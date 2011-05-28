@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="PackageExplorer.ContentViewerPane"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:self="clr-namespace:PackageExplorer">
+    <UserControl.Resources>
+        <self:FileSizeConverter x:Key="FileSizeConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+       
+        <ScrollViewer
+            Visibility="{Binding IsTextFile, Converter={StaticResource invertedBoolToVis}}"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            HorizontalScrollBarVisibility="Auto"
+            VerticalScrollBarVisibility="Auto"
+            Padding="2"
+            Content="{Binding Content}">
+        </ScrollViewer>
+
+        <self:SyntaxHighlightingTextBox
+            x:Name="contentBox"
+            Padding="0"
+            BorderThickness="0"
+            AcceptsReturn="True"
+            IsReadOnly="True"
+            Background="#FCFEF0"
+            Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}"
+            VerticalScrollBarVisibility="Auto"
+            HorizontalScrollBarVisibility="Auto"
+            SourceCode="{Binding Content, Mode=OneWay}"
+            SourceLanguage="{Binding Language, Mode=OneWay}" />
+
+        <Border Background="{StaticResource {x:Static SystemColors.ControlLightBrushKey}}" Grid.Row="1" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
+            <DockPanel>
+                <TextBlock 
+                    DockPanel.Dock="Left" 
+                    Text="{Binding Size, Converter={StaticResource FileSizeConverter}, StringFormat='Size: {0}'}" 
+                    Margin="3,0" 
+                    VerticalAlignment="Center">
+                </TextBlock>
+                <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}">
+                    <Label Content="Choose _Language:" Target="{Binding ElementName=LanguageBox}" />
+                    <ComboBox 
+                        x:Name="LanguageBox"
+                        Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"
+                        Margin="0,2,0,0"
+                        Width="150"
+                        DataContextChanged="UserControl_DataContextChanged"
+                        SelectedItem="{Binding Language}"
+                        SelectionChanged="OnLanguageBoxSelectionChanged" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
+    </Grid>
+</UserControl>

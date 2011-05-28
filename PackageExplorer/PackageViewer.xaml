@@ -1,0 +1,350 @@
+﻿<UserControl
+    x:Class="PackageExplorer.PackageViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:self="clr-namespace:PackageExplorer"
+    xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"
+    xmlns:resources="clr-namespace:PackageExplorer.Resources"
+    xmlns:effect="clr-namespace:GrayscaleEffect;assembly=GrayscaleEffect"
+    xmlns:settings="clr-namespace:PackageExplorer.Properties"
+    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
+    Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}"
+    mc:Ignorable="d" 
+    d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="TemplateStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <ContextMenu x:Key="SharedContextMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                <MenuItem Header="_View Content" Command="{Binding ViewCommand}" CommandParameter="{Binding}" FontWeight="SemiBold" />
+                <MenuItem Header="_Open in Windows shell..." Command="{Binding OpenCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="Open _with..." Command="{Binding OpenWithCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Save As..." Command="{Binding SaveCommand}" CommandParameter="{Binding}" />
+                <Separator />
+                <MenuItem Header="_Rename..." Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
+            </ContextMenu>
+
+            <ContextMenu x:Key="FolderSharedContextMenu" Opened="PackageFolderContextMenu_Opened" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                <MenuItem Header="_Add Existing File..." Command="{Binding   AddContentFileCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="Add Ne_w Folder..." Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Rename..." Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
+            </ContextMenu>
+
+            <!-- data template for the package details pane -->
+            <DataTemplate x:Key="PackageDetailTemplate">
+                <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="8">
+                        <Border 
+                            BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" 
+                            BorderThickness="0.5" 
+                            HorizontalAlignment="Left" 
+                            Padding="2"
+                            Background="White"
+                            Margin="0,0,0,5"
+                            ToolTipService.ToolTip="{Binding IconUrl, Mode=OneTime}"
+                            Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Image         
+                                Source="{Binding IconUrl}" 
+                                Width="32" 
+                                Height="32" 
+                                Stretch="Fill" 
+                                StretchDirection="DownOnly" />
+                        </Border>
+
+                        <!-- Id -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_IdLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding Id}" Style="{StaticResource DetailMetadataValueStyle}"  />
+                        </StackPanel>
+
+                        <!-- Version -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_VersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding Version}" Style="{StaticResource DetailMetadataValueStyle}"  />
+                        </StackPanel>
+
+                        <!-- Title -->
+                        <DockPanel Margin="0,3,0,0" Visibility="{Binding Title, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_TitleLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding Title}" Style="{StaticResource DetailMetadataValueStyle}" TextTrimming="CharacterEllipsis" />
+                        </DockPanel>
+
+                        <!-- Authors -->
+                        <DockPanel Margin="0,3,0,0">
+                            <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_CreatedByLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding Authors, Converter={StaticResource authorNamesConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
+                        </DockPanel>
+
+                        <!-- Owners -->
+                        <DockPanel Margin="0,3,0,0" Visibility="{Binding Owners, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_OwnersLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding Owners, Converter={StaticResource authorNamesConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
+                        </DockPanel>
+
+                        <!-- Tags -->
+                        <DockPanel Margin="0,3,0,0" Visibility="{Binding Tags, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_TagLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding Tags}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
+                        </DockPanel>
+
+                        <!-- Language -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Language, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_LanguageLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding Language}" Style="{StaticResource DetailMetadataValueStyle}"  />
+                        </StackPanel>
+
+                        <!-- Require License Acceptance -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_RequireLicenseLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding RequireLicenseAcceptance, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
+                        </StackPanel>
+
+                        <!-- View License link -->
+                        <TextBlock Visibility="{Binding LicenseUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Hyperlink Command="GoToPage" CommandParameter="{Binding LicenseUrl, Mode=OneTime}" ToolTip="{Binding LicenseUrl}">
+                                <Run Text="{x:Static resources:Resources.Dialog_ViewLicense}" />
+                            </Hyperlink>
+                        </TextBlock>
+
+                        <!-- Project Url -->
+                        <TextBlock Visibility="{Binding ProjectUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Hyperlink Command="GoToPage" CommandParameter="{Binding ProjectUrl, Mode=OneTime}" ToolTip="{Binding ProjectUrl}">
+                                <Run Text="{x:Static resources:Resources.Dialog_MoreInfo}" />
+                            </Hyperlink>
+                        </TextBlock>
+
+                        <!-- Summary -->
+                        <TextBlock Text="Summary:" Margin="0,3,0,0" Style="{StaticResource DetailMetadataLabelStyle}" Visibility="{Binding Summary, Converter={StaticResource NullToVisibilityConverter}}">
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource DetailDescriptionTextBoxStyle}" Text="{Binding Summary, Converter={StaticResource NormalizeTextConverter}}" Visibility="{Binding Summary, Converter={StaticResource NullToVisibilityConverter}}">
+                        </TextBlock>
+
+                        <!-- Description -->
+                        <TextBlock Text="Description:" Margin="0,3,0,0" Style="{StaticResource DetailMetadataLabelStyle}">
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource DetailDescriptionTextBoxStyle}" Text="{Binding Description, Converter={StaticResource NormalizeTextConverter}}" >
+                        </TextBlock>
+
+                        <!-- Dependencies list -->
+                        <TextBlock Text="{x:Static resources:Resources.Dialog_DependenciesLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                        <ItemsControl
+                            x:Name="DependencyItems"
+                            Margin="25,5,0,0"
+                            ItemsSource="{Binding Dependencies}">
+                        </ItemsControl>
+
+                        <TextBlock 
+                            Margin="25,5,0,5"
+                            Visibility="{Binding Items.Count, ElementName=DependencyItems, Converter={StaticResource invertedCountConverter}}"
+                            Style="{StaticResource NoDependencyTextBoxStyle}" 
+                            Text="{x:Static resources:Resources.Dialog_NoDependencyLabel}">
+                        </TextBlock>
+
+                        <!-- Framework assembly references -->
+                        <TextBlock 
+                            Visibility="{Binding Items.Count, ElementName=FrameworkAssemblyItems, Converter={StaticResource countConverter}}"
+                            Text="{x:Static resources:Resources.Dialog_FrameworkAssembliesLabel}" 
+                            Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                        <ItemsControl
+                            x:Name="FrameworkAssemblyItems"
+                            Margin="25,5,0,0"
+                            ItemsSource="{Binding FrameworkAssemblies}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding}" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodel:PackageFile}">
+                <StackPanel Background="Transparent" Orientation="Horizontal" ContextMenu="{StaticResource SharedContextMenu}">
+                    <Image x:Name="ItemIcon" Visibility="Collapsed" Margin="0,0,2,0" />
+                    <TextBlock x:Name="Header" Text="{Binding Name}">
+                    </TextBlock>
+                </StackPanel>
+
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS\INSTALL.PS1">
+                        <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Script.png" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS\UNINSTALL.PS1">
+                        <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Script.png" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS\INIT.PS1">
+                        <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Script.png" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <HierarchicalDataTemplate DataType="{x:Type viewmodel:PackageFolder}" ItemsSource="{Binding Children}">
+                <StackPanel Background="Transparent" Orientation="Horizontal" ContextMenu="{StaticResource FolderSharedContextMenu}">
+                    <Image x:Name="ItemIcon" Margin="0,0,2,0" Source="Images/Folder.png" />
+                    <TextBlock x:Name="Header" FontWeight="SemiBold">
+                        <Run Text="{Binding Name}" />
+                        <Run Text="{Binding Path, Converter={StaticResource frameworkConverter}}" Foreground="Salmon" />
+                    </TextBlock>
+                </StackPanel>
+
+                <HierarchicalDataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="LIB">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Lib.png" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="CONTENT">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/NoteHS.png" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Tools.png" />
+                    </DataTrigger>
+                </HierarchicalDataTemplate.Triggers>
+            </HierarchicalDataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <!-- Main content -->
+    <Grid x:Name="ContentGrid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" MinHeight="150" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="0*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="350" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- package metadata -->
+        <GroupBox Grid.RowSpan="3" BorderThickness="1" BorderBrush="DarkGray" Background="#FCFEF0" Margin="3" Header="Package metadata" FlowDirection="LeftToRight">
+            <Grid>
+                <ContentControl 
+                    Content="{Binding PackageMetadata}" 
+                    ContentTemplate="{StaticResource PackageDetailTemplate}" 
+                    Visibility="{Binding IsInEditMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}">
+                </ContentControl>
+
+                <self:PackageMetadataEditor 
+                        x:Name="PackageMetadataEditor"
+                        Margin="0,8,0,3"
+                        Visibility="{Binding IsInEditMode, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" />
+            </Grid>
+        </GroupBox>
+
+        <!-- package content tree view -->
+        <GroupBox BorderBrush="DarkGray" Background="Transparent" BorderThickness="1" Grid.Column="1" Margin="3" Header="Package contents">
+            <TreeView 
+                    x:Name="PackagesTreeView" 
+                    ItemsSource="{Binding PackageParts}" 
+                    BorderThickness="0" 
+                    Margin="0,4,0,0" 
+                    DragOver="OnTreeViewItemDragOver"
+                    Drop="OnTreeViewItemDrop"
+                    SelectedItemChanged="OnTreeViewSelectedItemChanged" 
+                    PreviewMouseRightButtonDown="TreeView_PreviewMouseRightButtonDown">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <EventSetter Event="MouseDoubleClick" Handler="OnTreeViewItemDoubleClick" />
+                        <EventSetter Event="DragOver" Handler="OnTreeViewItemDragOver" />
+                        <EventSetter Event="Drop" Handler="OnTreeViewItemDrop" />
+                        <EventSetter Event="PreviewMouseLeftButtonDown" Handler="PackagesTreeViewItem_PreviewMouseLeftButtonDown" />
+                        <EventSetter Event="PreviewMouseMove" Handler="PackagesTreeViewItem_PreviewMouseMove" />
+                        <EventSetter Event="PreviewMouseLeftButtonUp" Handler="PackagesTreeViewItem_PreviewMouseLeftButtonUp" />
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, FallbackValue=False}" />
+                        <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                        <Setter Property="AllowDrop" Value="True" />
+                    </Style>
+                </TreeView.ItemContainerStyle>
+
+                <TreeView.ContextMenu>
+                    <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="_Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}" />
+                        <MenuItem Header="_New Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}">
+                            <MenuItem.Icon>
+                                <Image Source="Images/NewFolderHS.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <Separator />
+                        <self:GrayscaleMenuItem Header="Add _Content Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="content">
+                            <self:GrayscaleMenuItem.Icon>
+                                <self:GrayscaleImage Source="Images/NoteHS.png" />
+                            </self:GrayscaleMenuItem.Icon>
+                        </self:GrayscaleMenuItem>
+                        <self:GrayscaleMenuItem Header="Add _Lib Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="lib">
+                            <self:GrayscaleMenuItem.Icon>
+                                <self:GrayscaleImage Source="Images/Lib.png" />
+                            </self:GrayscaleMenuItem.Icon>
+                        </self:GrayscaleMenuItem>
+                        <self:GrayscaleMenuItem Header="Add _Tools Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="tools">
+                            <self:GrayscaleMenuItem.Icon>
+                                <self:GrayscaleImage Source="Images/Tools.png" />
+                            </self:GrayscaleMenuItem.Icon>
+                        </self:GrayscaleMenuItem>
+                    </ContextMenu>
+                </TreeView.ContextMenu>
+
+            </TreeView>
+        </GroupBox>
+
+        <GridSplitter 
+                Grid.Column="1" 
+                Grid.Row="1" 
+                Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
+                ShowsPreview="True" 
+                ResizeBehavior="PreviousAndNext" 
+                Height="4" 
+                Margin="0,-2,0,0"
+                HorizontalAlignment="Stretch" 
+                Background="Transparent" 
+                VerticalAlignment="Bottom" />
+
+        <!-- content viewer -->
+        <GroupBox
+            x:Name="FileContentContainer"
+            Header="{Binding CurrentFileInfo.Name, TargetNullValue='Content Viewer'}"
+            Grid.Row="2"
+            Grid.Column="1" 
+            Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
+            Margin="3,0,3,3" 
+            Padding="0,4,0,0"
+            Background="#FCFEF0" 
+            BorderBrush="DarkGray" 
+            BorderThickness="1" 
+            IsVisibleChanged="FileContentContainer_IsVisibleChanged">
+        </GroupBox>
+
+        <Button 
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Top" 
+            Background="White"
+            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+            Command="{Binding ViewContentCommand}"
+            CommandParameter="Hide"
+            Margin="10,0"
+            Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
+            Grid.Row="2" 
+            Grid.Column="1"
+            ToolTipService.ToolTip="Close viewer pane">
+            <Image Source="Images/Delete.png" />
+        </Button>
+    </Grid>
+</UserControl>

@@ -1,0 +1,92 @@
+﻿<self:StandardDialog x:Class="PackageExplorer.PublishPackageWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:self="clr-namespace:PackageExplorer"
+    xmlns:settings="clr-namespace:PackageExplorer.Properties"
+    MinWidth="300"
+    MinHeight="150"
+    FocusManager.FocusedElement="{Binding ElementName=PublishKey}"
+    Title="Publish package"
+    ShowInTaskbar="False"
+    ResizeMode="NoResize"                              
+    Width="420"
+    FontSize="9pt"
+    FontFamily="Segoe UI"
+    WindowStartupLocation="CenterOwner"
+    SizeToContent="Height">
+    
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBlock}" x:Key="StatusTextStyle">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding HasError}" Value="True">
+                    <Setter Property="Foreground" Value="Red" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <DockPanel LastChildFill="False">
+
+        <!-- Main instruction -->
+        <TextBlock DockPanel.Dock="Top" Text="Enter your publish key." FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
+
+        <!-- Secondary instruction -->
+        <TextBlock DockPanel.Dock="Top" Margin="10,0" Text="This package will be published to the official NuGet gallery at http://nuget.org. To obtain your publish key, create an account at http://nuget.org and look for the key in the My Account page." TextWrapping="Wrap" />
+
+        <!-- Id & Version -->
+        <TextBlock DockPanel.Dock="Top" Margin="10,10,10,0">
+            <TextBlock.Inlines>
+                <Run Text="Id: " />
+                <Run FontWeight="Bold" Text="{Binding Id, Mode=OneTime}" />
+                <Run Text=" Version: " />
+                <Run FontWeight="Bold" Text="{Binding Version, Mode=OneTime}" />
+            </TextBlock.Inlines>
+        </TextBlock>
+                
+        <!-- Publish key -->
+        <DockPanel DockPanel.Dock="Top" Margin="7,8,10,5">
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishKey}" Content="Publish _key:" />
+            <TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}">
+                <TextBox.Text>
+                    <Binding Path="PublishKey" NotifyOnValidationError="True">
+                        <Binding.ValidationRules>
+                            <self:PublishApiKeyValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+        </DockPanel>
+        
+        <!-- Create only flag -->
+        <CheckBox 
+            x:Name="CreateOnlyFlag" 
+            Margin="10,5"
+            IsChecked="{Binding PushOnly}"
+            DockPanel.Dock="Top"
+            IsEnabled="{Binding CanPublish}"
+            HorizontalAlignment="Left"
+            Content="_Only push package to gallery but do not publish it.">
+        </CheckBox>
+
+        <!-- Progress bar -->
+        <ProgressBar x:Name="ProgressBar" Margin="10,5" Visibility="{Binding ShowProgress, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" DockPanel.Dock="Top" Height="22" Maximum="100" Value="{Binding PercentComplete, Mode=OneWay}" />
+        
+        <!-- Status text -->
+        <TextBlock x:Name="StatusText" Style="{StaticResource StatusTextStyle}" Text="{Binding Status}" Margin="10,5" Visibility="{Binding Status, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" DockPanel.Dock="Top" TextWrapping="Wrap" />
+
+        <Border DockPanel.Dock="Top" Margin="0,20,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
+            <UniformGrid Margin="10,5" HorizontalAlignment="Right" Rows="1" Columns="2">
+                <Button x:Name="PublishButton" IsDefault="True" Padding="15,0" Content="_Publish" Margin="5" Click="OnPublishButtonClick">
+                    <Button.IsEnabled>
+                        <MultiBinding Converter="{StaticResource andConverter}">
+                            <Binding Path="Text" ElementName="PublishKey" Converter="{StaticResource nullToBoolConverter}" />
+                            <Binding Path="CanPublish" />
+                        </MultiBinding>
+                    </Button.IsEnabled>
+                </Button>
+                <Button IsCancel="True" Content="_Close" Margin="5,5,0,5" Padding="15,0" Click="CloseButton_Click">
+                </Button>
+            </UniformGrid>
+        </Border>
+    </DockPanel>
+</self:StandardDialog>
