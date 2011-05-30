@@ -109,6 +109,7 @@ namespace PackageExplorer {
                 dialog.WindowTitle = Resources.Resources.Dialog_Title;
                 dialog.MainInstruction = title;
                 dialog.Content = message;
+                dialog.AllowDialogCancellation = true;
                 dialog.CenterParent = true;
                 if (isWarning) {
                     dialog.MainIcon = TaskDialogIcon.Warning;
@@ -117,8 +118,8 @@ namespace PackageExplorer {
                 dialog.Buttons.Add(new TaskDialogButton(ButtonType.Yes));
                 dialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
 
-                TaskDialogButton result = dialog.ShowDialog(Window.Value);
-                return result.ButtonType == ButtonType.Yes;
+                TaskDialogButton result = dialog.ShowDialog();
+                return result != null && result.ButtonType == ButtonType.Yes;
             }
         }
 
@@ -147,6 +148,7 @@ namespace PackageExplorer {
             using (TaskDialog dialog = new TaskDialog()) {
                 dialog.WindowTitle = Resources.Resources.Dialog_Title;
                 dialog.MainInstruction = title;
+                dialog.AllowDialogCancellation = true;
                 dialog.Content = message;
                 dialog.CenterParent = true;
                 dialog.MainIcon = TaskDialogIcon.Warning;
@@ -155,8 +157,12 @@ namespace PackageExplorer {
                 dialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
                 dialog.Buttons.Add(new TaskDialogButton(ButtonType.Cancel));
 
-                TaskDialogButton result = dialog.ShowDialog(Window.Value);
-                if (result.ButtonType == ButtonType.Yes) {
+                TaskDialogButton result = dialog.ShowDialog();
+
+                if (result == null) {
+                    return null;
+                }
+                else if (result.ButtonType == ButtonType.Yes) {
                     return true;
                 }
                 else if (result.ButtonType == ButtonType.No) {

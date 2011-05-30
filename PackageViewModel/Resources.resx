@@ -123,6 +123,9 @@
   <data name="ConfirmToDeleteContent_Title" xml:space="preserve">
     <value>Deleted file or folder is not recoverable.</value>
   </data>
+  <data name="ConfirmToDeletePlugin" xml:space="preserve">
+    <value>Are you sure you want to delete this plugin?</value>
+  </data>
   <data name="ConfirmToReplaceExsitingFile" xml:space="preserve">
     <value>Do you want to replace the existing file '{0}'?</value>
   </data>

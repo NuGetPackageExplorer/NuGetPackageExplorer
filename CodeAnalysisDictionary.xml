@@ -1,0 +1,44 @@
+<Dictionary>
+  <Words>
+    <Unrecognized>
+    </Unrecognized>
+    <Recognized>
+      <Word>Nu</Word>
+      <Word>NuGet</Word>
+      <Word>Tokenizer</Word>
+      <Word>Info</Word>
+      <Word>dte</Word>
+      <Word>param</Word>
+      <Word>Infos</Word>
+      <Word>nuspec</Word>
+      <Word>tfs</Word>
+      <Word>PowerShell</Word>
+      <Word>fwlink</Word>
+      <Word>Cpp</Word>
+      <Word>Php</Word>
+      <Word>Ashx</Word>
+      <Word>Asax</Word>
+      <Word>Plugin</Word>
+      <Word>Plugins</Word>
+    </Recognized>
+    <Deprecated>
+      <Term PreferredAlternate=""></Term>
+    </Deprecated>
+    <Compound>
+      <Term CompoundAlternate="NuGet">NuGet</Term>
+      <Term CompoundAlternate="ConsoleDispatcher">ConsoleDispatcher</Term>
+      <Term CompoundAlternate="PowerShell">PowerShell</Term>
+      <Term CompoundAlternate="WebSite">WebSite</Term>
+    </Compound>
+    <DiscreteExceptions>
+      <Term></Term>
+    </DiscreteExceptions>
+  </Words>
+  <Acronyms>
+    <CasingExceptions>
+      <Acronym>Vs</Acronym>
+      <Acronym>DTE</Acronym>
+      <Acronym>TFS</Acronym>
+    </CasingExceptions>
+  </Acronyms>
+</Dictionary>

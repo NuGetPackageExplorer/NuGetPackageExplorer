@@ -54,6 +54,15 @@ namespace PackageExplorerViewModel {
         }
 
         private void DeleteCommandExecute(FileInfo file) {
+            bool confirmed = _uiServices.Confirm(
+                "Confirm deleting " + file.Name,
+                Resources.ConfirmToDeletePlugin, 
+                isWarning: true);
+
+            if (!confirmed) {
+                return;
+            }
+
             bool succeeded = _pluginManager.DeletePlugin(file);
             if (succeeded) {
                 Plugins.Remove(file);

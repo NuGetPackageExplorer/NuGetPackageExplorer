@@ -65,7 +65,7 @@
         <DeploymentManifestFileName>$(ApplicationName).application</DeploymentManifestFileName>
         <ExeFileName>$(ApplicationName).exe</ExeFileName>
         <AppManifestFileName>$(ExeFileName).manifest</AppManifestFileName>
-        <ZipExe>$(PackageExplorerRoot)\..\..\7za920\7za.exe</ZipExe>
+        <ZipExe>$(PackageExplorerRoot)\Tools\7za920\7za.exe</ZipExe>
 	</PropertyGroup>
 	
 	<Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; ZipPublishedFiles">

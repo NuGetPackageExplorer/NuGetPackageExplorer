@@ -76,14 +76,6 @@ namespace PackageExplorer {
             if (!file.Exists || file.IsReadOnly) {
                 return false;
             }
-
-            bool confirmed = UIServices.Value.Confirm(
-                "Confirm deleting " + file.Name, 
-                "Do you really want to delete this plugin?");
-
-            if (!confirmed) {
-                return false;
-            }
             
             try {
                 RemovePluginFromCatalog(file);
