@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows;
 
 namespace PackageExplorer {
     public class GrayscaleButton : Button {
@@ -6,13 +7,21 @@ namespace PackageExplorer {
             IsEnabledChanged += OnIsEnabledChanged;
         }
 
-        private void OnIsEnabledChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) {
+        protected override void OnContentChanged(object oldContent, object newContent) {
+            base.OnContentChanged(oldContent, newContent);
+            UpdateImageContent();
+        }
+
+        private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            UpdateImageContent();
+        }
+
+        private void UpdateImageContent() {
             var icon = Content as Image;
             if (icon != null) {
                 var effect = icon.Effect as GrayscaleEffect.GrayscaleEffect;
                 if (effect != null) {
-                    bool isEnabled = (bool)e.NewValue;
-                    effect.DesaturationFactor = isEnabled ? 1 : 0;
+                    effect.DesaturationFactor = IsEnabled ? 1 : 0;
                 }
             }
         }

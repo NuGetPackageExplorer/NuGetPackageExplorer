@@ -1,18 +1,33 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace PackageExplorer {
     public class GrayscaleMenuItem : MenuItem {
+
+        static GrayscaleMenuItem() {
+            MenuItem.IconProperty.OverrideMetadata(
+                typeof(GrayscaleMenuItem),
+                new FrameworkPropertyMetadata(null, new PropertyChangedCallback(OnIconPropertyChanged)));
+        }
+
         public GrayscaleMenuItem() {
             IsEnabledChanged += OnIsEnabledChanged;
         }
 
-        private void OnIsEnabledChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) {
+        private static void OnIconPropertyChanged(object sender, DependencyPropertyChangedEventArgs args) {
+            ((GrayscaleMenuItem)sender).UpdateImageContent();
+        }
+
+        private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            UpdateImageContent();
+        }
+
+        private void UpdateImageContent() {
             var icon = Icon as Image;
             if (icon != null) {
                 var effect = icon.Effect as GrayscaleEffect.GrayscaleEffect;
                 if (effect != null) {
-                    bool isEnabled = (bool)e.NewValue;
-                    effect.DesaturationFactor = isEnabled ? 1 : 0;
+                    effect.DesaturationFactor = IsEnabled ? 1 : 0;
                 }
             }
         }
