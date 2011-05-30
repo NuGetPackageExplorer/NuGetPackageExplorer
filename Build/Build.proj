@@ -51,14 +51,14 @@
 	<PropertyGroup>
         <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
         <DeploymentUrl Condition="'$(DeploymentUrl)' == ''">http://nuget.codeplex.com/releases/clickonce/</DeploymentUrl>
+        <NpeDeploymentUrl>http://npe.codeplex.com/releases/clickonce/</NpeDeploymentUrl>
         <ApplicationName>NuGetPackageExplorer</ApplicationName>
         <PackageExplorerRoot>$(MSBuildProjectDirectory)\..</PackageExplorerRoot>
         <ManifestFilePath>$(MSBuildProjectDirectory)\VisualStyleManifest.xml</ManifestFilePath>
         <ManifestToolPath>$(ProgramFiles)\Microsoft SDKs\Windows\v7.0A\Bin\mt.exe</ManifestToolPath>
         <MageToolPath>$(ProgramFiles)\Microsoft SDKs\Windows\v7.0A\bin\NETFX 4.0 Tools\mage.exe</MageToolPath>
         <CertificateFilePath>$(PackageExplorerRoot)\$(CertificateFileName)</CertificateFilePath>
-        
-        <PublisherName>Outercurve Foundation</PublisherName>
+        <PublisherName>NuGet Package Explorer</PublisherName>
         <DropDirectory>$(PackageExplorerRoot)\bin</DropDirectory>
         <DeployDirectory>$(DropDirectory)\deploy</DeployDirectory>
         <PublishedDirectory>$(PackageExplorerRoot)\PackageExplorer\bin\$(Configuration)\app.publish</PublishedDirectory>
@@ -66,9 +66,11 @@
         <ExeFileName>$(ApplicationName).exe</ExeFileName>
         <AppManifestFileName>$(ExeFileName).manifest</AppManifestFileName>
         <ZipExe>$(PackageExplorerRoot)\Tools\7za920\7za.exe</ZipExe>
+        <DeployNpeZipFileName>Npe$(ApplicationName).zip</DeployNpeZipFileName>
+        <DeployZipFileName>$(ApplicationName).zip</DeployZipFileName>
 	</PropertyGroup>
 	
-	<Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; ZipPublishedFiles">
+	<Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment;">
 	</Target>
 	
 	<Target Name="CheckTools">
@@ -147,13 +149,29 @@
         <Copy SourceFiles="@(DeployFilesWithoutDeployExtension)" DestinationFiles="@(DeployFilesWithoutDeployExtension->'%(FullPath).deploy')" />
         <Delete Files="@(DeployFilesWithoutDeployExtension)" />
         
-        <!-- sign deployment manifest with mage.exe -->
+        <!-- sign deployment manifest with mage.exe for nuget site -->
         <Exec
             Command="&quot;$(MageToolPath)&quot; -u &quot;$(DeploymentManifestFileName)&quot; -appc &quot;$(ManifestCodeBase)\$(AppManifestFileName)&quot; -appm &quot;$(AppManifestDirectory)\$(AppManifestFileName)&quot; -cf &quot;$(CertificateFilePath)&quot; -pub &quot;$(PublisherName)&quot; -pu &quot;$(DeploymentUrl)$(DeploymentManifestFileName)&quot; -password &quot;$(CertificatePassword)&quot;"
             WorkingDirectory="$(DeployDirectory)" />
-	</Target>
+
+        <!-- zip the whole thing for nuget site -->
+        <Exec 
+            Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(DeployZipFileName)&quot;" 
+            WorkingDirectory="$(DeployDirectory)" />
+
+        <!-- sign deployment manifest with mage.exe for nuget package explorer site -->
+        <Exec
+            Command="&quot;$(MageToolPath)&quot; -u &quot;$(DeploymentManifestFileName)&quot; -appc &quot;$(ManifestCodeBase)\$(AppManifestFileName)&quot; -appm &quot;$(AppManifestDirectory)\$(AppManifestFileName)&quot; -cf &quot;$(CertificateFilePath)&quot; -pub &quot;$(PublisherName)&quot; -pu &quot;$(NpeDeploymentUrl)$(DeploymentManifestFileName)&quot; -password &quot;$(CertificatePassword)&quot;"
+            WorkingDirectory="$(DeployDirectory)" />
+
+        <!-- zip the whole thing for nuget package explorer site -->
+        <Exec
+            Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(DeployNpeZipFileName)&quot;"
+            WorkingDirectory="$(DeployDirectory)" />
+
+  </Target>
 	
-	<Target Name="ZipPublishedFiles">
+	<!--<Target Name="ZipPublishedFiles">
         <Exec Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(ApplicationName).zip&quot;" WorkingDirectory="$(DeployDirectory)" />
-	</Target>
+	</Target>-->
 </Project>

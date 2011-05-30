@@ -2,9 +2,9 @@ using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyCompany("Outercurve Foundation")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NuGet Package Explorer")]
-[assembly: AssemblyCopyright("\x00a9 Outercurve Foundation. All rights reserved.")]
+[assembly: AssemblyCopyright("\x00a9 Luan Nguyen. All rights reserved.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
