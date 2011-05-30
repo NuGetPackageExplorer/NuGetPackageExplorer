@@ -181,16 +181,16 @@
             </MenuItem>
 
             <MenuItem Header="_Help">
-                <self:GrayscaleMenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="http://nuget.codeplex.com/documentation">
+                <self:GrayscaleMenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="http://docs.nuget.org/">
                     <self:GrayscaleMenuItem.Icon>
                         <self:GrayscaleImage Source="Images/Book_angleHS.png" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
-                <MenuItem Header="How to _Create Package" Command="GoToPage" CommandParameter="http://nuget.codeplex.com/documentation?title=Creating%20a%20Package" />
-                <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="http://nuget.codeplex.com/wikipage?title=Version%20Range%20Specification" />
-                <MenuItem Header="Framework Assembly F_ormat" Command="GoToPage" CommandParameter="http://nuget.codeplex.com/wikipage?title=.nuspec%20v1.2%20Format#x_frameworkassemblies" />
+                <MenuItem Header="How to _Create Package" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package" />
+                <MenuItem Header="_Nuspec Reference" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/nuspec-reference" />
+                <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/version-range-specification" />
                 <Separator />
-                <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="http://nuget.codeplex.com/WorkItem/Create" />
+                <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="http://npe.codeplex.com/WorkItem/Create" />
                 <MenuItem Header="_About..." Click="AboutMenuItem_Click" />
             </MenuItem>
         </Menu>
