@@ -344,7 +344,7 @@
             Grid.Row="2" 
             Grid.Column="1"
             ToolTipService.ToolTip="Close viewer pane">
-            <Image Source="Images/Delete.png" />
+            <Image Source="Images/Close.png" />
         </Button>
     </Grid>
 </UserControl>
