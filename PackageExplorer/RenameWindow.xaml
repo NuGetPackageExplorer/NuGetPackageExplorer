@@ -19,8 +19,8 @@
         <TextBox x:Name="NameBox" x:FieldModifier="private" DockPanel.Dock="Top" VerticalAlignment="Center" Margin="10,10,10,0" MaxLength="200" />
         <Border DockPanel.Dock="Top" Margin="0,20,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
             <UniformGrid HorizontalAlignment="Right" Margin="10,5" Rows="1" Columns="2">
-                <Button IsDefault="True" IsEnabled="{Binding Text, ElementName=NameBox, Converter={StaticResource nullToBoolConverter}}" Content="_OK" Margin="5" Click="OkButton_Click" />
-                <Button IsCancel="True" Content="_Cancel" Margin="5,5,0,5" Padding="15,0" Click="CancelButton_Click" />
+                <Button IsDefault="True" IsEnabled="{Binding Text, ElementName=NameBox, Converter={StaticResource nullToBoolConverter}}" Content="OK" Margin="5" Click="OkButton_Click" />
+                <Button IsCancel="True" Content="Cancel" Margin="5,5,0,5" Padding="15,0" Click="CancelButton_Click" />
             </UniformGrid>
         </Border>
     </DockPanel>

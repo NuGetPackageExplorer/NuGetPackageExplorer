@@ -267,7 +267,7 @@
         </TextBlock>
 
         <UniformGrid HorizontalAlignment="Right" Grid.Row="4" Grid.Column="1" Rows="1" Columns="2">
-            <Button IsDefault="True" Content="_OK" Margin="5" Click="OkButton_Click" Padding="15,0">
+            <Button IsDefault="True" Content="OK" Margin="5" Click="OkButton_Click" Padding="15,0">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource andConverter}">
                         <Binding Path="SelectedItem" ElementName="PackageGrid" Converter="{StaticResource nullToBoolConverter}" />
@@ -275,7 +275,7 @@
                     </MultiBinding>
                 </Button.IsEnabled>
             </Button>
-            <Button IsCancel="True" Content="_Cancel" Margin="5,5,0,5" Padding="15,0" Click="CancelButton_Click" />
+            <Button IsCancel="True" Content="Cancel" Margin="5,5,0,5" Padding="15,0" Click="CancelButton_Click" />
         </UniformGrid>
     </Grid>
 </self:StandardDialog>

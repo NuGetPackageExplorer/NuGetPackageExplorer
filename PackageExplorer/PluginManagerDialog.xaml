@@ -41,7 +41,7 @@
             <Button Content="_Delete" Padding="15,0" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=PluginFiles}" />
         </StackPanel>
 
-        <Button Grid.Column="1" Grid.Row="2" Padding="15,0" Content="_Close" Click="Button_Click" IsDefault="True" IsCancel="True">
+        <Button Grid.Column="1" Grid.Row="2" Padding="15,0" Content="Close" Click="Button_Click" IsDefault="True" IsCancel="True">
         </Button>
     </Grid>
 </self:StandardDialog>

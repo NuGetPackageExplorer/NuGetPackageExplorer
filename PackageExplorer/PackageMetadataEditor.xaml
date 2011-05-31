@@ -253,8 +253,8 @@
 
         <!-- Button -->
         <UniformGrid Grid.Row="1" HorizontalAlignment="Center" Margin="0,8,0,0" Rows="1" Columns="2">
-            <Button Content="_OK" Padding="15,0" Margin="0,0,5,0" Command="{Binding ApplyEditCommand}" />
-            <Button Padding="15,0" Content="_Cancel" Margin="5,0,0,0" Command="{Binding CancelEditCommand}" />
+            <Button Content="OK" Padding="15,0" Margin="0,0,5,0" Command="{Binding ApplyEditCommand}" />
+            <Button Padding="15,0" Content="Cancel" Margin="5,0,0,0" Command="{Binding CancelEditCommand}" />
         </UniformGrid>
     </Grid>
 </UserControl>

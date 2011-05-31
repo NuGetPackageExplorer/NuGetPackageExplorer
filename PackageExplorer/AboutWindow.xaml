@@ -51,7 +51,7 @@
                 <Run Text="." />
             </TextBlock>
             
-            <Button Content="_OK" Padding="20,0,20,0" HorizontalAlignment="Right" Margin="0,30,0,0" IsDefault="True" IsCancel="True" Click="Button_Click" />
+            <Button Content="OK" Padding="20,0,20,0" HorizontalAlignment="Right" Margin="0,30,0,0" IsDefault="True" IsCancel="True" Click="Button_Click" />
         </StackPanel>
     </DockPanel>
 </self:StandardDialog>

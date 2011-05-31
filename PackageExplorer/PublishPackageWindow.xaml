@@ -84,7 +84,7 @@
                         </MultiBinding>
                     </Button.IsEnabled>
                 </Button>
-                <Button IsCancel="True" Content="_Close" Margin="5,5,0,5" Padding="15,0" Click="CloseButton_Click">
+                <Button IsCancel="True" Content="Close" Margin="5,5,0,5" Padding="15,0" Click="CloseButton_Click">
                 </Button>
             </UniformGrid>
         </Border>
