@@ -17,7 +17,12 @@ namespace PackageExplorerViewModel {
         public event EventHandler CanExecuteChanged = delegate { };
 
         public bool CanExecute(object parameter) {
-            return ViewModel.SelectedItem is PackageFile;
+            if ("Hide".Equals(parameter)) {
+                return true;
+            }
+            else {
+                return ViewModel.SelectedItem is PackageFile;
+            }
         }
 
         public void RaiseCanExecuteChanged() {
