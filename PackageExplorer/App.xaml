@@ -135,28 +135,36 @@
             <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
         </Style>
 
-        <Style  TargetType="{x:Type GridSplitter}">
+        <Style TargetType="{x:Type GridSplitter}">
             <Setter Property="UIElement.SnapsToDevicePixels" Value="True" />
             <Setter Property="UIElement.Focusable" Value="False" />
             <Setter Property="ShowsPreview" Value="True"/>
             <Setter Property="Foreground" Value="{StaticResource ResourceKey={x:Static SystemColors.ControlDarkBrushKey}}" />
-
-            <Setter Property="Control.Template">
-                <Setter.Value>
-                    <ControlTemplate>
-                        <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}">
-                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Center">
-                                <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" Margin=".5" RadiusX="3" RadiusY="3" />
-                                <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" Margin=".5" RadiusX="3" RadiusY="3" />
-                                <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" Margin=".5" RadiusX="3" RadiusY="3" />
-                                <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" Margin=".5" RadiusX="3" RadiusY="3" />
-                                <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" Margin=".5" RadiusX="3" RadiusY="3" />
-                            </StackPanel>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
+            <Setter Property="Background" Value="Transparent" />
         </Style>
 
+        <ControlTemplate TargetType="{x:Type GridSplitter}" x:Key="HorizontalGridSplitterStyle">
+            <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}">
+                <StackPanel VerticalAlignment="Center" Orientation="Horizontal" HorizontalAlignment="Center">
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" RadiusX="1" RadiusY="1" Margin=".5" />
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" RadiusX="1" RadiusY="1" Margin=".5" />
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" RadiusX="1" RadiusY="1" Margin=".5" />
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" RadiusX="1" RadiusY="1" Margin=".5" />
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="3" Height="2" RadiusX="1" RadiusY="1" Margin=".5" />
+                </StackPanel>
+            </Border>
+        </ControlTemplate>
+
+        <ControlTemplate TargetType="{x:Type GridSplitter}" x:Key="VerticalGridSplitterStyle">
+            <Border BorderThickness="{TemplateBinding Border.BorderThickness}" BorderBrush="{TemplateBinding Border.BorderBrush}" Background="{TemplateBinding Panel.Background}">
+                <StackPanel Orientation="Vertical" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="2" Height="3" RadiusX="1" RadiusY="1" Margin=".5" />
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="2" Height="3" RadiusX="1" RadiusY="1" Margin=".5" />
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="2" Height="3" RadiusX="1" RadiusY="1" Margin=".5" />
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="2" Height="3" RadiusX="1" RadiusY="1" Margin=".5" />
+                    <Rectangle Fill="{TemplateBinding Foreground}" Width="2" Height="3" RadiusX="1" RadiusY="1" Margin=".5" />
+                </StackPanel>
+            </Border>
+        </ControlTemplate>
     </Application.Resources>
 </Application>

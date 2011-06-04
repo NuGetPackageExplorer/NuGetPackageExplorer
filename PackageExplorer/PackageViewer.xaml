@@ -230,8 +230,9 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="350" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="0*" MinWidth="350" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" MinWidth="200" />
         </Grid.ColumnDefinitions>
 
         <!-- package metadata -->
@@ -250,8 +251,19 @@
             </Grid>
         </GroupBox>
 
+        <GridSplitter 
+            Grid.Column="1" 
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            ShowsPreview="True" 
+            Template="{StaticResource VerticalGridSplitterStyle}"
+            ResizeBehavior="PreviousAndNext" 
+            Width="4" 
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Stretch" />
+        
         <!-- package content tree view -->
-        <GroupBox BorderBrush="DarkGray" Background="Transparent" BorderThickness="1" Grid.Column="1" Margin="3" Header="Package contents">
+        <GroupBox BorderBrush="DarkGray" Background="Transparent" BorderThickness="1" Grid.Column="2" Margin="3" Header="Package contents">
             <TreeView 
                     x:Name="PackagesTreeView" 
                     ItemsSource="{Binding PackageParts}" 
@@ -306,23 +318,22 @@
         </GroupBox>
 
         <GridSplitter 
-                Grid.Column="1" 
-                Grid.Row="1" 
-                Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
-                ShowsPreview="True" 
-                ResizeBehavior="PreviousAndNext" 
-                Height="4" 
-                Margin="0,-2,0,0"
-                HorizontalAlignment="Stretch" 
-                Background="Transparent" 
-                VerticalAlignment="Bottom" />
+            Grid.Column="2" 
+            Grid.Row="1" 
+            Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
+            Template="{StaticResource HorizontalGridSplitterStyle}"
+            ResizeBehavior="PreviousAndNext" 
+            Height="4" 
+            Margin="0,-2,0,0"
+            HorizontalAlignment="Stretch" 
+            VerticalAlignment="Bottom" />
 
         <!-- content viewer -->
         <GroupBox
             x:Name="FileContentContainer"
             Header="{Binding CurrentFileInfo.Name, TargetNullValue='Content Viewer'}"
             Grid.Row="2"
-            Grid.Column="1" 
+            Grid.Column="2" 
             Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
             Margin="3,0,3,3" 
             Padding="0,4,0,0"
@@ -342,7 +353,7 @@
             Margin="10,0"
             Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
             Grid.Row="2" 
-            Grid.Column="1"
+            Grid.Column="2"
             ToolTipService.ToolTip="Close viewer pane">
             <Image Source="Images/Close.png" />
         </Button>
