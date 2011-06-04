@@ -2,113 +2,129 @@
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Threading;
 using NuGet;
-using Ookii.Dialogs.Wpf;
 using NuGetPackageExplorer.Types;
+using Ookii.Dialogs.Wpf;
 
 namespace PackageExplorer {
 
     [Export(typeof(IPackageDownloader))]
     internal class PackageDownloader : IPackageDownloader {
-
         [Import]
         public Lazy<MainWindow> MainWindow { get; set; }
 
         [Import]
         public IUIServices UIServices { get; set; }
 
+        private ProgressDialog _progressDialog;
+
         public void Download(
-            Uri downloadUri, 
-            string packageId, 
-            Version packageVersion, 
+            Uri downloadUri,
+            string packageId,
+            Version packageVersion,
             IProxyService proxyService,
             Action<IPackage> callback) {
 
-            var progressDialog = new ProgressDialog {
+            _progressDialog = new ProgressDialog {
                 Text = "Downloading package " + packageId + " " + packageVersion.ToString(),
                 WindowTitle = Resources.Resources.Dialog_Title,
                 ShowTimeRemaining = true,
                 CancellationText = "Canceling download..."
             };
-            progressDialog.ShowDialog(MainWindow.Value);
+            _progressDialog.ShowDialog(MainWindow.Value);
 
-            DownloadData(downloadUri, proxyService, progressDialog, callback);
-        }
-
-        private void DownloadData(Uri uri, IProxyService proxyService, ProgressDialog progressDialog, Action<IPackage> callback) {
-            WebClient client = new WebClient();
-            string userAgent = HttpUtility.CreateUserAgentString(PackageExplorerViewModel.Constants.UserAgentClient);
-            client.Headers[HttpRequestHeader.UserAgent] = userAgent;
-            client.UseDefaultCredentials = true;
-            client.Proxy = proxyService.GetProxy(uri);
-
-            client.DownloadDataCompleted += (sender, e) => {
-                // close the progress dialog first thing
-                progressDialog.Close();
-                // when the progress dialog close, the main window loses focus unexpectedly. 
-                // call Activate() so that the main window retains focus
-                MainWindow.Value.Activate();
-
-                if (!e.Cancelled) {
-                    // the progress takes a while to disappear, wait for a bit 
-                    // before we load the package.
-                    DispatcherTimer timer = new DispatcherTimer() {
-                        Interval = TimeSpan.FromMilliseconds(500)
-                    };
-                    timer.Tick += (s, args) => {
-                        timer.Stop();
-                        OnCompleted(callback, e);
-                    };
-
-                    timer.Start();
+            // polling for Cancel button being clicked
+            CancellationTokenSource cts = new CancellationTokenSource();
+            var timer = new DispatcherTimer() {
+                Interval = TimeSpan.FromMilliseconds(200)
+            };
+            timer.Tick += (o, e) => {
+                if (_progressDialog.CancellationPending) {
+                    timer.Stop();
+                    cts.Cancel();
                 }
             };
+            timer.Start();
 
-            client.DownloadProgressChanged += (sender, e) => {
-                // detect when user presses Cancel button
-                if (progressDialog.CancellationPending) {
-                    client.CancelAsync();
-                }
-                else {
-                    OnProgress(progressDialog, e.ProgressPercentage, e.BytesReceived, e.TotalBytesToReceive);
-                }
+            // report progress must be done via UI thread
+            Action<int, string> reportProgress = (percent, description) => {
+                UIServices.BeginInvoke(() => _progressDialog.ReportProgress(percent, null, description));
             };
 
-            client.DownloadDataAsync(uri);
+            // download package on background thread
+            TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            Task.Factory.StartNew(
+                () => DownloadData(downloadUri, proxyService, reportProgress, cts.Token),
+                cts.Token
+            ).ContinueWith(
+                task => {
+                    timer.Stop();
+
+                    // close progress dialog when done
+                    _progressDialog.Close();
+                    _progressDialog = null;
+                    MainWindow.Value.Activate();
+
+                    if (task.Exception != null) {
+                        OnError(task.Exception);
+                    }
+                    else if (!task.IsCanceled) {
+                        IPackage package = task.Result;
+                        callback(package);
+                    }
+                },
+                uiScheduler
+            );
         }
 
-        private void OnCompleted(Action<IPackage> callback, DownloadDataCompletedEventArgs e) {
-            if (e.Error != null) {
-                OnError(e.Error);
+        private IPackage DownloadData(Uri url, IProxyService proxyService, Action<int, string> reportProgressAction, CancellationToken cancelToken) {
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            request.UserAgent = HttpUtility.CreateUserAgentString(PackageExplorerViewModel.Constants.UserAgentClient);
+            request.UseDefaultCredentials = true;
+            request.Proxy = proxyService.GetProxy(url);
+
+            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse()) {
+                cancelToken.ThrowIfCancellationRequested();
+                using (Stream requestStream = response.GetResponseStream()) {
+                    int chunkSize = 4 * 1024;
+                    int totalBytes = (int)response.ContentLength;
+                    byte[] buffer = new byte[chunkSize];
+                    int readSoFar = 0;
+
+                    // while reading data from network, we write it to a temp file
+                    string tempFilePath = Path.GetTempFileName();
+                    using (FileStream fileStream = File.OpenWrite(tempFilePath)) {
+                        while (readSoFar < totalBytes) {
+                            int bytesRead = requestStream.Read(buffer, 0, Math.Min(chunkSize, totalBytes - readSoFar));
+                            readSoFar += bytesRead;
+
+                            cancelToken.ThrowIfCancellationRequested();
+
+                            fileStream.Write(buffer, 0, bytesRead);
+                            OnProgress(readSoFar, totalBytes, reportProgressAction);
+                        }
+                    }
+
+                    // read all bytes successfully
+                    if (readSoFar >= totalBytes) {
+                        return new ZipPackage(tempFilePath);
+                    }
+                }
             }
-            else {
-                string tempFilePath = SaveResultToTempFile(e.Result);
-                var package = new ZipPackage(tempFilePath);
-                callback(package);
-            }
+            return null;
         }
 
-        private string SaveResultToTempFile(byte[] bytes) {
-            string tempFile = Path.GetTempFileName();
-            File.WriteAllBytes(tempFile, bytes);
-            return tempFile;
-        }
-
-        public void OnError(Exception error) {
+        private void OnError(Exception error) {
             UIServices.Show((error.InnerException ?? error).Message, MessageLevel.Error);
         }
 
-        private void OnProgress(ProgressDialog progressDialog, int percentComplete, long bytesReceived, long totalBytes) {
-            if (percentComplete < 0) {
-                percentComplete = 0;
-            }
-            if (percentComplete > 100) {
-                percentComplete = 100;
-            }
-
-            var description = String.Format("Downloaded {0}KB of {1}KB...", ToKB(bytesReceived).ToString(), ToKB(totalBytes).ToString());
-            progressDialog.ReportProgress(percentComplete, null, description);
+        private void OnProgress(int bytesReceived, int totalBytes, Action<int, string> reportProgress) {
+            int percentComplete = (bytesReceived * 100) / totalBytes;
+            string description = String.Format("Downloaded {0}KB of {1}KB...", ToKB(bytesReceived).ToString(), ToKB(totalBytes).ToString());
+            reportProgress(percentComplete, description);
         }
 
         private long ToKB(long totalBytes) {
