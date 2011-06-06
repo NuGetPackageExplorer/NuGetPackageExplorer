@@ -73,6 +73,11 @@ namespace PackageExplorer
                 }
             }
 
+            if (res.Length == 0 && parts.Length > 0) {
+                string lastPart = parts[parts.Length - 1];
+                res = lastPart.Substring(Math.Max(0, lastPart.Length - remainingLength));
+            }
+
             return prefix + "..." + res;
         }
 
