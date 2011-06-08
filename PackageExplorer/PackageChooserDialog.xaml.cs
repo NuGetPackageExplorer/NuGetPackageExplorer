@@ -41,6 +41,12 @@ namespace PackageExplorer {
         public PackageChooserDialog(PackageChooserViewModel viewModel) {
             InitializeComponent();
 
+            IsVisibleChanged += (sender, args) => {
+                if (IsVisible) {
+                    Dispatcher.BeginInvoke(new Action(FocusSearchBox), DispatcherPriority.Background);
+                }
+            };
+
             SetBinding(SortColumnProperty, new Binding("SortColumn") { Mode = BindingMode.OneWay });
             SetBinding(SortDirectionProperty, new Binding("SortDirection") { Mode = BindingMode.OneWay });
 
@@ -57,7 +63,7 @@ namespace PackageExplorer {
             // Ensure that the SearchBox is focused after the packages have loaded so that the user can search right
             // away if they need to. Currently the default search behavior is not working most likely do to the
             // controls being disabled when the packages are loading.
-            SearchBox.Focus();
+            FocusSearchBox();
 
             RedrawSortGlyph();
         }
@@ -183,6 +189,10 @@ namespace PackageExplorer {
         internal void ForceClose() {
             this.Closing -= StandardDialog_Closing;
             Close();
+        }
+
+        private void FocusSearchBox() {
+            SearchBox.Focus();
         }
     }
 }
