@@ -48,7 +48,7 @@
                             Padding="2"
                             Background="White"
                             Margin="0,0,0,5"
-                            ToolTipService.ToolTip="{Binding IconUrl, Mode=OneTime}"
+                            ToolTipService.ToolTip="{Binding IconUrl}"
                             Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
                             <Image         
                                 Source="{Binding IconUrl}" 
@@ -108,14 +108,14 @@
 
                         <!-- View License link -->
                         <TextBlock Visibility="{Binding LicenseUrl, Converter={StaticResource NullToVisibilityConverter}}">
-                            <Hyperlink Command="GoToPage" CommandParameter="{Binding LicenseUrl, Mode=OneTime}" ToolTip="{Binding LicenseUrl}">
+                            <Hyperlink Command="GoToPage" CommandParameter="{Binding LicenseUrl}" ToolTip="{Binding LicenseUrl}">
                                 <Run Text="{x:Static resources:Resources.Dialog_ViewLicense}" />
                             </Hyperlink>
                         </TextBlock>
 
                         <!-- Project Url -->
                         <TextBlock Visibility="{Binding ProjectUrl, Converter={StaticResource NullToVisibilityConverter}}">
-                            <Hyperlink Command="GoToPage" CommandParameter="{Binding ProjectUrl, Mode=OneTime}" ToolTip="{Binding ProjectUrl}">
+                            <Hyperlink Command="GoToPage" CommandParameter="{Binding ProjectUrl}" ToolTip="{Binding ProjectUrl}">
                                 <Run Text="{x:Static resources:Resources.Dialog_MoreInfo}" />
                             </Hyperlink>
                         </TextBlock>
