@@ -49,10 +49,10 @@ namespace PackageExplorerViewModel {
             T[] buffer = null;
             int skipCursor = _nextSkip = _skip;
             int head = 0;
-            for (int i = 0; i < _pageSize && _nextSkip < TotalItemCount; i++) {
+            for (int i = 0; i < _pageSize && (!_totalItemCount.IsValueCreated || _nextSkip < _totalItemCount.Value); i++) {
                 bool firstItem = true;
                 T lastItem = default(T);
-                while (_nextSkip < TotalItemCount) {
+                while (!_totalItemCount.IsValueCreated || _nextSkip < _totalItemCount.Value) {
                     if (buffer == null || head >= buffer.Length) {
                         // read the next batch
                         buffer = _source.Skip(skipCursor).Take(_bufferSize).ToArray();

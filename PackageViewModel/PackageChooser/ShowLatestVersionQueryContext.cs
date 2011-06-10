@@ -40,7 +40,7 @@ namespace PackageExplorerViewModel {
         }
 
         public IEnumerable<T> GetItemsForCurrentPage() {
-            return _source.Skip(Math.Max(0, BeginPackage - 1)).Take(_pageSize);
+            return _source.Skip(_pageIndex * _pageSize).Take(_pageSize);
         }
 
         public bool MoveFirst() {

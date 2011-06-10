@@ -244,6 +244,11 @@ namespace PackageExplorerViewModel {
         }
 
         private IList<PackageInfo> QueryPackages() {
+            // HACK: trigger calling TotalItemCount asynchronously so that the request for $count
+            // can run in parallel with the request for packages
+            Func<int> getTotalItemCount = () => _currentQuery.TotalItemCount;
+            getTotalItemCount.BeginInvoke(null, null);
+
             IList<PackageInfo> result = _currentQuery.GetItemsForCurrentPage().ToList();
             var repository = GetPackageRepository();
             foreach (PackageInfo entity in result) {
