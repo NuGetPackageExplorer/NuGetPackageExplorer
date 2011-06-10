@@ -112,9 +112,12 @@ namespace PackageExplorer {
                 e.Handled = true;
             }
             else if (e.Key == Key.Escape) {
-                // simulate Clear Search command execution
-                ClearSearchButton.Command.Execute(null);
-                e.Handled = true;
+                ICommand clearSearchCommand = ClearSearchButton.Command;
+                if (clearSearchCommand.CanExecute(null)) {
+                    // simulate Clear Search command execution
+                    clearSearchCommand.Execute(null);
+                    e.Handled = true;
+                }
             }
         }
 
