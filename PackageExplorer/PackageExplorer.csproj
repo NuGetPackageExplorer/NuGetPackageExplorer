@@ -281,6 +281,7 @@
     <Resource Include="Images\folder.png" />
     <Resource Include="Images\Cog.png" />
     <Resource Include="Images\Close.png" />
+    <Resource Include="Images\clear.png" />
     <Content Include="nuspec.ico" />
   </ItemGroup>
   <ItemGroup>

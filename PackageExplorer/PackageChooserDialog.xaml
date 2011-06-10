@@ -103,22 +103,37 @@
             Padding="2" 
             KeyDown="SearchBox_KeyDown" 
             IsEnabled="{Binding IsEditable}"
-            Tag="{Binding SearchCommand}" 
+            Text="{Binding CurrentTypingSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
             VerticalAlignment="Center">
         </TextBox>
 
         <!-- Search Button -->
-        <self:GrayscaleButton 
+        <self:GrayscaleButton
+            x:Name="SearchButton"
             Grid.Column="1"
             Grid.Row="1"
-            Margin="0,4,6,0"
+            Margin="0,4,25,0"
             ToolTip="Search"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
             Command="{Binding SearchCommand}"
             CommandParameter="{Binding Text, ElementName=SearchBox}">
-            <self:GrayscaleImage Source="Images/search.png" />
+            <self:GrayscaleImage Source="Images/search.png" />            
+        </self:GrayscaleButton>
+
+        <!-- Clear search button -->
+        <self:GrayscaleButton 
+            x:Name="ClearSearchButton"
+            Grid.Column="1"
+            Grid.Row="1"
+            Margin="0,4,5,0"
+            ToolTip="Clear search"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
+            Command="{Binding ClearSearchCommand}">
+            <self:GrayscaleImage Source="Images/clear.png" Stretch="None"/>
         </self:GrayscaleButton>
 
         <!-- package list view -->

@@ -43,7 +43,7 @@ namespace PackageExplorer {
 
             IsVisibleChanged += (sender, args) => {
                 if (IsVisible) {
-                    Dispatcher.BeginInvoke(new Action(FocusSearchBox), DispatcherPriority.Background);
+                    Dispatcher.BeginInvoke(new Action(OnAfterShow), DispatcherPriority.Background);
                 }
             };
 
@@ -106,32 +106,20 @@ namespace PackageExplorer {
         }
 
         private void SearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
-            string searchTerm = null;
-
             if (e.Key == Key.Enter) {
-                searchTerm = SearchBox.Text;
+                // simulate Search command execution
+                SearchButton.Command.Execute(null);
+                e.Handled = true;
             }
             else if (e.Key == Key.Escape) {
-                if (!String.IsNullOrEmpty(SearchBox.Text)) {
-                    searchTerm = String.Empty;
-                    SearchBox.Text = String.Empty;
-                }
-            }
-
-            if (searchTerm != null) {
-                Search(searchTerm);
+                // simulate Clear Search command execution
+                ClearSearchButton.Command.Execute(null);
                 e.Handled = true;
             }
         }
 
-        private void Search(string searchTerm) {
-            ICommand searchCommand = (ICommand)SearchBox.Tag;
-            searchCommand.Execute(searchTerm);
-        }
-
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             AdjustSearchBox();
-
             Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
         }
 
@@ -140,8 +128,8 @@ namespace PackageExplorer {
             if (SearchBox.Template != null) {
                 var contentHost = SearchBox.Template.FindName("PART_ContentHost", SearchBox) as FrameworkElement;
                 if (contentHost != null) {
-                    contentHost.Margin = new Thickness(0, 0, 20, 0);
-                    contentHost.Width = 150;
+                    contentHost.Margin = new Thickness(0, 0, 40, 0);
+                    contentHost.Width = 160;
                 }
             }
         }
@@ -153,7 +141,7 @@ namespace PackageExplorer {
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e) {
             if (e.Key == Key.E && Keyboard.Modifiers == ModifierKeys.Control) {
-                SearchBox.Focus();
+                FocusSearchBox();
                 e.Handled = true;
             }
         }
@@ -192,7 +180,16 @@ namespace PackageExplorer {
         }
 
         private void FocusSearchBox() {
-            SearchBox.Focus();
+            bool gotFocus = SearchBox.Focus();
+            if (gotFocus) {
+                // move caret to the end 
+                SearchBox.Select(SearchBox.Text.Length, 0);
+            }
+        }
+
+        private void OnAfterShow() {
+            ((PackageChooserViewModel)DataContext).OnAfterShow();
+            FocusSearchBox();
         }
     }
 }

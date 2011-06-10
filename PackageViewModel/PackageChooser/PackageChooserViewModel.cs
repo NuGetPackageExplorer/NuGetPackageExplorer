@@ -34,6 +34,7 @@ namespace PackageExplorerViewModel {
             Packages = new ObservableCollection<PackageInfo>();
             SortCommand = new RelayCommand<string>(Sort, column => TotalPackageCount > 0);
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
+            ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
             NavigationCommand = new RelayCommand<string>(NavigationCommandExecute, NavigationCommandCanExecute);
             LoadedCommand = new RelayCommand(() => Sort("VersionDownloadCount", ListSortDirection.Descending));
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
@@ -43,8 +44,20 @@ namespace PackageExplorerViewModel {
 
         public event EventHandler LoadPackagesCompleted = delegate { };
 
-        private string _sortColumn;
+        private string _currentTypingSearch;
+        public string CurrentTypingSearch {
+            get {
+                return _currentTypingSearch;
+            }
+            set {
+                if (_currentTypingSearch != value) {
+                    _currentTypingSearch = value;
+                    OnPropertyChanged("CurrentTypingSearch");
+                }
+            }
+        }
 
+        private string _sortColumn;
         public string SortColumn {
             get { return _sortColumn; }
 
@@ -57,7 +70,6 @@ namespace PackageExplorerViewModel {
         }
 
         private ListSortDirection _sortDirection;
-
         public ListSortDirection SortDirection {
             get { return _sortDirection; }
             set {
@@ -69,7 +81,6 @@ namespace PackageExplorerViewModel {
         }
 
         private bool _isEditable = true;
-
         public bool IsEditable {
             get {
                 return _isEditable;
@@ -84,7 +95,6 @@ namespace PackageExplorerViewModel {
         }
 
         private bool _showLatestVersion;
-
         public bool ShowLatestVersion {
             get {
                 return _showLatestVersion;
@@ -197,6 +207,7 @@ namespace PackageExplorerViewModel {
         public RelayCommand<string> NavigationCommand { get; private set; }
         public ICommand SortCommand { get; private set; }
         public ICommand SearchCommand { get; private set; }
+        public ICommand ClearSearchCommand { get; private set; }
         public ICommand LoadedCommand { get; private set; }
         public ICommand ChangePackageSourceCommand { get; private set; }
 
@@ -329,6 +340,7 @@ namespace PackageExplorerViewModel {
         }
 
         private void Search(string searchTerm) {
+            searchTerm = searchTerm ?? CurrentTypingSearch;
             if (_currentSearch != searchTerm) {
                 _currentSearch = searchTerm;
                 LoadPackages();
@@ -336,7 +348,16 @@ namespace PackageExplorerViewModel {
         }
 
         private bool CanSearch(string searchTerm) {
-            return IsEditable;
+            return IsEditable && !String.IsNullOrEmpty(searchTerm);
+        }
+
+        private void ClearSearch() {
+            CurrentTypingSearch = _currentSearch = String.Empty;
+            LoadPackages();
+        }
+
+        private bool CanClearSearch() {
+            return IsEditable && !String.IsNullOrEmpty(_currentSearch);
         }
 
         private void Sort(string column) {
@@ -396,6 +417,10 @@ namespace PackageExplorerViewModel {
         private void ShowMessage(string message, bool hasError) {
             StatusContent = message;
             HasError = hasError;
+        }
+
+        public void OnAfterShow() {
+            CurrentTypingSearch = _currentSearch;
         }
 
         #region NavigationCommand
