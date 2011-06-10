@@ -4,7 +4,7 @@
     xmlns:self="clr-namespace:PackageExplorer"
     xmlns:effect="clr-namespace:GrayscaleEffect;assembly=GrayscaleEffect"
     xmlns:settings="clr-namespace:PackageExplorer.Properties"
-    Title="Select package" 
+    Title="Select Package" 
     ShowInTaskbar="False"
     WindowStartupLocation="CenterOwner"
     Tag="{Binding LoadedCommand}"
