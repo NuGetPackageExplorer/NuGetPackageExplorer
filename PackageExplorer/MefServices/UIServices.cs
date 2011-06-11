@@ -21,21 +21,24 @@ namespace PackageExplorer {
             }
         }
 
-        public bool OpenSaveFileDialog(string title, string defaultFileName, string filter, out string selectedFilePath) {
+        public bool OpenSaveFileDialog(string title, string defaultFileName, string filter, out string selectedFilePath, out int selectedFilterIndex) {
             var dialog = new SaveFileDialog() {
                 OverwritePrompt = true,
                 Title = title,
                 Filter = filter,
-                FileName = defaultFileName
+                FileName = defaultFileName,
+                ValidateNames = true
             };
 
             bool? result = dialog.ShowDialog();
             if (result ?? false) {
                 selectedFilePath = dialog.FileName;
+                selectedFilterIndex = dialog.FilterIndex;
                 return true;
             }
             else {
                 selectedFilePath = null;
+                selectedFilterIndex = -1;
                 return false;
             }
         }

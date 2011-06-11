@@ -66,11 +66,15 @@ namespace PackageExplorerViewModel {
         }
 
         private void SaveAs() {
-            string packageName = ViewModel.PackageMetadata.ToString();
+            string packageName = ViewModel.PackageMetadata.ToString() + NuGet.Constants.PackageExtension;
             string title = "Save " + packageName;
             string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
             string selectedPackagePath;
-            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, out selectedPackagePath)) {
+            int filterIndex;
+            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, out selectedPackagePath, out filterIndex)) {
+                if (filterIndex == 0 && !selectedPackagePath.EndsWith(NuGet.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase)) {
+                    selectedPackagePath += NuGet.Constants.PackageExtension; 
+                }
                 SavePackage(selectedPackagePath);
                 ViewModel.PackageSource = selectedPackagePath;
             }
@@ -79,12 +83,17 @@ namespace PackageExplorerViewModel {
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void SaveMetadataAs() {
-            string packageName = ViewModel.PackageMetadata.ToString();
+            string packageName = ViewModel.PackageMetadata.ToString() + NuGet.Constants.ManifestExtension;
             string title = "Save " + packageName;
             string filter = "NuGet manifest file (*.nuspec)|*.nuspec|All files (*.*)|*.*";
             string selectedPath;
-            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, out selectedPath)) {
+            int filterIndex;
+            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, out selectedPath, out filterIndex)) {
                 try {
+                    if (filterIndex == 0 && !selectedPath.EndsWith(NuGet.Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase)) {
+                        selectedPath += NuGet.Constants.ManifestExtension;
+                    }
+
                     ViewModel.ExportManifest(selectedPath);
                     ViewModel.OnSaved(selectedPath);
                 }

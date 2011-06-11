@@ -660,7 +660,8 @@ namespace PackageExplorerViewModel {
             string selectedFileName;
             string title = "Save " + file.Name;
             string filter = "All files (*.*)|*.*";
-            if (UIServices.OpenSaveFileDialog(title, file.Name, filter, out selectedFileName)) {
+            int filterIndex;
+            if (UIServices.OpenSaveFileDialog(title, file.Name, filter, out selectedFileName, out filterIndex)) {
                 using (FileStream fileStream = File.OpenWrite(selectedFileName)) {
                     file.GetStream().CopyTo(fileStream);
                 }

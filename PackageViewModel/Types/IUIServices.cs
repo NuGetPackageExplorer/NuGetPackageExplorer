@@ -9,18 +9,13 @@ namespace NuGetPackageExplorer.Types {
     }
 
     public interface IUIServices {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "3#")]
-        bool OpenSaveFileDialog(string title, string defaultFileName, string filter, out string selectedFilePath);
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "2#")]
+        bool OpenSaveFileDialog(string title, string defaultFileName, string filter, out string selectedFilePath, out int selectedFilterIndex);
         bool OpenFileDialog(string title, string filter, out string selectedFileName);
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "2#")]
         bool OpenMultipleFilesDialog(string title, string filter, out string[] selectedFileNames);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "2#")]
         bool OpenRenameDialog(string currentName, string description, out string newName);
 
         bool OpenPublishDialog(object viewModel);
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "2#")]
         bool OpenFolderDialog(string title, string initialPath, out string selectedPath);
 
         bool Confirm(string title, string message);
