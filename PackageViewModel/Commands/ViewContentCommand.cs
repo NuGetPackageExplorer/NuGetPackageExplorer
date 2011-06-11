@@ -215,6 +215,7 @@ namespace PackageExplorerViewModel {
                 case ".CONFIG":
                 case ".PS1XML":
                 case ".NUSPEC":
+                case ".RESX":
                     return SourceLanguageType.Xml;
 
                 default:
