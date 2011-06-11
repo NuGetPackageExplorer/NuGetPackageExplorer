@@ -11,6 +11,10 @@
     FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}, Mode=OneWay}"
     Height="300"
     Width="300">
+    
+    <Window.CommandBindings>
+        <CommandBinding Command="GoToPage" Executed="GoToPageCommand_Executed" />
+    </Window.CommandBindings>    
     <Grid Margin="10,10,10,20">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
@@ -19,6 +23,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
@@ -43,5 +48,11 @@
 
         <Button Grid.Column="1" Grid.Row="2" Padding="15,0" Content="Close" Click="Button_Click" IsDefault="True" IsCancel="True">
         </Button>
+        
+        <TextBlock Grid.Row="3" HorizontalAlignment="Left" Grid.ColumnSpan="2">
+            <Hyperlink Command="GoToPage" CommandParameter="http://npe.codeplex.com/wikipage?title=How%20to%20write%20a%20plugin%20for%20NuGet%20Package%20Explorer" ToolTip="{Binding CommandParameter, RelativeSource={RelativeSource Self}}">
+                <Run Text="How to write a plugin?" />
+            </Hyperlink>
+        </TextBlock>
     </Grid>
 </self:StandardDialog>
