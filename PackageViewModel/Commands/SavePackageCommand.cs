@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel {
     internal class SavePackageCommand : CommandBase, ICommand {
-
         private const string SaveAction = "Save";
         private const string SaveAsAction = "SaveAs";
         private const string ForceSaveAction = "ForceSave";
@@ -71,10 +71,21 @@ namespace PackageExplorerViewModel {
             string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
             string selectedPackagePath;
             int filterIndex;
-            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, out selectedPackagePath, out filterIndex)) {
+            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, /* overwritePrompt */ false, out selectedPackagePath, out filterIndex)) {
                 if (filterIndex == 1 && !selectedPackagePath.EndsWith(NuGet.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase)) {
                     selectedPackagePath += NuGet.Constants.PackageExtension; 
                 }
+
+                // prompt if the file already exists on disk
+                if (File.Exists(selectedPackagePath)) {
+                    bool confirmed = ViewModel.UIServices.Confirm(
+                       Resources.ConfirmToReplaceFile_Title,
+                       String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, selectedPackagePath));
+                    if (!confirmed) {
+                        return;
+                    }
+                }
+
                 SavePackage(selectedPackagePath);
                 ViewModel.PackageSource = selectedPackagePath;
             }
@@ -88,7 +99,7 @@ namespace PackageExplorerViewModel {
             string filter = "NuGet manifest file (*.nuspec)|*.nuspec|All files (*.*)|*.*";
             string selectedPath;
             int filterIndex;
-            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, out selectedPath, out filterIndex)) {
+            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, /* overwritePrompt */ false, out selectedPath, out filterIndex)) {
                 try {
                     if (filterIndex == 1 && !selectedPath.EndsWith(NuGet.Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase)) {
                         selectedPath += NuGet.Constants.ManifestExtension;

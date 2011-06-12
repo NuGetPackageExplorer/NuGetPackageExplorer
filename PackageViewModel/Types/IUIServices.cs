@@ -9,7 +9,7 @@ namespace NuGetPackageExplorer.Types {
     }
 
     public interface IUIServices {
-        bool OpenSaveFileDialog(string title, string defaultFileName, string filter, out string selectedFilePath, out int selectedFilterIndex);
+        bool OpenSaveFileDialog(string title, string defaultFileName, string filter, bool overwritePrompt, out string selectedFilePath, out int selectedFilterIndex);
         bool OpenFileDialog(string title, string filter, out string selectedFileName);
         bool OpenMultipleFilesDialog(string title, string filter, out string[] selectedFileNames);
 

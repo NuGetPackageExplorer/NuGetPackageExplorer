@@ -21,9 +21,9 @@ namespace PackageExplorer {
             }
         }
 
-        public bool OpenSaveFileDialog(string title, string defaultFileName, string filter, out string selectedFilePath, out int selectedFilterIndex) {
+        public bool OpenSaveFileDialog(string title, string defaultFileName, string filter, bool overwritePrompt, out string selectedFilePath, out int selectedFilterIndex) {
             var dialog = new SaveFileDialog() {
-                OverwritePrompt = true,
+                OverwritePrompt = overwritePrompt,
                 Title = title,
                 Filter = filter,
                 FileName = defaultFileName,
