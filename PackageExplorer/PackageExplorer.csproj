@@ -28,7 +28,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://nuget.codeplex.com/releases/clickonce/</InstallUrl>
-    <SupportUrl>http://nuget.codeplex.com</SupportUrl>
+    <SupportUrl>http://npe.codeplex.com</SupportUrl>
     <ProductName>NuGet Package Explorer</ProductName>
     <PublisherName>NuGet Package Explorer</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
@@ -329,7 +329,7 @@
     <FileAssociation Include=".nuspec">
       <Visible>False</Visible>
       <Description>NuGet spec file</Description>
-      <Progid>NuGet.Package</Progid>
+      <Progid>NuGet.Spec</Progid>
       <DefaultIcon>nuspec.ico</DefaultIcon>
     </FileAssociation>
   </ItemGroup>
