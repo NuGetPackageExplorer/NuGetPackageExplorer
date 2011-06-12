@@ -345,27 +345,6 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        //private void AddFileToFolder(PackageFolder folder, string file) {
-        //    if (folder == null) {
-        //        string guessFolderName = FileHelper.GuessFolderNameFromFile(file);
-        //        bool confirmed = UIServices.Confirm(Resources.ConfirmToMoveFileIntoFolder_Title, String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToMoveFileIntoFolder, file, guessFolderName));
-
-        //        if (confirmed) {
-        //            if (RootFolder.ContainsFolder(guessFolderName)) {
-        //                folder = (PackageFolder)RootFolder[guessFolderName];
-        //            }
-        //            else {
-        //                folder = RootFolder.AddFolder(guessFolderName);
-        //            }
-        //        }
-        //        else {
-        //            folder = RootFolder;
-        //        }
-        //    }
-
-        //    folder.AddFile(file);
-        //}
-
         internal bool IsShowingFileContent(PackageFile file) {
             return ShowContentViewer && CurrentFileInfo.File == file;
         }
