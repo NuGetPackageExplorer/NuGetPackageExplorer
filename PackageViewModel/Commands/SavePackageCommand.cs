@@ -72,7 +72,7 @@ namespace PackageExplorerViewModel {
             string selectedPackagePath;
             int filterIndex;
             if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, out selectedPackagePath, out filterIndex)) {
-                if (filterIndex == 0 && !selectedPackagePath.EndsWith(NuGet.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase)) {
+                if (filterIndex == 1 && !selectedPackagePath.EndsWith(NuGet.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase)) {
                     selectedPackagePath += NuGet.Constants.PackageExtension; 
                 }
                 SavePackage(selectedPackagePath);
@@ -90,7 +90,7 @@ namespace PackageExplorerViewModel {
             int filterIndex;
             if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, out selectedPath, out filterIndex)) {
                 try {
-                    if (filterIndex == 0 && !selectedPath.EndsWith(NuGet.Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase)) {
+                    if (filterIndex == 1 && !selectedPath.EndsWith(NuGet.Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase)) {
                         selectedPath += NuGet.Constants.ManifestExtension;
                     }
 
