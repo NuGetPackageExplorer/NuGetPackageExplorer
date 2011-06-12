@@ -255,7 +255,7 @@ namespace PackageExplorerViewModel {
             RootFolder.Export(rootPath);
 
             // export .nuspec file
-            ExportManifest(Path.Combine(rootPath, PackageMetadata.Id + ".nuspec"));
+            ExportManifest(Path.Combine(rootPath, PackageMetadata.ToString() + ".nuspec"));
         }
 
         internal void ExportManifest(string fullpath) {
@@ -270,6 +270,9 @@ namespace PackageExplorerViewModel {
 
             using (Stream fileStream = File.Create(fullpath)) {
                 Manifest manifest = Manifest.Create(PackageMetadata);
+                manifest.Files = new List<ManifestFile>();
+                manifest.Files.AddRange(
+                    RootFolder.GetFiles().Select(f => new ManifestFile { Source = f.Path, Target = f.Path }));
                 manifest.Save(fileStream);
             }
         }
