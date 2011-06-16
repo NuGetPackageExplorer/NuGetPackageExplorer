@@ -19,12 +19,13 @@ namespace PackageExplorerViewModel {
         private ICommand _saveCommand, _editCommand, _cancelEditCommand, _applyEditCommand, _viewContentCommand, _saveContentCommand;
         private ICommand _addContentFolderCommand, _addContentFileCommand, _addNewFolderCommand, _openWithContentFileCommand, _executePackageCommand;
         private RelayCommand<object> _openContentFileCommand, _deleteContentCommand, _renameContentCommand;
-        private RelayCommand _publishCommand, _exportCommand;
+        private RelayCommand _publishCommand, _exportCommand, _analyzePackageCommand;
         private readonly IMruManager _mruManager;
         private readonly IUIServices _uiServices;
         private readonly IPackageEditorService _editorService;
         private readonly ISettingsManager _settingsManager;
         private readonly IProxyService _proxyService;
+        private readonly Lazy<IPackageAnalyzer> _packageAnalyzer;
         private readonly IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> _contentViewerMetadata;
 
         internal PackageViewModel(
@@ -35,6 +36,7 @@ namespace PackageExplorerViewModel {
             IPackageEditorService editorService,
             ISettingsManager settingsManager,
             IProxyService proxyService,
+            Lazy<IPackageAnalyzer> packageAnalyzer,
             IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata) {
 
             if (package == null) {
@@ -63,6 +65,7 @@ namespace PackageExplorerViewModel {
             _package = package;
             _proxyService = proxyService;
             _contentViewerMetadata = contentViewerMetadata;
+            _packageAnalyzer = packageAnalyzer;
 
             _packageMetadata = new EditablePackageMetadata(_package);
             PackageSource = source;
@@ -741,6 +744,24 @@ namespace PackageExplorerViewModel {
 
         private bool ExportCanExecute() {
             return !IsInEditMode;
+        }
+
+        #endregion
+
+        #region Analyze Package Command
+
+        public RelayCommand AnalyzePackageCommand {
+            get {
+                if (_analyzePackageCommand == null) {
+                    _analyzePackageCommand = new RelayCommand(AnalyzePackageExecute);
+                }
+
+                return _analyzePackageCommand;
+            }
+        }
+
+        private void AnalyzePackageExecute() {
+            IEnumerable<PackageProblem> problems = _packageAnalyzer.Value.Analyze(PackageMetadata, RootFolder.GetFiles());
         }
 
         #endregion

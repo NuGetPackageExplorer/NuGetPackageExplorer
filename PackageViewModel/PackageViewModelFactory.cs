@@ -5,6 +5,7 @@ using System.ComponentModel.Composition;
 using System.Linq;
 using NuGet;
 using NuGetPackageExplorer.Types;
+using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel {
 
@@ -48,6 +49,9 @@ namespace PackageExplorerViewModel {
             set;
         }
 
+        [Import]
+        public Lazy<IPackageAnalyzer> PackageAnalyzer { get; set; }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         [ImportMany(AllowRecomposition=true)]
         public List<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata { get; set; }
@@ -65,6 +69,7 @@ namespace PackageExplorerViewModel {
                 EditorService.Value, 
                 SettingsManager, 
                 ProxyService.Value,
+                PackageAnalyzer,
                 ContentViewerMetadata);
         }
 
