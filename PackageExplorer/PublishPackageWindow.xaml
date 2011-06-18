@@ -5,8 +5,8 @@
     xmlns:settings="clr-namespace:PackageExplorer.Properties"
     MinWidth="300"
     MinHeight="150"
-    FocusManager.FocusedElement="{Binding ElementName=PublishKey}"
-    Title="Publish package"
+    FocusManager.FocusedElement="{Binding ElementName=PublishUrl}"
+    Title="Publish Package"
     ShowInTaskbar="False"
     ResizeMode="NoResize"                              
     Width="420"
@@ -23,15 +23,32 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style TargetType="{x:Type ComboBox}">
+            <Style.Triggers>
+                <Trigger Property="Validation.HasError" Value="True">
+                    <Setter Property="ToolTip">
+                        <Setter.Value>
+                            <Binding 
+                                Path="(Validation.Errors).CurrentItem.ErrorContent"
+                                RelativeSource="{x:Static RelativeSource.Self}" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     
     <DockPanel LastChildFill="False">
+        <DockPanel.BindingGroup>
+            <BindingGroup x:Name="DialogBindingGroup" NotifyOnValidationError="true" />
+        </DockPanel.BindingGroup>
 
         <!-- Main instruction -->
         <TextBlock DockPanel.Dock="Top" Text="Enter your publish key." FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
 
         <!-- Secondary instruction -->
-        <TextBlock DockPanel.Dock="Top" Margin="10,0" Text="This package will be published to the official NuGet gallery at http://nuget.org. To obtain your publish key, create an account at http://nuget.org and look for the key in the My Account page." TextWrapping="Wrap" />
+        <TextBlock DockPanel.Dock="Top" Margin="10,0" Text="Provide the publish Url and the publish key associated with it." TextWrapping="Wrap" />
 
         <!-- Id & Version -->
         <TextBlock DockPanel.Dock="Top" Margin="10,10,10,0">
@@ -42,13 +59,27 @@
                 <Run FontWeight="Bold" Text="{Binding Version, Mode=OneTime}" />
             </TextBlock.Inlines>
         </TextBlock>
+        
+        <!-- Publish Url -->
+        <DockPanel DockPanel.Dock="Top" Margin="7,8,10,5">
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishUrl}" Content="Publish _Url:" />
+            <ComboBox x:Name="PublishUrl" IsReadOnly="False" IsEditable="True" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}">
+                <ComboBox.Text>
+                    <Binding Path="PublishUrl">
+                        <Binding.ValidationRules>
+                            <self:PublishUrlValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </ComboBox.Text>
+            </ComboBox>
+        </DockPanel>
                 
         <!-- Publish key -->
-        <DockPanel DockPanel.Dock="Top" Margin="7,8,10,5">
+        <DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
             <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishKey}" Content="Publish _key:" />
-            <TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}">
+            <TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0">
                 <TextBox.Text>
-                    <Binding Path="PublishKey" NotifyOnValidationError="True">
+                    <Binding Path="PublishKey">
                         <Binding.ValidationRules>
                             <self:PublishApiKeyValidationRule />
                         </Binding.ValidationRules>

@@ -1,27 +1,35 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Net;
 using NuGet;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel {
     public class PublishPackageViewModel : ViewModelBase, IObserver<int> {
         private readonly IPackageMetadata _package;
         private readonly Lazy<Stream> _packageStream;
-        private readonly string _publishUrl;
         private readonly IProxyService _proxyService;
+        private readonly MruPackageSourceManager _mruSourceManager;
+        private readonly ISettingsManager _settingsManager;
+        private string _publishUrl;
+        private string _publishKey;
+        private readonly ObservableCollection<string> _publishSources;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "0#")]
-        public PublishPackageViewModel(string publishUrl, PackageViewModel viewModel) {
-            if (viewModel == null) {
-                throw new ArgumentNullException("viewModel");
-            }
-            _publishUrl = publishUrl;
+        public PublishPackageViewModel(
+            MruPackageSourceManager mruSourceManager, 
+            ISettingsManager settingsManager,
+            PackageViewModel viewModel) {
+
+            _publishSources = new ObservableCollection<string>(mruSourceManager.PackageSources);
+            _mruSourceManager = mruSourceManager;
+            _settingsManager = settingsManager;
             _package = viewModel.PackageMetadata;
             _packageStream = new Lazy<Stream>(viewModel.GetCurrentPackageStream);
             _proxyService = viewModel.ProxyService;
+            PublishUrl = _mruSourceManager.ActivePackageSource;
         }
-
-        private string _publishKey;
 
         public string PublishKey {
             get { return _publishKey; }
@@ -30,6 +38,23 @@ namespace PackageExplorerViewModel {
                     _publishKey = value;
                     OnPropertyChanged("PublishKey");
                 }
+            }
+        }
+
+        public string PublishUrl {
+            get { return _publishUrl; }
+            set {
+                if (_publishUrl != value) {
+                    _publishUrl = value;
+                    OnPropertyChanged("PublishUrl");
+                    //PublishKey = _settingsManager.ReadApiKey(value);
+                }
+            }
+        }
+
+        public ObservableCollection<string> PublishSources {
+            get {
+                return _publishSources;
             }
         }
 
@@ -110,7 +135,7 @@ namespace PackageExplorerViewModel {
                 if (_uploadHelper == null) {
                     _uploadHelper = new GalleryServer(
                         HttpUtility.CreateUserAgentString(Constants.UserAgentClient), 
-                        _publishUrl, 
+                        PublishUrl, 
                         _proxyService);
                 }
                 return _uploadHelper;
@@ -140,7 +165,11 @@ namespace PackageExplorerViewModel {
             fileStream.Seek(0, SeekOrigin.Begin);
 
             try {
-                GalleryServer.CreatePackage(PublishKey, fileStream, this, PushOnly == true ? (IPackageMetadata)null : _package);
+                GalleryServer.CreatePackage(
+                    PublishKey, 
+                    fileStream, 
+                    this, 
+                    PushOnly == true ? (IPackageMetadata)null : _package);
             }
             catch (WebException e) {
                 if (WebExceptionStatus.Timeout == e.Status) {
@@ -153,6 +182,8 @@ namespace PackageExplorerViewModel {
             ShowProgress = false;
             HasError = false;
             Status = (PushOnly == true) ? "Package pushed successfully." : "Package published successfully.";
+
+            _settingsManager.WriteApiKey(PublishUrl, PublishKey);
         }
 
         public void OnError(Exception error) {

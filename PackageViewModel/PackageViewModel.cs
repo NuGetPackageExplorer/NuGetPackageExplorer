@@ -687,17 +687,11 @@ namespace PackageExplorerViewModel {
                 return;
             }
 
-            string storedKey = _settingsManager.ReadApiKeyFromSettingFile();
-            var publishPackageViewModel = new PublishPackageViewModel(_settingsManager.PublishPackageLocation, this) {
-                PublishKey = storedKey
-            };
-
+            var publishPackageViewModel = new PublishPackageViewModel(
+                new MruPackageSourceManager(new PublishSourceSettings(_settingsManager)), 
+                _settingsManager,
+                this);
             _uiServices.OpenPublishDialog(publishPackageViewModel);
-
-            string newKey = publishPackageViewModel.PublishKey;
-            if (!String.IsNullOrEmpty(newKey)) {
-                _settingsManager.WriteApiKeyToSettingFile(newKey);
-            }
         }
 
         private bool PublishCanExecute() {

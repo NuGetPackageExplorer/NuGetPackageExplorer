@@ -175,6 +175,7 @@
     <Compile Include="PublishPackageWindow.xaml.cs">
       <DependentUpon>PublishPackageWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PublishUrlValidationRule.cs" />
     <Compile Include="RenameWindow.xaml.cs">
       <DependentUpon>RenameWindow.xaml</DependentUpon>
     </Compile>

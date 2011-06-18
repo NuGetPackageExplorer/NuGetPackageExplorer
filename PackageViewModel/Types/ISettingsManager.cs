@@ -8,14 +8,17 @@ namespace NuGetPackageExplorer.Types {
         void SetMruFiles(IEnumerable<string> files);
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        IList<string> GetMruPackageSources();
-        void SetMruPackageSources(IEnumerable<string> sources);
-
+        IList<string> GetPackageSources();
+        void SetPackageSources(IEnumerable<string> sources);
         string ActivePackageSource { get; set; }
-        string PublishPackageLocation { get; set; }
 
-        string ReadApiKeyFromSettingFile();
-        void WriteApiKeyToSettingFile(string apiKey);
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        IList<string> GetPublishSources();
+        void SetPublishSources(IEnumerable<string> sources);
+        string ActivePublishSource { get; set; }
+
+        string ReadApiKey(string source);
+        void WriteApiKey(string source, string apiKey);
 
         bool ShowLatestVersionOfPackage { get; set; }
     }

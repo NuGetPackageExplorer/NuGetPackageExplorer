@@ -1,12 +1,7 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer {
-    /// <summary>
-    /// Interaction logic for PublishPackageWindow.xaml
-    /// </summary>
     public partial class PublishPackageWindow : StandardDialog {
         public PublishPackageWindow() {
             InitializeComponent();
@@ -16,12 +11,9 @@ namespace PackageExplorer {
             DialogResult = false;
         }
 
-        private void OnPublishButtonClick(object sender, RoutedEventArgs e)
-        {
-            BindingExpression bindingExpression = PublishKey.GetBindingExpression(TextBox.TextProperty);
-            bindingExpression.UpdateSource();
-            if (!bindingExpression.HasError)
-            {
+        private void OnPublishButtonClick(object sender, RoutedEventArgs e) {
+            bool isValid = DialogBindingGroup.UpdateSources();
+            if (isValid) {
                 var viewModel = (PublishPackageViewModel)DataContext;
                 viewModel.PushPackage();
             }

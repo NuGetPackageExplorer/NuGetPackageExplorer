@@ -34,7 +34,7 @@ namespace PackageExplorerViewModel {
             _settingsManager = settingsManager;
         }
 
-        public void OnApplicationExit() {
+        private void OnApplicationExit() {
             List<string> sc = new List<string>();
             foreach (var item in _files) {
                 if (item != null) {
@@ -179,6 +179,10 @@ namespace PackageExplorerViewModel {
                 Path = parts[0].ToLowerInvariant(),
                 PackageType = type
             };
+        }
+
+        public void Dispose() {
+            OnApplicationExit();
         }
     }
 }

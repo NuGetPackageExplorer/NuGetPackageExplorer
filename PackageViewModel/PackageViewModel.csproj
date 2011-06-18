@@ -56,7 +56,9 @@
     <Compile Include="EmptyPackage.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="PackageChooser\PackageSourceSettings.cs" />
     <Compile Include="PluginManagerViewModel.cs" />
+    <Compile Include="PublishPackage\PublishSourceSettings.cs" />
     <Compile Include="Types\IPackageChooser.cs" />
     <Compile Include="MruManager.cs" />
     <Compile Include="MruPackageSourceManager.cs" />
@@ -86,11 +88,11 @@
     <Compile Include="Commands\ViewContentCommand.cs" />
     <Compile Include="Commands\SavePackageCommand.cs" />
     <Compile Include="Types\FileContentInfo.cs" />
-    <Compile Include="Types\IMruPackageSourceManager.cs" />
     <Compile Include="Types\IPackageContentViewerMetadata.cs" />
     <Compile Include="Types\IPackageDownloader.cs" />
     <Compile Include="Types\IPackageEditor.cs" />
     <Compile Include="Types\IPluginManager.cs" />
+    <Compile Include="Types\ISourceSettings.cs" />
     <Compile Include="Types\IUIServices.cs" />
     <Compile Include="Types\SourceLanguageType.cs" />
     <Compile Include="Types\IMruManager.cs" />

@@ -24,13 +24,13 @@ namespace PackageExplorer {
             Properties.Settings.Default.MruFiles = sc;
         }
 
-        public IList<string> GetMruPackageSources() {
+        public IList<string> GetPackageSources() {
             var sources = Properties.Settings.Default.MruPackageSources;
             var packageSources = (sources == null) ? new List<string>() : sources.Cast<string>().ToList();
             return packageSources;
         }
 
-        public void SetMruPackageSources(IEnumerable<string> sources) {
+        public void SetPackageSources(IEnumerable<string> sources) {
             StringCollection sc = new StringCollection();
             sc.AddRange(sources.ToArray());
             Properties.Settings.Default.MruPackageSources = sc;
@@ -45,7 +45,19 @@ namespace PackageExplorer {
             }
         }
 
-        public string PublishPackageLocation {
+        public IList<string> GetPublishSources() {
+            var sources = Properties.Settings.Default.PublishPackageSources;
+            var packageSources = (sources == null) ? new List<string>() : sources.Cast<string>().ToList();
+            return packageSources;
+        }
+
+        public void SetPublishSources(IEnumerable<string> sources) {
+            StringCollection sc = new StringCollection();
+            sc.AddRange(sources.ToArray());
+            Properties.Settings.Default.PublishPackageSources = sc;
+        }
+
+        public string ActivePublishSource {
             get {
                 return Properties.Settings.Default.PublishPackageLocation;
             }
@@ -54,17 +66,16 @@ namespace PackageExplorer {
             }
         }
 
-        public string ReadApiKeyFromSettingFile() {
+        public string ReadApiKey(string source) {
             var settings = new UserSettings(new PhysicalFileSystem(Environment.CurrentDirectory));
-            string key = settings.GetDecryptedValue(ApiKeysSectionName, PublishPackageLocation);
+            string key = settings.GetDecryptedValue(ApiKeysSectionName, source);
             return key ?? Properties.Settings.Default.PublishPrivateKey;
         }
 
-        public void WriteApiKeyToSettingFile(string apiKey) {
+        public void WriteApiKey(string source, string apiKey) {
             var settings = new UserSettings(new PhysicalFileSystem(Environment.CurrentDirectory));
-            settings.SetEncryptedValue(ApiKeysSectionName, PublishPackageLocation, apiKey);
+            settings.SetEncryptedValue(ApiKeysSectionName, source, apiKey);
         }
-
 
         public bool ShowLatestVersionOfPackage {
             get {

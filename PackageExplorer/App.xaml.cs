@@ -77,10 +77,13 @@ namespace PackageExplorer {
         }
 
         private void Application_Exit(object sender, ExitEventArgs e) {
-            PackageExplorer.Properties.Settings.Default.Save();
             if (_container != null) {
                 _container.Dispose();
             }
+
+            // IMPORTANT: Call this after calling _container.Dispose(). Some exports relies on Dispose()
+            // being called to save settings values.
+            PackageExplorer.Properties.Settings.Default.Save();
         }
     }
 }

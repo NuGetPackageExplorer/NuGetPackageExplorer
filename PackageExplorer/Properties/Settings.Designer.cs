@@ -176,5 +176,16 @@ namespace PackageExplorer.Properties {
                 this["IsFirstTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection PublishPackageSources {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["PublishPackageSources"]));
+            }
+            set {
+                this["PublishPackageSources"] = value;
+            }
+        }
     }
 }

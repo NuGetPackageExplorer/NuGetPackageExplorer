@@ -26,9 +26,6 @@ namespace PackageExplorer {
         public ISettingsManager SettingsManager { get; set; }
 
         [Import]
-        public IMruPackageSourceManager PackageSourceManager { get; set; }
-
-        [Import]
         public IUIServices UIServices { get; set; }
 
         [Import(typeof(IProxyService))]
@@ -261,9 +258,6 @@ namespace PackageExplorer {
             if (!isCanceled) {
                 try {
                     SaveSettings();
-                    _mruManager.OnApplicationExit();
-                    PackageSourceManager.OnApplicationExit();
-
                     DisposeViewModel();
                 }
                 catch (Exception) { }
@@ -404,7 +398,7 @@ namespace PackageExplorer {
         private void AddPluginFromAssembly_Click(object sender, RoutedEventArgs e) {
             var dialog = new PluginManagerDialog() {
                 Owner = this,
-                DataContext = PackageViewModelFactory.CreatePluginViewModel()
+                DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
             };
             dialog.ShowDialog();
         }

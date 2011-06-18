@@ -6,7 +6,6 @@ using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel {
     public class PluginManagerViewModel : INotifyPropertyChanged, IComparer<FileInfo> {
-
         private SortedCollection<FileInfo> _plugins;
         private readonly IPluginManager _pluginManager;
         private readonly IUIServices _uiServices;

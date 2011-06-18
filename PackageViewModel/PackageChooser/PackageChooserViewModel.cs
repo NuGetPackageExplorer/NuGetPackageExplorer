@@ -19,10 +19,10 @@ namespace PackageExplorerViewModel {
         private DataServicePackageRepository _packageRepository;
         private IQueryContext<PackageInfo> _currentQuery;
         private string _currentSearch;
-        private IMruPackageSourceManager _packageSourceManager;
+        private MruPackageSourceManager _packageSourceManager;
         private readonly DataServicePackageRepositoryFactory _packageRepositoryFactory;
 
-        public PackageChooserViewModel(IMruPackageSourceManager packageSourceManager, IProxyService proxyService, bool showLatestVersion) {
+        public PackageChooserViewModel(MruPackageSourceManager packageSourceManager, IProxyService proxyService, bool showLatestVersion) {
             if (null == packageSourceManager) {
                 throw new ArgumentNullException("packageSourceManager");
             }
@@ -111,7 +111,7 @@ namespace PackageExplorerViewModel {
         }
 
         /// <summary>
-        /// This method needs to be run on background thread so as not to block UI thread
+        /// This method needs run on background thread so as not to block UI thread
         /// </summary>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]

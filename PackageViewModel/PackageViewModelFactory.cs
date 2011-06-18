@@ -19,12 +19,6 @@ namespace PackageExplorerViewModel {
         }
 
         [Import]
-        public IMruPackageSourceManager MruPackageSourceManager {
-            get;
-            set;
-        }
-
-        [Import]
         public IUIServices UIServices {
             get;
             set;
@@ -75,7 +69,10 @@ namespace PackageExplorerViewModel {
         }
 
         public PackageChooserViewModel CreatePackageChooserViewModel() {
-            var model = new PackageChooserViewModel(MruPackageSourceManager, ProxyService.Value, SettingsManager.ShowLatestVersionOfPackage);
+            var model = new PackageChooserViewModel(
+                new MruPackageSourceManager(new PackageSourceSettings(SettingsManager)), 
+                ProxyService.Value, 
+                SettingsManager.ShowLatestVersionOfPackage);
             model.PropertyChanged += OnPackageChooserViewModelPropertyChanged;
             return model;
         }
@@ -87,7 +84,7 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        public PluginManagerViewModel CreatePluginViewModel() {
+        public PluginManagerViewModel CreatePluginManagerViewModel() {
             return _pluginManagerViewModel.Value;
         }
     }
