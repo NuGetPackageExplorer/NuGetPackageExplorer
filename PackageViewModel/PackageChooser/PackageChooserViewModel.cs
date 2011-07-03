@@ -346,6 +346,7 @@ namespace PackageExplorerViewModel {
 
         private void Search(string searchTerm) {
             searchTerm = searchTerm ?? CurrentTypingSearch;
+            searchTerm = searchTerm.Trim();
             if (_currentSearch != searchTerm) {
                 _currentSearch = searchTerm;
                 LoadPackages();
