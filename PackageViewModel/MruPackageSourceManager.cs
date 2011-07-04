@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel {
@@ -29,7 +28,7 @@ namespace PackageExplorerViewModel {
                 ActivePackageSource = _sourceSettings.ActiveSource;
             }
 
-            // if there is no source (this happens after upgrading), add NuGetFeed to it
+            // if there is no source (this happens after upgrading), add the default source to it
             if (_sources.Count == 0 || !_sources.Contains(_sourceSettings.DefaultSource)) {
                 _sources.Insert(0, _sourceSettings.DefaultSource);
             }

@@ -32,7 +32,7 @@
 
             <ContextMenu x:Key="FolderSharedContextMenu" Opened="PackageFolderContextMenu_Opened" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="_Add Existing File..." Command="{Binding   AddContentFileCommand}" CommandParameter="{Binding}" />
-                <MenuItem Header="Add Ne_w Folder..." Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="Add Ne_w Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Rename..." Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
             </ContextMenu>
@@ -289,8 +289,8 @@
 
                 <TreeView.ContextMenu>
                     <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                        <MenuItem Header="_Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}" />
-                        <MenuItem Header="_New Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}">
+                        <MenuItem Header="_Add Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}" />
+                        <MenuItem Header="Add Ne_w Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}">
                             <MenuItem.Icon>
                                 <Image Source="Images/NewFolderHS.png" />
                             </MenuItem.Icon>

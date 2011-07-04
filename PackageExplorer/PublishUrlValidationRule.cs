@@ -8,10 +8,16 @@ namespace PackageExplorer {
             string stringValue = (string)value;
             Uri url;
             if (Uri.TryCreate(stringValue, UriKind.Absolute, out url)) {
-                return ValidationResult.ValidResult;
+                if (url.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) ||
+                    url.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)) {
+                    return ValidationResult.ValidResult;
+                }
+                else {
+                    return new ValidationResult(false, "Publish url must be an HTTP or HTTPS address.");
+                }
             }
             else {
-                return new ValidationResult(false, "Invalid Url.");
+                return new ValidationResult(false, "Invalid publish url.");
             }
         }
     }

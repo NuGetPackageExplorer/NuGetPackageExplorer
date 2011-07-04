@@ -695,11 +695,14 @@ namespace PackageExplorerViewModel {
                 return;
             }
 
-            var publishPackageViewModel = new PublishPackageViewModel(
-                new MruPackageSourceManager(new PublishSourceSettings(_settingsManager)),
-                _settingsManager,
-                this);
-            _uiServices.OpenPublishDialog(publishPackageViewModel);
+            using (var mruSourceManager = new MruPackageSourceManager(
+                        new PublishSourceSettings(_settingsManager))) {
+                var publishPackageViewModel = new PublishPackageViewModel(
+                    mruSourceManager,
+                    _settingsManager,
+                    this);
+                _uiServices.OpenPublishDialog(publishPackageViewModel);
+            }
         }
 
         private bool PublishCanExecute() {

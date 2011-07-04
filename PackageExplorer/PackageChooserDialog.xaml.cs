@@ -194,5 +194,15 @@ namespace PackageExplorer {
             ((PackageChooserViewModel)DataContext).OnAfterShow();
             FocusSearchBox();
         }
+
+        private void PackageSourceBox_PreviewKeyDown(object sender, KeyEventArgs e) {
+            if (e.Key == Key.Enter) {
+                string source = PackageSourceBox.Text;
+                if (!String.IsNullOrEmpty(source)) {
+                    ((PackageChooserViewModel)DataContext).ChangePackageSourceCommand.Execute(source);
+                    e.Handled = true;
+                }
+            }
+        }
     }
 }

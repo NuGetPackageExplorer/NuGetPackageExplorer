@@ -4,12 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet;
-using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel {
     public class PackageChooserViewModel : ViewModelBase {
@@ -396,9 +394,9 @@ namespace PackageExplorerViewModel {
 
         private void ChangePackageSource(string source) {
             if (PackageSource != source || _currentQuery == null) {
-                PackageSource = source;
                 // add the new source to MRU list
                 _packageSourceManager.NotifyPackageSourceAdded(source);
+                PackageSource = source;
 
                 ResetPackageRepository();
                 LoadPackages();

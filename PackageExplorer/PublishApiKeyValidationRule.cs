@@ -4,7 +4,6 @@ using System.Windows.Controls;
 
 namespace PackageExplorer {
     public class PublishApiKeyValidationRule : ValidationRule {
-
         public override ValidationResult Validate(object value, System.Globalization.CultureInfo cultureInfo) {
             string key = (string)value;
             key = key.ToUpper(CultureInfo.InvariantCulture);

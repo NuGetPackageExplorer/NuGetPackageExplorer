@@ -61,7 +61,16 @@
                 </Button.IsEnabled>
             </Button>
 
-            <ComboBox x:Name="PackageSourceBox" ItemsSource="{Binding PackageSources}" IsReadOnly="False" IsEditable="True" IsEnabled="{Binding IsEditable}" VerticalContentAlignment="Center" Text="{Binding PackageSource, Mode=OneWay}" Margin="4,0" />
+            <ComboBox 
+                x:Name="PackageSourceBox" 
+                ItemsSource="{Binding PackageSources}" 
+                IsReadOnly="False" 
+                IsEditable="True" 
+                IsEnabled="{Binding IsEditable}" 
+                PreviewKeyDown="PackageSourceBox_PreviewKeyDown"
+                VerticalContentAlignment="Center" 
+                Text="{Binding PackageSource, Mode=OneWay}" 
+                Margin="4,0" />
         </DockPanel>
 
         <!-- navigation buttons -->

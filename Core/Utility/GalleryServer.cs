@@ -13,6 +13,7 @@ namespace NuGet {
         private readonly string _userAgent;
         private readonly string _baseGalleryServerUrl;
         private readonly IWebProxy _internalProxy;
+        private readonly string _originalSource;
 
         public GalleryServer(string userAgent, string galleryServerSource, IProxyService proxyService) {
             if (string.IsNullOrEmpty(galleryServerSource)) {
@@ -21,9 +22,16 @@ namespace NuGet {
             if (null == proxyService) {
                 throw new ArgumentNullException("proxyService");
             }
+            _originalSource = galleryServerSource.Trim();
             _internalProxy = proxyService.GetProxy(new Uri(galleryServerSource));
             _baseGalleryServerUrl = GetSafeRedirectedUri(galleryServerSource);
             _userAgent = userAgent;
+        }
+
+        public string OriginalSource {
+            get {
+                return _originalSource;
+            }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -84,7 +92,7 @@ namespace NuGet {
                 WebException webException = e.Error as WebException;
                 if (webException != null) {
                     var response = (HttpWebResponse)webException.Response;
-                    if (response.StatusCode == HttpStatusCode.InternalServerError) {
+                    if (response != null && response.StatusCode == HttpStatusCode.InternalServerError) {
                         // real error message is contained inside the response body
                         using (Stream stream = response.GetResponseStream()) {
                             string errorMessage = stream.ReadToEnd();
@@ -158,7 +166,12 @@ namespace NuGet {
                 // catch the error and return the response url of the response that can be used for publishing
                 // the reason why we get this error is because this is a POST action and IIS gives us this error
                 // because it thinks that we are trying to navigate to a page.
-                return e.Response.ResponseUri.ToString();
+                if (e.Response != null && e.Response.ResponseUri != null) {
+                    return e.Response.ResponseUri.ToString();
+                }
+                else {
+                    return url;
+                }
             }
         }
 

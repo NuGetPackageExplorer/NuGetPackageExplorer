@@ -12,23 +12,20 @@ namespace PackageExplorerViewModel {
         private readonly IProxyService _proxyService;
         private readonly MruPackageSourceManager _mruSourceManager;
         private readonly ISettingsManager _settingsManager;
-        private string _publishUrl;
         private string _publishKey;
-        private readonly ObservableCollection<string> _publishSources;
+        private string _selectedPublishItem;
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1054:UriParametersShouldNotBeStrings", MessageId = "0#")]
         public PublishPackageViewModel(
             MruPackageSourceManager mruSourceManager, 
             ISettingsManager settingsManager,
             PackageViewModel viewModel) {
 
-            _publishSources = new ObservableCollection<string>(mruSourceManager.PackageSources);
             _mruSourceManager = mruSourceManager;
             _settingsManager = settingsManager;
             _package = viewModel.PackageMetadata;
             _packageStream = new Lazy<Stream>(viewModel.GetCurrentPackageStream);
             _proxyService = viewModel.ProxyService;
-            PublishUrl = _mruSourceManager.ActivePackageSource;
+            SelectedPublishItem = _mruSourceManager.ActivePackageSource;
         }
 
         public string PublishKey {
@@ -41,20 +38,43 @@ namespace PackageExplorerViewModel {
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string PublishUrl {
-            get { return _publishUrl; }
+            get { return _mruSourceManager.ActivePackageSource; }
             set {
-                if (_publishUrl != value) {
-                    _publishUrl = value;
+                if (_mruSourceManager.ActivePackageSource != value) {
+                    _mruSourceManager.ActivePackageSource = value;
                     OnPropertyChanged("PublishUrl");
-                    //PublishKey = _settingsManager.ReadApiKey(value);
+                }
+            }
+        }
+
+        public string SelectedPublishItem {
+            get {
+                return _selectedPublishItem;
+            }
+            set {
+                if (_selectedPublishItem != value) {
+                    _selectedPublishItem = value;
+                    OnPropertyChanged("SelectedPublishItem");
+
+                    if (value != null) {
+                        // store the selected source into settings
+                        PublishUrl = value;
+
+                        // when the selection change, we retrieve the API key for that source
+                        string key = _settingsManager.ReadApiKey(value);
+                        if (!String.IsNullOrEmpty(key)) {
+                            PublishKey = key;
+                        }
+                    }
                 }
             }
         }
 
         public ObservableCollection<string> PublishSources {
             get {
-                return _publishSources;
+                return _mruSourceManager.PackageSources;
             }
         }
 
@@ -132,7 +152,7 @@ namespace PackageExplorerViewModel {
 
         public GalleryServer GalleryServer {
             get {
-                if (_uploadHelper == null) {
+                if (_uploadHelper == null || !PublishUrl.Equals(_uploadHelper.OriginalSource, StringComparison.OrdinalIgnoreCase)) {
                     _uploadHelper = new GalleryServer(
                         HttpUtility.CreateUserAgentString(Constants.UserAgentClient), 
                         PublishUrl, 
@@ -161,6 +181,11 @@ namespace PackageExplorerViewModel {
             HasError = false;
             CanPublish = false;
 
+            // add the publish url to the list
+            _mruSourceManager.NotifyPackageSourceAdded(PublishUrl);
+            // this is to make sure the combox box doesn't goes blank after publishing
+            SelectedPublishItem = PublishUrl;
+
             Stream fileStream = _packageStream.Value;
             fileStream.Seek(0, SeekOrigin.Begin);
 
@@ -182,8 +207,9 @@ namespace PackageExplorerViewModel {
             ShowProgress = false;
             HasError = false;
             Status = (PushOnly == true) ? "Package pushed successfully." : "Package published successfully.";
-
             _settingsManager.WriteApiKey(PublishUrl, PublishKey);
+
+            CanPublish = true;
         }
 
         public void OnError(Exception error) {

@@ -69,7 +69,14 @@ namespace PackageExplorer {
         public string ReadApiKey(string source) {
             var settings = new UserSettings(new PhysicalFileSystem(Environment.CurrentDirectory));
             string key = settings.GetDecryptedValue(ApiKeysSectionName, source);
-            return key ?? Properties.Settings.Default.PublishPrivateKey;
+
+            if (String.IsNullOrEmpty(key)) {
+                if (source.Equals("https://go.microsoft.com/fwlink/?LinkID=206669", StringComparison.OrdinalIgnoreCase)) {
+                    key = Properties.Settings.Default.PublishPrivateKey;
+                }
+            }
+
+            return key;
         }
 
         public void WriteApiKey(string source, string apiKey) {
