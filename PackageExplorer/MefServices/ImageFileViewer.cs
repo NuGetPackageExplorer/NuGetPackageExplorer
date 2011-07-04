@@ -4,7 +4,7 @@ using System.Windows.Media.Imaging;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorer {
-    [PackageContentViewerMetadata(99, ".jpg", ".gif", ".png")]
+    [PackageContentViewerMetadata(99, ".jpg", ".gif", ".png", ".tif")]
     internal class ImageFileViewer : IPackageContentViewer {
         public object GetView(string extension, Stream stream) {
             var source = new BitmapImage();

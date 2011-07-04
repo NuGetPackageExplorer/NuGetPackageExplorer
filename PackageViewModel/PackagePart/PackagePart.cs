@@ -103,7 +103,9 @@ namespace PackageExplorerViewModel {
             if (Name != newName) {
                 if (Parent != null) {
                     if (Parent.ContainsFile(newName) || Parent.ContainsFolder(newName)) {
-                        PackageViewModel.UIServices.Show(Resources.RenameCausesNameCollison, MessageLevel.Error);
+                        PackageViewModel.UIServices.Show(
+                            String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, newName),
+                            MessageLevel.Error);
                         return;
                     }
                 }

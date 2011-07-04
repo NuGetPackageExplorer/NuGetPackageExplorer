@@ -175,7 +175,7 @@
     <value>*** The plugin that registers to read this file type fails to read the content of this file. ***</value>
   </data>
   <data name="RenameCausesNameCollison" xml:space="preserve">
-    <value>There is another file or folder with the same name.</value>
+    <value>There is another file or folder with the same name as '{0}'.</value>
   </data>
   <data name="UnsupportedFormatMessage" xml:space="preserve">
     <value>*** The format of this file is not supported. ***</value>

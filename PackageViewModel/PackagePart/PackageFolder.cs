@@ -140,8 +140,10 @@ namespace PackageExplorerViewModel {
         }
 
         public PackageFolder AddFolder(string folderName) {
-            if (ContainsFolder(folderName) || ContainsFile(folderName)) {
-                PackageViewModel.UIServices.Show(Resources.RenameCausesNameCollison, MessageLevel.Error);
+            if (!AddContentFolderCanExecute(folderName)) {
+                PackageViewModel.UIServices.Show(
+                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName), 
+                    MessageLevel.Error);
                 return null;
             }
             var newFolder = new PackageFolder(folderName, this);
@@ -166,7 +168,7 @@ namespace PackageExplorerViewModel {
             bool showingRemovedFile = false;
             if (ContainsFile(newFileName)) {
                 bool confirmed = PackageViewModel.UIServices.Confirm(
-                    Resources.ConfirmToReplaceExsitingFile_Title, 
+                    Resources.ConfirmToReplaceExsitingFile_Title,
                     String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceExsitingFile, newFileName),
                     isWarning: true);
 
@@ -218,6 +220,33 @@ namespace PackageExplorerViewModel {
             file.IsSelected = true;
             this.IsExpanded = true;
             PackageViewModel.NotifyChanges();
+        }
+
+        public void AddPhysicalFolder(string folderPath) {
+            DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
+            if (!dirInfo.Exists) {
+                return;
+            }
+
+            string folderName = dirInfo.Name;
+            if (!AddContentFolderCanExecute(folderName)) {
+                PackageViewModel.UIServices.Show(
+                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
+                    MessageLevel.Error); 
+                return;
+            }
+            
+            AddPhysicalFolderCore(dirInfo);
+        }
+
+        private void AddPhysicalFolderCore(DirectoryInfo dirInfo) {
+            PackageFolder childPackgeFolder = AddFolder(dirInfo.Name);
+            foreach (var file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly)) {
+                childPackgeFolder.AddFile(file.FullName);
+            }
+            foreach (var subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly)) {
+                childPackgeFolder.AddPhysicalFolderCore(subFolder);
+            }
         }
 
         private void RemoveChildByName(string name) {

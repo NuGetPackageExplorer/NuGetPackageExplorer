@@ -51,7 +51,7 @@ namespace PackageExplorerViewModel {
             if (settingsManager == null) {
                 throw new ArgumentNullException("settingsManager");
             }
-            if(null == proxyService) {
+            if (null == proxyService) {
                 throw new ArgumentNullException("proxyService");
             }
 
@@ -261,7 +261,7 @@ namespace PackageExplorerViewModel {
         internal void ExportManifest(string fullpath) {
             if (File.Exists(fullpath)) {
                 bool confirmed = UIServices.Confirm(
-                    Resources.ConfirmToReplaceFile_Title, 
+                    Resources.ConfirmToReplaceFile_Title,
                     String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullpath));
                 if (!confirmed) {
                     return;
@@ -308,7 +308,7 @@ namespace PackageExplorerViewModel {
                         if (rememberedAnswer == null) {
                             // ask user if he wants to move file
                             Tuple<bool?, bool> answer = UIServices.ConfirmMoveFile(
-                                Path.GetFileName(file), 
+                                Path.GetFileName(file),
                                 guessFolderName, fileNames.Length - i - 1);
 
                             if (answer.Item1 == null) {
@@ -339,12 +339,18 @@ namespace PackageExplorerViewModel {
 
                         targetFolder.AddFile(file);
                     }
+                    else if (Directory.Exists(file)) {
+                        RootFolder.AddPhysicalFolder(file);
+                    }
                 }
             }
             else {
                 foreach (string file in fileNames) {
                     if (File.Exists(file)) {
                         folder.AddFile(file);
+                    }
+                    else if (Directory.Exists(file)) {
+                        folder.AddPhysicalFolder(file);
                     }
                 }
             }
@@ -500,7 +506,7 @@ namespace PackageExplorerViewModel {
         public ICommand ApplyEditCommand {
             get {
                 if (_applyEditCommand == null) {
-                    _applyEditCommand = new RelayCommand(()=>ApplyEditExecute());
+                    _applyEditCommand = new RelayCommand(() => ApplyEditExecute());
                 }
 
                 return _applyEditCommand;
@@ -653,7 +659,7 @@ namespace PackageExplorerViewModel {
         }
 
         #endregion
-        
+
         #region ViewContentCommand
 
         public ICommand ViewContentCommand {
@@ -690,7 +696,7 @@ namespace PackageExplorerViewModel {
             }
 
             var publishPackageViewModel = new PublishPackageViewModel(
-                new MruPackageSourceManager(new PublishSourceSettings(_settingsManager)), 
+                new MruPackageSourceManager(new PublishSourceSettings(_settingsManager)),
                 _settingsManager,
                 this);
             _uiServices.OpenPublishDialog(publishPackageViewModel);
