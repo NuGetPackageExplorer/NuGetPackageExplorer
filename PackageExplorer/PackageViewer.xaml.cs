@@ -224,7 +224,7 @@ namespace PackageExplorer {
 
         private static readonly Dictionary<string, string[]> _frameworkFolders =
            new Dictionary<string, string[]>() {
-               { "Windows Phone", new[] { "v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-WindowsPhone71" }},
+               { "Windows Phone", new[] { "v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71" }},
                { "Siverlight", new[] {"(no version)", "sl", "v2.0", "sl2", "v3.0", "sl30", "v4.0", "sl40", "v5.0", "sl50" }},
                { ".NET", new[] { "(no version)", "net", "v1.0", "net10", "v1.1", "net11", "v2.0", "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40"}}
            };

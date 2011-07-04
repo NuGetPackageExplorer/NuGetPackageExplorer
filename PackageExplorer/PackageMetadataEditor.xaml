@@ -20,7 +20,7 @@
 
         <Style x:Key="ImageStyle" TargetType="{x:Type Image}">
             <Setter Property="Width" Value="16" />
-            <Setter Property="Height" Value="16" />  
+            <Setter Property="Height" Value="16" />
             <Setter Property="Stretch" Value="Uniform" />
         </Style>
 
@@ -39,7 +39,7 @@
         <Style TargetType="{x:Type ComboBox}" x:Key="ComboBoxStyle">
             <Setter Property="Margin" Value="0, 4, 3, 0" />
         </Style>
-        
+
         <DataTemplate DataType="{x:Type core:PackageDependency}" x:Key="PackageDependencyTemplate">
             <Grid Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
@@ -59,13 +59,13 @@
         <DataTemplate DataType="{x:Type core:FrameworkAssemblyReference}" x:Key="FrameworkAssemblyTemplate">
             <Grid Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="{Binding AssemblyName, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
-                <TextBlock Grid.Column="1" Text="{Binding SupportedFrameworks, Converter={StaticResource FrameworkNameConverter}, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
+                <TextBlock Grid.Column="1" Margin="2,0,2,0" Text="{Binding DisplayString}" ToolTip="{Binding SupportedFrameworks, Converter={StaticResource FrameworkNameConverter}, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
                 <Button Grid.Column="2" ToolTipService.ToolTip="Remove this framework assembly" Click="RemoveFrameworkAssemblyButtonClicked">
                     <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
                 </Button>
@@ -78,14 +78,14 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <Grid Validation.ErrorTemplate="{x:Null}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -106,7 +106,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                
+
                 <Grid.BindingGroup>
                     <BindingGroup x:Name="PackageMetadataGroup" Name="PackageMetadataGroup" NotifyOnValidationError="True">
                         <BindingGroup.ValidationRules>
@@ -145,7 +145,7 @@
 
                 <!-- Require License Acceptane -->
                 <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding PackageMetadata.RequireLicenseAcceptance}" Content="_Require License Acceptance" Style="{StaticResource CheckBoxStyle}" />
-                
+
                 <!-- LicenseUrl -->
                 <Label Grid.Row="9" Grid.Column="0" Target="LicenseUrlBox" Style="{StaticResource LabelStyle}" Content="_License Url" />
                 <TextBox Grid.Row="9" Grid.Column="1" x:Name="LicenseUrlBox" Text="{Binding PackageMetadata.LicenseUrl, Converter={StaticResource UriConverter}, ValidatesOnDataErrors=true}" />
@@ -157,7 +157,7 @@
                 <!-- Description -->
                 <Label Grid.Row="11" Grid.Column="0" Target="DescriptionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Description" />
                 <TextBox Grid.Row="11" Grid.Column="1" Height="80" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="DescriptionBox" Text="{Binding PackageMetadata.Description, ValidatesOnDataErrors=True}" AcceptsReturn="True" />
-                
+
                 <!-- Language -->
                 <Label Grid.Row="12" Grid.Column="0" Target="LanguageBox" Style="{StaticResource LabelStyle}" Content="La_nguage" />
                 <ComboBox Grid.Row="12" Grid.Column="1" x:Name="LanguageBox" Text="{Binding PackageMetadata.Language}" IsEditable="true" IsReadOnly="False" Width="120" HorizontalAlignment="Left" Style="{StaticResource ComboBoxStyle}" />
@@ -199,7 +199,7 @@
 
                         <TextBox x:Name="NewDependencyId" Text="{Binding Id, ValidatesOnDataErrors=True, BindingGroupName=NewPackageDependency, NotifyOnValidationError=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
                         <TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, Converter={StaticResource VersionSpecConverter}, NotifyOnValidationError=True, ValidatesOnDataErrors=True, BindingGroupName=NewPackageDependency}" Margin="2" Grid.Column="2" Grid.Row="2" />
-                        
+
                         <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency" Click="AddDependencyButtonClicked">
                             <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
                             <self:GrayscaleButton.IsEnabled>
@@ -218,8 +218,8 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="3*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
@@ -234,8 +234,21 @@
                             ItemTemplate="{StaticResource FrameworkAssemblyTemplate}">
                         </ItemsControl>
 
-                        <TextBox x:Name="NewAssemblyName" Text="{Binding AssemblyName, BindingGroupName=NewFrameworkAssembly, NotifyOnValidationError=True}" Margin="2" Grid.Column="0" Grid.Row="2" />
-                        <TextBox x:Name="NewSupportedFramework" Text="{Binding SupportedFrameworks, Converter={StaticResource FrameworkNameConverter}, NotifyOnValidationError=True, BindingGroupName=NewFrameworkAssembly}" Margin="2" Grid.Column="1" Grid.Row="2" />
+                        <ComboBox 
+                            x:Name="NewAssemblyName"
+                            Text="{Binding AssemblyName, BindingGroupName=NewFrameworkAssembly, NotifyOnValidationError=True}" 
+                            Margin="2"
+                            IsEditable="true"
+                            IsReadOnly="False" 
+                            Grid.Column="0" 
+                            Grid.Row="2" />
+
+                        <TextBox 
+                            x:Name="NewSupportedFramework"
+                            Text="{Binding SupportedFrameworks, UpdateSourceTrigger=Explicit, Converter={StaticResource FrameworkNameConverter}, NotifyOnValidationError=True, BindingGroupName=NewFrameworkAssembly}"
+                            Margin="2"
+                            Grid.Column="1"
+                            Grid.Row="2" />
 
                         <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="2" Grid.Row="2" ToolTipService.ToolTip="Add new framework assembly" Click="AddFrameworkAssemblyButtonClicked">
                             <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />

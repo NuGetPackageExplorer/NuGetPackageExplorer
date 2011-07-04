@@ -10,7 +10,7 @@ namespace NuGet {
             : this(assemblyName, Enumerable.Empty<FrameworkName>()) {
         }
 
-        public FrameworkAssemblyReference(string assemblyName, IEnumerable<FrameworkName> supportedFrameworks) {
+        public FrameworkAssemblyReference(string assemblyName, IEnumerable<FrameworkName> supportedFrameworks, string displayValue = null) {
             if (String.IsNullOrEmpty(assemblyName)) {
                 throw new ArgumentException("Argument is null or empty.", "assemblyName");
             }
@@ -19,10 +19,12 @@ namespace NuGet {
                 throw new ArgumentNullException("supportedFrameworks");
             }
 
+            DisplayString = displayValue ?? assemblyName;
             AssemblyName = assemblyName;
             SupportedFrameworks = supportedFrameworks;
         }
 
+        public string DisplayString { get; private set; }
         public string AssemblyName { get; private set; }
         public IEnumerable<FrameworkName> SupportedFrameworks { get; private set; }
 

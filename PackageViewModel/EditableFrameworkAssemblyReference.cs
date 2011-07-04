@@ -10,13 +10,7 @@ namespace PackageExplorerViewModel {
         public EditableFrameworkAssemblyReference() {
         }
 
-        public EditableFrameworkAssemblyReference(string assemblyName, IEnumerable<FrameworkName> supportedFrameworks) {
-            this.AssemblyName = assemblyName;
-            this.SupportedFrameworks = supportedFrameworks;
-        }
-
         private string _assemblyName;
-
         public string AssemblyName {
             get {
                 return _assemblyName;
@@ -30,7 +24,6 @@ namespace PackageExplorerViewModel {
         }
 
         private IEnumerable<FrameworkName> _supportedFrameworks;
-
         public IEnumerable<FrameworkName> SupportedFrameworks {
             get { return _supportedFrameworks; }
             set {
@@ -49,8 +42,8 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        public FrameworkAssemblyReference AsReadOnly() {
-            return new FrameworkAssemblyReference(AssemblyName, SupportedFrameworks);
+        public FrameworkAssemblyReference AsReadOnly(string displayValue) {
+            return new FrameworkAssemblyReference(AssemblyName, SupportedFrameworks, displayValue);
         }
     }
 }

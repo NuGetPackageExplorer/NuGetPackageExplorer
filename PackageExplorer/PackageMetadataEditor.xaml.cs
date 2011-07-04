@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using NuGet;
-using PackageExplorerViewModel;
 using NuGetPackageExplorer.Types;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer {
     /// <summary>
@@ -26,6 +27,7 @@ namespace PackageExplorer {
         public PackageMetadataEditor() {
             InitializeComponent();
             PopulateLanguagesForLanguageBox();
+            PopulateFrameworkAssemblyNames();
         }
 
         private void PackageMetadataEditor_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
@@ -59,6 +61,19 @@ namespace PackageExplorer {
 
         private void PopulateLanguagesForLanguageBox() {
             LanguageBox.ItemsSource = CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(c => c.Name).OrderBy(p => p, StringComparer.OrdinalIgnoreCase);
+        }
+
+        private void PopulateFrameworkAssemblyNames() {
+            string fxAssemblyPath = "Resources/fxAssemblies.txt";
+            if (File.Exists(fxAssemblyPath)) {
+                try {
+                    NewAssemblyName.ItemsSource = File.ReadAllLines(fxAssemblyPath);
+                }
+                catch (Exception) {
+                    // ignore exception
+                }
+            }
+
         }
 
         private void RemoveDependencyButtonClicked(object sender, System.Windows.RoutedEventArgs e) {
@@ -99,7 +114,7 @@ namespace PackageExplorer {
                     MessageLevel.Warning);
                 return;
             }
-            
+
             var selectedPackage = PackageChooser.SelectPackage();
             if (selectedPackage != null) {
                 _newPackageDependency.Id = selectedPackage.Id;
@@ -109,11 +124,18 @@ namespace PackageExplorer {
 
         private void AddFrameworkAssemblyButtonClicked(object sender, RoutedEventArgs args) {
             var bindingExpression = NewSupportedFramework.GetBindingExpression(TextBox.TextProperty);
+            if (!bindingExpression.ValidateWithoutUpdate()) {
+                return;
+            }
+
             if (bindingExpression.HasError) {
                 return;
             }
 
-            _frameworkAssemblies.Add(_newFrameworkAssembly.AsReadOnly());
+            string displayString = NewSupportedFramework.Text;
+
+            bindingExpression.UpdateSource();
+            _frameworkAssemblies.Add(_newFrameworkAssembly.AsReadOnly(displayString));
 
             // after framework assembly is added, clear the textbox
             ClearFrameworkAssemblyTextBox();

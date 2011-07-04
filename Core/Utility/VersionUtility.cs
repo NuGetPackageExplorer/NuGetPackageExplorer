@@ -28,6 +28,7 @@ namespace NuGet {
         private static readonly Dictionary<string, string> _knownProfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
             { "Client", "Client" },
             { "WP", "WindowsPhone" },
+            { "WP71", "WindowsPhone71" },
             { "CF", "CompactFramework" },
             { "Full", String.Empty }
         };
