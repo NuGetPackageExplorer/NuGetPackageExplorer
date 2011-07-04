@@ -21,20 +21,20 @@
             </ResourceDictionary.MergedDictionaries>
 
             <ContextMenu x:Key="SharedContextMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                <MenuItem Header="_View Content" Command="{Binding ViewCommand}" CommandParameter="{Binding}" FontWeight="SemiBold" />
+                <MenuItem Header="_View Content" InputGestureText="Enter" Command="{Binding ViewCommand}" CommandParameter="{Binding}" FontWeight="SemiBold" />
                 <MenuItem Header="_Open in Windows shell..." Command="{Binding OpenCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Open _with..." Command="{Binding OpenWithCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Save As..." Command="{Binding SaveCommand}" CommandParameter="{Binding}" />
                 <Separator />
-                <MenuItem Header="_Rename..." Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
-                <MenuItem Header="_Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
             </ContextMenu>
 
             <ContextMenu x:Key="FolderSharedContextMenu" Opened="PackageFolderContextMenu_Opened" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="_Add Existing File..." Command="{Binding   AddContentFileCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Add Ne_w Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding}" />
-                <MenuItem Header="_Rename..." Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
-                <MenuItem Header="_Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
             </ContextMenu>
 
             <!-- data template for the package details pane -->
