@@ -10,7 +10,7 @@ using System.Windows.Input;
 using NuGet;
 
 namespace PackageExplorerViewModel {
-    public class PackageChooserViewModel : ViewModelBase {
+    public class PackageChooserViewModel : ViewModelBase, IDisposable {
         private const int ShowAllVersionsPageSize = 7;
         private const int ShowLatestVersionPageSize = 15;
         private const int PageBuffer = 30;
@@ -21,10 +21,10 @@ namespace PackageExplorerViewModel {
         private readonly DataServicePackageRepositoryFactory _packageRepositoryFactory;
 
         public PackageChooserViewModel(MruPackageSourceManager packageSourceManager, IProxyService proxyService, bool showLatestVersion) {
-            if (null == packageSourceManager) {
+            if (packageSourceManager == null) {
                 throw new ArgumentNullException("packageSourceManager");
             }
-            if (null == proxyService) {
+            if (proxyService == null) {
                 throw new ArgumentNullException("proxyService");
             }
 
@@ -515,5 +515,12 @@ namespace PackageExplorerViewModel {
         }
 
         #endregion
+
+        public void Dispose() {
+            if (_packageSourceManager != null) {
+                _packageSourceManager.Dispose();
+                _packageSourceManager = null;
+            }
+        }
     }
 }

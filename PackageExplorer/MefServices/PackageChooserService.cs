@@ -2,6 +2,7 @@
 using System.ComponentModel.Composition;
 using NuGet;
 using NuGetPackageExplorer.Types;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer {
 
@@ -9,6 +10,7 @@ namespace PackageExplorer {
     internal class PackageChooserService : IPackageChooser {
 
         private PackageChooserDialog _dialog;
+        private PackageChooserViewModel _viewModel;
 
         [Import]
         public IPackageViewModelFactory ViewModelFactory { get; set; }
@@ -18,7 +20,8 @@ namespace PackageExplorer {
 
         public PackageInfo SelectPackage() {
             if (_dialog == null) {
-                _dialog = new PackageChooserDialog(ViewModelFactory.CreatePackageChooserViewModel()) {
+                _viewModel = ViewModelFactory.CreatePackageChooserViewModel();
+                _dialog = new PackageChooserDialog(_viewModel) {
                     Owner = Window.Value
                 };
             }
@@ -29,6 +32,7 @@ namespace PackageExplorer {
         public void Dispose() {
             if (_dialog != null) {
                 _dialog.ForceClose();
+                _viewModel.Dispose();
             }
         }
     }
