@@ -19,7 +19,7 @@ namespace NuGet {
                 throw new ArgumentNullException("supportedFrameworks");
             }
 
-            DisplayString = displayValue ?? assemblyName;
+            DisplayString = displayValue ?? String.Join("; ", supportedFrameworks);
             AssemblyName = assemblyName;
             SupportedFrameworks = supportedFrameworks;
         }
