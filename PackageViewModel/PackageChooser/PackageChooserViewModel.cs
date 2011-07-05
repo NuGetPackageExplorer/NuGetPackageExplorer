@@ -10,7 +10,7 @@ using System.Windows.Input;
 using NuGet;
 
 namespace PackageExplorerViewModel {
-    public class PackageChooserViewModel : ViewModelBase, IDisposable {
+    public sealed class PackageChooserViewModel : ViewModelBase, IDisposable {
         private const int ShowAllVersionsPageSize = 7;
         private const int ShowLatestVersionPageSize = 15;
         private const int PageBuffer = 30;
