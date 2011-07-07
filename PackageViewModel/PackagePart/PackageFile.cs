@@ -31,6 +31,7 @@ namespace PackageExplorerViewModel {
             if (physicalFile != null) {
                 WatchPhysicalFile(physicalFile);
             }
+            ReplaceCommand = new RelayCommand(Replace);
         }
 
         private void WatchPhysicalFile(PhysicalPackageFile physicalFile) {
@@ -87,6 +88,16 @@ namespace PackageExplorerViewModel {
 
         public ICommand OpenWithCommand {
             get { return PackageViewModel.OpenWithContentFileCommand; }
+        }
+
+        public RelayCommand ReplaceCommand { get; private set; }
+
+        public void Replace()
+        {
+            if (Parent != null)
+            {
+                Parent.ReplaceFile(this);
+            }
         }
 
         public override void Export(string rootPath) {

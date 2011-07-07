@@ -27,6 +27,7 @@
                 <MenuItem Header="_Save As..." Command="{Binding SaveCommand}" CommandParameter="{Binding}" />
                 <Separator />
                 <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="Re_place with..." Command="{Binding ReplaceCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
             </ContextMenu>
 

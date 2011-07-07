@@ -222,6 +222,29 @@ namespace PackageExplorerViewModel {
             PackageViewModel.NotifyChanges();
         }
 
+        internal void ReplaceFile(PackageFile oldFile)
+        {
+            string selectedFileName;
+            var result = PackageViewModel.UIServices.OpenFileDialog("Select New File", "All files (*.*)|*.*", out selectedFileName);
+            if (result)
+            {
+                // temporarily remove the old file in order to add a new file
+                Children.Remove(oldFile);
+
+                PackageFile newFile = AddFile(selectedFileName);
+                if (newFile != null)
+                {
+                    // new file added successfully, officially delete the old file by disposing it
+                    oldFile.Dispose();
+                }
+                else
+                {
+                    // otherwise, if the adding failed, restore the old file
+                    Children.Add(oldFile);
+                }
+            }
+        }
+
         public void AddPhysicalFolder(string folderPath) {
             DirectoryInfo dirInfo = new DirectoryInfo(folderPath);
             if (!dirInfo.Exists) {
