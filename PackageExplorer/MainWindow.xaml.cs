@@ -183,6 +183,12 @@ namespace PackageExplorer {
                     DataServicePackage servicePackage = selectedPackageInfo.AsDataServicePackage();
                     servicePackage.CorePackage = package;
                     LoadPackage(servicePackage, selectedPackageInfo.DownloadUrl.ToString(), PackageType.DataServicePackage);
+
+                    // adding package to the cache, but with low priority
+                    Dispatcher.BeginInvoke(
+                        (Action<IPackage>)MachineCache.Default.AddPackage,
+                        DispatcherPriority.ApplicationIdle,
+                        package);
                 };
 
                 if (cachePackage == null || cachePackage.GetHash() != selectedPackageInfo.PackageHash) {

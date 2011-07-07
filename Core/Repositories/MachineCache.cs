@@ -1,14 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace NuGet {
     /// <summary>
     /// The machine cache represents a location on the machine where packages are cached. It is a specific implementation of a local repository and can be used as such.
     /// </summary>
     public class MachineCache : IPackageRepository {
+        // Maximum number of packages that can live in this cache.
+        private const int MaxPackages = 100;
         private static readonly MachineCache _default = new MachineCache();
-
         private readonly string _cacheRoot;
 
         // Disable caching since we don't want to cache packages in memory
@@ -40,6 +42,50 @@ namespace NuGet {
             }
             else {
                 return null;
+            }
+        }
+
+        public void AddPackage(IPackage package) {
+            // if the package is already present in the cache, no need to do anything
+            if (FindPackage(package.Id, package.Version) != null) {
+                return;
+            }
+
+            // create the cache directory if it doesn't exist
+            var cacheDirectory = new DirectoryInfo(Source);
+            if (!cacheDirectory.Exists) {
+                cacheDirectory.Create();
+            }
+
+            // don't want to blow up user's hard drive with too many packages
+            ClearCacheIfFull(cacheDirectory);
+
+            // now copy the package to the cache
+            var filePath = GetPackageFilePath(package.Id, package.Version);
+            using (Stream stream = package.GetStream(),
+                          fileStream = File.Create(filePath)) {
+                if (stream != null) {
+                    stream.CopyTo(fileStream);
+                }
+            }
+        }
+
+        private static void ClearCacheIfFull(DirectoryInfo cacheDirectory) {
+            // If we exceed the package count then clear the cache
+            FileInfo[] packageFiles = cacheDirectory.GetFiles("*" + Constants.PackageExtension, SearchOption.TopDirectoryOnly);
+            int totalFileCount = packageFiles.Length;
+            if (totalFileCount >= MaxPackages) {
+                foreach (var packageFile in packageFiles) {
+                    try {
+                        if (packageFile.Exists) {
+                            packageFile.Delete();
+                        }
+                    }
+                    catch (FileNotFoundException) {
+                    }
+                    catch (UnauthorizedAccessException) {
+                    }
+                }
             }
         }
 
