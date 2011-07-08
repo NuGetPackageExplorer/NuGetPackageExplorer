@@ -84,6 +84,7 @@ namespace NuGet {
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
         private void OnCreatePackageCompleted(object sender, UploadDataCompletedEventArgs e) {
             var state = (PublishState)e.UserState;
             if (e.Error != null) {
@@ -92,12 +93,18 @@ namespace NuGet {
                 WebException webException = e.Error as WebException;
                 if (webException != null) {
                     var response = (HttpWebResponse)webException.Response;
-                    if (response != null && response.StatusCode == HttpStatusCode.InternalServerError) {
-                        // real error message is contained inside the response body
-                        using (Stream stream = response.GetResponseStream()) {
-                            string errorMessage = stream.ReadToEnd();
-                            error = new WebException(errorMessage, webException, webException.Status,
-                                                     webException.Response);
+                    if (response != null) {
+                        if (response.StatusCode == HttpStatusCode.InternalServerError ||
+                            response.StatusCode == HttpStatusCode.Unauthorized) {
+                            // real error message is contained inside the response body
+                            using (Stream stream = response.GetResponseStream()) {
+                                string errorMessage = stream.ReadToEnd();
+                                error = new ApplicationException(errorMessage);
+                            }
+                        }
+                        else if (response.StatusCode == HttpStatusCode.Forbidden) {
+                            // this is for myget.org when the api key is invalid
+                            error = new ApplicationException(response.StatusDescription);
                         }
                     }
                 }
