@@ -151,7 +151,7 @@
     <value>Report Abuse</value>
   </data>
   <data name="Dialog_RequireLicenseLabel" xml:space="preserve">
-    <value>Require License Acceptance:</value>
+    <value>Requires License Acceptance:</value>
   </data>
   <data name="Dialog_SaveQuestion" xml:space="preserve">
     <value>Do you want to save your changes?</value>
@@ -185,9 +185,6 @@
   </data>
   <data name="PackageHasNoFile" xml:space="preserve">
     <value>There are no contents or dependencies in the package.</value>
-  </data>
-  <data name="ProductRelease" xml:space="preserve">
-    <value>RTM</value>
   </data>
   <data name="ProxyConnectToMessage" xml:space="preserve">
     <value>Connect to {0}</value>

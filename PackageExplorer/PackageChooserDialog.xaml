@@ -14,7 +14,6 @@
     MinHeight="300"
     MinWidth="450"
     Closing="StandardDialog_Closing"
-    
     Height="{Binding PackageChooserDialogHeight, Source={x:Static settings:Settings.Default}, Mode=OneWay}" 
     Width="{Binding PackageChooserDialogWidth, Source={x:Static settings:Settings.Default}, Mode=OneWay}"
     SizeChanged="OnWindowSizeChanged">
@@ -272,10 +271,16 @@
             </ListView.View>
         </ListView>
 
-        <CheckBox Grid.Row="3" IsEnabled="{Binding IsEditable}" HorizontalAlignment="Left" Content="Only _show latest version of each package Id." IsChecked="{Binding ShowLatestVersion}" Checked="OnShowLatestVersionValueChanged" Unchecked="OnShowLatestVersionValueChanged" />
+        <!-- Checkbox: Show latest version of each Id -->
+        <CheckBox Margin="0,0,0,8"  Grid.Row="3" IsEnabled="{Binding IsEditable}" HorizontalAlignment="Left" Content="Only _show latest version of each package Id." IsChecked="{Binding ShowLatestVersion}" Checked="OnShowLatestVersionValueChanged" Unchecked="OnShowLatestVersionValueChanged" />
 
+        <!-- Background color for the footer -->
+        <Border Grid.Row="4" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
+        </Border>
+
+        <!-- Status message, e.g. Loadding, error, etc.-->
         <TextBlock 
-            Grid.Row="4" 
+            Grid.Row="4"
             Text="{Binding StatusContent}" 
             VerticalAlignment="Center" 
             TextTrimming="WordEllipsis">
@@ -290,8 +295,9 @@
             </TextBlock.Style>
         </TextBlock>
 
+        <!-- OK and Cancel buttons -->
         <UniformGrid HorizontalAlignment="Right" Grid.Row="4" Grid.Column="1" Rows="1" Columns="2">
-            <Button IsDefault="True" Content="OK" Margin="5" Click="OkButton_Click" Padding="15,0">
+            <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,0">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource andConverter}">
                         <Binding Path="SelectedItem" ElementName="PackageGrid" Converter="{StaticResource nullToBoolConverter}" />
@@ -299,7 +305,7 @@
                     </MultiBinding>
                 </Button.IsEnabled>
             </Button>
-            <Button IsCancel="True" Content="Cancel" Margin="5,5,0,5" Padding="15,0" Click="CancelButton_Click" />
+            <Button IsCancel="True" Content="Cancel" Margin="5,10,0,0" Padding="15,0" Click="CancelButton_Click" />
         </UniformGrid>
     </Grid>
 </self:StandardDialog>

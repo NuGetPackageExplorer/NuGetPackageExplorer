@@ -14,9 +14,8 @@ namespace PackageExplorer {
             InitializeComponent();
 
             ProductTitle.Text = String.Format(
-                "{0} {1} ({2})",
+                "{0} ({1})",
                 StringResources.Dialog_Title,
-                StringResources.ProductRelease,
                 GetApplicationVersion().ToString());
         }
 

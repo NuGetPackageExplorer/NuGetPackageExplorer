@@ -6,18 +6,27 @@
         xmlns:resources="clr-namespace:PackageExplorer.Resources"
         xmlns:effect="clr-namespace:GrayscaleEffect;assembly=GrayscaleEffect"
         xmlns:settings="clr-namespace:PackageExplorer.Properties"
+        xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
         Title="{Binding WindowTitle, FallbackValue={x:Static resources:Resources.Dialog_Title}}" 
         Height="650" 
         Width="750" 
         MinWidth="600" 
         MinHeight="300" 
-        Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}"
         Icon="Images/packageicon.png" 
         FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}"
         AllowDrop="True"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
         Closing="Window_Closing">
+    <Window.Background>
+        <ImageBrush 
+            PresentationOptions:Freeze="true"
+            ImageSource="Images/background.png" 
+            Stretch="None" 
+            TileMode="Tile" 
+            Viewport="0,0,24,24" 
+            ViewportUnits="Absolute" />
+    </Window.Background>
 
     <Window.Resources>
         <viewmodel:DisabledCommand x:Key="DisabledCommand" />
@@ -45,6 +54,13 @@
     <DockPanel x:Name="RootLayout" LastChildFill="False">
         <!-- Menu bar -->
         <Menu DockPanel.Dock="Top">
+            <Menu.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                    <GradientStop Offset="0" Color="#FFCAD3E2" />
+                    <GradientStop Offset="0.3" Color="#FFC2CCDB" />
+                    <GradientStop Offset="1" Color="#FFADB9CD" />
+                </LinearGradientBrush>
+            </Menu.Background>
             <self:GrayscaleMenuItem Header="_File">
                 <MenuItem Command="New" Header="_New">
                     <MenuItem.Icon>
@@ -197,11 +213,11 @@
         </Menu>
 
         <!-- Status bar -->
-        <StatusBar Grid.Row="2" DockPanel.Dock="Bottom" Visibility="{Binding IsChecked, ElementName=ShowStatusBarMenuItem, Converter={StaticResource boolToVis}}">
+        <StatusBar Grid.Row="2" Padding="0,2,0,2" DockPanel.Dock="Bottom" Background="#293955" Foreground="White" Visibility="{Binding IsChecked, ElementName=ShowStatusBarMenuItem, Converter={StaticResource boolToVis}}">
             <StatusBarItem x:Name="PackageSourceItem" Content="{Binding PackageSource, FallbackValue=Ready}" />
             <StatusBarItem HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,3,0" Visibility="{Binding HasEdit, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}">
                 <StatusBarItem.Content>
-                    <Ellipse Width="7" Height="7" Fill="Blue" />
+                    <Ellipse Width="7" Height="7" Fill="White" />
                 </StatusBarItem.Content>
             </StatusBarItem>
         </StatusBar>

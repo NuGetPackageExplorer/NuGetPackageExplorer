@@ -144,7 +144,7 @@
                 <TextBox Grid.Row="6" Grid.Column="1" x:Name="ProjectUrlBox" Text="{Binding PackageMetadata.ProjectUrl, Converter={StaticResource UriConverter}}" />
 
                 <!-- Require License Acceptane -->
-                <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding PackageMetadata.RequireLicenseAcceptance}" Content="_Require License Acceptance" Style="{StaticResource CheckBoxStyle}" />
+                <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding PackageMetadata.RequireLicenseAcceptance}" Content="_Requires License Acceptance" Style="{StaticResource CheckBoxStyle}" />
 
                 <!-- LicenseUrl -->
                 <Label Grid.Row="9" Grid.Column="0" Target="LicenseUrlBox" Style="{StaticResource LabelStyle}" Content="_License Url" />

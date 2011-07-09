@@ -9,10 +9,11 @@
     xmlns:resources="clr-namespace:PackageExplorer.Resources"
     xmlns:effect="clr-namespace:GrayscaleEffect;assembly=GrayscaleEffect"
     xmlns:settings="clr-namespace:PackageExplorer.Properties"
-    Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}"
+    Margin="5,7,5,7"
     mc:Ignorable="d" 
-    d:DesignHeight="300" d:DesignWidth="300">
+    d:DesignHeight="300"
+    d:DesignWidth="300">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -237,7 +238,7 @@
         </Grid.ColumnDefinitions>
 
         <!-- package metadata -->
-        <GroupBox Grid.RowSpan="3" BorderThickness="1" BorderBrush="DarkGray" Background="#FCFEF0" Margin="3" Header="Package metadata" FlowDirection="LeftToRight">
+        <HeaderedContentControl Grid.RowSpan="3" Margin="0,0,1,0" Header="Package metadata" FlowDirection="LeftToRight">
             <Grid>
                 <ContentControl 
                     Content="{Binding PackageMetadata}" 
@@ -246,34 +247,33 @@
                 </ContentControl>
 
                 <self:PackageMetadataEditor 
-                        x:Name="PackageMetadataEditor"
-                        Margin="0,8,0,3"
-                        Visibility="{Binding IsInEditMode, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" />
+                    x:Name="PackageMetadataEditor"
+                    Margin="0,8,0,3"
+                    Visibility="{Binding IsInEditMode, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" />
             </Grid>
-        </GroupBox>
+        </HeaderedContentControl>
 
         <GridSplitter 
             Grid.Column="1" 
             Grid.Row="0"
             Grid.RowSpan="3"
             ShowsPreview="True" 
-            Template="{StaticResource VerticalGridSplitterStyle}"
             ResizeBehavior="PreviousAndNext" 
             Width="4" 
             HorizontalAlignment="Center" 
             VerticalAlignment="Stretch" />
         
         <!-- package content tree view -->
-        <GroupBox BorderBrush="DarkGray" Background="Transparent" BorderThickness="1" Grid.Column="2" Margin="3" Header="Package contents">
+        <HeaderedContentControl Margin="1,0,0,0" Grid.Column="2" Header="Package contents">
             <TreeView 
-                    x:Name="PackagesTreeView" 
-                    ItemsSource="{Binding PackageParts}" 
-                    BorderThickness="0" 
-                    Margin="0,4,0,0" 
-                    DragOver="OnTreeViewItemDragOver"
-                    Drop="OnTreeViewItemDrop"
-                    SelectedItemChanged="OnTreeViewSelectedItemChanged" 
-                    PreviewMouseRightButtonDown="TreeView_PreviewMouseRightButtonDown">
+                x:Name="PackagesTreeView" 
+                ItemsSource="{Binding PackageParts}" 
+                BorderThickness="0" 
+                Margin="0,4,0,0" 
+                DragOver="OnTreeViewItemDragOver"
+                Drop="OnTreeViewItemDrop"
+                SelectedItemChanged="OnTreeViewSelectedItemChanged" 
+                PreviewMouseRightButtonDown="TreeView_PreviewMouseRightButtonDown">
                 <TreeView.ItemContainerStyle>
                     <Style TargetType="{x:Type TreeViewItem}">
                         <EventSetter Event="MouseDoubleClick" Handler="OnTreeViewItemDoubleClick" />
@@ -314,15 +314,13 @@
                         </self:GrayscaleMenuItem>
                     </ContextMenu>
                 </TreeView.ContextMenu>
-
             </TreeView>
-        </GroupBox>
+        </HeaderedContentControl>
 
         <GridSplitter 
             Grid.Column="2" 
             Grid.Row="1" 
             Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
-            Template="{StaticResource HorizontalGridSplitterStyle}"
             ResizeBehavior="PreviousAndNext" 
             Height="4" 
             Margin="0,-2,0,0"
@@ -330,28 +328,25 @@
             VerticalAlignment="Bottom" />
 
         <!-- content viewer -->
-        <GroupBox
+        <HeaderedContentControl
             x:Name="FileContentContainer"
             Header="{Binding CurrentFileInfo.Name, TargetNullValue='Content Viewer'}"
             Grid.Row="2"
             Grid.Column="2" 
             Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
-            Margin="3,0,3,3" 
-            Padding="0,4,0,0"
-            Background="#FCFEF0" 
-            BorderBrush="DarkGray" 
-            BorderThickness="1" 
+            Padding="0"
+            Margin="1,5,0,0" 
             IsVisibleChanged="FileContentContainer_IsVisibleChanged">
-        </GroupBox>
+        </HeaderedContentControl>
 
         <Button 
             HorizontalAlignment="Right" 
             VerticalAlignment="Top" 
-            Background="White"
+            Background="#465A7D"
             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
             Command="{Binding ViewContentCommand}"
             CommandParameter="Hide"
-            Margin="10,0"
+            Margin="0,6,4,0"
             Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
             Grid.Row="2" 
             Grid.Column="2"

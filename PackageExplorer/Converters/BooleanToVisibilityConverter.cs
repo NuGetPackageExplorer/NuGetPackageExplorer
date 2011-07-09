@@ -20,7 +20,12 @@ namespace PackageExplorer {
                 boolValue = !boolValue;
             }
 
-            return boolValue ? Visibility.Visible : Visibility.Collapsed;
+            if ((string)parameter == "hidden") {
+                return boolValue ? Visibility.Visible : Visibility.Hidden;
+            }
+            else {
+                return boolValue ? Visibility.Visible : Visibility.Collapsed;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {

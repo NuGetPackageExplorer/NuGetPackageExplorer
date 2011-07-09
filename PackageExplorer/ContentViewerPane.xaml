@@ -1,40 +1,52 @@
 ﻿<UserControl x:Class="PackageExplorer.ContentViewerPane"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:self="clr-namespace:PackageExplorer">
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:self="clr-namespace:PackageExplorer"
+             mc:Ignorable="d" 
+             d:DesignHeight="200" 
+             d:DesignWidth="500">
     <UserControl.Resources>
         <self:FileSizeConverter x:Key="FileSizeConverter" />
     </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-       
+
+        <!-- for binary file -->
         <ScrollViewer
+            Grid.Row="1"
             Visibility="{Binding IsTextFile, Converter={StaticResource invertedBoolToVis}}"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
             HorizontalScrollBarVisibility="Auto"
             VerticalScrollBarVisibility="Auto"
-            Padding="2"
+            Padding="4,5,4,2"
             Content="{Binding Content}">
         </ScrollViewer>
 
+        <!-- for builtin text file -->
         <self:SyntaxHighlightingTextBox
             x:Name="contentBox"
-            Padding="0"
+            Grid.Row="1"
+            Padding="0,5,0,2"
             BorderThickness="0"
             AcceptsReturn="True"
             IsReadOnly="True"
-            Background="#FCFEF0"
             Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}"
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Auto"
             SourceCode="{Binding Content, Mode=OneWay}"
             SourceLanguage="{Binding Language, Mode=OneWay}" />
 
-        <Border Background="{StaticResource {x:Static SystemColors.ControlLightBrushKey}}" Grid.Row="1" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
+        <!-- 
+            Note: the order of elements matter. This Border element has to come last. 
+            Otherwise, the content won't update properly. I know, this is lame. 
+        -->
+        <Border Grid.Row="0" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
             <DockPanel>
                 <TextBlock 
                     DockPanel.Dock="Left" 
@@ -42,12 +54,11 @@
                     Margin="3,0" 
                     VerticalAlignment="Center">
                 </TextBlock>
-                <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}">
-                    <Label Content="Choose _Language:" Target="{Binding ElementName=LanguageBox}" />
+                <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}, ConverterParameter='hidden'}">
+                    <Label Content="Choose _language:" Target="{Binding ElementName=LanguageBox}" />
                     <ComboBox 
                         x:Name="LanguageBox"
                         Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"
-                        Margin="0,2,0,0"
                         Width="150"
                         DataContextChanged="UserControl_DataContextChanged"
                         SelectedItem="{Binding Language}"
