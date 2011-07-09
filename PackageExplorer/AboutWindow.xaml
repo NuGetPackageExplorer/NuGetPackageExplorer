@@ -11,11 +11,15 @@
         SizeToContent="WidthAndHeight"
         ShowInTaskbar="False">
     
-    <DockPanel Margin="20" LastChildFill="true">
+    <DockPanel LastChildFill="true">
+
+        <Border DockPanel.Dock="Bottom" Margin="0,30,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
+            <Button Content="OK" Padding="20,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,10,15,10" IsDefault="True" IsCancel="True" Click="Button_Click" />
+        </Border>
+
+        <Image Style="{x:Null}" Margin="15,20,0,0" DockPanel.Dock="Left" Stretch="None" VerticalAlignment="Top" Source="Images/packageicon.png" />
         
-        <Image Style="{x:Null}" DockPanel.Dock="Left" Stretch="None" VerticalAlignment="Top" Source="Images/packageicon.png" />
-        
-        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="20,0,0,0">
+        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="15,20,15,0">
             <TextBlock x:Name="ProductTitle" Text="NuGet Package Explorer" FontWeight="Bold" />
             
             <TextBlock Text="Compatible with NuGet 1.4.1 and below." Margin="0,5,0,0"/>
@@ -27,31 +31,17 @@
             </TextBlock>
 
             <TextBlock Margin="0,5,0,0">
-                <Run Text="Author: Luan Nguyen (" />
-                <Hyperlink NavigateUri="http://twitter.com/dotnetjunky/" Click="Hyperlink_Click">
-                    <Run Text="@dotnetjunky" />
-                </Hyperlink>
-                <Run Text=")" />
+                <Run Text="Author: Luan Nguyen (" /><Hyperlink NavigateUri="http://twitter.com/dotnetjunky/" Click="Hyperlink_Click"><Run Text="@dotnetjunky" /></Hyperlink><Run Text=")" />
             </TextBlock>
-            <TextBlock Margin="0,5,0,0" Text="Contributors: iLya Lozovyy, Brian Hartung">
+            <TextBlock Margin="0,5,0,0" Text="Contributors: iLya Lozovyy, Brian Hartung.">
             </TextBlock>
             <TextBlock Margin="0,5,0,0">
-                <Run Text="Syntax highlighting viewer powered by " />
-                <Hyperlink NavigateUri="http://colorcode.codeplex.com" Click="Hyperlink_Click">
-                    <Run Text="ColorCode" />
-                </Hyperlink>
-                <Run Text="." />
+                <Run Text="Syntax highlighting viewer powered by " /><Hyperlink NavigateUri="http://colorcode.codeplex.com" Click="Hyperlink_Click"><Run Text="ColorCode" /></Hyperlink><Run Text="." />
             </TextBlock>
             
             <TextBlock Margin="0,5,0,0">
-                <Run Text="Some dialogs are provided by " />
-                <Hyperlink NavigateUri="http://www.ookii.org/software/dialogs/" Click="Hyperlink_Click">
-                    <Run Text="Ookii.Dialogs" />
-                </Hyperlink>
-                <Run Text="." />
+                <Run Text="Some dialogs are provided by " /><Hyperlink NavigateUri="http://www.ookii.org/software/dialogs/" Click="Hyperlink_Click"><Run Text="Ookii.Dialogs" /></Hyperlink><Run Text="." />
             </TextBlock>
-            
-            <Button Content="OK" Padding="20,0,20,0" HorizontalAlignment="Right" Margin="0,30,0,0" IsDefault="True" IsCancel="True" Click="Button_Click" />
         </StackPanel>
     </DockPanel>
 </self:StandardDialog>

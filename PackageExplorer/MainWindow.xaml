@@ -144,9 +144,9 @@
             <MenuItem Header="_View">
                 <MenuItem Header="Text _Size" x:Name="FontSizeMenuItem">
                     <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" IsCheckable="True" />
-                    <self:GrayscaleMenuItem Header="_Larger" Tag="14" Click="OnFontSizeItem_Click" IsCheckable="True" />
-                    <self:GrayscaleMenuItem Header="L_argest" Tag="16" Click="OnFontSizeItem_Click" IsCheckable="True" />
-
+                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" IsCheckable="True" />
+                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click" IsCheckable="True" />
+                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click" IsCheckable="True" />
                     <MenuItem.Icon>
                         <Image Source="Images/FontDialogHS.png" />
                     </MenuItem.Icon>
