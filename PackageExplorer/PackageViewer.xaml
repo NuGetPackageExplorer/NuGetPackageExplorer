@@ -345,13 +345,21 @@
             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
             Command="{Binding ViewContentCommand}"
             CommandParameter="Hide"
-            Margin="0,9,4,0"
+            Margin="0,8,4,0"
             Padding="3"
             Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
             Grid.Row="2" 
             Grid.Column="2"
             ToolTipService.ToolTip="Close">
-            <Path StrokeThickness="2" Stroke="#CCFFFFFF" Data="M 0,0 L 8,8 M 0,8 L 8,0" />
+            <Path 
+                StrokeThickness="1"
+                UseLayoutRounding="True"
+                SnapsToDevicePixels="True"
+                Stretch="Uniform"
+                Height="8"
+                Width="10"
+                Fill="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" 
+                Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z" />
         </Button>
     </Grid>
 </UserControl>

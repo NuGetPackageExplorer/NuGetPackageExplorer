@@ -526,8 +526,7 @@
 
     <Style x:Key="{x:Static ToolBar.ButtonStyleKey}"
            TargetType="{x:Type Button}">
-        <Setter Property="Foreground"
-                Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+        <Setter Property="Foreground" Value="#CCFFFFFF" />
         <Setter Property="Padding"
                 Value="1"/>
         <Setter Property="BorderThickness"
@@ -566,6 +565,7 @@
                             <Setter TargetName="Bd"
                                     Property="Background"
                                     Value="{StaticResource MenuItemSelectionFill}"/>
+                            <Setter Property="Foreground" Value="Black" />
                         </Trigger>
                         <Trigger Property="IsKeyboardFocused"
                                  Value="true">
@@ -584,6 +584,7 @@
                             <Setter TargetName="Bd"
                                     Property="Background"
                                     Value="{StaticResource MenuItemPressedFill}"/>
+                            <Setter Property="Foreground" Value="Black" />
                         </Trigger>
                         <Trigger Property="IsEnabled"
                                  Value="false">
