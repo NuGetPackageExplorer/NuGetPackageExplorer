@@ -342,16 +342,16 @@
         <Button 
             HorizontalAlignment="Right" 
             VerticalAlignment="Top" 
-            Background="#465A7D"
             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
             Command="{Binding ViewContentCommand}"
             CommandParameter="Hide"
-            Margin="0,6,4,0"
+            Margin="0,9,4,0"
+            Padding="3"
             Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
             Grid.Row="2" 
             Grid.Column="2"
-            ToolTipService.ToolTip="Close viewer pane">
-            <Image Source="Images/Close.png" />
+            ToolTipService.ToolTip="Close">
+            <Path StrokeThickness="2" Stroke="#CCFFFFFF" Data="M 0,0 L 8,8 M 0,8 L 8,0" />
         </Button>
     </Grid>
 </UserControl>

@@ -213,7 +213,7 @@
         </Menu>
 
         <!-- Status bar -->
-        <StatusBar Grid.Row="2" Padding="0,2,0,2" DockPanel.Dock="Bottom" Background="#293955" Foreground="White" Visibility="{Binding IsChecked, ElementName=ShowStatusBarMenuItem, Converter={StaticResource boolToVis}}">
+        <StatusBar Grid.Row="2" Padding="0,2,0,2" DockPanel.Dock="Bottom" Background="#293955" Foreground="#CCFFFFFF" Visibility="{Binding IsChecked, ElementName=ShowStatusBarMenuItem, Converter={StaticResource boolToVis}}">
             <StatusBarItem x:Name="PackageSourceItem" Content="{Binding PackageSource, FallbackValue=Ready}" />
             <StatusBarItem HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,3,0" Visibility="{Binding HasEdit, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}">
                 <StatusBarItem.Content>

@@ -211,6 +211,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Resource Include="MenuItems.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
     <Page Include="PackageChooserDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -285,7 +289,6 @@
     <Resource Include="Images\EditHS.png" />
     <Resource Include="Images\folder.png" />
     <Resource Include="Images\Cog.png" />
-    <Resource Include="Images\Close.png" />
     <Resource Include="Images\clear.png" />
     <Content Include="nuspec.ico" />
   </ItemGroup>
