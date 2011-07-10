@@ -17,7 +17,7 @@
         <BitmapImage x:Key="arrowImage" UriSource="Images/arrow.png" />
     </UserControl.Resources>
 
-    <HeaderedContentControl FontSize="18" Padding="10" Header="Task Shortcuts">
+    <HeaderedContentControl FontSize="18" Padding="10" Header="Task Shortcuts" Foreground="#CCFFFFFF">
         <HeaderedContentControl.Effect>
             <DropShadowEffect RenderingBias="Performance" ShadowDepth="4" Opacity="0.4" />
         </HeaderedContentControl.Effect>
