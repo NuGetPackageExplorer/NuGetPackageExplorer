@@ -56,7 +56,7 @@
             <Image Grid.Row="3" Source="{StaticResource arrowImage}" />
 
             <TextBlock Grid.Row="3" Grid.Column="1">
-                <Hyperlink Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package">Read online help</Hyperlink>
+                <Hyperlink Command="GoToPage" CommandParameter="http://docs.nuget.org">Read NuGet documentation</Hyperlink>
             </TextBlock>
         </Grid>
     </HeaderedContentControl>
