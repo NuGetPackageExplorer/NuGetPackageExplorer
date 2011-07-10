@@ -19,7 +19,7 @@
 
     <HeaderedContentControl FontSize="18" Padding="10" Header="Task Shortcuts">
         <HeaderedContentControl.Effect>
-            <DropShadowEffect RenderingBias="Performance" ShadowDepth="4" Opacity="0.5" />
+            <DropShadowEffect RenderingBias="Performance" ShadowDepth="4" Opacity="0.4" />
         </HeaderedContentControl.Effect>
 
         <Grid>
