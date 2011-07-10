@@ -51,16 +51,9 @@
         <KeyBinding Key="Enter"  Command="{Binding ViewContentCommand}" />
     </Window.InputBindings>
     
-    <DockPanel x:Name="RootLayout" LastChildFill="False">
+    <DockPanel x:Name="RootLayout" LastChildFill="True">
         <!-- Menu bar -->
-        <Menu DockPanel.Dock="Top">
-            <Menu.Background>
-                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                    <GradientStop Offset="0" Color="#FFCAD3E2" />
-                    <GradientStop Offset="0.3" Color="#FFC2CCDB" />
-                    <GradientStop Offset="1" Color="#FFADB9CD" />
-                </LinearGradientBrush>
-            </Menu.Background>
+        <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
             <self:GrayscaleMenuItem Header="_File">
                 <MenuItem Command="New" Header="_New">
                     <MenuItem.Icon>
@@ -221,5 +214,12 @@
                 </StatusBarItem.Content>
             </StatusBarItem>
         </StatusBar>
+        
+        <Grid x:Name="MainContentContainer">
+            <self:TaskShortcut 
+                Visibility="{Binding Converter={StaticResource invertedNullToVisibilityConverter}}" 
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center" />
+        </Grid>
     </DockPanel>
 </Window>

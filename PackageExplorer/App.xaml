@@ -10,12 +10,14 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="MenuItems.xaml" />
             </ResourceDictionary.MergedDictionaries>
-        
+
+            
             <self:BooleanToVisibilityConverter x:Key="invertedBoolToVis" Inverted="True" />
             <self:BooleanToVisibilityConverter x:Key="boolToVis" />
             <self:CountToVisibilityConverter x:Key="countConverter" />
             <self:CountToVisibilityConverter Inverted="True" x:Key="invertedCountConverter" />
             <self:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <self:NullToVisibilityConverter x:Key="invertedNullToVisibilityConverter" Inverted="True" />
             <self:StringCollectionsToStringConverter x:Key="authorNamesConverter" />
             <self:UppercaseConverter x:Key="upperCaseConverter" />
             <self:FrameworkNameConverter x:Key="frameworkConverter" />

@@ -20,6 +20,12 @@
     <Geometry x:Key="RightArrow">M 0,0 L 4,3.5 L 0,7 Z</Geometry>
     <Geometry x:Key="Checkmark">M 0,5.1 L 1.7,5.2 L 3.4,7.1 L 8,0.4 L 9.2,0 L 3.3,10.8 Z</Geometry>
 
+    <LinearGradientBrush x:Key="MenuBackgroundBrush" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Offset="0" Color="#FFCAD3E2" />
+        <GradientStop Offset="0.3" Color="#FFC2CCDB" />
+        <GradientStop Offset="1" Color="#FFADB9CD" />
+    </LinearGradientBrush>
+
     <LinearGradientBrush x:Key="SubMenuBackgroundBrush" StartPoint="0,0" EndPoint="0,1" PresentationOptions:Freeze="True">
         <GradientStop Color="#FFE9ECEE" Offset="0" />
         <GradientStop Color="#FFD0D7E2" Offset="1" />
@@ -118,7 +124,6 @@
                             HorizontalAlignment="Left"
                             Height="2" />
                     </Grid>
-
                 </theme:SystemDropShadowChrome>
             </Popup>
         </Grid>

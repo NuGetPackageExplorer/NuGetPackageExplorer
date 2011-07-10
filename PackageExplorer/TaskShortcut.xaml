@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="PackageExplorer.TaskShortcut"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             MinWidth="400" 
+             MinHeight="200" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <Style TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="6,4" />
+        </Style>
+
+        <BitmapImage x:Key="arrowImage" UriSource="Images/arrow.png" />
+    </UserControl.Resources>
+
+    <HeaderedContentControl FontSize="18" Padding="10" Header="Task Shortcuts">
+        <HeaderedContentControl.Effect>
+            <DropShadowEffect RenderingBias="Performance" ShadowDepth="4" Opacity="0.5" />
+        </HeaderedContentControl.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Image Grid.Row="0" Source="{StaticResource arrowImage}" />
+
+            <TextBlock Grid.Row="0" Grid.Column="1">
+                <Hyperlink Command="Open">Open a local package</Hyperlink>
+            </TextBlock>
+
+            <Image Grid.Row="1" Source="{StaticResource arrowImage}" />
+
+            <TextBlock Grid.Row="1" Grid.Column="1">
+                <Hyperlink Command="Open" CommandParameter="Feed">Open a package from online feed</Hyperlink>
+            </TextBlock>
+
+            <Image Grid.Row="2" Source="{StaticResource arrowImage}" />
+
+            <TextBlock Grid.Row="2" Grid.Column="1">
+                <Hyperlink Command="New">Create a new package</Hyperlink>
+            </TextBlock>
+
+            <Image Grid.Row="3" Source="{StaticResource arrowImage}" />
+
+            <TextBlock Grid.Row="3" Grid.Column="1">
+                <Hyperlink Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package">Read online help</Hyperlink>
+            </TextBlock>
+        </Grid>
+    </HeaderedContentControl>
+</UserControl>

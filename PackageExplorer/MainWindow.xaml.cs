@@ -99,12 +99,9 @@ namespace PackageExplorer {
             DisposeViewModel();
 
             if (package != null) {
-
-                if (!RootLayout.LastChildFill) {
+                if (MainContentContainer.Children.Count == 1) {
                     var packageViewer = new PackageViewer(UIServices, PackageChooser);
-                    Grid.SetRow(packageViewer, 1);
-                    RootLayout.Children.Add(packageViewer);
-                    RootLayout.LastChildFill = true;
+                    MainContentContainer.Children.Add(packageViewer);
 
                     // set the Export of IPackageMetadataEditor here
                     EditorService = packageViewer.PackageMetadataEditor;

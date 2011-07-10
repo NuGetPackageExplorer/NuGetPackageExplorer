@@ -4,16 +4,33 @@ using System.Windows.Data;
 
 namespace PackageExplorer {
     public class NullToVisibilityConverter : IValueConverter {
+
+        public bool Inverted { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             if (targetType == typeof(Visibility)) {
+                Visibility returnValue;
 
                 string stringValue = value as string;
                 if (stringValue != null) {
-                    return String.IsNullOrEmpty(stringValue) ? Visibility.Collapsed : Visibility.Visible;
+                    returnValue = String.IsNullOrEmpty(stringValue) ? Visibility.Collapsed : Visibility.Visible;
+                }
+                else {
+                    returnValue = value == null ? Visibility.Collapsed : Visibility.Visible;
                 }
 
-                return value == null ? Visibility.Collapsed : Visibility.Visible;
+                if (Inverted) {
+                    if (returnValue == Visibility.Visible) {
+                        returnValue = Visibility.Collapsed;
+                    }
+                    else {
+                        returnValue = Visibility.Visible;
+                    }
+                }
+
+                return returnValue;
             }
+
             return value;
         }
 
