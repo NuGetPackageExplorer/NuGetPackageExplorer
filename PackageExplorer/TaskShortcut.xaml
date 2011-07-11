@@ -3,21 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:settings="clr-namespace:PackageExplorer.Properties"
              mc:Ignorable="d" 
              MinWidth="400" 
-             MinHeight="200" 
+             MinHeight="200"
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
         <Style TargetType="{x:Type TextBlock}">
             <Setter Property="Margin" Value="6,4" />
+            <Setter Property="FontSize" Value="{Binding FontSize, Mode=OneWay, Source={x:Static settings:Settings.Default}, Converter={StaticResource SubtracterConverter}, ConverterParameter=-3}" />
         </Style>
 
         <BitmapImage x:Key="arrowImage" UriSource="Images/arrow.png" />
     </UserControl.Resources>
 
     <HeaderedContentControl Padding="10" Foreground="#CCFFFFFF">
-        
         <HeaderedContentControl.Header>
             <TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, ElementName=FirstLink, Converter={StaticResource SubtracterConverter}, ConverterParameter=-2}" />
         </HeaderedContentControl.Header>
