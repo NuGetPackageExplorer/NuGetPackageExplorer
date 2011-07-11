@@ -80,6 +80,8 @@
            
             <Style TargetType="{x:Type Window}">
                 <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+                <Setter Property="UseLayoutRounding" Value="True" />
+                <Setter Property="SnapsToDevicePixels" Value="True" />
             </Style>
 
             <Style TargetType="{x:Type GridSplitter}">
