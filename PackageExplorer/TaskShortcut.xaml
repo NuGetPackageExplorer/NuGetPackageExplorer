@@ -10,14 +10,18 @@
 
     <UserControl.Resources>
         <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="FontSize" Value="14" />
             <Setter Property="Margin" Value="6,4" />
         </Style>
 
         <BitmapImage x:Key="arrowImage" UriSource="Images/arrow.png" />
     </UserControl.Resources>
 
-    <HeaderedContentControl FontSize="18" Padding="10" Header="Task Shortcuts" Foreground="#CCFFFFFF">
+    <HeaderedContentControl Padding="10" Foreground="#CCFFFFFF">
+        
+        <HeaderedContentControl.Header>
+            <TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, ElementName=FirstLink, Converter={StaticResource SubtracterConverter}, ConverterParameter=-2}" />
+        </HeaderedContentControl.Header>
+        
         <HeaderedContentControl.Effect>
             <DropShadowEffect RenderingBias="Performance" ShadowDepth="4" Opacity="0.4" />
         </HeaderedContentControl.Effect>
@@ -37,7 +41,7 @@
 
             <Image Grid.Row="0" Source="{StaticResource arrowImage}" />
 
-            <TextBlock Grid.Row="0" Grid.Column="1">
+            <TextBlock x:Name="FirstLink" Grid.Row="0" Grid.Column="1">
                 <Hyperlink Command="Open">Open a local package</Hyperlink>
             </TextBlock>
 

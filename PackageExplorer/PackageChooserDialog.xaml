@@ -24,8 +24,6 @@
         </Style>
         
         <self:PackageInfoDownloadCountConverter x:Key="DownloadCountConverter" />
-
-        <self:SubtracterConverter x:Key="SubtracterConverter" />
         
         <CollectionViewSource x:Key="PackageCollectionSource" Source="{Binding Packages}">
             <CollectionViewSource.GroupDescriptions>

@@ -24,6 +24,25 @@
             <self:AndLogicConverter x:Key="andConverter" />
             <self:NormalizeTextConverter x:Key="NormalizeTextConverter" />
             <self:BooleanToStringConverter x:Key="BooleanConverter" />
+            <self:SubtracterConverter x:Key="SubtracterConverter" />
+
+            <ContextMenu x:Key="TextBoxContextMenu">
+                <self:GrayscaleMenuItem Command="Cut">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/CutHS.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+                <self:GrayscaleMenuItem Command="Copy">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/CopyHS.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+                <self:GrayscaleMenuItem Command="Paste">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/PasteHS.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+            </ContextMenu>
 
             <SolidColorBrush Color="#003399" x:Key="TaskDialogMainInstructionBrush" PresentationOptions:Freeze="True" />
 
@@ -41,7 +60,7 @@
 
             <Style TargetType="{x:Type TextBox}">
                 <Setter Property="Margin" Value="0, 4, 3, 0" />
-
+                <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
                 <Style.Triggers>
                     <Trigger Property="Validation.HasError" Value="True">
                         <Setter Property="ToolTip">
@@ -53,6 +72,10 @@
                         </Setter>
                     </Trigger>
                 </Style.Triggers>
+            </Style>
+
+            <Style TargetType="{x:Type RichTextBox}">
+                <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
             </Style>
 
             <self:BorderGapMaskConverter x:Key="BorderGapMaskConverter"/>

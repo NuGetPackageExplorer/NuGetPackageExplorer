@@ -40,7 +40,8 @@
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Auto"
             SourceCode="{Binding Content, Mode=OneWay}"
-            SourceLanguage="{Binding Language, Mode=OneWay}" />
+            SourceLanguage="{Binding Language, Mode=OneWay}"
+            ContextMenu="{StaticResource TextBoxContextMenu}" />
 
         <!-- 
             Note: the order of elements matter. This Border element has to come last. 
