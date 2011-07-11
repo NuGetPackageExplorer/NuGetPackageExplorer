@@ -167,7 +167,7 @@
                 <TextBox Grid.Row="13" Grid.Column="1" x:Name="TagsBox" Text="{Binding PackageMetadata.Tags}" />
 
                 <!-- Dependencies -->
-                <GroupBox Grid.Row="14" Grid.ColumnSpan="2" Header="Dependencies" Margin="0,10,0,0">
+                <Border Grid.Row="14" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
                     <Grid Margin="3,4,3,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -207,10 +207,22 @@
                             </self:GrayscaleButton.IsEnabled>
                         </self:GrayscaleButton>
                     </Grid>
-                </GroupBox>
+                </Border>
 
+                <!-- Header text for Dependencies -->
+                <TextBlock 
+                    Text="Dependencies" 
+                    FontWeight="SemiBold"
+                    Foreground="Navy"
+                    Background="White"
+                    Grid.Row="14" 
+                    Grid.ColumnSpan="2" 
+                    Margin="1,10,1,0" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Top" />
+                
                 <!-- Framework assemblies -->
-                <GroupBox Grid.Row="15" Grid.ColumnSpan="2" Header="Framework Assemblies" Margin="0,10,0,0">
+                <Border Grid.Row="15" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
                     <Grid Margin="3,4,3,0">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
@@ -260,7 +272,19 @@
                             </Button.IsEnabled>
                         </self:GrayscaleButton>
                     </Grid>
-                </GroupBox>
+                </Border>
+
+                <!-- Header text for Framework assemblies -->
+                <TextBlock 
+                    Text="Framework assemblies" 
+                    FontWeight="SemiBold"
+                    Foreground="Navy"
+                    Background="White"
+                    Grid.Row="15" 
+                    Grid.ColumnSpan="2" 
+                    Margin="1,10,1,0" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Top" />
             </Grid>
         </ScrollViewer>
 
