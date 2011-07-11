@@ -9,9 +9,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Separator}">
-                    <Grid Margin="30,2,1,2">
-                        <Rectangle Height="1" Fill="#FFBEC3CB" SnapsToDevicePixels="True" />
-                    </Grid>
+                    <Rectangle Margin="30,2,1,2" Height="1" Fill="#FFBEC3CB" SnapsToDevicePixels="True" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
