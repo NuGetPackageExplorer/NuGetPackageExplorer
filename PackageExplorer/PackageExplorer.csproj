@@ -127,7 +127,6 @@
     <Compile Include="Converters\SubtracterConverter.cs" />
     <Compile Include="Converters\AndLogicConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Converters\BorderGapMaskConverter.cs" />
     <Compile Include="Converters\CountToVisibilityConverter.cs" />
     <Compile Include="Converters\FrameworkAssemblyReferenceConverter.cs" />
     <Compile Include="Converters\FrameworkNameConverter.cs" />
