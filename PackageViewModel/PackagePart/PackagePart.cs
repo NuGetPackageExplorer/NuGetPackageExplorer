@@ -9,6 +9,7 @@ using NuGetPackageExplorer.Types;
 namespace PackageExplorerViewModel {
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")]
     public abstract class PackagePart : IComparable<PackagePart>, INotifyPropertyChanged, IDisposable {
+        private int _hashCode;
 
         protected PackagePart(string name, PackageFolder parent, PackageViewModel viewModel) {
             if (name == null) {
@@ -21,6 +22,8 @@ namespace PackageExplorerViewModel {
 
             _viewModel = viewModel;
             _name = name;
+            // precalculate hash code to improve perf
+            _hashCode = _name.ToUpperInvariant().GetHashCode();
             _parent = parent;
             RecalculatePath();
         }
@@ -50,6 +53,9 @@ namespace PackageExplorerViewModel {
             }
             set {
                 if (_name != value) {
+                    // precalculate hash code to improve perf
+                    _hashCode = value == null ? 0 : value.ToUpperInvariant().GetHashCode();
+
                     _name = value;
                     OnPropertyChanged("Name");
                     UpdatePath();
@@ -186,7 +192,7 @@ namespace PackageExplorerViewModel {
         }
 
         public override int GetHashCode() {
-            return Name.ToUpper(CultureInfo.InvariantCulture).GetHashCode();
+            return _hashCode;
         }
 
         public void Dispose() {
