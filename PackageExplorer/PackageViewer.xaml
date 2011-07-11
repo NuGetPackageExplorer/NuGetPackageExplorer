@@ -20,6 +20,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="TemplateStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            
+            <BitmapImage x:Key="FolderImageSource" UriSource="Images/Folder.png" />
+            <BitmapImage x:Key="ScriptImageSource" UriSource="Images/Script.png" />
 
             <ContextMenu x:Key="SharedContextMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="_View Content" InputGestureText="Enter" Command="{Binding ViewCommand}" CommandParameter="{Binding}" FontWeight="SemiBold" />
@@ -182,24 +185,24 @@
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS\INSTALL.PS1">
                         <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Script.png" />
+                        <Setter TargetName="ItemIcon" Property="Source" Value="{StaticResource ScriptImageSource}" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS\UNINSTALL.PS1">
                         <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Script.png" />
+                        <Setter TargetName="ItemIcon" Property="Source" Value="{StaticResource ScriptImageSource}" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS\INIT.PS1">
                         <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Script.png" />
+                        <Setter TargetName="ItemIcon" Property="Source" Value="{StaticResource ScriptImageSource}" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
 
             <HierarchicalDataTemplate DataType="{x:Type viewmodel:PackageFolder}" ItemsSource="{Binding Children}">
                 <StackPanel Background="Transparent" Orientation="Horizontal" ContextMenu="{StaticResource FolderSharedContextMenu}">
-                    <Image x:Name="ItemIcon" Margin="0,0,2,0" Source="Images/Folder.png" />
+                    <Image x:Name="ItemIcon" Margin="0,0,2,0" Source="{StaticResource FolderImageSource}" />
                     <TextBlock x:Name="Header" FontWeight="SemiBold">
                         <Run Text="{Binding Name}" />
                         <Run Text="{Binding Path, Converter={StaticResource frameworkConverter}}" Foreground="Salmon" />
