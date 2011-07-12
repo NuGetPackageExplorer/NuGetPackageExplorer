@@ -9,7 +9,7 @@ namespace PackageExplorer {
             Uri url;
             if (Uri.TryCreate(stringValue, UriKind.Absolute, out url)) {
                 if (url.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) ||
-                    url.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase)) {
+                    url.Scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase)) {
                     return ValidationResult.ValidResult;
                 }
                 else {
