@@ -8,7 +8,6 @@
              mc:Ignorable="d" 
              MinWidth="400" 
              MinHeight="200"
-             
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
@@ -19,7 +18,7 @@
         <BitmapImage x:Key="arrowImage" UriSource="Images/arrow.png" />
     </UserControl.Resources>
 
-    <theme:SystemDropShadowChrome SnapsToDevicePixels="True">
+    <theme:SystemDropShadowChrome>
         <HeaderedContentControl Padding="10" Foreground="#CCFFFFFF">
             <HeaderedContentControl.Header>
                 <TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, ElementName=FirstLink, Converter={StaticResource SubtracterConverter}, ConverterParameter=-2}" />
