@@ -4,9 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:settings="clr-namespace:PackageExplorer.Properties"
+             xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              mc:Ignorable="d" 
              MinWidth="400" 
              MinHeight="200"
+             
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
@@ -14,55 +16,52 @@
             <Setter Property="Margin" Value="6,4" />
             <Setter Property="FontSize" Value="{Binding FontSize, Mode=OneWay, Source={x:Static settings:Settings.Default}, Converter={StaticResource SubtracterConverter}, ConverterParameter=-3}" />
         </Style>
-
         <BitmapImage x:Key="arrowImage" UriSource="Images/arrow.png" />
     </UserControl.Resources>
 
-    <HeaderedContentControl Padding="10" Foreground="#CCFFFFFF">
-        <HeaderedContentControl.Header>
-            <TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, ElementName=FirstLink, Converter={StaticResource SubtracterConverter}, ConverterParameter=-2}" />
-        </HeaderedContentControl.Header>
-        
-        <HeaderedContentControl.Effect>
-            <DropShadowEffect RenderingBias="Performance" ShadowDepth="4" Opacity="0.4" />
-        </HeaderedContentControl.Effect>
+    <theme:SystemDropShadowChrome SnapsToDevicePixels="True">
+        <HeaderedContentControl Padding="10" Foreground="#CCFFFFFF">
+            <HeaderedContentControl.Header>
+                <TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, ElementName=FirstLink, Converter={StaticResource SubtracterConverter}, ConverterParameter=-2}" />
+            </HeaderedContentControl.Header>
 
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <Image Grid.Row="0" Source="{StaticResource arrowImage}" />
+                <Image Grid.Row="0" Source="{StaticResource arrowImage}" />
 
-            <TextBlock x:Name="FirstLink" Grid.Row="0" Grid.Column="1">
+                <TextBlock x:Name="FirstLink" Grid.Row="0" Grid.Column="1">
                 <Hyperlink Command="Open">Open a local package</Hyperlink>
-            </TextBlock>
+                </TextBlock>
 
-            <Image Grid.Row="1" Source="{StaticResource arrowImage}" />
+                <Image Grid.Row="1" Source="{StaticResource arrowImage}" />
 
-            <TextBlock Grid.Row="1" Grid.Column="1">
+                <TextBlock Grid.Row="1" Grid.Column="1">
                 <Hyperlink Command="Open" CommandParameter="Feed">Open a package from online feed</Hyperlink>
-            </TextBlock>
+                </TextBlock>
 
-            <Image Grid.Row="2" Source="{StaticResource arrowImage}" />
+                <Image Grid.Row="2" Source="{StaticResource arrowImage}" />
 
-            <TextBlock Grid.Row="2" Grid.Column="1">
+                <TextBlock Grid.Row="2" Grid.Column="1">
                 <Hyperlink Command="New">Create a new package</Hyperlink>
-            </TextBlock>
+                </TextBlock>
 
-            <Image Grid.Row="3" Source="{StaticResource arrowImage}" />
+                <Image Grid.Row="3" Source="{StaticResource arrowImage}" />
 
-            <TextBlock Grid.Row="3" Grid.Column="1">
+                <TextBlock Grid.Row="3" Grid.Column="1">
                 <Hyperlink Command="GoToPage" CommandParameter="http://docs.nuget.org">Read NuGet documentation</Hyperlink>
-            </TextBlock>
-        </Grid>
-    </HeaderedContentControl>
+                </TextBlock>
+            </Grid>
+        </HeaderedContentControl>
+    </theme:SystemDropShadowChrome>
 </UserControl>
