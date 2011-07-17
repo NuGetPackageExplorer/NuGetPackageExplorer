@@ -216,7 +216,7 @@
         </StatusBar>
         
         <Grid x:Name="MainContentContainer">
-            <self:TaskShortcut 
+            <self:TaskShortcut
                 Visibility="{Binding Converter={StaticResource invertedNullToVisibilityConverter}}" 
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Center" />

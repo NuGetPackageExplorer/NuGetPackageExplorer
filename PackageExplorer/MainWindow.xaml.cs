@@ -8,9 +8,9 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NuGet;
+using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
-using NuGetPackageExplorer.Types;
 using StringResources = PackageExplorer.Resources.Resources;
 
 namespace PackageExplorer {

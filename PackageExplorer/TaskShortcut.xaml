@@ -6,7 +6,7 @@
              xmlns:settings="clr-namespace:PackageExplorer.Properties"
              xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
              mc:Ignorable="d" 
-             MinWidth="400" 
+             MinWidth="380" 
              MinHeight="200"
              d:DesignHeight="300" d:DesignWidth="300">
 
@@ -24,43 +24,35 @@
                 <TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, ElementName=FirstLink, Converter={StaticResource SubtracterConverter}, ConverterParameter=-2}" />
             </HeaderedContentControl.Header>
 
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
+            <UniformGrid Columns="1" Rows="4">
+                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Open">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{StaticResource arrowImage}" />
+                        <TextBlock Text="Open a local package" x:Name="FirstLink" />
+                    </StackPanel>
+                </Button>
 
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
+                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Open" CommandParameter="Feed">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{StaticResource arrowImage}" />
+                        <TextBlock Text="Open a package from online feed" />
+                    </StackPanel>
+                </Button>
 
-                <Image Grid.Row="0" Source="{StaticResource arrowImage}" />
+                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="New">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{StaticResource arrowImage}" />
+                        <TextBlock Text="Create a new package" />
+                    </StackPanel>
+                </Button>
 
-                <TextBlock x:Name="FirstLink" Grid.Row="0" Grid.Column="1">
-                <Hyperlink Command="Open">Open a local package</Hyperlink>
-                </TextBlock>
-
-                <Image Grid.Row="1" Source="{StaticResource arrowImage}" />
-
-                <TextBlock Grid.Row="1" Grid.Column="1">
-                <Hyperlink Command="Open" CommandParameter="Feed">Open a package from online feed</Hyperlink>
-                </TextBlock>
-
-                <Image Grid.Row="2" Source="{StaticResource arrowImage}" />
-
-                <TextBlock Grid.Row="2" Grid.Column="1">
-                <Hyperlink Command="New">Create a new package</Hyperlink>
-                </TextBlock>
-
-                <Image Grid.Row="3" Source="{StaticResource arrowImage}" />
-
-                <TextBlock Grid.Row="3" Grid.Column="1">
-                <Hyperlink Command="GoToPage" CommandParameter="http://docs.nuget.org">Read NuGet documentation</Hyperlink>
-                </TextBlock>
-            </Grid>
+                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="GoToPage" CommandParameter="http://docs.nuget.org">
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{StaticResource arrowImage}" />
+                        <TextBlock Text="Read NuGet documentation" />
+                    </StackPanel>
+                </Button>
+            </UniformGrid>
         </HeaderedContentControl>
     </theme:SystemDropShadowChrome>
 </UserControl>

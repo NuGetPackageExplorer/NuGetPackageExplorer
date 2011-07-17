@@ -567,15 +567,6 @@
                                     Value="{StaticResource MenuItemSelectionFill}"/>
                             <Setter Property="Foreground" Value="Black" />
                         </Trigger>
-                        <Trigger Property="IsKeyboardFocused"
-                                 Value="true">
-                            <Setter TargetName="Bd"
-                                    Property="BorderBrush"
-                                    Value="{StaticResource MenuItemSelectionBorder}"/>
-                            <Setter TargetName="Bd"
-                                    Property="Background"
-                                    Value="{StaticResource MenuItemSelectionFill}"/>
-                        </Trigger>
                         <Trigger Property="IsPressed"
                                  Value="true">
                             <Setter TargetName="Bd"
