@@ -21,14 +21,14 @@
     <theme:SystemDropShadowChrome>
         <HeaderedContentControl Padding="10" Foreground="#CCFFFFFF">
             <HeaderedContentControl.Header>
-                <TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, ElementName=FirstLink, Converter={StaticResource SubtracterConverter}, ConverterParameter=-2}" />
+                <TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, Source={x:Static settings:Settings.Default}, Converter={StaticResource SubtracterConverter}, ConverterParameter=-5}" />
             </HeaderedContentControl.Header>
 
             <UniformGrid Columns="1" Rows="4">
                 <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Open">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource arrowImage}" />
-                        <TextBlock Text="Open a local package" x:Name="FirstLink" />
+                        <TextBlock Text="Open a local package" />
                     </StackPanel>
                 </Button>
 

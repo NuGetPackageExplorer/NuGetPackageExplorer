@@ -217,6 +217,7 @@
         
         <Grid x:Name="MainContentContainer">
             <self:TaskShortcut
+                x:Name="ComonTasksPane"
                 Visibility="{Binding Converter={StaticResource invertedNullToVisibilityConverter}}" 
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Center" />
