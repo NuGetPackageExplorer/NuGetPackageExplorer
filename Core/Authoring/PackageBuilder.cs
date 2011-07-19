@@ -94,6 +94,11 @@ namespace NuGet {
             set;
         }
 
+        public string ReleaseNotes {
+            get;
+            set;
+        }
+
         public string Language {
             get;
             set;
@@ -191,6 +196,7 @@ namespace NuGet {
             RequireLicenseAcceptance = metadata.RequireLicenseAcceptance;
             Description = metadata.Description;
             Summary = metadata.Summary;
+            ReleaseNotes = metadata.ReleaseNotes;
             Language = metadata.Language;
 
             if (metadata.Tags != null) {

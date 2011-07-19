@@ -27,6 +27,7 @@ namespace NuGet
             RequireLicenseAcceptance = packageBuilder.RequireLicenseAcceptance;
             Description = packageBuilder.Description;
             Summary = packageBuilder.Summary;
+            ReleaseNotes = packageBuilder.ReleaseNotes;
             Language = packageBuilder.Language;
             Tags = packageBuilder.Tags;
             FrameworkAssemblies = packageBuilder.FrameworkAssemblies;
@@ -116,6 +117,11 @@ namespace NuGet
 
         public string Summary
         {
+            get;
+            private set;
+        }
+
+        public string ReleaseNotes {
             get;
             private set;
         }

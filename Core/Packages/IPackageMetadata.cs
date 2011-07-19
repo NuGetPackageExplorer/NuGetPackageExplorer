@@ -14,6 +14,7 @@ namespace NuGet {
         bool RequireLicenseAcceptance { get; }
         string Description { get; }
         string Summary { get; }
+        string ReleaseNotes { get; }
         string Language { get; }
         string Tags { get; }
         IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; }

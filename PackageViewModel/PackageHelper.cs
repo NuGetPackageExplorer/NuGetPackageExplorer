@@ -53,6 +53,7 @@ namespace PackageExplorerViewModel {
             builder.RequireLicenseAcceptance = source.RequireLicenseAcceptance;
             builder.Description = source.Description;
             builder.Summary = source.Summary;
+            builder.ReleaseNotes = source.ReleaseNotes;
             builder.Language = source.Language;
             builder.Tags.AddRange(ParseTags(source.Tags));
             builder.Dependencies.AddRange(source.Dependencies);

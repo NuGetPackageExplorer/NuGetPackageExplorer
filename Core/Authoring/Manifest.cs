@@ -105,6 +105,7 @@ namespace NuGet {
             manifest.Metadata.Owners = manifest.Metadata.Owners.SafeTrim();
             manifest.Metadata.Description = manifest.Metadata.Description.SafeTrim();
             manifest.Metadata.Summary = manifest.Metadata.Summary.SafeTrim();
+            manifest.Metadata.ReleaseNotes = manifest.Metadata.ReleaseNotes.SafeTrim();
             manifest.Metadata.Language = manifest.Metadata.Language.SafeTrim();
             manifest.Metadata.Tags = manifest.Metadata.Tags.SafeTrim();
 
@@ -143,6 +144,7 @@ namespace NuGet {
                     RequireLicenseAcceptance = metadata.RequireLicenseAcceptance,
                     Description = metadata.Description.SafeTrim(),
                     Summary = metadata.Summary.SafeTrim(),
+                    ReleaseNotes = metadata.ReleaseNotes.SafeTrim(),
                     Language = metadata.Language.SafeTrim(),
                     Dependencies = metadata.Dependencies == null ||
                                    !metadata.Dependencies.Any() ? null :

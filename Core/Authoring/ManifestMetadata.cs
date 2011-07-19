@@ -61,6 +61,9 @@ namespace NuGet {
         [XmlElement("summary")]
         public string Summary { get; set; }
 
+        [XmlElement("releaseNotes")]
+        public string ReleaseNotes { get; set; }
+
         [XmlElement("language")]
         public string Language { get; set; }
 

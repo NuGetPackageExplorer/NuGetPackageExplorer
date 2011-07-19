@@ -23,9 +23,5 @@ namespace NuGet {
         public static Stream AsStream(this string value, Encoding encoding) {
             return new MemoryStream(encoding.GetBytes(value));
         }
-
-        //public static bool ContentEquals(this Stream stream, Stream otherStream) {
-        //    return Crc32.Calculate(stream) == Crc32.Calculate(otherStream);
-        //}
     }
 }

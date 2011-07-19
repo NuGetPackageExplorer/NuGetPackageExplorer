@@ -139,6 +139,13 @@
                         <TextBlock Style="{StaticResource DetailDescriptionTextBoxStyle}" Text="{Binding Description, Converter={StaticResource NormalizeTextConverter}}" >
                         </TextBlock>
 
+                        <!-- Release Notes -->
+                        <TextBlock Text="Release notes:" Margin="0,3,0,0" Style="{StaticResource DetailMetadataLabelStyle}" Visibility="{Binding ReleaseNotes, Converter={StaticResource NullToVisibilityConverter}}">
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource DetailDescriptionTextBoxStyle}" Text="{Binding ReleaseNotes, Converter={StaticResource NormalizeTextConverter}}" Visibility="{Binding ReleaseNotes, Converter={StaticResource NullToVisibilityConverter}}">
+                        </TextBlock>
+
                         <!-- Dependencies list -->
                         <TextBlock Text="{x:Static resources:Resources.Dialog_DependenciesLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 

@@ -120,6 +120,12 @@ namespace NuGet {
             }
         }
 
+        public string ReleaseNotes {
+            get {
+                return CorePackage == null ? null : CorePackage.ReleaseNotes;
+            }
+        }
+
         public string Language {
             get {
                 return CorePackage == null ? null : CorePackage.Language;

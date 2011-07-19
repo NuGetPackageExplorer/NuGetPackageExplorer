@@ -61,6 +61,10 @@ namespace PackageExplorerViewModel {
             get { return String.Empty; }
         }
 
+        public string ReleaseNotes {
+            get { return String.Empty; }
+        }
+
         public string Language {
             get { return null; }
         }
