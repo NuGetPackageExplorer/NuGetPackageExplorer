@@ -273,7 +273,6 @@ namespace PackageExplorerViewModel {
                     var query = repository.GetPackages();
                     if (!String.IsNullOrEmpty(_currentSearch)) {
                         query = query.Find(_currentSearch.Split(' '));
-                        query = query.Where(p => p.Id.ToLower().Contains(_currentSearch.ToLower()));
                     }
 
                     switch (SortColumn) {
