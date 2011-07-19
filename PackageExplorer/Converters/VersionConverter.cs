@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Data;
+using NuGet;
 
 namespace PackageExplorer {
 
@@ -18,7 +19,7 @@ namespace PackageExplorer {
             }
             else {
                 Version version;
-                if (Version.TryParse(stringValue, out version)) {
+                if (VersionUtility.TryParseVersion(stringValue, out version)) {
                     return version;
                 }
                 else {

@@ -176,7 +176,7 @@ namespace NuGet {
 
             // First, try to parse it as a plain version string
             Version version;
-            if (Version.TryParse(value, out version)) {
+            if (TryParseVersion(value, out version)) {
                 // A plain version is treated as an inclusive minimum range
                 result = new VersionSpec {
                     MinVersion = version,
@@ -234,7 +234,7 @@ namespace NuGet {
 
             // Only parse the min version if it's non-empty
             if (!String.IsNullOrWhiteSpace(minVersionString)) {
-                if (!Version.TryParse(minVersionString, out version)) {
+                if (!TryParseVersion(minVersionString, out version)) {
                     return false;
                 }
                 versionSpec.MinVersion = version;
@@ -242,7 +242,7 @@ namespace NuGet {
 
             // Same deal for max
             if (!String.IsNullOrWhiteSpace(maxVersionString)) {
-                if (!Version.TryParse(maxVersionString, out version)) {
+                if (!TryParseVersion(maxVersionString, out version)) {
                     return false;
                 }
                 versionSpec.MaxVersion = version;
@@ -252,7 +252,7 @@ namespace NuGet {
             result = versionSpec;
             return true;
         }
-
+        
         public static string GetFrameworkString(FrameworkName frameworkName) {
             string name = frameworkName.Identifier + frameworkName.Version;
             if (String.IsNullOrEmpty(frameworkName.Profile)) {
@@ -278,5 +278,21 @@ namespace NuGet {
 
             return null;
         }
+
+        public static bool TryParseVersion(string versionString, out Version version)
+        {
+            version = null;
+            if (!Version.TryParse(versionString, out version))
+            {
+                // Support integer version numbers (i.e 1 -> 1.0)
+                int versionNumber;
+                if (Int32.TryParse(versionString, out versionNumber) && versionNumber > 0)
+                {
+                    version = new Version(versionNumber, 0);
+                }
+            }
+            return version != null;
+        }
+
     }
 }
