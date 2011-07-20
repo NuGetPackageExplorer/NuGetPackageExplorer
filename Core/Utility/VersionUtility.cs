@@ -176,7 +176,7 @@ namespace NuGet {
 
             // First, try to parse it as a plain version string
             Version version;
-            if (TryParseVersion(value, out version)) {
+            if (Version.TryParse(value, out version)) {
                 // A plain version is treated as an inclusive minimum range
                 result = new VersionSpec {
                     MinVersion = version,

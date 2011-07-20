@@ -19,7 +19,7 @@ namespace PackageExplorer {
             }
             else {
                 Version version;
-                if (VersionUtility.TryParseVersion(stringValue, out version)) {
+                if (Version.TryParse(stringValue, out version)) {
                     return version;
                 }
                 else {
