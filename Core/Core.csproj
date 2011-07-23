@@ -61,7 +61,6 @@
     <Compile Include="Authoring\ManifestFrameworkAssembly.cs" />
     <Compile Include="Authoring\PackageBuilder.cs" />
     <Compile Include="Authoring\PathResolver.cs" />
-    <Compile Include="Authoring\PathSearchFilter.cs" />
     <Compile Include="Authoring\PhysicalPackageFile.cs" />
     <Compile Include="Configuration\ISettings.cs" />
     <Compile Include="Configuration\UserSettings.cs" />

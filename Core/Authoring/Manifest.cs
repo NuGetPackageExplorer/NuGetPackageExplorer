@@ -100,6 +100,8 @@ namespace NuGet {
 
             // Trim fields in case they have extra whitespace
             manifest.Metadata.Id = manifest.Metadata.Id.SafeTrim();
+            // validate the package Id early to avoid any further processing
+            PackageIdValidator.ValidatePackageId(manifest.Metadata.Id);
             manifest.Metadata.Title = manifest.Metadata.Title.SafeTrim();
             manifest.Metadata.Authors = manifest.Metadata.Authors.SafeTrim();
             manifest.Metadata.Owners = manifest.Metadata.Owners.SafeTrim();

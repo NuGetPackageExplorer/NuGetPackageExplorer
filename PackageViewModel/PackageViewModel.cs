@@ -270,11 +270,9 @@ namespace PackageExplorerViewModel {
 
             using (Stream fileStream = File.Create(fullpath)) {
                 Manifest manifest = Manifest.Create(PackageMetadata);
-                if (RootFolder.GetFiles().Any()) {
-                    manifest.Files = new List<ManifestFile>();
-                    manifest.Files.AddRange(
-                        RootFolder.GetFiles().Select(f => new ManifestFile { Source = f.Path, Target = f.Path }));
-                }
+                manifest.Files = new List<ManifestFile>();
+                manifest.Files.AddRange(
+                    RootFolder.GetFiles().Select(f => new ManifestFile { Source = f.Path, Target = f.Path }));
                 manifest.Save(fileStream);
             }
         }

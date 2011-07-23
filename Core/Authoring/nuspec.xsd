@@ -56,10 +56,11 @@
                 <xs:element name="files" minOccurs="0" maxOccurs="1">
                     <xs:complexType>
                         <xs:sequence>
-                            <xs:element name="file" minOccurs="1" maxOccurs="unbounded">
+                            <xs:element name="file" minOccurs="0" maxOccurs="unbounded">
                                 <xs:complexType>
                                     <xs:attribute name="src" use="required" type="xs:string" />
                                     <xs:attribute name="target" use="optional" type="xs:string" />
+                                    <xs:attribute name="exclude" use="optional" type="xs:string" />
                                 </xs:complexType>
                             </xs:element>
                         </xs:sequence>

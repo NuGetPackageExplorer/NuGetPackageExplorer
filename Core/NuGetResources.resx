@@ -148,7 +148,7 @@
     <value>Cannot create a package that has no dependencies nor content.</value>
   </data>
   <data name="InvalidPackageId" xml:space="preserve">
-    <value>Package id '{0}' is invalid.</value>
+    <value>The package ID '{0}' contains invalid characters. Examples of valid package IDs include 'MyPackage' and 'MyPackage.Sample'.</value>
   </data>
   <data name="PackageAuthoring_FileNotFound" xml:space="preserve">
     <value>File not found: '{0}'.</value>
@@ -176,5 +176,14 @@
   </data>
   <data name="UserSettings_UnableToParseConfigFile" xml:space="preserve">
     <value>Unable to parse config file.</value>
+  </data>
+  <data name="Manifest_ExcludeContainsInvalidCharacters" xml:space="preserve">
+    <value>Exclude path '{0}' contains invalid characters.</value>
+  </data>
+  <data name="Manifest_SourceContainsInvalidCharacters" xml:space="preserve">
+    <value>Source path '{0}' contains invalid characters.</value>
+  </data>
+  <data name="Manifest_TargetContainsInvalidCharacters" xml:space="preserve">
+    <value>Target path '{0}' contains invalid characters.</value>
   </data>
 </root>

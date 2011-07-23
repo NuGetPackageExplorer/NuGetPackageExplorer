@@ -213,7 +213,7 @@ namespace NuGet {
                 }
                 else {
                     foreach (var file in manifest.Files) {
-                        AddFiles(basePath, file.Source, file.Target);
+                        AddFiles(basePath, file.Source, file.Target, file.Exclude);
                     }
                 }
             }
@@ -243,23 +243,27 @@ namespace NuGet {
             }
         }
 
-        private void AddFiles(string basePath, string source, string destination) {
-            PathSearchFilter searchFilter = PathResolver.ResolveSearchFilter(basePath, source);
-            IEnumerable<string> searchFiles = Directory.EnumerateFiles(searchFilter.SearchDirectory,
-                                                          searchFilter.SearchPattern,
-                                                          searchFilter.SearchOption);
+        private void AddFiles(string basePath, string source, string destination, string exclude = null) {
+            List<PhysicalPackageFile> searchFiles = PathResolver.ResolveSearchPattern(basePath, source, destination).ToList();
+            ExcludeFiles(searchFiles, basePath, exclude);
 
-            if (!searchFilter.WildCardSearch && !searchFiles.Any()) {
+            if (!PathResolver.IsWildcardSearch(source) && !searchFiles.Any()) {
                 throw new FileNotFoundException(String.Format(CultureInfo.CurrentCulture, NuGetResources.PackageAuthoring_FileNotFound,
                     source));
             }
+            Files.AddRange(searchFiles);
+        }
 
-            foreach (var file in searchFiles) {
-                var destinationPath = PathResolver.ResolvePackagePath(searchFilter, file, destination);
-                Files.Add(new PhysicalPackageFile {
-                    SourcePath = file,
-                    TargetPath = destinationPath
-                });
+        private static void ExcludeFiles(List<PhysicalPackageFile> searchFiles, string basePath, string exclude) {
+            if (String.IsNullOrEmpty(exclude)) {
+                return;
+            }
+
+            // One or more exclusions may be specified in the file. Split it and prepend the base path to the wildcard provided.
+            var exclusions = exclude.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var item in exclusions) {
+                string wildCard = PathResolver.NormalizeWildcard(basePath, item);
+                PathResolver.FilterPackageFiles(searchFiles, p => p.SourcePath, new[] { wildCard });
             }
         }
 
