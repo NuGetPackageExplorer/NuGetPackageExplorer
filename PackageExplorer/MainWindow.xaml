@@ -32,6 +32,24 @@
         <viewmodel:DisabledCommand x:Key="DisabledCommand" />
         <self:PackagePartToBoolConverter x:Key="PackagePartConverter" />
         <self:TruncateFilePathConverter x:Key="TruncatePathConverter" />
+        
+        <DataTemplate x:Key="PackageCommandTemplate">
+            <TextBlock Text="{Binding Metadata.Text, Mode=OneTime}" />
+        </DataTemplate>
+
+        <Style x:Key="PackageCommandItemStyle" TargetType="{x:Type MenuItem}">
+            <EventSetter Event="Click" Handler="OnPackageCommandClick" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Metadata.Text, Mode=OneWay, TargetNullValue=''}" Value="">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding DataContext, ElementName=RootLayout, Mode=OneWay}" Value="{x:Null}">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        
+        <self:PackageCommandItemContainerSelector x:Key="PackageCommandItemStyleSelector" PackageCommandStyle="{StaticResource PackageCommandItemStyle}" />    
     </Window.Resources>
     
     <Window.CommandBindings>
@@ -181,13 +199,21 @@
                 <MenuItem Header="_Rename..." Command="{Binding RenameContentCommand}" InputGestureText="F2" />
                 <MenuItem Header="_Delete..." Command="{Binding DeleteContentCommand}" InputGestureText="Delete" />
             </MenuItem>
-            
-            <MenuItem Header="_Tools">
-                <MenuItem Header="_Plugin Manager..." Click="AddPluginFromAssembly_Click">
-                    <MenuItem.Icon>
-                        <Image Source="images/cog.png" />
-                    </MenuItem.Icon>   
-                </MenuItem>
+
+            <MenuItem Header="_Tools" ItemTemplate="{StaticResource PackageCommandTemplate}" ItemContainerStyleSelector="{StaticResource PackageCommandItemStyleSelector}">
+                <MenuItem.ItemsSource>
+                    <CompositeCollection>
+                        <CollectionContainer x:Name="PackageCommandsContainer">
+                        </CollectionContainer>
+                        <Separator Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}" />
+                        <MenuItem Header="_Plugin Manager..." Click="AddPluginFromAssembly_Click">
+                            <MenuItem.Icon>
+                                <Image Source="images/cog.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </CompositeCollection>
+                </MenuItem.ItemsSource>
+                
             </MenuItem>
 
             <MenuItem Header="_Help">

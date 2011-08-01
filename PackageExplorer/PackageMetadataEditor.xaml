@@ -6,6 +6,7 @@
              xmlns:self="clr-namespace:PackageExplorer"
              xmlns:effect="clr-namespace:GrayscaleEffect;assembly=GrayscaleEffect"
              xmlns:core="clr-namespace:NuGet;assembly=Core"
+             xmlns:types="clr-namespace:NuGet;assembly=NuGetPackageExplorer.Types"
              xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"
              IsVisibleChanged="PackageMetadataEditor_IsVisibleChanged"
              mc:Ignorable="d" 
@@ -40,7 +41,7 @@
             <Setter Property="Margin" Value="0, 4, 3, 0" />
         </Style>
 
-        <DataTemplate DataType="{x:Type core:PackageDependency}" x:Key="PackageDependencyTemplate">
+        <DataTemplate DataType="{x:Type types:PackageDependency}" x:Key="PackageDependencyTemplate">
             <Grid Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
@@ -56,7 +57,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type core:FrameworkAssemblyReference}" x:Key="FrameworkAssemblyTemplate">
+        <DataTemplate DataType="{x:Type types:FrameworkAssemblyReference}" x:Key="FrameworkAssemblyTemplate">
             <Grid Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />

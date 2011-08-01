@@ -44,8 +44,20 @@
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Packages\FrameworkAssemblyReference.cs" />
+    <Compile Include="Packages\IFrameworkTargetable.cs" />
+    <Compile Include="Packages\IPackage.cs" />
     <Compile Include="IPackageContentViewer.cs" />
+    <Compile Include="IPackageCommand.cs" />
+    <Compile Include="Packages\IPackageAssemblyReference.cs" />
+    <Compile Include="Packages\IPackageFile.cs" />
+    <Compile Include="Packages\IPackageMetadata.cs" />
+    <Compile Include="Packages\IServerPackageMetadata.cs" />
     <Compile Include="PackageContentViewerMetadataAttribute.cs" />
+    <Compile Include="PackageCommandMetadataAttribute.cs" />
+    <Compile Include="Packages\IVersionSpec.cs" />
+    <Compile Include="Packages\PackageDependency.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

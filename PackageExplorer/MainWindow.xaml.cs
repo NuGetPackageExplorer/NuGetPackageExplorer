@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
@@ -11,6 +12,7 @@ using NuGet;
 using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
+using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, PackageExplorerViewModel.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
 
 namespace PackageExplorer {
@@ -42,6 +44,20 @@ namespace PackageExplorer {
 
         [Import]
         public IPackageViewModelFactory PackageViewModelFactory { get; set; }
+
+        [ImportMany(AllowRecomposition = true)]
+        public ObservableCollection<LazyPackageCommand> PackageCommands {
+            get {
+                return PackageCommandsContainer != null ?
+                    (ObservableCollection<LazyPackageCommand>)PackageCommandsContainer.Collection : 
+                    null; 
+            }
+            set {
+                if (PackageCommandsContainer != null) {
+                    PackageCommandsContainer.Collection = value;
+                }
+            }
+        }
 
         [Export]
         public IPackageEditorService EditorService { get; set; }
@@ -374,6 +390,16 @@ namespace PackageExplorer {
                 }
                 else {
                     DownloadAndOpenDataServicePackage(mruItem);
+                }
+            }
+        }
+
+        private void OnPackageCommandClick(object sender, RoutedEventArgs args) {
+            var element = sender as FrameworkElement;
+            if (element != null) {
+                var packageCommand = element.DataContext as LazyPackageCommand;
+                if (packageCommand != null) {
+                    packageCommand.Value.Execute(null);
                 }
             }
         }

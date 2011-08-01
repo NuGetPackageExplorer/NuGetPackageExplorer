@@ -157,7 +157,7 @@
     <value>Loading...</value>
   </data>
   <data name="NoNetworkConnection" xml:space="preserve">
-    <value>Network connection is not detected.</value>
+    <value>No network connection is detected.</value>
   </data>
   <data name="OpenExecutableScriptWarning" xml:space="preserve">
     <value>Opening this file can potentially harm your computer. Do you want to continue?</value>

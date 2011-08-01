@@ -178,7 +178,7 @@ namespace PackageExplorerViewModel {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Network connection is not detected..
+        ///   Looks up a localized string similar to No network connection is detected..
         /// </summary>
         internal static string NoNetworkConnection {
             get {
