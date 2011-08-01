@@ -394,16 +394,6 @@ namespace PackageExplorer {
             }
         }
 
-        private void OnPackageCommandClick(object sender, RoutedEventArgs args) {
-            var element = sender as FrameworkElement;
-            if (element != null) {
-                var packageCommand = element.DataContext as LazyPackageCommand;
-                if (packageCommand != null) {
-                    packageCommand.Value.Execute(null);
-                }
-            }
-        }
-
         private void DownloadAndOpenDataServicePackage(MruItem item) {
             if (!NetworkInterface.GetIsNetworkAvailable()) {
                 UIServices.Show(

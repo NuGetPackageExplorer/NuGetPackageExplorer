@@ -38,7 +38,8 @@
         </DataTemplate>
 
         <Style x:Key="PackageCommandItemStyle" TargetType="{x:Type MenuItem}">
-            <EventSetter Event="Click" Handler="OnPackageCommandClick" />
+            <Setter Property="Command" Value="{Binding DataContext.ExecutePackageCommand, ElementName=RootLayout, Mode=OneWay}" />
+            <Setter Property="CommandParameter" Value="{Binding Mode=OneWay}" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Metadata.Text, Mode=OneWay, TargetNullValue=''}" Value="">
                     <Setter Property="Visibility" Value="Collapsed" />

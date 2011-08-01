@@ -60,6 +60,17 @@ namespace PackageExplorerViewModel {
             builder.FrameworkReferences.AddRange(source.FrameworkAssemblies);
         }
 
+        public static IPackage BuildPackage(IPackageMetadata metadata, IEnumerable<IPackageFile> files) {
+            var builder = new PackageBuilder();
+            CopyMetadata(metadata, builder);
+            builder.Files.AddRange(files);
+            return builder.Build();
+        }
+
+        public static bool IsPackageValid(IPackageMetadata metadata, IEnumerable<IPackageFile> files) {
+            return files.Any() || metadata.Dependencies.Any() || metadata.FrameworkAssemblies.Any();
+        }
+
         /// <summary>
         /// Tags come in this format. tag1 tag2 tag3 etc..
         /// </summary>

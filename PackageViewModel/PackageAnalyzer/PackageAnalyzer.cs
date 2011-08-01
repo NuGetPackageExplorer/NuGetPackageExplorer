@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using NuGet;
 using NuGetPackageExplorer.Types;
-using NuGet;
 
 namespace PackageExplorerViewModel {
     [System.Diagnostics.CodeAnalysis.SuppressMessage(

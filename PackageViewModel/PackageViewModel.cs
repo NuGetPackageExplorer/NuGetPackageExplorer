@@ -7,6 +7,7 @@ using System.Net.NetworkInformation;
 using System.Windows.Input;
 using NuGet;
 using NuGetPackageExplorer.Types;
+using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, PackageExplorerViewModel.IPackageCommandMetadata>;
 
 namespace PackageExplorerViewModel {
 
@@ -16,7 +17,7 @@ namespace PackageExplorerViewModel {
         private EditablePackageMetadata _packageMetadata;
         private PackageFolder _packageRoot;
         private ICommand _saveCommand, _editCommand, _cancelEditCommand, _applyEditCommand, _viewContentCommand, _saveContentCommand;
-        private ICommand _addContentFolderCommand, _addContentFileCommand, _addNewFolderCommand, _openWithContentFileCommand;
+        private ICommand _addContentFolderCommand, _addContentFileCommand, _addNewFolderCommand, _openWithContentFileCommand, _executePackageCommand;
         private RelayCommand<object> _openContentFileCommand, _deleteContentCommand, _renameContentCommand;
         private RelayCommand _publishCommand, _exportCommand;
         private readonly IMruManager _mruManager;
@@ -143,7 +144,7 @@ namespace PackageExplorerViewModel {
 
         public bool IsValid {
             get {
-                return GetFiles().Any() || PackageMetadata.Dependencies.Any() || PackageMetadata.FrameworkAssemblies.Any();
+                return PackageHelper.IsPackageValid(PackageMetadata, GetFiles());
             }
         }
 
@@ -742,6 +743,29 @@ namespace PackageExplorerViewModel {
             return !IsInEditMode;
         }
 
+        #endregion
+
+        #region ExecutePackageCommand
+
+        public ICommand ExecutePackageCommand {
+            get {
+                if (_executePackageCommand == null) {
+                    _executePackageCommand = new RelayCommand<LazyPackageCommand>(PackageCommandExecute);
+                }
+                return _executePackageCommand;
+            }
+        }
+
+        private void PackageCommandExecute(LazyPackageCommand packageCommand) {
+            if (!IsValid) {
+                UIServices.Show(Resources.PackageHasNoFile, MessageLevel.Warning);
+                return;
+            }
+
+            var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
+            packageCommand.Value.Execute(package);
+        }
+        
         #endregion
     }
 }
