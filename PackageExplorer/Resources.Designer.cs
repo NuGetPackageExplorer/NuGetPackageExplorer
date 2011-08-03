@@ -61,7 +61,7 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Created by:.
+        ///   Looks up a localized string similar to Authors:.
         /// </summary>
         public static string Dialog_CreatedByLabel {
             get {

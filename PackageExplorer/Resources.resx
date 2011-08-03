@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Dialog_CreatedByLabel" xml:space="preserve">
-    <value>Created by:</value>
+    <value>Authors:</value>
   </data>
   <data name="Dialog_DependenciesLabel" xml:space="preserve">
     <value>Dependencies:</value>
