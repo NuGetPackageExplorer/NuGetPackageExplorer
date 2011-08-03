@@ -228,6 +228,8 @@ namespace PackageExplorerViewModel {
             var result = PackageViewModel.UIServices.OpenFileDialog("Select New File", "All files (*.*)|*.*", out selectedFileName);
             if (result)
             {
+                bool showingFile = PackageViewModel.IsShowingFileContent(oldFile);
+
                 // temporarily remove the old file in order to add a new file
                 Children.Remove(oldFile);
 
@@ -236,6 +238,10 @@ namespace PackageExplorerViewModel {
                 {
                     // new file added successfully, officially delete the old file by disposing it
                     oldFile.Dispose();
+
+                    if (showingFile) {
+                        PackageViewModel.ShowFileContent(newFile);
+                    }
                 }
                 else
                 {
