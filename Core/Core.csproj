@@ -58,6 +58,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Authoring\IPackageBuilder.cs" />
+    <Compile Include="Authoring\ManifestFileList.cs" />
     <Compile Include="Authoring\ManifestFrameworkAssembly.cs" />
     <Compile Include="Authoring\PackageBuilder.cs" />
     <Compile Include="Authoring\PathResolver.cs" />

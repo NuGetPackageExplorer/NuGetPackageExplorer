@@ -208,7 +208,7 @@ namespace NuGet {
             
             // If there's no base path then ignore the files node
             if (basePath != null) {
-                if (manifest.Files == null || !manifest.Files.Any()) {
+                if (manifest.Files == null) {
                     AddFiles(basePath, @"**\*.*", null);
                 }
                 else {

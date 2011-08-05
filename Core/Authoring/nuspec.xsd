@@ -53,7 +53,7 @@
                         </xs:all>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="files" minOccurs="0" maxOccurs="1">
+                <xs:element name="files" minOccurs="0" maxOccurs="1" nillable="true">
                     <xs:complexType>
                         <xs:sequence>
                             <xs:element name="file" minOccurs="0" maxOccurs="unbounded">
