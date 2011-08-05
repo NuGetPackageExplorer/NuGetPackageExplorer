@@ -138,7 +138,7 @@ namespace PackageExplorer {
             }
         }
 
-        private void NewMenuItem_Click(object sender, RoutedEventArgs e) {
+        private void NewMenuItem_Click(object sender, ExecutedRoutedEventArgs e) {
             bool canceled = AskToSaveCurrentFile();
             if (canceled) {
                 return;

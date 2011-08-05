@@ -160,6 +160,15 @@
                             x:Name="DependencyItems"
                             Margin="25,5,0,0"
                             ItemsSource="{Binding Dependencies}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock ToolTip="Open this package from online feed.">
+                                        <Hyperlink Command="Open" CommandParameter="Feed">
+                                            <Run Text="{Binding Mode=OneWay}"></Run>
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
                         </ItemsControl>
 
                         <TextBlock 

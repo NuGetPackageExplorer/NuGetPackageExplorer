@@ -28,21 +28,21 @@
                 <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Open">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource arrowImage}" />
-                        <TextBlock Text="Open a local package" />
+                        <TextBlock Text="Open a local package (Ctrl+O)" />
                     </StackPanel>
                 </Button>
 
                 <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Open" CommandParameter="Feed">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource arrowImage}" />
-                        <TextBlock Text="Open a package from online feed" />
+                        <TextBlock Text="Open a package from online feed (Ctrl+G)" />
                     </StackPanel>
                 </Button>
 
                 <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="New">
                     <StackPanel Orientation="Horizontal">
                         <Image Source="{StaticResource arrowImage}" />
-                        <TextBlock Text="Create a new package" />
+                        <TextBlock Text="Create a new package (Ctrl+N)" />
                     </StackPanel>
                 </Button>
 
