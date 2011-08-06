@@ -45,6 +45,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="IPackageCommandMetadata.cs" />
+    <Compile Include="IPackageContentViewerMetadata.cs" />
+    <Compile Include="IPackageRule.cs" />
+    <Compile Include="PackageIssue.cs" />
+    <Compile Include="PackageIssueType.cs" />
     <Compile Include="Packages\FrameworkAssemblyReference.cs" />
     <Compile Include="Packages\IFrameworkTargetable.cs" />
     <Compile Include="Packages\IPackage.cs" />

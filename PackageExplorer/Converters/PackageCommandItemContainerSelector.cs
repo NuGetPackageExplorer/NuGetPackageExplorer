@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using NuGetPackageExplorer.Types;
-using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, PackageExplorerViewModel.IPackageCommandMetadata>;
+using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 
 namespace PackageExplorer {
     public class PackageCommandItemContainerSelector : StyleSelector {

@@ -12,7 +12,7 @@ using NuGet;
 using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
-using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, PackageExplorerViewModel.IPackageCommandMetadata>;
+using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
 
 namespace PackageExplorer {

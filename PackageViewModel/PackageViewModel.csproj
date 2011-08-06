@@ -59,8 +59,6 @@
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PackageAnalyzer\PackageAnalyzer.cs" />
     <Compile Include="PackageChooser\PackageSourceSettings.cs" />
-    <Compile Include="Types\IPackageAnalyzer.cs" />
-    <Compile Include="Types\PackageProblem.cs" />
     <Compile Include="PluginManagerViewModel.cs" />
     <Compile Include="PublishPackage\PublishSourceSettings.cs" />
     <Compile Include="Types\IPackageChooser.cs" />
@@ -92,11 +90,8 @@
     <Compile Include="Commands\ViewContentCommand.cs" />
     <Compile Include="Commands\SavePackageCommand.cs" />
     <Compile Include="Types\FileContentInfo.cs" />
-    <Compile Include="Types\IPackageCommandMetadata.cs" />
-    <Compile Include="Types\IPackageContentViewerMetadata.cs" />
     <Compile Include="Types\IPackageDownloader.cs" />
     <Compile Include="Types\IPackageEditor.cs" />
-    <Compile Include="Types\IPackageRule.cs" />
     <Compile Include="Types\IPluginManager.cs" />
     <Compile Include="Types\ISourceSettings.cs" />
     <Compile Include="Types\IUIServices.cs" />
