@@ -54,6 +54,7 @@ namespace PackageExplorerViewModel {
             builder.Description = source.Description;
             builder.Summary = source.Summary;
             builder.ReleaseNotes = source.ReleaseNotes;
+            builder.Copyright = source.Copyright;
             builder.Language = source.Language;
             builder.Tags.AddRange(ParseTags(source.Tags));
             builder.Dependencies.AddRange(source.Dependencies);

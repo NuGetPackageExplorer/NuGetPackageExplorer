@@ -140,6 +140,11 @@ namespace NuGet {
             set;
         }
 
+        public string Copyright {
+            get;
+            set;
+        }
+
         public IEnumerable<PackageDependency> Dependencies {
             get;
             set;
@@ -207,6 +212,7 @@ namespace NuGet {
                     Description = metadata.Description;
                     Summary = metadata.Summary;
                     ReleaseNotes = metadata.ReleaseNotes;
+                    Copyright = metadata.Copyright;
                     Language = metadata.Language;
                     Tags = metadata.Tags;
                     Dependencies = metadata.Dependencies;

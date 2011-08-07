@@ -32,6 +32,7 @@ namespace NuGet
             Tags = packageBuilder.Tags;
             FrameworkAssemblies = packageBuilder.FrameworkAssemblies;
             Dependencies = packageBuilder.Dependencies;
+            Copyright = packageBuilder.Copyright;
             _packageBuilder = packageBuilder;
         }
 
@@ -122,6 +123,11 @@ namespace NuGet
         }
 
         public string ReleaseNotes {
+            get;
+            private set;
+        }
+
+        public string Copyright {
             get;
             private set;
         }

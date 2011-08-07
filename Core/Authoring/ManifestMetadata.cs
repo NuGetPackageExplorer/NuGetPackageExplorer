@@ -64,6 +64,9 @@ namespace NuGet {
         [XmlElement("releaseNotes")]
         public string ReleaseNotes { get; set; }
 
+        [XmlElement("copyright")]
+        public string Copyright { get; set; }
+
         [XmlElement("language")]
         public string Language { get; set; }
 

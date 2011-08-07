@@ -99,6 +99,11 @@ namespace NuGet {
             set;
         }
 
+        public string Copyright {
+            get;
+            set;
+        }
+
         public string Language {
             get;
             set;
@@ -198,6 +203,7 @@ namespace NuGet {
             Summary = metadata.Summary;
             ReleaseNotes = metadata.ReleaseNotes;
             Language = metadata.Language;
+            Copyright = metadata.Copyright;
 
             if (metadata.Tags != null) {
                 Tags.AddRange(ParseTags(metadata.Tags));

@@ -24,6 +24,7 @@
                             <xs:element name="description" maxOccurs="1" minOccurs="1" type="xs:string" />
                             <xs:element name="summary" maxOccurs="1" minOccurs="0" type="xs:string" />
                             <xs:element name="releaseNotes" maxOccurs="1" minOccurs="0" type="xs:string" />
+                            <xs:element name="copyright" maxOccurs="1" minOccurs="0" type="xs:string" />
                             <xs:element name="language" maxOccurs="1" minOccurs="0" type="xs:string" default="en-US" />
                             <xs:element name="tags" maxOccurs="1" minOccurs="0" type="xs:string" />
                             <xs:element name="dependencies" maxOccurs="1" minOccurs="0">

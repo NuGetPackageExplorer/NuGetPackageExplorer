@@ -58,11 +58,17 @@ namespace PackageExplorerViewModel {
         }
 
         public string Summary {
-            get { return String.Empty; }
+            get { return null; }
         }
 
         public string ReleaseNotes {
-            get { return String.Empty; }
+            get { return null; }
+        }
+
+        public string Copyright {
+            get {
+                return null;
+            }
         }
 
         public string Language {

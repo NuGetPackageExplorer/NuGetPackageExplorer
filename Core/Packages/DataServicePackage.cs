@@ -75,7 +75,7 @@ namespace NuGet {
         public DateTimeOffset LastUpdated {
             get;
             set;
-        }        
+        }
 
         public int DownloadCount {
             get;
@@ -123,6 +123,12 @@ namespace NuGet {
         public string ReleaseNotes {
             get {
                 return CorePackage == null ? null : CorePackage.ReleaseNotes;
+            }
+        }
+
+        public string Copyright {
+            get {
+                return CorePackage == null ? null : CorePackage.Copyright;
             }
         }
 

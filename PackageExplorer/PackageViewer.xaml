@@ -125,6 +125,13 @@
                             </Hyperlink>
                         </TextBlock>
 
+                        <!-- Copyright -->
+                        <TextBlock Text="Copyright:" Margin="0,3,0,0" Style="{StaticResource DetailMetadataLabelStyle}" Visibility="{Binding Copyright, Converter={StaticResource NullToVisibilityConverter}}">
+                        </TextBlock>
+
+                        <TextBlock Style="{StaticResource DetailDescriptionTextBoxStyle}" Text="{Binding Copyright, Converter={StaticResource NormalizeTextConverter}}" Visibility="{Binding Copyright, Converter={StaticResource NullToVisibilityConverter}}">
+                        </TextBlock>
+
                         <!-- Summary -->
                         <TextBlock Text="Summary:" Margin="0,3,0,0" Style="{StaticResource DetailMetadataLabelStyle}" Visibility="{Binding Summary, Converter={StaticResource NullToVisibilityConverter}}">
                         </TextBlock>

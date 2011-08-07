@@ -31,6 +31,7 @@ namespace PackageExplorerViewModel {
             this.Description = source.Description;
             this.Summary = source.Summary;
             this.ReleaseNotes = source.ReleaseNotes;
+            this.Copyright = source.Copyright;
             this.Language = source.Language;
             this.Tags = source.Tags;
             this.Dependencies = new ObservableCollection<PackageDependency>(source.Dependencies);
@@ -250,6 +251,20 @@ namespace PackageExplorerViewModel {
                 if (_releaseNotes != value) {
                     _releaseNotes = value;
                     RaisePropertyChange("ReleaseNotes");
+                }
+            }
+        }
+
+        private string _copyright;
+
+        public string Copyright {
+            get {
+                return _copyright;
+            }
+            set {
+                if (_copyright != value) {
+                    _copyright = value;
+                    RaisePropertyChange("Copyright");
                 }
             }
         }
