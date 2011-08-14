@@ -25,7 +25,7 @@ namespace PackageExplorerViewModel {
             // copy to temporary file
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
-            string tempFileName = Path.Combine(Path.GetTempPath(), file.Name);
+            string tempFileName = Path.Combine(GetTempFilePath(), file.Name);
             using (Stream tempFileStream = File.Create(tempFileName)) {
                 file.GetStream().CopyTo(tempFileStream);
             }
@@ -44,7 +44,7 @@ namespace PackageExplorerViewModel {
             // copy to temporary file
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
-            string tempFileName = Path.Combine(Path.GetTempPath(), file.Name);
+            string tempFileName = Path.Combine(GetTempFilePath(), file.Name);
 
             using (Stream tempFileStream = File.Create(tempFileName)) {
                 file.GetStream().CopyTo(tempFileStream);
@@ -72,6 +72,15 @@ namespace PackageExplorerViewModel {
             else {
                 return "content";
             }
+        }
+
+        private static string GetTempFilePath() {
+            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            if (!Directory.Exists(tempPath)) {
+                Directory.CreateDirectory(tempPath);
+            }
+
+            return tempPath;
         }
     }
 }

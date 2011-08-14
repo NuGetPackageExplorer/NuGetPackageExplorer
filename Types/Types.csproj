@@ -49,7 +49,7 @@
     <Compile Include="IPackageContentViewerMetadata.cs" />
     <Compile Include="IPackageRule.cs" />
     <Compile Include="PackageIssue.cs" />
-    <Compile Include="PackageIssueType.cs" />
+    <Compile Include="PackageIssueLevel.cs" />
     <Compile Include="Packages\FrameworkAssemblyReference.cs" />
     <Compile Include="Packages\IFrameworkTargetable.cs" />
     <Compile Include="Packages\IPackage.cs" />

@@ -279,14 +279,14 @@ namespace NuGet {
             return null;
         }
 
-        public static bool TryParseVersion(string versionString, out Version version)
+        public static bool TryParseVersion(string versionValue, out Version version)
         {
             version = null;
-            if (!Version.TryParse(versionString, out version))
+            if (!Version.TryParse(versionValue, out version))
             {
                 // Support integer version numbers (i.e 1 -> 1.0)
                 int versionNumber;
-                if (Int32.TryParse(versionString, out versionNumber) && versionNumber > 0)
+                if (Int32.TryParse(versionValue, out versionNumber) && versionNumber > 0)
                 {
                     version = new Version(versionNumber, 0);
                 }

@@ -1,6 +1,6 @@
 ﻿
 namespace NuGetPackageExplorer.Types {
-    public enum PackageIssueType {
+    public enum PackageIssueLevel {
         Warning,
         Error
     }
