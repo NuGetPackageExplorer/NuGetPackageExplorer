@@ -163,7 +163,7 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock ToolTip="Open this package from online feed.">
-                                        <Hyperlink Command="Open" CommandParameter="Feed">
+                                        <Hyperlink Command="Find" CommandParameter="{Binding Id, Mode=OneWay}">
                                             <Run Text="{Binding Mode=OneWay}"></Run>
                                         </Hyperlink>
                                     </TextBlock>
@@ -172,7 +172,7 @@
                         </ItemsControl>
 
                         <TextBlock 
-                            Margin="25,5,0,5"
+                            Margin="25,5,0,0"
                             Visibility="{Binding Items.Count, ElementName=DependencyItems, Converter={StaticResource invertedCountConverter}}"
                             Style="{StaticResource NoDependencyTextBoxStyle}" 
                             Text="{x:Static resources:Resources.Dialog_NoDependencyLabel}">
@@ -182,6 +182,7 @@
                         <TextBlock 
                             Visibility="{Binding Items.Count, ElementName=FrameworkAssemblyItems, Converter={StaticResource countConverter}}"
                             Text="{x:Static resources:Resources.Dialog_FrameworkAssembliesLabel}" 
+                            Margin="0,5,0,0"
                             Style="{StaticResource DetailMetadataLabelStyle}" />
 
                         <ItemsControl

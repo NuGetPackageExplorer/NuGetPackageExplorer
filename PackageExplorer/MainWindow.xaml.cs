@@ -148,13 +148,12 @@ namespace PackageExplorer {
         }
 
         private void OpenMenuItem_Click(object sender, ExecutedRoutedEventArgs e) {
+            OpenPackageFromLocal();
+        }
+
+        private void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e) {
             string parameter = (string)e.Parameter;
-            if (parameter == "Feed") {
-                OpenPackageFromNuGetFeed();
-            }
-            else {
-                OpenPackageFromLocal();
-            }
+            OpenPackageFromNuGetFeed(parameter);
         }
 
         private void OpenPackageFromLocal() {
@@ -174,7 +173,7 @@ namespace PackageExplorer {
             }
         }
 
-        private void OpenPackageFromNuGetFeed() {
+        private void OpenPackageFromNuGetFeed(string searchTerm) {
             if (!NetworkInterface.GetIsNetworkAvailable()) {
                 UIServices.Show(
                     PackageExplorer.Resources.Resources.NoNetworkConnection,
@@ -187,7 +186,7 @@ namespace PackageExplorer {
                 return;
             }
 
-            PackageInfo selectedPackageInfo = PackageChooser.SelectPackage();
+            PackageInfo selectedPackageInfo = PackageChooser.SelectPackage(searchTerm);
             if (selectedPackageInfo != null) {
                 Version packageVersion = new Version(selectedPackageInfo.Version);
                 IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion); ;

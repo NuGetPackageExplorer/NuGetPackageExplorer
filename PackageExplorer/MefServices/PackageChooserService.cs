@@ -5,7 +5,6 @@ using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer {
-
     [Export(typeof(IPackageChooser))]
     internal class PackageChooserService : IPackageChooser {
 
@@ -18,14 +17,15 @@ namespace PackageExplorer {
         [Import]
         public Lazy<MainWindow> Window { get; set; }
 
-        public PackageInfo SelectPackage() {
+        public PackageInfo SelectPackage(string searchTerm) {
             if (_dialog == null) {
                 _viewModel = ViewModelFactory.CreatePackageChooserViewModel();
                 _dialog = new PackageChooserDialog(_viewModel) {
                     Owner = Window.Value
                 };
             }
-            _dialog.ShowDialog();
+
+            _dialog.ShowDialog(searchTerm);
             return _dialog.SelectedPackage;
         }
 

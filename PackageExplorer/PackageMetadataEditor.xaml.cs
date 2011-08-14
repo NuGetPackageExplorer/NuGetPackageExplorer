@@ -115,7 +115,7 @@ namespace PackageExplorer {
                 return;
             }
 
-            var selectedPackage = PackageChooser.SelectPackage();
+            var selectedPackage = PackageChooser.SelectPackage(null);
             if (selectedPackage != null) {
                 _newPackageDependency.Id = selectedPackage.Id;
                 _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version.ToString());

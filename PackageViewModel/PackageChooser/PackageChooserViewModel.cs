@@ -348,6 +348,7 @@ namespace PackageExplorerViewModel {
             if (_currentSearch != searchTerm) {
                 _currentSearch = searchTerm;
                 LoadPackages();
+                CurrentTypingSearch = _currentSearch;
             }
         }
 

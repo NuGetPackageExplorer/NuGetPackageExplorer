@@ -56,13 +56,14 @@
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewMenuItem_Click" />
         <CommandBinding Command="Open" Executed="OpenMenuItem_Click" />
+        <CommandBinding Command="Find" Executed="OpenFeedItem_Click" />
         <CommandBinding Command="Close" Executed="CloseMenuItem_Click" CanExecute="CanExecuteCloseCommand" />
         <CommandBinding Command="GoToPage" Executed="OpenExternalLink" />
     </Window.CommandBindings>
     
     <Window.InputBindings>
         <KeyBinding Key="K" Modifiers="Control" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}" />
-        <KeyBinding Key="G" Modifiers="Control" Command="Open" CommandParameter="Feed" />
+        <KeyBinding Key="G" Modifiers="Control" Command="Find" />
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="Save" />
         <KeyBinding Key="P" Modifiers="Control" Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Key="F2" Command="{Binding RenameContentCommand}" />
@@ -86,7 +87,7 @@
                         </Image>
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
-                <MenuItem Header="Open from F_eed..." Command="Open" CommandParameter="Feed" InputGestureText="Ctrl+G">
+                <MenuItem Header="Open from F_eed..." Command="Find" InputGestureText="Ctrl+G">
                 </MenuItem>
                 <Separator />
                 <MenuItem Command="Close" Header="_Close" />

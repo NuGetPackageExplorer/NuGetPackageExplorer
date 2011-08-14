@@ -13,6 +13,7 @@
     FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}, Mode=OneWay}"
     MinHeight="300"
     MinWidth="450"
+    IsVisibleChanged="StandardDialog_IsVisibleChanged"
     Closing="StandardDialog_Closing"
     Height="{Binding PackageChooserDialogHeight, Source={x:Static settings:Settings.Default}, Mode=OneWay}" 
     Width="{Binding PackageChooserDialogWidth, Source={x:Static settings:Settings.Default}, Mode=OneWay}"

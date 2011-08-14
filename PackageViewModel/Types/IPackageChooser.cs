@@ -3,6 +3,6 @@ using NuGet;
 
 namespace NuGetPackageExplorer.Types {
     public interface IPackageChooser : IDisposable {
-        PackageInfo SelectPackage();
+        PackageInfo SelectPackage(string searchTerm);
     }
 }

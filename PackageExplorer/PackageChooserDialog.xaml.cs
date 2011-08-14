@@ -14,6 +14,7 @@ namespace PackageExplorer {
     /// Interaction logic for PackageChooserDialog.xaml
     /// </summary>
     public partial class PackageChooserDialog : StandardDialog {
+        private string _pendingSearch;
 
         public string SortColumn {
             get { return (string)GetValue(SortColumnProperty); }
@@ -40,12 +41,6 @@ namespace PackageExplorer {
 
         public PackageChooserDialog(PackageChooserViewModel viewModel) {
             InitializeComponent();
-
-            IsVisibleChanged += (sender, args) => {
-                if (IsVisible) {
-                    Dispatcher.BeginInvoke(new Action(OnAfterShow), DispatcherPriority.Background);
-                }
-            };
 
             SetBinding(SortColumnProperty, new Binding("SortColumn") { Mode = BindingMode.OneWay });
             SetBinding(SortDirectionProperty, new Binding("SortDirection") { Mode = BindingMode.OneWay });
@@ -107,8 +102,7 @@ namespace PackageExplorer {
 
         private void SearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
             if (e.Key == Key.Enter) {
-                // simulate Search command execution
-                SearchButton.Command.Execute(null);
+                InvokeSearch(null);
                 e.Handled = true;
             }
             else if (e.Key == Key.Escape) {
@@ -121,9 +115,23 @@ namespace PackageExplorer {
             }
         }
 
+        private void InvokeSearch(string searchTerm) {
+            // simulate Search command execution
+            SearchButton.Command.Execute(searchTerm);
+        }
+
         private void Window_Loaded(object sender, RoutedEventArgs e) {
             AdjustSearchBox();
-            Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
+
+            if (String.IsNullOrEmpty(_pendingSearch)) {
+                Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
+            }
+            else {
+                Dispatcher.BeginInvoke(
+                    new Action<string>(InvokeSearch),
+                    DispatcherPriority.Background,
+                    _pendingSearch);
+            }
         }
 
         private void AdjustSearchBox() {
@@ -201,6 +209,26 @@ namespace PackageExplorer {
                 if (!String.IsNullOrEmpty(source)) {
                     ((PackageChooserViewModel)DataContext).ChangePackageSourceCommand.Execute(source);
                     e.Handled = true;
+                }
+            }
+        }
+
+        internal void ShowDialog(string searchTerm) {
+            _pendingSearch = searchTerm;
+            ShowDialog();
+            _pendingSearch = null;
+        }
+
+        private void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            // The first time this event handler is invoked, IsLoaded = false
+            // We only do work from the second time.
+            if (IsVisible && IsLoaded) {
+                if (String.IsNullOrEmpty(_pendingSearch)) {
+                    // there is no pending search operation, just set focus on the search box
+                    Dispatcher.BeginInvoke(new Action(OnAfterShow), DispatcherPriority.Background);
+                }
+                else {
+                    InvokeSearch(_pendingSearch);
                 }
             }
         }
