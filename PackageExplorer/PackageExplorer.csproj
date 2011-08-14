@@ -154,6 +154,9 @@
     <Compile Include="MefServices\UIServices.cs" />
     <Compile Include="MefServices\WindowsCredentialProvider.cs" />
     <Compile Include="MefServices\WindowsProxyService.cs" />
+    <Compile Include="PackageAnalyzerPane.xaml.cs">
+      <DependentUpon>PackageAnalyzerPane.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PackageChooserDialog.xaml.cs">
       <DependentUpon>PackageChooserDialog.xaml</DependentUpon>
     </Compile>
@@ -219,6 +222,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Resource>
+    <Page Include="PackageAnalyzerPane.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PackageChooserDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
