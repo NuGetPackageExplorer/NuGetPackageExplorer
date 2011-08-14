@@ -56,7 +56,7 @@
                     VerticalAlignment="Center">
                 </TextBlock>
                 <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}, ConverterParameter='hidden'}">
-                    <Label Content="Choose _language:" Target="{Binding ElementName=LanguageBox}" />
+                    <Label Content="S_yntax scheme:" Target="{Binding ElementName=LanguageBox}" />
                     <ComboBox 
                         x:Name="LanguageBox"
                         Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"
