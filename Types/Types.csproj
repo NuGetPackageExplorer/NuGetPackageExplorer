@@ -48,6 +48,7 @@
     <Compile Include="IPackageCommandMetadata.cs" />
     <Compile Include="IPackageContentViewerMetadata.cs" />
     <Compile Include="IPackageRule.cs" />
+    <Compile Include="PackageExtensions.cs" />
     <Compile Include="PackageIssue.cs" />
     <Compile Include="PackageIssueLevel.cs" />
     <Compile Include="Packages\FrameworkAssemblyReference.cs" />

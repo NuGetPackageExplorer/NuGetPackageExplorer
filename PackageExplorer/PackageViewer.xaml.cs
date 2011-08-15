@@ -15,6 +15,7 @@ namespace PackageExplorer {
     /// </summary>
     public partial class PackageViewer : UserControl {
         private const string PackageFileDataFormat = "PackageFileContent";
+        private double _analysisPaneWidth;
 
         public PackageViewer(IUIServices messageBoxServices, IPackageChooser packageChooser) {
             InitializeComponent();
@@ -32,8 +33,7 @@ namespace PackageExplorer {
                 ContentGrid.RowDefinitions[2].MinHeight = 150;
 
                 if (FileContentContainer.Content == null) {
-                    UserControl fileContent = CreateFileContentViewer();
-                    FileContentContainer.Content = fileContent;
+                    FileContentContainer.Content = CreateFileContentViewer();
                 }
             }
             else {
@@ -42,6 +42,47 @@ namespace PackageExplorer {
 
                 ContentGrid.RowDefinitions[2].Height = new GridLength(0, GridUnitType.Star);
                 ContentGrid.RowDefinitions[2].MinHeight = 0;
+            }
+        }
+
+        private void PackageAnalyzerContainer_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
+            var settings = Properties.Settings.Default;
+
+            if ((bool)e.NewValue) {
+                double metadataWidth = ContentGrid.ColumnDefinitions[0].ActualWidth;
+                double contentsWidth = ContentGrid.ColumnDefinitions[2].ActualWidth;
+                double totalWidth = metadataWidth + contentsWidth;
+
+                _analysisPaneWidth = Math.Max(_analysisPaneWidth, ContentGrid.ColumnDefinitions[4].MinWidth);
+                double newContentsWidth = Math.Max(
+                    ContentGrid.ColumnDefinitions[2].MinWidth, 
+                    totalWidth - metadataWidth - _analysisPaneWidth);
+                double newMetadataWidth = Math.Max(
+                    ContentGrid.ColumnDefinitions[0].MinWidth,
+                    totalWidth - newContentsWidth - _analysisPaneWidth); ;
+
+                ContentGrid.ColumnDefinitions[0].Width = new GridLength(newMetadataWidth / totalWidth, GridUnitType.Star);
+                ContentGrid.ColumnDefinitions[2].Width = new GridLength(newContentsWidth / totalWidth, GridUnitType.Star);
+                ContentGrid.ColumnDefinitions[4].MinWidth = 250;
+                ContentGrid.ColumnDefinitions[4].Width = new GridLength(_analysisPaneWidth / totalWidth, GridUnitType.Star);
+
+                if (PackageAnalyzerContainer.Content == null) {
+                    PackageAnalyzerContainer.Content = new PackageAnalyzerPane();
+                }
+            }
+            else {
+                
+                double metadataWidth = ContentGrid.ColumnDefinitions[0].ActualWidth;
+                double contentsWidth = ContentGrid.ColumnDefinitions[2].ActualWidth;
+                _analysisPaneWidth = ContentGrid.ColumnDefinitions[4].ActualWidth;
+                double totalWidth = metadataWidth + contentsWidth + _analysisPaneWidth;
+
+                double newContentsWidth = contentsWidth + _analysisPaneWidth;
+
+                ContentGrid.ColumnDefinitions[0].Width = new GridLength(metadataWidth / totalWidth, GridUnitType.Star);
+                ContentGrid.ColumnDefinitions[2].Width = new GridLength(newContentsWidth / totalWidth, GridUnitType.Star);
+                ContentGrid.ColumnDefinitions[4].MinWidth = 0;
+                ContentGrid.ColumnDefinitions[4].Width = new GridLength(0, GridUnitType.Star);
             }
         }
 

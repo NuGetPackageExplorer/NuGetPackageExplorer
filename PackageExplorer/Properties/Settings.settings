@@ -26,9 +26,6 @@
     <Setting Name="PublishPackageLocation" Type="System.String" Scope="User">
       <Value Profile="(Default)">http://go.microsoft.com/fwlink/?LinkID=207106</Value>
     </Setting>
-    <Setting Name="PackageContentHeight" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">400</Value>
-    </Setting>
     <Setting Name="PackageChooserDialogWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">610</Value>
     </Setting>
@@ -43,6 +40,9 @@
     </Setting>
     <Setting Name="PublishPackageSources" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="PackageContentHeight" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">400</Value>
     </Setting>
   </Settings>
 </SettingsFile>

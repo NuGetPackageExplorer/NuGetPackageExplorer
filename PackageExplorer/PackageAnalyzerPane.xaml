@@ -4,21 +4,40 @@
              xmlns:types="clr-namespace:NuGetPackageExplorer.Types;assembly=NuGetPackageExplorer.Types"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             Width="200"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <DataTemplate x:Key="PackageIssueTemplate" DataType="types:PackageIssue">
+            <Expander Margin="0,5,0,0">
+                <Expander.Header>
+                    <TextBlock Text="{Binding Title, Mode=OneTime}" FontWeight="Bold" TextWrapping="Wrap" />
+                </Expander.Header>
+                <StackPanel>
+                    <TextBlock TextWrapping="Wrap" Margin="3,3,0,0">
+                        <Run Text="Description:" FontWeight="Bold" />
+                        <Run Text="{Binding Description, Mode=OneTime}" />
+                    </TextBlock>
+
+                    <TextBlock TextWrapping="Wrap" Margin="3,3,0,0">
+                        <Run Text="Solution:" FontWeight="Bold" />
+                        <Run Text="{Binding Solution, Mode=OneTime}" />
+                    </TextBlock>
+                </StackPanel>
+            </Expander>
             
         </DataTemplate>
     </UserControl.Resources>
     
-    <DockPanel>
-        <TextBlock Text="The results here do not update when package contents are changed." TextWrapping="Wrap" FontStyle="Italic" />
-        
-        <ItemsControl>
-                
-        </ItemsControl>
+    <DockPanel Margin="5">
+        <TextBlock DockPanel.Dock="Top">
+            <Run Text="{Binding PackageIssues.Count, Mode=OneWay, StringFormat='{}{0} issue(s) found.'}" />
+            <Hyperlink Command="{Binding ViewPackageAnalysisCommand, Mode=OneWay}">Rerun package analysis.</Hyperlink>
+        </TextBlock>
+
+        <ScrollViewer Margin="0,5,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding PackageIssues, Mode=OneWay}" ItemTemplate="{StaticResource PackageIssueTemplate}">
+            </ItemsControl>
+        </ScrollViewer>
     </DockPanel>
     
 </UserControl>

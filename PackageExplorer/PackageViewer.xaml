@@ -263,7 +263,7 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="*" MinWidth="200" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="*" MinWidth="200" />
+            <ColumnDefinition Width="0*" />
         </Grid.ColumnDefinitions>
 
         <!-- package metadata -->
@@ -408,10 +408,10 @@
             Grid.Row="0"
             Grid.Column="4" 
             Grid.RowSpan="3"
-            Visibility="{Binding ShowContentViewer, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
+            Visibility="{Binding ShowPackageAnalysis, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
             Padding="0"
             Margin="2,0,0,0" 
-            >
+            IsVisibleChanged="PackageAnalyzerContainer_IsVisibleChanged">
         </HeaderedContentControl>
 
         <!-- Close button for Package Analyzer -->
@@ -419,12 +419,13 @@
             HorizontalAlignment="Right" 
             VerticalAlignment="Top" 
             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
-            Command="{Binding ViewPackageAnalyzer}"
+            Command="{Binding ViewPackageAnalysisCommand}"
             CommandParameter="Hide"
             Margin="0,4,4,0"
             Padding="3"
             Grid.Row="0"
             Grid.Column="4"
+            Visibility="{Binding ShowPackageAnalysis, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
             ToolTipService.ToolTip="Close">
             <Path 
                 StrokeThickness="1"

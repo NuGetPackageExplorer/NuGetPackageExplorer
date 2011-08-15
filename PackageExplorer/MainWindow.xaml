@@ -66,9 +66,10 @@
         <KeyBinding Key="G" Modifiers="Control" Command="Find" />
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="Save" />
         <KeyBinding Key="P" Modifiers="Control" Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" />
+        <KeyBinding Key="R" Modifiers="Control" Command="{Binding ViewPackageAnalysisCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Key="F2" Command="{Binding RenameContentCommand}" />
         <KeyBinding Key="Del" Command="{Binding DeleteContentCommand}" />
-        <KeyBinding Key="Enter"  Command="{Binding ViewContentCommand}" />
+        <KeyBinding Key="Enter" Command="{Binding ViewContentCommand}" />
     </Window.InputBindings>
     
     <DockPanel x:Name="RootLayout" LastChildFill="True">
@@ -207,7 +208,9 @@
                     <CompositeCollection>
                         <CollectionContainer x:Name="PackageCommandsContainer">
                         </CollectionContainer>
-                        <Separator Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}" />
+
+                        <MenuItem Header="_Analyze Package" InputGestureText="Ctrl+R"  Command="{Binding ViewPackageAnalysisCommand}" Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />                        
+                        <Separator Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
                         <MenuItem Header="_Plugin Manager..." Click="AddPluginFromAssembly_Click">
                             <MenuItem.Icon>
                                 <Image Source="images/cog.png" />

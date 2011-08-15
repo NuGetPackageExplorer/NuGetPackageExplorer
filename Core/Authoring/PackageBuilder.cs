@@ -121,7 +121,7 @@ namespace NuGet {
 
         public Collection<IPackageFile> Files {
             get;
-            private set;
+            private set; 
         }
 
         public Collection<FrameworkAssemblyReference> FrameworkReferences {

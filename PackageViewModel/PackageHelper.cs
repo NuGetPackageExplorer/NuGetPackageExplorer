@@ -72,6 +72,10 @@ namespace PackageExplorerViewModel {
             return files.Any() || metadata.Dependencies.Any() || metadata.FrameworkAssemblies.Any();
         }
 
+        public static bool IsPackageValid(this IPackage package) {
+            return package.GetFiles().Any() || package.Dependencies.Any() || package.FrameworkAssemblies.Any();
+        }
+
         /// <summary>
         /// Tags come in this format. tag1 tag2 tag3 etc..
         /// </summary>

@@ -52,20 +52,25 @@ namespace PackageExplorerViewModel {
         [ImportMany(AllowRecomposition=true)]
         public List<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata { get; set; }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [ImportMany(AllowRecomposition = true)]
+        public List<Lazy<IPackageRule>> PackageRules { get; set; }
+
         public PackageViewModelFactory() {
             _pluginManagerViewModel = new Lazy<PluginManagerViewModel>(() => new PluginManagerViewModel(PluginManager, UIServices));
         }
 
         public PackageViewModel CreateViewModel(NuGet.IPackage package, string packageSource) {
             return new PackageViewModel(
-                package, 
-                packageSource, 
-                MruManager, 
-                UIServices, 
-                EditorService.Value, 
-                SettingsManager, 
+                package,
+                packageSource,
+                MruManager,
+                UIServices,
+                EditorService.Value,
+                SettingsManager,
                 ProxyService.Value,
-                ContentViewerMetadata);
+                ContentViewerMetadata,
+                PackageRules);
         }
 
         public PackageChooserViewModel CreatePackageChooserViewModel() {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,12 +13,11 @@ using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageComman
 namespace PackageExplorerViewModel {
 
     public sealed class PackageViewModel : ViewModelBase, IDisposable {
-
         private readonly IPackage _package;
         private EditablePackageMetadata _packageMetadata;
         private PackageFolder _packageRoot;
         private ICommand _saveCommand, _editCommand, _cancelEditCommand, _applyEditCommand, _viewContentCommand, _saveContentCommand;
-        private ICommand _addContentFolderCommand, _addContentFileCommand, _addNewFolderCommand, _openWithContentFileCommand, _executePackageCommand;
+        private ICommand _addContentFolderCommand, _addContentFileCommand, _addNewFolderCommand, _openWithContentFileCommand, _executePackageCommand, _viewPackageAnalysisCommand;
         private RelayCommand<object> _openContentFileCommand, _deleteContentCommand, _renameContentCommand;
         private RelayCommand _publishCommand, _exportCommand;
         private readonly IMruManager _mruManager;
@@ -26,6 +26,7 @@ namespace PackageExplorerViewModel {
         private readonly ISettingsManager _settingsManager;
         private readonly IProxyService _proxyService;
         private readonly IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> _contentViewerMetadata;
+        private readonly IList<Lazy<IPackageRule>> _packageRules;
 
         internal PackageViewModel(
             IPackage package,
@@ -35,7 +36,8 @@ namespace PackageExplorerViewModel {
             IPackageEditorService editorService,
             ISettingsManager settingsManager,
             IProxyService proxyService,
-            IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata) {
+            IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata,
+            IList<Lazy<IPackageRule>> packageRules) {
 
             if (package == null) {
                 throw new ArgumentNullException("package");
@@ -52,7 +54,7 @@ namespace PackageExplorerViewModel {
             if (settingsManager == null) {
                 throw new ArgumentNullException("settingsManager");
             }
-            if (null == proxyService) {
+            if (proxyService == null) {
                 throw new ArgumentNullException("proxyService");
             }
 
@@ -63,6 +65,7 @@ namespace PackageExplorerViewModel {
             _package = package;
             _proxyService = proxyService;
             _contentViewerMetadata = contentViewerMetadata;
+            _packageRules = packageRules;
 
             _packageMetadata = new EditablePackageMetadata(_package);
             PackageSource = source;
@@ -121,6 +124,19 @@ namespace PackageExplorerViewModel {
                 if (_showContentViewer != value) {
                     _showContentViewer = value;
                     OnPropertyChanged("ShowContentViewer");
+                }
+            }
+        }
+
+        private bool _showPackageAnalysis;
+        public bool ShowPackageAnalysis {
+            get {
+                return _showPackageAnalysis;
+            }
+            set {
+                if (_showPackageAnalysis != value) {
+                    _showPackageAnalysis = value;
+                    OnPropertyChanged("ShowPackageAnalysis");
                 }
             }
         }
@@ -187,20 +203,32 @@ namespace PackageExplorerViewModel {
             }
         }
 
+        private ObservableCollection<PackageIssue> _packageIssues = new ObservableCollection<PackageIssue>();
+        public ObservableCollection<PackageIssue> PackageIssues {
+            get {
+                return _packageIssues;
+            }
+        }
+
+        private void SetPackageIssues(IEnumerable<PackageIssue> issues) {
+            _packageIssues.Clear();
+            _packageIssues.AddRange(issues);
+        }
+
         public void ShowFile(FileContentInfo fileInfo) {
             ShowContentViewer = true;
             CurrentFileInfo = fileInfo;
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public IEnumerable<IPackageFile> GetFiles() {
+        internal IEnumerable<IPackageFile> GetFiles() {
             return _packageRoot.GetFiles();
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public Stream GetCurrentPackageStream() {
             string tempFile = Path.GetTempFileName();
-            PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, false);
+            PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, useTempFile: false);
             if (File.Exists(tempFile)) {
                 return File.OpenRead(tempFile);
             }
@@ -766,6 +794,35 @@ namespace PackageExplorerViewModel {
             packageCommand.Value.Execute(package);
         }
         
+        #endregion
+
+        #region ViewPackageAnalysisCommand
+
+        public ICommand ViewPackageAnalysisCommand {
+            get {
+                if (_viewPackageAnalysisCommand == null) {
+                    _viewPackageAnalysisCommand = new RelayCommand<string>(ViewPackageAnalysisExecute, CanExecutePackageAnalysis);
+                }
+                return _viewPackageAnalysisCommand;
+            }
+        }
+
+        private void ViewPackageAnalysisExecute(string parameter) {
+            if (parameter == "Hide") {
+                ShowPackageAnalysis = false;
+            }
+            else if (_packageRules != null) {
+                var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
+                IEnumerable<PackageIssue> allIssues = _packageRules.SelectMany(r => r.Value.Check(package));
+                SetPackageIssues(allIssues);
+                ShowPackageAnalysis = true;
+            }
+        }
+
+        private bool CanExecutePackageAnalysis(string parameter) {
+            return !IsInEditMode;
+        }
+
         #endregion
     }
 }

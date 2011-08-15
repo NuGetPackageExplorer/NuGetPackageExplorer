@@ -57,7 +57,9 @@
     <Compile Include="EmptyPackage.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="PackageAnalyzer\PackageAnalyzer.cs" />
+    <Compile Include="PackageAnalyzer\InvalidFrameworkFolderRule.cs" />
+    <Compile Include="PackageAnalyzer\MissingContentOrDependencyRule.cs" />
+    <Compile Include="PackageAnalyzer\MissingSummaryRule.cs" />
     <Compile Include="PackageChooser\PackageSourceSettings.cs" />
     <Compile Include="PluginManagerViewModel.cs" />
     <Compile Include="PublishPackage\PublishSourceSettings.cs" />
@@ -123,6 +125,7 @@
       <Link>Properties\CodeAnalysisDictionary.xml</Link>
     </CodeAnalysisDictionary>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

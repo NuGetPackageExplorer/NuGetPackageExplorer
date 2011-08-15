@@ -2,28 +2,25 @@
 
 namespace NuGetPackageExplorer.Types {
     public class PackageIssue {
-        public PackageIssue(
-            PackageIssueLevel type, string title, string problem, string solution, string target) {
+        public PackageIssue(PackageIssueLevel type, string title, string description, string solution) {
 
             if (string.IsNullOrEmpty(title)) {
                 throw new ArgumentException("Argument is null or empty.", "title");
             }
 
-            if (string.IsNullOrEmpty(problem)) {
-                throw new ArgumentException("Argument is null or empty.", "problem");
+            if (string.IsNullOrEmpty(description)) {
+                throw new ArgumentException("Argument is null or empty.", "description");
             }
 
             Level = type;
             Title = title;
-            Problem = problem;
+            Description = description;
             Solution = solution;
-            Target = target;
         }
 
         public PackageIssueLevel Level { get; private set; }
         public string Title { get; private set; }
-        public string Problem { get; private set; }
+        public string Description { get; private set; }
         public string Solution { get; private set; }
-        public string Target { get; set; }
     }
 }

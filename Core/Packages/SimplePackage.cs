@@ -19,8 +19,8 @@ namespace NuGet
             Id = packageBuilder.Id;
             Version = packageBuilder.Version;
             Title = packageBuilder.Title;
-            Authors = packageBuilder.Authors;
-            Owners = packageBuilder.Owners;
+            Authors = new SafeEnumerable<string>(packageBuilder.Authors);
+            Owners = new SafeEnumerable<string>(packageBuilder.Owners);
             IconUrl = packageBuilder.IconUrl;
             LicenseUrl = packageBuilder.LicenseUrl;
             ProjectUrl = packageBuilder.ProjectUrl;
@@ -30,8 +30,8 @@ namespace NuGet
             ReleaseNotes = packageBuilder.ReleaseNotes;
             Language = packageBuilder.Language;
             Tags = packageBuilder.Tags;
-            FrameworkAssemblies = packageBuilder.FrameworkAssemblies;
-            Dependencies = packageBuilder.Dependencies;
+            FrameworkAssemblies = new SafeEnumerable<FrameworkAssemblyReference>(packageBuilder.FrameworkAssemblies);
+            Dependencies = new SafeEnumerable<PackageDependency>(packageBuilder.Dependencies);
             Copyright = packageBuilder.Copyright;
             _packageBuilder = packageBuilder;
         }
@@ -183,6 +183,21 @@ namespace NuGet
 
         public double VersionRating {
             get { return -1; }
+        }
+
+        private class SafeEnumerable<T> : IEnumerable<T> {
+            private readonly IEnumerable<T> _source;
+            public SafeEnumerable(IEnumerable<T> source) {
+                _source = source;
+            }
+
+            public IEnumerator<T> GetEnumerator() {
+                return _source.GetEnumerator();
+            }
+
+            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() {
+                return GetEnumerator();
+            }
         }
     }
 }
