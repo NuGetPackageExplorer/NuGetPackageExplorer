@@ -7,10 +7,16 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
+        <BitmapImage x:Key="errorIcon" UriSource="Images/error.png" />
+        <BitmapImage x:Key="warningIcon" UriSource="Images/warning.png" />
+        
         <DataTemplate x:Key="PackageIssueTemplate" DataType="types:PackageIssue">
             <Expander Margin="0,5,0,0">
                 <Expander.Header>
-                    <TextBlock Text="{Binding Title, Mode=OneTime}" FontWeight="Bold" TextWrapping="Wrap" />
+                    <DockPanel>
+                        <Image x:Name="icon" Margin="0,0,3,0" DockPanel.Dock="Left" />
+                        <TextBlock Text="{Binding Title, Mode=OneTime}" FontWeight="Bold" TextWrapping="Wrap" />
+                    </DockPanel>
                 </Expander.Header>
                 <StackPanel>
                     <TextBlock TextWrapping="Wrap" Margin="3,3,0,0">
@@ -24,7 +30,15 @@
                     </TextBlock>
                 </StackPanel>
             </Expander>
-            
+
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Level, Mode=OneWay}" Value="Warning">
+                    <Setter TargetName="icon" Property="Source" Value="{StaticResource warningIcon}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Level, Mode=OneWay}" Value="Error">
+                    <Setter TargetName="icon" Property="Source" Value="{StaticResource errorIcon}" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
         </DataTemplate>
     </UserControl.Resources>
     
