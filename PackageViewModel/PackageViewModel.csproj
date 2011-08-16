@@ -58,6 +58,7 @@
     <Compile Include="FileHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PackageAnalyzer\InvalidFrameworkFolderRule.cs" />
+    <Compile Include="PackageAnalyzer\MisplacedScriptFileRule.cs" />
     <Compile Include="PackageAnalyzer\MissingContentOrDependencyRule.cs" />
     <Compile Include="PackageAnalyzer\MissingSummaryRule.cs" />
     <Compile Include="PackageChooser\PackageSourceSettings.cs" />
