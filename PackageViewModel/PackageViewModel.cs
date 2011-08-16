@@ -820,7 +820,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool CanExecutePackageAnalysis(string parameter) {
-            return !IsInEditMode;
+            return parameter == "Hide" || !IsInEditMode;
         }
 
         #endregion

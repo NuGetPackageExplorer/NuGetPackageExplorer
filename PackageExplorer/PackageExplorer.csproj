@@ -275,6 +275,7 @@
     <Resource Include="Images\arrow.png" />
     <Resource Include="Images\error.png" />
     <Resource Include="Images\Warning.png" />
+    <Resource Include="Images\RepeatHS.png" />
     <Content Include="Resources\fxAssemblies.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

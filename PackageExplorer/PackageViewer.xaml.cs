@@ -15,7 +15,7 @@ namespace PackageExplorer {
     /// </summary>
     public partial class PackageViewer : UserControl {
         private const string PackageFileDataFormat = "PackageFileContent";
-        private double _analysisPaneWidth;
+        private double _analysisPaneWidth = 250;    // default width for package analysis pane
 
         public PackageViewer(IUIServices messageBoxServices, IPackageChooser packageChooser) {
             InitializeComponent();
@@ -72,7 +72,6 @@ namespace PackageExplorer {
                 }
             }
             else {
-                
                 double metadataWidth = ContentGrid.ColumnDefinitions[0].ActualWidth;
                 double contentsWidth = ContentGrid.ColumnDefinitions[2].ActualWidth;
                 _analysisPaneWidth = ContentGrid.ColumnDefinitions[4].ActualWidth;

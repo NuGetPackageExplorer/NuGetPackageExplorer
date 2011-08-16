@@ -17,7 +17,7 @@ namespace PackageExplorerViewModel.Rules {
         }
 
         public IEnumerable<PackageIssue> Check(IPackage package) {
-            var set = new HashSet<string>();
+            var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var file in package.GetFiles()) {
                 string path = file.Path;
                 string[] parts = path.Split(Path.DirectorySeparatorChar);

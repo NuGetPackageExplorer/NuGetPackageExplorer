@@ -4,6 +4,7 @@
              xmlns:types="clr-namespace:NuGetPackageExplorer.Types;assembly=NuGetPackageExplorer.Types"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:self="clr-namespace:PackageExplorer"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -15,7 +16,7 @@
                 <Expander.Header>
                     <DockPanel>
                         <Image x:Name="icon" Margin="0,0,3,0" DockPanel.Dock="Left" />
-                        <TextBlock Text="{Binding Title, Mode=OneTime}" FontWeight="Bold" TextWrapping="Wrap" />
+                        <TextBlock Text="{Binding Title, Mode=OneTime}" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
                     </DockPanel>
                 </Expander.Header>
                 <StackPanel>
@@ -42,13 +43,17 @@
         </DataTemplate>
     </UserControl.Resources>
     
-    <DockPanel Margin="5">
-        <TextBlock DockPanel.Dock="Top">
-            <Run Text="{Binding PackageIssues.Count, Mode=OneWay, StringFormat='{}{0} issue(s) found.'}" />
-            <Hyperlink Command="{Binding ViewPackageAnalysisCommand, Mode=OneWay}">Rerun package analysis.</Hyperlink>
+    <DockPanel>
+        <Border Padding="3" DockPanel.Dock="Top" Grid.Row="0" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}">
+            <self:GrayscaleButton HorizontalAlignment="Left" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ViewPackageAnalysisCommand, Mode=OneWay}" ToolTip="Rerun package analysis">
+                <self:GrayscaleImage Source="Images/RepeatHS.png" />
+            </self:GrayscaleButton>
+        </Border>
+
+        <TextBlock Margin="8,10,5,3" DockPanel.Dock="Top" Text="{Binding PackageIssues.Count, Mode=OneWay, StringFormat='{}{0} issue(s) found.'}">
         </TextBlock>
 
-        <ScrollViewer Margin="0,5,0,0" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Margin="5" HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding PackageIssues, Mode=OneWay}" ItemTemplate="{StaticResource PackageIssueTemplate}">
             </ItemsControl>
         </ScrollViewer>
