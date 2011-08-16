@@ -47,13 +47,14 @@ namespace PackageExplorer {
 
         private void PackageAnalyzerContainer_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
             var settings = Properties.Settings.Default;
+            const double analysisPaneMinWidth = 250;
 
             if ((bool)e.NewValue) {
                 double metadataWidth = ContentGrid.ColumnDefinitions[0].ActualWidth;
                 double contentsWidth = ContentGrid.ColumnDefinitions[2].ActualWidth;
                 double totalWidth = metadataWidth + contentsWidth;
 
-                _analysisPaneWidth = Math.Max(_analysisPaneWidth, ContentGrid.ColumnDefinitions[4].MinWidth);
+                _analysisPaneWidth = Math.Max(_analysisPaneWidth, analysisPaneMinWidth);
                 double newContentsWidth = Math.Max(
                     ContentGrid.ColumnDefinitions[2].MinWidth, 
                     totalWidth - metadataWidth - _analysisPaneWidth);
@@ -63,7 +64,7 @@ namespace PackageExplorer {
 
                 ContentGrid.ColumnDefinitions[0].Width = new GridLength(newMetadataWidth / totalWidth, GridUnitType.Star);
                 ContentGrid.ColumnDefinitions[2].Width = new GridLength(newContentsWidth / totalWidth, GridUnitType.Star);
-                ContentGrid.ColumnDefinitions[4].MinWidth = 250;
+                ContentGrid.ColumnDefinitions[4].MinWidth = analysisPaneMinWidth;
                 ContentGrid.ColumnDefinitions[4].Width = new GridLength(_analysisPaneWidth / totalWidth, GridUnitType.Star);
 
                 if (PackageAnalyzerContainer.Content == null) {
