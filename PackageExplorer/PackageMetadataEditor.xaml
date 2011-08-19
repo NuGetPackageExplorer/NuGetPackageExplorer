@@ -75,11 +75,11 @@
 
         <DataTemplate x:Key="FilteredAssemblyReferencesTemplate">
             <DockPanel Margin="0,4,0,0">
-                <Button DockPanel.Dock="Right" Click="RemoveFilteredAssemblyReferenceClicked">
+                <Button DockPanel.Dock="Right" Click="RemoveFilteredAssemblyReferenceClicked" ToolTip="Remove this assembly name">
                     <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
                 </Button>
                 
-                <TextBlock Text="{Binding File}" HorizontalAlignment="Left" />
+                <TextBlock Text="{Binding File, Mode=OneWay}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"  />
             </DockPanel>
         </DataTemplate>
     </UserControl.Resources>
@@ -328,7 +328,6 @@
 
                         <TextBox 
                             x:Name="NewReferenceFileName"
-                            Text="{Binding Luan, UpdateSourceTrigger=Explicit, NotifyOnValidationError=True}"
                             Margin="2"
                             Grid.Column="0"
                             Grid.Row="1" />

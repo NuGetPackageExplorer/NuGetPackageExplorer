@@ -146,7 +146,7 @@ namespace PackageExplorer {
                 return;
             }
 
-            string displayString = NewSupportedFramework.Text;
+            string displayString = NewSupportedFramework.Text.Trim();
 
             bindingExpression.UpdateSource();
             _frameworkAssemblies.Add(_newFrameworkAssembly.AsReadOnly(displayString));

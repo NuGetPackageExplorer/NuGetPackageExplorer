@@ -7,7 +7,7 @@ namespace PackageExplorer {
 
             string stringValue = value as string;
             if (stringValue != null) {
-                return !String.IsNullOrEmpty(stringValue);
+                return !String.IsNullOrWhiteSpace(stringValue);
             }
 
             return value != null;
