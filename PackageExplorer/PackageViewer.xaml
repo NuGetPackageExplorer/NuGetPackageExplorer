@@ -204,7 +204,7 @@
                         <!-- Package Assembly References -->
                         <TextBlock 
                             Visibility="{Binding Items.Count, ElementName=PackageAssemblyReferences, Converter={StaticResource countConverter}}"
-                            Text="Filtered assembly references:" 
+                            Text="Filtered Assembly References:" 
                             Margin="0,5,0,0"
                             Style="{StaticResource DetailMetadataLabelStyle}" />
 

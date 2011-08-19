@@ -203,8 +203,8 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private ObservableCollection<PackageIssue> _packageIssues = new ObservableCollection<PackageIssue>();
-        public ObservableCollection<PackageIssue> PackageIssues {
+        private SortedCollection<PackageIssue> _packageIssues = new SortedCollection<PackageIssue>(PackageIssueComparer.Instance);
+        public SortedCollection<PackageIssue> PackageIssues {
             get {
                 return _packageIssues;
             }

@@ -1,7 +1,7 @@
 ﻿
 namespace NuGetPackageExplorer.Types {
     public enum PackageIssueLevel {
-        Warning,
-        Error
+        Error = 0,
+        Warning = 1
     }
 }

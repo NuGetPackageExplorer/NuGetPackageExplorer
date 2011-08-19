@@ -62,6 +62,8 @@
     <Compile Include="PackageAnalyzer\MisplacedScriptFileRule.cs" />
     <Compile Include="PackageAnalyzer\MissingContentOrDependencyRule.cs" />
     <Compile Include="PackageAnalyzer\MissingSummaryRule.cs" />
+    <Compile Include="PackageAnalyzer\OrphanAssemblyReferenceName.cs" />
+    <Compile Include="PackageAnalyzer\PackageIssueComparer.cs" />
     <Compile Include="PackageChooser\PackageSourceSettings.cs" />
     <Compile Include="PluginManagerViewModel.cs" />
     <Compile Include="PublishPackage\PublishSourceSettings.cs" />

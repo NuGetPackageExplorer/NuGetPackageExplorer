@@ -1,14 +1,20 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace PackageExplorerViewModel {
-    public class SortedCollection<T> : ICollection<T>, INotifyCollectionChanged {
+    public class SortedCollection<T> : ICollection<T>, INotifyCollectionChanged, INotifyPropertyChanged {
 
         private readonly SortedSet<T> _items;
+        private static readonly PropertyChangedEventArgs CountPropertyChangeEventArgs = new PropertyChangedEventArgs("Count");
 
         public SortedCollection() {
             _items = new SortedSet<T>();
+        }
+
+        public SortedCollection(IComparer<T> comparer) {
+            _items = new SortedSet<T>(comparer);
         }
 
         public SortedCollection(IEnumerable<T> collection, IComparer<T> comparer) {
@@ -53,6 +59,7 @@ namespace PackageExplorerViewModel {
             if (successful) {
                 var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
                 RaiseCollectionChangedEvent(args);
+
             }
             return successful;
         }
@@ -82,6 +89,17 @@ namespace PackageExplorerViewModel {
         private void RaiseCollectionChangedEvent(NotifyCollectionChangedEventArgs args) {
             if (CollectionChanged != null) {
                 CollectionChanged(this, args);
+            }
+
+            // if the collection changes, raise the Count property changed event too.
+            RaiseCountPropertyChanged();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void RaiseCountPropertyChanged() {
+            if (PropertyChanged != null) {
+                PropertyChanged(this, CountPropertyChangeEventArgs);
             }
         }
     }
