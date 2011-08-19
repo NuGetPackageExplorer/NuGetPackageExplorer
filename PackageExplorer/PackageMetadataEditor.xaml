@@ -72,6 +72,16 @@
                 </Button>
             </Grid>
         </DataTemplate>
+
+        <DataTemplate x:Key="FilteredAssemblyReferencesTemplate">
+            <DockPanel Margin="0,4,0,0">
+                <Button DockPanel.Dock="Right" Click="RemoveFilteredAssemblyReferenceClicked">
+                    <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
+                </Button>
+                
+                <TextBlock Text="{Binding File}" HorizontalAlignment="Left" />
+            </DockPanel>
+        </DataTemplate>
     </UserControl.Resources>
 
     <Grid>
@@ -88,6 +98,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
@@ -292,6 +303,49 @@
                     Foreground="Navy"
                     Background="White"
                     Grid.Row="17" 
+                    Grid.ColumnSpan="2" 
+                    Margin="1,10,1,0" 
+                    HorizontalAlignment="Center" 
+                    VerticalAlignment="Top" />
+
+                <!-- Filtered assembly references -->
+                <Border Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
+                    <Grid Margin="3,4,3,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <ItemsControl 
+                            x:Name="AssemblyReferencesList" 
+                            Grid.ColumnSpan="2" 
+                            ItemTemplate="{StaticResource FilteredAssemblyReferencesTemplate}">
+                        </ItemsControl>
+
+                        <TextBox 
+                            x:Name="NewReferenceFileName"
+                            Text="{Binding Luan, UpdateSourceTrigger=Explicit, NotifyOnValidationError=True}"
+                            Margin="2"
+                            Grid.Column="0"
+                            Grid.Row="1" />
+
+                        <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding Text, ElementName=NewReferenceFileName, Converter={StaticResource nullToBoolConverter}}" ToolTipService.ToolTip="Add new filtered assembly reference" Click="AddReferenceFileNameClicked">
+                            <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
+                        </self:GrayscaleButton>
+                    </Grid>
+                </Border>
+
+                <!-- Header text for Filtered assembly references -->
+                <TextBlock 
+                    Text="Filtered assembly references" 
+                    FontWeight="SemiBold"
+                    Foreground="Navy"
+                    Background="White"
+                    Grid.Row="18" 
                     Grid.ColumnSpan="2" 
                     Margin="1,10,1,0" 
                     HorizontalAlignment="Center" 

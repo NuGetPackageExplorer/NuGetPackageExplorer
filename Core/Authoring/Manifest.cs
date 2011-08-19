@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -11,7 +12,6 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using NuGet.Resources;
-using System.ComponentModel;
 
 namespace NuGet {
     [XmlType("package", Namespace = Constants.ManifestSchemaNamespace)]
@@ -173,22 +173,40 @@ namespace NuGet {
                     Summary = metadata.Summary.SafeTrim(),
                     ReleaseNotes = metadata.ReleaseNotes.SafeTrim(),
                     Language = metadata.Language.SafeTrim(),
-                    Dependencies = metadata.Dependencies == null ||
-                                   !metadata.Dependencies.Any() ? null :
-                                   (from d in metadata.Dependencies
-                                    select new ManifestDependency {
-                                        Id = d.Id.SafeTrim(),
-                                        Version = d.VersionSpec.ToStringSafe()
-                                    }).ToList(),
-                    FrameworkAssemblies = metadata.FrameworkAssemblies == null ||
-                                          !metadata.FrameworkAssemblies.Any() ? null :
-                                          (from reference in metadata.FrameworkAssemblies
-                                           select new ManifestFrameworkAssembly {
-                                               AssemblyName = reference.AssemblyName,
-                                               TargetFramework = String.Join(", ", reference.SupportedFrameworks.Select(VersionUtility.GetFrameworkString))
-                                           }).ToList()
+                    Dependencies = CreateDependencies(metadata),
+                    FrameworkAssemblies = CreateFrameworkAssemblies(metadata),
+                    References = CreateReferences(metadata)
                 }
             };
+        }
+
+        private static List<ManifestDependency> CreateDependencies(IPackageMetadata metadata) {
+            return metadata.Dependencies == null ||
+                                               !metadata.Dependencies.Any() ? null :
+                                               (from d in metadata.Dependencies
+                                                select new ManifestDependency {
+                                                    Id = d.Id.SafeTrim(),
+                                                    Version = d.VersionSpec.ToStringSafe()
+                                                }).ToList();
+        }
+
+        private static List<ManifestFrameworkAssembly> CreateFrameworkAssemblies(IPackageMetadata metadata) {
+            return metadata.FrameworkAssemblies == null ||
+                                                      !metadata.FrameworkAssemblies.Any() ? null :
+                                                      (from reference in metadata.FrameworkAssemblies
+                                                       select new ManifestFrameworkAssembly {
+                                                           AssemblyName = reference.AssemblyName,
+                                                           TargetFramework = String.Join(", ", reference.SupportedFrameworks.Select(VersionUtility.GetFrameworkString))
+                                                       }).ToList();
+        }
+
+        private static List<ManifestReference> CreateReferences(IPackageMetadata metadata) {
+            if (metadata.References == null || !metadata.References.Any()) {
+                return null;
+            }
+            return (from reference in metadata.References
+                    where reference != null && reference.File != null
+                    select new ManifestReference { File = reference.File.Trim() }).ToList();
         }
 
         private static string GetCommaSeparatedString(IEnumerable<string> values) {

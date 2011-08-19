@@ -81,6 +81,12 @@ namespace NuGet {
 
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "It's easier to create a list")]
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is needed for xml serialization")]
+        [XmlArray("references")]
+        [XmlArrayItem("reference")]
+        public List<ManifestReference> References { get; set; }
+
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "It's easier to create a list")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is needed for xml serialization")]
         [XmlArray("frameworkAssemblies")]
         [XmlArrayItem("frameworkAssembly")]
         public List<ManifestFrameworkAssembly> FrameworkAssemblies { get; set; }
@@ -146,6 +152,16 @@ namespace NuGet {
                 }
                 return from dependency in Dependencies
                        select new PackageDependency(dependency.Id, String.IsNullOrEmpty(dependency.Version) ? null : VersionUtility.ParseVersionSpec(dependency.Version));
+            }
+        }
+
+        IEnumerable<AssemblyReference> IPackageMetadata.References {
+            get {
+                if (References == null) {
+                    return Enumerable.Empty<AssemblyReference>();
+                }
+
+                return References.Select(r => new AssemblyReference(r.File));
             }
         }
 

@@ -145,6 +145,11 @@ namespace NuGet {
             set;
         }
 
+        public IEnumerable<AssemblyReference> References {
+            get;
+            set;
+        }
+
         public IEnumerable<PackageDependency> Dependencies {
             get;
             set;
@@ -217,6 +222,7 @@ namespace NuGet {
                     Tags = metadata.Tags;
                     Dependencies = metadata.Dependencies;
                     FrameworkAssemblies = metadata.FrameworkAssemblies;
+                    References = metadata.References;
 
                     // Ensure tags start and end with an empty " " so we can do contains filtering reliably
                     if (!String.IsNullOrEmpty(Tags)) {

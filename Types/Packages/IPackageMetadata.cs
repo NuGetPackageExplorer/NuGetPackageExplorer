@@ -19,6 +19,7 @@ namespace NuGet {
         string Language { get; }
         string Tags { get; }
         IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; }
-        IEnumerable<PackageDependency> Dependencies { get; }        
+        IEnumerable<PackageDependency> Dependencies { get; }
+        IEnumerable<AssemblyReference> References { get; }
     }
 }

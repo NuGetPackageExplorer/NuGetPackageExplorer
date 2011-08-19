@@ -110,5 +110,10 @@ namespace PackageExplorerViewModel {
         public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies {
             get { return Enumerable.Empty<FrameworkAssemblyReference>(); }
         }
+
+
+        public IEnumerable<AssemblyReference> References {
+            get { return Enumerable.Empty<AssemblyReference>(); }
+        }
     }
 }

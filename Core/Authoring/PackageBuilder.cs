@@ -34,6 +34,7 @@ namespace NuGet {
             Files = new Collection<IPackageFile>();
             Dependencies = new Collection<PackageDependency>();
             FrameworkReferences = new Collection<FrameworkAssemblyReference>();
+            PackageAssemblyReferences = new Collection<AssemblyReference>();
             Authors = new HashSet<string>();
             Owners = new HashSet<string>();
             Tags = new HashSet<string>();
@@ -124,6 +125,11 @@ namespace NuGet {
             private set; 
         }
 
+        public Collection<AssemblyReference> PackageAssemblyReferences {
+            get;
+            private set;
+        }
+
         public Collection<FrameworkAssemblyReference> FrameworkReferences {
             get;
             private set;
@@ -144,6 +150,12 @@ namespace NuGet {
         string IPackageMetadata.Tags {
             get {
                 return String.Join(" ", Tags);
+            }
+        }
+
+        IEnumerable<AssemblyReference> IPackageMetadata.References {
+            get {
+                return PackageAssemblyReferences;
             }
         }
 
@@ -211,6 +223,7 @@ namespace NuGet {
 
             Dependencies.AddRange(metadata.Dependencies);
             FrameworkReferences.AddRange(metadata.FrameworkAssemblies);
+            PackageAssemblyReferences.AddRange(manifest.Metadata.References.Select(r => new AssemblyReference(r.File)));
             
             // If there's no base path then ignore the files node
             if (basePath != null) {
@@ -236,6 +249,10 @@ namespace NuGet {
 
             using (Stream stream = packagePart.GetStream()) {
                 Manifest manifest = Manifest.Create(this);
+                if (PackageAssemblyReferences.Any()) {
+                    manifest.Metadata.References = new List<ManifestReference>(
+                        PackageAssemblyReferences.Select(reference => new ManifestReference { File = reference.File }));
+                }
                 manifest.Save(stream);
             }
         }

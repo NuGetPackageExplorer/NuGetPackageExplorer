@@ -42,6 +42,15 @@
                 <MenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
             </ContextMenu>
 
+            <DataTemplate x:Key="SimpleTextItemTemplate">
+                <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding}" />
+            </DataTemplate>
+
+            <DataTemplate x:Key="AssemblyReferenceItemTemplate">
+                <TextBlock Text="{Binding File, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding}" />
+            </DataTemplate>
+
+
             <!-- data template for the package details pane -->
             <DataTemplate x:Key="PackageDetailTemplate">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
@@ -188,12 +197,22 @@
                         <ItemsControl
                             x:Name="FrameworkAssemblyItems"
                             Margin="25,5,0,0"
-                            ItemsSource="{Binding FrameworkAssemblies}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding}" />
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
+                            ItemsSource="{Binding FrameworkAssemblies}"
+                            ItemTemplate="{StaticResource SimpleTextItemTemplate}">
+                        </ItemsControl>
+                        
+                        <!-- Package Assembly References -->
+                        <TextBlock 
+                            Visibility="{Binding Items.Count, ElementName=PackageAssemblyReferences, Converter={StaticResource countConverter}}"
+                            Text="Filtered assembly references:" 
+                            Margin="0,5,0,0"
+                            Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                        <ItemsControl
+                            x:Name="PackageAssemblyReferences"
+                            Margin="25,5,0,0"
+                            ItemsSource="{Binding PackageAssemblyReferences}"
+                            ItemTemplate="{StaticResource AssemblyReferenceItemTemplate}">
                         </ItemsControl>
                     </StackPanel>
                 </ScrollViewer>

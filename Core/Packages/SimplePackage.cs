@@ -32,6 +32,7 @@ namespace NuGet
             Tags = packageBuilder.Tags;
             FrameworkAssemblies = new SafeEnumerable<FrameworkAssemblyReference>(packageBuilder.FrameworkAssemblies);
             Dependencies = new SafeEnumerable<PackageDependency>(packageBuilder.Dependencies);
+            References = new SafeEnumerable<AssemblyReference>(packageBuilder.References);
             Copyright = packageBuilder.Copyright;
             _packageBuilder = packageBuilder;
         }
@@ -152,6 +153,11 @@ namespace NuGet
 
         public IEnumerable<PackageDependency> Dependencies
         {
+            get;
+            private set;
+        }
+
+        public IEnumerable<AssemblyReference> References {
             get;
             private set;
         }

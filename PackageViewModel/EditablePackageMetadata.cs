@@ -7,7 +7,7 @@ using NuGet;
 
 namespace PackageExplorerViewModel {
 
-    public class EditablePackageMetadata : IPackageMetadata, IDataErrorInfo, INotifyPropertyChanged {
+    public sealed class EditablePackageMetadata : IPackageMetadata, IDataErrorInfo, INotifyPropertyChanged {
 
         private readonly Dictionary<string, string> _propertyErrors = new Dictionary<string, string>();
 
@@ -36,6 +36,10 @@ namespace PackageExplorerViewModel {
             this.Tags = source.Tags;
             this.Dependencies = new ObservableCollection<PackageDependency>(source.Dependencies);
             this.FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkAssemblies);
+            this.PackageAssemblyReferences = new ObservableCollection<AssemblyReference>();
+            if (source.References != null) {
+                PackageAssemblyReferences.AddRange(source.References);
+            }
         }
 
         private static Uri FixIconUrl(Uri uri)
@@ -297,6 +301,8 @@ namespace PackageExplorerViewModel {
             }
         }
 
+        public ObservableCollection<AssemblyReference> PackageAssemblyReferences { get; private set; }
+
         public ObservableCollection<PackageDependency> Dependencies { get; private set; }
 
         public ObservableCollection<FrameworkAssemblyReference> FrameworkAssemblies { get; private set; }
@@ -330,6 +336,12 @@ namespace PackageExplorerViewModel {
         IEnumerable<FrameworkAssemblyReference> IPackageMetadata.FrameworkAssemblies {
             get {
                 return this.FrameworkAssemblies;
+            }
+        }
+
+        IEnumerable<AssemblyReference> IPackageMetadata.References {
+            get {
+                return this.PackageAssemblyReferences;
             }
         }
 

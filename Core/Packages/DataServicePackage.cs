@@ -175,6 +175,12 @@ namespace NuGet {
             }
         }
 
+        public IEnumerable<AssemblyReference> References {
+            get {
+                return CorePackage == null ? Enumerable.Empty<AssemblyReference>() : CorePackage.References;
+            }
+        }
+
         public IEnumerable<IPackageAssemblyReference> AssemblyReferences {
             get {
                 return CorePackage.AssemblyReferences;

@@ -18,6 +18,7 @@ namespace PackageExplorer {
 
         private ObservableCollection<PackageDependency> _packageDependencies;
         private ObservableCollection<FrameworkAssemblyReference> _frameworkAssemblies;
+        private ObservableCollection<AssemblyReference> _filteredAssemblyReferences;
         private EditablePackageDependency _newPackageDependency;
         private EditableFrameworkAssemblyReference _newFrameworkAssembly;
 
@@ -34,6 +35,7 @@ namespace PackageExplorer {
             if (this.Visibility == System.Windows.Visibility.Visible) {
                 ClearDependencyTextBox();
                 ClearFrameworkAssemblyTextBox();
+                ClearFilteredAssemblyReferenceTextBox();
                 PrepareBindings();
             }
         }
@@ -47,6 +49,9 @@ namespace PackageExplorer {
             _frameworkAssemblies =
                 new ObservableCollection<FrameworkAssemblyReference>(viewModel.PackageMetadata.FrameworkAssemblies);
             FrameworkAssembliesList.ItemsSource = _frameworkAssemblies;
+
+            _filteredAssemblyReferences = new ObservableCollection<AssemblyReference>(viewModel.PackageMetadata.PackageAssemblyReferences);
+            AssemblyReferencesList.ItemsSource = _filteredAssemblyReferences;
         }
 
         private void ClearDependencyTextBox() {
@@ -57,6 +62,10 @@ namespace PackageExplorer {
         private void ClearFrameworkAssemblyTextBox() {
             _newFrameworkAssembly = new EditableFrameworkAssemblyReference();
             NewAssemblyName.DataContext = NewSupportedFramework.DataContext = _newFrameworkAssembly;
+        }
+
+        private void ClearFilteredAssemblyReferenceTextBox() {
+            NewReferenceFileName.Text = String.Empty;
         }
 
         private void PopulateLanguagesForLanguageBox() {
@@ -73,7 +82,6 @@ namespace PackageExplorer {
                     // ignore exception
                 }
             }
-
         }
 
         private void RemoveDependencyButtonClicked(object sender, System.Windows.RoutedEventArgs e) {
@@ -88,6 +96,12 @@ namespace PackageExplorer {
             var item = (FrameworkAssemblyReference)button.DataContext;
 
             _frameworkAssemblies.Remove(item);
+        }
+
+        private void RemoveFilteredAssemblyReferenceClicked(object sender, RoutedEventArgs e) {
+            var button = (Button)sender;
+            var reference = (AssemblyReference)button.DataContext;
+            _filteredAssemblyReferences.Remove(reference);
         }
 
         private void AddDependencyButtonClicked(object sender, System.Windows.RoutedEventArgs e) {
@@ -141,6 +155,14 @@ namespace PackageExplorer {
             ClearFrameworkAssemblyTextBox();
         }
 
+        private void AddReferenceFileNameClicked(object sender, RoutedEventArgs e) {
+            string file = NewReferenceFileName.Text.Trim();
+            _filteredAssemblyReferences.Add(new AssemblyReference(file));
+            
+            // after reference name is added, clear the textbox
+            ClearFilteredAssemblyReferenceTextBox();
+        }
+
         #region IPackageEditorService
 
         void IPackageEditorService.BeginEdit() {
@@ -157,6 +179,7 @@ namespace PackageExplorer {
                 var viewModel = (PackageViewModel)DataContext;
                 _packageDependencies.CopyTo(viewModel.PackageMetadata.Dependencies);
                 _frameworkAssemblies.CopyTo(viewModel.PackageMetadata.FrameworkAssemblies);
+                _filteredAssemblyReferences.CopyTo(viewModel.PackageMetadata.PackageAssemblyReferences);
             }
 
             return valid;

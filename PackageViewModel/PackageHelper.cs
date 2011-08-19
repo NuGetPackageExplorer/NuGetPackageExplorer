@@ -59,6 +59,7 @@ namespace PackageExplorerViewModel {
             builder.Tags.AddRange(ParseTags(source.Tags));
             builder.Dependencies.AddRange(source.Dependencies);
             builder.FrameworkReferences.AddRange(source.FrameworkAssemblies);
+            builder.PackageAssemblyReferences.AddRange(source.References);
         }
 
         public static IPackage BuildPackage(IPackageMetadata metadata, IEnumerable<IPackageFile> files) {
