@@ -785,11 +785,6 @@ namespace PackageExplorerViewModel {
         }
 
         private void PackageCommandExecute(LazyPackageCommand packageCommand) {
-            if (!IsValid) {
-                UIServices.Show(Resources.PackageHasNoFile, MessageLevel.Warning);
-                return;
-            }
-
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
             packageCommand.Value.Execute(package);
         }
