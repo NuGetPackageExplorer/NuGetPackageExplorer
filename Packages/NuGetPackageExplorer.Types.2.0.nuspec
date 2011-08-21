@@ -1,6 +1,6 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-  <metadata schemaVersion="2">
+  <metadata>
     <id>NuGetPackageExplorer.Types</id>
     <version>2.0</version>
     <title>NuGet Package Explorer Types</title>
@@ -9,7 +9,7 @@
     <licenseUrl>http://npe.codeplex.com/license</licenseUrl>
     <projectUrl>http://npe.codeplex.com/</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>This library contains shared types which allows you to write extensions to NuGet Package Explorer 2.0 or above. In the current version, you can write file viewer plugins to display files types that are not supported by NuGet Package Explorer by default.</description>
+    <description>This library contains shared types which allows you to write extensions to NuGet Package Explorer 2.0 or above. In the current version, you can do the following tasks: write file viewer plugins to display files types that are not supported by NuGet Package Explorer by default; write custom package command which appears in the Tools menu; write custom package rule for the Analyze Package command.</description>
     <summary>This library contains shared types which allows you to write extensions to NuGet Package Explorer 2.0 or above.</summary>
     <tags>nuget package explorer mef extensions</tags>
     <frameworkAssemblies>
@@ -21,8 +21,8 @@
     </frameworkAssemblies>
   </metadata>
   <files>
-    <file src="content\MyCustomContentViewer.cs.pp" target="content\MyCustomContentViewer.cs.pp" />
+    <file src="content\*.*" target="content" />
+    <file src="tools\*.*" target="tools" />
     <file src="..\Types\bin\Release\NuGetPackageExplorer.Types.dll" target="lib\net40-client\NuGetPackageExplorer.Types.dll" />
-    <file src="tools\install.ps1" target="tools\install.ps1" />
   </files>
 </package>
