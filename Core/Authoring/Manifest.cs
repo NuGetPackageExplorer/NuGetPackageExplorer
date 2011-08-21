@@ -14,15 +14,9 @@ using System.Xml.Serialization;
 using NuGet.Resources;
 
 namespace NuGet {
-    [XmlType("package", Namespace = Constants.ManifestSchemaNamespace)]
+    [XmlType("package")]
     public class Manifest {
         private const string SchemaVersionAttributeName = "schemaVersion";
-        private const string CurrentSchemaVersion = "2";
-
-        // Mapping from schema to resource name
-        private static readonly Dictionary<string, string> Schemas = new Dictionary<string, string> {
-            { "http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd" , "NuGet.Authoring.nuspec.xsd" }
-        };
 
         public Manifest() {
             Metadata = new ManifestMetadata();
@@ -35,14 +29,6 @@ namespace NuGet {
         [EditorBrowsable(EditorBrowsableState.Never)]
         [XmlElement("files", IsNullable = true)]
         public ManifestFileList FilesList { get; set; }
-
-        [Browsable(false)]
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public bool ShouldSerializeFilesList() {
-            // This is to prevent the XML serializer from serializing 'null' value of FilesList as 
-            // <files xsi:nil="true" />
-            return FilesList != null;
-        }
 
         [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "It's easier to create a list")]
         [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is needed for xml serialization")]
@@ -60,62 +46,54 @@ namespace NuGet {
         }
 
         public void Save(Stream stream) {
-            // Validate before saving
-            Validate(this);
+            Save(stream, validate: true);
+        }
+
+        public void Save(Stream stream, bool validate) {
+            if (validate) {
+                // Validate before saving
+                Validate(this);
+            }
+
+            int version = ManifestVersionUtility.GetManifestVersion(Metadata);
+            string schemaNamespace = ManifestSchemaUtility.GetSchemaNamespace(version);
 
             // Define the namespaces to use when serializing
             var ns = new XmlSerializerNamespaces();
-            ns.Add("", Constants.ManifestSchemaNamespace);
+            ns.Add("", schemaNamespace);
 
             // Need to force the namespace here again as the default in order to get the XML output clean
-            var serializer = new XmlSerializer(typeof(Manifest), Constants.ManifestSchemaNamespace);
-
-            if (Metadata.FrameworkAssemblies != null && Metadata.FrameworkAssemblies.Any()) {
-                using (var ms = new MemoryStream()) {
-                    serializer.Serialize(ms, this, ns);
-
-                    // Reset the stream so we can read the document and add the attribute
-                    ms.Seek(0, SeekOrigin.Begin);
-                    XDocument document = XDocument.Load(ms);
-                    AddSchemaVersionAttribute(document, stream);
-                }
-            }
-            else {
-                serializer.Serialize(stream, this, ns);
-            }
+            var serializer = new XmlSerializer(typeof(Manifest), schemaNamespace);
+            serializer.Serialize(stream, this, ns);
         }
 
-        private static void AddSchemaVersionAttribute(XDocument document, Stream stream) {
-            XElement metadata = GetMetadataElement(document);
-
-            if (metadata != null) {
-                metadata.SetAttributeValue(SchemaVersionAttributeName, CurrentSchemaVersion);
-            }
-
-            document.Save(stream);
+        // http://msdn.microsoft.com/en-us/library/53b8022e(VS.71).aspx
+        [Browsable(false)]
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public bool ShouldSerializeFilesList() {
+            // This is to prevent the XML serializer from serializing 'null' value of FilesList as 
+            // <files xsi:nil="true" />
+            return FilesList != null;
         }
 
         public static Manifest ReadFrom(Stream stream) {
             // Read the document
             XDocument document = XDocument.Load(stream);
+            string schemeNamespace = GetSchemaNamespace(document);
 
-            // Add the schema namespace if it isn't there
             foreach (var e in document.Descendants()) {
-                if (e.Name.Namespace == null || String.IsNullOrEmpty(e.Name.Namespace.NamespaceName)) {
-                    e.Name = XName.Get(e.Name.LocalName, Constants.ManifestSchemaNamespace);
-                }
+                // Assign the schema namespace derived to all nodes in the document.
+                e.Name = XName.Get(e.Name.LocalName, schemeNamespace);
             }
 
             // Validate the schema
-            ValidateManifestSchema(document);
+            ValidateManifestSchema(document, schemeNamespace);
 
-            // Remove the namespace from the outer tag to match CTP2 expectations
-            document.Root.Name = document.Root.Name.LocalName;
-
-            var serializer = new XmlSerializer(typeof(Manifest));
+            var serializer = new XmlSerializer(typeof(Manifest), schemeNamespace);
             var manifest = (Manifest)serializer.Deserialize(document.CreateReader());
 
             // Convert <file source="Foo.cs;.\src\bar.cs" target="content" /> to multiple individual items.
+            // Do this before validating to ensure validation for files still works as before.
             manifest.SplitManifestFiles();
 
             // Validate before returning
@@ -136,6 +114,15 @@ namespace NuGet {
             manifest.Metadata.Copyright = manifest.Metadata.Copyright.SafeTrim();
 
             return manifest;
+        }
+
+        private static string GetSchemaNamespace(XDocument document) {
+            string schemaNamespace = ManifestSchemaUtility.SchemaVersionV1;
+            var rootNameSpace = document.Root.Name.Namespace;
+            if (rootNameSpace != null && !String.IsNullOrEmpty(rootNameSpace.NamespaceName)) {
+                schemaNamespace = rootNameSpace.NamespaceName;
+            }
+            return schemaNamespace;
         }
 
         private void SplitManifestFiles() {
@@ -216,13 +203,13 @@ namespace NuGet {
             return String.Join(",", values);
         }
 
-        private static void ValidateManifestSchema(XDocument document) {
+        private static void ValidateManifestSchema(XDocument document, string schemaNamespace) {
             CheckSchemaVersion(document);
 
             // Create the schema set
             var schemaSet = new XmlSchemaSet();
-            using (Stream schemaStream = GetSchemaStream(document)) {
-                schemaSet.Add(Constants.ManifestSchemaNamespace, XmlReader.Create(schemaStream));
+            using (Stream schemaStream = ManifestSchemaUtility.GetSchemaStream(schemaNamespace)) {
+                schemaSet.Add(schemaNamespace, XmlReader.Create(schemaStream));
             }
 
             // Validate the document
@@ -250,7 +237,7 @@ namespace NuGet {
                 string packageId = GetPackageId(metadata);
 
                 // If the schema of the document doesn't match any of our known schemas
-                if (!Schemas.ContainsKey(document.Root.Name.Namespace.NamespaceName)) {
+                if (!ManifestSchemaUtility.IsKnownSchema(document.Root.Name.Namespace.NamespaceName)) {
                     throw new InvalidOperationException(
                             String.Format(CultureInfo.CurrentCulture,
                                           NuGetResources.IncompatibleSchema,
@@ -278,22 +265,14 @@ namespace NuGet {
             return document.Root.Element(metadataName);
         }
 
-        private static Stream GetSchemaStream(XDocument document) {
-            string schemaResourceName;
-            if (Schemas.TryGetValue(document.Root.Name.NamespaceName, out schemaResourceName)) {
-                return typeof(Manifest).Assembly.GetManifestResourceStream(schemaResourceName);
-            }
-
-            return null;
-        }
-
-        private static void Validate(Manifest manifest) {
+        internal static void Validate(Manifest manifest) {
             var results = new List<ValidationResult>();
 
             // Run all data annotations validations
             TryValidate(manifest.Metadata, results);
             TryValidate(manifest.Files, results);
             TryValidate(manifest.Metadata.Dependencies, results);
+            TryValidate(manifest.Metadata.References, results);
 
             if (results.Any()) {
                 string message = String.Join(Environment.NewLine, results.Select(r => r.ErrorMessage));
@@ -316,6 +295,7 @@ namespace NuGet {
                 ValidateDependencyVersion(dependency);
             }
         }
+
         private static void ValidateDependencyVersion(PackageDependency dependency) {
             if (dependency.VersionSpec != null) {
                 if (dependency.VersionSpec.MinVersion != null &&

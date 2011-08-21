@@ -61,6 +61,9 @@
     <Compile Include="Authoring\ManifestFileList.cs" />
     <Compile Include="Authoring\ManifestFrameworkAssembly.cs" />
     <Compile Include="Authoring\ManifestReference.cs" />
+    <Compile Include="Authoring\ManifestSchemaUtility.cs" />
+    <Compile Include="Authoring\ManifestVersionAttribute.cs" />
+    <Compile Include="Authoring\ManifestVersionUtility.cs" />
     <Compile Include="Authoring\PackageBuilder.cs" />
     <Compile Include="Authoring\PathResolver.cs" />
     <Compile Include="Authoring\PhysicalPackageFile.cs" />

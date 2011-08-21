@@ -189,7 +189,7 @@ namespace NuGet {
             using (Stream stream = _streamFactory()) {
                 Package package = Package.Open(stream);
 
-                PackageRelationship relationshipType = package.GetRelationshipsByType(Constants.SchemaNamespace + PackageBuilder.ManifestRelationType).SingleOrDefault();
+                PackageRelationship relationshipType = package.GetRelationshipsByType(Constants.PackageRelationshipNamespace + PackageBuilder.ManifestRelationType).SingleOrDefault();
 
                 if (relationshipType == null) {
                     throw new InvalidOperationException(NuGetResources.PackageDoesNotContainManifest);

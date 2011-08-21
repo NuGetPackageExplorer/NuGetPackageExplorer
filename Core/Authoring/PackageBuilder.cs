@@ -242,7 +242,7 @@ namespace NuGet {
             Uri uri = UriUtility.CreatePartUri(Id + Constants.ManifestExtension);
 
             // Create the manifest relationship
-            package.CreateRelationship(uri, TargetMode.Internal, Constants.SchemaNamespace + ManifestRelationType);
+            package.CreateRelationship(uri, TargetMode.Internal, Constants.PackageRelationshipNamespace + ManifestRelationType);
 
             // Create the part
             PackagePart packagePart = package.CreatePart(uri, DefaultContentType, CompressionOption.Maximum);

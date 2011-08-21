@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xs:schema id="nuspec"
-    targetNamespace="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"
+    targetNamespace="{0}"
     elementFormDefault="qualified"
-    xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"
-    xmlns:mstns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd"
+    xmlns="{0}"
+    xmlns:mstns="{0}"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
 >
   <xs:element name="package">

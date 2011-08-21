@@ -186,4 +186,10 @@
   <data name="Manifest_TargetContainsInvalidCharacters" xml:space="preserve">
     <value>Target path '{0}' contains invalid characters.</value>
   </data>
+  <data name="Manifest_InvalidSchemaNamespace" xml:space="preserve">
+    <value>Invalid schema namespace '{0}'.</value>
+  </data>
+  <data name="Manifest_InvalidVersion" xml:space="preserve">
+    <value>No namespace was found corresponding to the schema version '{0}'. Add an entry to the VersionToSchemaMappings dictionary in '{1}'.</value>
+  </data>
 </root>

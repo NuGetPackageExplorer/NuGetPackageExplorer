@@ -6,7 +6,6 @@ namespace NuGet {
 
         internal const string PackageServiceEntitySetName = "Packages";
 
-        internal const string ManifestSchemaNamespace = SchemaNamespace + "nuspec.xsd";
-        internal const string SchemaNamespace = "http://schemas.microsoft.com/packaging/2010/07/";
+        internal const string PackageRelationshipNamespace = "http://schemas.microsoft.com/packaging/2010/07/";
     }
 }

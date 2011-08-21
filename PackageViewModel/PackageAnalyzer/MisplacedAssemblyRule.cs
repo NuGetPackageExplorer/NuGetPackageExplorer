@@ -32,16 +32,16 @@ namespace PackageExplorerViewModel.Rules {
             }
         }
 
-        private PackageIssue CreatePackageIssueForAssembliesUnderLib(string target) {
+        private static PackageIssue CreatePackageIssueForAssembliesUnderLib(string target) {
             return new PackageIssue(
                 PackageIssueLevel.Warning,
                 "Assembly not inside a framework folder",
-                "The assembly '" + target + "' is placed directly under 'lib' folder. It is recommended that assemblies be placed inside a specific framework folder.",
-                "Move it into a framework folder."
+                "The assembly '" + target + "' is placed directly under 'lib' folder. It is recommended that assemblies be placed inside a framework-specific folder.",
+                "Move it into a framework-specific folder."
             );
         }
 
-        private PackageIssue CreatePackageIssueForAssembliesOutsideLib(string target) {
+        private static PackageIssue CreatePackageIssueForAssembliesOutsideLib(string target) {
             return new PackageIssue(
                 PackageIssueLevel.Warning,
                 "Assembly outside lib folder",
