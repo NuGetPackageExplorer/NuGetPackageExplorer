@@ -68,9 +68,11 @@
         <ZipExe>$(PackageExplorerRoot)\Tools\7za920\7za.exe</ZipExe>
         <DeployNpeZipFileName>Npe$(ApplicationName).zip</DeployNpeZipFileName>
         <DeployZipFileName>$(ApplicationName).zip</DeployZipFileName>
+        <PackagesFolder>$(PackageExplorerRoot)\Packages</PackagesFolder>
+        <NuGetExeToolPath>$(PackagesFolder)\NuGet.exe</NuGetExeToolPath>
 	</PropertyGroup>
 	
-	<Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment;">
+	<Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; BuildPackages">
 	</Target>
 	
 	<Target Name="CheckTools">
@@ -169,6 +171,12 @@
             Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(DeployNpeZipFileName)&quot;"
             WorkingDirectory="$(DeployDirectory)" />
 
+  </Target>
+  
+  <Target Name="BuildPackages">
+        <Exec
+            Command="&quot;$(NuGetExeToolPath)&quot; pack -OutputDirectory $(DropDirectory)"
+            WorkingDirectory="$(PackagesFolder)" />
   </Target>
 	
 	<!--<Target Name="ZipPublishedFiles">

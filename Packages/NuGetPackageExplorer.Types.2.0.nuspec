@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata schemaVersion="2">
+    <id>NuGetPackageExplorer.Types</id>
+    <version>2.0</version>
+    <title>NuGet Package Explorer Types</title>
+    <authors>Luan Nguyen</authors>
+    <owners>Luan Nguyen</owners>
+    <licenseUrl>http://npe.codeplex.com/license</licenseUrl>
+    <projectUrl>http://npe.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This library contains shared types which allows you to write extensions to NuGet Package Explorer 2.0 or above. In the current version, you can write file viewer plugins to display files types that are not supported by NuGet Package Explorer by default.</description>
+    <summary>This library contains shared types which allows you to write extensions to NuGet Package Explorer 2.0 or above.</summary>
+    <tags>nuget package explorer mef extensions</tags>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="System.ComponentModel.Composition" targetFramework=".NETFramework4.0, .NETFramework4.0-Client" />
+      <frameworkAssembly assemblyName="WindowsBase" targetFramework=".NETFramework4.0, .NETFramework4.0-Client" />
+      <frameworkAssembly assemblyName="PresentationFramework" targetFramework=".NETFramework4.0-Client, .NETFramework4.0" />
+      <frameworkAssembly assemblyName="PresentationCore" targetFramework=".NETFramework4.0-Client, .NETFramework4.0" />
+      <frameworkAssembly assemblyName="System.Xaml" targetFramework=".NETFramework4.0-Client, .NETFramework4.0" />
+    </frameworkAssemblies>
+  </metadata>
+  <files>
+    <file src="content\MyCustomContentViewer.cs.pp" target="content\MyCustomContentViewer.cs.pp" />
+    <file src="..\Types\bin\Release\NuGetPackageExplorer.Types.dll" target="lib\net40-client\NuGetPackageExplorer.Types.dll" />
+    <file src="tools\install.ps1" target="tools\install.ps1" />
+  </files>
+</package>
