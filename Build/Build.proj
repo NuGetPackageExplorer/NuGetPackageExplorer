@@ -69,7 +69,7 @@
         <DeployNpeZipFileName>Npe$(ApplicationName).zip</DeployNpeZipFileName>
         <DeployZipFileName>$(ApplicationName).zip</DeployZipFileName>
         <PackagesFolder>$(PackageExplorerRoot)\Packages</PackagesFolder>
-        <NuGetExeToolPath>$(PackagesFolder)\NuGet.exe</NuGetExeToolPath>
+        <NuGetExeToolPath>$(PackageExplorerRoot)\NuGet.exe</NuGetExeToolPath>
 	</PropertyGroup>
 	
 	<Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; BuildPackages">
@@ -175,7 +175,7 @@
   
   <Target Name="BuildPackages">
         <Exec
-            Command="&quot;$(NuGetExeToolPath)&quot; pack -OutputDirectory $(DropDirectory)"
+            Command="&quot;$(NuGetExeToolPath)&quot; pack $(PackagesFolder)\NuGetPackageExplorer.Types.nuspec -OutputDirectory $(DropDirectory)"
             WorkingDirectory="$(PackagesFolder)" />
   </Target>
 	
