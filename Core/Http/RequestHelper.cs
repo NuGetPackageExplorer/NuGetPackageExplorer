@@ -51,6 +51,7 @@ namespace NuGet {
                         // This is to work around the "The underlying connection was closed: An unexpected error occurred on a receive."
                         // exception.
                         ((HttpWebRequest)request).KeepAlive = false;
+                        ((HttpWebRequest)request).ProtocolVersion = HttpVersion.Version10;
                     }
                     
                     // Prepare the request, we do something like write to the request stream
