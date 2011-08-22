@@ -416,7 +416,8 @@
             Grid.RowSpan="3"
             ShowsPreview="True" 
             ResizeBehavior="PreviousAndNext" 
-            Width="4" 
+            Width="4"
+            Visibility="{Binding ShowPackageAnalysis, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}"
             HorizontalAlignment="Center" 
             VerticalAlignment="Stretch" />
         
