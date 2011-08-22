@@ -36,12 +36,6 @@ namespace PackageExplorerViewModel {
             set;
         }
 
-        [Import(typeof(IProxyService))]
-        public Lazy<IProxyService> ProxyService {
-            get;
-            set;
-        }
-
         [Import(typeof(IPluginManager))]
         public IPluginManager PluginManager {
             get;
@@ -68,7 +62,6 @@ namespace PackageExplorerViewModel {
                 UIServices,
                 EditorService.Value,
                 SettingsManager,
-                ProxyService.Value,
                 ContentViewerMetadata,
                 PackageRules);
         }
@@ -76,7 +69,6 @@ namespace PackageExplorerViewModel {
         public PackageChooserViewModel CreatePackageChooserViewModel() {
             var model = new PackageChooserViewModel(
                 new MruPackageSourceManager(new PackageSourceSettings(SettingsManager)), 
-                ProxyService.Value, 
                 SettingsManager.ShowLatestVersionOfPackage);
             model.PropertyChanged += OnPackageChooserViewModelPropertyChanged;
             return model;

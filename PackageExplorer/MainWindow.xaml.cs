@@ -30,9 +30,6 @@ namespace PackageExplorer {
         [Import]
         public IUIServices UIServices { get; set; }
 
-        [Import(typeof(IProxyService))]
-        public Lazy<IProxyService> ProxyService { get; set; }
-
         [Import]
         public IPackageDownloader PackageDownloader { get; set; }
 
@@ -208,7 +205,6 @@ namespace PackageExplorer {
                         selectedPackageInfo.DownloadUrl,
                         selectedPackageInfo.Id,
                         packageVersion,
-                        ProxyService.Value,
                         processPackageAction
                     );
                 }
@@ -407,7 +403,6 @@ namespace PackageExplorer {
                     downloadUrl,
                     item.Id,
                     item.Version,
-                    ProxyService.Value,
                     package => LoadPackage(package, item.Path, PackageType.DataServicePackage)
                 );
             }

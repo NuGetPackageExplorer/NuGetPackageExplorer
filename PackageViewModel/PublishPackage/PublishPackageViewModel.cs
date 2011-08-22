@@ -9,7 +9,6 @@ namespace PackageExplorerViewModel {
     public class PublishPackageViewModel : ViewModelBase, IObserver<int> {
         private readonly IPackageMetadata _package;
         private readonly Lazy<Stream> _packageStream;
-        private readonly IProxyService _proxyService;
         private readonly MruPackageSourceManager _mruSourceManager;
         private readonly ISettingsManager _settingsManager;
         private string _publishKey;
@@ -25,7 +24,6 @@ namespace PackageExplorerViewModel {
             _settingsManager = settingsManager;
             _package = viewModel.PackageMetadata;
             _packageStream = new Lazy<Stream>(viewModel.GetCurrentPackageStream);
-            _proxyService = viewModel.ProxyService;
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
         }
 
@@ -158,8 +156,7 @@ namespace PackageExplorerViewModel {
                 if (_uploadHelper == null || !PublishUrl.Equals(_uploadHelper.OriginalSource, StringComparison.OrdinalIgnoreCase)) {
                     _uploadHelper = new GalleryServer(
                         HttpUtility.CreateUserAgentString(Constants.UserAgentClient), 
-                        PublishUrl, 
-                        _proxyService);
+                        PublishUrl);
                 }
                 return _uploadHelper;
             }

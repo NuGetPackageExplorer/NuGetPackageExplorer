@@ -259,6 +259,15 @@ namespace NuGet.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to resolve &apos;{0}&apos;..
+        /// </summary>
+        internal static string UnableToResolveUri {
+            get {
+                return ResourceManager.GetString("UnableToResolveUri", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Key &apos;{0}&apos; does not exist..
         /// </summary>
         internal static string UserSettings_KeyDoesNotExist {

@@ -69,9 +69,24 @@
     <Compile Include="Authoring\PhysicalPackageFile.cs" />
     <Compile Include="Configuration\ISettings.cs" />
     <Compile Include="Configuration\UserSettings.cs" />
+    <Compile Include="Extensions\CredentialProviderExtensions.cs" />
     <Compile Include="Extensions\FileSystemExtensions.cs" />
     <Compile Include="Extensions\SettingsExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
+    <Compile Include="Http\CredentialStore.cs" />
+    <Compile Include="Http\HttpClient.cs" />
+    <Compile Include="Http\HttpUtility.cs" />
+    <Compile Include="Http\ICredentialCache.cs" />
+    <Compile Include="Http\ICredentialProvider.cs" />
+    <Compile Include="Http\IHttpClient.cs" />
+    <Compile Include="Http\IHttpClientEvents.cs" />
+    <Compile Include="Http\IHttpWebResponse.cs" />
+    <Compile Include="Http\IProxyCache.cs" />
+    <Compile Include="Http\NullCredentialProvider.cs" />
+    <Compile Include="Http\ProgressEventArgs.cs" />
+    <Compile Include="Http\ProxyCache.cs" />
+    <Compile Include="Http\RedirectedHttpClient.cs" />
+    <Compile Include="Http\RequestHelper.cs" />
     <Compile Include="Packages\Constants.cs" />
     <Compile Include="Packages\DataServicePackage.cs" />
     <Compile Include="Packages\IPackagePathResolver.cs" />
@@ -80,23 +95,14 @@
     <Compile Include="Packages\SimplePackage.cs" />
     <Compile Include="ProjectSystem\IFileSystem.cs" />
     <Compile Include="ProjectSystem\PhysicalFileSystem.cs" />
-    <Compile Include="Repositories\CredentialProviderExtensions.cs" />
     <Compile Include="Repositories\DataServicePackageRepository.cs" />
-    <Compile Include="Repositories\DefaultCredentialProvider.cs" />
-    <Compile Include="Repositories\ICredentialProvider.cs" />
     <Compile Include="Repositories\IPackageRepository.cs" />
     <Compile Include="Repositories\MachineCache.cs" />
-    <Compile Include="Repositories\IProxyService.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\CollectionExtensions.cs" />
-    <Compile Include="Repositories\ProxyService.cs" />
     <Compile Include="Utility\CryptoHashProvider.cs" />
     <Compile Include="Utility\GalleryServer.cs" />
-    <Compile Include="Utility\HttpClient.cs" />
-    <Compile Include="Utility\HttpUtility.cs" />
     <Compile Include="Utility\IHashProvider.cs" />
-    <Compile Include="Utility\IHttpClient.cs" />
-    <Compile Include="Utility\IPackageFactory.cs" />
     <Compile Include="Authoring\Manifest.cs" />
     <Compile Include="Authoring\ManifestDependency.cs" />
     <Compile Include="Authoring\ManifestFile.cs" />
@@ -108,11 +114,11 @@
     </Compile>
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\PackageExtensions.cs" />
+    <Compile Include="Utility\IProgressProvider.cs" />
     <Compile Include="Utility\PackageIdValidator.cs" />
     <Compile Include="Utility\PackageUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Utility\RedirectedHttpClient.cs" />
     <Compile Include="Utility\UriUtility.cs" />
     <Compile Include="Utility\VersionSpec.cs" />
     <Compile Include="Utility\VersionUtility.cs" />
@@ -120,8 +126,8 @@
     <Compile Include="Packages\ZipPackageAssemblyReference.cs" />
     <Compile Include="Packages\ZipPackageFile.cs" />
     <Compile Include="Extensions\XElementExtensions.cs" />
+    <Compile Include="Utility\WebRequestEventArgs.cs" />
     <Compile Include="Utility\XmlUtility.cs" />
-    <Compile Include="Utility\ZipPackageFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="NuGetResources.resx">

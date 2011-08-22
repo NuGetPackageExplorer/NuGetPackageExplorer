@@ -4,7 +4,6 @@ using System.Net;
 
 namespace NuGet {
     public static class HttpUtility {
-
         private const string UserAgentTemplate = "{0}/{1} ({2})";
 
         public static string CreateUserAgentString(string client) {

@@ -5,6 +5,7 @@ using System.IO;
 using System.Windows;
 using PackageExplorerViewModel;
 using NuGetPackageExplorer.Types;
+using NuGet;
 
 namespace PackageExplorer {
     /// <summary>
@@ -34,6 +35,8 @@ namespace PackageExplorer {
 
         private void Application_Startup(object sender, StartupEventArgs e) {
             MigrateSettings();
+
+            HttpClient.DefaultCredentialProvider = new WindowsCredentialProvider();
 
             MainWindow window = Container.GetExportedValue<MainWindow>();
             window.Show();

@@ -26,14 +26,6 @@ namespace NuGet {
             EnsureManifest();
         }
 
-        internal ZipPackage(Func<Stream> streamFactory) {
-            if (streamFactory == null) {
-                throw new ArgumentNullException("streamFactory");
-            }
-            _streamFactory = streamFactory;
-            EnsureManifest();
-        }
-
         public string Id {
             get;
             set;

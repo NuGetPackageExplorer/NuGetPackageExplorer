@@ -18,14 +18,10 @@ namespace PackageExplorerViewModel {
         private IQueryContext<PackageInfo> _currentQuery;
         private string _currentSearch;
         private MruPackageSourceManager _packageSourceManager;
-        private readonly DataServicePackageRepositoryFactory _packageRepositoryFactory;
 
-        public PackageChooserViewModel(MruPackageSourceManager packageSourceManager, IProxyService proxyService, bool showLatestVersion) {
+        public PackageChooserViewModel(MruPackageSourceManager packageSourceManager, bool showLatestVersion) {
             if (packageSourceManager == null) {
                 throw new ArgumentNullException("packageSourceManager");
-            }
-            if (proxyService == null) {
-                throw new ArgumentNullException("proxyService");
             }
 
             _showLatestVersion = showLatestVersion;
@@ -36,7 +32,6 @@ namespace PackageExplorerViewModel {
             NavigationCommand = new RelayCommand<string>(NavigationCommandExecute, NavigationCommandCanExecute);
             LoadedCommand = new RelayCommand(() => Sort("VersionDownloadCount", ListSortDirection.Descending));
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
-            _packageRepositoryFactory = new DataServicePackageRepositoryFactory(proxyService);
             _packageSourceManager = packageSourceManager;
         }
 
@@ -115,7 +110,7 @@ namespace PackageExplorerViewModel {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private DataServicePackageRepository GetPackageRepository() {
             if (_packageRepository == null) {
-                _packageRepository = _packageRepositoryFactory.CreateRepository(PackageSource);
+                _packageRepository = DataServicePackageRepositoryFactory.CreateRepository(PackageSource);
             }
             return _packageRepository;
         }

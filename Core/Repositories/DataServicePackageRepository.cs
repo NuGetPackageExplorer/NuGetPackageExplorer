@@ -6,17 +6,18 @@ namespace NuGet {
     public class DataServicePackageRepository : IPackageRepository {
         private readonly DataServiceContext _context;
         private DataServiceQuery<DataServicePackage> _query;
-        private readonly IHttpClient _client;
+        private readonly IHttpClient _httpClient;
 
-        public DataServicePackageRepository(IHttpClient client)
+        public DataServicePackageRepository(IHttpClient httpClient)
         {
-            if (null == client)
+            if (httpClient == null)
             {
-                throw new ArgumentNullException("client");
+                throw new ArgumentNullException("httpClient");
             }
-            _client = client;
-            _context = new DataServiceContext(client.Uri);
-
+            _httpClient = httpClient;
+            _httpClient.AcceptCompression = true;
+            
+            _context = new DataServiceContext(httpClient.Uri);
             _context.SendingRequest += OnSendingRequest;
             _context.IgnoreMissingProperties = true;
         }
@@ -28,7 +29,7 @@ namespace NuGet {
         }
 
         private void OnSendingRequest(object sender, SendingRequestEventArgs e) {
-            _client.InitializeRequest(e.Request);
+            _httpClient.InitializeRequest(e.Request);
         }
 
         IQueryable<IPackage> IPackageRepository.GetPackages() {

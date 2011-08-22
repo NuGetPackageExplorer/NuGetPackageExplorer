@@ -192,4 +192,7 @@
   <data name="Manifest_InvalidVersion" xml:space="preserve">
     <value>No namespace was found corresponding to the schema version '{0}'. Add an entry to the VersionToSchemaMappings dictionary in '{1}'.</value>
   </data>
+  <data name="UnableToResolveUri" xml:space="preserve">
+    <value>Unable to resolve '{0}'.</value>
+  </data>
 </root>

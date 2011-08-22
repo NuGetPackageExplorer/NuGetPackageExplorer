@@ -24,7 +24,6 @@ namespace PackageExplorerViewModel {
         private readonly IUIServices _uiServices;
         private readonly IPackageEditorService _editorService;
         private readonly ISettingsManager _settingsManager;
-        private readonly IProxyService _proxyService;
         private readonly IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> _contentViewerMetadata;
         private readonly IList<Lazy<IPackageRule>> _packageRules;
 
@@ -35,7 +34,6 @@ namespace PackageExplorerViewModel {
             IUIServices uiServices,
             IPackageEditorService editorService,
             ISettingsManager settingsManager,
-            IProxyService proxyService,
             IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata,
             IList<Lazy<IPackageRule>> packageRules) {
 
@@ -54,16 +52,12 @@ namespace PackageExplorerViewModel {
             if (settingsManager == null) {
                 throw new ArgumentNullException("settingsManager");
             }
-            if (proxyService == null) {
-                throw new ArgumentNullException("proxyService");
-            }
 
             _settingsManager = settingsManager;
             _editorService = editorService;
             _uiServices = uiServices;
             _mruManager = mruManager;
             _package = package;
-            _proxyService = proxyService;
             _contentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
@@ -82,12 +76,6 @@ namespace PackageExplorerViewModel {
         internal IUIServices UIServices {
             get {
                 return _uiServices;
-            }
-        }
-
-        internal IProxyService ProxyService {
-            get {
-                return _proxyService;
             }
         }
 

@@ -25,7 +25,6 @@ namespace PackageExplorer {
             Uri downloadUri,
             string packageId,
             Version packageVersion,
-            IProxyService proxyService,
             Action<IPackage> callback) {
 
             _progressDialog = new ProgressDialog {
@@ -57,7 +56,7 @@ namespace PackageExplorer {
             // download package on background thread
             TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             Task.Factory.StartNew(
-                () => DownloadData(downloadUri, proxyService, reportProgress, cts.Token),
+                () => DownloadData(downloadUri, reportProgress, cts.Token),
                 cts.Token
             ).ContinueWith(
                 task => {
@@ -80,13 +79,14 @@ namespace PackageExplorer {
             );
         }
 
-        private IPackage DownloadData(Uri url, IProxyService proxyService, Action<int, string> reportProgressAction, CancellationToken cancelToken) {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            request.UserAgent = HttpUtility.CreateUserAgentString(PackageExplorerViewModel.Constants.UserAgentClient);
-            request.UseDefaultCredentials = true;
-            request.Proxy = proxyService.GetProxy(url);
+        private IPackage DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken) {
 
-            using (HttpWebResponse response = (HttpWebResponse)request.GetResponse()) {
+            var httpClient = new RedirectedHttpClient(url) {
+                UserAgent = HttpUtility.CreateUserAgentString(PackageExplorerViewModel.Constants.UserAgentClient),
+                AcceptCompression = false
+            };
+
+            using (HttpWebResponse response = (HttpWebResponse)httpClient.GetResponse()) {
                 cancelToken.ThrowIfCancellationRequested();
                 using (Stream requestStream = response.GetResponseStream()) {
                     int chunkSize = 4 * 1024;

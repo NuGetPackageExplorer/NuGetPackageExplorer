@@ -12,18 +12,14 @@ namespace NuGet {
         private const string PublishPackageService = "PublishedPackages/Publish";
         private readonly string _userAgent;
         private readonly string _baseGalleryServerUrl;
-        private readonly IWebProxy _internalProxy;
         private readonly string _originalSource;
 
-        public GalleryServer(string userAgent, string galleryServerSource, IProxyService proxyService) {
+        public GalleryServer(string userAgent, string galleryServerSource) {
             if (string.IsNullOrEmpty(galleryServerSource)) {
                 throw new ArgumentNullException("galleryServerSource");
             }
-            if (null == proxyService) {
-                throw new ArgumentNullException("proxyService");
-            }
+            
             _originalSource = galleryServerSource.Trim();
-            _internalProxy = proxyService.GetProxy(new Uri(galleryServerSource));
             _baseGalleryServerUrl = GetSafeRedirectedUri(galleryServerSource);
             _userAgent = userAgent;
         }
@@ -48,7 +44,6 @@ namespace NuGet {
             var url = new Uri(String.Format(CultureInfo.InvariantCulture, "{0}/{1}/{2}/nupkg", _baseGalleryServerUrl, CreatePackageService, apiKey));
 
             WebClient client = new WebClient();
-            client.Proxy = _internalProxy;
             client.Headers[HttpRequestHeader.ContentType] = "application/octet-stream";
             client.Headers[HttpRequestHeader.UserAgent] = _userAgent;
             client.UploadProgressChanged += OnUploadProgressChanged;
@@ -75,7 +70,6 @@ namespace NuGet {
                 requestStream.Seek(0, SeekOrigin.Begin);
 
                 WebClient client = new WebClient();
-                client.Proxy = _internalProxy;
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
                 client.Headers[HttpRequestHeader.UserAgent] = _userAgent;
                 client.UploadProgressChanged += OnUploadProgressChanged;
@@ -154,11 +148,10 @@ namespace NuGet {
             state.ProgressObserver.OnNext(Math.Min(100, 2 * e.ProgressPercentage));
         }
 
-        private string GetSafeRedirectedUri(string url) {
+        private static string GetSafeRedirectedUri(string url) {
             try {
                 Uri uri = new Uri(url);
-                IWebProxy proxy = _internalProxy;
-                RedirectedHttpClient client = new RedirectedHttpClient(uri, proxy);
+                RedirectedHttpClient client = new RedirectedHttpClient(uri);
                 return client.Uri.ToString();
             }
             catch (WebException e) {
