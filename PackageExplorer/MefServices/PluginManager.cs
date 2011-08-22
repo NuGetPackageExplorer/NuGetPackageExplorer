@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorer {
@@ -55,8 +56,7 @@ namespace PackageExplorer {
                             File.Delete(deleteMePath);
 
                             file = new FileInfo(targetPath);
-                            AddPluginToCatalog(file);
-                            return true;
+                            return AddPluginToCatalog(file);
                         }
                     }
                 }
@@ -98,10 +98,19 @@ namespace PackageExplorer {
             }
         }
 
-        private void AddPluginToCatalog(FileInfo pluginFile) {
-            var fileCatalog = new AssemblyCatalog(pluginFile.FullName);
-            _pluginCatalog.Catalogs.Add(fileCatalog);
-            _pluginToCatalog[pluginFile] = fileCatalog;
+        private bool AddPluginToCatalog(FileInfo pluginFile) {
+            try {
+                var fileCatalog = new AssemblyCatalog(pluginFile.FullName);
+                if (fileCatalog.Parts.Any()) {
+                    _pluginCatalog.Catalogs.Add(fileCatalog);
+                    _pluginToCatalog[pluginFile] = fileCatalog;
+                }
+                return true;
+            }
+            catch (ReflectionTypeLoadException) {
+                // ignore loading exception
+                return false;
+            }
         }
 
         private void RemovePluginFromCatalog(FileInfo pluginFile) {
