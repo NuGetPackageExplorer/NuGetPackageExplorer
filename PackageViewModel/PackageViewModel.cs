@@ -840,6 +840,8 @@ namespace PackageExplorerViewModel {
             }
             else {
                 PackageMetadata.AddAssemblyReference(file.Name);
+                // mark the document as dirty
+                NotifyChanges();
             }
         }
 
