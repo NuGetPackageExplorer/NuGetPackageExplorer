@@ -382,6 +382,14 @@ namespace PackageExplorerViewModel {
             }
         }
 
+        public bool ContainsAssemblyReference(string name) {
+            return PackageAssemblyReferences.Any(f => f.File.Equals(name, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public void AddAssemblyReference(string name) {
+            PackageAssemblyReferences.Add(new AssemblyReference(name));
+        }
+
         public void ResetErrors() {
             _propertyErrors.Clear();
         }

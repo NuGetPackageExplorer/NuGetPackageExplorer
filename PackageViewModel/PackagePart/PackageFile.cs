@@ -90,6 +90,10 @@ namespace PackageExplorerViewModel {
             get { return PackageViewModel.OpenWithContentFileCommand; }
         }
 
+        public ICommand AddAsAssemblyReferenceCommand {
+            get { return PackageViewModel.AddAsAssemblyReferenceCommand; }
+        }
+
         public RelayCommand ReplaceCommand { get; private set; }
 
         public void Replace()
