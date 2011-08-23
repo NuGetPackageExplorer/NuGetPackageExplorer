@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NuGetPackageExplorer.Types;
 using System.ComponentModel.Composition;
-using NuGet;
 using System.IO;
+using NuGet;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel.Rules {
 

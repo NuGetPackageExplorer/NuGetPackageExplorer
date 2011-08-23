@@ -57,14 +57,15 @@
     <Compile Include="EmptyPackage.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="PackageAnalyzer\NonAssemblyReferenceName.cs" />
+    <Compile Include="PackageAnalyzer\NonAssemblyInsideLibRule.cs" />
+    <Compile Include="PackageAnalyzer\NonAssemblyReferenceNameRule.cs" />
     <Compile Include="PackageAnalyzer\MisplacedTransformFileRule.cs" />
     <Compile Include="PackageAnalyzer\InvalidFrameworkFolderRule.cs" />
     <Compile Include="PackageAnalyzer\MisplacedScriptFileRule.cs" />
     <Compile Include="PackageAnalyzer\MisplacedAssemblyRule.cs" />
     <Compile Include="PackageAnalyzer\MissingContentOrDependencyRule.cs" />
     <Compile Include="PackageAnalyzer\MissingSummaryRule.cs" />
-    <Compile Include="PackageAnalyzer\OrphanAssemblyReferenceName.cs" />
+    <Compile Include="PackageAnalyzer\OrphanAssemblyReferenceNameRule.cs" />
     <Compile Include="PackageAnalyzer\PackageIssueComparer.cs" />
     <Compile Include="PackageChooser\PackageSourceSettings.cs" />
     <Compile Include="PluginManagerViewModel.cs" />

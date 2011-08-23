@@ -191,8 +191,8 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private SortedCollection<PackageIssue> _packageIssues = new SortedCollection<PackageIssue>(PackageIssueComparer.Instance);
-        public SortedCollection<PackageIssue> PackageIssues {
+        private ObservableCollection<PackageIssue> _packageIssues = new ObservableCollection<PackageIssue>();
+        public ObservableCollection<PackageIssue> PackageIssues {
             get {
                 return _packageIssues;
             }
@@ -796,7 +796,9 @@ namespace PackageExplorerViewModel {
             }
             else if (_packageRules != null) {
                 var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-                IEnumerable<PackageIssue> allIssues = _packageRules.SelectMany(r => r.Value.Check(package));
+                List<PackageIssue> allIssues = _packageRules.SelectMany(r => r.Value.Check(package)).ToList();
+                allIssues.Sort(PackageIssueComparer.Instance);
+
                 SetPackageIssues(allIssues);
                 ShowPackageAnalysis = true;
             }

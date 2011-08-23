@@ -12,7 +12,7 @@ namespace PackageExplorerViewModel.Rules {
     internal class InvalidFrameworkFolderRule : IPackageRule {
         public string Name {
             get {
-                return "InvalidFrameworkFolder";
+                return "Invalid Framework Folder";
             }
         }
 

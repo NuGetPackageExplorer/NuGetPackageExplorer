@@ -8,7 +8,7 @@ using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel.Rules {
     [Export(typeof(IPackageRule))]
-    internal class OrphanAssemblyReferenceName : IPackageRule {
+    internal class OrphanAssemblyReferenceNameRule : IPackageRule {
 
         public string Name {
             get {
@@ -18,7 +18,7 @@ namespace PackageExplorerViewModel.Rules {
 
         public IEnumerable<PackageIssue> Check(IPackage package) {
             if (package.References.Any()) {
-                var allLibFiles = package.GetFilesInFolders("lib").Select(Path.GetFileName);
+                var allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
                 var libFilesSet = new HashSet<string>(allLibFiles, StringComparer.OrdinalIgnoreCase);
 
                 return from reference in package.References

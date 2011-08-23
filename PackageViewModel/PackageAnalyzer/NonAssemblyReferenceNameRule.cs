@@ -7,7 +7,7 @@ using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel.Rules {
     [Export(typeof(IPackageRule))]
-    internal class NonAssemblyReferenceName : IPackageRule {
+    internal class NonAssemblyReferenceNameRule : IPackageRule {
 
         public string Name {
             get {
