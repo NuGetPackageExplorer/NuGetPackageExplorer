@@ -29,8 +29,13 @@ namespace NuGet {
         public IEnumerable<FrameworkName> SupportedFrameworks { get; private set; }
 
         public override string ToString() {
-            return String.Format(CultureInfo.CurrentCulture, "{0} ({1})", AssemblyName,
+            if (SupportedFrameworks.Any()) {
+                return String.Format(CultureInfo.CurrentCulture, "{0} ({1})", AssemblyName,
                                  String.Join("; ", SupportedFrameworks));
+            }
+            else {
+                return AssemblyName;
+            }
         }
     }
 }

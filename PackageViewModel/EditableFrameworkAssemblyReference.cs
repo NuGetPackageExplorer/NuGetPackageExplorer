@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.Versioning;
 using NuGet;
 
@@ -25,7 +26,7 @@ namespace PackageExplorerViewModel {
 
         private IEnumerable<FrameworkName> _supportedFrameworks;
         public IEnumerable<FrameworkName> SupportedFrameworks {
-            get { return _supportedFrameworks; }
+            get { return _supportedFrameworks ?? Enumerable.Empty<FrameworkName>(); }
             set {
                 if (_supportedFrameworks != value) {
                     _supportedFrameworks = value;
