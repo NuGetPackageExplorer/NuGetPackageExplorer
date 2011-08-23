@@ -12,7 +12,7 @@ namespace NuGet {
             }
         }
 
-        public static void CopyTo<T>(this ICollection<T> sourceCollection, ICollection<T> targetCollection)
+        public static void CopyTo<T>(this IEnumerable<T> sourceCollection, ICollection<T> targetCollection)
         {
             targetCollection.Clear();
             targetCollection.AddRange(sourceCollection);

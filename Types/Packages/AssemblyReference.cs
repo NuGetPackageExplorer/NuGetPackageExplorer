@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace NuGet {
-    public class AssemblyReference {
+    public class AssemblyReference : IEquatable<AssemblyReference> {
         public string File { get; private set; }
 
         public AssemblyReference(string file) {
@@ -10,6 +10,14 @@ namespace NuGet {
             }
 
             File = file;
+        }
+
+        public bool Equals(AssemblyReference other) {
+            return File.Equals(other.File, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public override int GetHashCode() {
+            return File.GetHashCode();
         }
     }
 }

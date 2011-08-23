@@ -33,6 +33,9 @@
                 <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Re_place with..." Command="{Binding ReplaceCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
+            
+                <Separator />
+                <MenuItem Header="Add to Filtered Assembly References" Command="{Binding AddAsAssemblyReferenceCommand}" CommandParameter="{Binding}" />
             </ContextMenu>
 
             <ContextMenu x:Key="FolderSharedContextMenu" Opened="PackageFolderContextMenu_Opened" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">

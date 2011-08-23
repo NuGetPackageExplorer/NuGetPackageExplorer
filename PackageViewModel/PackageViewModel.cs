@@ -16,7 +16,7 @@ namespace PackageExplorerViewModel {
         private readonly IPackage _package;
         private EditablePackageMetadata _packageMetadata;
         private PackageFolder _packageRoot;
-        private ICommand _saveCommand, _editCommand, _cancelEditCommand, _applyEditCommand, _viewContentCommand, _saveContentCommand;
+        private ICommand _saveCommand, _editCommand, _cancelEditCommand, _applyEditCommand, _viewContentCommand, _saveContentCommand, _addAsAssemblyReferenceCommand;
         private ICommand _addContentFolderCommand, _addContentFileCommand, _addNewFolderCommand, _openWithContentFileCommand, _executePackageCommand, _viewPackageAnalysisCommand;
         private RelayCommand<object> _openContentFileCommand, _deleteContentCommand, _renameContentCommand;
         private RelayCommand _publishCommand, _exportCommand;
@@ -804,6 +804,43 @@ namespace PackageExplorerViewModel {
 
         private bool CanExecutePackageAnalysis(string parameter) {
             return parameter == "Hide" || !IsInEditMode;
+        }
+
+        #endregion
+
+        #region AddAsAssemblyReferenceCommand
+
+        public ICommand AddAsAssemblyReferenceCommand {
+            get {
+                if (_addAsAssemblyReferenceCommand == null) {
+                    _addAsAssemblyReferenceCommand = new RelayCommand<PackageFile>(AddAsAssemblyReferenceExecute, CanAddAsAssemblyReference);
+                }
+                return _addAsAssemblyReferenceCommand;
+            }
+        }
+
+        private bool CanAddAsAssemblyReference(PackageFile file) {
+            if (file == null) {
+                return false;
+            }
+
+            return file != null && 
+                   (file.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
+                    file.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) &&
+                    (IsInEditMode || !PackageMetadata.ContainsAssemblyReference(file.Name));
+        }
+
+        private void AddAsAssemblyReferenceExecute(PackageFile file) {
+            if (file == null) {
+                return;
+            }
+
+            if (IsInEditMode) {
+                _editorService.AddAssemblyReference(file.Name);
+            }
+            else {
+                PackageMetadata.AddAssemblyReference(file.Name);
+            }
         }
 
         #endregion

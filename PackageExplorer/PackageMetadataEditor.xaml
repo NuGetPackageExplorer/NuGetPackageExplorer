@@ -79,7 +79,7 @@
                     <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
                 </Button>
                 
-                <TextBlock Text="{Binding File, Mode=OneWay}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"  />
+                <TextBlock Text="{Binding Mode=OneWay}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis"  />
             </DockPanel>
         </DataTemplate>
     </UserControl.Resources>

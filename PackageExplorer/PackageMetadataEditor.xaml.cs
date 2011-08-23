@@ -18,7 +18,7 @@ namespace PackageExplorer {
 
         private ObservableCollection<PackageDependency> _packageDependencies;
         private ObservableCollection<FrameworkAssemblyReference> _frameworkAssemblies;
-        private ObservableCollection<AssemblyReference> _filteredAssemblyReferences;
+        private ObservableCollection<string> _filteredAssemblyReferences;
         private EditablePackageDependency _newPackageDependency;
         private EditableFrameworkAssemblyReference _newFrameworkAssembly;
 
@@ -50,7 +50,7 @@ namespace PackageExplorer {
                 new ObservableCollection<FrameworkAssemblyReference>(viewModel.PackageMetadata.FrameworkAssemblies);
             FrameworkAssembliesList.ItemsSource = _frameworkAssemblies;
 
-            _filteredAssemblyReferences = new ObservableCollection<AssemblyReference>(viewModel.PackageMetadata.PackageAssemblyReferences);
+            _filteredAssemblyReferences = new ObservableCollection<string>(viewModel.PackageMetadata.PackageAssemblyReferences.Select(f => f.File));
             AssemblyReferencesList.ItemsSource = _filteredAssemblyReferences;
         }
 
@@ -100,7 +100,7 @@ namespace PackageExplorer {
 
         private void RemoveFilteredAssemblyReferenceClicked(object sender, RoutedEventArgs e) {
             var button = (Button)sender;
-            var reference = (AssemblyReference)button.DataContext;
+            var reference = (string)button.DataContext;
             _filteredAssemblyReferences.Remove(reference);
         }
 
@@ -157,7 +157,7 @@ namespace PackageExplorer {
 
         private void AddReferenceFileNameClicked(object sender, RoutedEventArgs e) {
             string file = NewReferenceFileName.Text.Trim();
-            _filteredAssemblyReferences.Add(new AssemblyReference(file));
+            _filteredAssemblyReferences.Add(file);
             
             // after reference name is added, clear the textbox
             ClearFilteredAssemblyReferenceTextBox();
@@ -179,10 +179,17 @@ namespace PackageExplorer {
                 var viewModel = (PackageViewModel)DataContext;
                 _packageDependencies.CopyTo(viewModel.PackageMetadata.Dependencies);
                 _frameworkAssemblies.CopyTo(viewModel.PackageMetadata.FrameworkAssemblies);
-                _filteredAssemblyReferences.CopyTo(viewModel.PackageMetadata.PackageAssemblyReferences);
+                _filteredAssemblyReferences.Distinct().Select(s => new AssemblyReference(s)).CopyTo(
+                    viewModel.PackageMetadata.PackageAssemblyReferences);
             }
 
             return valid;
+        }
+
+        void IPackageEditorService.AddAssemblyReference(string name) {
+            if (!String.IsNullOrWhiteSpace(name)) {
+                _filteredAssemblyReferences.Add(name);
+            }
         }
 
         #endregion
