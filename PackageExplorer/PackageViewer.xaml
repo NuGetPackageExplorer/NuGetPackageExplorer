@@ -65,7 +65,7 @@
                             ToolTipService.ToolTip="{Binding IconUrl}"
                             Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
                             <Image         
-                                Source="{Binding IconUrl}" 
+                                Source="{Binding IconUrl, TargetNullValue={x:Null}}" 
                                 Width="32" 
                                 Height="32" 
                                 Stretch="Fill" 

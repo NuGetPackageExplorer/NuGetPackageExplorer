@@ -32,6 +32,7 @@
         <viewmodel:DisabledCommand x:Key="DisabledCommand" />
         <self:PackagePartToBoolConverter x:Key="PackagePartConverter" />
         <self:TruncateFilePathConverter x:Key="TruncatePathConverter" />
+        <self:TaskShortcutVisibilityConverter x:Key="TaskShortcutConverter" />
         
         <DataTemplate x:Key="PackageCommandTemplate">
             <TextBlock Text="{Binding Metadata.Text, Mode=OneTime}" />
@@ -248,13 +249,11 @@
         </StatusBar>
         
         <Grid x:Name="MainContentContainer">
-            <self:TaskShortcut
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center">
+            <self:TaskShortcut HorizontalAlignment="Center" VerticalAlignment="Center">
                 <self:TaskShortcut.Visibility>
-                    <MultiBinding Converter="{StaticResource andConverter}">
-                        <Binding Converter="{StaticResource invertedNullToVisibilityConverter}" ConverterParameter="luan" FallbackValue="Visible" TargetNullValue="Visible" Mode="OneWay" />
-                        <Binding Path="ShowTaskShortcuts" Source="{x:Static settings:Settings.Default}" ConverterParameter="thuy" Converter="{StaticResource boolToVis}" Mode="OneWay" />
+                    <MultiBinding Converter="{StaticResource TaskShortcutConverter}">
+                        <Binding Mode="OneWay" FallbackValue="{x:Null}" />
+                        <Binding Path="ShowTaskShortcuts" Source="{x:Static settings:Settings.Default}" Mode="OneWay" />
                     </MultiBinding>
                 </self:TaskShortcut.Visibility>
             </self:TaskShortcut>
