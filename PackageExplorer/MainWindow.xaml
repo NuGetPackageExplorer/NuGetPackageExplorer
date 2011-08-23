@@ -165,6 +165,7 @@
                         <Image Source="Images/FontDialogHS.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Show Common Tas_ks" IsChecked="{Binding ShowTaskShortcuts, Source={x:Static settings:Settings.Default}}" IsCheckable="True" />
                 <MenuItem Header="Show Status _Bar" x:Name="ShowStatusBarMenuItem" IsCheckable="True" IsChecked="True" />
             </MenuItem>
 
@@ -248,10 +249,15 @@
         
         <Grid x:Name="MainContentContainer">
             <self:TaskShortcut
-                x:Name="ComonTasksPane"
-                Visibility="{Binding Converter={StaticResource invertedNullToVisibilityConverter}}" 
                 HorizontalAlignment="Center" 
-                VerticalAlignment="Center" />
+                VerticalAlignment="Center">
+                <self:TaskShortcut.Visibility>
+                    <MultiBinding Converter="{StaticResource andConverter}">
+                        <Binding Converter="{StaticResource invertedNullToVisibilityConverter}" ConverterParameter="luan" FallbackValue="Visible" TargetNullValue="Visible" Mode="OneWay" />
+                        <Binding Path="ShowTaskShortcuts" Source="{x:Static settings:Settings.Default}" ConverterParameter="thuy" Converter="{StaticResource boolToVis}" Mode="OneWay" />
+                    </MultiBinding>
+                </self:TaskShortcut.Visibility>
+            </self:TaskShortcut>
         </Grid>
     </DockPanel>
 </Window>
