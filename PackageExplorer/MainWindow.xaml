@@ -233,6 +233,8 @@
                 <MenuItem Header="_Nuspec Reference" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/nuspec-reference" />
                 <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/version-range-specification" />
                 <Separator />
+                <MenuItem Header="Donate..." Command="GoToPage" CommandParameter="http://npe.cloudapp.net" />
+                <Separator />
                 <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="http://npe.codeplex.com/WorkItem/Create" />
                 <MenuItem Header="_About..." Click="AboutMenuItem_Click" />
             </MenuItem>
