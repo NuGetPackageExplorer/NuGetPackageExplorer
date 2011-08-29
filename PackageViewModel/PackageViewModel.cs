@@ -146,12 +146,6 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        public bool IsValid {
-            get {
-                return PackageHelper.IsPackageValid(PackageMetadata, GetFiles());
-            }
-        }
-
         private object _selectedItem;
         public object SelectedItem {
             get {
@@ -257,6 +251,11 @@ namespace PackageExplorerViewModel {
             get {
                 return _packageRoot;
             }
+        }
+
+        public IEnumerable<PackageIssue> Validate() {
+            var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
+            return package.Validate(_packageRules.Select(r => r.Value));
         }
 
         private void Export(string rootPath) {
@@ -712,8 +711,15 @@ namespace PackageExplorerViewModel {
                 return;
             }
 
-            if (!this.IsValid) {
-                UIServices.Show(Resources.PackageHasNoFile, MessageLevel.Warning);
+            // validate the package to see if there is any error before actually creating the package.
+            PackageIssue firstIssue = Validate().Where(p => p.Level == PackageIssueLevel.Error).FirstOrDefault();
+            if (firstIssue != null) {
+                UIServices.Show(
+                    Resources.PackageCreationFailed
+                        + Environment.NewLine 
+                        + Environment.NewLine
+                        + firstIssue.Description, 
+                    MessageLevel.Warning);
                 return;
             }
 
@@ -802,10 +808,7 @@ namespace PackageExplorerViewModel {
                 ShowPackageAnalysis = false;
             }
             else if (_packageRules != null) {
-                var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-                List<PackageIssue> allIssues = _packageRules.SelectMany(r => r.Value.Check(package)).ToList();
-                allIssues.Sort(PackageIssueComparer.Instance);
-
+                IEnumerable<PackageIssue> allIssues = Validate().OrderBy(p => p.Title, StringComparer.CurrentCulture);
                 SetPackageIssues(allIssues);
                 ShowPackageAnalysis = true;
             }

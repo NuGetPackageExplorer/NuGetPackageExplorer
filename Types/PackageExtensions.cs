@@ -29,9 +29,5 @@ namespace NuGetPackageExplorer.Types {
         public static IEnumerable<string> GetFilesUnderRoot(this IPackage package) {
             return GetFilesInFolder(package, String.Empty);
         }
-
-        public static bool IsValid(this IPackage package) {
-            return package.GetFiles().Any() || package.Dependencies.Any() || package.FrameworkAssemblies.Any();
-        }
     }
 }

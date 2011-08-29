@@ -10,13 +10,7 @@ namespace PackageExplorerViewModel.Rules {
 
     [Export(typeof(IPackageRule))]
     internal class InvalidFrameworkFolderRule : IPackageRule {
-        public string Name {
-            get {
-                return "Invalid Framework Folder";
-            }
-        }
-
-        public IEnumerable<PackageIssue> Check(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package) {
             var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var file in package.GetFiles()) {
                 string path = file.Path;
@@ -30,8 +24,7 @@ namespace PackageExplorerViewModel.Rules {
         }
 
         private bool IsInvalidFrameworkName(string name) {
-            var frameworkName = VersionUtility.ParseFrameworkName(name);
-            return frameworkName == VersionUtility.UnsupportedFrameworkName;
+            return VersionUtility.ParseFrameworkName(name) == VersionUtility.UnsupportedFrameworkName;
         }
 
         private PackageIssue CreatePackageIssue(string target) {

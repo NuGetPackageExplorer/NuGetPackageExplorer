@@ -160,6 +160,15 @@ namespace NuGet.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid assembly reference &apos;{0}&apos;. Ensure that a file named &apos;{0}&apos; exists in the lib directory..
+        /// </summary>
+        internal static string Manifest_InvalidReference {
+            get {
+                return ResourceManager.GetString("Manifest_InvalidReference", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid schema namespace &apos;{0}&apos;..
         /// </summary>
         internal static string Manifest_InvalidSchemaNamespace {

@@ -13,23 +13,18 @@ namespace PackageExplorerViewModel.Rules {
         private const string CodeTransformExtension = ".pp";
         private const string ConfigTransformExtension = ".transform";
 
-        public string Name {
-            get {
-                return "Misplaced Transform File";
-            }
-        }
-
-        public IEnumerable<PackageIssue> Check(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package) {
             foreach (PackageFile file in package.GetFiles()) {
                 string path = file.Path;
+
+                // if not a .transform file, ignore 
                 if (!path.EndsWith(CodeTransformExtension, StringComparison.OrdinalIgnoreCase) &&
                     !path.EndsWith(ConfigTransformExtension, StringComparison.OrdinalIgnoreCase)) {
                     continue;
                 }
 
-                string directory = Path.GetDirectoryName(path);
-                if (!directory.Equals(ContentFolder, StringComparison.OrdinalIgnoreCase) &&
-                    !directory.StartsWith("content\\", StringComparison.OrdinalIgnoreCase)) {
+                // if not inside 'content' folder, warn
+                if (!path.StartsWith(ContentFolder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) {
                     yield return CreatePackageIssueForMisplacedContent(path);
                 }
             }
@@ -38,9 +33,9 @@ namespace PackageExplorerViewModel.Rules {
         private static PackageIssue CreatePackageIssueForMisplacedContent(string path) {
             return new PackageIssue(
                 PackageIssueLevel.Warning,
-                "Transform file outside contents folder",
-                "The transform file '" + path + "' is outside the 'contents' folder and hence will not be transformed during installation of this package.",
-                "Move it into the 'contents' folder.");
+                "Transform file outside content folder",
+                "The transform file '" + path + "' is outside the 'content' folder and hence will not be transformed during installation of this package.",
+                "Move it into the 'content' folder.");
         }
     }
 }

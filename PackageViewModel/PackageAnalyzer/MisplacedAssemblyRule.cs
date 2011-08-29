@@ -9,25 +9,27 @@ namespace PackageExplorerViewModel.Rules {
 
     [Export(typeof(IPackageRule))]
     internal class MisplacedAssemblyRule : IPackageRule {
-        public string Name {
-            get {
-                return "Misplaced Assembly File";
-            }
-        }
+        const string LibFolder = "lib";
 
-        public IEnumerable<PackageIssue> Check(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package) {
             foreach (PackageFile file in package.GetFiles()) {
                 string path = file.Path;
-                if (path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) {
+                if (IsAssembly(path)) {
                     string directory = Path.GetDirectoryName(path);
-                    if (directory.Equals("lib", StringComparison.OrdinalIgnoreCase)) {
+
+                    if (directory.Equals(LibFolder, StringComparison.OrdinalIgnoreCase)) {
                         yield return CreatePackageIssueForAssembliesUnderLib(path);
                     }
-                    else if (!directory.StartsWith("lib", StringComparison.OrdinalIgnoreCase)) {
+                    else if (!directory.StartsWith(LibFolder, StringComparison.OrdinalIgnoreCase)) {
                         yield return CreatePackageIssueForAssembliesOutsideLib(path);
                     }
                 }
             }
+        }
+
+        private static bool IsAssembly(string path) {
+            return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
+                   path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
         }
 
         private static PackageIssue CreatePackageIssueForAssembliesUnderLib(string target) {

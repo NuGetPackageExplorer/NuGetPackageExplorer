@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
 
@@ -33,9 +34,18 @@ namespace PackageExplorerViewModel {
             string action = parameter as string;
 
             // if the action is Save Metadata, we don't care if the package is valid
-            if (action != SaveMetadataAction && !ViewModel.IsValid) {
-                ViewModel.UIServices.Show(Resources.PackageHasNoFile, MessageLevel.Warning);
-                return;
+            if (action != SaveMetadataAction) {
+                // validate the package to see if there is any error before actually creating the package.
+                PackageIssue firstIssue = ViewModel.Validate().Where(p => p.Level == PackageIssueLevel.Error).FirstOrDefault();
+                if (firstIssue != null) {
+                    ViewModel.UIServices.Show(
+                        Resources.PackageCreationFailed
+                            + Environment.NewLine
+                            + Environment.NewLine
+                            + firstIssue.Description,
+                        MessageLevel.Warning);
+                    return;
+                }
             }
 
             if (action == SaveAction || action == ForceSaveAction) {
@@ -61,8 +71,10 @@ namespace PackageExplorerViewModel {
         }
 
         private void Save() {
-            SavePackage(ViewModel.PackageSource);
-            RaiseCanExecuteChangedEvent();
+            bool succeeded = SavePackage(ViewModel.PackageSource);
+            if (succeeded) {
+                RaiseCanExecuteChangedEvent();
+            }
         }
 
         private void SaveAs() {
@@ -86,8 +98,10 @@ namespace PackageExplorerViewModel {
                     }
                 }
 
-                SavePackage(selectedPackagePath);
-                ViewModel.PackageSource = selectedPackagePath;
+                bool succeeded = SavePackage(selectedPackagePath);
+                if (succeeded) {
+                    ViewModel.PackageSource = selectedPackagePath;
+                }
             }
             RaiseCanExecuteChangedEvent();
         }
@@ -115,13 +129,15 @@ namespace PackageExplorerViewModel {
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private void SavePackage(string fileName) {
+        private bool SavePackage(string fileName) {
             try {
                 PackageHelper.SavePackage(ViewModel.PackageMetadata, ViewModel.GetFiles(), fileName, true);
                 ViewModel.OnSaved(fileName);
+                return true;
             }
             catch (Exception ex) {
                 ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
+                return false;
             }
         }
 

@@ -9,13 +9,7 @@ using NuGetPackageExplorer.Types;
 namespace PackageExplorerViewModel.Rules {
     [Export(typeof(IPackageRule))]
     internal class NonAssemblyInsideLibRule : IPackageRule {
-        public string Name {
-            get {
-                return "Non Assembly Files In Lib";
-            }
-        }
-
-        public IEnumerable<PackageIssue> Check(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package) {
             var allLibFiles = package.GetFilesInFolder("lib");
             var assembliesSet = new HashSet<string>(allLibFiles.Where(IsAssembly), StringComparer.OrdinalIgnoreCase);
 
@@ -28,11 +22,8 @@ namespace PackageExplorerViewModel.Rules {
             if (path.EndsWith(".xml", StringComparison.OrdinalIgnoreCase) ||
                 path.EndsWith(".pdb", StringComparison.OrdinalIgnoreCase)) {
 
-                string truncatedPath = Path.Combine(
-                    Path.GetDirectoryName(path),
-                    Path.GetFileNameWithoutExtension(path)) + ".dll";
-
-                return assemblies.Contains(truncatedPath);
+                return assemblies.Contains(Path.ChangeExtension(path, ".dll")) ||
+                       assemblies.Contains(Path.ChangeExtension(path, ".exe"));
             }
 
             return false;
@@ -47,8 +38,8 @@ namespace PackageExplorerViewModel.Rules {
             return new PackageIssue(
                 PackageIssueLevel.Warning,
                 "Incompatible files in lib folder",
-                "The file '" + target + "' is not a valid assembly. If it is a XML documentation file or a .pdb file, there is no matching .dll file specified in the same folder.",
-                "Either remove this file from 'lib' folder or add a matching .dll for it."
+                "The file '" + target + "' is not a valid assembly. If it is a XML documentation file or a .pdb file, there is no matching assembly specified in the same folder.",
+                "Either remove this file from 'lib' folder or add a matching assembly for it."
             );
         }
     }

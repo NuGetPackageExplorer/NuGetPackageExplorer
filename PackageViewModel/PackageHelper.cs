@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NuGet;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel {
     internal static class PackageHelper {
@@ -69,12 +70,8 @@ namespace PackageExplorerViewModel {
             return builder.Build();
         }
 
-        public static bool IsPackageValid(IPackageMetadata metadata, IEnumerable<IPackageFile> files) {
-            return files.Any() || metadata.Dependencies.Any() || metadata.FrameworkAssemblies.Any();
-        }
-
-        public static bool IsPackageValid(this IPackage package) {
-            return package.GetFiles().Any() || package.Dependencies.Any() || package.FrameworkAssemblies.Any();
+        public static IEnumerable<PackageIssue> Validate(this IPackage package, IEnumerable<IPackageRule> rules) {
+            return rules.Where(r => r != null).SelectMany(r => r.Validate(package));
         }
 
         /// <summary>

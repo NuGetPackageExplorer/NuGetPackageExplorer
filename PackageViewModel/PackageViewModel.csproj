@@ -58,7 +58,6 @@
     <Compile Include="FileHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PackageAnalyzer\NonAssemblyInsideLibRule.cs" />
-    <Compile Include="PackageAnalyzer\NonAssemblyReferenceNameRule.cs" />
     <Compile Include="PackageAnalyzer\MisplacedTransformFileRule.cs" />
     <Compile Include="PackageAnalyzer\InvalidFrameworkFolderRule.cs" />
     <Compile Include="PackageAnalyzer\MisplacedScriptFileRule.cs" />
@@ -66,7 +65,6 @@
     <Compile Include="PackageAnalyzer\MissingContentOrDependencyRule.cs" />
     <Compile Include="PackageAnalyzer\MissingSummaryRule.cs" />
     <Compile Include="PackageAnalyzer\OrphanAssemblyReferenceNameRule.cs" />
-    <Compile Include="PackageAnalyzer\PackageIssueComparer.cs" />
     <Compile Include="PackageChooser\PackageSourceSettings.cs" />
     <Compile Include="PluginManagerViewModel.cs" />
     <Compile Include="PublishPackage\PublishSourceSettings.cs" />
@@ -125,6 +123,7 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
