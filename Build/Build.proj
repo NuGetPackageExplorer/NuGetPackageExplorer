@@ -62,17 +62,19 @@
         <DropDirectory>$(PackageExplorerRoot)\bin</DropDirectory>
         <DeployDirectory>$(DropDirectory)\deploy</DeployDirectory>
         <PublishedDirectory>$(PackageExplorerRoot)\PackageExplorer\bin\$(Configuration)\app.publish</PublishedDirectory>
+        <LocalExecutableDirectory>$(PackageExplorerRoot)\PackageExplorer\bin\$(Configuration)</LocalExecutableDirectory>
         <DeploymentManifestFileName>$(ApplicationName).application</DeploymentManifestFileName>
         <ExeFileName>$(ApplicationName).exe</ExeFileName>
         <AppManifestFileName>$(ExeFileName).manifest</AppManifestFileName>
         <ZipExe>$(PackageExplorerRoot)\Tools\7za920\7za.exe</ZipExe>
         <DeployNpeZipFileName>Npe$(ApplicationName).zip</DeployNpeZipFileName>
         <DeployZipFileName>$(ApplicationName).zip</DeployZipFileName>
+        <LocalExecutableZipFileName>NpeLocalExecutable.zip</LocalExecutableZipFileName>
         <PackagesFolder>$(PackageExplorerRoot)\Packages</PackagesFolder>
         <NuGetExeToolPath>$(PackageExplorerRoot)\NuGet.exe</NuGetExeToolPath>
 	</PropertyGroup>
 	
-	<Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; BuildPackages">
+	<Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; BuildPackages; BuildLocalExecutableZip">
 	</Target>
 	
 	<Target Name="CheckTools">
@@ -178,8 +180,8 @@
             Command="&quot;$(NuGetExeToolPath)&quot; pack $(PackagesFolder)\NuGetPackageExplorer.Types.nuspec -OutputDirectory $(DropDirectory)"
             WorkingDirectory="$(PackagesFolder)" />
   </Target>
-	
-	<!--<Target Name="ZipPublishedFiles">
-        <Exec Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(ApplicationName).zip&quot;" WorkingDirectory="$(DeployDirectory)" />
-	</Target>-->
+
+    <Target Name="BuildLocalExecutableZip">
+        <Exec Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(LocalExecutableZipFileName)&quot; &quot;NuGetPackageExplorer.exe&quot; &quot;*.dll&quot; &quot;NuGetPackageExplorer.exe.config&quot;" WorkingDirectory="$(LocalExecutableDirectory)" />
+    </Target>
 </Project>
