@@ -42,7 +42,7 @@ namespace PackageExplorerViewModel.Rules {
                 PackageIssueLevel.Warning,
                 "Assembly not inside a framework folder",
                 "The assembly '" + target + "' is placed directly under 'lib' folder. It is recommended that assemblies be placed inside a framework-specific folder.",
-                "Move it into a framework-specific folder."
+                "Move it into a framework-specific folder. If this assembly is targeted for multiple frameworks, ignore this warning."
             );
         }
 
