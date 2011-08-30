@@ -12,15 +12,20 @@ namespace PackageExplorerViewModel.Rules {
         const string LibFolder = "lib";
 
         public IEnumerable<PackageIssue> Validate(IPackage package) {
-            foreach (PackageFile file in package.GetFiles()) {
+            foreach (IPackageFile file in package.GetFiles()) {
                 string path = file.Path;
-                if (IsAssembly(path)) {
-                    string directory = Path.GetDirectoryName(path);
+                string directory = Path.GetDirectoryName(path);
 
-                    if (directory.Equals(LibFolder, StringComparison.OrdinalIgnoreCase)) {
+                // if under 'lib' directly
+                if (directory.Equals(LibFolder, StringComparison.OrdinalIgnoreCase)) {
+                    if (IsAssembly(path)) {
                         yield return CreatePackageIssueForAssembliesUnderLib(path);
                     }
-                    else if (!directory.StartsWith(LibFolder, StringComparison.OrdinalIgnoreCase)) {
+                }
+                else if (!directory.StartsWith(LibFolder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) {
+                    // when checking for assemblies outside 'lib' folder, only check .dll files.
+                    // .exe files are often legitimate outside 'lib'.
+                    if (path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) {
                         yield return CreatePackageIssueForAssembliesOutsideLib(path);
                     }
                 }
