@@ -8,20 +8,10 @@ using NuGet;
 
 namespace $rootnamespace$ 
 {
-
     [Export(typeof(IPackageRule))]
     internal class MyCustomPackageRule : IPackageRule 
     {
-
-        public string Name 
-        {
-            get 
-            {
-                return "My Custom Rule";
-            }
-        }
-
-        public IEnumerable<PackageIssue> Check(IPackage package) 
+        public IEnumerable<PackageIssue> Validate(IPackage package) 
         {
             throw new NotImplementedException();
         }

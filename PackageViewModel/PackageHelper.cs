@@ -71,7 +71,23 @@ namespace PackageExplorerViewModel {
         }
 
         public static IEnumerable<PackageIssue> Validate(this IPackage package, IEnumerable<IPackageRule> rules) {
-            return rules.Where(r => r != null).SelectMany(r => r.Validate(package));
+            foreach (var rule in rules) {
+                if (rule != null) {
+                    IEnumerable<PackageIssue> issues = null;
+                    try {
+                        issues = rule.Validate(package);
+                    }
+                    catch (Exception) {
+                    }
+
+                    // can't yield inside a try/catch block
+                    if (issues != null) {
+                        foreach (var issue in issues) {
+                            yield return issue;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
