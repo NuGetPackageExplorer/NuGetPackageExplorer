@@ -785,9 +785,18 @@ namespace PackageExplorerViewModel {
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.Show(System.String,NuGetPackageExplorer.Types.MessageLevel)")]
         private void PackageCommandExecute(LazyPackageCommand packageCommand) {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-            packageCommand.Value.Execute(package);
+            try {
+                packageCommand.Value.Execute(package);
+            }
+            catch (Exception ex) {
+                UIServices.Show("The command failed with this error message:" +
+                    Environment.NewLine +
+                    Environment.NewLine +
+                    ex.Message, MessageLevel.Error);
+            }
         }
         
         #endregion
