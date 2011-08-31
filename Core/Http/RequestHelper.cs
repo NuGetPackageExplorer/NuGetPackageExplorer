@@ -50,7 +50,9 @@ namespace NuGet {
                         !String.Equals(authType, "Kerberos", StringComparison.OrdinalIgnoreCase)) {
                         // This is to work around the "The underlying connection was closed: An unexpected error occurred on a receive."
                         // exception.
-                        ((HttpWebRequest)request).KeepAlive = false;
+                        var httpRequest = request as HttpWebRequest;
+                        httpRequest.KeepAlive = false;
+                        httpRequest.ProtocolVersion = HttpVersion.Version10;
                     }
                     
                     // Prepare the request, we do something like write to the request stream

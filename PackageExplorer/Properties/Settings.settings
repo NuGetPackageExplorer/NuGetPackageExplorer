@@ -44,5 +44,8 @@
     <Setting Name="PackageContentHeight" Type="System.Double" Scope="User">
       <Value Profile="(Default)">400</Value>
     </Setting>
+    <Setting Name="ShowTaskShortcuts" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

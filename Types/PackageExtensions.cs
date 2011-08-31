@@ -6,8 +6,8 @@ using NuGet;
 
 namespace NuGetPackageExplorer.Types {
     public static class PackageExtensions {
-
-        public static IEnumerable<string> GetFilesInFolders(this IPackage package, string folder) {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "InFolder")]
+        public static IEnumerable<string> GetFilesInFolder(this IPackage package, string folder) {
             if (folder == null) {
                 throw new ArgumentNullException("folder");
             }
@@ -22,16 +22,12 @@ namespace NuGetPackageExplorer.Types {
                 string prefix = folder + Path.DirectorySeparatorChar;
                 return from s in package.GetFiles()
                        where s.Path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
-                       select s.Path.Substring(prefix.Length);
+                       select s.Path;
             }
         }
 
         public static IEnumerable<string> GetFilesUnderRoot(this IPackage package) {
-            return GetFilesInFolders(package, String.Empty);
-        }
-
-        public static bool IsValid(this IPackage package) {
-            return package.GetFiles().Any() || package.Dependencies.Any() || package.FrameworkAssemblies.Any();
+            return GetFilesInFolder(package, String.Empty);
         }
     }
 }

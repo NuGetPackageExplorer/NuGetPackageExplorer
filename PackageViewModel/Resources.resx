@@ -165,8 +165,8 @@
   <data name="OpenExecutableScriptWarning_Title" xml:space="preserve">
     <value>The file '{0}' is executable.</value>
   </data>
-  <data name="PackageHasNoFile" xml:space="preserve">
-    <value>There are no contents or dependencies in the package.</value>
+  <data name="PackageCreationFailed" xml:space="preserve">
+    <value>Failed to generate package due to this error:</value>
   </data>
   <data name="PhysicalFileMissing" xml:space="preserve">
     <value>The file '{0}' was either renamed or deleted from its physical location. It will now be removed from the package.</value>

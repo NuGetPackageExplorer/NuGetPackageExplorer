@@ -132,8 +132,8 @@
     <Compile Include="Converters\CountToVisibilityConverter.cs" />
     <Compile Include="Converters\FrameworkAssemblyReferenceConverter.cs" />
     <Compile Include="Converters\FrameworkNameConverter.cs" />
-    <Compile Include="Converters\MultiStringToBoolConverter.cs" />
     <Compile Include="Converters\NullToBoolConverter.cs" />
+    <Compile Include="Converters\TaskShortcutVisibilityConverter.cs" />
     <Compile Include="Converters\TruncateFilePathConverter.cs" />
     <Compile Include="Converters\UpperCaseConverter.cs" />
     <Compile Include="Converters\UriConverter.cs" />

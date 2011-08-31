@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using NuGet;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel {
     internal static class PackageHelper {
@@ -69,12 +70,24 @@ namespace PackageExplorerViewModel {
             return builder.Build();
         }
 
-        public static bool IsPackageValid(IPackageMetadata metadata, IEnumerable<IPackageFile> files) {
-            return files.Any() || metadata.Dependencies.Any() || metadata.FrameworkAssemblies.Any();
-        }
+        public static IEnumerable<PackageIssue> Validate(this IPackage package, IEnumerable<IPackageRule> rules) {
+            foreach (var rule in rules) {
+                if (rule != null) {
+                    IEnumerable<PackageIssue> issues = null;
+                    try {
+                        issues = rule.Validate(package);
+                    }
+                    catch (Exception) {
+                    }
 
-        public static bool IsPackageValid(this IPackage package) {
-            return package.GetFiles().Any() || package.Dependencies.Any() || package.FrameworkAssemblies.Any();
+                    // can't yield inside a try/catch block
+                    if (issues != null) {
+                        foreach (var issue in issues) {
+                            yield return issue;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>

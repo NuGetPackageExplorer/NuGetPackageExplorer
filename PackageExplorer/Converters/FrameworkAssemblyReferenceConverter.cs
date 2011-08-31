@@ -16,7 +16,7 @@ namespace PackageExplorer {
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
             string stringValue = (string)value;
             if (!String.IsNullOrEmpty(stringValue)) {
-                string[] parts = stringValue.Split(new char[] {';', ','}, StringSplitOptions.RemoveEmptyEntries);
+                string[] parts = stringValue.Split(new char[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length > 0) {
                     FrameworkName[] names = new FrameworkName[parts.Length];
                     for (int i = 0; i < parts.Length; i++) {
@@ -33,8 +33,7 @@ namespace PackageExplorer {
                     return names;
                 }
             }
-
-            return DependencyProperty.UnsetValue;
+            return new FrameworkName[0];
         }
     }
 }

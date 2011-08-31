@@ -9,6 +9,7 @@ namespace PackageExplorer {
             if (values.Any(v => v == null || v == DependencyProperty.UnsetValue)) {
                 return false;
             }
+
             return values.Cast<bool>().All(a => a);
         }
 

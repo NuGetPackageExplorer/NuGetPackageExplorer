@@ -195,4 +195,7 @@
   <data name="UnableToResolveUri" xml:space="preserve">
     <value>Unable to resolve '{0}'.</value>
   </data>
+  <data name="Manifest_InvalidReference" xml:space="preserve">
+    <value>Invalid assembly reference '{0}'. Ensure that a file named '{0}' exists in the lib directory.</value>
+  </data>
 </root>

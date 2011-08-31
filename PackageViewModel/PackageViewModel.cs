@@ -146,12 +146,6 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        public bool IsValid {
-            get {
-                return PackageHelper.IsPackageValid(PackageMetadata, GetFiles());
-            }
-        }
-
         private object _selectedItem;
         public object SelectedItem {
             get {
@@ -191,8 +185,8 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private SortedCollection<PackageIssue> _packageIssues = new SortedCollection<PackageIssue>(PackageIssueComparer.Instance);
-        public SortedCollection<PackageIssue> PackageIssues {
+        private ObservableCollection<PackageIssue> _packageIssues = new ObservableCollection<PackageIssue>();
+        public ObservableCollection<PackageIssue> PackageIssues {
             get {
                 return _packageIssues;
             }
@@ -257,6 +251,11 @@ namespace PackageExplorerViewModel {
             get {
                 return _packageRoot;
             }
+        }
+
+        public IEnumerable<PackageIssue> Validate() {
+            var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
+            return package.Validate(_packageRules.Select(r => r.Value));
         }
 
         private void Export(string rootPath) {
@@ -473,7 +472,10 @@ namespace PackageExplorerViewModel {
             parameter = parameter ?? SelectedItem ?? RootFolder;
             PackageFolder folder = parameter as PackageFolder;
             string folderName = "NewFolder";
-            bool result = UIServices.OpenRenameDialog(folderName, "Provide name for the new folder.", out folderName);
+            bool result = UIServices.OpenRenameDialog(
+                folderName, 
+                "Provide name for the new folder.", 
+                out folderName);
             if (result) {
                 folder.AddFolder(folderName);
             }
@@ -602,7 +604,11 @@ namespace PackageExplorerViewModel {
             var part = (parameter ?? SelectedItem) as PackagePart;
             if (part != null) {
                 string newName;
-                bool result = UIServices.OpenRenameDialog(part.Name, "Provide new name for '" + part.Name + "'.", out newName);
+                bool result = UIServices.OpenRenameDialog(
+                    part.Name, 
+                    "Provide new name for '" + part.Name + "'.", 
+                    out newName);
+
                 if (result) {
                     part.Rename(newName);
                 }
@@ -705,8 +711,15 @@ namespace PackageExplorerViewModel {
                 return;
             }
 
-            if (!this.IsValid) {
-                UIServices.Show(Resources.PackageHasNoFile, MessageLevel.Warning);
+            // validate the package to see if there is any error before actually creating the package.
+            PackageIssue firstIssue = Validate().Where(p => p.Level == PackageIssueLevel.Error).FirstOrDefault();
+            if (firstIssue != null) {
+                UIServices.Show(
+                    Resources.PackageCreationFailed
+                        + Environment.NewLine 
+                        + Environment.NewLine
+                        + firstIssue.Description, 
+                    MessageLevel.Warning);
                 return;
             }
 
@@ -772,9 +785,18 @@ namespace PackageExplorerViewModel {
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.Show(System.String,NuGetPackageExplorer.Types.MessageLevel)")]
         private void PackageCommandExecute(LazyPackageCommand packageCommand) {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-            packageCommand.Value.Execute(package);
+            try {
+                packageCommand.Value.Execute(package);
+            }
+            catch (Exception ex) {
+                UIServices.Show("The command failed with this error message:" +
+                    Environment.NewLine +
+                    Environment.NewLine +
+                    ex.Message, MessageLevel.Error);
+            }
         }
         
         #endregion
@@ -795,8 +817,7 @@ namespace PackageExplorerViewModel {
                 ShowPackageAnalysis = false;
             }
             else if (_packageRules != null) {
-                var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-                IEnumerable<PackageIssue> allIssues = _packageRules.SelectMany(r => r.Value.Check(package));
+                IEnumerable<PackageIssue> allIssues = Validate().OrderBy(p => p.Title, StringComparer.CurrentCulture);
                 SetPackageIssues(allIssues);
                 ShowPackageAnalysis = true;
             }
@@ -840,6 +861,8 @@ namespace PackageExplorerViewModel {
             }
             else {
                 PackageMetadata.AddAssemblyReference(file.Name);
+                // mark the document as dirty
+                NotifyChanges();
             }
         }
 

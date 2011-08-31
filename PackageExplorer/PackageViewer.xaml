@@ -50,9 +50,8 @@
             </DataTemplate>
 
             <DataTemplate x:Key="AssemblyReferenceItemTemplate">
-                <TextBlock Text="{Binding File, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding}" />
+                <TextBlock Text="{Binding File, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
             </DataTemplate>
-
 
             <!-- data template for the package details pane -->
             <DataTemplate x:Key="PackageDetailTemplate">
@@ -68,7 +67,7 @@
                             ToolTipService.ToolTip="{Binding IconUrl}"
                             Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
                             <Image         
-                                Source="{Binding IconUrl}" 
+                                Source="{Binding IconUrl, TargetNullValue={x:Null}}" 
                                 Width="32" 
                                 Height="32" 
                                 Stretch="Fill" 

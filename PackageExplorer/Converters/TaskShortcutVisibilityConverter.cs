@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 
 namespace PackageExplorer {
-    public class MultiStringToBoolConverter : IMultiValueConverter {
+    public class TaskShortcutVisibilityConverter : IMultiValueConverter {
         public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            return values.Cast<string>().All(s => !String.IsNullOrEmpty(s));
+            bool visible = values[0] == null && (bool)values[1];
+            return visible ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) {

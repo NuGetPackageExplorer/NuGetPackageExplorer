@@ -12,25 +12,18 @@ namespace PackageExplorerViewModel.Rules {
         private const string ToolsFolder = "tools";
         private const string ScriptExtension = ".ps1";
 
-        public string Name {
-            get {
-                return "Misplaced Powershell Script File";
-            }
-        }
-
-        public IEnumerable<PackageIssue> Check(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package) {
             foreach (PackageFile file in package.GetFiles()) {
                 string path = file.Path;
                 if (!path.EndsWith(ScriptExtension, StringComparison.OrdinalIgnoreCase)) {
                     continue;
                 }
 
-                string directory = Path.GetDirectoryName(path);
-                if (!directory.Equals(ToolsFolder, StringComparison.OrdinalIgnoreCase) &&
-                    !directory.StartsWith("tools\\", StringComparison.OrdinalIgnoreCase)) {
+                if (!path.StartsWith(ToolsFolder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) {
                     yield return CreatePackageIssueForMisplacedScript(path);
                 }
                 else {
+                    string directory = Path.GetDirectoryName(path);
                     string name = Path.GetFileNameWithoutExtension(path);
                     if (!directory.Equals(ToolsFolder, StringComparison.OrdinalIgnoreCase) ||
                         !name.Equals("install", StringComparison.OrdinalIgnoreCase) &&

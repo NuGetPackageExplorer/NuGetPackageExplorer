@@ -28,7 +28,7 @@
         
         <CollectionViewSource x:Key="PackageCollectionSource" Source="{Binding Packages}">
             <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Id" />
+                <PropertyGroupDescription PropertyName="Id" StringComparison="OrdinalIgnoreCase" />
             </CollectionViewSource.GroupDescriptions>
         </CollectionViewSource>
     </Window.Resources>

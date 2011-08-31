@@ -1,35 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using NuGetPackageExplorer.Types;
 using System.ComponentModel.Composition;
-using NuGet;
 using System.IO;
+using NuGet;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel.Rules {
 
     [Export(typeof(IPackageRule))]
     internal class MisplacedAssemblyRule : IPackageRule {
-        public string Name {
-            get {
-                return "Misplaced Assembly File";
-            }
-        }
+        const string LibFolder = "lib";
 
-        public IEnumerable<PackageIssue> Check(IPackage package) {
-            foreach (PackageFile file in package.GetFiles()) {
+        public IEnumerable<PackageIssue> Validate(IPackage package) {
+            foreach (IPackageFile file in package.GetFiles()) {
                 string path = file.Path;
-                if (path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) {
-                    string directory = Path.GetDirectoryName(path);
-                    if (directory.Equals("lib", StringComparison.OrdinalIgnoreCase)) {
+                string directory = Path.GetDirectoryName(path);
+
+                // if under 'lib' directly
+                if (directory.Equals(LibFolder, StringComparison.OrdinalIgnoreCase)) {
+                    if (IsAssembly(path)) {
                         yield return CreatePackageIssueForAssembliesUnderLib(path);
                     }
-                    else if (!directory.StartsWith("lib", StringComparison.OrdinalIgnoreCase)) {
+                }
+                else if (!directory.StartsWith(LibFolder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) {
+                    // when checking for assemblies outside 'lib' folder, only check .dll files.
+                    // .exe files are often legitimate outside 'lib'.
+                    if (path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) {
                         yield return CreatePackageIssueForAssembliesOutsideLib(path);
                     }
                 }
             }
+        }
+
+        private static bool IsAssembly(string path) {
+            return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
+                   path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
         }
 
         private static PackageIssue CreatePackageIssueForAssembliesUnderLib(string target) {
@@ -37,7 +42,7 @@ namespace PackageExplorerViewModel.Rules {
                 PackageIssueLevel.Warning,
                 "Assembly not inside a framework folder",
                 "The assembly '" + target + "' is placed directly under 'lib' folder. It is recommended that assemblies be placed inside a framework-specific folder.",
-                "Move it into a framework-specific folder."
+                "Move it into a framework-specific folder. If this assembly is targeted for multiple frameworks, ignore this warning."
             );
         }
 

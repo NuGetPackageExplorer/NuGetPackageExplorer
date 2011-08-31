@@ -32,6 +32,7 @@
         <viewmodel:DisabledCommand x:Key="DisabledCommand" />
         <self:PackagePartToBoolConverter x:Key="PackagePartConverter" />
         <self:TruncateFilePathConverter x:Key="TruncatePathConverter" />
+        <self:TaskShortcutVisibilityConverter x:Key="TaskShortcutConverter" />
         
         <DataTemplate x:Key="PackageCommandTemplate">
             <TextBlock Text="{Binding Metadata.Text, Mode=OneTime}" />
@@ -66,7 +67,7 @@
         <KeyBinding Key="G" Modifiers="Control" Command="Find" />
         <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="Save" />
         <KeyBinding Key="P" Modifiers="Control" Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" />
-        <KeyBinding Key="R" Modifiers="Control" Command="{Binding ViewPackageAnalysisCommand, FallbackValue={StaticResource DisabledCommand}}" />
+        <KeyBinding Key="Q" Modifiers="Control" Command="{Binding ViewPackageAnalysisCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Key="F2" Command="{Binding RenameContentCommand}" />
         <KeyBinding Key="Del" Command="{Binding DeleteContentCommand}" />
         <KeyBinding Key="Enter" Command="{Binding ViewContentCommand}" />
@@ -165,6 +166,7 @@
                         <Image Source="Images/FontDialogHS.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Show Common Tas_ks" IsChecked="{Binding ShowTaskShortcuts, Source={x:Static settings:Settings.Default}}" IsCheckable="True" />
                 <MenuItem Header="Show Status _Bar" x:Name="ShowStatusBarMenuItem" IsCheckable="True" IsChecked="True" />
             </MenuItem>
 
@@ -209,7 +211,7 @@
                         <CollectionContainer x:Name="PackageCommandsContainer">
                         </CollectionContainer>
 
-                        <MenuItem Header="_Analyze Package" InputGestureText="Ctrl+R"  Command="{Binding ViewPackageAnalysisCommand}" Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />                        
+                        <MenuItem Header="_Analyze Package" InputGestureText="Ctrl+Q"  Command="{Binding ViewPackageAnalysisCommand}" Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />                        
                         <Separator Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
                         <MenuItem Header="_Plugin Manager..." Click="AddPluginFromAssembly_Click">
                             <MenuItem.Icon>
@@ -231,6 +233,8 @@
                 <MenuItem Header="_Nuspec Reference" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/nuspec-reference" />
                 <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/version-range-specification" />
                 <Separator />
+                <MenuItem Header="_Donate..." Command="GoToPage" CommandParameter="http://npe.cloudapp.net" />
+                <Separator />
                 <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="http://npe.codeplex.com/WorkItem/Create" />
                 <MenuItem Header="_About..." Click="AboutMenuItem_Click" />
             </MenuItem>
@@ -247,11 +251,14 @@
         </StatusBar>
         
         <Grid x:Name="MainContentContainer">
-            <self:TaskShortcut
-                x:Name="ComonTasksPane"
-                Visibility="{Binding Converter={StaticResource invertedNullToVisibilityConverter}}" 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center" />
+            <self:TaskShortcut HorizontalAlignment="Center" VerticalAlignment="Center">
+                <self:TaskShortcut.Visibility>
+                    <MultiBinding Converter="{StaticResource TaskShortcutConverter}">
+                        <Binding Mode="OneWay" FallbackValue="{x:Null}" />
+                        <Binding Path="ShowTaskShortcuts" Source="{x:Static settings:Settings.Default}" Mode="OneWay" />
+                    </MultiBinding>
+                </self:TaskShortcut.Visibility>
+            </self:TaskShortcut>
         </Grid>
     </DockPanel>
 </Window>

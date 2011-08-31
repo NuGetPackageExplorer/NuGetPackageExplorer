@@ -8,15 +8,10 @@ namespace PackageExplorerViewModel.Rules {
 
     [Export(typeof(IPackageRule))]
     internal class MissingSummaryRule : IPackageRule {
+        private const int DescriptionLengthThreshold = 300;
 
-        public string Name {
-            get { 
-                return "Missing Summary Field"; 
-            }
-        }
-
-        public IEnumerable<PackageIssue> Check(IPackage package) {
-            if (package.Description.Length > 200 && String.IsNullOrEmpty(package.Summary)) {
+        public IEnumerable<PackageIssue> Validate(IPackage package) {
+            if (package.Description.Length > DescriptionLengthThreshold && String.IsNullOrEmpty(package.Summary)) {
                 yield return new PackageIssue(
                     PackageIssueLevel.Warning,
                     "Consider providing Summary text",

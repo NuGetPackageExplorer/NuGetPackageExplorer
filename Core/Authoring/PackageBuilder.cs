@@ -180,6 +180,8 @@ namespace NuGet {
                 throw new InvalidOperationException(NuGetResources.CannotCreateEmptyPackage);
             }
 
+            ValidateReferenceAssemblies(Files, PackageAssemblyReferences);
+
             using (Package package = Package.Open(stream, FileMode.Create)) {
                 // Validate and write the manifest
                 WriteManifest(package);
@@ -194,6 +196,22 @@ namespace NuGet {
                 package.PackageProperties.Version = Version.ToString();
                 package.PackageProperties.Language = Language;
                 package.PackageProperties.Keywords = ((IPackageMetadata)this).Tags;
+            }
+        }
+
+        internal static void ValidateReferenceAssemblies(IEnumerable<IPackageFile> files, IEnumerable<AssemblyReference> packageAssemblyReferences) {
+            var libFiles = new HashSet<string>(from file in files
+                                               where !String.IsNullOrEmpty(file.Path) && file.Path.StartsWith("lib\\", StringComparison.OrdinalIgnoreCase)
+                                               select Path.GetFileName(file.Path), StringComparer.OrdinalIgnoreCase);
+
+            foreach (var reference in packageAssemblyReferences) {
+                if (!libFiles.Contains(reference.File) && !libFiles.Contains(reference + ".dll") && !libFiles.Contains(reference + ".exe")) {
+                    throw new InvalidDataException(
+                        String.Format(
+                            CultureInfo.CurrentCulture, 
+                            NuGetResources.Manifest_InvalidReference, 
+                            reference.File));
+                }
             }
         }
 
@@ -259,7 +277,7 @@ namespace NuGet {
 
         private void WriteFiles(Package package) {
             // Add files that might not come from expanding files on disk
-            foreach (IPackageFile file in Files) {
+            foreach (IPackageFile file in new HashSet<IPackageFile>(Files)) {
                 using (Stream stream = file.GetStream()) {
                     CreatePart(package, file.Path, stream);
                 }

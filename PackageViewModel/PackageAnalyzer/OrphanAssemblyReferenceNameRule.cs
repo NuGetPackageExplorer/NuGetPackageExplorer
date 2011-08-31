@@ -8,17 +8,10 @@ using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel.Rules {
     [Export(typeof(IPackageRule))]
-    internal class OrphanAssemblyReferenceName : IPackageRule {
-
-        public string Name {
-            get {
-                return "Orphan Assembly Reference Name";
-            }
-        }
-
-        public IEnumerable<PackageIssue> Check(IPackage package) {
+    internal class OrphanAssemblyReferenceNameRule : IPackageRule {
+        public IEnumerable<PackageIssue> Validate(IPackage package) {
             if (package.References.Any()) {
-                var allLibFiles = package.GetFilesInFolders("lib").Select(Path.GetFileName);
+                var allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
                 var libFilesSet = new HashSet<string>(allLibFiles, StringComparer.OrdinalIgnoreCase);
 
                 return from reference in package.References
@@ -30,7 +23,7 @@ namespace PackageExplorerViewModel.Rules {
 
         private static PackageIssue CreateIssue(string reference) {
             return new PackageIssue(
-                PackageIssueLevel.Warning,
+                PackageIssueLevel.Error,
                 "Assembly reference name not found.",
                 "The name '" + reference + "' in the Filtered Assembly References is not found under the 'lib' folder.",
                 "Either remove this assembly reference name or add a file with this name to the 'lib' folder.");
