@@ -10,7 +10,6 @@ using NuGetPackageExplorer.Types;
 using Ookii.Dialogs.Wpf;
 
 namespace PackageExplorer {
-
     [Export(typeof(IPackageDownloader))]
     internal class PackageDownloader : IPackageDownloader {
         [Import]
@@ -26,71 +25,80 @@ namespace PackageExplorer {
             string packageId,
             Version packageVersion,
             Action<IPackage> callback) {
+            string progressDialogText = Resources.Resources.Dialog_DownloadingPackage;
+            if (!string.IsNullOrEmpty(packageId)) {
+                progressDialogText = string.Format(progressDialogText, packageId, packageVersion);
+            }
+            else {
+                progressDialogText = string.Format(progressDialogText,
+                                                   downloadUri.Scheme + "://..." + downloadUri.PathAndQuery, "");
+            }
 
             _progressDialog = new ProgressDialog {
-                Text = "Downloading package " + packageId + " " + packageVersion.ToString(),
-                WindowTitle = Resources.Resources.Dialog_Title,
-                ShowTimeRemaining = true,
-                CancellationText = "Canceling download..."
-            };
+                                                     Text = progressDialogText,
+                                                     WindowTitle = Resources.Resources.Dialog_Title,
+                                                     ShowTimeRemaining = true,
+                                                     CancellationText = "Canceling download..."
+                                                 };
             _progressDialog.ShowDialog(MainWindow.Value);
 
             // polling for Cancel button being clicked
             CancellationTokenSource cts = new CancellationTokenSource();
             var timer = new DispatcherTimer() {
-                Interval = TimeSpan.FromMilliseconds(200)
-            };
+                                                  Interval = TimeSpan.FromMilliseconds(200)
+                                              };
             timer.Tick += (o, e) => {
-                if (_progressDialog.CancellationPending) {
-                    timer.Stop();
-                    cts.Cancel();
-                }
-            };
+                              if (_progressDialog.CancellationPending) {
+                                  timer.Stop();
+                                  cts.Cancel();
+                              }
+                          };
             timer.Start();
 
             // report progress must be done via UI thread
-            Action<int, string> reportProgress = (percent, description) => {
-                UIServices.BeginInvoke(() => _progressDialog.ReportProgress(percent, null, description));
-            };
+            Action<int, string> reportProgress =
+                (percent, description) => { UIServices.BeginInvoke(() => _progressDialog.ReportProgress(percent, null, description)); };
 
             // download package on background thread
             TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             Task.Factory.StartNew(
                 () => DownloadData(downloadUri, reportProgress, cts.Token),
                 cts.Token
-            ).ContinueWith(
-                task => {
-                    timer.Stop();
+                ).ContinueWith(
+                    task => {
+                        timer.Stop();
 
-                    // close progress dialog when done
-                    _progressDialog.Close();
-                    _progressDialog = null;
-                    MainWindow.Value.Activate();
+                        // close progress dialog when done
+                        _progressDialog.Close();
+                        _progressDialog = null;
+                        MainWindow.Value.Activate();
 
-                    if (task.Exception != null) {
-                        OnError(task.Exception);
-                    }
-                    else if (!task.IsCanceled) {
-                        IPackage package = task.Result;
-                        callback(package);
-                    }
-                },
-                uiScheduler
-            );
+                        if (task.Exception != null) {
+                            OnError(task.Exception);
+                        }
+                        else if (!task.IsCanceled) {
+                            IPackage package = task.Result;
+                            callback(package);
+                        }
+                    },
+                    uiScheduler
+                );
         }
 
         private IPackage DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken) {
-
             var httpClient = new RedirectedHttpClient(url) {
-                UserAgent = HttpUtility.CreateUserAgentString(PackageExplorerViewModel.Constants.UserAgentClient),
-                AcceptCompression = false
-            };
+                                                               UserAgent =
+                                                                   HttpUtility.CreateUserAgentString(
+                                                                       PackageExplorerViewModel.Constants.
+                                                                           UserAgentClient),
+                                                               AcceptCompression = false
+                                                           };
 
-            using (HttpWebResponse response = (HttpWebResponse)httpClient.GetResponse()) {
+            using (HttpWebResponse response = (HttpWebResponse) httpClient.GetResponse()) {
                 cancelToken.ThrowIfCancellationRequested();
                 using (Stream requestStream = response.GetResponseStream()) {
-                    int chunkSize = 4 * 1024;
-                    int totalBytes = (int)response.ContentLength;
+                    int chunkSize = 4*1024;
+                    int totalBytes = (int) response.ContentLength;
                     byte[] buffer = new byte[chunkSize];
                     int readSoFar = 0;
 
@@ -122,13 +130,14 @@ namespace PackageExplorer {
         }
 
         private void OnProgress(int bytesReceived, int totalBytes, Action<int, string> reportProgress) {
-            int percentComplete = (bytesReceived * 100) / totalBytes;
-            string description = String.Format("Downloaded {0}KB of {1}KB...", ToKB(bytesReceived).ToString(), ToKB(totalBytes).ToString());
+            int percentComplete = (bytesReceived*100)/totalBytes;
+            string description = String.Format("Downloaded {0}KB of {1}KB...", ToKB(bytesReceived).ToString(),
+                                               ToKB(totalBytes).ToString());
             reportProgress(percentComplete, description);
         }
 
         private long ToKB(long totalBytes) {
-            return (totalBytes + 1023) / 1024;
+            return (totalBytes + 1023)/1024;
         }
     }
 }

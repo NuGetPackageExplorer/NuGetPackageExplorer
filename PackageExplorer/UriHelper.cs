@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace PackageExplorer {
     internal static class UriHelper {
-
         public static void OpenExternalLink(Uri licenseUrl) {
             if (licenseUrl == null) {
                 return;
@@ -20,6 +22,15 @@ namespace PackageExplorer {
                 // We have limited the url to be HTTP only, but is it sufficient?
                 System.Diagnostics.Process.Start(licenseUrl.AbsoluteUri);
             }
+        }
+
+        public static Dictionary<string, string> GetRequestParameters(Uri uri) {
+            var matches = Regex.Matches(uri.Query, @"[\?&](([^&=]+)=([^&=#]*))");
+            return matches.Cast<Match>().ToDictionary(
+                m => Uri.UnescapeDataString(m.Groups[2].Value),
+                m => Uri.UnescapeDataString(m.Groups[3].Value),
+                StringComparer.InvariantCultureIgnoreCase
+            );
         }
     }
 }

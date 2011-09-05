@@ -123,6 +123,9 @@
   <data name="Dialog_DependenciesLabel" xml:space="preserve">
     <value>Dependencies:</value>
   </data>
+  <data name="Dialog_DownloadingPackage" xml:space="preserve">
+    <value>Downloading package {0} {1}</value>
+  </data>
   <data name="Dialog_FrameworkAssembliesLabel" xml:space="preserve">
     <value>Framework Assembly References:</value>
   </data>
@@ -131,6 +134,9 @@
   </data>
   <data name="Dialog_IdLabel" xml:space="preserve">
     <value>Id:</value>
+  </data>
+  <data name="Dialog_InvalidPackageUrl" xml:space="preserve">
+    <value>The package URL {0} is invalid and can not be opened.</value>
   </data>
   <data name="Dialog_LanguageLabel" xml:space="preserve">
     <value>Language:</value>
@@ -155,6 +161,11 @@
   </data>
   <data name="Dialog_SaveQuestion" xml:space="preserve">
     <value>Do you want to save your changes?</value>
+  </data>
+  <data name="Dialog_SetActivePackagePublishSource" xml:space="preserve">
+    <value>An external program wants to add a package publish source to NuGetPackageExplorer.
+
+Are you sure you want to add {0} to the list of package publish sources?</value>
   </data>
   <data name="Dialog_TagLabel" xml:space="preserve">
     <value>Tags:</value>

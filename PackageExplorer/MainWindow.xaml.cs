@@ -21,7 +21,6 @@ namespace PackageExplorer {
     /// </summary>
     [Export]
     public partial class MainWindow : Window {
-
         private readonly IMruManager _mruManager;
 
         [Import]
@@ -45,9 +44,9 @@ namespace PackageExplorer {
         [ImportMany(AllowRecomposition = true)]
         public ObservableCollection<LazyPackageCommand> PackageCommands {
             get {
-                return PackageCommandsContainer != null ?
-                    (ObservableCollection<LazyPackageCommand>)PackageCommandsContainer.Collection : 
-                    null; 
+                return PackageCommandsContainer != null
+                           ? (ObservableCollection<LazyPackageCommand>) PackageCommandsContainer.Collection
+                           : null;
             }
             set {
                 if (PackageCommandsContainer != null) {
@@ -62,7 +61,7 @@ namespace PackageExplorer {
         [ImportingConstructor]
         public MainWindow(IMruManager mruManager) {
             InitializeComponent();
-            
+
             RecentFilesMenuItem.DataContext = _mruManager = mruManager;
             RecentFilesContainer.Collection = _mruManager.Files;
         }
@@ -73,7 +72,8 @@ namespace PackageExplorer {
             try {
                 LoadSettings();
             }
-            catch (Exception) { }
+            catch (Exception) {
+            }
         }
 
         internal void OpenLocalPackage(string packagePath) {
@@ -83,6 +83,37 @@ namespace PackageExplorer {
             }
             PackageSourceItem.SetCurrentValue(ContentControl.ContentProperty, "Loading " + packagePath + "...");
             Dispatcher.BeginInvoke(new Action<string>(OpenLocalPackageCore), DispatcherPriority.Loaded, packagePath);
+        }
+
+        internal void SetActivePackagePublishSource(string packagePublishSource) {
+            if (UIServices.Confirm(
+                PackageExplorer.Resources.Resources.Dialog_Title,
+                string.Format(PackageExplorer.Resources.Resources.Dialog_SetActivePackagePublishSource, packagePublishSource), true)) {
+                this.SettingsManager.ActivePublishSource = packagePublishSource;
+            }
+        }
+
+        internal void OpenRemotePackage(string packageUrl) {
+            if (!NetworkInterface.GetIsNetworkAvailable()) {
+                UIServices.Show(
+                    PackageExplorer.Resources.Resources.NoNetworkConnection,
+                    MessageLevel.Warning);
+                return;
+            }
+
+            bool canceled = AskToSaveCurrentFile();
+            if (canceled) {
+                return;
+            }
+
+            try {
+                Uri packageUri = new Uri(packageUrl);
+
+                PackageDownloader.Download(packageUri, null, null,
+                                           (package) => LoadPackage(package, packageUrl, PackageType.DataServicePackage));
+            } catch (UriFormatException) {
+                UIServices.Show(string.Format(PackageExplorer.Resources.Resources.Dialog_InvalidPackageUrl, packageUrl), MessageLevel.Error);
+            }
         }
 
         private void OpenLocalPackageCore(string packagePath) {
@@ -149,7 +180,7 @@ namespace PackageExplorer {
         }
 
         private void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e) {
-            string parameter = (string)e.Parameter;
+            string parameter = (string) e.Parameter;
             OpenPackageFromNuGetFeed(parameter);
         }
 
@@ -186,19 +217,23 @@ namespace PackageExplorer {
             PackageInfo selectedPackageInfo = PackageChooser.SelectPackage(searchTerm);
             if (selectedPackageInfo != null) {
                 Version packageVersion = new Version(selectedPackageInfo.Version);
-                IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion); ;
+                IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
+                ;
 
                 Action<IPackage> processPackageAction = (package) => {
-                    DataServicePackage servicePackage = selectedPackageInfo.AsDataServicePackage();
-                    servicePackage.CorePackage = package;
-                    LoadPackage(servicePackage, selectedPackageInfo.DownloadUrl.ToString(), PackageType.DataServicePackage);
+                                                            DataServicePackage servicePackage =
+                                                                selectedPackageInfo.AsDataServicePackage();
+                                                            servicePackage.CorePackage = package;
+                                                            LoadPackage(servicePackage,
+                                                                        selectedPackageInfo.DownloadUrl.ToString(),
+                                                                        PackageType.DataServicePackage);
 
-                    // adding package to the cache, but with low priority
-                    Dispatcher.BeginInvoke(
-                        (Action<IPackage>)MachineCache.Default.AddPackage,
-                        DispatcherPriority.ApplicationIdle,
-                        package);
-                };
+                                                            // adding package to the cache, but with low priority
+                                                            Dispatcher.BeginInvoke(
+                                                                (Action<IPackage>) MachineCache.Default.AddPackage,
+                                                                DispatcherPriority.ApplicationIdle,
+                                                                package);
+                                                        };
 
                 if (cachePackage == null || cachePackage.GetHash() != selectedPackageInfo.PackageHash) {
                     PackageDownloader.Download(
@@ -206,7 +241,7 @@ namespace PackageExplorer {
                         selectedPackageInfo.Id,
                         packageVersion,
                         processPackageAction
-                    );
+                        );
                 }
                 else {
                     processPackageAction(cachePackage);
@@ -261,7 +296,7 @@ namespace PackageExplorer {
         }
 
         private void AboutMenuItem_Click(object sender, RoutedEventArgs e) {
-            var dialog = new AboutWindow() { Owner = this };
+            var dialog = new AboutWindow() {Owner = this};
             dialog.ShowDialog();
         }
 
@@ -274,7 +309,8 @@ namespace PackageExplorer {
                     SaveSettings();
                     DisposeViewModel();
                 }
-                catch (Exception) { }
+                catch (Exception) {
+                }
             }
         }
 
@@ -284,9 +320,9 @@ namespace PackageExplorer {
         /// <returns>true if user cancels the impending action</returns>
         private bool AskToSaveCurrentFile() {
             if (HasUnsavedChanges) {
-
                 // if there is unsaved changes, ask user for confirmation
-                var result = UIServices.ConfirmWithCancel(StringResources.Dialog_SaveQuestion, "You have unsaved changes in the current file.");
+                var result = UIServices.ConfirmWithCancel(StringResources.Dialog_SaveQuestion,
+                                                          "You have unsaved changes in the current file.");
                 if (result == null) {
                     return true;
                 }
@@ -303,13 +339,13 @@ namespace PackageExplorer {
 
         private bool HasUnsavedChanges {
             get {
-                var viewModel = (PackageViewModel)DataContext;
+                var viewModel = (PackageViewModel) DataContext;
                 return (viewModel != null && viewModel.HasEdit);
             }
         }
 
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e) {
-            var item = (MenuItem)sender;
+            var item = (MenuItem) sender;
             int size = Convert.ToInt32(item.Tag);
             SetFontSize(size);
         }
@@ -345,7 +381,7 @@ namespace PackageExplorer {
 
             Uri uri = e.Parameter as Uri;
             if (uri == null) {
-                string url = (string)e.Parameter;
+                string url = (string) e.Parameter;
                 Uri.TryCreate(url, UriKind.Absolute, out uri);
             }
 
@@ -374,7 +410,7 @@ namespace PackageExplorer {
                 return;
             }
 
-            MenuItem menuItem = (MenuItem)sender;
+            MenuItem menuItem = (MenuItem) sender;
             var mruItem = menuItem.DataContext as MruItem;
             if (mruItem == null) {
                 _mruManager.Clear();
@@ -404,15 +440,16 @@ namespace PackageExplorer {
                     item.Id,
                     item.Version,
                     package => LoadPackage(package, item.Path, PackageType.DataServicePackage)
-                );
+                    );
             }
         }
 
         private void AddPluginFromAssembly_Click(object sender, RoutedEventArgs e) {
             var dialog = new PluginManagerDialog() {
-                Owner = this,
-                DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
-            };
+                                                       Owner = this,
+                                                       DataContext =
+                                                           PackageViewModelFactory.CreatePluginManagerViewModel()
+                                                   };
             dialog.ShowDialog();
         }
     }

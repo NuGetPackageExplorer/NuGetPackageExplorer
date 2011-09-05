@@ -1,18 +1,18 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Deployment.Application;
 using System.IO;
+using System.Linq;
 using System.Windows;
-using PackageExplorerViewModel;
-using NuGetPackageExplorer.Types;
 using NuGet;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application {
-
         private CompositionContainer _container;
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
@@ -56,6 +56,25 @@ namespace PackageExplorer {
                 if (activationData != null && activationData.Length > 0) {
                     string file = activationData[0];
                     LoadFile(window, file);
+                }
+            }
+
+            if (ApplicationDeployment.IsNetworkDeployed) {
+                // click-once with command in the URL
+                // var requestParameters = UriHelper.GetRequestParameters(new Uri("http://xyz?action=load-package&packageurl=http://www.myget.org/F/chucknorris/Download/Package/roundhouse/0.8.0.292&packagesource=http://www.myget.org/F/chucknorris/"));
+                var requestParameters = UriHelper.GetRequestParameters(ApplicationDeployment.CurrentDeployment.ActivationUri);
+
+                if (requestParameters.Any() && requestParameters.ContainsKey("action")) {
+                    switch (requestParameters["action"].ToLowerInvariant()) {
+                        case "load-package":
+                            if (requestParameters.ContainsKey("packagesource")) {
+                                window.SetActivePackagePublishSource(requestParameters["packagesource"]);
+                            }
+                            if (requestParameters.ContainsKey("packageurl")) {
+                                window.OpenRemotePackage(requestParameters["packageurl"]);
+                            }
+                            break;
+                    }
                 }
             }
         }
