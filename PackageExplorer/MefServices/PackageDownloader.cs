@@ -28,10 +28,8 @@ namespace PackageExplorer {
             string progressDialogText = Resources.Resources.Dialog_DownloadingPackage;
             if (!string.IsNullOrEmpty(packageId)) {
                 progressDialogText = string.Format(progressDialogText, packageId, packageVersion);
-            }
-            else {
-                progressDialogText = string.Format(progressDialogText,
-                                                   downloadUri.Scheme + "://..." + downloadUri.PathAndQuery, "");
+            } else {
+                progressDialogText = string.Format(progressDialogText, downloadUri, "");
             }
 
             _progressDialog = new ProgressDialog {
@@ -87,10 +85,7 @@ namespace PackageExplorer {
 
         private IPackage DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken) {
             var httpClient = new RedirectedHttpClient(url) {
-                                                               UserAgent =
-                                                                   HttpUtility.CreateUserAgentString(
-                                                                       PackageExplorerViewModel.Constants.
-                                                                           UserAgentClient),
+                                                               UserAgent = HttpUtility.CreateUserAgentString(PackageExplorerViewModel.Constants.UserAgentClient),
                                                                AcceptCompression = false
                                                            };
 
@@ -131,8 +126,7 @@ namespace PackageExplorer {
 
         private void OnProgress(int bytesReceived, int totalBytes, Action<int, string> reportProgress) {
             int percentComplete = (bytesReceived*100)/totalBytes;
-            string description = String.Format("Downloaded {0}KB of {1}KB...", ToKB(bytesReceived).ToString(),
-                                               ToKB(totalBytes).ToString());
+            string description = String.Format("Downloaded {0}KB of {1}KB...", ToKB(bytesReceived).ToString(), ToKB(totalBytes).ToString());
             reportProgress(percentComplete, description);
         }
 

@@ -109,6 +109,7 @@ namespace PackageExplorer {
             try {
                 Uri packageUri = new Uri(packageUrl);
 
+                // REVIEW: Should this be in thesame critical section as the URL parsing?
                 PackageDownloader.Download(packageUri, null, null,
                                            (package) => LoadPackage(package, packageUrl, PackageType.DataServicePackage));
             } catch (UriFormatException) {
@@ -180,7 +181,7 @@ namespace PackageExplorer {
         }
 
         private void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e) {
-            string parameter = (string) e.Parameter;
+            string parameter = (string)e.Parameter;
             OpenPackageFromNuGetFeed(parameter);
         }
 
@@ -218,7 +219,6 @@ namespace PackageExplorer {
             if (selectedPackageInfo != null) {
                 Version packageVersion = new Version(selectedPackageInfo.Version);
                 IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
-                ;
 
                 Action<IPackage> processPackageAction = (package) => {
                                                             DataServicePackage servicePackage =
@@ -339,13 +339,13 @@ namespace PackageExplorer {
 
         private bool HasUnsavedChanges {
             get {
-                var viewModel = (PackageViewModel) DataContext;
+                var viewModel = (PackageViewModel DataContext;
                 return (viewModel != null && viewModel.HasEdit);
             }
         }
 
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e) {
-            var item = (MenuItem) sender;
+            var item = (MenuItem)sender;
             int size = Convert.ToInt32(item.Tag);
             SetFontSize(size);
         }
@@ -381,7 +381,7 @@ namespace PackageExplorer {
 
             Uri uri = e.Parameter as Uri;
             if (uri == null) {
-                string url = (string) e.Parameter;
+                string url = (string)e.Parameter;
                 Uri.TryCreate(url, UriKind.Absolute, out uri);
             }
 
@@ -410,7 +410,7 @@ namespace PackageExplorer {
                 return;
             }
 
-            MenuItem menuItem = (MenuItem) sender;
+            MenuItem menuItem = (MenuItem)sender;
             var mruItem = menuItem.DataContext as MruItem;
             if (mruItem == null) {
                 _mruManager.Clear();
@@ -447,8 +447,7 @@ namespace PackageExplorer {
         private void AddPluginFromAssembly_Click(object sender, RoutedEventArgs e) {
             var dialog = new PluginManagerDialog() {
                                                        Owner = this,
-                                                       DataContext =
-                                                           PackageViewModelFactory.CreatePluginManagerViewModel()
+                                                       DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
                                                    };
             dialog.ShowDialog();
         }
