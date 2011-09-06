@@ -18,6 +18,7 @@ namespace PackageExplorerViewModel {
         private PackageFolder _packageRoot;
         private ICommand _saveCommand, _editCommand, _cancelEditCommand, _applyEditCommand, _viewContentCommand, _saveContentCommand, _addAsAssemblyReferenceCommand;
         private ICommand _addContentFolderCommand, _addContentFileCommand, _addNewFolderCommand, _openWithContentFileCommand, _executePackageCommand, _viewPackageAnalysisCommand;
+        private ICommand _editFileCommand;
         private RelayCommand<object> _openContentFileCommand, _deleteContentCommand, _renameContentCommand;
         private RelayCommand _publishCommand, _exportCommand;
         private readonly IMruManager _mruManager;
@@ -80,15 +81,34 @@ namespace PackageExplorerViewModel {
         }
 
         private bool _isInEditMode;
-        public bool IsInEditMode {
+        public bool IsInEditMetadataMode {
             get {
                 return _isInEditMode;
             }
             private set {
                 if (_isInEditMode != value) {
                     _isInEditMode = value;
-                    OnPropertyChanged("IsInEditMode");
-                    PublishCommand.RaiseCanExecuteChanged();
+                    OnPropertyChanged("IsInEditMetadataMode");
+                }
+            }
+        }
+
+        public bool IsInEditFileMode {
+            get {
+                return FileEditorViewModel != null;
+            }
+        }
+
+        private FileEditorViewModel _fileEditorViewModel;
+        public FileEditorViewModel FileEditorViewModel {
+            get {
+                return _fileEditorViewModel;
+            }
+            set {
+                if (_fileEditorViewModel != value) {
+                    _fileEditorViewModel = value;
+                    OnPropertyChanged("FileEditorViewModel");
+                    OnPropertyChanged("IsInEditFileMode");
                 }
             }
         }
@@ -223,18 +243,18 @@ namespace PackageExplorerViewModel {
             // raise the property change event here to force the edit form to rebind 
             // all controls, which will erase all error states, if any, left over from the previous edit
             OnPropertyChanged("PackageMetadata");
-            IsInEditMode = true;
+            IsInEditMetadataMode = true;
         }
 
         public void CancelEdit() {
             PackageMetadata.ResetErrors();
-            IsInEditMode = false;
+            IsInEditMetadataMode = false;
         }
 
         private void CommitEdit() {
             HasEdit = true;
             PackageMetadata.ResetErrors();
-            IsInEditMode = false;
+            IsInEditMetadataMode = false;
             OnPropertyChanged("WindowTitle");
         }
 
@@ -508,7 +528,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool EditPackageCanExecute() {
-            return !IsInEditMode;
+            return !IsInEditMetadataMode;
         }
 
         private void EditPackageExecute() {
@@ -734,7 +754,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool PublishCanExecute() {
-            return !IsInEditMode;
+            return !IsInEditMetadataMode;
         }
 
         #endregion
@@ -769,7 +789,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool ExportCanExecute() {
-            return !IsInEditMode;
+            return !IsInEditMetadataMode;
         }
 
         #endregion
@@ -824,7 +844,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool CanExecutePackageAnalysis(string parameter) {
-            return parameter == "Hide" || !IsInEditMode;
+            return parameter == "Hide" || !IsInEditMetadataMode;
         }
 
         #endregion
@@ -848,7 +868,7 @@ namespace PackageExplorerViewModel {
             return file != null && 
                    (file.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
                     file.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) &&
-                    (IsInEditMode || !PackageMetadata.ContainsAssemblyReference(file.Name));
+                    (IsInEditMetadataMode || !PackageMetadata.ContainsAssemblyReference(file.Name));
         }
 
         private void AddAsAssemblyReferenceExecute(PackageFile file) {
@@ -856,7 +876,7 @@ namespace PackageExplorerViewModel {
                 return;
             }
 
-            if (IsInEditMode) {
+            if (IsInEditMetadataMode) {
                 _editorService.AddAssemblyReference(file.Name);
             }
             else {
@@ -864,6 +884,32 @@ namespace PackageExplorerViewModel {
                 // mark the document as dirty
                 NotifyChanges();
             }
+        }
+
+        #endregion
+
+        #region EditFileCommand
+
+        public ICommand EditFileCommand {
+            get {
+                if (_editFileCommand == null) {
+                    _editFileCommand = new RelayCommand<PackagePart>(EditFileCommandExecute, CanEditFileCommandExecute);
+                }
+
+                return _editFileCommand;
+            }
+        }
+
+        private void EditFileCommandExecute(PackagePart file) {
+            FileEditorViewModel = new FileEditorViewModel(this, file as PackageFile);
+        }
+
+        private bool CanEditFileCommandExecute(PackagePart file) {
+            return (file is PackageFile) && !FileHelper.IsBinaryFile(file.Path);
+        }
+
+        internal void CloseEditFileMode() {
+            FileEditorViewModel = null;
         }
 
         #endregion

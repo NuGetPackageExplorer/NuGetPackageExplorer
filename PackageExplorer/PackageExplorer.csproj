@@ -126,7 +126,7 @@
     <Compile Include="Converters\BooleanToStringConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\NormalizeTextConverter.cs" />
-    <Compile Include="Converters\PackageCommandItemContainerSelector.cs" />
+    <Compile Include="Wpf\PackageCommandItemContainerSelector.cs" />
     <Compile Include="Converters\PackageInfoDownloadCountConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
     <Compile Include="Converters\SubtracterConverter.cs" />
@@ -142,7 +142,7 @@
     <Compile Include="Converters\UriConverter.cs" />
     <Compile Include="Converters\VersionConverter.cs" />
     <Compile Include="Converters\VersionSpecConverter.cs" />
-    <Compile Include="Converters\PackagePartToBoolConverter.cs" />
+    <Compile Include="Converters\PackagePartToVisibilityConverter.cs" />
     <Compile Include="Controls\StandardDialog.cs" />
     <Compile Include="FileEditor.xaml.cs">
       <DependentUpon>FileEditor.xaml</DependentUpon>

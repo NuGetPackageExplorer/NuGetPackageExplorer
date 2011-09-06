@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NuGet;
@@ -23,6 +26,7 @@ namespace PackageExplorer {
     public partial class MainWindow : Window {
 
         private readonly IMruManager _mruManager;
+        private FileEditor _fileEditor;
 
         [Import]
         public ISettingsManager SettingsManager { get; set; }
@@ -112,17 +116,42 @@ namespace PackageExplorer {
             DisposeViewModel();
 
             if (package != null) {
-                if (MainContentContainer.Children.Count == 1) {
+                if (!HasLoadedContent<PackageViewer>()) {
                     var packageViewer = new PackageViewer(UIServices, PackageChooser);
+                    var binding = new Binding("IsInEditFileMode") {
+                        Converter = new BooleanToVisibilityConverter() { Inverted = true }
+                    };
+                    packageViewer.SetBinding(FrameworkElement.VisibilityProperty, binding);
+
                     MainContentContainer.Children.Add(packageViewer);
 
-                    // set the Export of IPackageMetadataEditor here
+                    // HACK HACK: set the Export of IPackageMetadataEditor here
                     EditorService = packageViewer.PackageMetadataEditor;
                 }
 
-                DataContext = PackageViewModelFactory.CreateViewModel(package, packagePath);
+                PackageViewModel packageViewModel = PackageViewModelFactory.CreateViewModel(package, packagePath);
+                packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+
+                DataContext = packageViewModel;
                 if (!String.IsNullOrEmpty(packagePath)) {
                     _mruManager.NotifyFileAdded(package, packagePath, packageType);
+                }
+            }
+        }
+
+        private void OnPackageViewModelPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            var viewModel = (PackageViewModel)sender;
+            if (e.PropertyName == "IsInEditFileMode") {
+                if (viewModel.IsInEditFileMode) {
+                    Debug.Assert(_fileEditor == null);
+                    _fileEditor = new FileEditor() {
+                        DataContext = viewModel.FileEditorViewModel
+                    };
+                    MainContentContainer.Children.Add(_fileEditor);
+                }
+                else {
+                    MainContentContainer.Children.Remove(_fileEditor);
+                    _fileEditor = null;
                 }
             }
         }
@@ -414,6 +443,10 @@ namespace PackageExplorer {
                 DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
             };
             dialog.ShowDialog();
+        }
+
+        private bool HasLoadedContent<T>() {
+            return MainContentContainer.Children.Cast<UIElement>().Any(p => p is T);
         }
     }
 }

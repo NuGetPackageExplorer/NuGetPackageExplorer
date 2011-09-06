@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Windows.Data;
 using PackageExplorerViewModel;
+using System.Windows;
 
 namespace PackageExplorer {
-    public class PackagePartToBoolConverter : IValueConverter {
+    public class PackagePartToVisibilityConverter : IValueConverter {
 
-        public PackagePartToBoolConverter() {
+        public PackagePartToVisibilityConverter() {
         }
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
@@ -16,14 +17,18 @@ namespace PackageExplorer {
 
             string type = (string)parameter;
             if (type == "file") {
-                return value is PackageFile;
+                return BoolToVisibility(value is PackageFile);
             }
             else if (type == "folder") {
-                return value is PackageFolder;
+                return BoolToVisibility(value is PackageFolder);
             }
             else {
-                return value is PackagePart;
+                return BoolToVisibility(value is PackagePart);
             }
+        }
+
+        private Visibility BoolToVisibility(bool b) {
+            return b ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {

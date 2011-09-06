@@ -142,7 +142,7 @@ namespace PackageExplorerViewModel {
         public PackageFolder AddFolder(string folderName) {
             if (!AddContentFolderCanExecute(folderName)) {
                 PackageViewModel.UIServices.Show(
-                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName), 
+                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
                     MessageLevel.Error);
                 return null;
             }
@@ -222,32 +222,32 @@ namespace PackageExplorerViewModel {
             PackageViewModel.NotifyChanges();
         }
 
-        internal void ReplaceFile(PackageFile oldFile)
-        {
+        internal void ReplaceFile(PackageFile oldFile) {
             string selectedFileName;
             var result = PackageViewModel.UIServices.OpenFileDialog("Select New File", "All files (*.*)|*.*", out selectedFileName);
-            if (result)
-            {
-                bool showingFile = PackageViewModel.IsShowingFileContent(oldFile);
+            if (result) {
+                ReplaceFile(oldFile, selectedFileName);
+            }
+        }
 
-                // temporarily remove the old file in order to add a new file
-                Children.Remove(oldFile);
+        internal void ReplaceFile(PackageFile oldFile, string newFileName) {
+            bool showingFile = PackageViewModel.IsShowingFileContent(oldFile);
 
-                PackageFile newFile = AddFile(selectedFileName);
-                if (newFile != null)
-                {
-                    // new file added successfully, officially delete the old file by disposing it
-                    oldFile.Dispose();
+            // temporarily remove the old file in order to add a new file
+            Children.Remove(oldFile);
 
-                    if (showingFile) {
-                        PackageViewModel.ShowFileContent(newFile);
-                    }
+            PackageFile newFile = AddFile(newFileName);
+            if (newFile != null) {
+                // new file added successfully, officially delete the old file by disposing it
+                oldFile.Dispose();
+
+                if (showingFile) {
+                    PackageViewModel.ShowFileContent(newFile);
                 }
-                else
-                {
-                    // otherwise, if the adding failed, restore the old file
-                    Children.Add(oldFile);
-                }
+            }
+            else {
+                // otherwise, if the adding failed, restore the old file
+                Children.Add(oldFile);
             }
         }
 
@@ -261,10 +261,10 @@ namespace PackageExplorerViewModel {
             if (!AddContentFolderCanExecute(folderName)) {
                 PackageViewModel.UIServices.Show(
                     String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
-                    MessageLevel.Error); 
+                    MessageLevel.Error);
                 return;
             }
-            
+
             AddPhysicalFolderCore(dirInfo);
         }
 

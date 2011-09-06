@@ -30,7 +30,7 @@
 
     <Window.Resources>
         <viewmodel:DisabledCommand x:Key="DisabledCommand" />
-        <self:PackagePartToBoolConverter x:Key="PackagePartConverter" />
+        <self:PackagePartToVisibilityConverter x:Key="PackagePartConverter" />
         <self:TruncateFilePathConverter x:Key="TruncatePathConverter" />
         <self:TaskShortcutVisibilityConverter x:Key="TaskShortcutConverter" />
         
@@ -75,7 +75,10 @@
     
     <DockPanel x:Name="RootLayout" LastChildFill="True">
         <!-- Menu bar -->
-        <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
+        <Menu 
+            DockPanel.Dock="Top" 
+            Background="{StaticResource MenuBackgroundBrush}" 
+            Visibility="{Binding IsInEditFileMode, Mode=OneWay, FallbackValue=Visible, Converter={StaticResource invertedBoolToVis}}">
             <self:GrayscaleMenuItem Header="_File">
                 <MenuItem Command="New" Header="_New">
                     <MenuItem.Icon>
@@ -138,6 +141,16 @@
                         <self:GrayscaleImage Source="Images/EditHS.png" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
+                
+                <MenuItem 
+                    Visibility="{Binding SelectedItem, Converter={StaticResource PackagePartConverter}, ConverterParameter=file, FallbackValue=Collapsed}"
+                    Command="{Binding EditFileCommand}"
+                    CommandParameter="{Binding SelectedItem, FallbackValue={x:Null}}">
+                    <MenuItem.Header>
+                        <TextBlock Text="{Binding SelectedItem.Name, Mode=OneWay, FallbackValue='', StringFormat='Edit \'{0}\''}" />
+                    </MenuItem.Header>
+                </MenuItem>
+                
                 <Separator />
                 <self:GrayscaleMenuItem Command="Cut">
                     <self:GrayscaleMenuItem.Icon>
@@ -224,11 +237,11 @@
             </MenuItem>
 
             <MenuItem Header="_Help">
-                <self:GrayscaleMenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="http://docs.nuget.org/">
-                    <self:GrayscaleMenuItem.Icon>
+                <MenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="http://docs.nuget.org/">
+                    <MenuItem.Icon>
                         <self:GrayscaleImage Source="Images/Book_angleHS.png" />
-                    </self:GrayscaleMenuItem.Icon>
-                </self:GrayscaleMenuItem>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <MenuItem Header="How to _Create Package" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package" />
                 <MenuItem Header="_Nuspec Reference" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/nuspec-reference" />
                 <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/version-range-specification" />

@@ -94,12 +94,14 @@ namespace PackageExplorerViewModel {
             get { return PackageViewModel.AddAsAssemblyReferenceCommand; }
         }
 
+        public ICommand EditCommand {
+            get { return PackageViewModel.EditFileCommand; }
+        }
+
         public RelayCommand ReplaceCommand { get; private set; }
 
-        public void Replace()
-        {
-            if (Parent != null)
-            {
+        public void Replace() {
+            if (Parent != null) {
                 Parent.ReplaceFile(this);
             }
         }
@@ -108,7 +110,7 @@ namespace PackageExplorerViewModel {
             string fullPath = System.IO.Path.Combine(rootPath, Path);
             if (File.Exists(fullPath)) {
                 bool confirmed = PackageViewModel.UIServices.Confirm(
-                    Resources.ConfirmToReplaceFile_Title, 
+                    Resources.ConfirmToReplaceFile_Title,
                     String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullPath));
                 if (!confirmed) {
                     return;

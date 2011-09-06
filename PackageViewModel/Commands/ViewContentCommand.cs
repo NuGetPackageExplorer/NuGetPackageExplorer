@@ -81,7 +81,7 @@ namespace PackageExplorerViewModel {
 
             // if plugins fail to read this file, fall back to the default viewer
             if (content == null) {
-                isBinary = IsBinaryFile(file.Name);
+                isBinary = FileHelper.IsBinaryFile(file.Name);
                 if (isBinary) {
                     // don't calculate the size again if we already have it
                     if (size == -1) {
@@ -146,16 +146,6 @@ namespace PackageExplorerViewModel {
             }
 
             return sb.ToString();
-        }
-
-        private static string[] BinaryFileExtensions = new string[] { 
-            ".DLL", ".EXE", ".CHM", ".PDF", ".DOCX", ".DOC", ".JPG", ".PNG", ".GIF", ".RTF", ".PDB", ".ZIP", ".RAR", ".XAP", ".VSIX", ".NUPKG", ".SNK", ".PFX", ".ICO"
-        };
-
-        private static bool IsBinaryFile(string path) {
-            // TODO: check for content type of the file here
-            string extension = Path.GetExtension(path).ToUpper(CultureInfo.InvariantCulture);
-            return String.IsNullOrEmpty(extension) || BinaryFileExtensions.Any(p => p.Equals(extension));
         }
 
         private static SourceLanguageType DetermineLanguage(string name) {

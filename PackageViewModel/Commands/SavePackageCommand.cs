@@ -23,7 +23,7 @@ namespace PackageExplorerViewModel {
         public event EventHandler CanExecuteChanged;
 
         public void Execute(object parameter) {
-            if (ViewModel.IsInEditMode) {
+            if (ViewModel.IsInEditMetadataMode) {
                 bool isMetadataValid = ViewModel.ApplyEditExecute();
                 if (!isMetadataValid) {
                     ViewModel.UIServices.Show(Resources.EditFormHasInvalidInput, MessageLevel.Error);

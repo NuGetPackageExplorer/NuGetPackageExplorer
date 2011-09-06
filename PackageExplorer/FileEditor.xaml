@@ -1,60 +1,162 @@
 ﻿<UserControl x:Class="PackageExplorer.FileEditor"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <DockPanel>
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+			 xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
+			 xmlns:viewmodel="clr-namespace:NuGetPackageExplorer.Types;assembly=PackageViewModel"
+			 xmlns:self="clr-namespace:PackageExplorer"
+			 mc:Ignorable="d" 
+			 d:DesignHeight="300"
+			 d:DesignWidth="300"
+			 DataContextChanged="UserControl_DataContextChanged">
+	<DockPanel>
 
-        <ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
-            
-            <Button Command="Save">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Save and Return" Margin="0,0,3,0" />
-                    <Image Source="Images/SaveHS.png" />
-                </StackPanel>
-            </Button>
-            
-            <Separator />
-            
-            <Button Command="Cut">
-                <Image Source="Images/CutHS.png" />
-            </Button>
+        <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
+            <MenuItem Header="File">
+                <self:GrayscaleMenuItem 
+                    Header="Save"
+                    Command="{Binding SaveCommand, Mode=OneWay}" 
+				    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/saveHS.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+                <Separator />
+                <MenuItem 
+                    Header="Return to Package" 
+                    Command="{Binding CloseCommand, Mode=OneWay}" 
+				    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}" />
+            </MenuItem>
 
-            <Button Command="Copy">
-                <Image Source="Images/CopyHS.png" />
-            </Button>
+            <self:GrayscaleMenuItem Header="_Edit" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
+                <self:GrayscaleMenuItem Command="Undo">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/Edit_UndoHS.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+                <self:GrayscaleMenuItem Command="Redo">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/Edit_RedoHS.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+                <Separator />
+                <self:GrayscaleMenuItem Command="Cut">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/CutHS.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+                <self:GrayscaleMenuItem Command="Copy">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/CopyHS.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+                <self:GrayscaleMenuItem Command="Paste">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/PasteHS.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+            </self:GrayscaleMenuItem>
 
-            <Button Command="Paste">
-                <Image Source="Images/PasteHS.png" />
-            </Button>
+            <MenuItem Header="_View">
+                <MenuItem Header="Text _Size" x:Name="FontSizeMenuItem">
+                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" IsCheckable="True" />
+                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" IsCheckable="True" />
+                    <self:GrayscaleMenuItem Header="L_arge"  Tag="16" IsCheckable="True" />
+                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" IsCheckable="True" />
+                    <MenuItem.Icon>
+                        <Image Source="Images/FontDialogHS.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
 
-            <Separator />
+            <MenuItem Header="_Help">
+                <MenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="http://docs.nuget.org/">
+                    <MenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/Book_angleHS.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="How to _Create Package" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package" />
+                <MenuItem Header="_Nuspec Reference" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/nuspec-reference" />
+                <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/version-range-specification" />
+                <Separator />
+                <MenuItem Header="_Donate..." Command="GoToPage" CommandParameter="http://npe.cloudapp.net" />
+                <Separator />
+                <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="http://npe.codeplex.com/WorkItem/Create" />
+                <MenuItem Header="_About..." />
+            </MenuItem>
+        </Menu>
+        
+		<ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+			<Button
+                ToolTip="Save (Ctrl+S)"
+                Command="{Binding SaveCommand, Mode=OneWay}" 
+				CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
+				<Image Source="Images/SaveHS.png" />
+			</Button>
+			
+			<Separator />
 
-            <Button Command="Undo">
-                <Image Source="Images/Edit_UndoHS.png" />
-            </Button>
+            <self:GrayscaleButton ToolTip="Cut (Ctrl+X)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Cut" >
+				<self:GrayscaleImage Source="Images/CutHS.png" />
+			</self:GrayscaleButton>
 
-            <Button Command="Redo">
-                <Image Source="Images/Edit_RedoHS.png" />
-            </Button>
+            <self:GrayscaleButton ToolTip="Copy (Ctrl+C)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Copy">
+				<self:GrayscaleImage Source="Images/CopyHS.png" />
+			</self:GrayscaleButton>
 
-            <Separator />
+            <self:GrayscaleButton ToolTip="Paste (Ctrl+V)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Paste">
+				<self:GrayscaleImage Source="Images/PasteHS.png" />
+			</self:GrayscaleButton>
 
-            <Label Content="Syntax Scheme:" />
+			<Separator />
 
-            <ComboBox x:Name="SyntaxDefinitions" IsEditable="False" IsReadOnly="True" Width="100" DisplayMemberPath="Name" SelectedIndex="0">
-            </ComboBox>
-        </ToolBar>
+            <self:GrayscaleButton ToolTip="Undo (Ctrl+Z)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Undo">
+				<self:GrayscaleImage Source="Images/Edit_UndoHS.png" />
+			</self:GrayscaleButton>
 
-        <ae:TextEditor 
-            x:Name="Editor"
-            Padding="3"
-            HorizontalScrollBarVisibility="Auto"
-            WordWrap="True"
-            SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}"
-            FontFamily="Consolas" />
-    </DockPanel>
+            <self:GrayscaleButton ToolTip="Redo (Ctrl+Y)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Redo">
+				<self:GrayscaleImage Source="Images/Edit_RedoHS.png" />
+			</self:GrayscaleButton>
+
+			<Separator />
+
+			<Label Content="Syntax Scheme:" />
+
+			<ComboBox 
+				x:Name="SyntaxDefinitions" 
+				IsEditable="false" 
+				IsReadOnly="false" 
+				Width="110" 
+				DisplayMemberPath="Name">
+			</ComboBox>
+			
+			<Separator />
+
+			<Button
+                ToolTip="Close and return to package"
+				Command="{Binding CloseCommand, Mode=OneWay}" 
+				CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}"
+				Width="16" 
+				Height="16">
+				<Path 
+					StrokeThickness="1"
+					UseLayoutRounding="True"
+					SnapsToDevicePixels="True"
+					Stretch="Uniform"
+					Height="12"
+					Width="12"
+					Fill="Black" 
+					Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z" />
+			</Button>
+		</ToolBar>
+
+		<ae:TextEditor 
+			x:Name="Editor"
+			Margin="5"
+			Padding="3,0,3,0"
+			HorizontalScrollBarVisibility="Auto"
+			SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}"
+			FontFamily="Consolas" />
+	</DockPanel>
 </UserControl>

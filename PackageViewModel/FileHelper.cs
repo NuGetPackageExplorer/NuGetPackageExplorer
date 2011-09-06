@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel {
@@ -10,6 +11,16 @@ namespace PackageExplorerViewModel {
             ".BAS", ".BAT", ".CHM", ".COM", ".EXE", ".HTA", ".INF", ".JS", ".LNK", ".MSI", 
             ".OCX", ".PPT", ".REG", ".SCT", ".SHS", ".SYS", ".URL", ".VB", ".VBS", ".WSH", ".WSF"
         };
+
+        private static string[] BinaryFileExtensions = new string[] { 
+            ".DLL", ".EXE", ".CHM", ".PDF", ".DOCX", ".DOC", ".JPG", ".PNG", ".GIF", ".RTF", ".PDB", ".ZIP", ".RAR", ".XAP", ".VSIX", ".NUPKG", ".SNK", ".PFX", ".ICO"
+        };
+
+        public static bool IsBinaryFile(string path) {
+            // TODO: check for content type of the file here
+            string extension = Path.GetExtension(path).ToUpper(CultureInfo.InvariantCulture);
+            return String.IsNullOrEmpty(extension) || BinaryFileExtensions.Any(p => p.Equals(extension));
+        }
 
         public static void OpenFileInShell(PackageFile file, IUIServices uiServices) {
             if (IsExecutableScript(file.Name)) {
@@ -74,7 +85,7 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private static string GetTempFilePath() {
+        public static string GetTempFilePath() {
             string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             if (!Directory.Exists(tempPath)) {
                 Directory.CreateDirectory(tempPath);
