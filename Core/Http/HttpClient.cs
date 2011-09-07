@@ -111,25 +111,35 @@ namespace NuGet {
             const int ChunkSize = 1024 * 4; // 4KB
 
             byte[] buffer = null;
-
-            // we don't want to enable compression when downloading 
             using (var response = GetResponse()) {
                 // Total response length
                 int length = (int)response.ContentLength;
-                buffer = new byte[length];
-
-                // We read the response stream chunk by chunk (each chunk is 4KB). 
-                // After reading each chunk, we report the progress based on the total number bytes read so far.
-                int totalReadSoFar = 0;
                 using (Stream stream = response.GetResponseStream()) {
-                    while (totalReadSoFar < length) {
-                        int bytesRead = stream.Read(buffer, totalReadSoFar, Math.Min(length - totalReadSoFar, ChunkSize));
-                        if (bytesRead == 0) {
-                            break;
+                    // in some circumstances, the Content-Length response header is missing, resulting in
+                    // the ContentLength = -1. In which case, we copy the whole stream and do not report progress.
+                    if (length < 0) {
+                        using (var memoryStream = new MemoryStream()) {
+                            stream.CopyTo(memoryStream, ChunkSize);
+                            buffer = memoryStream.ToArray();
                         }
-                        else {
-                            totalReadSoFar += bytesRead;
-                            OnProgressAvailable((totalReadSoFar * 100) / length);
+
+                        // reporting fake progress as 100%
+                        OnProgressAvailable(100);
+                    }
+                    else {
+                        // We read the response stream chunk by chunk (each chunk is 4KB). 
+                        // After reading each chunk, we report the progress based on the total number bytes read so far.
+                        int totalReadSoFar = 0;
+                        buffer = new byte[length];
+                        while (totalReadSoFar < length) {
+                            int bytesRead = stream.Read(buffer, totalReadSoFar, Math.Min(length - totalReadSoFar, ChunkSize));
+                            if (bytesRead == 0) {
+                                break;
+                            }
+                            else {
+                                totalReadSoFar += bytesRead;
+                                OnProgressAvailable((totalReadSoFar * 100) / length);
+                            }
                         }
                     }
                 }
