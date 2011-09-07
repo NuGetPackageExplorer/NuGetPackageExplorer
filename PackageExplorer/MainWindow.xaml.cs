@@ -106,13 +106,12 @@ namespace PackageExplorer {
                 return;
             }
 
-            try {
-                Uri packageUri = new Uri(packageUrl);
-
+            Uri packageUri = null;
+            if (Uri.TryCreate(packageUrl, UriKind.Absolute, out packageUri)) {
                 // REVIEW: Should this be in thesame critical section as the URL parsing?
                 PackageDownloader.Download(packageUri, null, null,
                                            (package) => LoadPackage(package, packageUrl, PackageType.DataServicePackage));
-            } catch (UriFormatException) {
+            } else {
                 UIServices.Show(string.Format(PackageExplorer.Resources.Resources.Dialog_InvalidPackageUrl, packageUrl), MessageLevel.Error);
             }
         }
