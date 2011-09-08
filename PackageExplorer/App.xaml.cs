@@ -56,25 +56,38 @@ namespace PackageExplorer {
                 if (activationData != null && activationData.Length > 0) {
                     string file = activationData[0];
                     LoadFile(window, file);
+                    return;
                 }
             }
 
-            if (ApplicationDeployment.IsNetworkDeployed) {
+            if (!ApplicationDeployment.IsNetworkDeployed) {
                 // click-once with command in the URL
-                // var requestParameters = UriHelper.GetRequestParameters(new Uri("http://xyz?action=load-package&packageurl=http://www.myget.org/F/chucknorris/Download/Package/roundhouse/0.8.0.292&packagesource=http://www.myget.org/F/chucknorris/"));
-                var requestParameters = UriHelper.GetRequestParameters(ApplicationDeployment.CurrentDeployment.ActivationUri);
+                ProcessUrlParameters(window);
+            }
+        }
 
-                if (requestParameters.Any() && requestParameters.ContainsKey("action")) {
-                    switch (requestParameters["action"].ToLowerInvariant()) {
-                        case "load-package":
-                            if (requestParameters.ContainsKey("packagesource")) {
-                                window.SetActivePackagePublishSource(requestParameters["packagesource"]);
-                            }
-                            if (requestParameters.ContainsKey("packageurl")) {
-                                window.OpenRemotePackage(requestParameters["packageurl"]);
-                            }
-                            break;
-                    }
+        private static void ProcessUrlParameters(MainWindow window) {
+            const string ActionParameter = "action";
+            const string LoadPackageAction = "load-package";
+            const string PackageSourceParameter = "packagesource";
+            const string PackageUrlParameter = "packageurl";
+
+            var requestParameters = UriHelper.GetRequestParameters(new Uri("http://xyz?action=load-package&packageurl=http://www.myget.org/F/chucknorris/Download/Package/roundhouse/0.8.0.292&packagesource=http://www.myget.org/F/chucknorris/"));
+            //var requestParameters = UriHelper.GetRequestParameters(ApplicationDeployment.CurrentDeployment.ActivationUri);
+
+            if (requestParameters.Any() && requestParameters.ContainsKey(ActionParameter)) {
+                switch (requestParameters[ActionParameter].ToLowerInvariant()) {
+                    case LoadPackageAction:
+                        string packageSourceValue;
+                        if (requestParameters.TryGetValue(PackageSourceParameter, out packageSourceValue)) {
+                            window.SetActivePackagePublishSource(packageSourceValue);
+                        }
+
+                        string packageUrlValue;
+                        if (requestParameters.TryGetValue(PackageUrlParameter, out packageUrlValue)) {
+                            window.DownloadAndOpenDataServicePackage(packageUrlValue);
+                        }
+                        break;
                 }
             }
         }

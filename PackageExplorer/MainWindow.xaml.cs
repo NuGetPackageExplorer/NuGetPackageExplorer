@@ -14,6 +14,7 @@ using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
+using System.Globalization;
 
 namespace PackageExplorer {
     /// <summary>
@@ -86,33 +87,19 @@ namespace PackageExplorer {
         }
 
         internal void SetActivePackagePublishSource(string packagePublishSource) {
+            if (String.IsNullOrEmpty(packagePublishSource)) {
+                return;
+            }
+
             if (UIServices.Confirm(
-                PackageExplorer.Resources.Resources.Dialog_Title,
-                string.Format(PackageExplorer.Resources.Resources.Dialog_SetActivePackagePublishSource, packagePublishSource), true)) {
-                this.SettingsManager.ActivePublishSource = packagePublishSource;
-            }
-        }
+                    "Add Package Source",
+                    string.Format(
+                        CultureInfo.CurrentCulture,
+                        PackageExplorer.Resources.Resources.Dialog_SetActivePackagePublishSource, 
+                        packagePublishSource),
+                    isWarning: true)) {
 
-        internal void OpenRemotePackage(string packageUrl) {
-            if (!NetworkInterface.GetIsNetworkAvailable()) {
-                UIServices.Show(
-                    PackageExplorer.Resources.Resources.NoNetworkConnection,
-                    MessageLevel.Warning);
-                return;
-            }
-
-            bool canceled = AskToSaveCurrentFile();
-            if (canceled) {
-                return;
-            }
-
-            Uri packageUri = null;
-            if (Uri.TryCreate(packageUrl, UriKind.Absolute, out packageUri)) {
-                // REVIEW: Should this be in thesame critical section as the URL parsing?
-                PackageDownloader.Download(packageUri, null, null,
-                                           (package) => LoadPackage(package, packageUrl, PackageType.DataServicePackage));
-            } else {
-                UIServices.Show(string.Format(PackageExplorer.Resources.Resources.Dialog_InvalidPackageUrl, packageUrl), MessageLevel.Error);
+                SettingsManager.ActivePublishSource = packagePublishSource;
             }
         }
 
@@ -239,8 +226,7 @@ namespace PackageExplorer {
                         selectedPackageInfo.DownloadUrl,
                         selectedPackageInfo.Id,
                         packageVersion,
-                        processPackageAction
-                        );
+                        processPackageAction);
                 }
                 else {
                     processPackageAction(cachePackage);
@@ -338,7 +324,7 @@ namespace PackageExplorer {
 
         private bool HasUnsavedChanges {
             get {
-                var viewModel = (PackageViewModel DataContext;
+                var viewModel = (PackageViewModel)DataContext;
                 return (viewModel != null && viewModel.HasEdit);
             }
         }
@@ -424,7 +410,11 @@ namespace PackageExplorer {
             }
         }
 
-        private void DownloadAndOpenDataServicePackage(MruItem item) {
+        internal void DownloadAndOpenDataServicePackage(MruItem item) {
+            DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
+        }
+
+        internal void DownloadAndOpenDataServicePackage(string packageUrl, string id = null, Version version = null) {
             if (!NetworkInterface.GetIsNetworkAvailable()) {
                 UIServices.Show(
                     PackageExplorer.Resources.Resources.NoNetworkConnection,
@@ -433,21 +423,30 @@ namespace PackageExplorer {
             }
 
             Uri downloadUrl;
-            if (Uri.TryCreate(item.Path, UriKind.Absolute, out downloadUrl)) {
+            if (Uri.TryCreate(packageUrl, UriKind.Absolute, out downloadUrl) && downloadUrl.IsRemoteUri()) {
                 PackageDownloader.Download(
                     downloadUrl,
-                    item.Id,
-                    item.Version,
-                    package => LoadPackage(package, item.Path, PackageType.DataServicePackage)
-                    );
+                    id,
+                    version,
+                    package => LoadPackage(package, packageUrl, PackageType.DataServicePackage)
+                );
+            }
+            else {
+                UIServices.Show(
+                    String.Format(
+                        CultureInfo.CurrentCulture,
+                        PackageExplorer.Resources.Resources.Dialog_InvalidPackageUrl,
+                        packageUrl),
+                    MessageLevel.Error
+                );
             }
         }
 
         private void AddPluginFromAssembly_Click(object sender, RoutedEventArgs e) {
             var dialog = new PluginManagerDialog() {
-                                                       Owner = this,
-                                                       DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
-                                                   };
+                Owner = this,
+                DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
+            };
             dialog.ShowDialog();
         }
     }

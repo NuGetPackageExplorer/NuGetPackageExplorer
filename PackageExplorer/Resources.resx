@@ -163,9 +163,9 @@
     <value>Do you want to save your changes?</value>
   </data>
   <data name="Dialog_SetActivePackagePublishSource" xml:space="preserve">
-    <value>An external program wants to add a package publish source to NuGetPackageExplorer.
+    <value>The external url wants to add a publish source to NuGet Package Explorer.
 
-Are you sure you want to add {0} to the list of package publish sources?</value>
+Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="Dialog_TagLabel" xml:space="preserve">
     <value>Tags:</value>

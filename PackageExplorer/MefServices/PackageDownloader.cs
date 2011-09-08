@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
+using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading;
@@ -20,24 +21,21 @@ namespace PackageExplorer {
 
         private ProgressDialog _progressDialog;
 
-        public void Download(
-            Uri downloadUri,
-            string packageId,
-            Version packageVersion,
-            Action<IPackage> callback) {
+        public void Download(Uri downloadUri, string packageId, Version packageVersion, Action<IPackage> callback) {
             string progressDialogText = Resources.Resources.Dialog_DownloadingPackage;
             if (!string.IsNullOrEmpty(packageId)) {
-                progressDialogText = string.Format(progressDialogText, packageId, packageVersion);
-            } else {
-                progressDialogText = string.Format(progressDialogText, downloadUri, "");
+                progressDialogText = String.Format(CultureInfo.CurrentCulture, progressDialogText, packageId, packageVersion);
+            } 
+            else {
+                progressDialogText = String.Format(CultureInfo.CurrentCulture, progressDialogText, downloadUri, String.Empty);
             }
 
             _progressDialog = new ProgressDialog {
-                                                     Text = progressDialogText,
-                                                     WindowTitle = Resources.Resources.Dialog_Title,
-                                                     ShowTimeRemaining = true,
-                                                     CancellationText = "Canceling download..."
-                                                 };
+                Text = progressDialogText,
+                WindowTitle = Resources.Resources.Dialog_Title,
+                ShowTimeRemaining = true,
+                CancellationText = "Canceling download..."
+            };
             _progressDialog.ShowDialog(MainWindow.Value);
 
             // polling for Cancel button being clicked
