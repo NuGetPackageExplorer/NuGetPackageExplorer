@@ -105,13 +105,7 @@ namespace PackageExplorer {
         }
 
         private void AddDependencyButtonClicked(object sender, System.Windows.RoutedEventArgs e) {
-            var bindingExpression = NewDependencyId.GetBindingExpression(TextBox.TextProperty);
-            if (bindingExpression.HasError) {
-                return;
-            }
-
-            var bindingExpression2 = NewDependencyVersion.GetBindingExpression(TextBox.TextProperty);
-            if (bindingExpression2.HasError) {
+            if (!NewPackageDependencyGroup.UpdateSources()) {
                 return;
             }
 

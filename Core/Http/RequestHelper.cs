@@ -20,6 +20,9 @@ namespace NuGet {
                 // Create the request
                 WebRequest request = createRequest();
                 request.Proxy = proxyCache.GetProxy(request.RequestUri);
+                if (request.Proxy != null && request.Proxy.Credentials == null) {
+                    request.Proxy.Credentials = CredentialCache.DefaultCredentials;
+                }
 
                 if (previousStatusCode == null) {
                     // Try to use the cached credentials (if any, for the first request)
@@ -50,7 +53,7 @@ namespace NuGet {
                         !String.Equals(authType, "Kerberos", StringComparison.OrdinalIgnoreCase)) {
                         // This is to work around the "The underlying connection was closed: An unexpected error occurred on a receive."
                         // exception.
-                        var httpRequest = request as HttpWebRequest;
+                        var httpRequest = (HttpWebRequest)request;
                         httpRequest.KeepAlive = false;
                         httpRequest.ProtocolVersion = HttpVersion.Version10;
                     }

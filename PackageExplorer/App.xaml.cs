@@ -60,7 +60,7 @@ namespace PackageExplorer {
                 }
             }
 
-            if (!ApplicationDeployment.IsNetworkDeployed) {
+            if (ApplicationDeployment.IsNetworkDeployed) {
                 // click-once with command in the URL
                 ProcessUrlParameters(window);
             }
@@ -72,8 +72,8 @@ namespace PackageExplorer {
             const string PackageSourceParameter = "packagesource";
             const string PackageUrlParameter = "packageurl";
 
-            var requestParameters = UriHelper.GetRequestParameters(new Uri("http://xyz?action=load-package&packageurl=http://www.myget.org/F/chucknorris/Download/Package/roundhouse/0.8.0.292&packagesource=http://www.myget.org/F/chucknorris/"));
-            //var requestParameters = UriHelper.GetRequestParameters(ApplicationDeployment.CurrentDeployment.ActivationUri);
+            //var requestParameters = UriHelper.GetRequestParameters(new Uri("http://xyz?action=load-package&packageurl=http://www.myget.org/F/chucknorris/Download/Package/roundhouse/0.8.0.292&packagesource=http://www.myget.org/F/chucknorris/"));
+            var requestParameters = UriHelper.GetRequestParameters(ApplicationDeployment.CurrentDeployment.ActivationUri);
 
             if (requestParameters.Any() && requestParameters.ContainsKey(ActionParameter)) {
                 switch (requestParameters[ActionParameter].ToLowerInvariant()) {

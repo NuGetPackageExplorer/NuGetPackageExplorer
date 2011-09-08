@@ -201,6 +201,12 @@
                             <ColumnDefinition Width="2*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
+                        <Grid.BindingGroup>
+                            <BindingGroup x:Name="NewPackageDependencyGroup" Name="NewPackageDependency" NotifyOnValidationError="True" />
+                        </Grid.BindingGroup>
+                        <Validation.ErrorTemplate>
+                            <ControlTemplate></ControlTemplate>
+                        </Validation.ErrorTemplate>
 
                         <TextBlock Grid.Column="1" Text="Id" FontWeight="SemiBold" HorizontalAlignment="Center" />
                         <TextBlock Grid.Column="2" Text="Version" FontWeight="SemiBold" HorizontalAlignment="Center" />
@@ -218,8 +224,8 @@
                             </Image>
                         </Button>
 
-                        <TextBox x:Name="NewDependencyId" Text="{Binding Id, ValidatesOnDataErrors=True, BindingGroupName=NewPackageDependency, NotifyOnValidationError=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
-                        <TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, Converter={StaticResource VersionSpecConverter}, NotifyOnValidationError=True, ValidatesOnDataErrors=True, BindingGroupName=NewPackageDependency}" Margin="2" Grid.Column="2" Grid.Row="2" />
+                        <TextBox x:Name="NewDependencyId" Text="{Binding Id, BindingGroupName=NewPackageDependency}" Margin="2" Grid.Column="1" Grid.Row="2" />
+                        <TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, BindingGroupName=NewPackageDependency, Converter={StaticResource VersionSpecConverter}}" Margin="2" Grid.Column="2" Grid.Row="2" />
 
                         <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency" Click="AddDependencyButtonClicked">
                             <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
