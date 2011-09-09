@@ -11,7 +11,6 @@
 			 d:DesignWidth="300"
 			 DataContextChanged="UserControl_DataContextChanged">
 	<DockPanel>
-
         <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
             <MenuItem Header="File">
                 <self:GrayscaleMenuItem 
@@ -60,103 +59,123 @@
 
             <MenuItem Header="_View">
                 <MenuItem Header="Text _Size" x:Name="FontSizeMenuItem">
-                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" IsCheckable="True" />
-                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" IsCheckable="True" />
-                    <self:GrayscaleMenuItem Header="L_arge"  Tag="16" IsCheckable="True" />
-                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" IsCheckable="True" />
                     <MenuItem.Icon>
                         <Image Source="Images/FontDialogHS.png" />
                     </MenuItem.Icon>
+                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" />
+                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" />
+                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click"  />
+                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click"  />
                 </MenuItem>
+                
+                <MenuItem x:Name="WordWrapMenuItem" Header="_Word Wrap" IsCheckable="True" />
+                <MenuItem x:Name="ShowLineNumbersMenuItem" Header="_Show Line Numbers" IsCheckable="True" />
             </MenuItem>
 
             <MenuItem Header="_Help">
-                <MenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="http://docs.nuget.org/">
-                    <MenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/Book_angleHS.png" />
-                    </MenuItem.Icon>
-                </MenuItem>
-                <MenuItem Header="How to _Create Package" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package" />
-                <MenuItem Header="_Nuspec Reference" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/nuspec-reference" />
-                <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/version-range-specification" />
-                <Separator />
-                <MenuItem Header="_Donate..." Command="GoToPage" CommandParameter="http://npe.cloudapp.net" />
-                <Separator />
                 <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="http://npe.codeplex.com/WorkItem/Create" />
-                <MenuItem Header="_About..." />
+                <MenuItem Header="_About..." Command="Help" />
             </MenuItem>
         </Menu>
         
 		<ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+            <!-- Save -->
 			<Button
                 ToolTip="Save (Ctrl+S)"
                 Command="{Binding SaveCommand, Mode=OneWay}" 
 				CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
 				<Image Source="Images/SaveHS.png" />
 			</Button>
-			
+
 			<Separator />
 
+            <!-- Cut -->
             <self:GrayscaleButton ToolTip="Cut (Ctrl+X)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Cut" >
 				<self:GrayscaleImage Source="Images/CutHS.png" />
 			</self:GrayscaleButton>
 
+            <!-- Copy -->
             <self:GrayscaleButton ToolTip="Copy (Ctrl+C)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Copy">
 				<self:GrayscaleImage Source="Images/CopyHS.png" />
 			</self:GrayscaleButton>
 
+            <!-- Paste -->
             <self:GrayscaleButton ToolTip="Paste (Ctrl+V)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Paste">
 				<self:GrayscaleImage Source="Images/PasteHS.png" />
 			</self:GrayscaleButton>
 
 			<Separator />
 
+            <!-- Undo -->
             <self:GrayscaleButton ToolTip="Undo (Ctrl+Z)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Undo">
 				<self:GrayscaleImage Source="Images/Edit_UndoHS.png" />
 			</self:GrayscaleButton>
 
+            <!-- Redo -->
             <self:GrayscaleButton ToolTip="Redo (Ctrl+Y)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Redo">
 				<self:GrayscaleImage Source="Images/Edit_RedoHS.png" />
 			</self:GrayscaleButton>
 
 			<Separator />
 
-			<Label Content="Syntax Scheme:" />
+			<Label Content="_Syntax Scheme:" Target="SyntaxDefinitions" />
 
 			<ComboBox 
 				x:Name="SyntaxDefinitions" 
 				IsEditable="false" 
-				IsReadOnly="false" 
+				IsReadOnly="true" 
 				Width="110" 
 				DisplayMemberPath="Name">
 			</ComboBox>
-			
-			<Separator />
+            
+            <Separator />
+            
+            <Label Content="_Font: " Target="FontChoice" />
+            
+            <ComboBox
+                x:Name="FontChoice"
+                IsEditable="false"
+                IsReadOnly="True"
+                Width="200"
+                ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
+                <ComboBox.Resources>
+                    <Style TargetType="{x:Type Popup}">
+                        <Setter Property="Width" Value="250"/>
+                    </Style>
+                </ComboBox.Resources>
 
-			<Button
-                ToolTip="Close and return to package"
-				Command="{Binding CloseCommand, Mode=OneWay}" 
-				CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}"
-				Width="16" 
-				Height="16">
-				<Path 
-					StrokeThickness="1"
-					UseLayoutRounding="True"
-					SnapsToDevicePixels="True"
-					Stretch="Uniform"
-					Height="12"
-					Width="12"
-					Fill="Black" 
-					Data="F1M0,0L2,0 5,3 8,0 10,0 6,4 10,8 8,8 5,5 2,8 0,8 4,4 0,0z" />
-			</Button>
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontFamily="{Binding}" FontSize="15" Height="20"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel />
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+            </ComboBox>
 		</ToolBar>
+        
+        <StatusBar Padding="0,2,0,2" DockPanel.Dock="Bottom" Background="#293955" Foreground="#CCFFFFFF">
+            <StatusBarItem Content="{Binding FileInEdit.Path, FallbackValue=Ready, Mode=OneWay}" />
+            <StatusBarItem HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,3,0" Visibility="{Binding HasEdit, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}">
+                <StatusBarItem.Content>
+                    <Ellipse Width="7" Height="7" Fill="White" />
+                </StatusBarItem.Content>
+            </StatusBarItem>
+        </StatusBar>
 
-		<ae:TextEditor 
+        <ae:TextEditor 
 			x:Name="Editor"
 			Margin="5"
 			Padding="3,0,3,0"
+            IsModified="{Binding HasEdit, Mode=TwoWay}"
+            WordWrap="{Binding IsChecked, ElementName=WordWrapMenuItem}"
+            ShowLineNumbers="{Binding IsChecked, ElementName=ShowLineNumbersMenuItem}"
 			HorizontalScrollBarVisibility="Auto"
 			SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}"
-			FontFamily="Consolas" />
+			FontFamily="{Binding SelectedItem, ElementName=FontChoice}" />
 	</DockPanel>
 </UserControl>

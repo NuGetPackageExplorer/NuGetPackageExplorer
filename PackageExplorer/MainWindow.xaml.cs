@@ -26,7 +26,6 @@ namespace PackageExplorer {
     public partial class MainWindow : Window {
 
         private readonly IMruManager _mruManager;
-        private FileEditor _fileEditor;
 
         [Import]
         public ISettingsManager SettingsManager { get; set; }
@@ -143,15 +142,13 @@ namespace PackageExplorer {
             var viewModel = (PackageViewModel)sender;
             if (e.PropertyName == "IsInEditFileMode") {
                 if (viewModel.IsInEditFileMode) {
-                    Debug.Assert(_fileEditor == null);
-                    _fileEditor = new FileEditor() {
+                    var fileEditor = new FileEditor() {
                         DataContext = viewModel.FileEditorViewModel
                     };
-                    MainContentContainer.Children.Add(_fileEditor);
+                    Content = fileEditor;
                 }
                 else {
-                    MainContentContainer.Children.Remove(_fileEditor);
-                    _fileEditor = null;
+                    Content = RootLayout;
                 }
             }
         }
@@ -289,9 +286,10 @@ namespace PackageExplorer {
             Close();
         }
 
-        private void AboutMenuItem_Click(object sender, RoutedEventArgs e) {
+        private void HelpCommandExecuted(object sender, ExecutedRoutedEventArgs e) {
             var dialog = new AboutWindow() { Owner = this };
             dialog.ShowDialog();
+            e.Handled = true;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
@@ -334,6 +332,13 @@ namespace PackageExplorer {
             get {
                 var viewModel = (PackageViewModel)DataContext;
                 return (viewModel != null && viewModel.HasEdit);
+            }
+        }
+
+        private bool IsInEditFileMode {
+            get {
+                var viewModel = (PackageViewModel)DataContext;
+                return (viewModel != null && viewModel.IsInEditFileMode);
             }
         }
 
@@ -447,6 +452,11 @@ namespace PackageExplorer {
 
         private bool HasLoadedContent<T>() {
             return MainContentContainer.Children.Cast<UIElement>().Any(p => p is T);
+        }
+
+        private void CanExecuteNewCommand(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = !IsInEditFileMode;
+            e.Handled = true;
         }
     }
 }

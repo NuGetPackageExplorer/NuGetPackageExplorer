@@ -91,6 +91,10 @@ namespace PackageExplorerViewModel {
                 return false;
             }
 
+            if (PackageViewModel.IsInEditFileMode) {
+                return false;
+            }
+
             return !ContainsFolder(folderName) && !ContainsFile(folderName);
         }
 

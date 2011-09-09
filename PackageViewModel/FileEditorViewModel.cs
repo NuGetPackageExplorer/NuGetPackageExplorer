@@ -33,6 +33,20 @@ namespace PackageExplorerViewModel {
             }
         }
 
+        private bool _hasEdit;
+
+        public bool HasEdit {
+            get {
+                return _hasEdit;
+            }
+            set {
+                if (_hasEdit != value) {
+                    _hasEdit = value;
+                    OnPropertyChanged("HasEdit");
+                }
+            }
+        }
+
         #region CloseCommand
 
         public ICommand CloseCommand {

@@ -34,9 +34,9 @@
         <self:TruncateFilePathConverter x:Key="TruncatePathConverter" />
         <self:TaskShortcutVisibilityConverter x:Key="TaskShortcutConverter" />
         
-        <DataTemplate x:Key="PackageCommandTemplate">
+        <!--<DataTemplate x:Key="PackageCommandTemplate">
             <TextBlock Text="{Binding Metadata.Text, Mode=OneTime}" />
-        </DataTemplate>
+        </DataTemplate>-->
 
         <Style x:Key="PackageCommandItemStyle" TargetType="{x:Type MenuItem}">
             <Setter Property="Command" Value="{Binding DataContext.ExecutePackageCommand, ElementName=RootLayout, Mode=OneWay}" />
@@ -55,30 +55,29 @@
     </Window.Resources>
     
     <Window.CommandBindings>
-        <CommandBinding Command="New" Executed="NewMenuItem_Click" />
-        <CommandBinding Command="Open" Executed="OpenMenuItem_Click" />
-        <CommandBinding Command="Find" Executed="OpenFeedItem_Click" />
+        <CommandBinding Command="New" Executed="NewMenuItem_Click" CanExecute="CanExecuteNewCommand" />
+        <CommandBinding Command="Open" Executed="OpenMenuItem_Click" CanExecute="CanExecuteNewCommand" />
+        <CommandBinding Command="Find" Executed="OpenFeedItem_Click" CanExecute="CanExecuteNewCommand" />
         <CommandBinding Command="Close" Executed="CloseMenuItem_Click" CanExecute="CanExecuteCloseCommand" />
         <CommandBinding Command="GoToPage" Executed="OpenExternalLink" />
+        <CommandBinding Command="Help" Executed="HelpCommandExecuted" />
     </Window.CommandBindings>
     
     <Window.InputBindings>
-        <KeyBinding Key="K" Modifiers="Control" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}" />
-        <KeyBinding Key="G" Modifiers="Control" Command="Find" />
-        <KeyBinding Key="S" Modifiers="Control" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="Save" />
-        <KeyBinding Key="P" Modifiers="Control" Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" />
-        <KeyBinding Key="Q" Modifiers="Control" Command="{Binding ViewPackageAnalysisCommand, FallbackValue={StaticResource DisabledCommand}}" />
+        <KeyBinding Modifiers="Control" Key="K" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}" />
+        <KeyBinding Modifiers="Control" Key="G" Command="Find" />
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="Save" />
+        <KeyBinding Modifiers="Control" Key="P" Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" />
+        <KeyBinding Modifiers="Control" Key="Q" Command="{Binding ViewPackageAnalysisCommand, FallbackValue={StaticResource DisabledCommand}}" />
+        <KeyBinding Modifiers="Control" Key="F" Command="NotACommand" />
         <KeyBinding Key="F2" Command="{Binding RenameContentCommand}" />
         <KeyBinding Key="Del" Command="{Binding DeleteContentCommand}" />
         <KeyBinding Key="Enter" Command="{Binding ViewContentCommand}" />
     </Window.InputBindings>
-    
-    <DockPanel x:Name="RootLayout" LastChildFill="True">
+
+    <DockPanel x:Name="RootLayout" LastChildFill="True" Visibility="{Binding IsInEditFileMode, Mode=OneWay, FallbackValue=Visible, Converter={StaticResource invertedBoolToVis}}">
         <!-- Menu bar -->
-        <Menu 
-            DockPanel.Dock="Top" 
-            Background="{StaticResource MenuBackgroundBrush}" 
-            Visibility="{Binding IsInEditFileMode, Mode=OneWay, FallbackValue=Visible, Converter={StaticResource invertedBoolToVis}}">
+        <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
             <self:GrayscaleMenuItem Header="_File">
                 <MenuItem Command="New" Header="_New">
                     <MenuItem.Icon>
@@ -171,15 +170,15 @@
             
             <MenuItem Header="_View">
                 <MenuItem Header="Text _Size" x:Name="FontSizeMenuItem">
-                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" IsCheckable="True" />
-                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" IsCheckable="True" />
-                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click" IsCheckable="True" />
-                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click" IsCheckable="True" />
                     <MenuItem.Icon>
                         <Image Source="Images/FontDialogHS.png" />
                     </MenuItem.Icon>
+                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" />
+                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" />
+                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click"  />
+                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click"  />
                 </MenuItem>
-                <MenuItem Header="Show Common Tas_ks" IsChecked="{Binding ShowTaskShortcuts, Source={x:Static settings:Settings.Default}}" IsCheckable="True" />
+                <MenuItem Header="Show Common Tas_ks" IsChecked="{Binding ShowTaskShortcuts, Source={x:Static settings:Settings.Default}}" />
                 <MenuItem Header="Show Status _Bar" x:Name="ShowStatusBarMenuItem" IsCheckable="True" IsChecked="True" />
             </MenuItem>
 
@@ -218,7 +217,7 @@
                 <MenuItem Header="_Delete..." Command="{Binding DeleteContentCommand}" InputGestureText="Delete" />
             </MenuItem>
 
-            <MenuItem Header="_Tools" ItemTemplate="{StaticResource PackageCommandTemplate}" ItemContainerStyleSelector="{StaticResource PackageCommandItemStyleSelector}">
+            <MenuItem Header="_Tools" DisplayMemberPath="Metadata.Text" ItemContainerStyleSelector="{StaticResource PackageCommandItemStyleSelector}">
                 <MenuItem.ItemsSource>
                     <CompositeCollection>
                         <CollectionContainer x:Name="PackageCommandsContainer">
@@ -249,12 +248,12 @@
                 <MenuItem Header="_Donate..." Command="GoToPage" CommandParameter="http://npe.cloudapp.net" />
                 <Separator />
                 <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="http://npe.codeplex.com/WorkItem/Create" />
-                <MenuItem Header="_About..." Click="AboutMenuItem_Click" />
+                <MenuItem Header="_About..." Command="Help" />
             </MenuItem>
         </Menu>
 
         <!-- Status bar -->
-        <StatusBar Grid.Row="2" Padding="0,2,0,2" DockPanel.Dock="Bottom" Background="#293955" Foreground="#CCFFFFFF" Visibility="{Binding IsChecked, ElementName=ShowStatusBarMenuItem, Converter={StaticResource boolToVis}}">
+        <StatusBar Padding="0,2,0,2" DockPanel.Dock="Bottom" Background="#293955" Foreground="#CCFFFFFF"  Visibility="{Binding IsChecked, ElementName=ShowStatusBarMenuItem, Converter={StaticResource boolToVis}}">            
             <StatusBarItem x:Name="PackageSourceItem" Content="{Binding PackageSource, FallbackValue=Ready}" />
             <StatusBarItem HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,3,0" Visibility="{Binding HasEdit, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}">
                 <StatusBarItem.Content>

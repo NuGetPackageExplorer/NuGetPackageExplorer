@@ -31,7 +31,7 @@ namespace PackageExplorerViewModel {
             if (physicalFile != null) {
                 WatchPhysicalFile(physicalFile);
             }
-            ReplaceCommand = new RelayCommand(Replace);
+            ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsInEditFileMode);
         }
 
         private void WatchPhysicalFile(PhysicalPackageFile physicalFile) {

@@ -415,6 +415,10 @@ namespace PackageExplorerViewModel {
         }
 
         private bool AddContentFileCanExecute(object parameter) {
+            if (IsInEditFileMode) {
+                return false;
+            }
+
             parameter = parameter ?? SelectedItem;
             return parameter == null || parameter is PackageFolder;
         }
@@ -462,6 +466,10 @@ namespace PackageExplorerViewModel {
                 return false;
             }
 
+            if (IsInEditFileMode) {
+                return false;
+            }
+
             return !RootFolder.ContainsFolder(folderName);
         }
 
@@ -484,6 +492,10 @@ namespace PackageExplorerViewModel {
         }
 
         private bool AddNewFolderCanExecute(object parameter) {
+            if (IsInEditFileMode) {
+                return false;
+            }
+
             parameter = parameter ?? SelectedItem;
             return parameter == null || parameter is PackageFolder;
         }
@@ -528,7 +540,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool EditPackageCanExecute() {
-            return !IsInEditMetadataMode;
+            return !IsInEditMetadataMode && !IsInEditFileMode;
         }
 
         private void EditPackageExecute() {
@@ -543,7 +555,7 @@ namespace PackageExplorerViewModel {
         public ICommand ApplyEditCommand {
             get {
                 if (_applyEditCommand == null) {
-                    _applyEditCommand = new RelayCommand(() => ApplyEditExecute());
+                    _applyEditCommand = new RelayCommand(() => ApplyEditExecute(), () => !IsInEditFileMode);
                 }
 
                 return _applyEditCommand;
@@ -566,7 +578,7 @@ namespace PackageExplorerViewModel {
         public ICommand CancelEditCommand {
             get {
                 if (_cancelEditCommand == null) {
-                    _cancelEditCommand = new RelayCommand(CancelEditExecute);
+                    _cancelEditCommand = new RelayCommand(CancelEditExecute, () => !IsInEditFileMode);
                 }
 
                 return _cancelEditCommand;
@@ -593,6 +605,10 @@ namespace PackageExplorerViewModel {
         }
 
         private bool DeleteContentCanExecute(object parameter) {
+            if (IsInEditFileMode) {
+                return false;
+            }
+
             return (parameter ?? SelectedItem) is PackagePart;
         }
 
@@ -617,6 +633,10 @@ namespace PackageExplorerViewModel {
         }
 
         private bool RenameContentCanExecuted(object parameter) {
+            if (IsInEditFileMode) {
+                return false;
+            }
+
             return (parameter ?? SelectedItem) is PackagePart;
         }
 
@@ -649,6 +669,10 @@ namespace PackageExplorerViewModel {
         }
 
         private bool OpenContentFileCanExecute(object parameter) {
+            if (IsInEditFileMode) {
+                return false;
+            }
+
             parameter = parameter ?? SelectedItem;
             return parameter is PackageFile;
         }
@@ -668,7 +692,7 @@ namespace PackageExplorerViewModel {
         public ICommand OpenWithContentFileCommand {
             get {
                 if (_openWithContentFileCommand == null) {
-                    _openWithContentFileCommand = new RelayCommand<PackageFile>(FileHelper.OpenFileInShellWith);
+                    _openWithContentFileCommand = new RelayCommand<PackageFile>(FileHelper.OpenFileInShellWith, f => !IsInEditFileMode);
                 }
                 return _openWithContentFileCommand;
             }
@@ -681,7 +705,7 @@ namespace PackageExplorerViewModel {
         public ICommand SaveContentCommand {
             get {
                 if (_saveContentCommand == null) {
-                    _saveContentCommand = new RelayCommand<PackageFile>(SaveContentExecute);
+                    _saveContentCommand = new RelayCommand<PackageFile>(SaveContentExecute, SaveContentCanExecute);
                 }
                 return _saveContentCommand;
             }
@@ -697,6 +721,10 @@ namespace PackageExplorerViewModel {
                     file.GetStream().CopyTo(fileStream);
                 }
             }
+        }
+
+        private bool SaveContentCanExecute(PackageFile file) {
+            return !IsInEditFileMode;
         }
 
         #endregion
@@ -754,7 +782,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool PublishCanExecute() {
-            return !IsInEditMetadataMode;
+            return !IsInEditMetadataMode && !IsInEditFileMode;
         }
 
         #endregion
@@ -789,7 +817,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool ExportCanExecute() {
-            return !IsInEditMetadataMode;
+            return !IsInEditMetadataMode && !IsInEditFileMode;
         }
 
         #endregion
@@ -799,7 +827,7 @@ namespace PackageExplorerViewModel {
         public ICommand ExecutePackageCommand {
             get {
                 if (_executePackageCommand == null) {
-                    _executePackageCommand = new RelayCommand<LazyPackageCommand>(PackageCommandExecute);
+                    _executePackageCommand = new RelayCommand<LazyPackageCommand>(PackageCommandExecute, p => !IsInEditFileMode);
                 }
                 return _executePackageCommand;
             }
@@ -844,6 +872,10 @@ namespace PackageExplorerViewModel {
         }
 
         private bool CanExecutePackageAnalysis(string parameter) {
+            if (IsInEditFileMode) {
+                return false;
+            }
+
             return parameter == "Hide" || !IsInEditMetadataMode;
         }
 
@@ -862,6 +894,10 @@ namespace PackageExplorerViewModel {
 
         private bool CanAddAsAssemblyReference(PackageFile file) {
             if (file == null) {
+                return false;
+            }
+
+            if (IsInEditFileMode) {
                 return false;
             }
 
@@ -905,7 +941,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool CanEditFileCommandExecute(PackagePart file) {
-            return (file is PackageFile) && !FileHelper.IsBinaryFile(file.Path);
+            return (file is PackageFile) && !IsInEditFileMode && !FileHelper.IsBinaryFile(file.Path);
         }
 
         internal void CloseEditFileMode() {

@@ -126,6 +126,7 @@
     <Compile Include="Converters\BooleanToStringConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\NormalizeTextConverter.cs" />
+    <Compile Include="TextHighlightingDefinition.cs" />
     <Compile Include="Wpf\PackageCommandItemContainerSelector.cs" />
     <Compile Include="Converters\PackageInfoDownloadCountConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />

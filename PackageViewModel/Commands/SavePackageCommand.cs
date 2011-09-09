@@ -17,7 +17,7 @@ namespace PackageExplorerViewModel {
         }
 
         public bool CanExecute(object parameter) {
-            return true;
+            return !ViewModel.IsInEditFileMode;
         }
 
         public event EventHandler CanExecuteChanged;
