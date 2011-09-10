@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="MenuItems.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
+            <self:IntegerToBooleanConverter x:Key="FontSizeToBoolConverter" />
             <self:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <self:BooleanToVisibilityConverter x:Key="invertedBoolToVis" Inverted="True" />
             <self:BooleanToVisibilityConverter x:Key="boolToVis" />
@@ -67,8 +68,8 @@
                         <Setter Property="ToolTip">
                             <Setter.Value>
                                 <Binding 
-                                        Path="(Validation.Errors).CurrentItem.ErrorContent"
-                                        RelativeSource="{x:Static RelativeSource.Self}" />
+                                    Path="(Validation.Errors).CurrentItem.ErrorContent"
+                                    RelativeSource="{x:Static RelativeSource.Self}" />
                             </Setter.Value>
                         </Setter>
                     </Trigger>

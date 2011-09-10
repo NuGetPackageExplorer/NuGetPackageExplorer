@@ -124,6 +124,7 @@
       <DependentUpon>ContentViewerPane.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BooleanToStringConverter.cs" />
+    <Compile Include="Converters\IntegerToBooleanConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\NormalizeTextConverter.cs" />
     <Compile Include="TextHighlightingDefinition.cs" />

@@ -6,6 +6,7 @@
 			 xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
 			 xmlns:viewmodel="clr-namespace:NuGetPackageExplorer.Types;assembly=PackageViewModel"
 			 xmlns:self="clr-namespace:PackageExplorer"
+             xmlns:settings="clr-namespace:PackageExplorer.Properties"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="300"
 			 d:DesignWidth="300"
@@ -13,8 +14,8 @@
              Loaded="UserControl_Loaded">
     
     <UserControl.InputBindings>
-        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand, Mode=OneWay}" />
-        <KeyBinding Modifiers="Control" Key="F4" Command="{Binding CloseCommand, Mode=OneWay}" />
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}" />
+        <KeyBinding Modifiers="Control" Key="F4" Command="{Binding CloseCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}" />
     </UserControl.InputBindings>
     
 	<DockPanel>
@@ -69,10 +70,10 @@
                     <MenuItem.Icon>
                         <Image Source="Images/FontDialogHS.png" />
                     </MenuItem.Icon>
-                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" />
-                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" />
-                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click"  />
-                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click"  />
+                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=12, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=14, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=16, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=18, Mode=OneWay}" />
                 </MenuItem>
                 
                 <MenuItem x:Name="WordWrapMenuItem" Header="_Word Wrap" IsCheckable="True" />
