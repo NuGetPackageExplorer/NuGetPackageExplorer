@@ -6,11 +6,17 @@
 			 xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
 			 xmlns:viewmodel="clr-namespace:NuGetPackageExplorer.Types;assembly=PackageViewModel"
 			 xmlns:self="clr-namespace:PackageExplorer"
-             FocusManager.FocusedElement="{Binding ElementName=Editor, Mode=OneTime}"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="300"
 			 d:DesignWidth="300"
-			 DataContextChanged="UserControl_DataContextChanged">
+			 DataContextChanged="UserControl_DataContextChanged"
+             Loaded="UserControl_Loaded">
+    
+    <UserControl.InputBindings>
+        <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand, Mode=OneWay}" />
+        <KeyBinding Modifiers="Control" Key="F4" Command="{Binding CloseCommand, Mode=OneWay}" />
+    </UserControl.InputBindings>
+    
 	<DockPanel>
         <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
             <MenuItem Header="File">
@@ -80,6 +86,14 @@
         </Menu>
         
 		<ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
+            <!-- Return to Package -->
+            <Button
+                ToolTip="Return to Package (Ctrl+F4)"
+                Command="{Binding CloseCommand, Mode=OneWay}" 
+				CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
+                <Image Source="Images/GoToPrevious.png" />
+            </Button>
+            
             <!-- Save -->
 			<Button
                 ToolTip="Save (Ctrl+S)"
@@ -88,7 +102,7 @@
 				<Image Source="Images/SaveHS.png" />
 			</Button>
 
-			<Separator />
+            <Separator />
 
             <!-- Cut -->
             <self:GrayscaleButton ToolTip="Cut (Ctrl+X)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Cut" >
@@ -172,11 +186,11 @@
 			x:Name="Editor"
 			Margin="5"
 			Padding="3,0,3,0"
+            HorizontalScrollBarVisibility="Auto"
             IsModified="{Binding HasEdit, Mode=TwoWay}"
             WordWrap="{Binding IsChecked, ElementName=WordWrapMenuItem}"
             ShowLineNumbers="{Binding IsChecked, ElementName=ShowLineNumbersMenuItem}"
-			HorizontalScrollBarVisibility="Auto"
 			SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}"
 			FontFamily="{Binding SelectedItem, ElementName=FontChoice}" />
 	</DockPanel>
-</UserControl>
+</UserControl> 

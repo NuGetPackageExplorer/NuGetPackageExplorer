@@ -288,6 +288,7 @@
     <Resource Include="Images\RepeatHS.png" />
     <Resource Include="Images\Edit_RedoHS.png" />
     <Resource Include="Images\Edit_UndoHS.png" />
+    <Resource Include="Images\GoToPrevious.png" />
     <Content Include="Resources\fxAssemblies.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

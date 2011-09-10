@@ -10,18 +10,19 @@ namespace PackageExplorerViewModel {
         private readonly PackageViewModel _packageViewModel;
         private readonly PackageFile _fileInEdit;
         private readonly ICommand _closeCommand, _saveCommand;
-        private readonly Lazy<string> _filePath;
+        private readonly string _filePath;
+        private bool _hasSaved;
 
         internal FileEditorViewModel(PackageViewModel packageViewModel, PackageFile fileInEdit) {
             Debug.Assert(packageViewModel != null);
             Debug.Assert(fileInEdit != null);
             Debug.Assert(fileInEdit.Parent != null);
-
+            
             _packageViewModel = packageViewModel;
             _fileInEdit = fileInEdit;
 
-            // Note: has to preseve the file name here so that the new file "appears" to be the same as old file
-            _filePath = new Lazy<string>(() => Path.Combine(FileHelper.GetTempFilePath(), Path.GetFileName(fileInEdit.Name)));
+            // Note: has to preserve the file name here so that the new file "appears" to be the same as old file
+            _filePath = fileInEdit.OriginalPath ?? Path.Combine(FileHelper.GetTempFilePath(), fileInEdit.Name);
 
             _closeCommand = new RelayCommand<IFileEditorService>(CloseExecute);
             _saveCommand = new RelayCommand<IFileEditorService>(SaveExecute);
@@ -56,12 +57,37 @@ namespace PackageExplorerViewModel {
         }
 
         private void CloseExecute(IFileEditorService editorService) {
-            SaveFile(editorService);
-
+            // if there is unsaved changes, ask user for confirmation
+            if (HasEdit) {
+                var result = _packageViewModel.UIServices.ConfirmWithCancel(
+                    Resources.Dialog_SaveQuestion,
+                    "You have unsaved changes in the current file.");
+                if (result == null) {
+                    return;
+                }
+                else if (result == true) {
+                    SaveFile(editorService);
+                }
+            }
+            
             PersistChangesToPackage();
 
             // return back to Package view
             _packageViewModel.CloseEditFileMode();
+        }
+
+        private void PersistChangesToPackage() {
+            if (_hasSaved) {
+                if (_filePath != _fileInEdit.OriginalPath) {
+                    _fileInEdit.ReplaceWith(_filePath);
+                }
+                else {
+                    if (_packageViewModel.IsShowingFileContent(_fileInEdit)) {
+                        // force a refresh to show new content
+                        _packageViewModel.ShowFileContent(_fileInEdit);
+                    }
+                }
+            }
         }
 
         #endregion
@@ -78,18 +104,17 @@ namespace PackageExplorerViewModel {
             SaveFile(editorService);
         }
 
-        #endregion
-
         private void SaveFile(IFileEditorService editorService) {
-            editorService.Save(_filePath.Value);
+            editorService.Save(_filePath);
+            _packageViewModel.NotifyChanges();
+            _hasSaved = true;
         }
 
-        private void PersistChangesToPackage() {
-            // only persist changes if the file has been saved at least once
-            if (_filePath.IsValueCreated) {
-                _fileInEdit.Parent.ReplaceFile(_fileInEdit, _filePath.Value);
-                _packageViewModel.NotifyChanges();
-            }
+        #endregion
+
+        public void SaveOnExit(IFileEditorService editorService) {
+            SaveExecute(editorService);
+            PersistChangesToPackage();
         }
     }
 }

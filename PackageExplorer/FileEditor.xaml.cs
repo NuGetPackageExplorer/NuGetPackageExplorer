@@ -6,8 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using NuGetPackageExplorer.Types;
-using PackageExplorerViewModel;
 using PackageExplorer.Properties;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer {
     public partial class FileEditor : UserControl, IFileEditorService {
@@ -62,7 +62,6 @@ namespace PackageExplorer {
             if (filePath == null) {
                 throw new ArgumentNullException("filePath");
             }
-
             Editor.Save(filePath);
         }
 
@@ -83,6 +82,10 @@ namespace PackageExplorer {
                 int value = Convert.ToInt32(child.Tag);
                 child.IsChecked = value == size;
             }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e) {
+            Editor.Focus();
         }
     }
 }

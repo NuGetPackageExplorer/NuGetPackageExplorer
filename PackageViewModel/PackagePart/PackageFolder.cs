@@ -246,13 +246,13 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        internal void ReplaceFile(PackageFile oldFile, string newFileName) {
+        internal void ReplaceFile(PackageFile oldFile, string newFilePath) {
             bool showingFile = PackageViewModel.IsShowingFileContent(oldFile);
 
             // temporarily remove the old file in order to add a new file
             Children.Remove(oldFile);
 
-            PackageFile newFile = AddFile(newFileName);
+            PackageFile newFile = AddFile(newFilePath);
             if (newFile != null) {
                 // new file added successfully, officially delete the old file by disposing it
                 oldFile.Dispose();

@@ -34,6 +34,16 @@ namespace PackageExplorerViewModel {
             ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsInEditFileMode);
         }
 
+        /// <summary>
+        /// Returns the path on this if this file is a PhysicalPackageFile. Otherwise, returns null;
+        /// </summary>
+        public string OriginalPath {
+            get {
+                var physicalFile = _file as PhysicalPackageFile;
+                return physicalFile != null ? physicalFile.SourcePath : null;
+            }
+        }
+
         private void WatchPhysicalFile(PhysicalPackageFile physicalFile) {
             string folderPath = System.IO.Path.GetDirectoryName(physicalFile.SourcePath);
             string fileName = System.IO.Path.GetFileName(physicalFile.SourcePath);
@@ -103,6 +113,12 @@ namespace PackageExplorerViewModel {
         public void Replace() {
             if (Parent != null) {
                 Parent.ReplaceFile(this);
+            }
+        }
+
+        public void ReplaceWith(string filePath) {
+            if (Parent != null) {
+                Parent.ReplaceFile(this, filePath);
             }
         }
 

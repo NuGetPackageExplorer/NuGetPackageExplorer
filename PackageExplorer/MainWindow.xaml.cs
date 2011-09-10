@@ -310,16 +310,22 @@ namespace PackageExplorer {
         /// </summary>
         /// <returns>true if user cancels the impending action</returns>
         private bool AskToSaveCurrentFile() {
-            if (HasUnsavedChanges) {
+            var viewModel = (PackageViewModel)DataContext;
 
+            if (HasUnsavedChanges || (IsInEditFileMode && viewModel.FileEditorViewModel.HasEdit)) {
                 // if there is unsaved changes, ask user for confirmation
-                var result = UIServices.ConfirmWithCancel(StringResources.Dialog_SaveQuestion, "You have unsaved changes in the current file.");
+                var result = UIServices.ConfirmWithCancel(StringResources.Dialog_SaveQuestion, "You have unsaved changes in the current package.");
                 if (result == null) {
                     return true;
                 }
+                else if (result == true) {
+                    if (IsInEditFileMode) {                       
+                        // force a Save from outside the file editor.
+                        // In this case, Content is the FileEditor user control
+                        viewModel.FileEditorViewModel.SaveOnExit((IFileEditorService)Content);
+                    }
 
-                if (result == true) {
-                    var saveCommand = SaveMenuItem.Command;
+                    var saveCommand = viewModel.SaveCommand;
                     const string parameter = "ForceSave";
                     saveCommand.Execute(parameter);
                 }

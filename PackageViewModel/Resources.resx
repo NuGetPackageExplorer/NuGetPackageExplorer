@@ -141,6 +141,9 @@
   <data name="ConnectingMessage" xml:space="preserve">
     <value>Connecting to package source...</value>
   </data>
+  <data name="Dialog_SaveQuestion" xml:space="preserve">
+    <value>Do you want to save your changes?</value>
+  </data>
   <data name="Dialog_Title" xml:space="preserve">
     <value>NuGet Package Explorer</value>
   </data>

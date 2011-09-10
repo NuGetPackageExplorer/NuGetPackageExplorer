@@ -133,6 +133,15 @@ namespace PackageExplorerViewModel {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Do you want to save your changes?.
+        /// </summary>
+        internal static string Dialog_SaveQuestion {
+            get {
+                return ResourceManager.GetString("Dialog_SaveQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to NuGet Package Explorer.
         /// </summary>
         internal static string Dialog_Title {
