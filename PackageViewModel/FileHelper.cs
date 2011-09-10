@@ -93,5 +93,15 @@ namespace PackageExplorerViewModel {
 
             return tempPath;
         }
+
+        public static string CreateTempFile(string fileName, string content = "") {
+            if (String.IsNullOrEmpty(fileName)) {
+                throw new ArgumentException("Argument is null or empty", "fileName");
+            }
+
+            string filePath = Path.Combine(GetTempFilePath(), fileName);
+            File.WriteAllText(filePath, content);
+            return filePath;
+        }
     }
 }

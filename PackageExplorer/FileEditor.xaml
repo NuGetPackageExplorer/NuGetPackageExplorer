@@ -6,6 +6,7 @@
 			 xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
 			 xmlns:viewmodel="clr-namespace:NuGetPackageExplorer.Types;assembly=PackageViewModel"
 			 xmlns:self="clr-namespace:PackageExplorer"
+             FocusManager.FocusedElement="{Binding ElementName=Editor, Mode=OneTime}"
 			 mc:Ignorable="d" 
 			 d:DesignHeight="300"
 			 d:DesignWidth="300"

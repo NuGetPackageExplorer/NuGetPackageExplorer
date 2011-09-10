@@ -18,7 +18,7 @@ namespace PackageExplorerViewModel {
         private PackageFolder _packageRoot;
         private ICommand _saveCommand, _editCommand, _cancelEditCommand, _applyEditCommand, _viewContentCommand, _saveContentCommand, _addAsAssemblyReferenceCommand;
         private ICommand _addContentFolderCommand, _addContentFileCommand, _addNewFolderCommand, _openWithContentFileCommand, _executePackageCommand, _viewPackageAnalysisCommand;
-        private ICommand _editFileCommand;
+        private ICommand _editFileCommand, _addNewFileCommand, _addScriptCommand;
         private RelayCommand<object> _openContentFileCommand, _deleteContentCommand, _renameContentCommand;
         private RelayCommand _publishCommand, _exportCommand;
         private readonly IMruManager _mruManager;
@@ -425,12 +425,7 @@ namespace PackageExplorerViewModel {
 
         private void AddContentFileExecute(object parameter) {
             PackageFolder folder = (parameter ?? SelectedItem) as PackageFolder;
-            if (folder != null) {
-                AddExistingFileToFolder(folder);
-            }
-            else {
-                AddExistingFileToFolder(RootFolder);
-            }
+            AddExistingFileToFolder(folder ?? RootFolder);
         }
 
         private void AddExistingFileToFolder(PackageFolder folder) {
@@ -946,6 +941,92 @@ namespace PackageExplorerViewModel {
 
         internal void CloseEditFileMode() {
             FileEditorViewModel = null;
+        }
+
+        #endregion
+
+        #region AddNewFileCommand
+
+        public ICommand AddNewFileCommand {
+            get {
+                if (_addNewFileCommand == null) {
+                    _addNewFileCommand = new RelayCommand<object>(AddNewFileExecute, AddNewFileCanExecute);
+                }
+
+                return _addNewFileCommand;
+            }
+        }
+
+        private bool AddNewFileCanExecute(object parameter) {
+            if (IsInEditFileMode) {
+                return false;
+            }
+
+            parameter = parameter ?? SelectedItem;
+            return parameter == null || parameter is PackageFolder;
+        }
+
+        private void AddNewFileExecute(object parameter) {
+            PackageFolder folder = (parameter ?? SelectedItem) as PackageFolder;
+            AddNewFileToFolder(folder ?? RootFolder);
+        }
+
+        private void AddNewFileToFolder(PackageFolder folder) {
+            string newName;
+            bool result = UIServices.OpenRenameDialog(
+                "NewFile.txt",
+                "Provide name for the new file.",
+                out newName);
+            if (result) {
+                var sourcePath = FileHelper.CreateTempFile(newName);
+                PackageFile file = folder.AddFile(sourcePath);
+                // file can be null if it collides with other files in the same directory
+                if (file != null) {
+                    EditFileCommandExecute(file);
+                }
+            }
+        }
+
+        #endregion
+
+        #region AddScriptCommand 
+
+        public ICommand AddScriptCommand {
+            get {
+                if (_addScriptCommand == null) {
+                    _addScriptCommand = new RelayCommand<string>(AddScriptCommandExecute, AddScriptCommandCanExecute);
+                }
+
+                return _addScriptCommand;
+            }
+        }
+
+        private void AddScriptCommandExecute(string scriptName) {
+            var tools = (PackageFolder)RootFolder[Constants.ToolsFolder];
+
+            string content = scriptName.Equals("init.ps1", StringComparison.OrdinalIgnoreCase) ?
+                Constants.ContentForInit : Constants.ContentForInstall;
+            var sourcePath = FileHelper.CreateTempFile(scriptName, content);
+
+            var toolsFolder = (PackageFolder)RootFolder[Constants.ToolsFolder];
+            PackageFile file = toolsFolder.AddFile(sourcePath);
+            // file can be null if it collides with other files in the same directory
+            if (file != null) {
+                EditFileCommandExecute(file);
+            }
+        }  
+
+        private bool AddScriptCommandCanExecute(string scriptName) {
+            if (scriptName != "install.ps1" && scriptName != "init.ps1" && scriptName != "uninstall.ps1") {
+                return false;
+            }
+
+            if (RootFolder.ContainsFolder(Constants.ToolsFolder)) {
+                var tools = (PackageFolder)RootFolder[Constants.ToolsFolder];
+                return !tools.ContainsFile(scriptName);
+            }
+
+            return false;
         }
 
         #endregion

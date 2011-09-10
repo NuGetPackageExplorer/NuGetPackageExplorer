@@ -75,6 +75,18 @@ namespace PackageExplorerViewModel {
             }
         }
 
+        public ICommand AddNewFileCommand {
+            get {
+                return PackageViewModel.AddNewFileCommand;
+            }
+        }
+
+        public ICommand AddScriptCommand {
+            get {
+                return PackageViewModel.AddScriptCommand;
+            }
+        }
+
         private ICommand _addContentFolderCommand = null;
         public ICommand AddContentFolderCommand {
             get {

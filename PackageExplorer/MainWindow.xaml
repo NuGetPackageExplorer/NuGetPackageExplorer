@@ -190,6 +190,7 @@
                     <MenuItem.Icon>
                         <Image Source="Images/Add.png" />
                     </MenuItem.Icon>
+                    <MenuItem Header="New F_ile..." Command="{Binding AddNewFileCommand}" />
                     <MenuItem Header="_Existing File..." Command="{Binding AddContentFileCommand}" />
                     <self:GrayscaleMenuItem Header="_New Folder" Command="{Binding AddNewFolderCommand}">
                         <self:GrayscaleMenuItem.Icon>

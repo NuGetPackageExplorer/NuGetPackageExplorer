@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="MenuItems.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
+            <self:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <self:BooleanToVisibilityConverter x:Key="invertedBoolToVis" Inverted="True" />
             <self:BooleanToVisibilityConverter x:Key="boolToVis" />
             <self:CountToVisibilityConverter x:Key="countConverter" />
