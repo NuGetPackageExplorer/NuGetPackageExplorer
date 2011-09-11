@@ -76,8 +76,8 @@
                     <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=18, Mode=OneWay}" />
                 </MenuItem>
                 
-                <MenuItem x:Name="WordWrapMenuItem" Header="_Word Wrap" IsCheckable="True" />
-                <MenuItem x:Name="ShowLineNumbersMenuItem" Header="_Show Line Numbers" IsCheckable="True" />
+                <MenuItem Header="_Word Wrap" IsCheckable="True" IsChecked="{Binding WordWrap, Source={x:Static settings:Settings.Default}, Mode=TwoWay}" />
+                <MenuItem Header="_Show Line Numbers" IsCheckable="True" IsChecked="{Binding ShowLineNumbers, Source={x:Static settings:Settings.Default}, Mode=TwoWay}" />
             </MenuItem>
 
             <MenuItem Header="_Help">
@@ -189,8 +189,8 @@
 			Padding="3,0,3,0"
             HorizontalScrollBarVisibility="Auto"
             IsModified="{Binding HasEdit, Mode=TwoWay}"
-            WordWrap="{Binding IsChecked, ElementName=WordWrapMenuItem}"
-            ShowLineNumbers="{Binding IsChecked, ElementName=ShowLineNumbersMenuItem}"
+            WordWrap="{Binding WordWrap, Source={x:Static settings:Settings.Default}, Mode=OneWay}"
+            ShowLineNumbers="{Binding ShowLineNumbers, Source={x:Static settings:Settings.Default}, Mode=OneWay}"
 			SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}"
 			FontFamily="{Binding SelectedItem, ElementName=FontChoice}" />
 	</DockPanel>
