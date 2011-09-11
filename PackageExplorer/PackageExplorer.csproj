@@ -127,7 +127,7 @@
     <Compile Include="Converters\IntegerToBooleanConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\NormalizeTextConverter.cs" />
-    <Compile Include="TextHighlightingDefinition.cs" />
+    <Compile Include="Utilities\TextHighlightingDefinition.cs" />
     <Compile Include="Wpf\PackageCommandItemContainerSelector.cs" />
     <Compile Include="Converters\PackageInfoDownloadCountConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />
@@ -149,7 +149,7 @@
     <Compile Include="FileEditor.xaml.cs">
       <DependentUpon>FileEditor.xaml</DependentUpon>
     </Compile>
-    <Compile Include="FileUtility.cs" />
+    <Compile Include="Utilities\FileUtility.cs" />
     <Compile Include="Controls\GrayscaleButton.cs" />
     <Compile Include="Controls\GrayscaleImage.cs" />
     <Compile Include="Controls\GrayscaleMenuItem.cs" />
@@ -160,7 +160,7 @@
     <Compile Include="MefServices\SettingsManager.cs" />
     <Compile Include="Interop\NativeMethods.cs" />
     <Compile Include="MefServices\UIServices.cs" />
-    <Compile Include="WindowsCredentialProvider.cs" />
+    <Compile Include="Utilities\WindowsCredentialProvider.cs" />
     <Compile Include="PackageAnalyzerPane.xaml.cs">
       <DependentUpon>PackageAnalyzerPane.xaml</DependentUpon>
     </Compile>
@@ -182,11 +182,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="PublishApiKeyValidationRule.cs" />
+    <Compile Include="Wpf\PublishApiKeyValidationRule.cs" />
     <Compile Include="PublishPackageWindow.xaml.cs">
       <DependentUpon>PublishPackageWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PublishUrlValidationRule.cs" />
+    <Compile Include="Wpf\PublishUrlValidationRule.cs" />
     <Compile Include="RenameWindow.xaml.cs">
       <DependentUpon>RenameWindow.xaml</DependentUpon>
     </Compile>
@@ -200,7 +200,7 @@
     <Compile Include="TaskShortcut.xaml.cs">
       <DependentUpon>TaskShortcut.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UriHelper.cs" />
+    <Compile Include="Utilities\UriHelper.cs" />
     <Compile Include="Interop\WindowPlacement.cs" />
     <Compile Include="Interop\WindowPlacementHelper.cs" />
     <Page Include="AboutWindow.xaml">
@@ -229,7 +229,11 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Resource Include="MenuItems.xaml">
+    <Resource Include="Xaml\Toolbar.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="Xaml\MenuItems.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Resource>
@@ -265,10 +269,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TemplateStyles.xaml">
+    <Resource Include="Xaml\TemplateStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

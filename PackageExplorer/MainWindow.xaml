@@ -33,10 +33,6 @@
         <self:PackagePartToVisibilityConverter x:Key="PackagePartConverter" />
         <self:TruncateFilePathConverter x:Key="TruncatePathConverter" />
         <self:TaskShortcutVisibilityConverter x:Key="TaskShortcutConverter" />
-        
-        <!--<DataTemplate x:Key="PackageCommandTemplate">
-            <TextBlock Text="{Binding Metadata.Text, Mode=OneTime}" />
-        </DataTemplate>-->
 
         <Style x:Key="PackageCommandItemStyle" TargetType="{x:Type MenuItem}">
             <Setter Property="Command" Value="{Binding DataContext.ExecutePackageCommand, ElementName=RootLayout, Mode=OneWay}" />

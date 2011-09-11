@@ -8,7 +8,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="MenuItems.xaml" />
+                <ResourceDictionary Source="Xaml/MenuItems.xaml" />
+                <ResourceDictionary Source="Xaml/Toolbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
             <self:IntegerToBooleanConverter x:Key="FontSizeToBoolConverter" />

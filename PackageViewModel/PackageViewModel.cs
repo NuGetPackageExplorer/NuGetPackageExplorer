@@ -936,7 +936,7 @@ namespace PackageExplorerViewModel {
         }
 
         private bool CanEditFileCommandExecute(PackagePart file) {
-            return (file is PackageFile) && !IsInEditFileMode && !FileHelper.IsBinaryFile(file.Path);
+            return (file is PackageFile) && !IsInEditMetadataMode && !IsInEditFileMode && !FileHelper.IsBinaryFile(file.Path);
         }
 
         internal void CloseEditFileMode() {

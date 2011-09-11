@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
+using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -24,7 +25,9 @@ namespace PackageExplorer {
             SyntaxDefinitions.ItemsSource = definitions;
 
             // Set the initial Font Family to Consolas
+            FontChoice.ItemsSource = Fonts.SystemFontFamilies.OrderBy(p => p.Source);
             FontChoice.SelectedItem = ConsolasFont;
+            
 
             // disable unnecessary editor features
             Editor.Options.CutCopyWholeLine = false;

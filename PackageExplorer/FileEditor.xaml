@@ -86,94 +86,97 @@
             </MenuItem>
         </Menu>
         
-		<ToolBar DockPanel.Dock="Top" ToolBarTray.IsLocked="True">
-            <!-- Return to Package -->
-            <Button
-                ToolTip="Return to Package (Ctrl+F4)"
-                Command="{Binding CloseCommand, Mode=OneWay}" 
-				CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
-                <Image Source="Images/GoToPrevious.png" />
-            </Button>
+        <!-- This border simulates ToolbarTray -->
+        <Border Background="{StaticResource ToolBarTrayBackground}" DockPanel.Dock="Top">
+		    <ToolBar ToolBarTray.IsLocked="True" Margin="1">            
+                <!-- Return to Package -->
+                <Button
+                    ToolTip="Return to Package (Ctrl+F4)"
+                    Command="{Binding CloseCommand, Mode=OneWay}" 
+				    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
+                    <Image Source="Images/GoToPrevious.png" />
+                </Button>
             
-            <!-- Save -->
-			<Button
-                ToolTip="Save (Ctrl+S)"
-                Command="{Binding SaveCommand, Mode=OneWay}" 
-				CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
-				<Image Source="Images/SaveHS.png" />
-			</Button>
+                <!-- Save -->
+			    <Button
+                    ToolTip="Save (Ctrl+S)"
+                    Command="{Binding SaveCommand, Mode=OneWay}" 
+				    CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
+				    <Image Source="Images/SaveHS.png" />
+			    </Button>
 
-            <Separator />
+                <Separator />
 
-            <!-- Cut -->
-            <self:GrayscaleButton ToolTip="Cut (Ctrl+X)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Cut" >
-				<self:GrayscaleImage Source="Images/CutHS.png" />
-			</self:GrayscaleButton>
+                <!-- Cut -->
+                <self:GrayscaleButton ToolTip="Cut (Ctrl+X)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Cut" >
+				    <self:GrayscaleImage Source="Images/CutHS.png" />
+			    </self:GrayscaleButton>
 
-            <!-- Copy -->
-            <self:GrayscaleButton ToolTip="Copy (Ctrl+C)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Copy">
-				<self:GrayscaleImage Source="Images/CopyHS.png" />
-			</self:GrayscaleButton>
+                <!-- Copy -->
+                <self:GrayscaleButton ToolTip="Copy (Ctrl+C)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Copy">
+				    <self:GrayscaleImage Source="Images/CopyHS.png" />
+			    </self:GrayscaleButton>
 
-            <!-- Paste -->
-            <self:GrayscaleButton ToolTip="Paste (Ctrl+V)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Paste">
-				<self:GrayscaleImage Source="Images/PasteHS.png" />
-			</self:GrayscaleButton>
+                <!-- Paste -->
+                <self:GrayscaleButton ToolTip="Paste (Ctrl+V)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Paste">
+				    <self:GrayscaleImage Source="Images/PasteHS.png" />
+			    </self:GrayscaleButton>
 
-			<Separator />
+			    <Separator />
 
-            <!-- Undo -->
-            <self:GrayscaleButton ToolTip="Undo (Ctrl+Z)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Undo">
-				<self:GrayscaleImage Source="Images/Edit_UndoHS.png" />
-			</self:GrayscaleButton>
+                <!-- Undo -->
+                <self:GrayscaleButton ToolTip="Undo (Ctrl+Z)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Undo">
+				    <self:GrayscaleImage Source="Images/Edit_UndoHS.png" />
+			    </self:GrayscaleButton>
 
-            <!-- Redo -->
-            <self:GrayscaleButton ToolTip="Redo (Ctrl+Y)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Redo">
-				<self:GrayscaleImage Source="Images/Edit_RedoHS.png" />
-			</self:GrayscaleButton>
+                <!-- Redo -->
+                <self:GrayscaleButton ToolTip="Redo (Ctrl+Y)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Redo">
+				    <self:GrayscaleImage Source="Images/Edit_RedoHS.png" />
+			    </self:GrayscaleButton>
 
-			<Separator />
+			    <Separator />
 
-			<Label Content="_Syntax Scheme:" Target="SyntaxDefinitions" />
+			    <Label Content="_Syntax Scheme:" Target="SyntaxDefinitions" />
 
-			<ComboBox 
-				x:Name="SyntaxDefinitions" 
-				IsEditable="false" 
-				IsReadOnly="true" 
-				Width="110" 
-				DisplayMemberPath="Name">
-			</ComboBox>
+			    <ComboBox 
+				    x:Name="SyntaxDefinitions" 
+				    IsEditable="false" 
+				    IsReadOnly="true" 
+				    Width="110" 
+				    DisplayMemberPath="Name">
+			    </ComboBox>
             
-            <Separator />
+                <Separator />
             
-            <Label Content="_Font: " Target="FontChoice" />
+                <Label Content="F_ont: " Target="FontChoice" />
             
-            <ComboBox
-                x:Name="FontChoice"
-                IsEditable="false"
-                IsReadOnly="True"
-                Width="200"
-                ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
-                <ComboBox.Resources>
-                    <Style TargetType="{x:Type Popup}">
-                        <Setter Property="Width" Value="250"/>
-                    </Style>
-                </ComboBox.Resources>
+                <ComboBox
+                    x:Name="FontChoice"
+                    IsEditable="false"
+                    IsReadOnly="True"
+                    Height="{Binding ActualHeight, ElementName=SyntaxDefinitions}"
+                    Width="150">
+                    <ComboBox.Resources>
+                        <Style TargetType="{x:Type Popup}">
+                            <Setter Property="Width" Value="250"/>
+                            <Setter Property="TextElement.FontSize" Value="15"/>
+                        </Style>
+                    </ComboBox.Resources>
 
-                <ComboBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding}" FontFamily="{Binding}" FontSize="15" Height="20"/>
-                    </DataTemplate>
-                </ComboBox.ItemTemplate>
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" FontFamily="{Binding}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
 
-                <ComboBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel />
-                    </ItemsPanelTemplate>
-                </ComboBox.ItemsPanel>
-            </ComboBox>
-		</ToolBar>
-        
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel />
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+		    </ToolBar>
+        </Border>
         <StatusBar Padding="0,2,0,2" DockPanel.Dock="Bottom" Background="#293955" Foreground="#CCFFFFFF">
             <StatusBarItem Content="{Binding FileInEdit.Path, FallbackValue=Ready, Mode=OneWay}" />
             <StatusBarItem HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,3,0" Visibility="{Binding HasEdit, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}">

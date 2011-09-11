@@ -18,7 +18,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="TemplateStyles.xaml" />
+                <ResourceDictionary Source="Xaml/TemplateStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
             <BitmapImage x:Key="FolderImageSource" UriSource="Images/Folder.png" />
