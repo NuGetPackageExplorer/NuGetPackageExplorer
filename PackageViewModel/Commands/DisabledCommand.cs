@@ -13,7 +13,6 @@ namespace PackageExplorerViewModel {
         }
 
         public void Execute(object parameter) {
-            throw new NotSupportedException();
         }
     }
 }

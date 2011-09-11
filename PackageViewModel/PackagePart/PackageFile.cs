@@ -31,7 +31,17 @@ namespace PackageExplorerViewModel {
             if (physicalFile != null) {
                 WatchPhysicalFile(physicalFile);
             }
-            ReplaceCommand = new RelayCommand(Replace);
+            ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsInEditFileMode);
+        }
+
+        /// <summary>
+        /// Returns the path on this if this file is a PhysicalPackageFile. Otherwise, returns null;
+        /// </summary>
+        public string OriginalPath {
+            get {
+                var physicalFile = _file as PhysicalPackageFile;
+                return physicalFile != null ? physicalFile.SourcePath : null;
+            }
         }
 
         private void WatchPhysicalFile(PhysicalPackageFile physicalFile) {
@@ -94,13 +104,21 @@ namespace PackageExplorerViewModel {
             get { return PackageViewModel.AddAsAssemblyReferenceCommand; }
         }
 
+        public ICommand EditCommand {
+            get { return PackageViewModel.EditFileCommand; }
+        }
+
         public RelayCommand ReplaceCommand { get; private set; }
 
-        public void Replace()
-        {
-            if (Parent != null)
-            {
+        public void Replace() {
+            if (Parent != null) {
                 Parent.ReplaceFile(this);
+            }
+        }
+
+        public void ReplaceWith(string filePath) {
+            if (Parent != null) {
+                Parent.ReplaceFile(this, filePath);
             }
         }
 
@@ -108,7 +126,7 @@ namespace PackageExplorerViewModel {
             string fullPath = System.IO.Path.Combine(rootPath, Path);
             if (File.Exists(fullPath)) {
                 bool confirmed = PackageViewModel.UIServices.Confirm(
-                    Resources.ConfirmToReplaceFile_Title, 
+                    Resources.ConfirmToReplaceFile_Title,
                     String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullPath));
                 if (!confirmed) {
                     return;

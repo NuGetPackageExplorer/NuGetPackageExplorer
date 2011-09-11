@@ -18,7 +18,7 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="TemplateStyles.xaml" />
+                <ResourceDictionary Source="Xaml/TemplateStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             
             <BitmapImage x:Key="FolderImageSource" UriSource="Images/Folder.png" />
@@ -30,6 +30,8 @@
                 <MenuItem Header="Open _with..." Command="{Binding OpenWithCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Save As..." Command="{Binding SaveCommand}" CommandParameter="{Binding}" />
                 <Separator />
+                <MenuItem Header="_Edit" Command="{Binding EditCommand}" CommandParameter="{Binding}" />
+                <Separator />
                 <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Re_place with..." Command="{Binding ReplaceCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
@@ -39,7 +41,39 @@
             </ContextMenu>
 
             <ContextMenu x:Key="FolderSharedContextMenu" Opened="PackageFolderContextMenu_Opened" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                <MenuItem Header="_Add Existing File..." Command="{Binding   AddContentFileCommand}" CommandParameter="{Binding}" />
+                <MenuItem 
+                    Header="Add init.ps1" 
+                    Command="{Binding AddScriptCommand, Mode=OneWay}"
+                    CommandParameter="init.ps1"
+                    Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}">
+                    <MenuItem.Icon>
+                        <Image Source="Images/script.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem 
+                    Header="Add install.ps1" 
+                    Command="{Binding AddScriptCommand, Mode=OneWay}"
+                    CommandParameter="install.ps1"
+                    Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}">
+                    <MenuItem.Icon>
+                        <Image Source="Images/script.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem 
+                    Header="Add uninstall.ps1" 
+                    Command="{Binding AddScriptCommand, Mode=OneWay}"
+                    CommandParameter="uninstall.ps1"
+                    Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}">
+                    <MenuItem.Icon>
+                        <Image Source="Images/script.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}" />
+                
+                <MenuItem Header="Add _New File..." Command="{Binding AddNewFileCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Add Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Add Ne_w Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
@@ -293,13 +327,13 @@
                 <ContentControl 
                     Content="{Binding PackageMetadata}" 
                     ContentTemplate="{StaticResource PackageDetailTemplate}" 
-                    Visibility="{Binding IsInEditMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}">
+                    Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}">
                 </ContentControl>
 
                 <self:PackageMetadataEditor 
                     x:Name="PackageMetadataEditor"
                     Margin="0,8,0,3"
-                    Visibility="{Binding IsInEditMode, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" />
+                    Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" />
             </Grid>
         </HeaderedContentControl>
 
@@ -340,6 +374,7 @@
 
                 <TreeView.ContextMenu>
                     <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                        <MenuItem Header="Add _New File..." Command="{Binding AddNewFileCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}" />
                         <MenuItem Header="_Add Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}" />
                         <MenuItem Header="Add Ne_w Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}">
                             <MenuItem.Icon>
@@ -438,8 +473,8 @@
 
         <!-- Close button for Package Analyzer -->
         <Button 
-            HorizontalAlignment="Right" 
-            VerticalAlignment="Top" 
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}"
             Command="{Binding ViewPackageAnalysisCommand}"
             CommandParameter="Hide"

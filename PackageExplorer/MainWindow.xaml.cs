@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NuGet;
@@ -130,17 +133,40 @@ namespace PackageExplorer {
             DisposeViewModel();
 
             if (package != null) {
-                if (MainContentContainer.Children.Count == 1) {
+                if (!HasLoadedContent<PackageViewer>()) {
                     var packageViewer = new PackageViewer(UIServices, PackageChooser);
+                    var binding = new Binding("IsInEditFileMode") {
+                        Converter = new BooleanToVisibilityConverter() { Inverted = true }
+                    };
+                    packageViewer.SetBinding(FrameworkElement.VisibilityProperty, binding);
+
                     MainContentContainer.Children.Add(packageViewer);
 
-                    // set the Export of IPackageMetadataEditor here
+                    // HACK HACK: set the Export of IPackageMetadataEditor here
                     EditorService = packageViewer.PackageMetadataEditor;
                 }
 
-                DataContext = PackageViewModelFactory.CreateViewModel(package, packagePath);
+                PackageViewModel packageViewModel = PackageViewModelFactory.CreateViewModel(package, packagePath);
+                packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+
+                DataContext = packageViewModel;
                 if (!String.IsNullOrEmpty(packagePath)) {
                     _mruManager.NotifyFileAdded(package, packagePath, packageType);
+                }
+            }
+        }
+
+        private void OnPackageViewModelPropertyChanged(object sender, PropertyChangedEventArgs e) {
+            var viewModel = (PackageViewModel)sender;
+            if (e.PropertyName == "IsInEditFileMode") {
+                if (viewModel.IsInEditFileMode) {
+                    var fileEditor = new FileEditor() {
+                        DataContext = viewModel.FileEditorViewModel
+                    };
+                    Content = fileEditor;
+                }
+                else {
+                    Content = RootLayout;
                 }
             }
         }
@@ -280,9 +306,10 @@ namespace PackageExplorer {
             Close();
         }
 
-        private void AboutMenuItem_Click(object sender, RoutedEventArgs e) {
+        private void HelpCommandExecuted(object sender, ExecutedRoutedEventArgs e) {
             var dialog = new AboutWindow() {Owner = this};
             dialog.ShowDialog();
+            e.Handled = true;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e) {
@@ -304,16 +331,22 @@ namespace PackageExplorer {
         /// </summary>
         /// <returns>true if user cancels the impending action</returns>
         private bool AskToSaveCurrentFile() {
-            if (HasUnsavedChanges) {
+            var viewModel = (PackageViewModel)DataContext;
+            if (HasUnsavedChanges || (IsInEditFileMode && viewModel.FileEditorViewModel.HasEdit)) {
                 // if there is unsaved changes, ask user for confirmation
-                var result = UIServices.ConfirmWithCancel(StringResources.Dialog_SaveQuestion,
-                                                          "You have unsaved changes in the current file.");
+                var result = UIServices.ConfirmWithCancel(StringResources.Dialog_SaveQuestion, "You have unsaved changes in the current package.");
+
                 if (result == null) {
                     return true;
                 }
+                else if (result == true) {
+                    if (IsInEditFileMode) {                       
+                        // force a Save from outside the file editor.
+                        // In this case, Content is the FileEditor user control
+                        viewModel.FileEditorViewModel.SaveOnExit((IFileEditorService)Content);
+                    }
 
-                if (result == true) {
-                    var saveCommand = SaveMenuItem.Command;
+                    var saveCommand = viewModel.SaveCommand;
                     const string parameter = "ForceSave";
                     saveCommand.Execute(parameter);
                 }
@@ -329,28 +362,21 @@ namespace PackageExplorer {
             }
         }
 
+        private bool IsInEditFileMode {
+            get {
+                var viewModel = (PackageViewModel)DataContext;
+                return (viewModel != null && viewModel.IsInEditFileMode);
+            }
+        }
+
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e) {
             var item = (MenuItem)sender;
             int size = Convert.ToInt32(item.Tag);
-            SetFontSize(size);
-        }
-
-        private void SetFontSize(int size) {
-            if (size <= 8 || size >= 50) {
-                size = 12;
-            }
             Properties.Settings.Default.FontSize = size;
-
-            // check the corresponding font size menu item 
-            foreach (MenuItem child in FontSizeMenuItem.Items) {
-                int value = Convert.ToInt32(child.Tag);
-                child.IsChecked = value == size;
-            }
         }
 
         private void LoadSettings() {
             Settings settings = Properties.Settings.Default;
-            SetFontSize(settings.FontSize);
             this.LoadWindowPlacementFromSettings(settings.WindowPlacement);
         }
 
@@ -448,6 +474,15 @@ namespace PackageExplorer {
                 DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
             };
             dialog.ShowDialog();
+        }
+
+        private bool HasLoadedContent<T>() {
+            return MainContentContainer.Children.Cast<UIElement>().Any(p => p is T);
+        }
+
+        private void CanExecuteNewCommand(object sender, CanExecuteRoutedEventArgs e) {
+            e.CanExecute = !IsInEditFileMode;
+            e.Handled = true;
         }
     }
 }

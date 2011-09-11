@@ -55,6 +55,7 @@
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="EmptyPackage.cs" />
+    <Compile Include="FileEditorViewModel.cs" />
     <Compile Include="FileHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PackageAnalyzer\NonAssemblyInsideLibRule.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="PackageChooser\PackageSourceSettings.cs" />
     <Compile Include="PluginManagerViewModel.cs" />
     <Compile Include="PublishPackage\PublishSourceSettings.cs" />
+    <Compile Include="Types\IFileEditorService.cs" />
     <Compile Include="Types\IPackageChooser.cs" />
     <Compile Include="MruManager.cs" />
     <Compile Include="MruPackageSourceManager.cs" />
