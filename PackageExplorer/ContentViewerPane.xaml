@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:self="clr-namespace:PackageExplorer"
              mc:Ignorable="d" 
              d:DesignHeight="200" 
@@ -29,18 +30,18 @@
         </ScrollViewer>
 
         <!-- for builtin text file -->
-        <self:SyntaxHighlightingTextBox
+        
+        <ae:TextEditor
             x:Name="contentBox"
             Grid.Row="1"
             Padding="0,5,0,2"
             BorderThickness="0"
-            AcceptsReturn="True"
             IsReadOnly="True"
             Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}"
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Auto"
-            SourceCode="{Binding Content, Mode=OneWay}"
-            SourceLanguage="{Binding Language, Mode=OneWay}"
+            DataContextChanged="UserControl_DataContextChanged"
+            SyntaxHighlighting="{Binding SelectedItem, ElementName=LanguageBox, Mode=OneWay}"
             ContextMenu="{StaticResource TextBoxContextMenu}" />
 
         <!-- 
@@ -60,10 +61,7 @@
                     <ComboBox 
                         x:Name="LanguageBox"
                         Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}"
-                        Width="150"
-                        DataContextChanged="UserControl_DataContextChanged"
-                        SelectedItem="{Binding Language}"
-                        SelectionChanged="OnLanguageBoxSelectionChanged" />
+                        Width="150" />
                 </StackPanel>
             </DockPanel>
         </Border>

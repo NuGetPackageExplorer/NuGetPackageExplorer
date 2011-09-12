@@ -104,7 +104,6 @@
     <Compile Include="Types\IPluginManager.cs" />
     <Compile Include="Types\ISourceSettings.cs" />
     <Compile Include="Types\IUIServices.cs" />
-    <Compile Include="Types\SourceLanguageType.cs" />
     <Compile Include="Types\IMruManager.cs" />
     <Compile Include="Types\IPackageViewModelFactory.cs" />
     <Compile Include="Types\ISettingsManager.cs" />

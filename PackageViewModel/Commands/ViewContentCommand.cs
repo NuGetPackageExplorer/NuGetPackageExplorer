@@ -105,8 +105,7 @@ namespace PackageExplorerViewModel {
                 file.Path,
                 content,
                 !isBinary,
-                size,
-                DetermineLanguage(file.Name));
+                size);
 
             ViewModel.ShowFile(fileInfo);
         }
@@ -150,71 +149,6 @@ namespace PackageExplorerViewModel {
             }
 
             return sb.ToString();
-        }
-
-        private static SourceLanguageType DetermineLanguage(string name) {
-            string extension = Path.GetExtension(name).ToUpperInvariant();
-
-            // if the extension is .pp or .transform, it is NuGet transform files.
-            // in which case, we strip out this extension and examine the real extension instead
-            if (extension == ".PP" || extension == ".TRANSFORM") {
-                name = Path.GetFileNameWithoutExtension(name);
-                extension = Path.GetExtension(name).ToUpperInvariant();
-            }
-
-            switch (extension) {
-                case ".ASAX":
-                    return SourceLanguageType.Asax;
-
-                case ".ASHX":
-                    return SourceLanguageType.Ashx;
-
-                case ".ASPX":
-                    return SourceLanguageType.Aspx;
-
-                case ".CS":
-                    return SourceLanguageType.CSharp;
-
-                case ".CPP":
-                    return SourceLanguageType.Cpp;
-
-                case ".CSS":
-                    return SourceLanguageType.Css;
-
-                case ".HTML":
-                case ".HTM":
-                    return SourceLanguageType.Html;
-
-                case ".JS":
-                    return SourceLanguageType.JavaScript;
-
-                case ".PHP":
-                    return SourceLanguageType.Php;
-
-                case ".PS1":
-                case ".PSM1":
-                    return SourceLanguageType.PowerShell;
-
-                case ".SQL":
-                    return SourceLanguageType.Sql;
-
-                case ".VB":
-                    return SourceLanguageType.VisualBasic;
-
-                case ".XAML":
-                    return SourceLanguageType.Xaml;
-
-                case ".XML":
-                case ".XSD":
-                case ".CONFIG":
-                case ".PS1XML":
-                case ".NUSPEC":
-                case ".RESX":
-                    return SourceLanguageType.Xml;
-
-                default:
-                    return SourceLanguageType.Text;
-            }
         }
     }
 }

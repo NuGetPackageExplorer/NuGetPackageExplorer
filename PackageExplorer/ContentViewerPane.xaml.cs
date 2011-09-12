@@ -1,36 +1,35 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Windows.Controls;
+using ICSharpCode.AvalonEdit.Highlighting;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorer
-{
+namespace PackageExplorer {
     /// <summary>
     /// Interaction logic for ContentViewerPane.xaml
     /// </summary>
-    public partial class ContentViewerPane : UserControl
-    {
-        public ContentViewerPane()
-        {
+    public partial class ContentViewerPane : UserControl {
+        public ContentViewerPane() {
             InitializeComponent();
             PopulateLanguageBoxValues();
+
+            // disable unnecessary editor features
+            contentBox.Options.CutCopyWholeLine = false;
+            contentBox.Options.EnableEmailHyperlinks = false;
+            contentBox.Options.EnableHyperlinks = false;
         }
 
-        private void PopulateLanguageBoxValues()
-        {
-            LanguageBox.ItemsSource = Enum.GetValues(typeof(SourceLanguageType));
+        private void PopulateLanguageBoxValues() {
+            // set the Syntax Highlighting definitions
+            var definitions = new List<IHighlightingDefinition>();
+            definitions.Add(TextHighlightingDefinition.Instance);
+            definitions.AddRange(HighlightingManager.Instance.HighlightingDefinitions);
+            LanguageBox.ItemsSource = definitions;
         }
 
-        private void UserControl_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
-        {
-            contentBox.Reparse();
-        }
-
-        private void OnLanguageBoxSelectionChanged(object sender, System.Windows.RoutedEventArgs e)
-        {
-            if (LanguageBox.SelectedItem != null)
-            {
-                contentBox.Reparse();
-            }
+        private void UserControl_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) {
+            var info = (FileContentInfo)DataContext;
+            LanguageBox.SelectedItem = FileUtility.DeduceHighligtingDefinition(info.File.Name);
+            contentBox.Load(info.GetFileStream());
         }
     }
 }

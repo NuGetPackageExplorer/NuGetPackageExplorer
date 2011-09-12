@@ -38,23 +38,9 @@ namespace PackageExplorer {
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e) {
             var viewModel = e.NewValue as FileEditorViewModel;
             if (viewModel != null && viewModel.FileInEdit != null) {
-                SyntaxDefinitions.SelectedItem = DeduceHighligtingDefinition(viewModel.FileInEdit.Path);
+                SyntaxDefinitions.SelectedItem = FileUtility.DeduceHighligtingDefinition(viewModel.FileInEdit.Path);
                 Editor.Load(viewModel.FileInEdit.GetStream());
             }
-        }
-
-        private static IHighlightingDefinition DeduceHighligtingDefinition(string name) {
-            string extension = Path.GetExtension(name).ToUpperInvariant();
-
-            // if the extension is .pp or .transform, it is NuGet transform files.
-            // in which case, we strip out this extension and examine the real extension instead
-            if (extension == ".PP" || extension == ".TRANSFORM") {
-                name = Path.GetFileNameWithoutExtension(name);
-                extension = Path.GetExtension(name).ToUpperInvariant();
-            }
-
-            return HighlightingManager.Instance.GetDefinitionByExtension(extension) ??
-                TextHighlightingDefinition.Instance;
         }
 
         void IFileEditorService.Save(string filePath) {
