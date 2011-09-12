@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using NuGetPackageExplorer.Types;
+using System.Diagnostics;
 
 namespace PackageExplorer {
 
@@ -107,8 +108,11 @@ namespace PackageExplorer {
                 }
                 return true;
             }
-            catch (ReflectionTypeLoadException) {
-                // ignore loading exception
+            catch (ReflectionTypeLoadException exception) {
+                Debug.WriteLine("{0}", new[] { exception.Message });
+                foreach (var loaderException in exception.LoaderExceptions) {
+                    Debug.WriteLine("\t{0}", new[] { loaderException.Message });
+                }
                 return false;
             }
         }
