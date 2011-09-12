@@ -125,6 +125,7 @@
     <Compile Include="Converters\IntegerToBooleanConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\NormalizeTextConverter.cs" />
+    <Compile Include="Utilities\StreamUtility.cs" />
     <Compile Include="Utilities\TextHighlightingDefinition.cs" />
     <Compile Include="Wpf\PackageCommandItemContainerSelector.cs" />
     <Compile Include="Converters\PackageInfoDownloadCountConverter.cs" />

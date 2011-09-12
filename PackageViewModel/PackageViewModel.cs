@@ -1002,8 +1002,6 @@ namespace PackageExplorerViewModel {
         }
 
         private void AddScriptCommandExecute(string scriptName) {
-            var tools = (PackageFolder)RootFolder[Constants.ToolsFolder];
-
             string content = scriptName.Equals("init.ps1", StringComparison.OrdinalIgnoreCase) ?
                 Constants.ContentForInit : Constants.ContentForInstall;
             var sourcePath = FileHelper.CreateTempFile(scriptName, content);

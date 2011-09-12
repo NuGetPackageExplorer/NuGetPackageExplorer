@@ -3,7 +3,7 @@ using PackageExplorerViewModel;
 using System.IO;
 
 namespace NuGetPackageExplorer.Types {
-    public sealed class FileContentInfo : INotifyPropertyChanged {
+    public sealed class FileContentInfo {
 
         public FileContentInfo(PackageFile file, string name, object content, bool isTextFile, long size) {
             File = file;
@@ -13,22 +13,10 @@ namespace NuGetPackageExplorer.Types {
             Size = size;
         }
 
-        public Stream GetFileStream() {
-            return File.GetStream();
-        }
-
         public PackageFile File { get; private set; }
         public string Name { get; private set; }
         public object Content { get; private set; }
         public bool IsTextFile { get; private set; }
         public long Size { get; private set; }
-
-        private void OnPropertyChanged(string name) {
-            if (PropertyChanged != null) {
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

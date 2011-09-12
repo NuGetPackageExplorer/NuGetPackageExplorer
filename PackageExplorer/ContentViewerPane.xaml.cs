@@ -28,8 +28,10 @@ namespace PackageExplorer {
 
         private void UserControl_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) {
             var info = (FileContentInfo)DataContext;
-            LanguageBox.SelectedItem = FileUtility.DeduceHighligtingDefinition(info.File.Name);
-            contentBox.Load(info.GetFileStream());
+            if (info != null && info.IsTextFile) {
+                LanguageBox.SelectedItem = FileUtility.DeduceHighligtingDefinition(info.File.Name);
+                contentBox.Load(StreamUtility.ToStream((string)info.Content));
+            }
         }
     }
 }

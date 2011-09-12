@@ -34,7 +34,7 @@
         <ae:TextEditor
             x:Name="contentBox"
             Grid.Row="1"
-            Padding="0,5,0,2"
+            Padding="3,5,3,2"
             BorderThickness="0"
             IsReadOnly="True"
             Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}"
