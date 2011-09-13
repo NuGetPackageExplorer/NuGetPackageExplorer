@@ -189,7 +189,7 @@
         <ae:TextEditor 
 			x:Name="Editor"
 			Margin="5"
-			Padding="3,0,3,0"
+			Padding="5,2,5,5"
             HorizontalScrollBarVisibility="Auto"
             IsModified="{Binding HasEdit, Mode=TwoWay}"
             WordWrap="{Binding WordWrap, Source={x:Static settings:Settings.Default}, Mode=OneWay}"

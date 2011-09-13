@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Windows;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using NuGetPackageExplorer.Types;
-using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer {

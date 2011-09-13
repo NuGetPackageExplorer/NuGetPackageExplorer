@@ -30,7 +30,11 @@ namespace PackageExplorer {
             var info = (FileContentInfo)DataContext;
             if (info != null && info.IsTextFile) {
                 LanguageBox.SelectedItem = FileUtility.DeduceHighligtingDefinition(info.File.Name);
+                contentBox.ScrollToHome();
                 contentBox.Load(StreamUtility.ToStream((string)info.Content));
+            }
+            else {
+                contentBox.Clear();
             }
         }
     }

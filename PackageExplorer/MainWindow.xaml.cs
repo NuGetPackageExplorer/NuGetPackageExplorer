@@ -2,7 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -17,7 +17,6 @@ using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
-using System.Globalization;
 
 namespace PackageExplorer {
     /// <summary>
@@ -135,8 +134,9 @@ namespace PackageExplorer {
             if (package != null) {
                 if (!HasLoadedContent<PackageViewer>()) {
                     var packageViewer = new PackageViewer(UIServices, PackageChooser);
-                    var binding = new Binding("IsInEditFileMode") {
-                        Converter = new BooleanToVisibilityConverter() { Inverted = true }
+                    var binding = new Binding() {
+                        Converter = new NullToVisibilityConverter(),
+                        FallbackValue = Visibility.Collapsed
                     };
                     packageViewer.SetBinding(FrameworkElement.VisibilityProperty, binding);
 
