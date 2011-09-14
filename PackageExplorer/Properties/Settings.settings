@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="FontSize" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">0</Value>
+      <Value Profile="(Default)">12</Value>
     </Setting>
     <Setting Name="ContentViewerHeight" Type="System.Double" Scope="User">
       <Value Profile="(Default)">400</Value>

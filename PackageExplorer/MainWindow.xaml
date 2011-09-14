@@ -17,6 +17,7 @@
         AllowDrop="True"
         DragOver="Window_DragOver"
         Drop="Window_Drop"
+        PreviewMouseWheel="Window_PreviewMouseWheel"
         Closing="Window_Closing">
     <Window.Background>
         <ImageBrush 

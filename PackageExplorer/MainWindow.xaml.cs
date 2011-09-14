@@ -162,7 +162,7 @@ namespace PackageExplorer {
                 if (viewModel.IsInEditFileMode) {
                     var fileEditor = new FileEditor() {
                         DataContext = viewModel.FileEditorViewModel
-                    };
+                    }; 
                     Content = fileEditor;
                 }
                 else {
@@ -483,6 +483,19 @@ namespace PackageExplorer {
         private void CanExecuteNewCommand(object sender, CanExecuteRoutedEventArgs e) {
             e.CanExecute = !IsInEditFileMode;
             e.Handled = true;
+        }
+
+        private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e) {
+            // if the Control key (and only Control key) is pressed 
+            if ((Keyboard.Modifiers | ModifierKeys.Control) == ModifierKeys.Control) {
+                int fontSizeDelta = e.Delta > 0 ? 2 : -2;
+                int newFontSize = Settings.Default.FontSize + fontSizeDelta;
+                newFontSize = Math.Max(newFontSize, 12);
+                newFontSize = Math.Min(newFontSize, 18);
+                Settings.Default.FontSize = newFontSize;
+
+                e.Handled = true;
+            }
         }
     }
 }
