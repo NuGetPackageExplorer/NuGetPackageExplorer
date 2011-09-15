@@ -487,7 +487,7 @@ namespace PackageExplorer {
 
         private void Window_PreviewMouseWheel(object sender, MouseWheelEventArgs e) {
             // if the Control key (and only Control key) is pressed 
-            if ((Keyboard.Modifiers | ModifierKeys.Control) == ModifierKeys.Control) {
+            if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control) {
                 int fontSizeDelta = e.Delta > 0 ? 2 : -2;
                 int newFontSize = Settings.Default.FontSize + fontSizeDelta;
                 newFontSize = Math.Max(newFontSize, 12);
