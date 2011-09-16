@@ -270,6 +270,12 @@ namespace PackageExplorerViewModel {
                         query = query.Find(_currentSearch.Split(' '));
                     }
 
+                    // When in Show All Versions mode, we can't sort by Last Updated. 
+                    // Fall back to sorting by Id
+                    if (SortColumn == "LastUpdated" && !ShowLatestVersion) {
+                        SortColumn = "Id";
+                    }
+
                     switch (SortColumn) {
                         case "Id":
                             query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Id) : query.OrderBy(p => p.Id);
@@ -285,6 +291,10 @@ namespace PackageExplorerViewModel {
 
                         case "Rating":
                             query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Rating).ThenBy(p => p.Id) : query.OrderBy(p => p.Rating).ThenBy(p => p.Id);
+                            break;
+
+                        case "LastUpdated":
+                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.LastUpdated).ThenBy(p => p.Id) : query.OrderBy(p => p.LastUpdated).ThenBy(p => p.Id);
                             break;
 
                         default:
@@ -303,7 +313,8 @@ namespace PackageExplorerViewModel {
                                 Authors = p.Authors,
                                 Rating = p.Rating,
                                 DownloadCount = p.DownloadCount,
-                                PackageHash = p.PackageHash
+                                PackageHash = p.PackageHash,
+                                LastUpdated = p.LastUpdated
                             });
 
                         _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(
@@ -319,7 +330,8 @@ namespace PackageExplorerViewModel {
                             Rating = p.Rating,
                             VersionRating = p.VersionRating,
                             VersionDownloadCount = p.VersionDownloadCount,
-                            PackageHash = p.PackageHash
+                            PackageHash = p.PackageHash,
+                            LastUpdated = p.LastUpdated
                         });
 
                         _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
@@ -365,8 +377,8 @@ namespace PackageExplorerViewModel {
         }
 
         private void Sort(string column, ListSortDirection? direction) {
-            if (column == "Version") {
-                // we can't sort Version
+            if (column == "Version" || column == "LastUpdated" && !ShowLatestVersion) {
+                // We can't sort by Version or LastUpdated in ShowAllVersions mode
                 return;
             }
 

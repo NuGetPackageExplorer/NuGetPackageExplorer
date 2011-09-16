@@ -119,7 +119,7 @@ namespace PackageExplorer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("610")]
+        [global::System.Configuration.DefaultSettingValueAttribute("630")]
         public double PackageChooserDialogWidth {
             get {
                 return ((double)(this["PackageChooserDialogWidth"]));

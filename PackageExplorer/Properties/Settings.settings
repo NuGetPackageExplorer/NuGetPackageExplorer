@@ -27,7 +27,7 @@
       <Value Profile="(Default)">http://go.microsoft.com/fwlink/?LinkID=207106</Value>
     </Setting>
     <Setting Name="PackageChooserDialogWidth" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">610</Value>
+      <Value Profile="(Default)">630</Value>
     </Setting>
     <Setting Name="PackageChooserDialogHeight" Type="System.Double" Scope="User">
       <Value Profile="(Default)">450</Value>

@@ -14,6 +14,7 @@ namespace NuGet {
         public double Rating { get; set; }
         public string PackageHash { get; set; }
         public Uri DownloadUrl { get; set; }
+        public DateTimeOffset LastUpdated { get; set; }
 
         public int EffectiveDownloadCount {
             get {
@@ -36,7 +37,8 @@ namespace NuGet {
                 VersionDownloadCount = VersionDownloadCount,
                 Rating = Rating,
                 DownloadCount = DownloadCount,
-                PackageHash = PackageHash
+                PackageHash = PackageHash,
+                LastUpdated = LastUpdated
             };
         }
     }

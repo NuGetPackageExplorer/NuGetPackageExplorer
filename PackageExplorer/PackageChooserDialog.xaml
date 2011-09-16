@@ -25,6 +25,7 @@
         </Style>
         
         <self:PackageInfoDownloadCountConverter x:Key="DownloadCountConverter" />
+        <self:PackageInfoLastUpdatedConverter x:Key="LastUpdatedConverter" />
         
         <CollectionViewSource x:Key="PackageCollectionSource" Source="{Binding Packages}">
             <CollectionViewSource.GroupDescriptions>
@@ -163,6 +164,7 @@
                                                         <ColumnDefinition Width="{Binding View.Columns[2].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
                                                         <ColumnDefinition Width="{Binding View.Columns[3].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
                                                         <ColumnDefinition Width="{Binding View.Columns[4].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
+                                                        <ColumnDefinition Width="{Binding View.Columns[5].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
                                                     </Grid.ColumnDefinitions>
                                                     
                                                     <!-- Id column -->
@@ -198,6 +200,12 @@
                                                         Grid.Column="4"
                                                         HorizontalAlignment="Center"
                                                         Text="{Binding Items, Converter={StaticResource DownloadCountConverter}, Mode=OneTime}" />
+
+                                                    <!-- LastUpdated column -->
+                                                    <TextBlock 
+                                                        Grid.Column="5"
+                                                        HorizontalAlignment="Center"
+                                                        Text="{Binding Items, Converter={StaticResource LastUpdatedConverter}, Mode=OneTime, StringFormat=d}" />
                                                 </Grid>
                                             </Expander.Header>
                                             <Expander.Content>
@@ -265,6 +273,15 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                         <GridViewColumnHeader Content="Downloads" Command="{Binding SortCommand}" CommandParameter="VersionDownloadCount" Padding="0,3">
+                        </GridViewColumnHeader>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding LastUpdated, StringFormat=d}" TextAlignment="Center" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                        <GridViewColumnHeader Content="Last Updated" Command="{Binding SortCommand}" CommandParameter="LastUpdated" Padding="0,3">
                         </GridViewColumnHeader>
                     </GridViewColumn>
                 </GridView>
