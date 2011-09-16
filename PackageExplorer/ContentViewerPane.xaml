@@ -41,8 +41,7 @@
             VerticalScrollBarVisibility="Auto"
             HorizontalScrollBarVisibility="Auto"
             DataContextChanged="UserControl_DataContextChanged"
-            SyntaxHighlighting="{Binding SelectedItem, ElementName=LanguageBox, Mode=OneWay}"
-            ContextMenu="{StaticResource TextBoxContextMenu}" />
+            SyntaxHighlighting="{Binding SelectedItem, ElementName=LanguageBox, Mode=OneWay}" />
 
         <!-- 
             Note: the order of elements matter. This Border element has to come last. 

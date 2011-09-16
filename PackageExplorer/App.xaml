@@ -76,10 +76,6 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-
-            <Style TargetType="{x:Type RichTextBox}">
-                <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
-            </Style>
            
             <Style TargetType="{x:Type Window}">
                 <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
