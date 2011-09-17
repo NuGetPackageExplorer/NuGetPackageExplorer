@@ -278,19 +278,19 @@ namespace PackageExplorerViewModel {
 
                     switch (SortColumn) {
                         case "Id":
-                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Id) : query.OrderBy(p => p.Id);
+                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Id).ThenByDescending(p => p.LastUpdated) : query.OrderBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
                         case "Authors":
-                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Authors).ThenBy(p => p.Id) : query.OrderBy(p => p.Authors).ThenBy(p => p.Id);
+                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : query.OrderBy(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
                         case "VersionDownloadCount":
-                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id) : query.OrderBy(p => p.DownloadCount).ThenBy(p => p.Id);
+                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : query.OrderBy(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
                         case "Rating":
-                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Rating).ThenBy(p => p.Id) : query.OrderBy(p => p.Rating).ThenBy(p => p.Id);
+                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Rating).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : query.OrderBy(p => p.Rating).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
                         case "LastUpdated":
