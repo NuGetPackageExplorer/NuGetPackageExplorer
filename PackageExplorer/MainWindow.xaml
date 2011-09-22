@@ -67,6 +67,7 @@
         <KeyBinding Modifiers="Control" Key="P" Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Modifiers="Control" Key="Q" Command="{Binding ViewPackageAnalysisCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Modifiers="Control" Key="F" Command="NotACommand" />
+        <KeyBinding Key="Escape" Command="{Binding CancelEditCommand}" />
         <KeyBinding Key="F2" Command="{Binding RenameContentCommand}" />
         <KeyBinding Key="Del" Command="{Binding DeleteContentCommand}" />
         <KeyBinding Key="Enter" Command="{Binding ViewContentCommand}" />
