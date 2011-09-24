@@ -20,6 +20,8 @@
       <Word>Asax</Word>
       <Word>Plugin</Word>
       <Word>Plugins</Word>
+      <Word>Api</Word>
+      <Word>Mru</Word>
     </Recognized>
     <Deprecated>
       <Term PreferredAlternate=""></Term>
@@ -39,6 +41,7 @@
       <Acronym>Vs</Acronym>
       <Acronym>DTE</Acronym>
       <Acronym>TFS</Acronym>
+      <Acronym>MRU</Acronym>
     </CasingExceptions>
   </Acronyms>
 </Dictionary>

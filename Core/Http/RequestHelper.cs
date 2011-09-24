@@ -113,7 +113,7 @@ namespace NuGet {
 
                     using (response) {
                         previousStatusCode = response.StatusCode;
-                        authType = response.AuthType;
+                        authType = response.AuthenticationType;
                     }
                 }
             }
@@ -143,7 +143,7 @@ namespace NuGet {
                 _response = response;
             }
 
-            public string AuthType {
+            public string AuthenticationType {
                 get {
                     return _response.Headers[HttpResponseHeader.WwwAuthenticate];
                 }
