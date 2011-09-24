@@ -29,6 +29,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://nuget.codeplex.com/releases/clickonce/</InstallUrl>
     <SupportUrl>http://npe.codeplex.com</SupportUrl>
+    <ErrorReportUrl>http://npe.codeplex.com/WorkItem/Create%3fProjectName=npe</ErrorReportUrl>
     <ProductName>NuGet Package Explorer</ProductName>
     <PublisherName>NuGet Package Explorer</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
