@@ -248,7 +248,7 @@
                         <GridViewColumnHeader Content="Version" Command="{Binding SortCommand}" CommandParameter="Version" Padding="0,3">
                         </GridViewColumnHeader>
                     </GridViewColumn>
-                    <GridViewColumn Width="175">
+                    <GridViewColumn Width="145">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding Authors}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Authors}" />
@@ -313,7 +313,7 @@
         </TextBlock>
 
         <!-- OK and Cancel buttons -->
-        <UniformGrid HorizontalAlignment="Right" Grid.Row="4" Grid.Column="1" Rows="1" Columns="2">
+        <UniformGrid HorizontalAlignment="Right" Grid.Row="4" Grid.Column="1" Rows="1" Columns="3">
             <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,0">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource andConverter}">
@@ -322,7 +322,8 @@
                     </MultiBinding>
                 </Button.IsEnabled>
             </Button>
-            <Button IsCancel="True" Content="Cancel" Margin="5,10,0,0" Padding="15,0" Click="CancelButton_Click" />
+            <Button Content="Cancel" Command="{Binding CancelCommand, Mode=OneWay}" Margin="5,10,5,0" Padding="15,0" />
+            <Button IsCancel="True" Content="Close" Margin="5,10,0,0" Padding="15,0" Click="CloseButton_Click" />
         </UniformGrid>
     </Grid>
 </self:StandardDialog>

@@ -18,6 +18,7 @@ namespace PackageExplorerViewModel {
         private IQueryContext<PackageInfo> _currentQuery;
         private string _currentSearch;
         private MruPackageSourceManager _packageSourceManager;
+        private CancellationTokenSource _currentCancellationTokenSource;
 
         public PackageChooserViewModel(MruPackageSourceManager packageSourceManager, bool showLatestVersion) {
             if (packageSourceManager == null) {
@@ -32,6 +33,7 @@ namespace PackageExplorerViewModel {
             NavigationCommand = new RelayCommand<string>(NavigationCommandExecute, NavigationCommandCanExecute);
             LoadedCommand = new RelayCommand(() => Sort("VersionDownloadCount", ListSortDirection.Descending));
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
+            CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
             _packageSourceManager = packageSourceManager;
         }
 
@@ -66,10 +68,11 @@ namespace PackageExplorerViewModel {
         public ListSortDirection SortDirection {
             get { return _sortDirection; }
             set {
-                if (_sortDirection != value) {
-                    _sortDirection = value;
-                    OnPropertyChanged("SortDirection");
-                }
+                // IMPORTANT: must NOT check if (_sortDirection != value) here.
+                // We want SortDirection property change event to raise even in that case so that
+                // the UI can redraw the sort glyph when SortColumn property chagnes.
+                _sortDirection = value;
+                OnPropertyChanged("SortDirection");
             }
         }
 
@@ -97,9 +100,20 @@ namespace PackageExplorerViewModel {
                     _showLatestVersion = value;
                     OnPropertyChanged("ShowLatestVersion");
 
-                    ResetPackageRepository();
-                    LoadPackages();
+                    OnShowLatestVersionChanged();
                 }
+            }
+        }
+
+        private void OnShowLatestVersionChanged()
+        {
+            if (SortColumn == "LastUpdated" && !ShowLatestVersion)
+            {
+                Sort("Id", SortDirection);
+            }
+            else
+            {
+                Sort(SortColumn, SortDirection);
             }
         }
 
@@ -108,10 +122,13 @@ namespace PackageExplorerViewModel {
         /// </summary>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private DataServicePackageRepository GetPackageRepository() {
+        private DataServicePackageRepository GetPackageRepository(object state) {
             if (_packageRepository == null) {
                 _packageRepository = DataServicePackageRepositoryFactory.CreateRepository(PackageSource);
             }
+
+            var token = (CancellationToken)state;
+            token.ThrowIfCancellationRequested();
             return _packageRepository;
         }
 
@@ -130,6 +147,19 @@ namespace PackageExplorerViewModel {
             private set {
                 _packageSourceManager.ActivePackageSource = value;
                 OnPropertyChanged("PackageSource");
+            }
+        }
+
+        private CancellationTokenSource CurrentCancellationTokenSource
+        {
+            get
+            {
+                return _currentCancellationTokenSource;
+            }
+            set
+            {
+                _currentCancellationTokenSource = value;
+                CancelCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -203,65 +233,124 @@ namespace PackageExplorerViewModel {
         public ICommand ClearSearchCommand { get; private set; }
         public ICommand LoadedCommand { get; private set; }
         public ICommand ChangePackageSourceCommand { get; private set; }
+        public RelayCommand CancelCommand { get; private set; }
 
-        internal void LoadPage() {
+        internal void LoadPage(CancellationToken token) {
             Debug.Assert(_currentQuery != null);
 
             var uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
-            ShowMessage(Resources.LoadingMessage, false);
             IsEditable = false;
+            ShowMessage(Resources.LoadingMessage, false);
+            ClearPackages(isErrorCase: false);
 
+            if (token == CancellationToken.None)
+            {
+                CurrentCancellationTokenSource = new CancellationTokenSource();
+                token = CurrentCancellationTokenSource.Token;
+            }
+
+            var usedTokenSource = CurrentCancellationTokenSource;
+
+            // IMPORTANT: Call StartNew() with TaskScheduler.Default here to make sure 
+            // QueryPackages() is scheduled on background thread. This is because this method
+            // can be called from UI TaskScheduler from the LoadPackages() method
             Task.Factory.StartNew<IList<PackageInfo>>(
-                QueryPackages, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default).ContinueWith(
-                result => {
-                    if (result.IsFaulted) {
-                        AggregateException exception = result.Exception;
-                        ShowMessage((exception.InnerException ?? exception).Message, true);
-                        ClearPackages();
-                    }
-                    else if (!result.IsCanceled) {
-                        ShowPackages(result.Result, _currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
-                        ShowMessage(String.Empty, false);
+                QueryPackages, token, token, TaskCreationOptions.None, TaskScheduler.Default).ContinueWith(
+                task => {
+                    Exception exception = task.Exception;
+                    if (usedTokenSource != CurrentCancellationTokenSource)
+                    {
+                        // this mean this request has already been canceled. No need to process this request anymore.
+                        return;
                     }
 
-                    IsEditable = true;
+                    if (task.IsFaulted) {
+                        ShowMessage(exception.GetBaseException().Message, true);
+                        ClearPackages(isErrorCase: true);
+                    }
+                    else if (task.IsCanceled)
+                    {
+                        ClearMessage();
+                        UpdatePageNumber(_currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
+                    }
+                    else
+                    {
+                        ClearMessage();
+                        ShowPackages(task.Result, _currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
+                    }
 
-                    RaiseLoadPackagesCompletedEvent();
+                    RestoreUI();
                 },
                 uiScheduler);
         }
 
-        private void RaiseLoadPackagesCompletedEvent() {
-            LoadPackagesCompleted(this, EventArgs.Empty);
-        }
+        private IList<PackageInfo> QueryPackages(object state) {
+            CancellationToken token = (CancellationToken)state;
 
-        private IList<PackageInfo> QueryPackages() {
             // HACK: trigger calling TotalItemCount asynchronously so that the request for $count
             // can run in parallel with the request for packages
             Func<int> getTotalItemCount = () => _currentQuery.TotalItemCount;
             getTotalItemCount.BeginInvoke(null, null);
 
+            token.ThrowIfCancellationRequested();
+
             IList<PackageInfo> result = _currentQuery.GetItemsForCurrentPage().ToList();
-            var repository = GetPackageRepository();
+
+            token.ThrowIfCancellationRequested();
+
+            var repository = GetPackageRepository(token);
+
+            token.ThrowIfCancellationRequested();
+
             foreach (PackageInfo entity in result) {
                 entity.DownloadUrl = repository.GetReadStreamUri(entity);
             }
+
+            token.ThrowIfCancellationRequested();
             return result;
         }
 
         private void LoadPackages() {
-            ShowMessage(Resources.ConnectingMessage, false);
-
             IsEditable = false;
+            ShowMessage(Resources.ConnectingMessage, false);
+            ClearPackages(isErrorCase: true);
+
             TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            Task.Factory.StartNew<DataServicePackageRepository>(GetPackageRepository).ContinueWith(
+
+            CurrentCancellationTokenSource = new CancellationTokenSource();
+            var usedTokenSource = CurrentCancellationTokenSource;
+
+            Task.Factory.StartNew<DataServicePackageRepository>(
+                GetPackageRepository, 
+                CurrentCancellationTokenSource.Token,
+                CurrentCancellationTokenSource.Token  
+            ).ContinueWith(
                 task => {
+                    Exception exception = task.Exception;
+                    if (usedTokenSource != CurrentCancellationTokenSource)
+                    {
+                        // this mean this request has already been canceled. No need to process this request anymore.
+                        return;
+                    }
+
+                    if (task.IsFaulted)
+                    {
+                        ShowMessage(exception.GetBaseException().Message, isError: true);
+                        RestoreUI();
+                        return;
+                    }
+                    else if (task.IsCanceled)
+                    {
+                        ClearMessage();
+                        RestoreUI();
+                        return;
+                    }
+
                     DataServicePackageRepository repository = task.Result;
                     if (repository == null) {
-                        IsEditable = true;
-                        ShowMessage(String.Empty, false);
-                        ClearPackages();
+                        ClearMessage();
+                        RestoreUI();
                         return;
                     }
 
@@ -278,23 +367,33 @@ namespace PackageExplorerViewModel {
 
                     switch (SortColumn) {
                         case "Id":
-                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Id).ThenByDescending(p => p.LastUpdated) : query.OrderBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
+                            query = SortDirection == ListSortDirection.Descending ? 
+                                query.OrderByDescending(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
+                                query.OrderBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
                         case "Authors":
-                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : query.OrderBy(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
+                            query = SortDirection == ListSortDirection.Descending ? 
+                                query.OrderByDescending(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
+                                query.OrderBy(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
                         case "VersionDownloadCount":
-                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : query.OrderBy(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
+                            query = SortDirection == ListSortDirection.Descending ? 
+                                query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
+                                query.OrderBy(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
                         case "Rating":
-                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.Rating).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : query.OrderBy(p => p.Rating).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
+                            query = SortDirection == ListSortDirection.Descending ? 
+                                query.OrderByDescending(p => p.Rating).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
+                                query.OrderBy(p => p.Rating).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
                         case "LastUpdated":
-                            query = SortDirection == ListSortDirection.Descending ? query.OrderByDescending(p => p.LastUpdated).ThenBy(p => p.Id) : query.OrderBy(p => p.LastUpdated).ThenBy(p => p.Id);
+                            query = SortDirection == ListSortDirection.Descending ? 
+                                query.OrderByDescending(p => p.LastUpdated).ThenBy(p => p.Id) : 
+                                query.OrderBy(p => p.LastUpdated).ThenBy(p => p.Id);
                             break;
 
                         default:
@@ -341,10 +440,10 @@ namespace PackageExplorerViewModel {
                             PackageInfoEqualityComparer.Instance);
                     }
                     
-                    LoadPage();
+                    LoadPage(CurrentCancellationTokenSource.Token);
                 },
-                CancellationToken.None,
-                TaskContinuationOptions.OnlyOnRanToCompletion,
+                CurrentCancellationTokenSource.Token,
+                TaskContinuationOptions.None,
                 uiScheduler
             );
         }
@@ -388,8 +487,8 @@ namespace PackageExplorerViewModel {
                 }
                 else {
                     SortDirection = SortDirection == ListSortDirection.Ascending
-                                        ? ListSortDirection.Descending
-                                        : ListSortDirection.Ascending;
+                                                        ? ListSortDirection.Descending
+                                                        : ListSortDirection.Ascending;
                 }
             }
             else {
@@ -401,7 +500,8 @@ namespace PackageExplorerViewModel {
         }
 
         private void ChangePackageSource(string source) {
-            if (PackageSource != source || _currentQuery == null) {
+            if (PackageSource != source)
+            {
                 // add the new source to MRU list
                 _packageSourceManager.NotifyPackageSourceAdded(source);
                 PackageSource = source;
@@ -409,31 +509,73 @@ namespace PackageExplorerViewModel {
                 ResetPackageRepository();
                 LoadPackages();
             }
+            else
+            {
+                LoadPackages();
+            }
         }
 
-        private void ClearPackages() {
-            ShowPackages(Enumerable.Empty<PackageInfo>(), 0, 0, 0);
-        }
-
-        private void ShowPackages(IEnumerable<PackageInfo> packages, int totalPackageCount, int beginPackage, int endPackage) {
+        private void UpdatePageNumber(int totalPackageCount, int beginPackage, int endPackage) {
             TotalPackageCount = totalPackageCount;
             BeginPackage = beginPackage;
             EndPackage = endPackage;
-
-            Packages.Clear();
-            Packages.AddRange(packages);
-
-            NavigationCommand.RaiseCanExecuteChanged();
         }
 
-        private void ShowMessage(string message, bool hasError) {
+        private void ClearPackages(bool isErrorCase)
+        {
+            Packages.Clear();
+            if (isErrorCase)
+            {
+                UpdatePageNumber(0, 0, 0);
+            }
+        }
+
+        private void ShowPackages(IEnumerable<PackageInfo> packages, int totalPackageCount, int beginPackage, int endPackage)
+        {
+            Packages.Clear();
+            Packages.AddRange(packages);
+            UpdatePageNumber(totalPackageCount, beginPackage, endPackage);
+        }
+
+        private void ShowMessage(string message, bool isError) {
             StatusContent = message;
-            HasError = hasError;
+            HasError = isError;
+        }
+
+        private void ClearMessage()
+        {
+            ShowMessage(String.Empty, isError: false);
         }
 
         public void OnAfterShow() {
             CurrentTypingSearch = _currentSearch;
         }
+
+        private void RestoreUI()
+        {
+            IsEditable = true;
+            CurrentCancellationTokenSource = null;
+            LoadPackagesCompleted(this, EventArgs.Empty);
+        }
+
+        #region CancelCommand
+
+        private void CancelCommandExecute()
+        {
+            if (CurrentCancellationTokenSource != null)
+            {
+                CurrentCancellationTokenSource.Cancel();
+                ClearMessage();
+                IsEditable = true;
+            }
+        }
+
+        private bool CanCancelCommandExecute()
+        {
+            return !IsEditable && CurrentCancellationTokenSource != null;
+        }
+
+        #endregion
 
         #region NavigationCommand
 
@@ -483,27 +625,27 @@ namespace PackageExplorerViewModel {
         private void MoveLast() {
             bool canMoveLast = _currentQuery.MoveLast();
             if (canMoveLast) {
-                LoadPage();
+                LoadPage(CancellationToken.None);
             }
         }
 
         private void MoveNext() {
             bool canMoveNext = _currentQuery.MoveNext();
             if (canMoveNext) {
-                LoadPage();
+                LoadPage(CancellationToken.None);
             }
         }
 
         private void MovePrevious() {
             bool canMovePrevious = _currentQuery.MovePrevious();
             if (canMovePrevious) {
-                LoadPage();
+                LoadPage(CancellationToken.None);
             }
         }
 
         private void MoveFirst() {
             _currentQuery.MoveFirst();
-            LoadPage();
+            LoadPage(CancellationToken.None);
         }
 
         private bool CanMoveLast() {
@@ -528,6 +670,11 @@ namespace PackageExplorerViewModel {
             if (_packageSourceManager != null) {
                 _packageSourceManager.Dispose();
                 _packageSourceManager = null;
+            }
+
+            if (CurrentCancellationTokenSource != null)
+            {
+                CurrentCancellationTokenSource.Dispose();
             }
         }
     }

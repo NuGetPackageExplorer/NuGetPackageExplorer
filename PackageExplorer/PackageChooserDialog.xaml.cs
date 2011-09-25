@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -15,39 +16,26 @@ namespace PackageExplorer {
     /// </summary>
     public partial class PackageChooserDialog : StandardDialog {
         private string _pendingSearch;
-
-        public string SortColumn {
-            get { return (string)GetValue(SortColumnProperty); }
-            set { SetValue(SortColumnProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for SortColumn.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SortColumnProperty =
-            DependencyProperty.Register("SortColumn", typeof(string), typeof(PackageChooserDialog), null);
-
-        public ListSortDirection SortDirection {
-            get { return (ListSortDirection)GetValue(SortDirectionProperty); }
-            set { SetValue(SortDirectionProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for SortDirection.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SortDirectionProperty =
-            DependencyProperty.Register("SortDirection", typeof(ListSortDirection), typeof(PackageChooserDialog), null);
-
-        private static void OnSortCounterPropertyChanged(object sender, DependencyPropertyChangedEventArgs args) {
-            var dialog = (PackageChooserDialog)sender;
-            dialog.RedrawSortGlyph();
-        }
-
+        private readonly PackageChooserViewModel _viewModel;
+        
         public PackageChooserDialog(PackageChooserViewModel viewModel) {
             InitializeComponent();
 
-            SetBinding(SortColumnProperty, new Binding("SortColumn") { Mode = BindingMode.OneWay });
-            SetBinding(SortDirectionProperty, new Binding("SortDirection") { Mode = BindingMode.OneWay });
+            Debug.Assert(viewModel != null);
 
-            viewModel.LoadPackagesCompleted += new EventHandler(OnLoadPackagesCompleted);
+            _viewModel = viewModel;
+            _viewModel.LoadPackagesCompleted += new EventHandler(OnLoadPackagesCompleted);
+            _viewModel.PropertyChanged += new PropertyChangedEventHandler(OnViewModelPropertyChanged);
 
-            DataContext = viewModel;
+            DataContext = _viewModel;
+        }
+
+        private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "SortDirection")
+            {
+                RedrawSortGlyph(_viewModel.SortColumn, _viewModel.SortDirection);
+            }
         }
 
         private void OnLoadPackagesCompleted(object sender, EventArgs e) {
@@ -59,11 +47,9 @@ namespace PackageExplorer {
             // away if they need to. Currently the default search behavior is not working most likely do to the
             // controls being disabled when the packages are loading.
             FocusSearchBox();
-
-            RedrawSortGlyph();
         }
 
-        private void RedrawSortGlyph() {
+        private void RedrawSortGlyph(string sortColumn, ListSortDirection sortDirection) {
             foreach (var column in PackageGridView.Columns) {
                 var header = (GridViewColumnHeader)column.Header;
                 if (header.Tag != null) {
@@ -73,8 +59,8 @@ namespace PackageExplorer {
                     }
                 }
 
-                if ((string)header.CommandParameter == SortColumn) {
-                    var newAdorner = new SortAdorner(header, SortDirection);
+                if ((string)header.CommandParameter == sortColumn) {
+                    var newAdorner = new SortAdorner(header, sortDirection);
                     header.Tag = newAdorner;
 
                     AdornerLayer layer = AdornerLayer.GetAdornerLayer(header);
@@ -91,13 +77,25 @@ namespace PackageExplorer {
             }
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e) {
+        private void OkButton_Click(object sender, RoutedEventArgs e) {
+            Hide();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            CancelPendingRequestAndCloseDialog();
+        }
+
+        private void CancelPendingRequestAndCloseDialog()
+        {
+            CancelPendingRequest();
             PackageGrid.SelectedItem = null;
             Hide();
         }
 
-        private void OkButton_Click(object sender, RoutedEventArgs e) {
-            Hide();
+        private void CancelPendingRequest()
+        {
+            _viewModel.CancelCommand.Execute(null);
         }
 
         private void SearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
@@ -182,7 +180,7 @@ namespace PackageExplorer {
 
         private void StandardDialog_Closing(object sender, CancelEventArgs e) {
             e.Cancel = true;
-            CancelButton_Click(this, null);
+            CancelPendingRequestAndCloseDialog();
         }
 
         internal void ForceClose() {
@@ -199,7 +197,7 @@ namespace PackageExplorer {
         }
 
         private void OnAfterShow() {
-            ((PackageChooserViewModel)DataContext).OnAfterShow();
+            _viewModel.OnAfterShow();
             FocusSearchBox();
         }
 
@@ -207,7 +205,7 @@ namespace PackageExplorer {
             if (e.Key == Key.Enter) {
                 string source = PackageSourceBox.Text;
                 if (!String.IsNullOrEmpty(source)) {
-                    ((PackageChooserViewModel)DataContext).ChangePackageSourceCommand.Execute(source);
+                    _viewModel.ChangePackageSourceCommand.Execute(source);
                     e.Handled = true;
                 }
             }

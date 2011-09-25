@@ -15,9 +15,17 @@ namespace PackageExplorerViewModel {
             _totalItemCount = new Lazy<int>(_source.Count);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public int TotalItemCount {
             get {
-                return _totalItemCount.Value;
+                try
+                {
+                    return _totalItemCount.Value;
+                }
+                catch (Exception)
+                {
+                    return 0;
+                }
             }
         }
 
