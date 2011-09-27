@@ -13,7 +13,7 @@ namespace PackageExplorerViewModel {
         };
 
         private static string[] BinaryFileExtensions = new string[] { 
-            ".DLL", ".EXE", ".CHM", ".PDF", ".DOCX", ".DOC", ".JPG", ".PNG", ".GIF", ".RTF", ".PDB", ".ZIP", ".RAR", ".XAP", ".VSIX", ".NUPKG", ".SNK", ".PFX", ".ICO"
+            ".DLL", ".EXE", ".WINMD", ".CHM", ".PDF", ".DOCX", ".DOC", ".JPG", ".PNG", ".GIF", ".RTF", ".PDB", ".ZIP", ".RAR", ".XAP", ".VSIX", ".NUPKG", ".SNK", ".PFX", ".ICO"
         };
 
         public static bool IsBinaryFile(string path) {
