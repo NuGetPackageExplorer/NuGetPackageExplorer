@@ -11,10 +11,10 @@ namespace PackageExplorerViewModel.Rules {
     internal class NonAssemblyInsideLibRule : IPackageRule {
         public IEnumerable<PackageIssue> Validate(IPackage package) {
             var allLibFiles = package.GetFilesInFolder("lib");
-            var assembliesSet = new HashSet<string>(allLibFiles.Where(IsAssembly), StringComparer.OrdinalIgnoreCase);
+            var assembliesSet = new HashSet<string>(allLibFiles.Where(FileHelper.IsAssembly), StringComparer.OrdinalIgnoreCase);
 
             return from path in allLibFiles
-                   where !IsAssembly(path) && !IsMatchingPdbOrXml(path, assembliesSet)
+                   where !FileHelper.IsAssembly(path) && !IsMatchingPdbOrXml(path, assembliesSet)
                    select CreatePackageIssue(path);
         }
 
@@ -23,15 +23,11 @@ namespace PackageExplorerViewModel.Rules {
                 path.EndsWith(".pdb", StringComparison.OrdinalIgnoreCase)) {
 
                 return assemblies.Contains(Path.ChangeExtension(path, ".dll")) ||
+                       assemblies.Contains(Path.ChangeExtension(path, ".winmd")) ||
                        assemblies.Contains(Path.ChangeExtension(path, ".exe"));
             }
 
             return false;
-        }
-
-        private static bool IsAssembly(string path) {
-            return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
-                   path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
         }
 
         private static PackageIssue CreatePackageIssue(string target) {

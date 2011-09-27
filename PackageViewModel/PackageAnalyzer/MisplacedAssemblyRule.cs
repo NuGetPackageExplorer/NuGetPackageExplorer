@@ -18,23 +18,19 @@ namespace PackageExplorerViewModel.Rules {
 
                 // if under 'lib' directly
                 if (directory.Equals(LibFolder, StringComparison.OrdinalIgnoreCase)) {
-                    if (IsAssembly(path)) {
+                    if (FileHelper.IsAssembly(path)) {
                         yield return CreatePackageIssueForAssembliesUnderLib(path);
                     }
                 }
                 else if (!directory.StartsWith(LibFolder + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)) {
                     // when checking for assemblies outside 'lib' folder, only check .dll files.
                     // .exe files are often legitimate outside 'lib'.
-                    if (path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase)) {
+                    if (path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
+                        path.EndsWith(".winmd", StringComparison.OrdinalIgnoreCase)) {
                         yield return CreatePackageIssueForAssembliesOutsideLib(path);
                     }
                 }
             }
-        }
-
-        private static bool IsAssembly(string path) {
-            return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
-                   path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
         }
 
         private static PackageIssue CreatePackageIssueForAssembliesUnderLib(string target) {

@@ -10,6 +10,7 @@ using NuGet.Resources;
 namespace NuGet {
     public static class VersionUtility {
         private const string NetFrameworkIdentifier = ".NETFramework";
+        private const string WinRTFrameworkIdentifier = ".NETCore";
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
         public static readonly FrameworkName UnsupportedFrameworkName = new FrameworkName("Unsupported", new Version());
         private static readonly Version _emptyVersion = new Version();
@@ -19,6 +20,7 @@ namespace NuGet {
             { ".NET", NetFrameworkIdentifier },
             { "NETFramework", NetFrameworkIdentifier },
             { ".NETFramework", NetFrameworkIdentifier },
+            { "WinRT", WinRTFrameworkIdentifier },
             { ".NETMicroFramework", ".NETMicroFramework" },
             { "netmf", ".NETMicroFramework" },
             { "SL", "Silverlight" },

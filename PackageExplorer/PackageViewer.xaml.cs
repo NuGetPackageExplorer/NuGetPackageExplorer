@@ -267,6 +267,7 @@ namespace PackageExplorer {
            new Dictionary<string, string[]>() {
                { "Windows Phone", new[] { "v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71" }},
                { "Siverlight", new[] {"(no version)", "sl", "v2.0", "sl2", "v3.0", "sl30", "v4.0", "sl40", "v5.0", "sl50" }},
+               { "WinRT", new[] { "(no version)", "winrt", "v4.5", "winrt45" } },
                { ".NET", new[] { "(no version)", "net", "v1.0", "net10", "v1.1", "net11", "v2.0", "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40", "v4.5", "net45"}}
            };
 

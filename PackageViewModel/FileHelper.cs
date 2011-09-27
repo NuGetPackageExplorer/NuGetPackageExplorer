@@ -103,5 +103,11 @@ namespace PackageExplorerViewModel {
             File.WriteAllText(filePath, content);
             return filePath;
         }
+
+        public static bool IsAssembly(string path) {
+            return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
+                   path.EndsWith(".winmd", StringComparison.OrdinalIgnoreCase) ||
+                   path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
+        }
     }
 }
