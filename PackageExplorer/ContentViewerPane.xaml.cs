@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using ICSharpCode.AvalonEdit.Highlighting;
 using NuGetPackageExplorer.Types;
 
@@ -10,20 +9,14 @@ namespace PackageExplorer {
     public partial class ContentViewerPane : UserControl {
         public ContentViewerPane() {
             InitializeComponent();
-            PopulateLanguageBoxValues();
+
+            // set the Syntax Highlighting definitions
+            LanguageBox.ItemsSource = HighlightingManager.Instance.HighlightingDefinitions;
 
             // disable unnecessary editor features
             contentBox.Options.CutCopyWholeLine = false;
             contentBox.Options.EnableEmailHyperlinks = false;
             contentBox.Options.EnableHyperlinks = false;
-        }
-
-        private void PopulateLanguageBoxValues() {
-            // set the Syntax Highlighting definitions
-            var definitions = new List<IHighlightingDefinition>();
-            definitions.Add(TextHighlightingDefinition.Instance);
-            definitions.AddRange(HighlightingManager.Instance.HighlightingDefinitions);
-            LanguageBox.ItemsSource = definitions;
         }
 
         private void UserControl_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) {

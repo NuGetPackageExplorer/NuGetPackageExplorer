@@ -25,8 +25,7 @@ namespace PackageExplorer {
                 extension = Path.GetExtension(name).ToUpperInvariant();
             }
 
-            return HighlightingManager.Instance.GetDefinitionByExtension(extension) ??
-                TextHighlightingDefinition.Instance;
+            return HighlightingManager.Instance.GetDefinitionByExtension(extension);
         }
     }
 }

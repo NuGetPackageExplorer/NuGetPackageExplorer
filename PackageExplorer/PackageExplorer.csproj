@@ -131,7 +131,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Utilities\StreamUtility.cs" />
-    <Compile Include="Utilities\TextHighlightingDefinition.cs" />
     <Compile Include="Wpf\PackageCommandItemContainerSelector.cs" />
     <Compile Include="Converters\PackageInfoDownloadCountConverter.cs" />
     <Compile Include="Converters\StringToVisibilityConverter.cs" />

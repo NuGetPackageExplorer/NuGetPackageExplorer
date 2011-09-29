@@ -17,10 +17,7 @@ namespace PackageExplorer {
             InitializeComponent();
 
             // set the Syntax Highlighting definitions
-            var definitions = new List<IHighlightingDefinition>();
-            definitions.Add(TextHighlightingDefinition.Instance);
-            definitions.AddRange(HighlightingManager.Instance.HighlightingDefinitions);
-            SyntaxDefinitions.ItemsSource = definitions;
+            SyntaxDefinitions.ItemsSource = HighlightingManager.Instance.HighlightingDefinitions;
 
             // Set the initial Font Family to Consolas
             FontChoice.ItemsSource = Fonts.SystemFontFamilies.OrderBy(p => p.Source);
