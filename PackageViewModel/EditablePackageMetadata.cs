@@ -91,8 +91,8 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private Version _version;
-        public Version Version {
+        private SemanticVersion _version;
+        public SemanticVersion Version {
             get { return _version; }
             set {
                 if (value == null) {

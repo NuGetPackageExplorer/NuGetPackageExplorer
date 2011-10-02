@@ -130,8 +130,8 @@ namespace PackageExplorerViewModel {
                 return null;
             }
 
-            Version version;
-            if (!Version.TryParse(parts[1], out version)) {
+            SemanticVersion version;
+            if (!SemanticVersion.TryParse(parts[1], out version)) {
                 return null;
             }
 
@@ -168,8 +168,8 @@ namespace PackageExplorerViewModel {
                 return null;
             }
 
-            Version version;
-            if (!Version.TryParse(nameParts[1], out version)) {
+            SemanticVersion version;
+            if (!SemanticVersion.TryParse(nameParts[1], out version)) {
                 return null;
             }
 

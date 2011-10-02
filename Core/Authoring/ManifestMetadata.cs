@@ -94,12 +94,12 @@ namespace NuGet {
         [XmlArrayItem("frameworkAssembly")]
         public List<ManifestFrameworkAssembly> FrameworkAssemblies { get; set; }
 
-        Version IPackageMetadata.Version {
+        SemanticVersion IPackageMetadata.Version {
             get {
                 if (Version == null) {
                     return null;
                 }
-                return new Version(Version);
+                return new SemanticVersion(Version);
             }
         }
 

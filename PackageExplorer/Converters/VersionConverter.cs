@@ -8,7 +8,7 @@ namespace PackageExplorer {
     [ValueConversion(typeof(Version), typeof(string))]
     public class VersionConverter : IValueConverter {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            Version version = (Version)value;
+            SemanticVersion version = (SemanticVersion)value;
             return version.ToString();
         }
 
@@ -18,8 +18,8 @@ namespace PackageExplorer {
                 return null;
             }
             else {
-                Version version;
-                if (Version.TryParse(stringValue, out version)) {
+                SemanticVersion version;
+                if (SemanticVersion.TryParse(stringValue, out version)) {
                     return version;
                 }
                 else {

@@ -177,8 +177,8 @@ namespace NuGet {
             value = value.Trim();
 
             // First, try to parse it as a plain version string
-            Version version;
-            if (Version.TryParse(value, out version)) {
+            SemanticVersion version;
+            if (SemanticVersion.TryParse(value, out version)) {
                 // A plain version is treated as an inclusive minimum range
                 result = new VersionSpec {
                     MinVersion = version,
@@ -286,16 +286,16 @@ namespace NuGet {
             return null;
         }
 
-        public static bool TryParseVersion(string versionValue, out Version version)
+        public static bool TryParseVersion(string versionValue, out SemanticVersion version)
         {
             version = null;
-            if (!Version.TryParse(versionValue, out version))
+            if (!SemanticVersion.TryParse(versionValue, out version))
             {
                 // Support integer version numbers (i.e 1 -> 1.0)
                 int versionNumber;
                 if (Int32.TryParse(versionValue, out versionNumber) && versionNumber > 0)
                 {
-                    version = new Version(versionNumber, 0);
+                    version = new SemanticVersion(versionNumber, 0, 0, 0);
                 }
             }
             return version != null;

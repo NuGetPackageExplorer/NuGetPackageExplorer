@@ -4,9 +4,9 @@ using System.Text;
 
 namespace NuGet {
     public class VersionSpec : IVersionSpec {
-        public Version MinVersion { get; set; }
+        public SemanticVersion MinVersion { get; set; }
         public bool IsMinInclusive { get; set; }
-        public Version MaxVersion { get; set; }
+        public SemanticVersion MaxVersion { get; set; }
         public bool IsMaxInclusive { get; set; }
 
         public override string ToString() {

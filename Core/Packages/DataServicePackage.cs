@@ -166,10 +166,10 @@ namespace NuGet {
             }
         }
 
-        Version IPackageMetadata.Version {
+        SemanticVersion IPackageMetadata.Version {
             get {
                 if (Version != null) {
-                    return new Version(Version);
+                    return new SemanticVersion(Version);
                 }
                 return null;
             }

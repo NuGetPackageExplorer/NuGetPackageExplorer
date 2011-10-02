@@ -21,8 +21,8 @@ namespace PackageExplorerViewModel {
             get { return "MyPackage"; }
         }
 
-        public Version Version {
-            get { return new Version("1.0"); }
+        public SemanticVersion Version {
+            get { return new SemanticVersion("1.0"); }
         }
 
         public string Title {

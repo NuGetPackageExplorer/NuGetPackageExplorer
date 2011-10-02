@@ -31,7 +31,7 @@ namespace NuGet {
             set;
         }
 
-        public Version Version {
+        public SemanticVersion Version {
             get;
             set;
         }

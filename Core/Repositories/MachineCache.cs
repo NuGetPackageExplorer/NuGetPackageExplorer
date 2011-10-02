@@ -34,7 +34,7 @@ namespace NuGet {
             throw new NotSupportedException();
         }
 
-        public IPackage FindPackage(string packageId, Version version) {
+        public IPackage FindPackage(string packageId, SemanticVersion version) {
             string path = GetPackageFilePath(packageId, version);
 
             if (File.Exists(path)) {
@@ -89,7 +89,7 @@ namespace NuGet {
             }
         }
 
-        private string GetPackageFilePath(string id, Version version) {
+        private string GetPackageFilePath(string id, SemanticVersion version) {
             return Path.Combine(Source, id + "." + version.ToString() + Constants.PackageExtension);
         }
 

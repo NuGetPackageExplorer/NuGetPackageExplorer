@@ -229,7 +229,7 @@ namespace PackageExplorer {
 
             PackageInfo selectedPackageInfo = PackageChooser.SelectPackage(searchTerm);
             if (selectedPackageInfo != null) {
-                Version packageVersion = new Version(selectedPackageInfo.Version);
+                SemanticVersion packageVersion = new SemanticVersion(selectedPackageInfo.Version);
                 IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
 
                 Action<IPackage> processPackageAction = (package) => {
@@ -440,7 +440,7 @@ namespace PackageExplorer {
             DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
         }
 
-        internal void DownloadAndOpenDataServicePackage(string packageUrl, string id = null, Version version = null) {
+        internal void DownloadAndOpenDataServicePackage(string packageUrl, string id = null, SemanticVersion version = null) {
             if (!NetworkInterface.GetIsNetworkAvailable()) {
                 UIServices.Show(
                     PackageExplorer.Resources.Resources.NoNetworkConnection,

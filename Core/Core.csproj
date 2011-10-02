@@ -89,7 +89,6 @@
     <Compile Include="Http\RequestHelper.cs" />
     <Compile Include="Packages\Constants.cs" />
     <Compile Include="Packages\DataServicePackage.cs" />
-    <Compile Include="Packages\IPackagePathResolver.cs" />
     <Compile Include="Packages\PackageInfo.cs" />
     <Compile Include="Packages\PackageInfoEqualityComparer.cs" />
     <Compile Include="Packages\SimplePackage.cs" />

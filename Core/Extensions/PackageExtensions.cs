@@ -12,6 +12,10 @@ namespace NuGet {
         private const string TagsProperty = "Tags";
         private static readonly string[] _packagePropertiesToSearch = new[] { "Id", "Description", TagsProperty };
 
+        public static bool IsReleaseVersion(this IPackageMetadata packageMetadata) {
+            return String.IsNullOrEmpty(packageMetadata.Version.SpecialVersion);
+        }
+
         public static string GetHash(this IPackage package) {
             return GetHash(package, new CryptoHashProvider());
         }

@@ -65,6 +65,7 @@
     <Compile Include="PackageCommandMetadataAttribute.cs" />
     <Compile Include="Packages\IVersionSpec.cs" />
     <Compile Include="Packages\PackageDependency.cs" />
+    <Compile Include="Packages\SemanticVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
