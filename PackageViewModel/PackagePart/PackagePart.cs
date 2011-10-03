@@ -157,7 +157,7 @@ namespace PackageExplorerViewModel {
                 return 1;
             }
 
-            return String.Compare(this.Name, other.Name, StringComparison.OrdinalIgnoreCase);
+            return String.Compare(this.Path, other.Path, StringComparison.OrdinalIgnoreCase);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
