@@ -198,4 +198,7 @@
   <data name="Manifest_InvalidReference" xml:space="preserve">
     <value>Invalid assembly reference '{0}'. Ensure that a file named '{0}' exists in the lib directory.</value>
   </data>
+  <data name="Manifest_InvalidPrereleaseDependency" xml:space="preserve">
+    <value>A stable release of a package should not have dependency on a prerelease package. Either modify the version spec of dependency "{0}" or update the version field.</value>
+  </data>
 </root>

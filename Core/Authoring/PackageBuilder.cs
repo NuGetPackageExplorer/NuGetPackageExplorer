@@ -180,6 +180,7 @@ namespace NuGet {
                 throw new InvalidOperationException(NuGetResources.CannotCreateEmptyPackage);
             }
 
+            ValidateDependencies(Version, Dependencies);
             ValidateReferenceAssemblies(Files, PackageAssemblyReferences);
 
             using (Package package = Package.Open(stream, FileMode.Create)) {
@@ -199,6 +200,21 @@ namespace NuGet {
             }
         }
 
+        internal static void ValidateDependencies(SemanticVersion version, IEnumerable<PackageDependency> dependencies) {
+            if (version == null) {
+                // We have independent validation for null-versions.
+                return;
+            }
+
+            if (String.IsNullOrEmpty(version.SpecialVersion)) {
+                // If we are creating a production package, do not allow any of the dependencies to be a prerelease version.
+                var prereleaseDependency = dependencies.FirstOrDefault(IsPrereleaseDependency);
+                if (prereleaseDependency != null) {
+                    throw new InvalidDataException(String.Format(CultureInfo.CurrentCulture, NuGetResources.Manifest_InvalidPrereleaseDependency, prereleaseDependency.ToString()));
+                }
+            }
+        }
+
         internal static void ValidateReferenceAssemblies(IEnumerable<IPackageFile> files, IEnumerable<AssemblyReference> packageAssemblyReferences) {
             var libFiles = new HashSet<string>(from file in files
                                                where !String.IsNullOrEmpty(file.Path) && file.Path.StartsWith("lib\\", StringComparison.OrdinalIgnoreCase)
@@ -213,6 +229,15 @@ namespace NuGet {
                             reference.File));
                 }
             }
+        }
+
+        private static bool IsPrereleaseDependency(PackageDependency dependency) {
+            var versionSpec = dependency.VersionSpec;
+            if (versionSpec != null) {
+                return (versionSpec.MinVersion != null && !String.IsNullOrEmpty(dependency.VersionSpec.MinVersion.SpecialVersion)) ||
+                       (versionSpec.MaxVersion != null && !String.IsNullOrEmpty(dependency.VersionSpec.MaxVersion.SpecialVersion));
+            }
+            return false;
         }
 
         private void ReadManifest(Stream stream, string basePath) {

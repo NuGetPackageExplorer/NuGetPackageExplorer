@@ -27,7 +27,7 @@ namespace PackageExplorerViewModel.Rules {
             return VersionUtility.ParseFrameworkName(name) == VersionUtility.UnsupportedFrameworkName;
         }
 
-        private PackageIssue CreatePackageIssue(string target) {
+        private static PackageIssue CreatePackageIssue(string target) {
             return new PackageIssue(
                 PackageIssueLevel.Warning,
                 "Invalid framework folder",

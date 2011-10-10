@@ -66,6 +66,7 @@
     <Compile Include="PackageAnalyzer\MissingContentOrDependencyRule.cs" />
     <Compile Include="PackageAnalyzer\MissingSummaryRule.cs" />
     <Compile Include="PackageAnalyzer\OrphanAssemblyReferenceNameRule.cs" />
+    <Compile Include="PackageAnalyzer\PrereleasePackageDependencyRule.cs" />
     <Compile Include="PackageChooser\PackageSourceSettings.cs" />
     <Compile Include="PluginManagerViewModel.cs" />
     <Compile Include="PublishPackage\PublishSourceSettings.cs" />
