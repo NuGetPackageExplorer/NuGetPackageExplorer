@@ -18,7 +18,7 @@ namespace PackageExplorerViewModel {
             _uiServices = uiServices;
 
             DeleteCommand = new RelayCommand<FileInfo>(DeleteCommandExecute, DeleteCommandCanExecute);
-            AddCommand = new RelayCommand(AddCommandExecute);
+            AddCommand = new RelayCommand<string>(AddCommandExecute);
         }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
@@ -34,13 +34,25 @@ namespace PackageExplorerViewModel {
 
         public RelayCommand<FileInfo> DeleteCommand { get; private set; }
 
-        public RelayCommand AddCommand { get; private set; }
+        public RelayCommand<string> AddCommand { get; private set; }
 
-        private void AddCommandExecute() {
+        private void AddCommandExecute(string parameter) {
+            if (parameter == "Local") {
+                AddLocalPlugin();
+            }
+            else if (parameter == "Remote") {
+                AddFeedPlugin();
+            }
+        }
+
+        private void AddFeedPlugin() {
+        }
+
+        private void AddLocalPlugin() {
             string selectedFile;
             bool result = _uiServices.OpenFileDialog(
-                "Select Plugin Assembly",
-                ".NET assemblies (*.dll)|*.dll",
+                "Select Plugin Package",
+                "NuGet package (*.nupkg)|*.nupkg",
                 out selectedFile);
 
             if (result) {

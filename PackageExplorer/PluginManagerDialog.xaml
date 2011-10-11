@@ -10,16 +10,12 @@
     WindowStartupLocation="CenterOwner"
     FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}, Mode=OneWay}"
     Height="300"
-    Width="300">
+    Width="319">
     
     <Window.CommandBindings>
         <CommandBinding Command="GoToPage" Executed="GoToPageCommand_Executed" />
     </Window.CommandBindings>    
     <Grid Margin="10,10,10,20">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
@@ -27,8 +23,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         
-        <Label Content="_Loaded plugins:" Target="{Binding ElementName=PluginFiles}" Grid.ColumnSpan="2" />
-        <ListBox x:Name="PluginFiles" Grid.Row="1" Grid.RowSpan="2" Margin="0,0,10,0" AlternationCount="2" ItemsSource="{Binding Plugins}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" DisplayMemberPath="Name">
+        <Label Content="_Loaded plugins:" Target="{Binding ElementName=PluginFiles}" />
+        <ListBox x:Name="PluginFiles" Grid.Row="1" AlternationCount="2" ItemsSource="{Binding Plugins}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" DisplayMemberPath="Name">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Setter Property="Padding" Value="3,4" />
@@ -41,13 +37,12 @@
             </ListBox.ItemContainerStyle>
         </ListBox>
         
-        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Vertical">
-            <Button Content="_Add" Margin="0,0,0,10" Padding="15,0" Command="{Binding AddCommand}" />
-            <Button Content="_Delete" Padding="15,0" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=PluginFiles}" />
-        </StackPanel>
-
-        <Button Grid.Column="1" Grid.Row="2" Padding="15,0" Content="Close" Click="Button_Click" IsDefault="True" IsCancel="True">
-        </Button>
+        <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,10,0,0">
+            <Button DockPanel.Dock="Left" Content="_Add Local Plugin..." Command="{Binding AddCommand}" CommandParameter="Local" />
+            <Button DockPanel.Dock="Left" Content="_Add Feed Plugin..." Command="{Binding AddCommand}" CommandParameter="Remote" />
+            <Button DockPanel.Dock="Left" Content="_Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=PluginFiles}" />
+            <Button DockPanel.Dock="Right" Content="Close" Click="Button_Click" IsDefault="True" IsCancel="True" />
+        </DockPanel>
         
         <TextBlock Grid.Row="3" HorizontalAlignment="Left" Grid.ColumnSpan="2">
             <Hyperlink Command="GoToPage" CommandParameter="http://npe.codeplex.com/wikipage?title=How%20to%20write%20a%20plugin%20for%20NuGet%20Package%20Explorer" ToolTip="{Binding CommandParameter, RelativeSource={RelativeSource Self}}">
