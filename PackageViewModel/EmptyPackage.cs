@@ -22,7 +22,7 @@ namespace PackageExplorerViewModel {
         }
 
         public SemanticVersion Version {
-            get { return new SemanticVersion("1.0"); }
+            get { return new SemanticVersion("1.0.0"); }
         }
 
         public string Title {
