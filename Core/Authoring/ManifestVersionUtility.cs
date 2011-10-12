@@ -7,10 +7,19 @@ using System.Xml.Serialization;
 namespace NuGet {
     internal class ManifestVersionUtility {
         private const int DefaultVersion = 1;
+        private const int SemverVersion = 3;
         private static readonly Type[] _xmlAttributes = new[] { typeof(XmlElementAttribute), typeof(XmlAttributeAttribute), typeof(XmlArrayAttribute) };
 
         public static int GetManifestVersion(ManifestMetadata metadata) {
-            return VisitObject(metadata);
+            return Math.Max(VisitObject(metadata), GetVersionPropertyVersion(metadata));
+        }
+
+        private static int GetVersionPropertyVersion(ManifestMetadata metadata) {
+            SemanticVersion semanticVersion;
+            if (SemanticVersion.TryParse(metadata.Version, out semanticVersion) && !String.IsNullOrEmpty(semanticVersion.SpecialVersion)) {
+                return SemverVersion;
+            }
+            return DefaultVersion;
         }
 
         private static int VisitObject(object obj) {
