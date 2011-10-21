@@ -130,7 +130,7 @@
 
                 <!-- Id -->
                 <Label Grid.Row="0" Grid.Column="0" Target="IdBox" Style="{StaticResource RequiredLabelStyle}" Content="_Id" />
-                <TextBox Grid.Row="0" Grid.Column="1" x:Name="IdBox" MaxLength="64" Text="{Binding PackageMetadata.Id, ValidatesOnDataErrors=True}" />
+                <TextBox Grid.Row="0" Grid.Column="1" x:Name="IdBox" MaxLength="100" Text="{Binding PackageMetadata.Id, ValidatesOnDataErrors=True}" />
 
                 <!-- Version -->
                 <Label Grid.Row="1" Grid.Column="0" Target="VersionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Version" />

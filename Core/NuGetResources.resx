@@ -201,4 +201,7 @@
   <data name="Manifest_InvalidPrereleaseDependency" xml:space="preserve">
     <value>A stable release of a package should not have dependency on a prerelease package. Either modify the version spec of dependency "{0}" or update the version field.</value>
   </data>
+  <data name="Manifest_IdMaxLengthExceeded" xml:space="preserve">
+    <value>Package Id cannot exceed 100 characters.</value>
+  </data>
 </root>

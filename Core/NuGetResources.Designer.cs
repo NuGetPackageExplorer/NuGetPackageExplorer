@@ -160,6 +160,15 @@ namespace NuGet.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Id cannot exceed 100 characters..
+        /// </summary>
+        internal static string Manifest_IdMaxLengthExceeded {
+            get {
+                return ResourceManager.GetString("Manifest_IdMaxLengthExceeded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A stable release of a package should not have dependency on a prerelease package. Either modify the version spec of dependency &quot;{0}&quot; or update the version field..
         /// </summary>
         internal static string Manifest_InvalidPrereleaseDependency {
