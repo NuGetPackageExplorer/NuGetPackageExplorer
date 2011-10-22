@@ -164,7 +164,6 @@
                                                         <ColumnDefinition Width="{Binding View.Columns[2].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
                                                         <ColumnDefinition Width="{Binding View.Columns[3].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
                                                         <ColumnDefinition Width="{Binding View.Columns[4].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
-                                                        <ColumnDefinition Width="{Binding View.Columns[5].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
                                                     </Grid.ColumnDefinitions>
                                                     
                                                     <!-- Id column -->
@@ -189,21 +188,15 @@
                                                         ToolTip="{Binding Items[0].Authors, Mode=OneTime}"
                                                         Text="{Binding Items[0].Authors, Mode=OneTime}" />
 
-                                                    <!-- Rating column -->
-                                                    <TextBlock 
-                                                        Grid.Column="3"
-                                                        HorizontalAlignment="Center"
-                                                        Text="{Binding Items[0].Rating, Mode=OneTime, StringFormat={}{0:G2}}" />
-
                                                     <!-- Downloads column -->
                                                     <TextBlock 
-                                                        Grid.Column="4"
+                                                        Grid.Column="3"
                                                         HorizontalAlignment="Center"
                                                         Text="{Binding Items, Converter={StaticResource DownloadCountConverter}, Mode=OneTime}" />
 
                                                     <!-- LastUpdated column -->
                                                     <TextBlock 
-                                                        Grid.Column="5"
+                                                        Grid.Column="4"
                                                         HorizontalAlignment="Center"
                                                         Text="{Binding Items, Converter={StaticResource LastUpdatedConverter}, Mode=OneTime, StringFormat=d}" />
                                                 </Grid>
@@ -255,15 +248,6 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                         <GridViewColumnHeader Content="Authors" Command="{Binding SortCommand}" CommandParameter="Authors" Padding="0,3">
-                        </GridViewColumnHeader>
-                    </GridViewColumn>
-                    <GridViewColumn Width="60">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding EffectiveRating, StringFormat={}{0:G2}}" TextAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                        <GridViewColumnHeader Content="Rating" Command="{Binding SortCommand}" CommandParameter="Rating" Padding="0,3">
                         </GridViewColumnHeader>
                     </GridViewColumn>
                     <GridViewColumn Width="80">

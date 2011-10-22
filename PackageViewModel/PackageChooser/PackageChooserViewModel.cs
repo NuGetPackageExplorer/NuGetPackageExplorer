@@ -410,7 +410,6 @@ namespace PackageExplorerViewModel {
                                 Id = p.Id,
                                 Version = p.Version,
                                 Authors = p.Authors,
-                                Rating = p.Rating,
                                 DownloadCount = p.DownloadCount,
                                 PackageHash = p.PackageHash,
                                 LastUpdated = p.LastUpdated
@@ -426,8 +425,6 @@ namespace PackageExplorerViewModel {
                             Id = p.Id,
                             Version = p.Version,
                             Authors = p.Authors,
-                            Rating = p.Rating,
-                            VersionRating = p.VersionRating,
                             VersionDownloadCount = p.VersionDownloadCount,
                             PackageHash = p.PackageHash,
                             LastUpdated = p.LastUpdated
