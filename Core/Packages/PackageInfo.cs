@@ -13,6 +13,7 @@ namespace NuGet {
         public string PackageHash { get; set; }
         public Uri DownloadUrl { get; set; }
         public DateTimeOffset LastUpdated { get; set; }
+        public long PackageSize { get; set; }
 
         public int EffectiveDownloadCount {
             get {

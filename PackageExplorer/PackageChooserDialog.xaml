@@ -26,7 +26,8 @@
         
         <self:PackageInfoDownloadCountConverter x:Key="DownloadCountConverter" />
         <self:PackageInfoLastUpdatedConverter x:Key="LastUpdatedConverter" />
-        
+        <self:FileSizeConverter x:Key="FileSizeConverter" />
+
         <CollectionViewSource x:Key="PackageCollectionSource" Source="{Binding Packages}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="Id" StringComparison="OrdinalIgnoreCase" />
@@ -164,6 +165,7 @@
                                                         <ColumnDefinition Width="{Binding View.Columns[2].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
                                                         <ColumnDefinition Width="{Binding View.Columns[3].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
                                                         <ColumnDefinition Width="{Binding View.Columns[4].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
+                                                        <ColumnDefinition Width="{Binding View.Columns[4].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
                                                     </Grid.ColumnDefinitions>
                                                     
                                                     <!-- Id column -->
@@ -266,6 +268,15 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                         <GridViewColumnHeader Content="Last Updated" Command="{Binding SortCommand}" CommandParameter="LastUpdated" Padding="0,3">
+                        </GridViewColumnHeader>
+                    </GridViewColumn>
+                    <GridViewColumn Width="100">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding PackageSize, Converter={StaticResource FileSizeConverter}}" TextAlignment="Center" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                        <GridViewColumnHeader Content="Package Size" Command="{Binding SortCommand}" CommandParameter="PackageSize" Padding="0,3">
                         </GridViewColumnHeader>
                     </GridViewColumn>
                 </GridView>

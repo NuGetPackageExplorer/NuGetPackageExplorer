@@ -177,20 +177,6 @@ namespace NuGet
             get { return -1; }
         }
 
-        public int RatingsCount
-        {
-            get { return -1; }
-        }
-
-        public double Rating
-        {
-            get { return -1; }
-        }
-
-        public double VersionRating {
-            get { return -1; }
-        }
-
         private class SafeEnumerable<T> : IEnumerable<T> {
             private readonly IEnumerable<T> _source;
             public SafeEnumerable(IEnumerable<T> source) {

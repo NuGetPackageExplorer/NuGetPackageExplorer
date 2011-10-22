@@ -87,17 +87,8 @@ namespace NuGet {
             set;
         }
 
-        public double Rating {
-            get;
-            set;
-        }
-
-        public double VersionRating {
-            get;
-            set;
-        }
-
-        public int RatingsCount {
+        public long PackageSize
+        {
             get;
             set;
         }

@@ -27,7 +27,7 @@ namespace PackageExplorerViewModel {
 
             _showLatestVersion = showLatestVersion;
             Packages = new ObservableCollection<PackageInfo>();
-            SortCommand = new RelayCommand<string>(Sort, column => TotalPackageCount > 0);
+            SortCommand = new RelayCommand<string>(Sort, CanSort);
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
             ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
             NavigationCommand = new RelayCommand<string>(NavigationCommandExecute, NavigationCommandCanExecute);
@@ -107,9 +107,9 @@ namespace PackageExplorerViewModel {
 
         private void OnShowLatestVersionChanged()
         {
-            if (SortColumn == "LastUpdated" && !ShowLatestVersion)
+            if ((SortColumn == "LastUpdated" || SortColumn == "PackageSize") && !ShowLatestVersion)
             {
-                Sort("Id", SortDirection);
+                Sort("Id", ListSortDirection.Ascending);
             }
             else
             {
@@ -359,11 +359,8 @@ namespace PackageExplorerViewModel {
                         query = query.Find(_currentSearch.Split(' '));
                     }
 
-                    // When in Show All Versions mode, we can't sort by Last Updated. 
-                    // Fall back to sorting by Id
-                    if (SortColumn == "LastUpdated" && !ShowLatestVersion) {
-                        SortColumn = "Id";
-                    }
+                    // When in Show All Versions mode, we can't sort by Last Updated or PackageSize. 
+                    Debug.Assert(!(SortColumn == "LastUpdated" || SortColumn == "PackageSize") || ShowLatestVersion);
 
                     switch (SortColumn) {
                         case "Id":
@@ -384,10 +381,10 @@ namespace PackageExplorerViewModel {
                                 query.OrderBy(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
-                        case "Rating":
+                        case "PackageSize":
                             query = SortDirection == ListSortDirection.Descending ? 
-                                query.OrderByDescending(p => p.Rating).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
-                                query.OrderBy(p => p.Rating).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
+                                query.OrderByDescending(p => p.PackageSize).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
+                                query.OrderBy(p => p.PackageSize).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                             break;
 
                         case "LastUpdated":
@@ -412,7 +409,8 @@ namespace PackageExplorerViewModel {
                                 Authors = p.Authors,
                                 DownloadCount = p.DownloadCount,
                                 PackageHash = p.PackageHash,
-                                LastUpdated = p.LastUpdated
+                                LastUpdated = p.LastUpdated,
+                                PackageSize = p.PackageSize
                             });
 
                         _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(
@@ -427,6 +425,7 @@ namespace PackageExplorerViewModel {
                             Authors = p.Authors,
                             VersionDownloadCount = p.VersionDownloadCount,
                             PackageHash = p.PackageHash,
+                            PackageSize = p.PackageSize,
                             LastUpdated = p.LastUpdated
                         });
 
@@ -472,12 +471,20 @@ namespace PackageExplorerViewModel {
             Sort(column, null);
         }
 
-        private void Sort(string column, ListSortDirection? direction) {
-            if (column == "Version" || column == "LastUpdated" && !ShowLatestVersion) {
+        private bool CanSort(string column)
+        {
+            if (column == "Version" ||
+                (column == "LastUpdated" && !ShowLatestVersion) ||
+                (column == "PackageSize" && !ShowLatestVersion))
+            {
                 // We can't sort by Version or LastUpdated in ShowAllVersions mode
-                return;
+                return false;
             }
 
+            return TotalPackageCount > 0;
+        }
+
+        private void Sort(string column, ListSortDirection? direction) {
             if (SortColumn == column) {
                 if (direction.HasValue) {
                     SortDirection = direction.Value;

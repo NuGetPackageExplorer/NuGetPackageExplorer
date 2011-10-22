@@ -8,8 +8,11 @@ namespace PackageExplorer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            long fileSize = (long)value;
+            return ConvertFileSizeToString((long)value, culture);
+        }
 
+        internal static string ConvertFileSizeToString(long fileSize, CultureInfo culture)
+        {
             long[] sizes = new long[] { 1024L * 1024 * 1024, 1024 * 1024, 1024, 1 };
             string[] unit = new string[] { " GB", " MB", " KB", " bytes" };
 
@@ -20,17 +23,17 @@ namespace PackageExplorer
                     if (fileSize % sizes[i] == 0)
                     {
                         long f = fileSize / sizes[i];
-                        return f.ToString(CultureInfo.CurrentCulture) + unit[i];
+                        return f.ToString(culture) + unit[i];
                     }
                     else
                     {
                         double f = fileSize * 1.0 / sizes[i];
-                        return f.ToString("F2", CultureInfo.CurrentCulture) + unit[i];
+                        return f.ToString("F0", culture) + unit[i];
                     }
                 }
             }
 
-            return fileSize.ToString(CultureInfo.CurrentCulture);
+            return fileSize.ToString(culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
