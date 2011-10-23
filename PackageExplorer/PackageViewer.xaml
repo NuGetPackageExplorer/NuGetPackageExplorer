@@ -118,6 +118,7 @@
                         <StackPanel Style="{StaticResource DetailMetadataStyle}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_VersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Version}" Style="{StaticResource DetailMetadataValueStyle}"  />
+                            <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version.SpecialVersion, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
                         </StackPanel>
 
                         <!-- Title -->
