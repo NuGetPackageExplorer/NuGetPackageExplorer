@@ -468,13 +468,16 @@ namespace PackageExplorerViewModel {
         }
 
         private void Sort(string column) {
+            if (column == "Version")
+            {
+                return;
+            }
             Sort(column, null);
         }
 
         private bool CanSort(string column)
         {
-            if (column == "Version" ||
-                (column == "LastUpdated" && !ShowLatestVersion) ||
+            if ((column == "LastUpdated" && !ShowLatestVersion) ||
                 (column == "PackageSize" && !ShowLatestVersion))
             {
                 // We can't sort by Version or LastUpdated in ShowAllVersions mode

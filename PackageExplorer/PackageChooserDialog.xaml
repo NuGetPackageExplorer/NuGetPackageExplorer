@@ -276,7 +276,7 @@
                                 <TextBlock Text="{Binding PackageSize, Converter={StaticResource FileSizeConverter}}" TextAlignment="Center" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
-                        <GridViewColumnHeader Content="Package Size" Command="{Binding SortCommand}" CommandParameter="PackageSize" Padding="0,3">
+                        <GridViewColumnHeader Content="Size" Command="{Binding SortCommand}" CommandParameter="PackageSize" Padding="0,3">
                         </GridViewColumnHeader>
                     </GridViewColumn>
                 </GridView>
@@ -284,7 +284,16 @@
         </ListView>
 
         <!-- Checkbox: Show latest version of each Id -->
-        <CheckBox Margin="0,0,0,8"  Grid.Row="3" IsEnabled="{Binding IsEditable}" HorizontalAlignment="Left" Content="Only _show latest version of each package Id." IsChecked="{Binding ShowLatestVersion}" Checked="OnShowLatestVersionValueChanged" Unchecked="OnShowLatestVersionValueChanged" />
+        <CheckBox 
+            Margin="0,0,0,8" 
+            Grid.Row="3"
+            Grid.ColumnSpan="2"
+            IsEnabled="{Binding IsEditable}" 
+            IsChecked="{Binding ShowLatestVersion}" 
+            HorizontalAlignment="Left" 
+            Content="Only _show latest version of each package Id." 
+            Checked="OnShowLatestVersionValueChanged" 
+            Unchecked="OnShowLatestVersionValueChanged" />
 
         <!-- Background color for the footer -->
         <Border Grid.Row="4" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
