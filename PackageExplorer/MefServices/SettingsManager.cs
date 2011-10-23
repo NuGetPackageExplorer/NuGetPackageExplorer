@@ -10,7 +10,6 @@ namespace PackageExplorer {
 
     [Export(typeof(ISettingsManager))]
     internal class SettingsManager : ISettingsManager {
-
         public const string ApiKeysSectionName = "apikeys";
 
         public IList<string> GetMruFiles() {
@@ -71,7 +70,8 @@ namespace PackageExplorer {
             string key = settings.GetDecryptedValue(ApiKeysSectionName, source);
 
             if (String.IsNullOrEmpty(key)) {
-                if (source.Equals("https://go.microsoft.com/fwlink/?LinkID=206669", StringComparison.OrdinalIgnoreCase)) {
+                if (source.Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
+                {
                     key = Properties.Settings.Default.PublishPrivateKey;
                 }
             }

@@ -9,7 +9,7 @@
       <Value Profile="(Default)">400</Value>
     </Setting>
     <Setting Name="PackageSource" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://go.microsoft.com/fwlink/?LinkID=206669</Value>
+      <Value Profile="(Default)">https://go.microsoft.com/fwlink/?LinkID=230477</Value>
     </Setting>
     <Setting Name="WindowPlacement" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
