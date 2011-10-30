@@ -57,7 +57,7 @@ namespace PackageExplorerViewModel {
             Justification = "We don't want to show upper case path.")]
         public void NotifyFileAdded(IPackageMetadata package, string filepath, PackageType packageType) {
             var item = new MruItem {
-                Path = filepath.ToLowerInvariant(),
+                Path = filepath,
                 Id = package.Id,
                 Version = package.Version,
                 PackageType = packageType
@@ -97,7 +97,7 @@ namespace PackageExplorerViewModel {
             }
 
             string[] parts = s.Split('|');
-            if (parts.Length != 3 && parts.Length != 4) {
+            if (parts.Length != 4) {
                 return null;
             }
 
@@ -107,12 +107,7 @@ namespace PackageExplorerViewModel {
                 }
             }
 
-            if (parts.Length == 3) {
-                return ParseVersion1MruItem(parts);
-            }
-            else {
-                return ParseMruItem(parts);
-            }
+            return ParseMruItem(parts);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
@@ -138,45 +133,7 @@ namespace PackageExplorerViewModel {
             return new MruItem {
                 Id = parts[0],
                 Version = version,
-                Path = parts[2].ToLowerInvariant(),
-                PackageType = type
-            };
-        }
-
-        /// <summary>
-        /// legacy format for version v1.0 and before
-        /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Globalization",
-            "CA1308:NormalizeStringsToUppercase",
-            Justification = "We don't want to show upper case path.")]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Performance",
-            "CA1811:AvoidUncalledPrivateCode",
-            Justification = "Called by MEF.")]
-        private static MruItem ParseVersion1MruItem(string[] parts) {
-            // v1.0
-
-            PackageType type;
-            if (!Enum.TryParse<PackageType>(parts[2], out type)) {
-                return null;
-            }
-
-            string packageName = parts[1];
-            string[] nameParts = packageName.Split(' ');
-            if (nameParts.Length != 2) {
-                return null;
-            }
-
-            SemanticVersion version;
-            if (!SemanticVersion.TryParse(nameParts[1], out version)) {
-                return null;
-            }
-
-            return new MruItem {
-                Id = nameParts[0],
-                Version = version,
-                Path = parts[0].ToLowerInvariant(),
+                Path = parts[2],
                 PackageType = type
             };
         }
