@@ -13,7 +13,8 @@ namespace PackageExplorerViewModel.Rules {
         private const string CodeTransformExtension = ".pp";
         private const string ConfigTransformExtension = ".transform";
 
-        public IEnumerable<PackageIssue> Validate(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
+        {
             foreach (PackageFile file in package.GetFiles()) {
                 string path = file.Path;
 

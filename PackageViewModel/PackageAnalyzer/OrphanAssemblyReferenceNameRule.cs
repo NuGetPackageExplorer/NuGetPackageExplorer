@@ -9,7 +9,8 @@ using NuGetPackageExplorer.Types;
 namespace PackageExplorerViewModel.Rules {
     [Export(typeof(IPackageRule))]
     internal class OrphanAssemblyReferenceNameRule : IPackageRule {
-        public IEnumerable<PackageIssue> Validate(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
+        {
             if (package.References.Any()) {
                 var allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
                 var libFilesSet = new HashSet<string>(allLibFiles, StringComparer.OrdinalIgnoreCase);

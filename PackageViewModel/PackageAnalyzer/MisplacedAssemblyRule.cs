@@ -11,7 +11,8 @@ namespace PackageExplorerViewModel.Rules {
     internal class MisplacedAssemblyRule : IPackageRule {
         const string LibFolder = "lib";
 
-        public IEnumerable<PackageIssue> Validate(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
+        {
             foreach (IPackageFile file in package.GetFiles()) {
                 string path = file.Path;
                 string directory = Path.GetDirectoryName(path);

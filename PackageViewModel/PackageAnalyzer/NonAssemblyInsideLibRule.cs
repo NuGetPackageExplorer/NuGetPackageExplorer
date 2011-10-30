@@ -9,7 +9,8 @@ using NuGetPackageExplorer.Types;
 namespace PackageExplorerViewModel.Rules {
     [Export(typeof(IPackageRule))]
     internal class NonAssemblyInsideLibRule : IPackageRule {
-        public IEnumerable<PackageIssue> Validate(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
+        {
             var allLibFiles = package.GetFilesInFolder("lib");
             var assembliesSet = new HashSet<string>(allLibFiles.Where(FileHelper.IsAssembly), StringComparer.OrdinalIgnoreCase);
 

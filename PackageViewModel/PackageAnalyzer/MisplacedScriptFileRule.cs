@@ -12,7 +12,8 @@ namespace PackageExplorerViewModel.Rules {
         private const string ToolsFolder = "tools";
         private const string ScriptExtension = ".ps1";
 
-        public IEnumerable<PackageIssue> Validate(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
+        {
             foreach (PackageFile file in package.GetFiles()) {
                 string path = file.Path;
                 if (!path.EndsWith(ScriptExtension, StringComparison.OrdinalIgnoreCase)) {

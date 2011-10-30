@@ -10,7 +10,8 @@ namespace PackageExplorerViewModel.Rules {
 
     [Export(typeof(IPackageRule))]
     internal class InvalidFrameworkFolderRule : IPackageRule {
-        public IEnumerable<PackageIssue> Validate(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
+        {
             var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             foreach (var file in package.GetFiles()) {
                 string path = file.Path;

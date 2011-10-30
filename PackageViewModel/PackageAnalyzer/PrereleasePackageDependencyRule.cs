@@ -8,7 +8,8 @@ using NuGetPackageExplorer.Types;
 namespace PackageExplorerViewModel.Rules {
     [Export(typeof(IPackageRule))]
     internal class PrereleasePackageDependencyRule : IPackageRule {
-        public IEnumerable<PackageIssue> Validate(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
+        {
             if (package.IsReleaseVersion()) {
                 foreach (var dependency in package.Dependencies) {
                     if (IsPrereleaseDependency(dependency)) {

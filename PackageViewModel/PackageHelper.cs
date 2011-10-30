@@ -70,12 +70,12 @@ namespace PackageExplorerViewModel {
             return builder.Build();
         }
 
-        public static IEnumerable<PackageIssue> Validate(this IPackage package, IEnumerable<IPackageRule> rules) {
+        public static IEnumerable<PackageIssue> Validate(this IPackage package, IEnumerable<IPackageRule> rules, string packageSource) {
             foreach (var rule in rules) {
                 if (rule != null) {
                     IEnumerable<PackageIssue> issues = null;
                     try {
-                        issues = rule.Validate(package);
+                        issues = rule.Validate(package, packageSource);
                     }
                     catch (Exception) {
                     }

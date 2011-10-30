@@ -10,7 +10,8 @@ namespace PackageExplorerViewModel.Rules {
     internal class MissingSummaryRule : IPackageRule {
         private const int DescriptionLengthThreshold = 300;
 
-        public IEnumerable<PackageIssue> Validate(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
+        {
             if (package.Description.Length > DescriptionLengthThreshold && String.IsNullOrEmpty(package.Summary)) {
                 yield return new PackageIssue(
                     PackageIssueLevel.Warning,

@@ -275,7 +275,8 @@ namespace PackageExplorerViewModel {
 
         public IEnumerable<PackageIssue> Validate() {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-            return package.Validate(_packageRules.Select(r => r.Value));
+            string packageFileName = Path.IsPathRooted(PackageSource) ? Path.GetFileName(PackageSource) : null;
+            return package.Validate(_packageRules.Select(r => r.Value), packageFileName);
         }
 
         private void Export(string rootPath) {
@@ -832,7 +833,7 @@ namespace PackageExplorerViewModel {
         private void PackageCommandExecute(LazyPackageCommand packageCommand) {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
             try {
-                packageCommand.Value.Execute(package);
+                packageCommand.Value.Execute(package, PackageSource);
             }
             catch (Exception ex) {
                 UIServices.Show("The command failed with this error message:" +

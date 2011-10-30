@@ -2,6 +2,6 @@
 
 namespace NuGetPackageExplorer.Types {
     public interface IPackageCommand {
-        void Execute(IPackage package);
+        void Execute(IPackage package, string packagePath);
     }
 }

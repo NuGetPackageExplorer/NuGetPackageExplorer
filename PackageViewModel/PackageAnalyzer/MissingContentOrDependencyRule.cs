@@ -8,7 +8,8 @@ namespace PackageExplorerViewModel.Rules {
 
     [Export(typeof(IPackageRule))]
     internal class MissingContentOrDependencyRule : IPackageRule {
-        public IEnumerable<PackageIssue> Validate(IPackage package) {
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
+        {
             if (!HasContentOrDependency(package)) {
                 yield return new PackageIssue(
                     PackageIssueLevel.Error,

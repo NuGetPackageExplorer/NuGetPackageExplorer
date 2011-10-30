@@ -3,6 +3,6 @@ using NuGet;
 
 namespace NuGetPackageExplorer.Types {
     public interface IPackageRule {
-        IEnumerable<PackageIssue> Validate(IPackage package);
+        IEnumerable<PackageIssue> Validate(IPackage package, string packageFileName);
     }
 }
