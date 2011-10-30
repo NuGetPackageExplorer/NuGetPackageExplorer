@@ -6,17 +6,20 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using NuGet;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorer {
 
     [Export(typeof(IPluginManager))]
-    internal class PluginManager : IPluginManager, IEqualityComparer<FileInfo> {
+    internal class PluginManager : IPluginManager {
         private const string NuGetDirectoryName = "NuGet";
         private const string PluginsDirectoryName = "PackageExplorerPlugins";
         private const string DeleteMeExtension = ".deleteme";
+        private const string FrameworkFolderForAssemblies = "lib\\net40";
 
-        private Dictionary<FileInfo, AssemblyCatalog> _pluginToCatalog;
+        private Dictionary<PluginInfo, DirectoryCatalog> _pluginToCatalog;
 
         // %localappdata%/NuGet/PackageExplorerPlugins
         private static readonly string PluginsDirectory = Path.Combine(
@@ -40,75 +43,107 @@ namespace PackageExplorer {
             EnsurePluginCatalog(catalog);
         }
 
-        public bool AddPluginFromAssembly(string assemblyPath, out FileInfo file) {
-            file = null;
-            if (File.Exists(assemblyPath)) {
-                try {
-                    string assemblyName = Path.GetFileName(assemblyPath);
-                    string targetPath = Path.Combine(PluginsDirectory, assemblyName);
-                    if (File.Exists(targetPath)) {
-                        UIServices.Value.Show("Adding plugin assembly failed. There is already an existing assembly with the same name.", MessageLevel.Error);
-                    }
-                    else {
-                        File.Copy(assemblyPath, targetPath);
-                        if (File.Exists(targetPath)) {
-                            // make sure there is no .delete file lurking around for this plugin
-                            string deleteMePath = targetPath + DeleteMeExtension;
-                            File.Delete(deleteMePath);
+        public PluginInfo AddPlugin(IPackage plugin) {
+            if (plugin == null)
+            {
+                throw new ArgumentNullException("plugin");
+            }
 
-                            file = new FileInfo(targetPath);
-                            return AddPluginToCatalog(file);
+            try
+            {
+                var pluginInfo = new PluginInfo(plugin.Id, plugin.Version);
+
+                string targetPath = GetTargetPath(pluginInfo);
+                if (Directory.Exists(targetPath))
+                {
+                    UIServices.Value.Show("Adding plugin failed. There is already an existing plugin with the same Id and Version.", MessageLevel.Error);
+                }
+                else
+                {
+                    Directory.CreateDirectory(targetPath);
+                    if (Directory.Exists(targetPath))
+                    {
+                        // make sure there is no .delete file lurking around for this plugin
+                        string deleteMePath = targetPath + DeleteMeExtension;
+                        File.Delete(deleteMePath);
+
+                        // copy assemblies
+                        int numberOfFilesCopied = plugin.UnpackPackage(FrameworkFolderForAssemblies, targetPath);
+                        if (numberOfFilesCopied == 0)
+                        {
+                            Directory.Delete(targetPath);
+                            UIServices.Value.Show("Adding plugin failed. The selected package does not have any assembly inside the 'lib\\net40' folder.", MessageLevel.Error);
+                        }
+                        else
+                        {
+                            bool succeeded = AddPluginToCatalog(pluginInfo, targetPath);
+                            if (!succeeded)
+                            {                               
+                                Directory.Delete(targetPath, recursive: true);
+                            }
+
+                            return succeeded ? pluginInfo : null;
                         }
                     }
                 }
-                catch (Exception exception) {
-                    UIServices.Value.Show(exception.Message, MessageLevel.Error);
+            }
+            catch (Exception exception)
+            {
+                UIServices.Value.Show(exception.Message, MessageLevel.Error);
+            }
+
+            return null;
+        }
+
+        public bool DeletePlugin(PluginInfo plugin) {
+            if (plugin == null) {
+                throw new ArgumentNullException("plugin");
+            }
+
+            string targetPath = GetTargetPath(plugin);
+            if (Directory.Exists(targetPath))
+            {
+                RemovePluginFromCatalog(plugin);
+
+                try
+                {
+                    CreateDeleteMeFile(targetPath);
+                    return true;
+                }
+                catch (IOException ex)
+                {
+                    UIServices.Value.Show(ex.Message, MessageLevel.Error);
+                    return false;
                 }
             }
 
             return false;
         }
 
-        public bool DeletePlugin(FileInfo file) {
-            if (file == null) {
-                throw new ArgumentNullException("file");
-            }
-
-            if (!file.Exists || file.IsReadOnly) {
-                return false;
-            }
-            
-            try {
-                RemovePluginFromCatalog(file);
-                CreateDeleteMeFile(file);
-                return true;
-            }
-            catch (IOException ex) {
-                UIServices.Value.Show(ex.Message, MessageLevel.Error);
-                return false;
-            }
-        }
-
-        public IEnumerable<FileInfo> GetAllPlugins() {
+        public IEnumerable<PluginInfo> GetAllPlugins() {
             var directoryInfo = new DirectoryInfo(PluginsDirectory);
-            if (directoryInfo.Exists) {
-                return directoryInfo.EnumerateFiles("*.dll", SearchOption.TopDirectoryOnly);
+            if (directoryInfo.Exists)
+            {
+                return directoryInfo.GetDirectories().Select(ConvertFromDirectoryToPluginInfo).Where(p => p != null);
             }
-            else {
-                return Enumerable.Empty<FileInfo>();
+            else
+            {
+                return Enumerable.Empty<PluginInfo>();
             }
         }
 
-        private bool AddPluginToCatalog(FileInfo pluginFile) {
+        private bool AddPluginToCatalog(PluginInfo pluginInfo, string targetPath) {
             try {
-                var fileCatalog = new AssemblyCatalog(pluginFile.FullName);
-                if (fileCatalog.Parts.Any()) {
-                    _pluginCatalog.Catalogs.Add(fileCatalog);
-                    _pluginToCatalog[pluginFile] = fileCatalog;
+                var directoryCatalog = new DirectoryCatalog(targetPath);
+                if (directoryCatalog.Parts.Any()) {
+                    _pluginCatalog.Catalogs.Add(directoryCatalog);
+                    _pluginToCatalog[pluginInfo] = directoryCatalog;
                 }
                 return true;
             }
             catch (ReflectionTypeLoadException exception) {
+                _pluginToCatalog.Remove(pluginInfo);
+
                 Debug.WriteLine("{0}", new[] { exception.Message });
                 foreach (var loaderException in exception.LoaderExceptions) {
                     Debug.WriteLine("\t{0}", new[] { loaderException.Message });
@@ -117,9 +152,9 @@ namespace PackageExplorer {
             }
         }
 
-        private void RemovePluginFromCatalog(FileInfo pluginFile) {
-            AssemblyCatalog catalog;
-            if (_pluginToCatalog.TryGetValue(pluginFile, out catalog)) {
+        private void RemovePluginFromCatalog(PluginInfo pluginInfo) {
+            DirectoryCatalog catalog;
+            if (_pluginToCatalog.TryGetValue(pluginInfo, out catalog)) {
                 _pluginCatalog.Catalogs.Remove(catalog);
             }
         }
@@ -137,10 +172,11 @@ namespace PackageExplorer {
                 pluginDirectoryInfo = CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
             }
 
-            _pluginToCatalog = new Dictionary<FileInfo, AssemblyCatalog>(this);
+            _pluginToCatalog = new Dictionary<PluginInfo, DirectoryCatalog>();
             _pluginCatalog = new AggregateCatalog();
-            foreach (FileInfo pluginFile in GetAllPlugins()) {
-                AddPluginToCatalog(pluginFile);
+            foreach (PluginInfo pluginInfo in GetAllPlugins())
+            {
+                AddPluginToCatalog(pluginInfo, GetTargetPath(pluginInfo));
             }
             mainCatalog.Catalogs.Add(_pluginCatalog);
         }
@@ -154,10 +190,40 @@ namespace PackageExplorer {
             return child;
         }
 
-        private void CreateDeleteMeFile(FileInfo file) {
+        private PluginInfo ConvertFromDirectoryToPluginInfo(DirectoryInfo directory)
+        {
+            string name = directory.Name;
+            string regex = @"^(.+)\[(.+?)\]$";
+            Match match = Regex.Match(name, regex);
+            if (match.Success)
+            {
+                string id = match.Groups[1].Value;
+                string versionString = match.Groups[2].Value;
+                SemanticVersion version;
+                if (SemanticVersion.TryParse(versionString, out version))
+                {
+                    return new PluginInfo(id, version);
+                }
+            }
+
+            return null;
+        }
+
+        private static string GetTargetPath(PluginInfo plugin)
+        {
+            string pluginName = plugin.Id + "[" + plugin.Version.ToString() + "]";
+            return Path.Combine(PluginsDirectory, pluginName);
+        }
+
+        private void CreateDeleteMeFile(string targetPath) {
+            if (targetPath.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
+            {
+                targetPath = targetPath.Substring(0, targetPath.Length - 1);
+            }
+
             // when a plugin assembly is loaded by the app, we can't delete it directly.
             // instead, we create a .deleteme file at the same location and delete it when the app exits.
-            string deleteMeFile = file.FullName + DeleteMeExtension;
+            string deleteMeFile = targetPath + DeleteMeExtension;
             File.WriteAllText(deleteMeFile, String.Empty);
         }
 
@@ -170,10 +236,10 @@ namespace PackageExplorer {
                         // delete the .deleteme file
                         file.Delete();
 
-                        // also delete the real plugin file
-                        string pluginFile = Path.Combine(PluginsDirectory, Path.GetFileNameWithoutExtension(file.Name));
-                        if (File.Exists(pluginFile)) {
-                            File.Delete(pluginFile);
+                        // also delete the real plugin directory
+                        string pluginDirectory = Path.Combine(PluginsDirectory, Path.GetFileNameWithoutExtension(file.Name));
+                        if (Directory.Exists(pluginDirectory)) {
+                            Directory.Delete(pluginDirectory, recursive: true);
                         }
                     }
                 }
@@ -182,14 +248,6 @@ namespace PackageExplorer {
                 // should not throw any exception when deleting files.
                 // ignore any of them.
             }
-        }
-
-        public bool Equals(FileInfo x, FileInfo y) {
-            return x.FullName.Equals(y.FullName, StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        public int GetHashCode(FileInfo obj) {
-            return obj.FullName.GetHashCode();
         }
     }
 }

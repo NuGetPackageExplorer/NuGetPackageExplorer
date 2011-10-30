@@ -4,27 +4,46 @@
     xmlns:self="clr-namespace:PackageExplorer"
     xmlns:settings="clr-namespace:PackageExplorer.Properties"
     Title="Plugin Manager"
-    MinWidth="200"
-    MinHeight="200"
+    MinWidth="350"
+    MinHeight="250"
     ShowInTaskbar="false"
     WindowStartupLocation="CenterOwner"
     FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}, Mode=OneWay}"
-    Height="300"
-    Width="319">
-    
+    Height="350"
+    Width="450">
+
     <Window.CommandBindings>
         <CommandBinding Command="GoToPage" Executed="GoToPageCommand_Executed" />
-    </Window.CommandBindings>    
-    <Grid Margin="10,10,10,20">
+    </Window.CommandBindings>
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <Label Content="_Loaded plugins:" Target="{Binding ElementName=PluginFiles}" />
-        <ListBox x:Name="PluginFiles" Grid.Row="1" AlternationCount="2" ItemsSource="{Binding Plugins}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" DisplayMemberPath="Name">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Label Content="_Loaded plugins:" Margin="8,10,10,0" Target="{Binding ElementName=PluginFiles}" />
+
+        <StackPanel Margin="10,10,10,0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+            <Button DockPanel.Dock="Left" Margin="0,0,10,0" ToolTip="Add Local Plugin..." Command="{Binding AddCommand}" CommandParameter="Local">
+                <Image Source="Images/Add.png" />
+            </Button>
+            <Button DockPanel.Dock="Left" Margin="0,0,10,0" ToolTip="Add Feed Plugin..." Command="{Binding AddCommand}" CommandParameter="Remote">
+                <Image Source="Images/Properties.png" />
+            </Button>
+            <self:GrayscaleButton ToolTip="Delete the selected plugin" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=PluginFiles}">
+                <self:GrayscaleButton.Content>
+                    <self:GrayscaleImage Source="Images/Delete.png" />
+                </self:GrayscaleButton.Content>
+            </self:GrayscaleButton>
+        </StackPanel>
+
+        <ListBox x:Name="PluginFiles" Grid.Row="1" Grid.ColumnSpan="2" Margin="10,0,10,0" AlternationCount="2" ItemsSource="{Binding Plugins}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <Setter Property="Padding" Value="3,4" />
@@ -36,18 +55,16 @@
                 </Style>
             </ListBox.ItemContainerStyle>
         </ListBox>
-        
-        <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,10,0,0">
-            <Button DockPanel.Dock="Left" Content="_Add Local Plugin..." Command="{Binding AddCommand}" CommandParameter="Local" />
-            <Button DockPanel.Dock="Left" Content="_Add Feed Plugin..." Command="{Binding AddCommand}" CommandParameter="Remote" />
-            <Button DockPanel.Dock="Left" Content="_Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=PluginFiles}" />
-            <Button DockPanel.Dock="Right" Content="Close" Click="Button_Click" IsDefault="True" IsCancel="True" />
-        </DockPanel>
-        
-        <TextBlock Grid.Row="3" HorizontalAlignment="Left" Grid.ColumnSpan="2">
-            <Hyperlink Command="GoToPage" CommandParameter="http://npe.codeplex.com/wikipage?title=How%20to%20write%20a%20plugin%20for%20NuGet%20Package%20Explorer" ToolTip="{Binding CommandParameter, RelativeSource={RelativeSource Self}}">
-                <Run Text="How to write a plugin?" />
-            </Hyperlink>
-        </TextBlock>
+
+        <Border Grid.Row="2" Grid.ColumnSpan="2" Margin="0,20,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
+            <DockPanel Margin="10,5">
+                <Button DockPanel.Dock="Right" Content="_Close" Margin="5,5,0,5" Padding="15,0" Click="Button_Click" IsCancel="True" />
+                <TextBlock Margin="5">
+                    <Hyperlink Command="GoToPage" CommandParameter="http://npe.codeplex.com/wikipage?title=How%20to%20write%20a%20plugin%20for%20NuGet%20Package%20Explorer" ToolTip="{Binding CommandParameter, RelativeSource={RelativeSource Self}}">
+                        <Run Text="How to write a plugin?" />
+                    </Hyperlink>
+                </TextBlock>
+            </DockPanel>
+        </Border>        
     </Grid>
 </self:StandardDialog>

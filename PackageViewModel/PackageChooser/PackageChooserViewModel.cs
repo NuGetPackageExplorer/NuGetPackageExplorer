@@ -19,13 +19,18 @@ namespace PackageExplorerViewModel {
         private string _currentSearch;
         private MruPackageSourceManager _packageSourceManager;
         private CancellationTokenSource _currentCancellationTokenSource;
+        private string _fixedPackageSource;
 
-        public PackageChooserViewModel(MruPackageSourceManager packageSourceManager, bool showLatestVersion) {
+        public PackageChooserViewModel(
+            MruPackageSourceManager packageSourceManager, 
+            bool showLatestVersion,
+            string fixedPackageSource) {
             if (packageSourceManager == null) {
                 throw new ArgumentNullException("packageSourceManager");
             }
 
             _showLatestVersion = showLatestVersion;
+            _fixedPackageSource = fixedPackageSource;
             Packages = new ObservableCollection<PackageInfo>();
             SortCommand = new RelayCommand<string>(Sort, CanSort);
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
@@ -140,11 +145,23 @@ namespace PackageExplorerViewModel {
             get { return _packageSourceManager.PackageSources; }
         }
 
+        public bool AllowsChangingPackageSource
+        {
+            get
+            {
+                return _fixedPackageSource == null;
+            }
+        }
+
         public string PackageSource {
             get {
-                return _packageSourceManager.ActivePackageSource;
+                return _fixedPackageSource ?? _packageSourceManager.ActivePackageSource;
             }
             private set {
+                if (_fixedPackageSource != null)
+                {
+                    throw new InvalidOperationException("Cannot set active package source when fixed package source is used.");
+                }
                 _packageSourceManager.ActivePackageSource = value;
                 OnPropertyChanged("PackageSource");
             }

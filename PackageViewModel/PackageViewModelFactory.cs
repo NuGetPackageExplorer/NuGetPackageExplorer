@@ -42,6 +42,20 @@ namespace PackageExplorerViewModel {
             set;
         }
 
+        [Import(typeof(IPackageChooser))]
+        public IPackageChooser PackageChooser
+        {
+            get;
+            set;
+        }
+
+        [Import(typeof(IPackageDownloader))]
+        public IPackageDownloader PackageDownloader
+        {
+            get;
+            set;
+        }
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         [ImportMany(AllowRecomposition=true)]
         public List<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata { get; set; }
@@ -51,7 +65,8 @@ namespace PackageExplorerViewModel {
         public List<Lazy<IPackageRule>> PackageRules { get; set; }
 
         public PackageViewModelFactory() {
-            _pluginManagerViewModel = new Lazy<PluginManagerViewModel>(() => new PluginManagerViewModel(PluginManager, UIServices));
+            _pluginManagerViewModel = new Lazy<PluginManagerViewModel>(
+                () => new PluginManagerViewModel(PluginManager, UIServices, PackageChooser, PackageDownloader));
         }
 
         public PackageViewModel CreateViewModel(NuGet.IPackage package, string packageSource) {
@@ -66,10 +81,11 @@ namespace PackageExplorerViewModel {
                 PackageRules);
         }
 
-        public PackageChooserViewModel CreatePackageChooserViewModel() {
+        public PackageChooserViewModel CreatePackageChooserViewModel(string fixedPackageSource) {
             var model = new PackageChooserViewModel(
                 new MruPackageSourceManager(new PackageSourceSettings(SettingsManager)), 
-                SettingsManager.ShowLatestVersionOfPackage);
+                SettingsManager.ShowLatestVersionOfPackage,
+                fixedPackageSource);
             model.PropertyChanged += OnPackageChooserViewModelPropertyChanged;
             return model;
         }

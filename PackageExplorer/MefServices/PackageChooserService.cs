@@ -10,6 +10,8 @@ namespace PackageExplorer {
 
         private PackageChooserDialog _dialog;
         private PackageChooserViewModel _viewModel;
+        private PackageChooserDialog _pluginDialog;
+        private PackageChooserViewModel _pluginViewModel;
 
         [Import]
         public IPackageViewModelFactory ViewModelFactory { get; set; }
@@ -19,7 +21,7 @@ namespace PackageExplorer {
 
         public PackageInfo SelectPackage(string searchTerm) {
             if (_dialog == null) {
-                _viewModel = ViewModelFactory.CreatePackageChooserViewModel();
+                _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
                 _dialog = new PackageChooserDialog(_viewModel) {
                     Owner = Window.Value
                 };
@@ -27,6 +29,21 @@ namespace PackageExplorer {
 
             _dialog.ShowDialog(searchTerm);
             return _dialog.SelectedPackage;
+        }
+
+        public PackageInfo SelectPluginPackage()
+        {
+            if (_pluginDialog == null)
+            {
+                _pluginViewModel = ViewModelFactory.CreatePackageChooserViewModel(NuGetConstants.PluginFeedUrl);
+                _pluginDialog = new PackageChooserDialog(_pluginViewModel)
+                {
+                    Owner = Window.Value
+                };    
+            }
+
+            _pluginDialog.ShowDialog();
+            return _pluginDialog.SelectedPackage;
         }
 
         public void Dispose() {

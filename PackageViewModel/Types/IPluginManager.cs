@@ -1,13 +1,12 @@
-﻿using System.IO;
-using System.Collections.Generic;
-using System;
+﻿using System.Collections.Generic;
+using NuGet;
 
 namespace NuGetPackageExplorer.Types {
     public interface IPluginManager {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "1#")]
-        bool AddPluginFromAssembly(string assemblyPath, out FileInfo file);
-        bool DeletePlugin(FileInfo file);
+        PluginInfo AddPlugin(IPackage plugin);
+        bool DeletePlugin(PluginInfo plugin);
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        IEnumerable<FileInfo> GetAllPlugins();
+        IEnumerable<PluginInfo> GetAllPlugins();
     }
 }

@@ -52,7 +52,14 @@
         <!-- change package source elements -->
         <DockPanel Grid.ColumnSpan="3" Margin="0,0,0,15" LastChildFill="True">
             <Label DockPanel.Dock="Left" Content="_Package source:" Target="{Binding ElementName=PackageSourceBox}" VerticalAlignment="Center" />
-            <Button DockPanel.Dock="Right" Content="_Apply" HorizontalAlignment="Center" Padding="10,0" Command="{Binding ChangePackageSourceCommand}" CommandParameter="{Binding Text, ElementName=PackageSourceBox}">
+            <Button 
+                DockPanel.Dock="Right" 
+                Content="_Apply" 
+                HorizontalAlignment="Center" 
+                Padding="10,0" 
+                Command="{Binding ChangePackageSourceCommand}" 
+                CommandParameter="{Binding Text, ElementName=PackageSourceBox}"
+                Visibility="{Binding AllowsChangingPackageSource, Converter={StaticResource boolToVis}}">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource andConverter}">
                         <Binding Path="Text" ElementName="PackageSourceBox" Converter="{StaticResource nullToBoolConverter}" />
@@ -66,11 +73,17 @@
                 ItemsSource="{Binding PackageSources}" 
                 IsReadOnly="False" 
                 IsEditable="True" 
-                IsEnabled="{Binding IsEditable}" 
                 PreviewKeyDown="PackageSourceBox_PreviewKeyDown"
                 VerticalContentAlignment="Center" 
                 Text="{Binding PackageSource, Mode=OneWay}" 
-                Margin="4,0" />
+                Margin="4,0">
+                <ComboBox.IsEnabled>
+                    <MultiBinding Converter="{StaticResource andConverter}">
+                        <Binding Path="IsEditable" Mode="OneWay" />
+                        <Binding Path="AllowsChangingPackageSource" Mode="OneWay" />
+                    </MultiBinding>
+                </ComboBox.IsEnabled>
+            </ComboBox>
         </DockPanel>
 
         <!-- navigation buttons -->
