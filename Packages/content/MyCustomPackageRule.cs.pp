@@ -11,7 +11,7 @@ namespace $rootnamespace$
     [Export(typeof(IPackageRule))]
     internal class MyCustomPackageRule : IPackageRule 
     {
-        public IEnumerable<PackageIssue> Validate(IPackage package) 
+        public IEnumerable<PackageIssue> Validate(IPackage package, string packageFileName) 
         {
             throw new NotImplementedException();
         }
