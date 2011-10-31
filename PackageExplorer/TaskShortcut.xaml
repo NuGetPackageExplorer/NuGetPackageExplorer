@@ -1,58 +1,48 @@
-﻿<UserControl x:Class="PackageExplorer.TaskShortcut"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:settings="clr-namespace:PackageExplorer.Properties"
-             xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
-             mc:Ignorable="d" 
-             MinWidth="380" 
-             MinHeight="200"
-             d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl x:Class="PackageExplorer.TaskShortcut" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:settings="clr-namespace:PackageExplorer.Properties" xmlns:theme="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero" mc:Ignorable="d" MinWidth="380" MinHeight="200" d:DesignHeight="300" d:DesignWidth="300">
 
-    <UserControl.Resources>
-        <Style TargetType="{x:Type TextBlock}">
-            <Setter Property="Margin" Value="6,4" />
-            <Setter Property="FontSize" Value="{Binding FontSize, Mode=OneWay, Source={x:Static settings:Settings.Default}, Converter={StaticResource SubtracterConverter}, ConverterParameter=-3}" />
-        </Style>
-        <BitmapImage x:Key="arrowImage" UriSource="Images/arrow.png" />
-    </UserControl.Resources>
+	<UserControl.Resources>
+		<Style TargetType="{x:Type TextBlock}">
+			<Setter Property="Margin" Value="6,4" />
+			<Setter Property="FontSize" Value="{Binding FontSize, Mode=OneWay, Source={x:Static settings:Settings.Default}, Converter={StaticResource SubtracterConverter}, ConverterParameter=-3}" />
+		</Style>
+		<BitmapImage x:Key="arrowImage" UriSource="Images/arrow.png" />
+	</UserControl.Resources>
 
-    <theme:SystemDropShadowChrome>
-        <HeaderedContentControl Padding="10" Foreground="#CCFFFFFF">
-            <HeaderedContentControl.Header>
-                <TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, Source={x:Static settings:Settings.Default}, Converter={StaticResource SubtracterConverter}, ConverterParameter=-5}" />
-            </HeaderedContentControl.Header>
+	<theme:SystemDropShadowChrome>
+		<HeaderedContentControl Padding="10" Foreground="#CCFFFFFF">
+			<HeaderedContentControl.Header>
+				<TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, Source={x:Static settings:Settings.Default}, Converter={StaticResource SubtracterConverter}, ConverterParameter=-5}" />
+			</HeaderedContentControl.Header>
 
-            <UniformGrid Columns="1" Rows="4">
-                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Open">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource arrowImage}" />
-                        <TextBlock Text="Open a local package (Ctrl+O)" />
-                    </StackPanel>
-                </Button>
+			<UniformGrid Columns="1" Rows="4">
+				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Open">
+					<StackPanel Orientation="Horizontal">
+						<Image Source="{StaticResource arrowImage}" />
+						<TextBlock Text="Open a local package (Ctrl+O)" />
+					</StackPanel>
+				</Button>
 
-                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Find">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource arrowImage}" />
-                        <TextBlock Text="Open a package from online feed (Ctrl+G)" />
-                    </StackPanel>
-                </Button>
+				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Find">
+					<StackPanel Orientation="Horizontal">
+						<Image Source="{StaticResource arrowImage}" />
+						<TextBlock Text="Open a package from online feed (Ctrl+G)" />
+					</StackPanel>
+				</Button>
 
-                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="New">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource arrowImage}" />
-                        <TextBlock Text="Create a new package (Ctrl+N)" />
-                    </StackPanel>
-                </Button>
+				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="New">
+					<StackPanel Orientation="Horizontal">
+						<Image Source="{StaticResource arrowImage}" />
+						<TextBlock Text="Create a new package (Ctrl+N)" />
+					</StackPanel>
+				</Button>
 
-                <Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6"  Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="GoToPage" CommandParameter="http://docs.nuget.org">
-                    <StackPanel Orientation="Horizontal">
-                        <Image Source="{StaticResource arrowImage}" />
-                        <TextBlock Text="Read NuGet documentation" />
-                    </StackPanel>
-                </Button>
-            </UniformGrid>
-        </HeaderedContentControl>
-    </theme:SystemDropShadowChrome>
+				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="GoToPage" CommandParameter="http://docs.nuget.org">
+					<StackPanel Orientation="Horizontal">
+						<Image Source="{StaticResource arrowImage}" />
+						<TextBlock Text="Read NuGet documentation" />
+					</StackPanel>
+				</Button>
+			</UniformGrid>
+		</HeaderedContentControl>
+	</theme:SystemDropShadowChrome>
 </UserControl>

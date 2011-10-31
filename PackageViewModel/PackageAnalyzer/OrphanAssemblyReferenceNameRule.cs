@@ -6,13 +6,18 @@ using System.Linq;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorerViewModel.Rules {
+namespace PackageExplorerViewModel.Rules
+{
     [Export(typeof(IPackageRule))]
-    internal class OrphanAssemblyReferenceNameRule : IPackageRule {
+    internal class OrphanAssemblyReferenceNameRule : IPackageRule
+    {
+        #region IPackageRule Members
+
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            if (package.References.Any()) {
-                var allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
+            if (package.References.Any())
+            {
+                IEnumerable<string> allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
                 var libFilesSet = new HashSet<string>(allLibFiles, StringComparer.OrdinalIgnoreCase);
 
                 return from reference in package.References
@@ -22,7 +27,10 @@ namespace PackageExplorerViewModel.Rules {
             return new PackageIssue[0];
         }
 
-        private static PackageIssue CreateIssue(string reference) {
+        #endregion
+
+        private static PackageIssue CreateIssue(string reference)
+        {
             return new PackageIssue(
                 PackageIssueLevel.Error,
                 "Assembly reference name not found.",

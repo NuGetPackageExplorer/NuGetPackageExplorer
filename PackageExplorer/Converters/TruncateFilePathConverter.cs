@@ -1,23 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows.Data;
+using System.Globalization;
 using System.IO;
+using System.Windows.Data;
 
 namespace PackageExplorer
 {
     public class TruncateFilePathConverter : IValueConverter
     {
-        const int MaxLength = 50;
+        private const int MaxLength = 50;
 
-        public TruncateFilePathConverter()
-        {
-        }
+        #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            string path = (string)value;
+            var path = (string) value;
             if (path == null)
             {
                 return null;
@@ -31,6 +27,13 @@ namespace PackageExplorer
                 return Truncate(path);
             }
         }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
 
         private static string Truncate(string path)
         {
@@ -58,8 +61,8 @@ namespace PackageExplorer
                 }
             }
 
-            string[] parts = path.Split(new char[] { separator }, StringSplitOptions.RemoveEmptyEntries);
-            int remainingLength = MaxLength - prefix.Length - 3;    // 3 is the length of '...'
+            string[] parts = path.Split(new[] {separator}, StringSplitOptions.RemoveEmptyEntries);
+            int remainingLength = MaxLength - prefix.Length - 3; // 3 is the length of '...'
             string res = "";
             for (int i = parts.Length - 1; i >= 0; --i)
             {
@@ -73,17 +76,13 @@ namespace PackageExplorer
                 }
             }
 
-            if (res.Length == 0 && parts.Length > 0) {
+            if (res.Length == 0 && parts.Length > 0)
+            {
                 string lastPart = parts[parts.Length - 1];
                 res = lastPart.Substring(Math.Max(0, lastPart.Length - remainingLength));
             }
 
             return prefix + "..." + res;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotImplementedException();
         }
     }
 }

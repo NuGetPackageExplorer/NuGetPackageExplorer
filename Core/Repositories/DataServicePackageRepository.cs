@@ -1,12 +1,15 @@
 using System;
 using System.Data.Services.Client;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
-namespace NuGet {
-    public class DataServicePackageRepository : IPackageRepository {
+namespace NuGet
+{
+    public class DataServicePackageRepository : IPackageRepository
+    {
         private readonly DataServiceContext _context;
-        private DataServiceQuery<DataServicePackage> _query;
         private readonly IHttpClient _httpClient;
+        private DataServiceQuery<DataServicePackage> _query;
 
         public DataServicePackageRepository(IHttpClient httpClient)
         {
@@ -16,33 +19,41 @@ namespace NuGet {
             }
             _httpClient = httpClient;
             _httpClient.AcceptCompression = true;
-            
+
             _context = new DataServiceContext(httpClient.Uri);
             _context.SendingRequest += OnSendingRequest;
             _context.IgnoreMissingProperties = true;
         }
 
-        public string Source {
-            get {
-                return _context.BaseUri.OriginalString;
-            }
+        #region IPackageRepository Members
+
+        public string Source
+        {
+            get { return _context.BaseUri.OriginalString; }
         }
 
-        private void OnSendingRequest(object sender, SendingRequestEventArgs e) {
-            _httpClient.InitializeRequest(e.Request);
-        }
-
-        IQueryable<IPackage> IPackageRepository.GetPackages() {
+        IQueryable<IPackage> IPackageRepository.GetPackages()
+        {
             return GetPackages();
         }
 
-        public Uri GetReadStreamUri(object entity) {
+        #endregion
+
+        private void OnSendingRequest(object sender, SendingRequestEventArgs e)
+        {
+            _httpClient.InitializeRequest(e.Request);
+        }
+
+        public Uri GetReadStreamUri(object entity)
+        {
             return _context.GetReadStreamUri(entity);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public IQueryable<DataServicePackage> GetPackages() {
-            if (_query == null) {
+        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
+        public IQueryable<DataServicePackage> GetPackages()
+        {
+            if (_query == null)
+            {
                 _query = _context.CreateQuery<DataServicePackage>(Constants.PackageServiceEntitySetName);
             }
             return _query;

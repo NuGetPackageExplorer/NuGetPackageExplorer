@@ -1,12 +1,16 @@
 ﻿using System;
 
-namespace NuGet {
-    public class ProgressEventArgs : EventArgs {
+namespace NuGet
+{
+    public class ProgressEventArgs : EventArgs
+    {
         public ProgressEventArgs(int percentComplete)
-            : this(null, percentComplete) {
+            : this(null, percentComplete)
+        {
         }
 
-        public ProgressEventArgs(string operation, int percentComplete) {
+        public ProgressEventArgs(string operation, int percentComplete)
+        {
             Operation = operation;
             PercentComplete = percentComplete;
         }

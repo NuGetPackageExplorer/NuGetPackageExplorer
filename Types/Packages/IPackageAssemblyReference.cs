@@ -1,14 +1,11 @@
-namespace NuGet {
-    using System;
-    using System.Runtime.Versioning;
+using System.Runtime.Versioning;
 
-    public interface IPackageAssemblyReference : IPackageFile, IFrameworkTargetable {
-        FrameworkName TargetFramework {
-            get;
-        }
+namespace NuGet
+{
+    public interface IPackageAssemblyReference : IPackageFile, IFrameworkTargetable
+    {
+        FrameworkName TargetFramework { get; }
 
-        string Name {
-            get;
-        }
+        string Name { get; }
     }
 }

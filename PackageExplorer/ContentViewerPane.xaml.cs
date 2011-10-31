@@ -1,13 +1,17 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using ICSharpCode.AvalonEdit.Highlighting;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorer {
+namespace PackageExplorer
+{
     /// <summary>
     /// Interaction logic for ContentViewerPane.xaml
     /// </summary>
-    public partial class ContentViewerPane : UserControl {
-        public ContentViewerPane() {
+    public partial class ContentViewerPane : UserControl
+    {
+        public ContentViewerPane()
+        {
             InitializeComponent();
 
             // set the Syntax Highlighting definitions
@@ -19,14 +23,17 @@ namespace PackageExplorer {
             contentBox.Options.EnableHyperlinks = false;
         }
 
-        private void UserControl_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) {
-            var info = (FileContentInfo)DataContext;
-            if (info != null && info.IsTextFile) {
+        private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var info = (FileContentInfo) DataContext;
+            if (info != null && info.IsTextFile)
+            {
                 LanguageBox.SelectedItem = FileUtility.DeduceHighligtingDefinition(info.File.Name);
                 contentBox.ScrollToHome();
-                contentBox.Load(StreamUtility.ToStream((string)info.Content));
+                contentBox.Load(StreamUtility.ToStream((string) info.Content));
             }
-            else {
+            else
+            {
                 contentBox.Clear();
             }
         }

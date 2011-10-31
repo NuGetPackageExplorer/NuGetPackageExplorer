@@ -4,20 +4,24 @@ using System.ComponentModel;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorerViewModel {
-    public class PluginManagerViewModel : INotifyPropertyChanged, IComparer<PluginInfo> {
-        private SortedCollection<PluginInfo> _plugins;
-        private readonly IPluginManager _pluginManager;
+namespace PackageExplorerViewModel
+{
+    public class PluginManagerViewModel : INotifyPropertyChanged, IComparer<PluginInfo>
+    {
         private readonly IPackageChooser _packageChooser;
-        private readonly IUIServices _uiServices;
         private readonly IPackageDownloader _packageDownloader;
+        private readonly IPluginManager _pluginManager;
+        private readonly IUIServices _uiServices;
+        private SortedCollection<PluginInfo> _plugins;
 
         public PluginManagerViewModel(
-            IPluginManager pluginManager, 
-            IUIServices uiServices, 
+            IPluginManager pluginManager,
+            IUIServices uiServices,
             IPackageChooser packageChooser,
-            IPackageDownloader packageDownloader) {
-            if (pluginManager == null) {
+            IPackageDownloader packageDownloader)
+        {
+            if (pluginManager == null)
+            {
                 throw new ArgumentNullException("pluginManager");
             }
 
@@ -45,11 +49,12 @@ namespace PackageExplorerViewModel {
             AddCommand = new RelayCommand<string>(AddCommandExecute);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        public ICollection<PluginInfo> Plugins {
-            get {
-                if (_plugins == null) {
+        public ICollection<PluginInfo> Plugins
+        {
+            get
+            {
+                if (_plugins == null)
+                {
                     _plugins = new SortedCollection<PluginInfo>(_pluginManager.Plugins, this);
                 }
                 return _plugins;
@@ -60,18 +65,42 @@ namespace PackageExplorerViewModel {
 
         public RelayCommand<string> AddCommand { get; private set; }
 
-        private void AddCommandExecute(string parameter) {
-            if (parameter == "Local") {
+        #region IComparer<PluginInfo> Members
+
+        public int Compare(PluginInfo x, PluginInfo y)
+        {
+            int result = String.Compare(x.Id, y.Id, StringComparison.CurrentCultureIgnoreCase);
+            if (result != 0)
+            {
+                return result;
+            }
+
+            return x.Version.CompareTo(y.Version);
+        }
+
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
+        #endregion
+
+        private void AddCommandExecute(string parameter)
+        {
+            if (parameter == "Local")
+            {
                 AddLocalPlugin();
             }
-            else if ((string)parameter == "Remote") {
+            else if (parameter == "Remote")
+            {
                 AddFeedPlugin();
             }
         }
 
         private void AddFeedPlugin()
         {
-            var selectedPackageInfo = _packageChooser.SelectPluginPackage();
+            PackageInfo selectedPackageInfo = _packageChooser.SelectPluginPackage();
             if (selectedPackageInfo != null)
             {
                 _packageDownloader.Download(
@@ -82,14 +111,16 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private void AddLocalPlugin() {
+        private void AddLocalPlugin()
+        {
             string selectedFile;
             bool result = _uiServices.OpenFileDialog(
                 "Select Plugin Package",
                 "NuGet package (*.nupkg)|*.nupkg",
                 out selectedFile);
 
-            if (result) {
+            if (result)
+            {
                 AddSelectedPluginPackage(new ZipPackage(selectedFile));
             }
         }
@@ -103,34 +134,28 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private void DeleteCommandExecute(PluginInfo file) {
+        private void DeleteCommandExecute(PluginInfo file)
+        {
             bool confirmed = _uiServices.Confirm(
-                "Confirm deleting " + file.ToString(),
-                Resources.ConfirmToDeletePlugin, 
+                "Confirm deleting " + file,
+                Resources.ConfirmToDeletePlugin,
                 isWarning: true);
 
-            if (!confirmed) {
+            if (!confirmed)
+            {
                 return;
             }
 
             bool succeeded = _pluginManager.DeletePlugin(file);
-            if (succeeded) {
+            if (succeeded)
+            {
                 Plugins.Remove(file);
             }
         }
 
-        private bool DeleteCommandCanExecute(PluginInfo file) {
+        private bool DeleteCommandCanExecute(PluginInfo file)
+        {
             return file != null;
-        }
-
-        public int Compare(PluginInfo x, PluginInfo y) {
-            int result = String.Compare(x.Id, y.Id, StringComparison.CurrentCultureIgnoreCase);
-            if (result != 0)
-            {
-                return result;
-            }
-
-            return x.Version.CompareTo(y.Version);
         }
     }
 }

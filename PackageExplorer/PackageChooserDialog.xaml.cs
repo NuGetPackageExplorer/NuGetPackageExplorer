@@ -8,26 +8,36 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NuGet;
+using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 
-namespace PackageExplorer {
+namespace PackageExplorer
+{
     /// <summary>
     /// Interaction logic for PackageChooserDialog.xaml
     /// </summary>
-    public partial class PackageChooserDialog : StandardDialog {
-        private string _pendingSearch;
+    public partial class PackageChooserDialog : StandardDialog
+    {
         private readonly PackageChooserViewModel _viewModel;
-        
-        public PackageChooserDialog(PackageChooserViewModel viewModel) {
+        private IDisposable _collectionDeferRefresh;
+        private string _pendingSearch;
+
+        public PackageChooserDialog(PackageChooserViewModel viewModel)
+        {
             InitializeComponent();
 
             Debug.Assert(viewModel != null);
 
             _viewModel = viewModel;
-            _viewModel.LoadPackagesCompleted += new EventHandler(OnLoadPackagesCompleted);
-            _viewModel.PropertyChanged += new PropertyChangedEventHandler(OnViewModelPropertyChanged);
+            _viewModel.LoadPackagesCompleted += OnLoadPackagesCompleted;
+            _viewModel.PropertyChanged += OnViewModelPropertyChanged;
 
             DataContext = _viewModel;
+        }
+
+        public PackageInfo SelectedPackage
+        {
+            get { return PackageGrid.SelectedItem as PackageInfo; }
         }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -38,8 +48,10 @@ namespace PackageExplorer {
             }
         }
 
-        private void OnLoadPackagesCompleted(object sender, EventArgs e) {
-            if (_collectionDeferRefresh != null) {
+        private void OnLoadPackagesCompleted(object sender, EventArgs e)
+        {
+            if (_collectionDeferRefresh != null)
+            {
                 _collectionDeferRefresh.Dispose();
             }
 
@@ -49,35 +61,36 @@ namespace PackageExplorer {
             FocusSearchBox();
         }
 
-        private void RedrawSortGlyph(string sortColumn, ListSortDirection sortDirection) {
-            foreach (var column in PackageGridView.Columns) {
-                var header = (GridViewColumnHeader)column.Header;
-                if (header.Tag != null) {
+        private void RedrawSortGlyph(string sortColumn, ListSortDirection sortDirection)
+        {
+            foreach (GridViewColumn column in PackageGridView.Columns)
+            {
+                var header = (GridViewColumnHeader) column.Header;
+                if (header.Tag != null)
+                {
                     AdornerLayer layer = AdornerLayer.GetAdornerLayer(header);
-                    if (layer != null) {
-                        layer.Remove((Adorner)header.Tag);
+                    if (layer != null)
+                    {
+                        layer.Remove((Adorner) header.Tag);
                     }
                 }
 
-                if ((string)header.CommandParameter == sortColumn) {
+                if ((string) header.CommandParameter == sortColumn)
+                {
                     var newAdorner = new SortAdorner(header, sortDirection);
                     header.Tag = newAdorner;
 
                     AdornerLayer layer = AdornerLayer.GetAdornerLayer(header);
-                    if (layer != null) {
+                    if (layer != null)
+                    {
                         layer.Add(newAdorner);
                     }
                 }
             }
         }
 
-        public PackageInfo SelectedPackage {
-            get {
-                return PackageGrid.SelectedItem as PackageInfo;
-            }
-        }
-
-        private void OkButton_Click(object sender, RoutedEventArgs e) {
+        private void OkButton_Click(object sender, RoutedEventArgs e)
+        {
             Hide();
         }
 
@@ -98,14 +111,18 @@ namespace PackageExplorer {
             _viewModel.CancelCommand.Execute(null);
         }
 
-        private void SearchBox_KeyDown(object sender, System.Windows.Input.KeyEventArgs e) {
-            if (e.Key == Key.Enter) {
+        private void SearchBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
                 InvokeSearch(null);
                 e.Handled = true;
             }
-            else if (e.Key == Key.Escape) {
+            else if (e.Key == Key.Escape)
+            {
                 ICommand clearSearchCommand = ClearSearchButton.Command;
-                if (clearSearchCommand.CanExecute(null)) {
+                if (clearSearchCommand.CanExecute(null))
+                {
                     // simulate Clear Search command execution
                     clearSearchCommand.Execute(null);
                     e.Handled = true;
@@ -113,18 +130,22 @@ namespace PackageExplorer {
             }
         }
 
-        private void InvokeSearch(string searchTerm) {
+        private void InvokeSearch(string searchTerm)
+        {
             // simulate Search command execution
             SearchButton.Command.Execute(searchTerm);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e) {
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
             AdjustSearchBox();
 
-            if (String.IsNullOrEmpty(_pendingSearch)) {
+            if (String.IsNullOrEmpty(_pendingSearch))
+            {
                 Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
             }
-            else {
+            else
+            {
                 Dispatcher.BeginInvoke(
                     new Action<string>(InvokeSearch),
                     DispatcherPriority.Background,
@@ -132,100 +153,121 @@ namespace PackageExplorer {
             }
         }
 
-        private void AdjustSearchBox() {
+        private void AdjustSearchBox()
+        {
             // HACK: Make space for the search image inside the search box
-            if (SearchBox.Template != null) {
+            if (SearchBox.Template != null)
+            {
                 var contentHost = SearchBox.Template.FindName("PART_ContentHost", SearchBox) as FrameworkElement;
-                if (contentHost != null) {
+                if (contentHost != null)
+                {
                     contentHost.Margin = new Thickness(0, 0, 40, 0);
                     contentHost.Width = 160;
                 }
             }
         }
 
-        private void LoadPackages() {
-            var loadedCommand = (ICommand)Tag;
+        private void LoadPackages()
+        {
+            var loadedCommand = (ICommand) Tag;
             loadedCommand.Execute(null);
         }
 
-        private void Window_PreviewKeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.E && Keyboard.Modifiers == ModifierKeys.Control) {
+        private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.E && Keyboard.Modifiers == ModifierKeys.Control)
+            {
                 FocusSearchBox();
                 e.Handled = true;
             }
         }
 
-        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e) {
-            if (!e.NewSize.IsEmpty) {
-                var settings = Properties.Settings.Default;
+        private void OnWindowSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (!e.NewSize.IsEmpty)
+            {
+                Settings settings = Settings.Default;
                 settings.PackageChooserDialogHeight = e.NewSize.Height;
                 settings.PackageChooserDialogWidth = e.NewSize.Width;
             }
         }
 
-        private IDisposable _collectionDeferRefresh;
-
-        private void OnShowLatestVersionValueChanged(object sender, RoutedEventArgs e) {
-            CollectionViewSource cvs = (CollectionViewSource)Resources["PackageCollectionSource"];
+        private void OnShowLatestVersionValueChanged(object sender, RoutedEventArgs e)
+        {
+            var cvs = (CollectionViewSource) Resources["PackageCollectionSource"];
             _collectionDeferRefresh = cvs.DeferRefresh();
 
             cvs.GroupDescriptions.Clear();
-            CheckBox box = (CheckBox)sender;
-            if (box.IsChecked != true) {
+            var box = (CheckBox) sender;
+            if (box.IsChecked != true)
+            {
                 cvs.GroupDescriptions.Add(new PropertyGroupDescription("Id"));
             }
 
             e.Handled = true;
         }
 
-        private void StandardDialog_Closing(object sender, CancelEventArgs e) {
+        private void StandardDialog_Closing(object sender, CancelEventArgs e)
+        {
             e.Cancel = true;
             CancelPendingRequestAndCloseDialog();
         }
 
-        internal void ForceClose() {
-            this.Closing -= StandardDialog_Closing;
+        internal void ForceClose()
+        {
+            Closing -= StandardDialog_Closing;
             Close();
         }
 
-        private void FocusSearchBox() {
+        private void FocusSearchBox()
+        {
             bool gotFocus = SearchBox.Focus();
-            if (gotFocus) {
+            if (gotFocus)
+            {
                 // move caret to the end 
                 SearchBox.Select(SearchBox.Text.Length, 0);
             }
         }
 
-        private void OnAfterShow() {
+        private void OnAfterShow()
+        {
             _viewModel.OnAfterShow();
             FocusSearchBox();
         }
 
-        private void PackageSourceBox_PreviewKeyDown(object sender, KeyEventArgs e) {
-            if (e.Key == Key.Enter) {
+        private void PackageSourceBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
                 string source = PackageSourceBox.Text;
-                if (!String.IsNullOrEmpty(source)) {
+                if (!String.IsNullOrEmpty(source))
+                {
                     _viewModel.ChangePackageSourceCommand.Execute(source);
                     e.Handled = true;
                 }
             }
         }
 
-        internal void ShowDialog(string searchTerm) {
+        internal void ShowDialog(string searchTerm)
+        {
             _pendingSearch = searchTerm;
             ShowDialog();
             _pendingSearch = null;
         }
 
-        private void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e) {
+        private void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
             // The first time this event handler is invoked, IsLoaded = false
             // We only do work from the second time.
-            if (IsVisible && IsLoaded) {
-                if (String.IsNullOrEmpty(_pendingSearch)) {
+            if (IsVisible && IsLoaded)
+            {
+                if (String.IsNullOrEmpty(_pendingSearch))
+                {
                     // there is no pending search operation, just set focus on the search box
                     Dispatcher.BeginInvoke(new Action(OnAfterShow), DispatcherPriority.Background);
                 }
-                else {
+                else
+                {
                     InvokeSearch(_pendingSearch);
                 }
             }

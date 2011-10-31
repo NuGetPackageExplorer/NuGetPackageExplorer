@@ -1,198 +1,157 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Services.Client;
 using System.Data.Services.Common;
 using System.IO;
 using System.Linq;
-using NuGet.Resources;
 
-namespace NuGet {
+namespace NuGet
+{
     [DataServiceKey("Id", "Version")]
-    [EntityPropertyMapping("LastUpdated", SyndicationItemProperty.Updated, SyndicationTextContentKind.Plaintext, keepInContent: false)]
-    [EntityPropertyMapping("Id", SyndicationItemProperty.Title, SyndicationTextContentKind.Plaintext, keepInContent: false)]
-    [EntityPropertyMapping("Authors", SyndicationItemProperty.AuthorName, SyndicationTextContentKind.Plaintext, keepInContent: false)]
-    [EntityPropertyMapping("Summary", SyndicationItemProperty.Summary, SyndicationTextContentKind.Plaintext, keepInContent: false)]
-    public class DataServicePackage : IPackage {
-        public DataServicePackage() {
-        }
+    [EntityPropertyMapping("LastUpdated", SyndicationItemProperty.Updated, SyndicationTextContentKind.Plaintext,
+        keepInContent: false)]
+    [EntityPropertyMapping("Id", SyndicationItemProperty.Title, SyndicationTextContentKind.Plaintext,
+        keepInContent: false)]
+    [EntityPropertyMapping("Authors", SyndicationItemProperty.AuthorName, SyndicationTextContentKind.Plaintext,
+        keepInContent: false)]
+    [EntityPropertyMapping("Summary", SyndicationItemProperty.Summary, SyndicationTextContentKind.Plaintext,
+        keepInContent: false)]
+    public class DataServicePackage : IPackage
+    {
+        public string Version { get; set; }
 
-        public string Id {
-            get;
-            set;
-        }
+        public string Authors { get; set; }
 
-        public string Version {
-            get;
-            set;
-        }
+        public bool IsLatestVersion { get; set; }
+        public DateTimeOffset LastUpdated { get; set; }
+        public long PackageSize { get; set; }
+        public string PackageHash { get; set; }
 
-        public string Title {
-            get {
-                return CorePackage == null ? null : CorePackage.Title;
-            }
-        }
+        public IPackage CorePackage { get; set; }
 
-        public string Authors {
-            get;
-            set;
-        }
+        #region IPackage Members
 
-        public bool IsLatestVersion {
-            get;
-            set;
-        }
+        public string Id { get; set; }
 
-        public IEnumerable<string> Owners {
-            get {
-                return CorePackage == null ? null : CorePackage.Owners;
-            }
-        }
-
-        public Uri IconUrl {
-            get {
-                return CorePackage == null ? null : CorePackage.IconUrl;
-            }
-        }
-
-        public Uri LicenseUrl {
-            get {
-                return CorePackage == null ? null : CorePackage.LicenseUrl;
-            }
-        }
-
-        public Uri ProjectUrl {
-            get {
-                return CorePackage == null ? null : CorePackage.ProjectUrl;
-            }
-        }
-
-        public Uri ReportAbuseUrl {
-            get {
-                return CorePackage == null ? null : CorePackage.ReportAbuseUrl;
-            }
-        }
-
-        public DateTimeOffset LastUpdated {
-            get;
-            set;
-        }
-
-        public int DownloadCount {
-            get;
-            set;
-        }
-
-        public int VersionDownloadCount {
-            get;
-            set;
-        }
-
-        public long PackageSize
+        public string Title
         {
-            get;
-            set;
+            get { return CorePackage == null ? null : CorePackage.Title; }
         }
 
-        public bool RequireLicenseAcceptance {
-            get {
-                return CorePackage == null ? false : CorePackage.RequireLicenseAcceptance;
-            }
+        public IEnumerable<string> Owners
+        {
+            get { return CorePackage == null ? null : CorePackage.Owners; }
         }
 
-        public string Description {
-            get {
-                return CorePackage == null ? null : CorePackage.Description;
-            }
+        public Uri IconUrl
+        {
+            get { return CorePackage == null ? null : CorePackage.IconUrl; }
         }
 
-        public string Summary {
-            get {
-                return CorePackage == null ? null : CorePackage.Summary;
-            }
+        public Uri LicenseUrl
+        {
+            get { return CorePackage == null ? null : CorePackage.LicenseUrl; }
         }
 
-        public string ReleaseNotes {
-            get {
-                return CorePackage == null ? null : CorePackage.ReleaseNotes;
-            }
+        public Uri ProjectUrl
+        {
+            get { return CorePackage == null ? null : CorePackage.ProjectUrl; }
         }
 
-        public string Copyright {
-            get {
-                return CorePackage == null ? null : CorePackage.Copyright;
-            }
+        public Uri ReportAbuseUrl
+        {
+            get { return CorePackage == null ? null : CorePackage.ReportAbuseUrl; }
         }
 
-        public string Language {
-            get {
-                return CorePackage == null ? null : CorePackage.Language;
-            }
+        public int DownloadCount { get; set; }
+
+        public int VersionDownloadCount { get; set; }
+
+        public bool RequireLicenseAcceptance
+        {
+            get { return CorePackage == null ? false : CorePackage.RequireLicenseAcceptance; }
         }
 
-        public string Tags {
-            get {
-                return CorePackage == null ? null : CorePackage.Tags;
-            }
+        public string Description
+        {
+            get { return CorePackage == null ? null : CorePackage.Description; }
         }
 
-        public IEnumerable<PackageDependency> Dependencies {
-            get {
-                return CorePackage == null ? Enumerable.Empty<PackageDependency>() : CorePackage.Dependencies;
-            }
+        public string Summary
+        {
+            get { return CorePackage == null ? null : CorePackage.Summary; }
         }
 
-        public string PackageHash {
-            get;
-            set;
+        public string ReleaseNotes
+        {
+            get { return CorePackage == null ? null : CorePackage.ReleaseNotes; }
         }
 
-        public IPackage CorePackage { 
-            get; 
-            set; 
+        public string Copyright
+        {
+            get { return CorePackage == null ? null : CorePackage.Copyright; }
         }
 
-        IEnumerable<string> IPackageMetadata.Authors {
-            get {
-                return CorePackage == null ? Enumerable.Empty<string>() : CorePackage.Authors;
-            }
+        public string Language
+        {
+            get { return CorePackage == null ? null : CorePackage.Language; }
         }
 
-        SemanticVersion IPackageMetadata.Version {
-            get {
-                if (Version != null) {
+        public string Tags
+        {
+            get { return CorePackage == null ? null : CorePackage.Tags; }
+        }
+
+        public IEnumerable<PackageDependency> Dependencies
+        {
+            get { return CorePackage == null ? Enumerable.Empty<PackageDependency>() : CorePackage.Dependencies; }
+        }
+
+        IEnumerable<string> IPackageMetadata.Authors
+        {
+            get { return CorePackage == null ? Enumerable.Empty<string>() : CorePackage.Authors; }
+        }
+
+        SemanticVersion IPackageMetadata.Version
+        {
+            get
+            {
+                if (Version != null)
+                {
                     return new SemanticVersion(Version);
                 }
                 return null;
             }
         }
 
-        public IEnumerable<AssemblyReference> References {
-            get {
-                return CorePackage == null ? Enumerable.Empty<AssemblyReference>() : CorePackage.References;
-            }
+        public IEnumerable<AssemblyReference> References
+        {
+            get { return CorePackage == null ? Enumerable.Empty<AssemblyReference>() : CorePackage.References; }
         }
 
-        public IEnumerable<IPackageAssemblyReference> AssemblyReferences {
-            get {
-                return CorePackage.AssemblyReferences;
-            }
+        public IEnumerable<IPackageAssemblyReference> AssemblyReferences
+        {
+            get { return CorePackage.AssemblyReferences; }
         }
 
-        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies {
-            get {
-                return CorePackage.FrameworkAssemblies;
-            }
+        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies
+        {
+            get { return CorePackage.FrameworkAssemblies; }
         }
 
-        public IEnumerable<IPackageFile> GetFiles() {
+        public IEnumerable<IPackageFile> GetFiles()
+        {
             return CorePackage.GetFiles();
         }
 
-        public Stream GetStream() {
+        public Stream GetStream()
+        {
             return CorePackage.GetStream();
         }
 
-        public override string ToString() {
+        #endregion
+
+        public override string ToString()
+        {
             return this.GetFullName();
         }
     }

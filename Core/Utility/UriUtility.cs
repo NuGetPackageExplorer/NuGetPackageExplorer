@@ -1,15 +1,19 @@
 using System;
-using System.IO.Packaging;
 using System.IO;
+using System.IO.Packaging;
 
-namespace NuGet {    
-    internal static class UriUtility {
+namespace NuGet
+{
+    internal static class UriUtility
+    {
         /// <summary>
         /// Converts a uri to a path. Only used for local paths.
         /// </summary>
-        internal static string GetPath(Uri uri) {
+        internal static string GetPath(Uri uri)
+        {
             string path = uri.OriginalString;
-            if (path.StartsWith("/", StringComparison.Ordinal)) {
+            if (path.StartsWith("/", StringComparison.Ordinal))
+            {
                 path = path.Substring(1);
             }
 
@@ -18,11 +22,13 @@ namespace NuGet {
             return Uri.UnescapeDataString(path.Replace('/', Path.DirectorySeparatorChar));
         }
 
-        internal static Uri CreatePartUri(string path) {
+        internal static Uri CreatePartUri(string path)
+        {
             return PackUriHelper.CreatePartUri(new Uri(Uri.EscapeDataString(path), UriKind.Relative));
         }
 
-        internal static Uri GetRootUri(Uri uri) {
+        internal static Uri GetRootUri(Uri uri)
+        {
             return new Uri(uri.GetComponents(UriComponents.SchemeAndServer, UriFormat.SafeUnescaped));
         }
     }

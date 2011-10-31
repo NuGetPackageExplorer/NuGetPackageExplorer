@@ -5,133 +5,88 @@ using System.IO.Packaging;
 using System.Linq;
 using NuGet.Resources;
 
-namespace NuGet {
-    public class ZipPackage : IPackage {
+namespace NuGet
+{
+    public class ZipPackage : IPackage
+    {
         private const string AssemblyReferencesDir = "lib";
         private const string ResourceAssemblyExtension = ".resources.dll";
-        private static readonly string[] AssemblyReferencesExtensions = new[] { ".dll", ".exe" };
+        private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe"};
 
         // paths to exclude
-        private static readonly string[] _excludePaths = new[] { "_rels", "package" };
+        private static readonly string[] _excludePaths = new[] {"_rels", "package"};
 
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
-        private Func<Stream> _streamFactory;
+        private readonly Func<Stream> _streamFactory;
 
-        public ZipPackage(string fileName) {
-            if (String.IsNullOrEmpty(fileName)) {
+        public ZipPackage(string fileName)
+        {
+            if (String.IsNullOrEmpty(fileName))
+            {
                 throw new ArgumentException("Argument cannot be null.", "fileName");
             }
             _streamFactory = () => File.OpenRead(fileName);
             EnsureManifest();
         }
 
-        public string Id {
-            get;
-            set;
+        #region IPackage Members
+
+        public string Id { get; set; }
+
+        public SemanticVersion Version { get; set; }
+
+        public string Title { get; set; }
+
+        public IEnumerable<string> Authors { get; set; }
+
+        public IEnumerable<string> Owners { get; set; }
+
+        public Uri IconUrl { get; set; }
+
+        public Uri LicenseUrl { get; set; }
+
+        public Uri ProjectUrl { get; set; }
+
+        public Uri ReportAbuseUrl
+        {
+            get { return null; }
         }
 
-        public SemanticVersion Version {
-            get;
-            set;
+        public int DownloadCount
+        {
+            get { return -1; }
         }
 
-        public string Title {
-            get;
-            set;
+        public int VersionDownloadCount
+        {
+            get { return -1; }
         }
 
-        public IEnumerable<string> Authors {
-            get;
-            set;
-        }
+        public bool RequireLicenseAcceptance { get; set; }
 
-        public IEnumerable<string> Owners {
-            get;
-            set;
-        }
+        public string Description { get; set; }
 
-        public Uri IconUrl {
-            get;
-            set;
-        }
+        public string Summary { get; set; }
 
-        public Uri LicenseUrl {
-            get;
-            set;
-        }
+        public string ReleaseNotes { get; set; }
 
-        public Uri ProjectUrl {
-            get;
-            set;
-        }
+        public string Language { get; set; }
 
-        public Uri ReportAbuseUrl {
-            get {
-                return null;
-            }
-        }
+        public string Tags { get; set; }
 
-        public int DownloadCount {
-            get {
-                return -1;
-            }
-        }
+        public string Copyright { get; set; }
 
-        public int VersionDownloadCount {
-            get {
-                return -1;
-            }
-        }
+        public IEnumerable<AssemblyReference> References { get; set; }
 
-        public bool RequireLicenseAcceptance {
-            get;
-            set;
-        }
+        public IEnumerable<PackageDependency> Dependencies { get; set; }
 
-        public string Description {
-            get;
-            set;
-        }
-
-        public string Summary {
-            get;
-            set;
-        }
-
-        public string ReleaseNotes {
-            get;
-            set;
-        }
-
-        public string Language {
-            get;
-            set;
-        }
-
-        public string Tags {
-            get;
-            set;
-        }
-
-        public string Copyright {
-            get;
-            set;
-        }
-
-        public IEnumerable<AssemblyReference> References {
-            get;
-            set;
-        }
-
-        public IEnumerable<PackageDependency> Dependencies {
-            get;
-            set;
-        }
-
-        public IEnumerable<IPackageAssemblyReference> AssemblyReferences {
-            get {
-                using (Stream stream = _streamFactory()) {
+        public IEnumerable<IPackageAssemblyReference> AssemblyReferences
+        {
+            get
+            {
+                using (Stream stream = _streamFactory())
+                {
                     Package package = Package.Open(stream);
                     return (from part in package.GetParts()
                             where IsAssemblyReference(part)
@@ -140,13 +95,12 @@ namespace NuGet {
             }
         }
 
-        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies {
-            get;
-            set;
-        }
+        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; set; }
 
-        public IEnumerable<IPackageFile> GetFiles() {
-            using (Stream stream = _streamFactory()) {
+        public IEnumerable<IPackageFile> GetFiles()
+        {
+            using (Stream stream = _streamFactory())
+            {
                 Package package = Package.Open(stream);
 
                 return (from part in package.GetParts()
@@ -155,27 +109,37 @@ namespace NuGet {
             }
         }
 
-        public Stream GetStream() {
+        public Stream GetStream()
+        {
             return _streamFactory();
         }
 
-        private void EnsureManifest() {
-            using (Stream stream = _streamFactory()) {
+        #endregion
+
+        private void EnsureManifest()
+        {
+            using (Stream stream = _streamFactory())
+            {
                 Package package = Package.Open(stream);
 
-                PackageRelationship relationshipType = package.GetRelationshipsByType(Constants.PackageRelationshipNamespace + PackageBuilder.ManifestRelationType).SingleOrDefault();
+                PackageRelationship relationshipType =
+                    package.GetRelationshipsByType(Constants.PackageRelationshipNamespace +
+                                                   PackageBuilder.ManifestRelationType).SingleOrDefault();
 
-                if (relationshipType == null) {
+                if (relationshipType == null)
+                {
                     throw new InvalidOperationException(NuGetResources.PackageDoesNotContainManifest);
                 }
 
                 PackagePart manifestPart = package.GetPart(relationshipType.TargetUri);
 
-                if (manifestPart == null) {
+                if (manifestPart == null)
+                {
                     throw new InvalidOperationException(NuGetResources.PackageDoesNotContainManifest);
                 }
 
-                using (Stream manifestStream = manifestPart.GetStream()) {
+                using (Stream manifestStream = manifestPart.GetStream())
+                {
                     Manifest manifest = Manifest.ReadFrom(manifestStream);
                     IPackageMetadata metadata = manifest.Metadata;
 
@@ -199,30 +163,34 @@ namespace NuGet {
                     References = metadata.References;
 
                     // Ensure tags start and end with an empty " " so we can do contains filtering reliably
-                    if (!String.IsNullOrEmpty(Tags)) {
+                    if (!String.IsNullOrEmpty(Tags))
+                    {
                         Tags = " " + Tags + " ";
                     }
                 }
             }
         }
 
-        private static bool IsAssemblyReference(PackagePart part) {
+        private static bool IsAssemblyReference(PackagePart part)
+        {
             // Assembly references are in lib/ and have a .dll/.exe extension
-            var path = UriUtility.GetPath(part.Uri);
+            string path = UriUtility.GetPath(part.Uri);
             return path.StartsWith(AssemblyReferencesDir, StringComparison.OrdinalIgnoreCase) &&
                    // Exclude resource assemblies
                    !path.EndsWith(ResourceAssemblyExtension, StringComparison.OrdinalIgnoreCase) &&
                    AssemblyReferencesExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
         }
 
-        private static bool IsPackageFile(PackagePart part) {
+        private static bool IsPackageFile(PackagePart part)
+        {
             string path = UriUtility.GetPath(part.Uri);
             // We exclude any opc files and the manifest file (.nuspec)
             return !_excludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return this.GetFullName();
         }
     }

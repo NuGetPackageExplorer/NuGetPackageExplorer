@@ -1,23 +1,27 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorerViewModel {
-    public class FileEditorViewModel : ViewModelBase {
-        private readonly PackageViewModel _packageViewModel;
+namespace PackageExplorerViewModel
+{
+    public class FileEditorViewModel : ViewModelBase
+    {
+        private readonly ICommand _closeCommand;
         private readonly PackageFile _fileInEdit;
-        private readonly ICommand _closeCommand, _saveCommand;
         private readonly string _filePath;
+        private readonly PackageViewModel _packageViewModel;
+        private readonly ICommand _saveCommand;
+        private bool _hasEdit;
         private bool _hasSaved;
 
-        internal FileEditorViewModel(PackageViewModel packageViewModel, PackageFile fileInEdit) {
+        internal FileEditorViewModel(PackageViewModel packageViewModel, PackageFile fileInEdit)
+        {
             Debug.Assert(packageViewModel != null);
             Debug.Assert(fileInEdit != null);
             Debug.Assert(fileInEdit.Parent != null);
-            
+
             _packageViewModel = packageViewModel;
             _fileInEdit = fileInEdit;
 
@@ -28,20 +32,18 @@ namespace PackageExplorerViewModel {
             _saveCommand = new RelayCommand<IFileEditorService>(SaveExecute);
         }
 
-        public IPackageFile FileInEdit {
-            get {
-                return _fileInEdit;
-            }
+        public IPackageFile FileInEdit
+        {
+            get { return _fileInEdit; }
         }
 
-        private bool _hasEdit;
-
-        public bool HasEdit {
-            get {
-                return _hasEdit;
-            }
-            set {
-                if (_hasEdit != value) {
+        public bool HasEdit
+        {
+            get { return _hasEdit; }
+            set
+            {
+                if (_hasEdit != value)
+                {
                     _hasEdit = value;
                     OnPropertyChanged("HasEdit");
                 }
@@ -50,39 +52,47 @@ namespace PackageExplorerViewModel {
 
         #region CloseCommand
 
-        public ICommand CloseCommand {
-            get {
-                return _closeCommand;
-            }
+        public ICommand CloseCommand
+        {
+            get { return _closeCommand; }
         }
 
-        private void CloseExecute(IFileEditorService editorService) {
+        private void CloseExecute(IFileEditorService editorService)
+        {
             // if there is unsaved changes, ask user for confirmation
-            if (HasEdit) {
-                var result = _packageViewModel.UIServices.ConfirmWithCancel(
+            if (HasEdit)
+            {
+                bool? result = _packageViewModel.UIServices.ConfirmWithCancel(
                     Resources.Dialog_SaveQuestion,
                     "You have unsaved changes in the current file.");
-                if (result == null) {
+                if (result == null)
+                {
                     return;
                 }
-                else if (result == true) {
+                else if (result == true)
+                {
                     SaveFile(editorService);
                 }
             }
-            
+
             PersistChangesToPackage();
 
             // return back to Package view
             _packageViewModel.CloseEditFileMode();
         }
 
-        private void PersistChangesToPackage() {
-            if (_hasSaved) {
-                if (_filePath != _fileInEdit.OriginalPath) {
+        private void PersistChangesToPackage()
+        {
+            if (_hasSaved)
+            {
+                if (_filePath != _fileInEdit.OriginalPath)
+                {
                     _fileInEdit.ReplaceWith(_filePath);
                 }
-                else {
-                    if (_packageViewModel.IsShowingFileContent(_fileInEdit)) {
+                else
+                {
+                    if (_packageViewModel.IsShowingFileContent(_fileInEdit))
+                    {
                         // force a refresh to show new content
                         _packageViewModel.ShowFileContent(_fileInEdit);
                     }
@@ -94,17 +104,18 @@ namespace PackageExplorerViewModel {
 
         #region SaveCommand
 
-        public ICommand SaveCommand {
-            get {
-                return _saveCommand;
-            }
+        public ICommand SaveCommand
+        {
+            get { return _saveCommand; }
         }
 
-        private void SaveExecute(IFileEditorService editorService) {
+        private void SaveExecute(IFileEditorService editorService)
+        {
             SaveFile(editorService);
         }
 
-        private void SaveFile(IFileEditorService editorService) {
+        private void SaveFile(IFileEditorService editorService)
+        {
             editorService.Save(_filePath);
             _packageViewModel.NotifyChanges();
             _hasSaved = true;
@@ -112,7 +123,8 @@ namespace PackageExplorerViewModel {
 
         #endregion
 
-        public void SaveOnExit(IFileEditorService editorService) {
+        public void SaveOnExit(IFileEditorService editorService)
+        {
             SaveExecute(editorService);
             PersistChangesToPackage();
         }

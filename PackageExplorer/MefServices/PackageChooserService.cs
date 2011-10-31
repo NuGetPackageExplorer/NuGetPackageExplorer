@@ -4,14 +4,15 @@ using NuGet;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
 
-namespace PackageExplorer {
+namespace PackageExplorer
+{
     [Export(typeof(IPackageChooser))]
-    internal class PackageChooserService : IPackageChooser {
-
+    internal class PackageChooserService : IPackageChooser
+    {
         private PackageChooserDialog _dialog;
-        private PackageChooserViewModel _viewModel;
         private PackageChooserDialog _pluginDialog;
         private PackageChooserViewModel _pluginViewModel;
+        private PackageChooserViewModel _viewModel;
 
         [Import]
         public IPackageViewModelFactory ViewModelFactory { get; set; }
@@ -19,12 +20,17 @@ namespace PackageExplorer {
         [Import]
         public Lazy<MainWindow> Window { get; set; }
 
-        public PackageInfo SelectPackage(string searchTerm) {
-            if (_dialog == null) {
+        #region IPackageChooser Members
+
+        public PackageInfo SelectPackage(string searchTerm)
+        {
+            if (_dialog == null)
+            {
                 _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
-                _dialog = new PackageChooserDialog(_viewModel) {
-                    Owner = Window.Value
-                };
+                _dialog = new PackageChooserDialog(_viewModel)
+                          {
+                              Owner = Window.Value
+                          };
             }
 
             _dialog.ShowDialog(searchTerm);
@@ -37,20 +43,24 @@ namespace PackageExplorer {
             {
                 _pluginViewModel = ViewModelFactory.CreatePackageChooserViewModel(NuGetConstants.PluginFeedUrl);
                 _pluginDialog = new PackageChooserDialog(_pluginViewModel)
-                {
-                    Owner = Window.Value
-                };    
+                                {
+                                    Owner = Window.Value
+                                };
             }
 
             _pluginDialog.ShowDialog();
             return _pluginDialog.SelectedPackage;
         }
 
-        public void Dispose() {
-            if (_dialog != null) {
+        public void Dispose()
+        {
+            if (_dialog != null)
+            {
                 _dialog.ForceClose();
                 _viewModel.Dispose();
             }
         }
+
+        #endregion
     }
 }

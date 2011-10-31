@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Net;
 
-namespace NuGet {
+namespace NuGet
+{
     /// <summary>
     /// This interface represents the basic interface that one needs to implement in order to
     /// support repository authentication. 
     /// </summary>
-    public interface ICredentialProvider {
+    public interface ICredentialProvider
+    {
         /// <summary>
         /// Returns CredentialState state that let's the consumer know if ICredentials
         /// were discovered by the ICredentialProvider. The credentials argument is then

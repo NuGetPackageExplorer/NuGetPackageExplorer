@@ -1,11 +1,11 @@
-﻿using System.ComponentModel;
-using PackageExplorerViewModel;
-using System.IO;
+﻿using PackageExplorerViewModel;
 
-namespace NuGetPackageExplorer.Types {
-    public sealed class FileContentInfo {
-
-        public FileContentInfo(PackageFile file, string name, object content, bool isTextFile, long size) {
+namespace NuGetPackageExplorer.Types
+{
+    public sealed class FileContentInfo
+    {
+        public FileContentInfo(PackageFile file, string name, object content, bool isTextFile, long size)
+        {
             File = file;
             Name = name;
             Content = content;

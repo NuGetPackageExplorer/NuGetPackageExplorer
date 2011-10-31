@@ -6,17 +6,22 @@ using System.Linq;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorerViewModel.Rules {
-
+namespace PackageExplorerViewModel.Rules
+{
     [Export(typeof(IPackageRule))]
-    internal class InvalidFrameworkFolderRule : IPackageRule {
+    internal class InvalidFrameworkFolderRule : IPackageRule
+    {
+        #region IPackageRule Members
+
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
             var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var file in package.GetFiles()) {
+            foreach (IPackageFile file in package.GetFiles())
+            {
                 string path = file.Path;
                 string[] parts = path.Split(Path.DirectorySeparatorChar);
-                if (parts.Length >= 3 && parts[0].Equals("lib", StringComparison.OrdinalIgnoreCase)) {
+                if (parts.Length >= 3 && parts[0].Equals("lib", StringComparison.OrdinalIgnoreCase))
+                {
                     set.Add(parts[1]);
                 }
             }
@@ -24,17 +29,21 @@ namespace PackageExplorerViewModel.Rules {
             return set.Where(IsInvalidFrameworkName).Select(CreatePackageIssue);
         }
 
-        private bool IsInvalidFrameworkName(string name) {
+        #endregion
+
+        private bool IsInvalidFrameworkName(string name)
+        {
             return VersionUtility.ParseFrameworkName(name) == VersionUtility.UnsupportedFrameworkName;
         }
 
-        private static PackageIssue CreatePackageIssue(string target) {
+        private static PackageIssue CreatePackageIssue(string target)
+        {
             return new PackageIssue(
                 PackageIssueLevel.Warning,
                 "Invalid framework folder",
                 "The folder '" + target + "' under 'lib' is not recognized as a valid framework name.",
                 "Rename it to a valid framework name."
-            );
+                );
         }
     }
 }

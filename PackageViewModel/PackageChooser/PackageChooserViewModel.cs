@@ -3,29 +3,44 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet;
 
-namespace PackageExplorerViewModel {
-    public sealed class PackageChooserViewModel : ViewModelBase, IDisposable {
+namespace PackageExplorerViewModel
+{
+    public sealed class PackageChooserViewModel : ViewModelBase, IDisposable
+    {
         private const int ShowAllVersionsPageSize = 7;
         private const int ShowLatestVersionPageSize = 15;
         private const int PageBuffer = 30;
-        private DataServicePackageRepository _packageRepository;
+        private readonly string _fixedPackageSource;
+        private int _beginPackage;
+        private CancellationTokenSource _currentCancellationTokenSource;
         private IQueryContext<PackageInfo> _currentQuery;
         private string _currentSearch;
+        private string _currentTypingSearch;
+        private int _endPackage;
+        private bool _hasError;
+        private bool _isEditable = true;
+        private DataServicePackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
-        private CancellationTokenSource _currentCancellationTokenSource;
-        private string _fixedPackageSource;
+        private bool _showLatestVersion;
+        private string _sortColumn;
+        private ListSortDirection _sortDirection;
+        private string _statusContent;
+        private int _totalPackageCount;
 
         public PackageChooserViewModel(
-            MruPackageSourceManager packageSourceManager, 
+            MruPackageSourceManager packageSourceManager,
             bool showLatestVersion,
-            string fixedPackageSource) {
-            if (packageSourceManager == null) {
+            string fixedPackageSource)
+        {
+            if (packageSourceManager == null)
+            {
                 throw new ArgumentNullException("packageSourceManager");
             }
 
@@ -42,37 +57,38 @@ namespace PackageExplorerViewModel {
             _packageSourceManager = packageSourceManager;
         }
 
-        public event EventHandler LoadPackagesCompleted = delegate { };
-
-        private string _currentTypingSearch;
-        public string CurrentTypingSearch {
-            get {
-                return _currentTypingSearch;
-            }
-            set {
-                if (_currentTypingSearch != value) {
+        public string CurrentTypingSearch
+        {
+            get { return _currentTypingSearch; }
+            set
+            {
+                if (_currentTypingSearch != value)
+                {
                     _currentTypingSearch = value;
                     OnPropertyChanged("CurrentTypingSearch");
                 }
             }
         }
 
-        private string _sortColumn;
-        public string SortColumn {
+        public string SortColumn
+        {
             get { return _sortColumn; }
 
-            set {
-                if (_sortColumn != value) {
+            set
+            {
+                if (_sortColumn != value)
+                {
                     _sortColumn = value;
                     OnPropertyChanged("SortColumn");
                 }
             }
         }
 
-        private ListSortDirection _sortDirection;
-        public ListSortDirection SortDirection {
+        public ListSortDirection SortDirection
+        {
             get { return _sortDirection; }
-            set {
+            set
+            {
                 // IMPORTANT: must NOT check if (_sortDirection != value) here.
                 // We want SortDirection property change event to raise even in that case so that
                 // the UI can redraw the sort glyph when SortColumn property chagnes.
@@ -81,13 +97,13 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private bool _isEditable = true;
-        public bool IsEditable {
-            get {
-                return _isEditable;
-            }
-            set {
-                if (_isEditable != value) {
+        public bool IsEditable
+        {
+            get { return _isEditable; }
+            set
+            {
+                if (_isEditable != value)
+                {
                     _isEditable = value;
                     OnPropertyChanged("IsEditable");
                     NavigationCommand.RaiseCanExecuteChanged();
@@ -95,13 +111,13 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private bool _showLatestVersion;
-        public bool ShowLatestVersion {
-            get {
-                return _showLatestVersion;
-            }
-            set {
-                if (_showLatestVersion != value) {
+        public bool ShowLatestVersion
+        {
+            get { return _showLatestVersion; }
+            set
+            {
+                if (_showLatestVersion != value)
+                {
                     _showLatestVersion = value;
                     OnPropertyChanged("ShowLatestVersion");
 
@@ -109,6 +125,136 @@ namespace PackageExplorerViewModel {
                 }
             }
         }
+
+        public ObservableCollection<string> PackageSources
+        {
+            get { return _packageSourceManager.PackageSources; }
+        }
+
+        public bool AllowsChangingPackageSource
+        {
+            get { return _fixedPackageSource == null; }
+        }
+
+        public string PackageSource
+        {
+            get { return _fixedPackageSource ?? _packageSourceManager.ActivePackageSource; }
+            private set
+            {
+                if (_fixedPackageSource != null)
+                {
+                    throw new InvalidOperationException(
+                        "Cannot set active package source when fixed package source is used.");
+                }
+                _packageSourceManager.ActivePackageSource = value;
+                OnPropertyChanged("PackageSource");
+            }
+        }
+
+        private CancellationTokenSource CurrentCancellationTokenSource
+        {
+            get { return _currentCancellationTokenSource; }
+            set
+            {
+                _currentCancellationTokenSource = value;
+                CancelCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public int TotalPackageCount
+        {
+            get { return _totalPackageCount; }
+            private set
+            {
+                if (_totalPackageCount != value)
+                {
+                    _totalPackageCount = value;
+                    OnPropertyChanged("TotalPackageCount");
+                }
+            }
+        }
+
+        public int BeginPackage
+        {
+            get { return _beginPackage; }
+            private set
+            {
+                if (_beginPackage != value)
+                {
+                    _beginPackage = value;
+                    OnPropertyChanged("BeginPackage");
+                }
+            }
+        }
+
+        public int EndPackage
+        {
+            get { return _endPackage; }
+            private set
+            {
+                if (_endPackage != value)
+                {
+                    _endPackage = value;
+                    OnPropertyChanged("EndPackage");
+                }
+            }
+        }
+
+        public string StatusContent
+        {
+            get { return _statusContent; }
+            set
+            {
+                if (_statusContent != value)
+                {
+                    _statusContent = value;
+                    OnPropertyChanged("StatusContent");
+                }
+            }
+        }
+
+        public bool HasError
+        {
+            get { return _hasError; }
+            set
+            {
+                if (_hasError != value)
+                {
+                    _hasError = value;
+                    OnPropertyChanged("HasError");
+                }
+            }
+        }
+
+        public ObservableCollection<PackageInfo> Packages { get; private set; }
+
+        public RelayCommand<string> NavigationCommand { get; private set; }
+        public ICommand SortCommand { get; private set; }
+        public ICommand SearchCommand { get; private set; }
+        public ICommand ClearSearchCommand { get; private set; }
+        public ICommand LoadedCommand { get; private set; }
+        public ICommand ChangePackageSourceCommand { get; private set; }
+        public RelayCommand CancelCommand { get; private set; }
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            if (_packageSourceManager != null)
+            {
+                _packageSourceManager.Dispose();
+                _packageSourceManager = null;
+            }
+
+            if (CurrentCancellationTokenSource != null)
+            {
+                CurrentCancellationTokenSource.Dispose();
+            }
+        }
+
+        #endregion
+
+        public event EventHandler LoadPackagesCompleted = delegate { };
 
         private void OnShowLatestVersionChanged()
         {
@@ -126,136 +272,29 @@ namespace PackageExplorerViewModel {
         /// This method needs run on background thread so as not to block UI thread
         /// </summary>
         /// <returns></returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private DataServicePackageRepository GetPackageRepository(object state) {
-            if (_packageRepository == null) {
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        private DataServicePackageRepository GetPackageRepository(object state)
+        {
+            if (_packageRepository == null)
+            {
                 _packageRepository = DataServicePackageRepositoryFactory.CreateRepository(PackageSource);
             }
 
-            var token = (CancellationToken)state;
+            var token = (CancellationToken) state;
             token.ThrowIfCancellationRequested();
             return _packageRepository;
         }
 
-        private void ResetPackageRepository() {
+        private void ResetPackageRepository()
+        {
             _packageRepository = null;
         }
 
-        public ObservableCollection<string> PackageSources {
-            get { return _packageSourceManager.PackageSources; }
-        }
-
-        public bool AllowsChangingPackageSource
+        internal void LoadPage(CancellationToken token)
         {
-            get
-            {
-                return _fixedPackageSource == null;
-            }
-        }
-
-        public string PackageSource {
-            get {
-                return _fixedPackageSource ?? _packageSourceManager.ActivePackageSource;
-            }
-            private set {
-                if (_fixedPackageSource != null)
-                {
-                    throw new InvalidOperationException("Cannot set active package source when fixed package source is used.");
-                }
-                _packageSourceManager.ActivePackageSource = value;
-                OnPropertyChanged("PackageSource");
-            }
-        }
-
-        private CancellationTokenSource CurrentCancellationTokenSource
-        {
-            get
-            {
-                return _currentCancellationTokenSource;
-            }
-            set
-            {
-                _currentCancellationTokenSource = value;
-                CancelCommand.RaiseCanExecuteChanged();
-            }
-        }
-
-        private int _totalPackageCount;
-
-        public int TotalPackageCount {
-            get { return _totalPackageCount; }
-            private set {
-                if (_totalPackageCount != value) {
-                    _totalPackageCount = value;
-                    OnPropertyChanged("TotalPackageCount");
-                }
-            }
-        }
-
-        private int _beginPackage;
-
-        public int BeginPackage {
-            get { return _beginPackage; }
-            private set {
-                if (_beginPackage != value) {
-                    _beginPackage = value;
-                    OnPropertyChanged("BeginPackage");
-                }
-            }
-        }
-
-        private int _endPackage;
-
-        public int EndPackage {
-            get { return _endPackage; }
-            private set {
-                if (_endPackage != value) {
-                    _endPackage = value;
-                    OnPropertyChanged("EndPackage");
-                }
-            }
-        }
-
-        private string _statusContent;
-
-        public string StatusContent {
-            get { return _statusContent; }
-            set {
-                if (_statusContent != value) {
-                    _statusContent = value;
-                    OnPropertyChanged("StatusContent");
-                }
-            }
-        }
-
-        private bool _hasError;
-
-        public bool HasError {
-            get {
-                return _hasError;
-            }
-            set {
-                if (_hasError != value) {
-                    _hasError = value;
-                    OnPropertyChanged("HasError");
-                }
-            }
-        }
-
-        public ObservableCollection<PackageInfo> Packages { get; private set; }
-
-        public RelayCommand<string> NavigationCommand { get; private set; }
-        public ICommand SortCommand { get; private set; }
-        public ICommand SearchCommand { get; private set; }
-        public ICommand ClearSearchCommand { get; private set; }
-        public ICommand LoadedCommand { get; private set; }
-        public ICommand ChangePackageSourceCommand { get; private set; }
-        public RelayCommand CancelCommand { get; private set; }
-
-        internal void LoadPage(CancellationToken token) {
             Debug.Assert(_currentQuery != null);
 
-            var uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
             IsEditable = false;
             ShowMessage(Resources.LoadingMessage, false);
@@ -267,43 +306,48 @@ namespace PackageExplorerViewModel {
                 token = CurrentCancellationTokenSource.Token;
             }
 
-            var usedTokenSource = CurrentCancellationTokenSource;
+            CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
 
             // IMPORTANT: Call StartNew() with TaskScheduler.Default here to make sure 
             // QueryPackages() is scheduled on background thread. This is because this method
             // can be called from UI TaskScheduler from the LoadPackages() method
             Task.Factory.StartNew<IList<PackageInfo>>(
                 QueryPackages, token, token, TaskCreationOptions.None, TaskScheduler.Default).ContinueWith(
-                task => {
-                    Exception exception = task.Exception;
-                    if (usedTokenSource != CurrentCancellationTokenSource)
+                    task =>
                     {
-                        // this mean this request has already been canceled. No need to process this request anymore.
-                        return;
-                    }
+                        Exception exception = task.Exception;
+                        if (usedTokenSource != CurrentCancellationTokenSource)
+                        {
+                            // this mean this request has already been canceled. No need to process this request anymore.
+                            return;
+                        }
 
-                    if (task.IsFaulted) {
-                        ShowMessage(exception.GetBaseException().Message, true);
-                        ClearPackages(isErrorCase: true);
-                    }
-                    else if (task.IsCanceled)
-                    {
-                        ClearMessage();
-                        UpdatePageNumber(_currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
-                    }
-                    else
-                    {
-                        ClearMessage();
-                        ShowPackages(task.Result, _currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
-                    }
+                        if (task.IsFaulted)
+                        {
+                            ShowMessage(exception.GetBaseException().Message, true);
+                            ClearPackages(isErrorCase: true);
+                        }
+                        else if (task.IsCanceled)
+                        {
+                            ClearMessage();
+                            UpdatePageNumber(_currentQuery.TotalItemCount, _currentQuery.BeginPackage,
+                                             _currentQuery.EndPackage);
+                        }
+                        else
+                        {
+                            ClearMessage();
+                            ShowPackages(task.Result, _currentQuery.TotalItemCount, _currentQuery.BeginPackage,
+                                         _currentQuery.EndPackage);
+                        }
 
-                    RestoreUI();
-                },
-                uiScheduler);
+                        RestoreUI();
+                    },
+                    uiScheduler);
         }
 
-        private IList<PackageInfo> QueryPackages(object state) {
-            CancellationToken token = (CancellationToken)state;
+        private IList<PackageInfo> QueryPackages(object state)
+        {
+            var token = (CancellationToken) state;
 
             // HACK: trigger calling TotalItemCount asynchronously so that the request for $count
             // can run in parallel with the request for packages
@@ -316,11 +360,12 @@ namespace PackageExplorerViewModel {
 
             token.ThrowIfCancellationRequested();
 
-            var repository = GetPackageRepository(token);
+            DataServicePackageRepository repository = GetPackageRepository(token);
 
             token.ThrowIfCancellationRequested();
 
-            foreach (PackageInfo entity in result) {
+            foreach (PackageInfo entity in result)
+            {
                 entity.DownloadUrl = repository.GetReadStreamUri(entity);
             }
 
@@ -328,7 +373,8 @@ namespace PackageExplorerViewModel {
             return result;
         }
 
-        private void LoadPackages() {
+        private void LoadPackages()
+        {
             IsEditable = false;
             ShowMessage(Resources.ConnectingMessage, false);
             ClearPackages(isErrorCase: true);
@@ -336,155 +382,176 @@ namespace PackageExplorerViewModel {
             TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
 
             CurrentCancellationTokenSource = new CancellationTokenSource();
-            var usedTokenSource = CurrentCancellationTokenSource;
+            CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
 
             Task.Factory.StartNew<DataServicePackageRepository>(
-                GetPackageRepository, 
+                GetPackageRepository,
                 CurrentCancellationTokenSource.Token,
-                CurrentCancellationTokenSource.Token  
-            ).ContinueWith(
-                task => {
-                    Exception exception = task.Exception;
-                    if (usedTokenSource != CurrentCancellationTokenSource)
+                CurrentCancellationTokenSource.Token
+                ).ContinueWith(
+                    task =>
                     {
-                        // this mean this request has already been canceled. No need to process this request anymore.
-                        return;
-                    }
+                        Exception exception = task.Exception;
+                        if (usedTokenSource != CurrentCancellationTokenSource)
+                        {
+                            // this mean this request has already been canceled. No need to process this request anymore.
+                            return;
+                        }
 
-                    if (task.IsFaulted)
-                    {
-                        ShowMessage(exception.GetBaseException().Message, isError: true);
-                        RestoreUI();
-                        return;
-                    }
-                    else if (task.IsCanceled)
-                    {
-                        ClearMessage();
-                        RestoreUI();
-                        return;
-                    }
+                        if (task.IsFaulted)
+                        {
+                            ShowMessage(exception.GetBaseException().Message, isError: true);
+                            RestoreUI();
+                            return;
+                        }
+                        else if (task.IsCanceled)
+                        {
+                            ClearMessage();
+                            RestoreUI();
+                            return;
+                        }
 
-                    DataServicePackageRepository repository = task.Result;
-                    if (repository == null) {
-                        ClearMessage();
-                        RestoreUI();
-                        return;
-                    }
+                        DataServicePackageRepository repository = task.Result;
+                        if (repository == null)
+                        {
+                            ClearMessage();
+                            RestoreUI();
+                            return;
+                        }
 
-                    var query = repository.GetPackages();
-                    if (!String.IsNullOrEmpty(_currentSearch)) {
-                        query = query.Find(_currentSearch.Split(' '));
-                    }
+                        IQueryable<DataServicePackage> query = repository.GetPackages();
+                        if (!String.IsNullOrEmpty(_currentSearch))
+                        {
+                            query = query.Find(_currentSearch.Split(' '));
+                        }
 
-                    // When in Show All Versions mode, we can't sort by Last Updated or PackageSize. 
-                    Debug.Assert(!(SortColumn == "LastUpdated" || SortColumn == "PackageSize") || ShowLatestVersion);
+                        // When in Show All Versions mode, we can't sort by Last Updated or PackageSize. 
+                        Debug.Assert(!(SortColumn == "LastUpdated" || SortColumn == "PackageSize") || ShowLatestVersion);
 
-                    switch (SortColumn) {
-                        case "Id":
-                            query = SortDirection == ListSortDirection.Descending ? 
-                                query.OrderByDescending(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
-                                query.OrderBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
-                            break;
+                        switch (SortColumn)
+                        {
+                            case "Id":
+                                query = SortDirection == ListSortDirection.Descending
+                                            ? query.OrderByDescending(p => p.Id).ThenByDescending(p => p.LastUpdated)
+                                            : query.OrderBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
+                                break;
 
-                        case "Authors":
-                            query = SortDirection == ListSortDirection.Descending ? 
-                                query.OrderByDescending(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
-                                query.OrderBy(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
-                            break;
+                            case "Authors":
+                                query = SortDirection == ListSortDirection.Descending
+                                            ? query.OrderByDescending(p => p.Authors).ThenBy(p => p.Id).
+                                                  ThenByDescending(p => p.LastUpdated)
+                                            : query.OrderBy(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(
+                                                p => p.LastUpdated);
+                                break;
 
-                        case "VersionDownloadCount":
-                            query = SortDirection == ListSortDirection.Descending ? 
-                                query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
-                                query.OrderBy(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
-                            break;
+                            case "VersionDownloadCount":
+                                query = SortDirection == ListSortDirection.Descending
+                                            ? query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id).
+                                                  ThenByDescending(p => p.LastUpdated)
+                                            : query.OrderBy(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(
+                                                p => p.LastUpdated);
+                                break;
 
-                        case "PackageSize":
-                            query = SortDirection == ListSortDirection.Descending ? 
-                                query.OrderByDescending(p => p.PackageSize).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated) : 
-                                query.OrderBy(p => p.PackageSize).ThenBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
-                            break;
+                            case "PackageSize":
+                                query = SortDirection == ListSortDirection.Descending
+                                            ? query.OrderByDescending(p => p.PackageSize).ThenBy(p => p.Id).
+                                                  ThenByDescending(p => p.LastUpdated)
+                                            : query.OrderBy(p => p.PackageSize).ThenBy(p => p.Id).ThenByDescending(
+                                                p => p.LastUpdated);
+                                break;
 
-                        case "LastUpdated":
-                            query = SortDirection == ListSortDirection.Descending ? 
-                                query.OrderByDescending(p => p.LastUpdated).ThenBy(p => p.Id) : 
-                                query.OrderBy(p => p.LastUpdated).ThenBy(p => p.Id);
-                            break;
+                            case "LastUpdated":
+                                query = SortDirection == ListSortDirection.Descending
+                                            ? query.OrderByDescending(p => p.LastUpdated).ThenBy(p => p.Id)
+                                            : query.OrderBy(p => p.LastUpdated).ThenBy(p => p.Id);
+                                break;
 
-                        default:
-                            query = query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id);
-                            break;
-                    }
+                            default:
+                                query = query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id);
+                                break;
+                        }
 
-                    IQueryable<PackageInfo> filteredQuery;
+                        IQueryable<PackageInfo> filteredQuery;
 
-                    if (ShowLatestVersion) {
-                        filteredQuery = query.
-                            Where(p => p.IsLatestVersion).
-                            Select(p => new PackageInfo {
-                                Id = p.Id,
-                                Version = p.Version,
-                                Authors = p.Authors,
-                                DownloadCount = p.DownloadCount,
-                                PackageHash = p.PackageHash,
-                                LastUpdated = p.LastUpdated,
-                                PackageSize = p.PackageSize
-                            });
+                        if (ShowLatestVersion)
+                        {
+                            filteredQuery = query.
+                                Where(p => p.IsLatestVersion).
+                                Select(p => new PackageInfo
+                                            {
+                                                Id = p.Id,
+                                                Version = p.Version,
+                                                Authors = p.Authors,
+                                                DownloadCount = p.DownloadCount,
+                                                PackageHash = p.PackageHash,
+                                                LastUpdated = p.LastUpdated,
+                                                PackageSize = p.PackageSize
+                                            });
 
-                        _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(
-                            filteredQuery, 
-                            ShowLatestVersionPageSize);
-                    }
-                    else {
-                        /* show all versions */
-                        filteredQuery = query.Select(p => new PackageInfo {
-                            Id = p.Id,
-                            Version = p.Version,
-                            Authors = p.Authors,
-                            VersionDownloadCount = p.VersionDownloadCount,
-                            PackageHash = p.PackageHash,
-                            PackageSize = p.PackageSize,
-                            LastUpdated = p.LastUpdated
-                        });
+                            _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(
+                                filteredQuery,
+                                ShowLatestVersionPageSize);
+                        }
+                        else
+                        {
+                            /* show all versions */
+                            filteredQuery = query.Select(p => new PackageInfo
+                                                              {
+                                                                  Id = p.Id,
+                                                                  Version = p.Version,
+                                                                  Authors = p.Authors,
+                                                                  VersionDownloadCount =
+                                                                      p.VersionDownloadCount,
+                                                                  PackageHash = p.PackageHash,
+                                                                  PackageSize = p.PackageSize,
+                                                                  LastUpdated = p.LastUpdated
+                                                              });
 
-                        _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
-                            filteredQuery,
-                            ShowAllVersionsPageSize,
-                            PageBuffer,
-                            PackageInfoEqualityComparer.Instance);
-                    }
-                    
-                    LoadPage(CurrentCancellationTokenSource.Token);
-                },
-                CurrentCancellationTokenSource.Token,
-                TaskContinuationOptions.None,
-                uiScheduler
-            );
+                            _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
+                                filteredQuery,
+                                ShowAllVersionsPageSize,
+                                PageBuffer,
+                                PackageInfoEqualityComparer.Instance);
+                        }
+
+                        LoadPage(CurrentCancellationTokenSource.Token);
+                    },
+                    CurrentCancellationTokenSource.Token,
+                    TaskContinuationOptions.None,
+                    uiScheduler
+                );
         }
 
-        private void Search(string searchTerm) {
+        private void Search(string searchTerm)
+        {
             searchTerm = searchTerm ?? CurrentTypingSearch;
             searchTerm = searchTerm.Trim();
-            if (_currentSearch != searchTerm) {
+            if (_currentSearch != searchTerm)
+            {
                 _currentSearch = searchTerm;
                 LoadPackages();
                 CurrentTypingSearch = _currentSearch;
             }
         }
 
-        private bool CanSearch(string searchTerm) {
+        private bool CanSearch(string searchTerm)
+        {
             return IsEditable && !String.IsNullOrEmpty(searchTerm);
         }
 
-        private void ClearSearch() {
+        private void ClearSearch()
+        {
             CurrentTypingSearch = _currentSearch = String.Empty;
             LoadPackages();
         }
 
-        private bool CanClearSearch() {
+        private bool CanClearSearch()
+        {
             return IsEditable && !String.IsNullOrEmpty(_currentSearch);
         }
 
-        private void Sort(string column) {
+        private void Sort(string column)
+        {
             if (column == "Version")
             {
                 return;
@@ -504,18 +571,23 @@ namespace PackageExplorerViewModel {
             return TotalPackageCount > 0;
         }
 
-        private void Sort(string column, ListSortDirection? direction) {
-            if (SortColumn == column) {
-                if (direction.HasValue) {
+        private void Sort(string column, ListSortDirection? direction)
+        {
+            if (SortColumn == column)
+            {
+                if (direction.HasValue)
+                {
                     SortDirection = direction.Value;
                 }
-                else {
+                else
+                {
                     SortDirection = SortDirection == ListSortDirection.Ascending
-                                                        ? ListSortDirection.Descending
-                                                        : ListSortDirection.Ascending;
+                                        ? ListSortDirection.Descending
+                                        : ListSortDirection.Ascending;
                 }
             }
-            else {
+            else
+            {
                 SortColumn = column;
                 SortDirection = direction ?? ListSortDirection.Ascending;
             }
@@ -523,7 +595,8 @@ namespace PackageExplorerViewModel {
             LoadPackages();
         }
 
-        private void ChangePackageSource(string source) {
+        private void ChangePackageSource(string source)
+        {
             if (PackageSource != source)
             {
                 // add the new source to MRU list
@@ -539,7 +612,8 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private void UpdatePageNumber(int totalPackageCount, int beginPackage, int endPackage) {
+        private void UpdatePageNumber(int totalPackageCount, int beginPackage, int endPackage)
+        {
             TotalPackageCount = totalPackageCount;
             BeginPackage = beginPackage;
             EndPackage = endPackage;
@@ -554,14 +628,16 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private void ShowPackages(IEnumerable<PackageInfo> packages, int totalPackageCount, int beginPackage, int endPackage)
+        private void ShowPackages(IEnumerable<PackageInfo> packages, int totalPackageCount, int beginPackage,
+                                  int endPackage)
         {
             Packages.Clear();
             Packages.AddRange(packages);
             UpdatePageNumber(totalPackageCount, beginPackage, endPackage);
         }
 
-        private void ShowMessage(string message, bool isError) {
+        private void ShowMessage(string message, bool isError)
+        {
             StatusContent = message;
             HasError = isError;
         }
@@ -571,7 +647,8 @@ namespace PackageExplorerViewModel {
             ShowMessage(String.Empty, isError: false);
         }
 
-        public void OnAfterShow() {
+        public void OnAfterShow()
+        {
             CurrentTypingSearch = _currentSearch;
         }
 
@@ -603,12 +680,15 @@ namespace PackageExplorerViewModel {
 
         #region NavigationCommand
 
-        private bool NavigationCommandCanExecute(string action) {
-            if (!IsEditable) {
+        private bool NavigationCommandCanExecute(string action)
+        {
+            if (!IsEditable)
+            {
                 return false;
             }
 
-            switch (action) {
+            switch (action)
+            {
                 case "First":
                     return CanMoveFirst();
 
@@ -626,8 +706,10 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private void NavigationCommandExecute(string action) {
-            switch (action) {
+        private void NavigationCommandExecute(string action)
+        {
+            switch (action)
+            {
                 case "First":
                     MoveFirst();
                     break;
@@ -646,60 +728,59 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private void MoveLast() {
+        private void MoveLast()
+        {
             bool canMoveLast = _currentQuery.MoveLast();
-            if (canMoveLast) {
+            if (canMoveLast)
+            {
                 LoadPage(CancellationToken.None);
             }
         }
 
-        private void MoveNext() {
+        private void MoveNext()
+        {
             bool canMoveNext = _currentQuery.MoveNext();
-            if (canMoveNext) {
+            if (canMoveNext)
+            {
                 LoadPage(CancellationToken.None);
             }
         }
 
-        private void MovePrevious() {
+        private void MovePrevious()
+        {
             bool canMovePrevious = _currentQuery.MovePrevious();
-            if (canMovePrevious) {
+            if (canMovePrevious)
+            {
                 LoadPage(CancellationToken.None);
             }
         }
 
-        private void MoveFirst() {
+        private void MoveFirst()
+        {
             _currentQuery.MoveFirst();
             LoadPage(CancellationToken.None);
         }
 
-        private bool CanMoveLast() {
+        private bool CanMoveLast()
+        {
             return EndPackage < TotalPackageCount && ShowLatestVersion;
         }
 
-        private bool CanMoveNext() {
+        private bool CanMoveNext()
+        {
             return EndPackage < TotalPackageCount;
         }
 
-        private bool CanMovePrevious() {
+        private bool CanMovePrevious()
+        {
             return BeginPackage > 1;
         }
 
-        private bool CanMoveFirst() {
+        private bool CanMoveFirst()
+        {
             return BeginPackage > 1;
         }
 
         #endregion
-
-        public void Dispose() {
-            if (_packageSourceManager != null) {
-                _packageSourceManager.Dispose();
-                _packageSourceManager = null;
-            }
-
-            if (CurrentCancellationTokenSource != null)
-            {
-                CurrentCancellationTokenSource.Dispose();
-            }
-        }
     }
 }

@@ -3,8 +3,10 @@ using System.Globalization;
 using System.Text.RegularExpressions;
 using NuGet.Resources;
 
-namespace NuGet {
-    public static class PackageIdValidator {
+namespace NuGet
+{
+    public static class PackageIdValidator
+    {
         public const int MaxPackageIdLength = 100;
         private static readonly Regex _idRegex = new Regex(@"^\w+([_.-]\w+)*$", RegexOptions.IgnoreCase);
 
@@ -26,7 +28,8 @@ namespace NuGet {
 
             if (!IsValidPackageId(packageId))
             {
-                throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, NuGetResources.InvalidPackageId, packageId));
+                throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, NuGetResources.InvalidPackageId,
+                                                          packageId));
             }
         }
     }

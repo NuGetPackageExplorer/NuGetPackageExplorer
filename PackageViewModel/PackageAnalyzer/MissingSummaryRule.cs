@@ -4,15 +4,19 @@ using System.ComponentModel.Composition;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorerViewModel.Rules {
-
+namespace PackageExplorerViewModel.Rules
+{
     [Export(typeof(IPackageRule))]
-    internal class MissingSummaryRule : IPackageRule {
+    internal class MissingSummaryRule : IPackageRule
+    {
         private const int DescriptionLengthThreshold = 300;
+
+        #region IPackageRule Members
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            if (package.Description.Length > DescriptionLengthThreshold && String.IsNullOrEmpty(package.Summary)) {
+            if (package.Description.Length > DescriptionLengthThreshold && String.IsNullOrEmpty(package.Summary))
+            {
                 yield return new PackageIssue(
                     PackageIssueLevel.Warning,
                     "Consider providing Summary text",
@@ -20,5 +24,7 @@ namespace PackageExplorerViewModel.Rules {
                     "Provide a brief summary of the package in the Summary field.");
             }
         }
+
+        #endregion
     }
 }

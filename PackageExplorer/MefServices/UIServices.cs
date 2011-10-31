@@ -7,95 +7,113 @@ using Microsoft.Win32;
 using NuGetPackageExplorer.Types;
 using Ookii.Dialogs.Wpf;
 
-namespace PackageExplorer {
-
+namespace PackageExplorer
+{
     [Export(typeof(IUIServices))]
-    internal class UIServices : IUIServices {
-
+    internal class UIServices : IUIServices
+    {
         [Import]
         public Lazy<MainWindow> Window { get; set; }
 
-        private static bool OSSupportsTaskDialogs {
-            get {
-                return NativeMethods.IsWindowsVistaOrLater;
-            }
+        private static bool OSSupportsTaskDialogs
+        {
+            get { return NativeMethods.IsWindowsVistaOrLater; }
         }
 
-        public bool OpenSaveFileDialog(string title, string defaultFileName, string filter, bool overwritePrompt, out string selectedFilePath, out int selectedFilterIndex) {
-            var dialog = new SaveFileDialog() {
-                OverwritePrompt = overwritePrompt,
-                Title = title,
-                Filter = filter,
-                FileName = defaultFileName,
-                ValidateNames = true
-            };
+        #region IUIServices Members
+
+        public bool OpenSaveFileDialog(string title, string defaultFileName, string filter, bool overwritePrompt,
+                                       out string selectedFilePath, out int selectedFilterIndex)
+        {
+            var dialog = new SaveFileDialog
+                         {
+                             OverwritePrompt = overwritePrompt,
+                             Title = title,
+                             Filter = filter,
+                             FileName = defaultFileName,
+                             ValidateNames = true
+                         };
 
             bool? result = dialog.ShowDialog();
-            if (result ?? false) {
+            if (result ?? false)
+            {
                 selectedFilePath = dialog.FileName;
                 selectedFilterIndex = dialog.FilterIndex;
                 return true;
             }
-            else {
+            else
+            {
                 selectedFilePath = null;
                 selectedFilterIndex = -1;
                 return false;
             }
         }
 
-        public bool OpenFileDialog(string title, string filter, out string selectedFileName) {
-            var dialog = new OpenFileDialog() {
-                Title = title,
-                CheckFileExists = true,
-                CheckPathExists = true,
-                FilterIndex = 0,
-                Multiselect = false,
-                ValidateNames = true,
-                Filter = filter
-            };
+        public bool OpenFileDialog(string title, string filter, out string selectedFileName)
+        {
+            var dialog = new OpenFileDialog
+                         {
+                             Title = title,
+                             CheckFileExists = true,
+                             CheckPathExists = true,
+                             FilterIndex = 0,
+                             Multiselect = false,
+                             ValidateNames = true,
+                             Filter = filter
+                         };
 
             bool? result = dialog.ShowDialog();
-            if (result ?? false) {
+            if (result ?? false)
+            {
                 selectedFileName = dialog.FileName;
                 return true;
             }
-            else {
+            else
+            {
                 selectedFileName = null;
                 return false;
             }
         }
 
-        public bool OpenMultipleFilesDialog(string title, string filter, out string[] selectedFileNames) {
-            var dialog = new OpenFileDialog() {
-                Title = title,
-                CheckFileExists = true,
-                CheckPathExists = true,
-                FilterIndex = 0,
-                Multiselect = true,
-                ValidateNames = true,
-                Filter = filter
-            };
+        public bool OpenMultipleFilesDialog(string title, string filter, out string[] selectedFileNames)
+        {
+            var dialog = new OpenFileDialog
+                         {
+                             Title = title,
+                             CheckFileExists = true,
+                             CheckPathExists = true,
+                             FilterIndex = 0,
+                             Multiselect = true,
+                             ValidateNames = true,
+                             Filter = filter
+                         };
 
             bool? result = dialog.ShowDialog();
-            if (result ?? false) {
+            if (result ?? false)
+            {
                 selectedFileNames = dialog.FileNames;
                 return true;
             }
-            else {
+            else
+            {
                 selectedFileNames = null;
                 return false;
             }
         }
 
-        public bool Confirm(string title, string message) {
+        public bool Confirm(string title, string message)
+        {
             return Confirm(title, message, isWarning: false);
         }
 
-        public bool Confirm(string title, string message, bool isWarning) {
-            if (OSSupportsTaskDialogs) {
+        public bool Confirm(string title, string message, bool isWarning)
+        {
+            if (OSSupportsTaskDialogs)
+            {
                 return ConfirmUsingTaskDialog(message, title, isWarning);
             }
-            else {
+            else
+            {
                 MessageBoxResult result = MessageBox.Show(
                     Window.Value,
                     message,
@@ -106,80 +124,36 @@ namespace PackageExplorer {
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private bool ConfirmUsingTaskDialog(string message, string title, bool isWarning) {
-            using (TaskDialog dialog = new TaskDialog()) {
-                dialog.WindowTitle = Resources.Resources.Dialog_Title;
-                dialog.MainInstruction = title;
-                dialog.Content = message;
-                dialog.AllowDialogCancellation = true;
-                dialog.CenterParent = true;
-                if (isWarning) {
-                    dialog.MainIcon = TaskDialogIcon.Warning;
-                }
-
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.Yes));
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
-
-                TaskDialogButton result = dialog.ShowDialog();
-                return result != null && result.ButtonType == ButtonType.Yes;
-            }
-        }
-
-        public bool? ConfirmWithCancel(string message, string title) {
-            if (OSSupportsTaskDialogs) {
+        public bool? ConfirmWithCancel(string message, string title)
+        {
+            if (OSSupportsTaskDialogs)
+            {
                 return ConfirmWithCancelUsingTaskDialog(message, title);
             }
-            else {
+            else
+            {
                 MessageBoxResult result = MessageBox.Show(
                     Window.Value,
                     message,
                     Resources.Resources.Dialog_Title,
                     MessageBoxButton.YesNoCancel,
                     MessageBoxImage.Question);
-                if (result == MessageBoxResult.Cancel) {
+                if (result == MessageBoxResult.Cancel)
+                {
                     return null;
                 }
-                else {
+                else
+                {
                     return result == MessageBoxResult.Yes;
                 }
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        private bool? ConfirmWithCancelUsingTaskDialog(string message, string title) {
-            using (TaskDialog dialog = new TaskDialog()) {
-                dialog.WindowTitle = Resources.Resources.Dialog_Title;
-                dialog.MainInstruction = title;
-                dialog.AllowDialogCancellation = true;
-                dialog.Content = message;
-                dialog.CenterParent = true;
-                dialog.MainIcon = TaskDialogIcon.Warning;
-
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.Yes));
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.Cancel));
-
-                TaskDialogButton result = dialog.ShowDialog();
-
-                if (result == null) {
-                    return null;
-                }
-                else if (result.ButtonType == ButtonType.Yes) {
-                    return true;
-                }
-                else if (result.ButtonType == ButtonType.No) {
-                    return false;
-                }
-                else {
-                    return null;
-                }
-            }
-        }
-
-        public void Show(string message, MessageLevel messageLevel) {
+        public void Show(string message, MessageLevel messageLevel)
+        {
             MessageBoxImage image;
-            switch (messageLevel) {
+            switch (messageLevel)
+            {
                 case MessageLevel.Error:
                     image = MessageBoxImage.Error;
                     break;
@@ -204,103 +178,189 @@ namespace PackageExplorer {
                 image);
         }
 
-        public bool OpenRenameDialog(string currentName, string description, out string newName) {
-            var dialog = new RenameWindow {
-                NewName = currentName,
-                Description = description,
-                Owner = Window.Value
-            };
+        public bool OpenRenameDialog(string currentName, string description, out string newName)
+        {
+            var dialog = new RenameWindow
+                         {
+                             NewName = currentName,
+                             Description = description,
+                             Owner = Window.Value
+                         };
 
             bool? result = dialog.ShowDialog();
-            if (result ?? false) {
+            if (result ?? false)
+            {
                 newName = dialog.NewName;
                 return true;
             }
-            else {
+            else
+            {
                 newName = null;
                 return false;
             }
         }
 
-        public bool OpenPublishDialog(object viewModel) {
-            var dialog = new PublishPackageWindow { 
-                Owner = Window.Value,
-                DataContext = viewModel
-            };
-            var result = dialog.ShowDialog();
+        public bool OpenPublishDialog(object viewModel)
+        {
+            var dialog = new PublishPackageWindow
+                         {
+                             Owner = Window.Value,
+                             DataContext = viewModel
+                         };
+            bool? result = dialog.ShowDialog();
             return result ?? false;
         }
 
-        public bool OpenFolderDialog(string title, string initialPath, out string selectedPath) {
-            var dialog = new VistaFolderBrowserDialog() {
-                ShowNewFolderButton = true,
-                SelectedPath = initialPath,
-                Description = title,
-                UseDescriptionForTitle = true
-            };
+        public bool OpenFolderDialog(string title, string initialPath, out string selectedPath)
+        {
+            var dialog = new VistaFolderBrowserDialog
+                         {
+                             ShowNewFolderButton = true,
+                             SelectedPath = initialPath,
+                             Description = title,
+                             UseDescriptionForTitle = true
+                         };
 
             bool? result = dialog.ShowDialog(Window.Value);
-            if (result ?? false) {
+            if (result ?? false)
+            {
                 selectedPath = dialog.SelectedPath;
                 return true;
             }
-            else {
+            else
+            {
                 selectedPath = null;
                 return false;
             }
         }
 
-        public void BeginInvoke(Action action) {
+        public void BeginInvoke(Action action)
+        {
             Window.Value.Dispatcher.BeginInvoke(action);
         }
 
-        public Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft) {
-            if (numberOfItemsLeft < 0) {
+        public Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft)
+        {
+            if (numberOfItemsLeft < 0)
+            {
                 throw new ArgumentOutOfRangeException("numberofItemsLeft");
             }
-            
+
             string mainInstruction = String.Format(
                 CultureInfo.CurrentCulture,
                 Resources.Resources.MoveContentFileToFolder,
                 fileName,
                 targetFolder);
 
-            if (OSSupportsTaskDialogs) {
+            if (OSSupportsTaskDialogs)
+            {
                 return ConfirmMoveFileUsingTaskDialog(fileName, targetFolder, numberOfItemsLeft, mainInstruction);
             }
-            else {
+            else
+            {
                 bool? answer = ConfirmWithCancel(mainInstruction, Resources.Resources.Dialog_Title);
-                return Tuple.Create(answer, false); 
+                return Tuple.Create(answer, false);
+            }
+        }
+
+        #endregion
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private bool ConfirmUsingTaskDialog(string message, string title, bool isWarning)
+        {
+            using (var dialog = new TaskDialog())
+            {
+                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.MainInstruction = title;
+                dialog.Content = message;
+                dialog.AllowDialogCancellation = true;
+                dialog.CenterParent = true;
+                if (isWarning)
+                {
+                    dialog.MainIcon = TaskDialogIcon.Warning;
+                }
+
+                dialog.Buttons.Add(new TaskDialogButton(ButtonType.Yes));
+                dialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
+
+                TaskDialogButton result = dialog.ShowDialog();
+                return result != null && result.ButtonType == ButtonType.Yes;
             }
         }
 
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private Tuple<bool?, bool> ConfirmMoveFileUsingTaskDialog(string fileName, string targetFolder, int numberOfItemsLeft, string mainInstruction) {
+        private bool? ConfirmWithCancelUsingTaskDialog(string message, string title)
+        {
+            using (var dialog = new TaskDialog())
+            {
+                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.MainInstruction = title;
+                dialog.AllowDialogCancellation = true;
+                dialog.Content = message;
+                dialog.CenterParent = true;
+                dialog.MainIcon = TaskDialogIcon.Warning;
+
+                dialog.Buttons.Add(new TaskDialogButton(ButtonType.Yes));
+                dialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
+                dialog.Buttons.Add(new TaskDialogButton(ButtonType.Cancel));
+
+                TaskDialogButton result = dialog.ShowDialog();
+
+                if (result == null)
+                {
+                    return null;
+                }
+                else if (result.ButtonType == ButtonType.Yes)
+                {
+                    return true;
+                }
+                else if (result.ButtonType == ButtonType.No)
+                {
+                    return false;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private Tuple<bool?, bool> ConfirmMoveFileUsingTaskDialog(string fileName, string targetFolder,
+                                                                  int numberOfItemsLeft, string mainInstruction)
+        {
             string content = String.Format(
                 CultureInfo.CurrentCulture,
                 Resources.Resources.MoveContentFileToFolderExplanation,
                 targetFolder);
-            
-            TaskDialog dialog = new TaskDialog {
-                MainInstruction = mainInstruction,
-                Content = content,
-                WindowTitle = Resources.Resources.Dialog_Title,
-                ButtonStyle = TaskDialogButtonStyle.CommandLinks
-            };
 
-            if (numberOfItemsLeft > 0) {
+            var dialog = new TaskDialog
+                         {
+                             MainInstruction = mainInstruction,
+                             Content = content,
+                             WindowTitle = Resources.Resources.Dialog_Title,
+                             ButtonStyle = TaskDialogButtonStyle.CommandLinks
+                         };
+
+            if (numberOfItemsLeft > 0)
+            {
                 dialog.VerificationText = "Do this for the next " + numberOfItemsLeft + " file(s).";
             }
 
-            TaskDialogButton moveButton = new TaskDialogButton {
-                Text = "Yes",
-                CommandLinkNote = "'" + fileName + "' will be added to '" + targetFolder + "' folder."
-            };
+            var moveButton = new TaskDialogButton
+                             {
+                                 Text = "Yes",
+                                 CommandLinkNote =
+                                     "'" + fileName + "' will be added to '" + targetFolder +
+                                     "' folder."
+                             };
 
-            TaskDialogButton noMoveButton = new TaskDialogButton {
-                Text = "No",
-                CommandLinkNote = "'" + fileName + "' will be added to the package root."
-            };
+            var noMoveButton = new TaskDialogButton
+                               {
+                                   Text = "No",
+                                   CommandLinkNote =
+                                       "'" + fileName + "' will be added to the package root."
+                               };
 
             dialog.Buttons.Add(moveButton);
             dialog.Buttons.Add(noMoveButton);
@@ -309,13 +369,16 @@ namespace PackageExplorer {
             TaskDialogButton result = dialog.ShowDialog(Window.Value);
 
             bool? movingFile;
-            if (result == moveButton) {
+            if (result == moveButton)
+            {
                 movingFile = true;
             }
-            else if (result == noMoveButton) {
+            else if (result == noMoveButton)
+            {
                 movingFile = false;
             }
-            else {
+            else
+            {
                 // Cancel button clicked
                 movingFile = null;
             }

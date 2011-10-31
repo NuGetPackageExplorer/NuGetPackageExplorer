@@ -2,42 +2,53 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.IO;
 
-namespace NuGet {
-    public static class PackageExtensions {
+namespace NuGet
+{
+    public static class PackageExtensions
+    {
         private const string TagsProperty = "Tags";
-        private static readonly string[] _packagePropertiesToSearch = new[] { "Id", "Description", TagsProperty };
+        private static readonly string[] _packagePropertiesToSearch = new[] {"Id", "Description", TagsProperty};
 
-        public static bool IsReleaseVersion(this IPackageMetadata packageMetadata) {
+        public static bool IsReleaseVersion(this IPackageMetadata packageMetadata)
+        {
             return String.IsNullOrEmpty(packageMetadata.Version.SpecialVersion);
         }
 
-        public static string GetHash(this IPackage package) {
+        public static string GetHash(this IPackage package)
+        {
             return GetHash(package, new CryptoHashProvider());
         }
 
-        public static string GetHash(this IPackage package, IHashProvider hashProvider) {
-            using (Stream stream = package.GetStream()) {
+        public static string GetHash(this IPackage package, IHashProvider hashProvider)
+        {
+            using (Stream stream = package.GetStream())
+            {
                 byte[] packageBytes = stream.ReadAllBytes();
                 return Convert.ToBase64String(hashProvider.CalculateHash(packageBytes));
             }
         }
 
-        public static string GetFullName(this IPackageMetadata package) {
+        public static string GetFullName(this IPackageMetadata package)
+        {
             return package.Id + " " + package.Version;
         }
 
-        public static IQueryable<DataServicePackage> Find(this IQueryable<DataServicePackage> packages, params string[] searchTerms) {
-            if (searchTerms == null) {
+        public static IQueryable<DataServicePackage> Find(this IQueryable<DataServicePackage> packages,
+                                                          params string[] searchTerms)
+        {
+            if (searchTerms == null)
+            {
                 return packages;
             }
 
             IEnumerable<string> nonNullTerms = searchTerms.Where(s => s != null);
-            if (!nonNullTerms.Any()) {
+            if (!nonNullTerms.Any())
+            {
                 return packages;
             }
 
@@ -47,37 +58,43 @@ namespace NuGet {
         /// <summary>
         /// Constructs an expression to search for individual tokens in a search term in the Id and Description of packages
         /// </summary>
-        private static Expression<Func<DataServicePackage, bool>> BuildSearchExpression(IEnumerable<string> searchTerms) {
+        private static Expression<Func<DataServicePackage, bool>> BuildSearchExpression(IEnumerable<string> searchTerms)
+        {
             Debug.Assert(searchTerms != null);
-            var parameterExpression = Expression.Parameter(typeof(IPackageMetadata));
+            ParameterExpression parameterExpression = Expression.Parameter(typeof(IPackageMetadata));
             // package.Id.ToLower().Contains(term1) || package.Id.ToLower().Contains(term2)  ...
             Expression condition = (from term in searchTerms
                                     from property in _packagePropertiesToSearch
-                                    select BuildExpressionForTerm(parameterExpression, term, property)).Aggregate(Expression.OrElse);
+                                    select BuildExpressionForTerm(parameterExpression, term, property)).Aggregate(
+                                        Expression.OrElse);
             return Expression.Lambda<Func<DataServicePackage, bool>>(condition, parameterExpression);
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1304:SpecifyCultureInfo", MessageId = "System.String.ToLower",
             Justification = "The expression is remoted using Odata which does not support the culture parameter")]
-        private static Expression BuildExpressionForTerm(ParameterExpression packageParameterExpression, string term, string propertyName) {
+        private static Expression BuildExpressionForTerm(ParameterExpression packageParameterExpression, string term,
+                                                         string propertyName)
+        {
             // For tags we want to prepend and append spaces to do an exact match
-            if (propertyName.Equals(TagsProperty, StringComparison.OrdinalIgnoreCase)) {
+            if (propertyName.Equals(TagsProperty, StringComparison.OrdinalIgnoreCase))
+            {
                 term = " " + term + " ";
             }
 
-            MethodInfo stringContains = typeof(String).GetMethod("Contains", new Type[] { typeof(string) });
+            MethodInfo stringContains = typeof(String).GetMethod("Contains", new[] {typeof(string)});
             MethodInfo stringToLower = typeof(String).GetMethod("ToLower", Type.EmptyTypes);
 
             // package.Id / package.Description
-            var propertyExpression = Expression.Property(packageParameterExpression, propertyName);
+            MemberExpression propertyExpression = Expression.Property(packageParameterExpression, propertyName);
             // .ToLower()
-            var toLowerExpression = Expression.Call(propertyExpression, stringToLower);
+            MethodCallExpression toLowerExpression = Expression.Call(propertyExpression, stringToLower);
 
             // Handle potentially null properties
             // package.{propertyName} != null && package.{propertyName}.ToLower().Contains(term.ToLower())
             return Expression.AndAlso(Expression.NotEqual(propertyExpression,
-                                                      Expression.Constant(null)),
-                                      Expression.Call(toLowerExpression, stringContains, Expression.Constant(term.ToLower())));
+                                                          Expression.Constant(null)),
+                                      Expression.Call(toLowerExpression, stringContains,
+                                                      Expression.Constant(term.ToLower())));
         }
     }
 }

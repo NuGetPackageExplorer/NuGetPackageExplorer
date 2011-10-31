@@ -1,22 +1,32 @@
 ﻿using System;
 
-namespace NuGet {
-    public class AssemblyReference : IEquatable<AssemblyReference> {
-        public string File { get; private set; }
-
-        public AssemblyReference(string file) {
-            if (file == null) {
+namespace NuGet
+{
+    public class AssemblyReference : IEquatable<AssemblyReference>
+    {
+        public AssemblyReference(string file)
+        {
+            if (file == null)
+            {
                 throw new ArgumentNullException("file");
             }
 
             File = file;
         }
 
-        public bool Equals(AssemblyReference other) {
+        public string File { get; private set; }
+
+        #region IEquatable<AssemblyReference> Members
+
+        public bool Equals(AssemblyReference other)
+        {
             return File.Equals(other.File, StringComparison.OrdinalIgnoreCase);
         }
 
-        public override int GetHashCode() {
+        #endregion
+
+        public override int GetHashCode()
+        {
             return File.GetHashCode();
         }
     }

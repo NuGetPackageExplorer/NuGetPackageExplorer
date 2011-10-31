@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 
-namespace NuGet {
-    public interface IPackageMetadata {
+namespace NuGet
+{
+    public interface IPackageMetadata
+    {
         string Id { get; }
         SemanticVersion Version { get; }
         string Title { get; }

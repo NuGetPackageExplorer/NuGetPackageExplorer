@@ -1,22 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Windows.Input;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorerViewModel {
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")]
-    public abstract class PackagePart : IComparable<PackagePart>, INotifyPropertyChanged, IDisposable {
+namespace PackageExplorerViewModel
+{
+    [SuppressMessage("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")]
+    public abstract class PackagePart : IComparable<PackagePart>, INotifyPropertyChanged, IDisposable
+    {
+        private readonly PackageViewModel _viewModel;
         private int _hashCode;
+        private bool _isSelected;
+        private string _name;
+        private PackageFolder _parent;
+        private string _path;
 
-        protected PackagePart(string name, PackageFolder parent, PackageViewModel viewModel) {
-            if (name == null) {
+        protected PackagePart(string name, PackageFolder parent, PackageViewModel viewModel)
+        {
+            if (name == null)
+            {
                 throw new ArgumentNullException("name");
             }
 
-            if (viewModel == null) {
+            if (viewModel == null)
+            {
                 throw new ArgumentNullException("viewModel");
             }
 
@@ -28,31 +39,31 @@ namespace PackageExplorerViewModel {
             RecalculatePath();
         }
 
-        private readonly PackageViewModel _viewModel;
-        public PackageViewModel PackageViewModel {
+        public PackageViewModel PackageViewModel
+        {
             get { return _viewModel; }
         }
 
-        private PackageFolder _parent;
-        public PackageFolder Parent {
-            get {
-                return _parent;
-            }
-            internal set {
-                if (_parent != value) {
+        public PackageFolder Parent
+        {
+            get { return _parent; }
+            internal set
+            {
+                if (_parent != value)
+                {
                     _parent = value;
                     UpdatePath();
                 }
             }
         }
 
-        private string _name;
-        public string Name {
-            get {
-                return _name;
-            }
-            set {
-                if (_name != value) {
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                if (_name != value)
+                {
                     // precalculate hash code to improve perf
                     _hashCode = value == null ? 0 : value.ToUpperInvariant().GetHashCode();
 
@@ -63,52 +74,104 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        private string _path;
-
-        public string Path {
-            get {
-                return _path;
-            }
-            set {
-                if (_path != value) {
+        public string Path
+        {
+            get { return _path; }
+            set
+            {
+                if (_path != value)
+                {
                     _path = value;
                     OnPropertyChanged("Path");
                 }
             }
         }
 
-        private bool _isSelected;
-
-        public bool IsSelected {
-            get {
-                return _isSelected;
-            }
-            set {
-                if (_isSelected != value) {
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                if (_isSelected != value)
+                {
                     _isSelected = value;
                     OnPropertyChanged("IsSelected");
                 }
             }
         }
 
-        public ICommand DeleteCommand {
-            get {
-                return PackageViewModel.DeleteContentCommand;
+        public ICommand DeleteCommand
+        {
+            get { return PackageViewModel.DeleteContentCommand; }
+        }
+
+        public ICommand RenameCommand
+        {
+            get { return PackageViewModel.RenameContentCommand; }
+        }
+
+        #region IComparable<PackagePart> Members
+
+        public int CompareTo(PackagePart other)
+        {
+            if (this == other)
+            {
+                return 0;
+            }
+
+            if (other == null)
+            {
+                return 1;
+            }
+
+            // folder goes before file
+            if (this is PackageFolder && other is PackageFile)
+            {
+                return -1;
+            }
+
+            if (this is PackageFile && other is PackageFolder)
+            {
+                return 1;
+            }
+
+            return String.Compare(Path, other.Path, StringComparison.OrdinalIgnoreCase);
+        }
+
+        #endregion
+
+        #region IDisposable Members
+
+        public void Dispose()
+        {
+            try
+            {
+                Dispose(true);
+            }
+            finally
+            {
+                GC.SuppressFinalize(this);
             }
         }
 
-        public ICommand RenameCommand {
-            get {
-                return PackageViewModel.RenameContentCommand;
-            }
-        }
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
 
         public abstract void Export(string rootPath);
 
-        public void Rename(string newName) {
-            if (Name != newName) {
-                if (Parent != null) {
-                    if (Parent.ContainsFile(newName) || Parent.ContainsFolder(newName)) {
+        public void Rename(string newName)
+        {
+            if (Name != newName)
+            {
+                if (Parent != null)
+                {
+                    if (Parent.ContainsFile(newName) || Parent.ContainsFolder(newName))
+                    {
                         PackageViewModel.UIServices.Show(
                             String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, newName),
                             MessageLevel.Error);
@@ -121,93 +184,74 @@ namespace PackageExplorerViewModel {
             }
         }
 
-        public void Delete(bool requireConfirmation = true) {
-            if (requireConfirmation) {
+        public void Delete(bool requireConfirmation = true)
+        {
+            if (requireConfirmation)
+            {
                 bool confirm = PackageViewModel.UIServices.Confirm(
-                    Resources.ConfirmToDeleteContent_Title, 
-                    String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToDeleteContent, Name), 
+                    Resources.ConfirmToDeleteContent_Title,
+                    String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToDeleteContent, Name),
                     isWarning: true);
-                
-                if (!confirm) {
+
+                if (!confirm)
+                {
                     return;
                 }
             }
 
-            if (Parent != null) {
+            if (Parent != null)
+            {
                 Parent.RemoveChild(this);
                 PackageViewModel.NotifyContentDeleted(this);
             }
         }
 
-        public int CompareTo(PackagePart other) {
-            if (this == other) {
-                return 0;
-            }
-
-            if (other == null) {
-                return 1;
-            }
-
-            // folder goes before file
-            if (this is PackageFolder && other is PackageFile) {
-                return -1;
-            }
-
-            if (this is PackageFile && other is PackageFolder) {
-                return 1;
-            }
-
-            return String.Compare(this.Path, other.Path, StringComparison.OrdinalIgnoreCase);
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        [SuppressMessage(
             "Microsoft.Design",
             "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This method is potentially expensive.")]
         public abstract IEnumerable<IPackageFile> GetFiles();
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName) {
-            if (PropertyChanged != null) {
+        protected void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-        protected void RecalculatePath() {
+        protected void RecalculatePath()
+        {
             Path = (Parent == null || String.IsNullOrEmpty(Parent.Path)) ? Name : (Parent.Path + "\\" + Name);
         }
 
-        internal virtual void UpdatePath() {
+        internal virtual void UpdatePath()
+        {
             RecalculatePath();
         }
 
-        public override bool Equals(object obj) {
-            PackagePart other = obj as PackagePart;
-            if (other == null) {
+        public override bool Equals(object obj)
+        {
+            var other = obj as PackagePart;
+            if (other == null)
+            {
                 return false;
             }
 
             return CompareTo(other) == 0;
         }
 
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             return _hashCode;
         }
 
-        public void Dispose() {
-            try {
-                Dispose(true);
-            }
-            finally {
-                GC.SuppressFinalize(this);
-            }
+        protected virtual void Dispose(bool disposing)
+        {
         }
 
-        protected virtual void Dispose(bool disposing) {
-        }
-
-        ~PackagePart() {
+        ~PackagePart()
+        {
             Dispose(false);
         }
     }

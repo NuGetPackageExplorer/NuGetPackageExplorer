@@ -8,10 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
 [assembly: ComVisible(false)]
-
 [assembly: NeutralResourcesLanguage("en-US")]
-
 [assembly: AssemblyVersion("2.5.0.0")]
 [assembly: AssemblyFileVersion("2.5.0.0")]

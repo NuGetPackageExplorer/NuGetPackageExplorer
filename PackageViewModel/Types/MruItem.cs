@@ -3,7 +3,8 @@ using NuGet;
 
 namespace NuGetPackageExplorer.Types
 {
-    public enum PackageType {
+    public enum PackageType
+    {
         LocalPackage,
         DataServicePackage
     }
@@ -15,6 +16,8 @@ namespace NuGetPackageExplorer.Types
         public string Path { get; set; }
         public PackageType PackageType { get; set; }
 
+        #region IEquatable<MruItem> Members
+
         public bool Equals(MruItem other)
         {
             if (other == null)
@@ -23,6 +26,8 @@ namespace NuGetPackageExplorer.Types
             }
             return Path.Equals(other.Path, StringComparison.OrdinalIgnoreCase);
         }
+
+        #endregion
 
         public override bool Equals(object obj)
         {

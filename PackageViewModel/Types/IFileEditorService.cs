@@ -1,7 +1,7 @@
-﻿using System.IO;
-
-namespace NuGetPackageExplorer.Types {
-    public interface IFileEditorService {
+﻿namespace NuGetPackageExplorer.Types
+{
+    public interface IFileEditorService
+    {
         void Save(string filePath);
     }
 }

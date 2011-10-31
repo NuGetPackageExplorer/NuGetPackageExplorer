@@ -2,10 +2,12 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 
-namespace PackageExplorer {
+namespace PackageExplorer
+{
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    public struct WindowPlacement {
+    public struct WindowPlacement
+    {
         public int length;
         public int flags;
         public int showCmd;
@@ -14,7 +16,8 @@ namespace PackageExplorer {
         public Point maxPosition;
         public Rect normalPosition;
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return String.Format(
                 CultureInfo.InvariantCulture,
                 "{0}|{1}|{2}|{3}|{4}|{5}",
@@ -26,10 +29,12 @@ namespace PackageExplorer {
                 normalPosition);
         }
 
-        public static WindowPlacement Parse(string value) {
+        public static WindowPlacement Parse(string value)
+        {
             string[] parts = value.Split('|');
 
-            if (parts.Length != 6) {
+            if (parts.Length != 6)
+            {
                 return new WindowPlacement();
             }
 
@@ -40,13 +45,15 @@ namespace PackageExplorer {
             Point fmaxPosition = Point.Parse(parts[4]);
             Rect fnormalPosition = Rect.Parse(parts[5]);
 
-            return new WindowPlacement {
-                length = flength,
-                flags = fflags,
-                showCmd = fshowCmd,
-                minPosition = fminPosition,
-                maxPosition = fmaxPosition,
-                normalPosition = fnormalPosition};
+            return new WindowPlacement
+                   {
+                       length = flength,
+                       flags = fflags,
+                       showCmd = fshowCmd,
+                       minPosition = fminPosition,
+                       maxPosition = fmaxPosition,
+                       normalPosition = fnormalPosition
+                   };
         }
     }
 
@@ -61,18 +68,21 @@ namespace PackageExplorer {
 
         public Rect(int left, int top, int width, int height)
         {
-            this.Left = left;
-            this.Top = top;
-            this.Width = width;
-            this.Height = height;
+            Left = left;
+            Top = top;
+            Width = width;
+            Height = height;
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return String.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3}", Left, Top, Width, Height);
         }
 
-        public static Rect Parse(string value) {
-            int[] ss = Array.ConvertAll<string, int>(value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries), v => int.Parse(v, CultureInfo.InvariantCulture));
+        public static Rect Parse(string value)
+        {
+            int[] ss = Array.ConvertAll(value.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
+                                        v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 4 ? new Rect(ss[0], ss[1], ss[2], ss[3]) : new Rect();
         }
     }
@@ -86,16 +96,19 @@ namespace PackageExplorer {
 
         public Point(int x, int y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
 
-        public override string ToString() {
+        public override string ToString()
+        {
             return String.Format(CultureInfo.InvariantCulture, "{0};{1}", X, Y);
         }
 
-        public static Point Parse(string value) {
-            int[] ss = Array.ConvertAll<string, int>(value.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries), v => int.Parse(v, CultureInfo.InvariantCulture));
+        public static Point Parse(string value)
+        {
+            int[] ss = Array.ConvertAll(value.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
+                                        v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 2 ? new Point(ss[0], ss[1]) : new Point();
         }
     }

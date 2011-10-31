@@ -1,41 +1,53 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Text;
 
-namespace NuGet {
-    public class VersionSpec : IVersionSpec {
+namespace NuGet
+{
+    public class VersionSpec : IVersionSpec
+    {
+        #region IVersionSpec Members
+
         public SemanticVersion MinVersion { get; set; }
         public bool IsMinInclusive { get; set; }
         public SemanticVersion MaxVersion { get; set; }
         public bool IsMaxInclusive { get; set; }
 
-        public override string ToString() {
-            if (MinVersion != null && IsMinInclusive && MaxVersion == null && !IsMaxInclusive) {
+        #endregion
+
+        public override string ToString()
+        {
+            if (MinVersion != null && IsMinInclusive && MaxVersion == null && !IsMaxInclusive)
+            {
                 return MinVersion.ToString();
             }
 
-            if (MinVersion != null && MaxVersion != null && MinVersion == MaxVersion && IsMinInclusive && IsMaxInclusive) {
+            if (MinVersion != null && MaxVersion != null && MinVersion == MaxVersion && IsMinInclusive && IsMaxInclusive)
+            {
                 return "[" + MinVersion + "]";
             }
 
             var versionBuilder = new StringBuilder();
-            if (IsMinInclusive) {
+            if (IsMinInclusive)
+            {
                 versionBuilder.Append("[");
             }
-            else {
+            else
+            {
                 versionBuilder.Append("(");
             }
 
             versionBuilder.AppendFormat(CultureInfo.InvariantCulture, "{0}, {1}", MinVersion, MaxVersion);
 
-            if (IsMaxInclusive) {
+            if (IsMaxInclusive)
+            {
                 versionBuilder.Append("]");
             }
-            else {
+            else
+            {
                 versionBuilder.Append(")");
             }
 
-            return versionBuilder.ToString(); 
+            return versionBuilder.ToString();
         }
     }
 }

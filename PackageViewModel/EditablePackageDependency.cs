@@ -2,68 +2,88 @@
 using System.ComponentModel;
 using NuGet;
 
-namespace PackageExplorerViewModel {
-
-    public class EditablePackageDependency : INotifyPropertyChanged, IDataErrorInfo {
-
-        public EditablePackageDependency() {
-        }
-
-        public EditablePackageDependency(string id, IVersionSpec versionSpec) {
-            this.Id = id;
-            this.VersionSpec = versionSpec;
-        }
-
+namespace PackageExplorerViewModel
+{
+    public class EditablePackageDependency : INotifyPropertyChanged, IDataErrorInfo
+    {
         private string _id;
+        private IVersionSpec _versionSpec;
 
-        public string Id {
-            get {
-                return _id;
-            }
-            set {
-                if (_id != value) {
+        public EditablePackageDependency()
+        {
+        }
+
+        public EditablePackageDependency(string id, IVersionSpec versionSpec)
+        {
+            Id = id;
+            VersionSpec = versionSpec;
+        }
+
+        public string Id
+        {
+            get { return _id; }
+            set
+            {
+                if (_id != value)
+                {
                     _id = value;
                     RaisePropertyChange("Id");
                 }
             }
         }
 
-        private IVersionSpec _versionSpec;
-
-        public IVersionSpec VersionSpec {
+        public IVersionSpec VersionSpec
+        {
             get { return _versionSpec; }
-            set {
-                if (_versionSpec != value) {
+            set
+            {
+                if (_versionSpec != value)
+                {
                     _versionSpec = value;
                     RaisePropertyChange("VersionSpec");
                 }
             }
         }
 
+        #region IDataErrorInfo Members
+
+        public string Error
+        {
+            get { return null; }
+        }
+
+        public string this[string columnName]
+        {
+            get { return IsValid(columnName); }
+        }
+
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void RaisePropertyChange(string propertyName) {
-            if (PropertyChanged != null) {
+        #endregion
+
+        private void RaisePropertyChange(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
-        public string Error {
-            get { return null; }
-        }
-
-        public string this[string columnName] {
-            get { return IsValid(columnName); }
-        }
-
-        private string IsValid(string columnName) {
-            if (columnName == "Id") {
-
-                if (String.IsNullOrEmpty(Id)) {
+        private string IsValid(string columnName)
+        {
+            if (columnName == "Id")
+            {
+                if (String.IsNullOrEmpty(Id))
+                {
                     return null;
                 }
 
-                if (!PackageIdValidator.IsValidPackageId(Id)) {
+                if (!PackageIdValidator.IsValidPackageId(Id))
+                {
                     return "Value '" + Id + "' cannot be converted.";
                 }
             }
@@ -71,7 +91,8 @@ namespace PackageExplorerViewModel {
             return null;
         }
 
-        public PackageDependency AsReadOnly() {
+        public PackageDependency AsReadOnly()
+        {
             return new PackageDependency(Id, VersionSpec);
         }
     }

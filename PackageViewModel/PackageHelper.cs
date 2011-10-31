@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorerViewModel {
-    internal static class PackageHelper {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", 
+namespace PackageExplorerViewModel
+{
+    internal static class PackageHelper
+    {
+        [SuppressMessage(
+            "Microsoft.Design",
             "CA1031:DoNotCatchGeneralExceptionTypes",
-            Justification="We don't really care of deleting temp file fails.")]
-        public static void SavePackage(IPackageMetadata packageMetadata, IEnumerable<IPackageFile> files, string targetFilePath, bool useTempFile) {
+            Justification = "We don't really care of deleting temp file fails.")]
+        public static void SavePackage(IPackageMetadata packageMetadata, IEnumerable<IPackageFile> files,
+                                       string targetFilePath, bool useTempFile)
+        {
             var builder = new PackageBuilder();
             // set metadata
             CopyMetadata(packageMetadata, builder);
@@ -21,28 +26,36 @@ namespace PackageExplorerViewModel {
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
             string fileNameToUse = useTempFile ? Path.GetTempFileName() : targetFilePath;
-            try {
-                using (Stream stream = File.Create(fileNameToUse)) {
+            try
+            {
+                using (Stream stream = File.Create(fileNameToUse))
+                {
                     builder.Save(stream);
                 }
 
-                if (useTempFile) {
+                if (useTempFile)
+                {
                     File.Copy(fileNameToUse, targetFilePath, true);
                 }
             }
-            finally {
-                try {
-                    if (useTempFile && File.Exists(fileNameToUse)) {
+            finally
+            {
+                try
+                {
+                    if (useTempFile && File.Exists(fileNameToUse))
+                    {
                         File.Delete(fileNameToUse);
                     }
                 }
-                catch {
+                catch
+                {
                     // don't care if this fails
                 }
             }
         }
 
-        private static void CopyMetadata(IPackageMetadata source, PackageBuilder builder) {
+        private static void CopyMetadata(IPackageMetadata source, PackageBuilder builder)
+        {
             builder.Id = source.Id;
             builder.Version = source.Version;
             builder.Title = source.Title;
@@ -63,26 +76,35 @@ namespace PackageExplorerViewModel {
             builder.PackageAssemblyReferences.AddRange(source.References);
         }
 
-        public static IPackage BuildPackage(IPackageMetadata metadata, IEnumerable<IPackageFile> files) {
+        public static IPackage BuildPackage(IPackageMetadata metadata, IEnumerable<IPackageFile> files)
+        {
             var builder = new PackageBuilder();
             CopyMetadata(metadata, builder);
             builder.Files.AddRange(files);
             return builder.Build();
         }
 
-        public static IEnumerable<PackageIssue> Validate(this IPackage package, IEnumerable<IPackageRule> rules, string packageSource) {
-            foreach (var rule in rules) {
-                if (rule != null) {
+        public static IEnumerable<PackageIssue> Validate(this IPackage package, IEnumerable<IPackageRule> rules,
+                                                         string packageSource)
+        {
+            foreach (IPackageRule rule in rules)
+            {
+                if (rule != null)
+                {
                     IEnumerable<PackageIssue> issues = null;
-                    try {
+                    try
+                    {
                         issues = rule.Validate(package, packageSource);
                     }
-                    catch (Exception) {
+                    catch (Exception)
+                    {
                     }
 
                     // can't yield inside a try/catch block
-                    if (issues != null) {
-                        foreach (var issue in issues) {
+                    if (issues != null)
+                    {
+                        foreach (PackageIssue issue in issues)
+                        {
                             yield return issue;
                         }
                     }
@@ -93,11 +115,13 @@ namespace PackageExplorerViewModel {
         /// <summary>
         /// Tags come in this format. tag1 tag2 tag3 etc..
         /// </summary>
-        private static IEnumerable<string> ParseTags(string tags) {
-            if (tags == null) {
+        private static IEnumerable<string> ParseTags(string tags)
+        {
+            if (tags == null)
+            {
                 return Enumerable.Empty<string>();
             }
-            return tags.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            return tags.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

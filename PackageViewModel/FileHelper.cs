@@ -5,30 +5,45 @@ using System.IO;
 using System.Linq;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorerViewModel {
-    internal static class FileHelper {
-        private static string[] _executableScriptsExtensions = new string[] {
-            ".BAS", ".BAT", ".CHM", ".COM", ".EXE", ".HTA", ".INF", ".JS", ".LNK", ".MSI", 
-            ".OCX", ".PPT", ".REG", ".SCT", ".SHS", ".SYS", ".URL", ".VB", ".VBS", ".WSH", ".WSF"
-        };
+namespace PackageExplorerViewModel
+{
+    internal static class FileHelper
+    {
+        private static readonly string[] _executableScriptsExtensions = new[]
+                                                                        {
+                                                                            ".BAS", ".BAT", ".CHM", ".COM", ".EXE"
+                                                                            , ".HTA", ".INF", ".JS", ".LNK",
+                                                                            ".MSI",
+                                                                            ".OCX", ".PPT", ".REG", ".SCT", ".SHS"
+                                                                            , ".SYS", ".URL", ".VB", ".VBS",
+                                                                            ".WSH", ".WSF"
+                                                                        };
 
-        private static string[] BinaryFileExtensions = new string[] { 
-            ".DLL", ".EXE", ".WINMD", ".CHM", ".PDF", ".DOCX", ".DOC", ".JPG", ".PNG", ".GIF", ".RTF", ".PDB", ".ZIP", ".RAR", ".XAP", ".VSIX", ".NUPKG", ".SNK", ".PFX", ".ICO"
-        };
+        private static readonly string[] BinaryFileExtensions = new[]
+                                                                {
+                                                                    ".DLL", ".EXE", ".WINMD", ".CHM", ".PDF",
+                                                                    ".DOCX", ".DOC", ".JPG", ".PNG", ".GIF",
+                                                                    ".RTF", ".PDB", ".ZIP", ".RAR", ".XAP",
+                                                                    ".VSIX", ".NUPKG", ".SNK", ".PFX", ".ICO"
+                                                                };
 
-        public static bool IsBinaryFile(string path) {
+        public static bool IsBinaryFile(string path)
+        {
             // TODO: check for content type of the file here
             string extension = Path.GetExtension(path).ToUpper(CultureInfo.InvariantCulture);
             return String.IsNullOrEmpty(extension) || BinaryFileExtensions.Any(p => p.Equals(extension));
         }
 
-        public static void OpenFileInShell(PackageFile file, IUIServices uiServices) {
-            if (IsExecutableScript(file.Name)) {
+        public static void OpenFileInShell(PackageFile file, IUIServices uiServices)
+        {
+            if (IsExecutableScript(file.Name))
+            {
                 bool confirm = uiServices.Confirm(
-                    String.Format(CultureInfo.CurrentCulture, Resources.OpenExecutableScriptWarning_Title, file.Name), 
-                    Resources.OpenExecutableScriptWarning, 
+                    String.Format(CultureInfo.CurrentCulture, Resources.OpenExecutableScriptWarning_Title, file.Name),
+                    Resources.OpenExecutableScriptWarning,
                     isWarning: true);
-                if (!confirm) {
+                if (!confirm)
+                {
                     return;
                 }
             }
@@ -37,65 +52,81 @@ namespace PackageExplorerViewModel {
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
             string tempFileName = Path.Combine(GetTempFilePath(), file.Name);
-            using (Stream tempFileStream = File.Create(tempFileName)) {
+            using (Stream tempFileStream = File.Create(tempFileName))
+            {
                 file.GetStream().CopyTo(tempFileStream);
             }
 
-            if (File.Exists(tempFileName)) {
+            if (File.Exists(tempFileName))
+            {
                 Process.Start("explorer.exe", tempFileName);
             }
         }
 
-        private static bool IsExecutableScript(string fileName) {
+        private static bool IsExecutableScript(string fileName)
+        {
             string extension = Path.GetExtension(fileName).ToUpperInvariant();
             return Array.IndexOf(_executableScriptsExtensions, extension) > -1;
         }
-        
-        public static void OpenFileInShellWith(PackageFile file) {
+
+        public static void OpenFileInShellWith(PackageFile file)
+        {
             // copy to temporary file
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
             string tempFileName = Path.Combine(GetTempFilePath(), file.Name);
 
-            using (Stream tempFileStream = File.Create(tempFileName)) {
+            using (Stream tempFileStream = File.Create(tempFileName))
+            {
                 file.GetStream().CopyTo(tempFileStream);
             }
 
-            if (File.Exists(tempFileName)) {
-                ProcessStartInfo info = new ProcessStartInfo("rundll32.exe") {
-                    ErrorDialog = true,
-                    UseShellExecute = false,
-                    Arguments = "shell32.dll,OpenAs_RunDLL " + tempFileName
-                };
+            if (File.Exists(tempFileName))
+            {
+                var info = new ProcessStartInfo("rundll32.exe")
+                           {
+                               ErrorDialog = true,
+                               UseShellExecute = false,
+                               Arguments =
+                                   "shell32.dll,OpenAs_RunDLL " + tempFileName
+                           };
 
                 Process.Start(info);
             }
         }
 
-        public static string GuessFolderNameFromFile(string file) {
-            string extension = System.IO.Path.GetExtension(file).ToUpperInvariant();
-            if (extension == ".DLL" || extension == ".PDB") {
+        public static string GuessFolderNameFromFile(string file)
+        {
+            string extension = Path.GetExtension(file).ToUpperInvariant();
+            if (extension == ".DLL" || extension == ".PDB")
+            {
                 return "lib";
             }
-            else if (extension == ".PS1" || extension == ".PSM1" || extension == ".PSD1") {
+            else if (extension == ".PS1" || extension == ".PSM1" || extension == ".PSD1")
+            {
                 return "tools";
             }
-            else {
+            else
+            {
                 return "content";
             }
         }
 
-        public static string GetTempFilePath() {
+        public static string GetTempFilePath()
+        {
             string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            if (!Directory.Exists(tempPath)) {
+            if (!Directory.Exists(tempPath))
+            {
                 Directory.CreateDirectory(tempPath);
             }
 
             return tempPath;
         }
 
-        public static string CreateTempFile(string fileName, string content = "") {
-            if (String.IsNullOrEmpty(fileName)) {
+        public static string CreateTempFile(string fileName, string content = "")
+        {
+            if (String.IsNullOrEmpty(fileName))
+            {
                 throw new ArgumentException("Argument is null or empty", "fileName");
             }
 
@@ -104,7 +135,8 @@ namespace PackageExplorerViewModel {
             return filePath;
         }
 
-        public static bool IsAssembly(string path) {
+        public static bool IsAssembly(string path)
+        {
             return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
                    path.EndsWith(".winmd", StringComparison.OrdinalIgnoreCase) ||
                    path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);

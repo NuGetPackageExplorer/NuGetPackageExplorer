@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows.Input;
 
 namespace PackageExplorerViewModel
@@ -28,14 +29,17 @@ namespace PackageExplorerViewModel
         public RelayCommand(Action<T> execute, Predicate<T> canExecute)
         {
             if (execute == null)
+            {
                 throw new ArgumentNullException("execute");
+            }
 
             _execute = execute;
             _canExecute = canExecute;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
-        public void RaiseCanExecuteChanged() {
+        [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
+        public void RaiseCanExecuteChanged()
+        {
             CommandManager.InvalidateRequerySuggested();
         }
 
@@ -46,7 +50,7 @@ namespace PackageExplorerViewModel
         [DebuggerStepThrough]
         public bool CanExecute(object parameter)
         {
-            return _canExecute == null ? true : _canExecute((T)parameter);
+            return _canExecute == null ? true : _canExecute((T) parameter);
         }
 
         public event EventHandler CanExecuteChanged
@@ -54,26 +58,30 @@ namespace PackageExplorerViewModel
             add
             {
                 if (_canExecute != null)
+                {
                     CommandManager.RequerySuggested += value;
+                }
             }
             remove
             {
                 if (_canExecute != null)
+                {
                     CommandManager.RequerySuggested -= value;
+                }
             }
         }
 
         public void Execute(object parameter)
         {
-            _execute((T)parameter);
+            _execute((T) parameter);
         }
 
-        #endregion // ICommand Members
+        #endregion
 
         #region Fields
 
-        readonly Action<T> _execute = null;
-        readonly Predicate<T> _canExecute = null;
+        private readonly Predicate<T> _canExecute;
+        private readonly Action<T> _execute;
 
         #endregion // Fields
     }
@@ -106,18 +114,15 @@ namespace PackageExplorerViewModel
         public RelayCommand(Action execute, Func<bool> canExecute)
         {
             if (execute == null)
+            {
                 throw new ArgumentNullException("execute");
+            }
 
             _execute = execute;
             _canExecute = canExecute;
         }
 
         #endregion // Constructors
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        public void RaiseCanExecuteChanged() {
-            CommandManager.InvalidateRequerySuggested();
-        }
 
         #region ICommand Members
 
@@ -132,12 +137,16 @@ namespace PackageExplorerViewModel
             add
             {
                 if (_canExecute != null)
+                {
                     CommandManager.RequerySuggested += value;
+                }
             }
             remove
             {
                 if (_canExecute != null)
+                {
                     CommandManager.RequerySuggested -= value;
+                }
             }
         }
 
@@ -146,13 +155,20 @@ namespace PackageExplorerViewModel
             _execute();
         }
 
-        #endregion // ICommand Members
+        #endregion
 
         #region Fields
 
-        readonly Action _execute;
-        readonly Func<bool> _canExecute;
+        private readonly Func<bool> _canExecute;
+        private readonly Action _execute;
 
         #endregion // Fields
+
+        [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate"),
+         SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        public void RaiseCanExecuteChanged()
+        {
+            CommandManager.InvalidateRequerySuggested();
+        }
     }
 }

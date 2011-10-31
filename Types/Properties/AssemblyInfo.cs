@@ -9,11 +9,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-
 [assembly: ComVisible(false)]
-
 [assembly: AssemblyVersion("3.0.0.0")]
 [assembly: AssemblyFileVersion("3.0.0.0")]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
+
 [assembly: Guid("8bdc7953-73c3-47d6-b0c5-41fda3d55e42")]

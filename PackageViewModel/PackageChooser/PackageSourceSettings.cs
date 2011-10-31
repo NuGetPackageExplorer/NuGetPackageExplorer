@@ -8,7 +8,7 @@ namespace PackageExplorerViewModel
 {
     internal class PackageSourceSettings : ISourceSettings
     {
-        private ISettingsManager _settingsManager;
+        private readonly ISettingsManager _settingsManager;
 
         public PackageSourceSettings(ISettingsManager settingsManager)
         {
@@ -22,9 +22,11 @@ namespace PackageExplorerViewModel
             }
         }
 
+        #region ISourceSettings Members
+
         public IList<string> GetSources()
         {
-            var sources = _settingsManager.GetPackageSources();
+            IList<string> sources = _settingsManager.GetPackageSources();
 
             // migrate nuget v1 feed to v2 feed
             for (int i = 0; i < sources.Count; i++)
@@ -50,14 +52,10 @@ namespace PackageExplorerViewModel
 
         public string ActiveSource
         {
-            get
-            {
-                return _settingsManager.ActivePackageSource;
-            }
-            set
-            {
-                _settingsManager.ActivePackageSource = value;
-            }
+            get { return _settingsManager.ActivePackageSource; }
+            set { _settingsManager.ActivePackageSource = value; }
         }
+
+        #endregion
     }
 }

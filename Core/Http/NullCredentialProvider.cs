@@ -1,25 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net;
 
-namespace NuGet {
-    public class NullCredentialProvider : ICredentialProvider {
+namespace NuGet
+{
+    public class NullCredentialProvider : ICredentialProvider
+    {
         private static readonly NullCredentialProvider _instance = new NullCredentialProvider();
 
-        public static ICredentialProvider Instance {
-            get {
-                return _instance;
-            }
+        private NullCredentialProvider()
+        {
         }
 
-        private NullCredentialProvider() {
-
+        public static ICredentialProvider Instance
+        {
+            get { return _instance; }
         }
 
-        public ICredentials GetCredentials(Uri uri, System.Net.IWebProxy proxy) {
+        #region ICredentialProvider Members
+
+        public ICredentials GetCredentials(Uri uri, IWebProxy proxy)
+        {
             return null;
         }
+
+        #endregion
     }
 }

@@ -1,38 +1,48 @@
-namespace NuGet {
-    using System;
-    using System.Diagnostics;
-    using System.IO;
-    using System.IO.Packaging;
-    
-    internal class ZipPackageFile : IPackageFile {
-        private readonly Func<MemoryStream> _streamFactory;
-        private readonly string _path;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.IO.Packaging;
 
-        public ZipPackageFile(PackagePart part) {           
+namespace NuGet
+{
+    internal class ZipPackageFile : IPackageFile
+    {
+        private readonly string _path;
+        private readonly Func<MemoryStream> _streamFactory;
+
+        public ZipPackageFile(PackagePart part)
+        {
             Debug.Assert(part != null, "part should not be null");
 
             byte[] buffer;
-            using (Stream partStream = part.GetStream()) {
-                using (var stream = new MemoryStream()) {
+            using (Stream partStream = part.GetStream())
+            {
+                using (var stream = new MemoryStream())
+                {
                     partStream.CopyTo(stream);
                     buffer = stream.ToArray();
                 }
             }
-            _path = UriUtility.GetPath(part.Uri);            
+            _path = UriUtility.GetPath(part.Uri);
             _streamFactory = () => new MemoryStream(buffer);
         }
 
-        public string Path {
-            get {
-                return _path;
-            }
+        #region IPackageFile Members
+
+        public string Path
+        {
+            get { return _path; }
         }
 
-        public Stream GetStream() {
+        public Stream GetStream()
+        {
             return _streamFactory();
         }
 
-        public override string ToString() {
+        #endregion
+
+        public override string ToString()
+        {
             return Path;
         }
     }

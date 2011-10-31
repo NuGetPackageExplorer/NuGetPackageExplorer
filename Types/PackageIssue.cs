@@ -1,14 +1,18 @@
 ﻿using System;
 
-namespace NuGetPackageExplorer.Types {
-    public class PackageIssue {
-        public PackageIssue(PackageIssueLevel type, string title, string description, string solution) {
-
-            if (string.IsNullOrEmpty(title)) {
+namespace NuGetPackageExplorer.Types
+{
+    public class PackageIssue
+    {
+        public PackageIssue(PackageIssueLevel type, string title, string description, string solution)
+        {
+            if (string.IsNullOrEmpty(title))
+            {
                 throw new ArgumentException("Argument is null or empty.", "title");
             }
 
-            if (string.IsNullOrEmpty(description)) {
+            if (string.IsNullOrEmpty(description))
+            {
                 throw new ArgumentException("Argument is null or empty.", "description");
             }
 

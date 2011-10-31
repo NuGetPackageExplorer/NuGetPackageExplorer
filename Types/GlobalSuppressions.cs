@@ -8,4 +8,8 @@
 // "In Project Suppression File".
 // You do not need to add suppressions to this file manually.
 
-[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace", Target = "NuGetPackageExplorer.Types")]
+using System.Diagnostics.CodeAnalysis;
+
+[assembly:
+    SuppressMessage("Microsoft.Design", "CA1020:AvoidNamespacesWithFewTypes", Scope = "namespace",
+        Target = "NuGetPackageExplorer.Types")]

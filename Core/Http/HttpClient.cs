@@ -2,16 +2,17 @@
 using System.IO;
 using System.Net;
 
-namespace NuGet {
-    public class HttpClient : IHttpClient {
-        public event EventHandler<ProgressEventArgs> ProgressAvailable = delegate { };
-        public event EventHandler<WebRequestEventArgs> SendingRequest = delegate { };
-
+namespace NuGet
+{
+    public class HttpClient : IHttpClient
+    {
         private static ICredentialProvider _credentialProvider;
         private Uri _uri;
 
-        public HttpClient(Uri uri) {
-            if (uri == null) {
+        public HttpClient(Uri uri)
+        {
+            if (uri == null)
+            {
                 throw new ArgumentNullException("uri");
             }
 
@@ -19,59 +20,48 @@ namespace NuGet {
             UserAgent = HttpUtility.CreateUserAgentString("NuGet Package Explorer");
         }
 
-        public string UserAgent {
-            get;
-            set;
+        public string Method { get; set; }
+
+        public string ContentType { get; set; }
+
+        public static ICredentialProvider DefaultCredentialProvider
+        {
+            get { return _credentialProvider ?? NullCredentialProvider.Instance; }
+            set { _credentialProvider = value; }
         }
 
-        public virtual Uri Uri {
-            get {
-                return _uri;
-            }
-            set {
-                _uri = value;
-            }
+        #region IHttpClient Members
+
+        public event EventHandler<ProgressEventArgs> ProgressAvailable = delegate { };
+        public event EventHandler<WebRequestEventArgs> SendingRequest = delegate { };
+        public string UserAgent { get; set; }
+
+        public virtual Uri Uri
+        {
+            get { return _uri; }
+            set { _uri = value; }
         }
 
-        public string Method {
-            get;
-            set;
-        }
+        public bool AcceptCompression { get; set; }
 
-        public string ContentType {
-            get;
-            set;
-        }
+        public virtual WebResponse GetResponse()
+        {
+            Func<WebRequest> webRequestFactory = () =>
+                                                 {
+                                                     WebRequest request = WebRequest.Create(Uri);
+                                                     InitializeRequestProperties(request);
+                                                     return request;
+                                                 };
 
-        public bool AcceptCompression {
-            get;
-            set;
-        }
-
-        public static ICredentialProvider DefaultCredentialProvider {
-            get {
-                return _credentialProvider ?? NullCredentialProvider.Instance;
-            }
-            set {
-                _credentialProvider = value;
-            }
-        }
-
-        public virtual WebResponse GetResponse() {
-            Func<WebRequest> webRequestFactory = () => {
-                WebRequest request = WebRequest.Create(Uri);
-                InitializeRequestProperties(request);
-                return request;
-            };
-
-            return RequestHelper.GetResponse(webRequestFactory, 
-                                             RaiseSendingRequest, 
-                                             ProxyCache.Instance, 
-                                             CredentialStore.Instance, 
+            return RequestHelper.GetResponse(webRequestFactory,
+                                             RaiseSendingRequest,
+                                             ProxyCache.Instance,
+                                             CredentialStore.Instance,
                                              DefaultCredentialProvider);
         }
 
-        public void InitializeRequest(WebRequest request) {
+        public void InitializeRequest(WebRequest request)
+        {
             // Setup the request properties like content type and compression
             InitializeRequestProperties(request);
 
@@ -82,43 +72,23 @@ namespace NuGet {
             RaiseSendingRequest(request);
         }
 
-        private void TrySetCredentialsAndProxy(WebRequest request) {
-            // Used the cached credentials and proxy we have
-            request.Credentials = CredentialStore.Instance.GetCredentials(Uri);
-            request.Proxy = ProxyCache.Instance.GetProxy(Uri);
-        }
-
-        private void InitializeRequestProperties(WebRequest request) {
-            var httpRequest = request as HttpWebRequest;
-            if (httpRequest != null) {
-                httpRequest.UserAgent = UserAgent;
-                httpRequest.CookieContainer = new CookieContainer();
-                if (AcceptCompression) {
-                    httpRequest.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
-                }
-            }
-
-            if (!String.IsNullOrEmpty(ContentType)) {
-                request.ContentType = ContentType;
-            }
-
-            if (!String.IsNullOrEmpty(Method)) {
-                request.Method = Method;
-            }
-        }
-
-        public byte[] DownloadData() {
-            const int ChunkSize = 1024 * 4; // 4KB
+        public byte[] DownloadData()
+        {
+            const int ChunkSize = 1024*4; // 4KB
 
             byte[] buffer = null;
-            using (var response = GetResponse()) {
+            using (WebResponse response = GetResponse())
+            {
                 // Total response length
-                int length = (int)response.ContentLength;
-                using (Stream stream = response.GetResponseStream()) {
+                var length = (int) response.ContentLength;
+                using (Stream stream = response.GetResponseStream())
+                {
                     // in some circumstances, the Content-Length response header is missing, resulting in
                     // the ContentLength = -1. In which case, we copy the whole stream and do not report progress.
-                    if (length < 0) {
-                        using (var memoryStream = new MemoryStream()) {
+                    if (length < 0)
+                    {
+                        using (var memoryStream = new MemoryStream())
+                        {
                             stream.CopyTo(memoryStream, ChunkSize);
                             buffer = memoryStream.ToArray();
                         }
@@ -126,19 +96,24 @@ namespace NuGet {
                         // reporting fake progress as 100%
                         OnProgressAvailable(100);
                     }
-                    else {
+                    else
+                    {
                         // We read the response stream chunk by chunk (each chunk is 4KB). 
                         // After reading each chunk, we report the progress based on the total number bytes read so far.
                         int totalReadSoFar = 0;
                         buffer = new byte[length];
-                        while (totalReadSoFar < length) {
-                            int bytesRead = stream.Read(buffer, totalReadSoFar, Math.Min(length - totalReadSoFar, ChunkSize));
-                            if (bytesRead == 0) {
+                        while (totalReadSoFar < length)
+                        {
+                            int bytesRead = stream.Read(buffer, totalReadSoFar,
+                                                        Math.Min(length - totalReadSoFar, ChunkSize));
+                            if (bytesRead == 0)
+                            {
                                 break;
                             }
-                            else {
+                            else
+                            {
                                 totalReadSoFar += bytesRead;
-                                OnProgressAvailable((totalReadSoFar * 100) / length);
+                                OnProgressAvailable((totalReadSoFar*100)/length);
                             }
                         }
                     }
@@ -148,11 +123,46 @@ namespace NuGet {
             return buffer;
         }
 
-        private void OnProgressAvailable(int percentage) {
+        #endregion
+
+        private void TrySetCredentialsAndProxy(WebRequest request)
+        {
+            // Used the cached credentials and proxy we have
+            request.Credentials = CredentialStore.Instance.GetCredentials(Uri);
+            request.Proxy = ProxyCache.Instance.GetProxy(Uri);
+        }
+
+        private void InitializeRequestProperties(WebRequest request)
+        {
+            var httpRequest = request as HttpWebRequest;
+            if (httpRequest != null)
+            {
+                httpRequest.UserAgent = UserAgent;
+                httpRequest.CookieContainer = new CookieContainer();
+                if (AcceptCompression)
+                {
+                    httpRequest.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+                }
+            }
+
+            if (!String.IsNullOrEmpty(ContentType))
+            {
+                request.ContentType = ContentType;
+            }
+
+            if (!String.IsNullOrEmpty(Method))
+            {
+                request.Method = Method;
+            }
+        }
+
+        private void OnProgressAvailable(int percentage)
+        {
             ProgressAvailable(this, new ProgressEventArgs(percentage));
         }
 
-        private void RaiseSendingRequest(WebRequest webRequest) {
+        private void RaiseSendingRequest(WebRequest webRequest)
+        {
             SendingRequest(this, new WebRequestEventArgs(webRequest));
         }
     }

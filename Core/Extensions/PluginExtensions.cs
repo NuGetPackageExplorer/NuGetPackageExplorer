@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
 
 namespace NuGet
@@ -20,9 +17,9 @@ namespace NuGet
                 throw new ArgumentNullException("targetRootDirectory");
             }
 
-            if (!sourceDirectory.EndsWith("\\", StringComparison.OrdinalIgnoreCase)) 
+            if (!sourceDirectory.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
             {
-                sourceDirectory += "\\";            
+                sourceDirectory += "\\";
             }
 
             int numberOfFilesCopied = 0;

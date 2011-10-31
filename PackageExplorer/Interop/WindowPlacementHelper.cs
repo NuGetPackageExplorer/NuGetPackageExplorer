@@ -3,11 +3,14 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace PackageExplorer {
-    internal static class WindowPlacementHelper {
-
-        public static void LoadWindowPlacementFromSettings(this Window window, string setting) {
-            if (String.IsNullOrEmpty(setting)) {
+namespace PackageExplorer
+{
+    internal static class WindowPlacementHelper
+    {
+        public static void LoadWindowPlacementFromSettings(this Window window, string setting)
+        {
+            if (String.IsNullOrEmpty(setting))
+            {
                 return;
             }
 
@@ -20,8 +23,9 @@ namespace PackageExplorer {
             NativeMethods.SetWindowPlacement(hwnd, ref wp);
         }
 
-        public static string SaveWindowPlacementToSettings(this Window window) {
-            WindowPlacement wp = new WindowPlacement();
+        public static string SaveWindowPlacementToSettings(this Window window)
+        {
+            var wp = new WindowPlacement();
             IntPtr hwnd = new WindowInteropHelper(window).Handle;
 
             NativeMethods.GetWindowPlacement(hwnd, out wp);

@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using NuGet;
 
-namespace NuGetPackageExplorer.Types {
-    public interface IPackageRule {
+namespace NuGetPackageExplorer.Types
+{
+    public interface IPackageRule
+    {
         IEnumerable<PackageIssue> Validate(IPackage package, string packageFileName);
     }
 }

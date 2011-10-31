@@ -1,148 +1,192 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
 
-namespace PackageExplorerViewModel {
-    internal class SavePackageCommand : CommandBase, ICommand {
+namespace PackageExplorerViewModel
+{
+    internal class SavePackageCommand : CommandBase, ICommand
+    {
         private const string SaveAction = "Save";
         private const string SaveAsAction = "SaveAs";
         private const string ForceSaveAction = "ForceSave";
         private const string SaveMetadataAction = "SaveMetadataAs";
 
         public SavePackageCommand(PackageViewModel model)
-            : base(model) {
+            : base(model)
+        {
         }
 
-        public bool CanExecute(object parameter) {
+        #region ICommand Members
+
+        public bool CanExecute(object parameter)
+        {
             return !ViewModel.IsInEditFileMode;
         }
 
         public event EventHandler CanExecuteChanged;
 
-        public void Execute(object parameter) {
-            if (ViewModel.IsInEditMetadataMode) {
+        public void Execute(object parameter)
+        {
+            if (ViewModel.IsInEditMetadataMode)
+            {
                 bool isMetadataValid = ViewModel.ApplyEditExecute();
-                if (!isMetadataValid) {
+                if (!isMetadataValid)
+                {
                     ViewModel.UIServices.Show(Resources.EditFormHasInvalidInput, MessageLevel.Error);
                     return;
                 }
             }
 
-            string action = parameter as string;
+            var action = parameter as string;
 
             // if the action is Save Metadata, we don't care if the package is valid
-            if (action != SaveMetadataAction) {
+            if (action != SaveMetadataAction)
+            {
                 // validate the package to see if there is any error before actually creating the package.
-                PackageIssue firstIssue = ViewModel.Validate().Where(p => p.Level == PackageIssueLevel.Error).FirstOrDefault();
-                if (firstIssue != null) {
+                PackageIssue firstIssue =
+                    ViewModel.Validate().Where(p => p.Level == PackageIssueLevel.Error).FirstOrDefault();
+                if (firstIssue != null)
+                {
                     ViewModel.UIServices.Show(
                         Resources.PackageCreationFailed
-                            + Environment.NewLine
-                            + Environment.NewLine
-                            + firstIssue.Description,
+                        + Environment.NewLine
+                        + Environment.NewLine
+                        + firstIssue.Description,
                         MessageLevel.Warning);
                     return;
                 }
             }
 
-            if (action == SaveAction || action == ForceSaveAction) {
-                if (CanSaveTo(ViewModel.PackageSource)) {
+            if (action == SaveAction || action == ForceSaveAction)
+            {
+                if (CanSaveTo(ViewModel.PackageSource))
+                {
                     Save();
                 }
-                else {
+                else
+                {
                     SaveAs();
                 }
             }
-            else if (action == SaveAsAction) {
+            else if (action == SaveAsAction)
+            {
                 SaveAs();
             }
-            else if (action == SaveMetadataAction) {
+            else if (action == SaveMetadataAction)
+            {
                 SaveMetadataAs();
             }
         }
 
-        private static bool CanSaveTo(string packageSource) {
-            return !String.IsNullOrEmpty(packageSource) && 
-                    Path.IsPathRooted(packageSource) &&
-                    Path.GetExtension(packageSource).Equals(NuGet.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase);
+        #endregion
+
+        private static bool CanSaveTo(string packageSource)
+        {
+            return !String.IsNullOrEmpty(packageSource) &&
+                   Path.IsPathRooted(packageSource) &&
+                   Path.GetExtension(packageSource).Equals(NuGet.Constants.PackageExtension,
+                                                           StringComparison.OrdinalIgnoreCase);
         }
 
-        private void Save() {
+        private void Save()
+        {
             bool succeeded = SavePackage(ViewModel.PackageSource);
-            if (succeeded) {
+            if (succeeded)
+            {
                 RaiseCanExecuteChangedEvent();
             }
         }
 
-        private void SaveAs() {
-            string packageName = ViewModel.PackageMetadata.ToString() + NuGet.Constants.PackageExtension;
+        private void SaveAs()
+        {
+            string packageName = ViewModel.PackageMetadata + NuGet.Constants.PackageExtension;
             string title = "Save " + packageName;
             string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
             string selectedPackagePath;
             int filterIndex;
-            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, /* overwritePrompt */ false, out selectedPackagePath, out filterIndex)) {
-                if (filterIndex == 1 && !selectedPackagePath.EndsWith(NuGet.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase)) {
-                    selectedPackagePath += NuGet.Constants.PackageExtension; 
+            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, /* overwritePrompt */ false,
+                                                        out selectedPackagePath, out filterIndex))
+            {
+                if (filterIndex == 1 &&
+                    !selectedPackagePath.EndsWith(NuGet.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                    selectedPackagePath += NuGet.Constants.PackageExtension;
                 }
 
                 // prompt if the file already exists on disk
-                if (File.Exists(selectedPackagePath)) {
+                if (File.Exists(selectedPackagePath))
+                {
                     bool confirmed = ViewModel.UIServices.Confirm(
-                       Resources.ConfirmToReplaceFile_Title,
-                       String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, selectedPackagePath));
-                    if (!confirmed) {
+                        Resources.ConfirmToReplaceFile_Title,
+                        String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, selectedPackagePath));
+                    if (!confirmed)
+                    {
                         return;
                     }
                 }
 
                 bool succeeded = SavePackage(selectedPackagePath);
-                if (succeeded) {
+                if (succeeded)
+                {
                     ViewModel.PackageSource = selectedPackagePath;
                 }
             }
             RaiseCanExecuteChangedEvent();
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private void SaveMetadataAs() {
-            string packageName = ViewModel.PackageMetadata.ToString() + NuGet.Constants.ManifestExtension;
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        private void SaveMetadataAs()
+        {
+            string packageName = ViewModel.PackageMetadata + NuGet.Constants.ManifestExtension;
             string title = "Save " + packageName;
             string filter = "NuGet manifest file (*.nuspec)|*.nuspec|All files (*.*)|*.*";
             string selectedPath;
             int filterIndex;
-            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, /* overwritePrompt */ false, out selectedPath, out filterIndex)) {
-                try {
-                    if (filterIndex == 1 && !selectedPath.EndsWith(NuGet.Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase)) {
+            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, /* overwritePrompt */ false,
+                                                        out selectedPath, out filterIndex))
+            {
+                try
+                {
+                    if (filterIndex == 1 &&
+                        !selectedPath.EndsWith(NuGet.Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase))
+                    {
                         selectedPath += NuGet.Constants.ManifestExtension;
                     }
 
                     ViewModel.ExportManifest(selectedPath);
                     ViewModel.OnSaved(selectedPath);
                 }
-                catch (Exception ex) {
+                catch (Exception ex)
+                {
                     ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
                 }
             }
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private bool SavePackage(string fileName) {
-            try {
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        private bool SavePackage(string fileName)
+        {
+            try
+            {
                 PackageHelper.SavePackage(ViewModel.PackageMetadata, ViewModel.GetFiles(), fileName, true);
                 ViewModel.OnSaved(fileName);
                 return true;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
                 return false;
             }
         }
 
-        private void RaiseCanExecuteChangedEvent() {
-            if (CanExecuteChanged != null) {
+        private void RaiseCanExecuteChangedEvent()
+        {
+            if (CanExecuteChanged != null)
+            {
                 CanExecuteChanged(this, EventArgs.Empty);
             }
         }

@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace NuGet {
-    public interface IHttpClientEvents : IProgressProvider {
+namespace NuGet
+{
+    public interface IHttpClientEvents : IProgressProvider
+    {
         event EventHandler<WebRequestEventArgs> SendingRequest;
     }
 }

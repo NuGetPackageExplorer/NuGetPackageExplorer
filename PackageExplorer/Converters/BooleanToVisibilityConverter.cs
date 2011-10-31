@@ -1,8 +1,10 @@
 using System;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
 
-namespace PackageExplorer {
+namespace PackageExplorer
+{
     /// <summary>
     /// This BooleanToVisibility converter allows us to override the converted value when
     /// the bound value is false.
@@ -10,26 +12,35 @@ namespace PackageExplorer {
     /// The built-in converter in WPF restricts us to always use Collapsed when the bound 
     /// value is false.
     /// </summary>
-    public class BooleanToVisibilityConverter : IValueConverter {
-        
+    public class BooleanToVisibilityConverter : IValueConverter
+    {
         public bool Inverted { get; set; }
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            bool boolValue = (bool)value;
-            if (Inverted) {
+        #region IValueConverter Members
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var boolValue = (bool) value;
+            if (Inverted)
+            {
                 boolValue = !boolValue;
             }
 
-            if ((string)parameter == "hidden") {
+            if ((string) parameter == "hidden")
+            {
                 return boolValue ? Visibility.Visible : Visibility.Hidden;
             }
-            else {
+            else
+            {
                 return boolValue ? Visibility.Visible : Visibility.Collapsed;
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

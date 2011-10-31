@@ -1,15 +1,20 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
-namespace NuGetPackageExplorer.Types {
-
-    public enum MessageLevel {
+namespace NuGetPackageExplorer.Types
+{
+    public enum MessageLevel
+    {
         Information,
         Warning,
         Error
     }
 
-    public interface IUIServices {
-        bool OpenSaveFileDialog(string title, string defaultFileName, string filter, bool overwritePrompt, out string selectedFilePath, out int selectedFilterIndex);
+    public interface IUIServices
+    {
+        bool OpenSaveFileDialog(string title, string defaultFileName, string filter, bool overwritePrompt,
+                                out string selectedFilePath, out int selectedFilterIndex);
+
         bool OpenFileDialog(string title, string filter, out string selectedFileName);
         bool OpenMultipleFilesDialog(string title, string filter, out string[] selectedFileNames);
 
@@ -23,7 +28,7 @@ namespace NuGetPackageExplorer.Types {
         bool? ConfirmWithCancel(string message, string title);
         void Show(string message, MessageLevel messageLevel);
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft);
 
         void BeginInvoke(Action action);

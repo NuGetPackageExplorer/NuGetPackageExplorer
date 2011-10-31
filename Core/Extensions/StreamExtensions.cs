@@ -1,26 +1,33 @@
 using System.IO;
 using System.Text;
 
-namespace NuGet {
-    public static class StreamExtensions {
-        public static byte[] ReadAllBytes(this Stream stream) {
-            int length = (int)stream.Length;
-            byte[] buffer = new byte[length];
+namespace NuGet
+{
+    public static class StreamExtensions
+    {
+        public static byte[] ReadAllBytes(this Stream stream)
+        {
+            var length = (int) stream.Length;
+            var buffer = new byte[length];
             stream.Read(buffer, 0, length);
             return buffer;
         }
 
-        public static string ReadToEnd(this Stream stream) {
-            using (var streamReader = new StreamReader(stream)) {
+        public static string ReadToEnd(this Stream stream)
+        {
+            using (var streamReader = new StreamReader(stream))
+            {
                 return streamReader.ReadToEnd();
             }
         }
 
-        public static Stream AsStream(this string value) {
+        public static Stream AsStream(this string value)
+        {
             return AsStream(value, Encoding.Default);
         }
 
-        public static Stream AsStream(this string value, Encoding encoding) {
+        public static Stream AsStream(this string value, Encoding encoding)
+        {
             return new MemoryStream(encoding.GetBytes(value));
         }
     }

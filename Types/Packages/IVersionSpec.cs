@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace NuGet {
-    public interface IVersionSpec {
+﻿namespace NuGet
+{
+    public interface IVersionSpec
+    {
         SemanticVersion MinVersion { get; }
         bool IsMinInclusive { get; }
         SemanticVersion MaxVersion { get; }

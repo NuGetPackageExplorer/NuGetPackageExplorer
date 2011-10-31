@@ -1,13 +1,19 @@
 ﻿using System;
+using System.Globalization;
 using System.Text.RegularExpressions;
 using System.Windows.Data;
 
-namespace PackageExplorer {
-    public class NormalizeTextConverter : IValueConverter {
+namespace PackageExplorer
+{
+    public class NormalizeTextConverter : IValueConverter
+    {
+        #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
-            string stringValue = (string)value;
-            if (String.IsNullOrEmpty(stringValue)) {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var stringValue = (string) value;
+            if (String.IsNullOrEmpty(stringValue))
+            {
                 return stringValue;
             }
 
@@ -16,8 +22,11 @@ namespace PackageExplorer {
             return Regex.Replace(stringValue, @"\s+", " ");
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture) {
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }
