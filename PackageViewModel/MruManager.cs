@@ -10,7 +10,7 @@ namespace PackageExplorerViewModel {
 
     [Export(typeof(IMruManager))]
     internal class MruManager : IMruManager {
-        private const int MaxFile = 7;
+        private const int MaxFile = 10;
         private readonly ObservableCollection<MruItem> _files;
         private readonly ISettingsManager _settingsManager;
 
