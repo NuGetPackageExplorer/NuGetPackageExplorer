@@ -50,7 +50,7 @@ namespace PackageExplorerViewModel {
         public ICollection<PluginInfo> Plugins {
             get {
                 if (_plugins == null) {
-                    _plugins = new SortedCollection<PluginInfo>(_pluginManager.GetAllPlugins(), this);
+                    _plugins = new SortedCollection<PluginInfo>(_pluginManager.Plugins, this);
                 }
                 return _plugins;
             }
@@ -64,7 +64,7 @@ namespace PackageExplorerViewModel {
             if (parameter == "Local") {
                 AddLocalPlugin();
             }
-            else if (parameter == "Remote") {
+            else if ((string)parameter == "Remote") {
                 AddFeedPlugin();
             }
         }

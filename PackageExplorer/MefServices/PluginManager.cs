@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Text.RegularExpressions;
 using NuGet;
 using NuGetPackageExplorer.Types;
@@ -20,6 +21,7 @@ namespace PackageExplorer {
         private const string FrameworkFolderForAssemblies = "lib\\net40";
 
         private Dictionary<PluginInfo, DirectoryCatalog> _pluginToCatalog;
+        private List<PluginInfo> _plugins;
 
         // %localappdata%/NuGet/PackageExplorerPlugins
         private static readonly string PluginsDirectory = Path.Combine(
@@ -41,6 +43,48 @@ namespace PackageExplorer {
             // clean up from previous run
             DeleteAllDeleteMeFiles();
             EnsurePluginCatalog(catalog);
+        }
+
+        private void EnsurePluginCatalog(AggregateCatalog mainCatalog)
+        {
+            if (_pluginCatalog != null)
+            {
+                return;
+            }
+
+            DirectoryInfo pluginDirectoryInfo = new DirectoryInfo(PluginsDirectory);
+            if (!pluginDirectoryInfo.Exists)
+            {
+                // creates the plugins directory if it doesn't exist
+                string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                DirectoryInfo nugetDirectory = CreateChildDirectory(new DirectoryInfo(localAppData), NuGetDirectoryName);
+                pluginDirectoryInfo = CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
+            }
+
+            _plugins = new List<PluginInfo>(GetAllPlugins());
+            _pluginToCatalog = new Dictionary<PluginInfo, DirectoryCatalog>();
+            _pluginCatalog = new AggregateCatalog();
+
+            for (int i = _plugins.Count - 1; i >= 0; i--)
+            {
+                PluginInfo pluginInfo = _plugins[i];
+                bool succeeded = AddPluginToCatalog(pluginInfo, GetTargetPath(pluginInfo), quietMode: true);
+                if (!succeeded)
+                {
+                    _plugins.RemoveAt(i);
+                    DeletePlugin(pluginInfo);
+                }
+            }
+
+            mainCatalog.Catalogs.Add(_pluginCatalog);
+        }
+
+        public ICollection<PluginInfo> Plugins
+        {
+            get
+            {
+                return _plugins;
+            }
         }
 
         public PluginInfo AddPlugin(IPackage plugin) {
@@ -76,12 +120,11 @@ namespace PackageExplorer {
                         }
                         else
                         {
-                            bool succeeded = AddPluginToCatalog(pluginInfo, targetPath);
+                            bool succeeded = AddPluginToCatalog(pluginInfo, targetPath, quietMode: false);
                             if (!succeeded)
-                            {                               
-                                Directory.Delete(targetPath, recursive: true);
+                            {
+                                DeletePlugin(pluginInfo);
                             }
-
                             return succeeded ? pluginInfo : null;
                         }
                     }
@@ -120,7 +163,7 @@ namespace PackageExplorer {
             return false;
         }
 
-        public IEnumerable<PluginInfo> GetAllPlugins() {
+        private IEnumerable<PluginInfo> GetAllPlugins() {
             var directoryInfo = new DirectoryInfo(PluginsDirectory);
             if (directoryInfo.Exists)
             {
@@ -132,7 +175,7 @@ namespace PackageExplorer {
             }
         }
 
-        private bool AddPluginToCatalog(PluginInfo pluginInfo, string targetPath) {
+        private bool AddPluginToCatalog(PluginInfo pluginInfo, string targetPath, bool quietMode) {
             try {
                 var directoryCatalog = new DirectoryCatalog(targetPath);
                 if (directoryCatalog.Parts.Any()) {
@@ -144,10 +187,16 @@ namespace PackageExplorer {
             catch (ReflectionTypeLoadException exception) {
                 _pluginToCatalog.Remove(pluginInfo);
 
-                Debug.WriteLine("{0}", new[] { exception.Message });
-                foreach (var loaderException in exception.LoaderExceptions) {
-                    Debug.WriteLine("\t{0}", new[] { loaderException.Message });
+                string errorMessage = BuildErrorMessage(exception);
+                if (quietMode)
+                {
+                    Trace.WriteLine(errorMessage, "Plugins Loader");
                 }
+                else
+                {
+                    UIServices.Value.Show(errorMessage, MessageLevel.Error);
+                }
+
                 return false;
             }
         }
@@ -157,28 +206,6 @@ namespace PackageExplorer {
             if (_pluginToCatalog.TryGetValue(pluginInfo, out catalog)) {
                 _pluginCatalog.Catalogs.Remove(catalog);
             }
-        }
-
-        private void EnsurePluginCatalog(AggregateCatalog mainCatalog) {
-            if (_pluginCatalog != null) {
-                return;
-            }
-
-            DirectoryInfo pluginDirectoryInfo = new DirectoryInfo(PluginsDirectory);
-            if (!pluginDirectoryInfo.Exists) {
-                // creates the plugins directory if it doesn't exist
-                string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                DirectoryInfo nugetDirectory = CreateChildDirectory(new DirectoryInfo(localAppData), NuGetDirectoryName);
-                pluginDirectoryInfo = CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
-            }
-
-            _pluginToCatalog = new Dictionary<PluginInfo, DirectoryCatalog>();
-            _pluginCatalog = new AggregateCatalog();
-            foreach (PluginInfo pluginInfo in GetAllPlugins())
-            {
-                AddPluginToCatalog(pluginInfo, GetTargetPath(pluginInfo));
-            }
-            mainCatalog.Catalogs.Add(_pluginCatalog);
         }
 
         private DirectoryInfo CreateChildDirectory(DirectoryInfo parentInfo, string path) {
@@ -248,6 +275,20 @@ namespace PackageExplorer {
                 // should not throw any exception when deleting files.
                 // ignore any of them.
             }
+        }
+
+        private string BuildErrorMessage(ReflectionTypeLoadException exception)
+        {
+            var builder = new StringBuilder("One or more errors occurred while loading the selected plugin:");
+            builder.AppendLine();
+            builder.AppendLine();
+
+            foreach (var loaderException in exception.LoaderExceptions)
+            {
+                builder.AppendLine(loaderException.Message);
+            }
+
+            return builder.ToString();
         }
     }
 }
