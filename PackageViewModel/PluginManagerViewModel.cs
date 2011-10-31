@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net.NetworkInformation;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
@@ -100,6 +101,12 @@ namespace PackageExplorerViewModel
 
         private void AddFeedPlugin()
         {
+            if (!NetworkInterface.GetIsNetworkAvailable())
+            {
+                _uiServices.Show(Resources.NoNetworkConnection, MessageLevel.Warning);
+                return;
+            }
+
             PackageInfo selectedPackageInfo = _packageChooser.SelectPluginPackage();
             if (selectedPackageInfo != null)
             {
