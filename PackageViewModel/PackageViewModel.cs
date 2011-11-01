@@ -9,13 +9,14 @@ using System.Net.NetworkInformation;
 using System.Windows.Input;
 using NuGet;
 using NuGetPackageExplorer.Types;
-using LazyPackageCommand =
-    System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
+using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 
 namespace PackageExplorerViewModel
 {
     public sealed class PackageViewModel : ViewModelBase, IDisposable
     {
+        #region private fields
+
         private readonly IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> _contentViewerMetadata;
         private readonly IPackageEditorService _editorService;
         private readonly IMruManager _mruManager;
@@ -28,11 +29,8 @@ namespace PackageExplorerViewModel
         private readonly IUIServices _uiServices;
 
         private ICommand _addAsAssemblyReferenceCommand;
-
         private ICommand _addContentFileCommand;
-
         private ICommand _addContentFolderCommand;
-
         private ICommand _addNewFileCommand;
         private ICommand _addNewFolderCommand;
         private ICommand _addScriptCommand;
@@ -59,6 +57,8 @@ namespace PackageExplorerViewModel
         private bool _showPackageAnalysis;
         private ICommand _viewContentCommand;
         private ICommand _viewPackageAnalysisCommand;
+
+        #endregion
 
         internal PackageViewModel(
             IPackage package,
