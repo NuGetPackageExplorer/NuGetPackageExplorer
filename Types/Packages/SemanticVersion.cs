@@ -11,12 +11,8 @@ namespace NuGet
     [Serializable]
     public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>, IEquatable<SemanticVersion>
     {
-        private const string SemanticVersionRegex =
-            @"^(?<Version>\d+(\s*\.\s*\d+){0,3})(?<Release>[a-z][0-9a-z-]{0,19})?$";
-
-        private const string StrictSemanticVersionRegex =
-            @"^(?<Version>\d+(\.\d+){2})(?<Release>[a-z][0-9a-z-]{0,19})?$";
-
+        private const string SemanticVersionRegex = @"^(?<Version>\d+(\s*\.\s*\d+){0,3})(?<Release>-[a-z][0-9a-z-]*)?$";
+        private const string StrictSemanticVersionRegex = @"^(?<Version>\d+(\.\d+){2})(?<Release>-[a-z][0-9a-z-]*)?$";
         private readonly string _originalString;
 
         public SemanticVersion(string version)
@@ -60,7 +56,9 @@ namespace NuGet
 
             Version = NormalizeVersionValue(version);
             SpecialVersion = specialVersion ?? String.Empty;
-            _originalString = String.IsNullOrEmpty(originalString) ? version + specialVersion : originalString;
+            _originalString = String.IsNullOrEmpty(originalString) 
+                ? version.ToString() + (!String.IsNullOrEmpty(specialVersion) ? '-' + specialVersion : null) 
+                : originalString;
         }
 
         internal SemanticVersion(SemanticVersion semVer)
@@ -196,8 +194,7 @@ namespace NuGet
                 return false;
             }
 
-            semVer = new SemanticVersion(NormalizeVersionValue(versionValue), match.Groups["Release"].Value,
-                                         version.Replace(" ", ""));
+            semVer = new SemanticVersion(NormalizeVersionValue(versionValue), match.Groups["Release"].Value.TrimStart('-'), version.Replace(" ", ""));
             return true;
         }
 
