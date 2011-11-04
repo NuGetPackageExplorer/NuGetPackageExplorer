@@ -21,6 +21,7 @@ namespace PackageExplorer
             contentBox.Options.CutCopyWholeLine = false;
             contentBox.Options.EnableEmailHyperlinks = false;
             contentBox.Options.EnableHyperlinks = false;
+            contentBox.TextArea.SelectionCornerRadius = 0;
         }
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

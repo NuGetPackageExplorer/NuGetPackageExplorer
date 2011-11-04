@@ -25,11 +25,12 @@ namespace PackageExplorer
             FontChoice.ItemsSource = Fonts.SystemFontFamilies.OrderBy(p => p.Source);
             FontChoice.SelectedItem = ConsolasFont;
 
-
             // disable unnecessary editor features
             Editor.Options.CutCopyWholeLine = false;
             Editor.Options.EnableEmailHyperlinks = false;
             Editor.Options.EnableHyperlinks = false;
+
+            Editor.TextArea.SelectionCornerRadius = 0;
         }
 
         #region IFileEditorService Members

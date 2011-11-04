@@ -12,15 +12,24 @@
 		<ScrollViewer Grid.Row="1" Visibility="{Binding IsTextFile, Converter={StaticResource invertedBoolToVis}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Padding="4,5,4,2" Content="{Binding Content}"></ScrollViewer>
 
 		<!-- for builtin text file -->
-        
+		
 		<ae:TextEditor x:Name="contentBox" Grid.Row="1" Padding="3,5,3,2" BorderThickness="0" IsReadOnly="True" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" DataContextChanged="UserControl_DataContextChanged" SyntaxHighlighting="{Binding SelectedItem, ElementName=LanguageBox, Mode=OneWay}" />
 
 		<!-- 
-            Note: the order of elements matter. This Border element has to come last. 
-            Otherwise, the content won't update properly. I know, this is lame. 
-        -->
+			Note: the order of elements matter. This Border element has to come last. 
+			Otherwise, the content won't update properly. I know, this is lame. 
+		-->
 		<Border Grid.Row="0" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
 			<DockPanel>
+				<TextBlock 
+					Margin="5,0"
+					VerticalAlignment="Center"
+					DockPanel.Dock="Right" 
+					DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:MainWindow}}}">
+					<Hyperlink Command="{Binding EditFileCommand, Mode=OneWay}" CommandParameter="{Binding CurrentFileInfo.File}">
+						<Run Text="Edit" />
+					</Hyperlink>
+				</TextBlock>
 				<TextBlock DockPanel.Dock="Left" Text="{Binding Size, Converter={StaticResource FileSizeConverter}, StringFormat='Size: {0}'}" Margin="3,0" VerticalAlignment="Center"></TextBlock>
 				<StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}, ConverterParameter='hidden'}">
 					<Label Content="S_yntax scheme:" Target="{Binding ElementName=LanguageBox}" />
