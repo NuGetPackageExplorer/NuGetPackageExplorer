@@ -15,10 +15,13 @@ namespace PackageExplorerViewModel
             Debug.Assert(settingsManager != null);
             _settingsManager = settingsManager;
 
-            // migrate active package source
-            if (ActiveSource.Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
+            if (settingsManager.IsFirstTimeAfterUpdate)
             {
-                ActiveSource = NuGetConstants.DefaultFeedUrl;
+                // migrate active package source
+                if (ActiveSource.Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
+                {
+                    ActiveSource = NuGetConstants.DefaultFeedUrl;
+                }
             }
         }
 
@@ -28,12 +31,15 @@ namespace PackageExplorerViewModel
         {
             IList<string> sources = _settingsManager.GetPackageSources();
 
-            // migrate nuget v1 feed to v2 feed
-            for (int i = 0; i < sources.Count; i++)
+            if (_settingsManager.IsFirstTimeAfterUpdate)
             {
-                if (sources[i].Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
+                // migrate nuget v1 feed to v2 feed
+                for (int i = 0; i < sources.Count; i++)
                 {
-                    sources[i] = NuGetConstants.DefaultFeedUrl;
+                    if (sources[i].Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
+                    {
+                        sources[i] = NuGetConstants.DefaultFeedUrl;
+                    }
                 }
             }
 

@@ -16,6 +16,14 @@ namespace PackageExplorer
 
         #region ISettingsManager Members
 
+        public bool IsFirstTimeAfterUpdate
+        {
+            get
+            {
+                return Settings.Default.IsFirstTime;
+            }
+        }
+
         public IList<string> GetMruFiles()
         {
             StringCollection files = Settings.Default.MruFiles;
@@ -76,7 +84,7 @@ namespace PackageExplorer
 
             if (String.IsNullOrEmpty(key))
             {
-                if (source.Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
+                if (IsFirstTimeAfterUpdate && source.Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
                 {
                     key = Settings.Default.PublishPrivateKey;
                 }

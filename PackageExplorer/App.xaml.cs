@@ -118,7 +118,6 @@ namespace PackageExplorer
             if (settings.IsFirstTime)
             {
                 settings.Upgrade();
-                settings.IsFirstTime = false;
                 settings.Save();
             }
         }
@@ -145,6 +144,7 @@ namespace PackageExplorer
 
             // IMPORTANT: Call this after calling _container.Dispose(). Some exports relies on Dispose()
             // being called to save settings values.
+            Settings.Default.IsFirstTime = false;
             Settings.Default.Save();
         }
     }
