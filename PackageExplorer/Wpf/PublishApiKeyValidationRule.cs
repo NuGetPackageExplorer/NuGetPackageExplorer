@@ -11,11 +11,6 @@ namespace PackageExplorer
             var key = (string) value;
             key = key.ToUpper(CultureInfo.InvariantCulture);
 
-            if (key.Length != 36)
-            {
-                return new ValidationResult(false, "Key must be exactly 36 characters.");
-            }
-
             for (int i = 0; i < key.Length; i++)
             {
                 char c = key[i];
