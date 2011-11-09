@@ -226,7 +226,11 @@
 					<DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS">
 						<Setter TargetName="ItemIcon" Property="Source" Value="Images/Tools.png" />
 					</DataTrigger>
-				</HierarchicalDataTemplate.Triggers>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="SRC">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/source.png" />
+                    </DataTrigger>
+                </HierarchicalDataTemplate.Triggers>
 			</HierarchicalDataTemplate>
 		</ResourceDictionary>
 	</UserControl.Resources>
@@ -300,7 +304,12 @@
 								<self:GrayscaleImage Source="Images/Tools.png" />
 							</self:GrayscaleMenuItem.Icon>
 						</self:GrayscaleMenuItem>
-					</ContextMenu>
+                        <self:GrayscaleMenuItem Header="Add _Src Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="src">
+                            <self:GrayscaleMenuItem.Icon>
+                                <self:GrayscaleImage Source="Images/Source.png" />
+                            </self:GrayscaleMenuItem.Icon>
+                        </self:GrayscaleMenuItem>
+                    </ContextMenu>
 				</TreeView.ContextMenu>
 			</TreeView>
 		</HeaderedContentControl>
