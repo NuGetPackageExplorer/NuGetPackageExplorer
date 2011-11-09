@@ -14,7 +14,6 @@ namespace NuGet
         public int DownloadCount { get; set; }
         public string PackageHash { get; set; }
         public Uri DownloadUrl { get; set; }
-        public DateTimeOffset LastUpdated { get; set; }
         public long PackageSize { get; set; }
 
         public int EffectiveDownloadCount
@@ -31,8 +30,7 @@ namespace NuGet
                        Authors = Authors,
                        VersionDownloadCount = VersionDownloadCount,
                        DownloadCount = DownloadCount,
-                       PackageHash = PackageHash,
-                       LastUpdated = LastUpdated
+                       PackageHash = PackageHash
                    };
         }
     }

@@ -18,9 +18,7 @@ namespace NuGet
     public class DataServicePackage : IPackage
     {
         public string Version { get; set; }
-
         public string Authors { get; set; }
-
         public bool IsLatestVersion { get; set; }
         public DateTimeOffset LastUpdated { get; set; }
         public long PackageSize { get; set; }

@@ -426,7 +426,7 @@ namespace PackageExplorerViewModel
                         }
 
                         // When in Show All Versions mode, we can't sort by Last Updated or PackageSize. 
-                        Debug.Assert(!(SortColumn == "LastUpdated" || SortColumn == "PackageSize") || ShowLatestVersion);
+                        Debug.Assert(SortColumn != "PackageSize" || ShowLatestVersion);
 
                         switch (SortColumn)
                         {
@@ -484,7 +484,6 @@ namespace PackageExplorerViewModel
                                                 Authors = p.Authors,
                                                 DownloadCount = p.DownloadCount,
                                                 PackageHash = p.PackageHash,
-                                                LastUpdated = p.LastUpdated,
                                                 PackageSize = p.PackageSize
                                             });
 
@@ -503,8 +502,7 @@ namespace PackageExplorerViewModel
                                                                   VersionDownloadCount =
                                                                       p.VersionDownloadCount,
                                                                   PackageHash = p.PackageHash,
-                                                                  PackageSize = p.PackageSize,
-                                                                  LastUpdated = p.LastUpdated
+                                                                  PackageSize = p.PackageSize
                                                               });
 
                             _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
@@ -561,10 +559,9 @@ namespace PackageExplorerViewModel
 
         private bool CanSort(string column)
         {
-            if ((column == "LastUpdated" && !ShowLatestVersion) ||
-                (column == "PackageSize" && !ShowLatestVersion))
+            if (column == "PackageSize" && !ShowLatestVersion)
             {
-                // We can't sort by Version or LastUpdated in ShowAllVersions mode
+                // We can't sort by PackageSize in ShowAllVersions mode
                 return false;
             }
 
