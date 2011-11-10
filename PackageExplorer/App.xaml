@@ -22,6 +22,7 @@
 			<self:NormalizeTextConverter x:Key="NormalizeTextConverter" />
 			<self:BooleanToStringConverter x:Key="BooleanConverter" />
 			<self:SubtracterConverter x:Key="SubtracterConverter" />
+            <self:StringShorternerConverter x:Key="StringShorternerConverter" />
 
 			<ContextMenu x:Key="TextBoxContextMenu">
 				<self:GrayscaleMenuItem Command="Cut">

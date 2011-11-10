@@ -126,6 +126,7 @@
     <Compile Include="Converters\IntegerToBooleanConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\NormalizeTextConverter.cs" />
+    <Compile Include="Converters\StringShorternerConverter.cs" />
     <Compile Include="Properties\Settings.partial.cs">
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
