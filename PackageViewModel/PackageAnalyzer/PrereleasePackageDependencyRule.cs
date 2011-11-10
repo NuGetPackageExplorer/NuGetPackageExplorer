@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
+using System.Linq;
 using System.Globalization;
 using NuGet;
 using NuGetPackageExplorer.Types;
@@ -14,31 +15,29 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            if (package.IsReleaseVersion())
+            if (IsPreReleasedVersion(package.Version))
             {
-                foreach (PackageDependency dependency in package.Dependencies)
-                {
-                    if (IsPrereleaseDependency(dependency))
-                    {
-                        yield return CreatePackageIssue(dependency);
-                    }
-                }
+                return new PackageIssue[0];
             }
+
+            return package.Dependencies.Where(IsPrereleaseDependency).Select(CreatePackageIssue);
         }
 
         #endregion
 
-        private static bool IsPrereleaseDependency(PackageDependency dependency)
+        private static bool IsPrereleaseDependency(PackageDependency pd)
         {
-            IVersionSpec versionSpec = dependency.VersionSpec;
-            if (versionSpec != null)
+            if (pd.VersionSpec == null)
             {
-                return (versionSpec.MinVersion != null &&
-                        !String.IsNullOrEmpty(dependency.VersionSpec.MinVersion.SpecialVersion)) ||
-                       (versionSpec.MaxVersion != null &&
-                        !String.IsNullOrEmpty(dependency.VersionSpec.MaxVersion.SpecialVersion));
+                return false;
             }
-            return false;
+
+            return IsPreReleasedVersion(pd.VersionSpec.MinVersion) || IsPreReleasedVersion(pd.VersionSpec.MaxVersion);
+        }
+
+        private static bool IsPreReleasedVersion(SemanticVersion version)
+        {
+            return version != null && !String.IsNullOrEmpty(version.SpecialVersion);
         }
 
         private static PackageIssue CreatePackageIssue(PackageDependency target)
