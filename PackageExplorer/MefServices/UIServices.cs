@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -22,7 +22,7 @@ namespace PackageExplorer
 
         #region IUIServices Members
 
-        public bool OpenSaveFileDialog(string title, string defaultFileName, string filter, bool overwritePrompt,
+        public bool OpenSaveFileDialog(string title, string defaultFileName, string initialDirectory, string filter, bool overwritePrompt,
                                        out string selectedFilePath, out int selectedFilterIndex)
         {
             var dialog = new SaveFileDialog
@@ -31,7 +31,8 @@ namespace PackageExplorer
                              Title = title,
                              Filter = filter,
                              FileName = defaultFileName,
-                             ValidateNames = true
+                             ValidateNames = true,
+                             InitialDirectory = initialDirectory
                          };
 
             bool? result = dialog.ShowDialog();

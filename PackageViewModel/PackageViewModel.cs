@@ -641,8 +641,8 @@ namespace PackageExplorerViewModel
             string title = "Save " + file.Name;
             string filter = "All files (*.*)|*.*";
             int filterIndex;
-            if (UIServices.OpenSaveFileDialog(title, file.Name, filter, /* overwritePrompt */ true, out selectedFileName,
-                                              out filterIndex))
+            if (UIServices.OpenSaveFileDialog(title, file.Name, /* initial directory */ null, filter, /* overwritePrompt */ true, 
+                                              out selectedFileName, out filterIndex))
             {
                 using (FileStream fileStream = File.OpenWrite(selectedFileName))
                 {

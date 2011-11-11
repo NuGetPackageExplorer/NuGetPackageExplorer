@@ -108,7 +108,8 @@ namespace PackageExplorerViewModel
             string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
             string selectedPackagePath;
             int filterIndex;
-            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, /* overwritePrompt */ false,
+            string initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;
+            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, initialDirectory, filter, /* overwritePrompt */ false,
                                                         out selectedPackagePath, out filterIndex))
             {
                 if (filterIndex == 1 &&
@@ -146,7 +147,8 @@ namespace PackageExplorerViewModel
             string filter = "NuGet manifest file (*.nuspec)|*.nuspec|All files (*.*)|*.*";
             string selectedPath;
             int filterIndex;
-            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, filter, /* overwritePrompt */ false,
+            string initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;
+            if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, initialDirectory, filter, /* overwritePrompt */ false,
                                                         out selectedPath, out filterIndex))
             {
                 try
