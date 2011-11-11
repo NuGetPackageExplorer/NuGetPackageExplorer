@@ -26,6 +26,10 @@ namespace NuGet
 
             _originalSource = galleryServerSource.Trim();
             _baseGalleryServerUrl = GetSafeRedirectedUri(galleryServerSource);
+            if (_baseGalleryServerUrl.EndsWith("/", StringComparison.Ordinal))
+            {
+                _baseGalleryServerUrl = _baseGalleryServerUrl.Substring(0, _baseGalleryServerUrl.Length - 1);
+            }
             _userAgent = userAgent;
         }
 
@@ -49,8 +53,11 @@ namespace NuGet
                         };
 
             var url =
-                new Uri(String.Format(CultureInfo.InvariantCulture, "{0}/{1}/{2}/nupkg", _baseGalleryServerUrl,
-                                      CreatePackageService, apiKey));
+                new Uri(String.Format(CultureInfo.InvariantCulture, 
+                                      "{0}/{1}/{2}/nupkg",
+                                      _baseGalleryServerUrl,
+                                      CreatePackageService, 
+                                      apiKey));
 
             var client = new WebClient();
             client.Headers[HttpRequestHeader.ContentType] = "application/octet-stream";
@@ -66,9 +73,10 @@ namespace NuGet
             Justification = "We dispose it in the Completed event handler.")]
         private void PublishPackage(PublishState state)
         {
-            var url =
-                new Uri(String.Format(CultureInfo.InvariantCulture, "{0}/{1}", _baseGalleryServerUrl,
-                                      PublishPackageService));
+            var url = new Uri(String.Format(CultureInfo.InvariantCulture,
+                                              "{0}/{1}",
+                                              _baseGalleryServerUrl,
+                                              PublishPackageService));
 
             using (Stream requestStream = new MemoryStream())
             {
@@ -95,7 +103,7 @@ namespace NuGet
         [SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
         private void OnCreatePackageCompleted(object sender, UploadDataCompletedEventArgs e)
         {
-            var state = (PublishState) e.UserState;
+            var state = (PublishState)e.UserState;
             if (e.Error != null)
             {
                 Exception error = e.Error;
@@ -103,7 +111,7 @@ namespace NuGet
                 var webException = e.Error as WebException;
                 if (webException != null)
                 {
-                    var response = (HttpWebResponse) webException.Response;
+                    var response = (HttpWebResponse)webException.Response;
                     if (response != null)
                     {
                         if (response.StatusCode == HttpStatusCode.InternalServerError ||
@@ -138,13 +146,13 @@ namespace NuGet
                 }
             }
 
-            var client = (WebClient) sender;
+            var client = (WebClient)sender;
             client.Dispose();
         }
 
         private void OnPublishPackageCompleted(object sender, UploadDataCompletedEventArgs e)
         {
-            var state = (PublishState) e.UserState;
+            var state = (PublishState)e.UserState;
             if (e.Error != null)
             {
                 Exception error = e.Error;
@@ -167,15 +175,15 @@ namespace NuGet
                 state.ProgressObserver.OnCompleted();
             }
 
-            var client = (WebClient) sender;
+            var client = (WebClient)sender;
             client.Dispose();
         }
 
         private void OnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
         {
-            var state = (PublishState) e.UserState;
+            var state = (PublishState)e.UserState;
             // Hack: the UploadDataAsync only reports up to 50 percent. multiply by 2 to simulate 100. LOL
-            state.ProgressObserver.OnNext(Math.Min(100, 2*e.ProgressPercentage));
+            state.ProgressObserver.OnNext(Math.Min(100, 2 * e.ProgressPercentage));
         }
 
         private static string GetSafeRedirectedUri(string url)
