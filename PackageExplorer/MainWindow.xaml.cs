@@ -116,8 +116,20 @@ namespace PackageExplorer
                 UIServices.Show("File not found at " + packagePath, MessageLevel.Error);
                 return;
             }
+
+            object oldContent = PackageSourceItem.Content;
             PackageSourceItem.SetCurrentValue(ContentProperty, "Loading " + packagePath + "...");
-            Dispatcher.BeginInvoke(new Action<string>(OpenLocalPackageCore), DispatcherPriority.Loaded, packagePath);
+
+            DispatcherOperation operation = Dispatcher.BeginInvoke(new Func<string, bool>(OpenLocalPackageCore), DispatcherPriority.Loaded, packagePath);
+            operation.Completed += (o, e) =>
+            {
+                bool succeeded = (bool)operation.Result;
+                if (!succeeded)
+                {
+                    // restore old content
+                    PackageSourceItem.SetCurrentValue(ContentProperty, oldContent);
+                }
+            };
         }
 
         internal void SetActivePackagePublishSource(string packagePublishSource)
@@ -139,7 +151,7 @@ namespace PackageExplorer
             }
         }
 
-        private void OpenLocalPackageCore(string packagePath)
+        private bool OpenLocalPackageCore(string packagePath)
         {
             IPackage package = null;
 
@@ -159,13 +171,16 @@ namespace PackageExplorer
             catch (Exception ex)
             {
                 UIServices.Show(ex.Message, MessageLevel.Error);
-                return;
+                return false;
             }
 
             if (package != null)
             {
                 LoadPackage(package, packagePath, PackageType.LocalPackage);
+                return true;
             }
+
+            return false;
         }
 
         private void LoadPackage(IPackage package, string packagePath, PackageType packageType)
