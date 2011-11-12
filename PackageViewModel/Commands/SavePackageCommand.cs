@@ -94,6 +94,21 @@ namespace PackageExplorerViewModel
 
         private void Save()
         {
+            string expectedPackageName = ViewModel.PackageMetadata + NuGet.Constants.PackageExtension;
+            string packageName = Path.GetFileName(ViewModel.PackageSource);
+            if (!expectedPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase))
+            {
+                bool confirmed = ViewModel.UIServices.Confirm(
+                    "File name mismatch",
+                    "It looks like the package Id and version do not match this file name. Do you still want to save the package as '" + packageName + "'?",
+                    isWarning: true);
+
+                if (!confirmed)
+                {
+                    return;
+                }
+            }
+
             bool succeeded = SavePackage(ViewModel.PackageSource);
             if (succeeded)
             {
