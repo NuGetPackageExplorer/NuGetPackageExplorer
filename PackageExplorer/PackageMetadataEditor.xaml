@@ -122,7 +122,15 @@
 
 				<!-- Version -->
 				<Label Grid.Row="1" Grid.Column="0" Target="VersionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Version" />
-				<TextBox Grid.Row="1" Grid.Column="1" x:Name="VersionBox" Text="{Binding PackageMetadata.Version, Converter={StaticResource VersionConverter}, ValidatesOnDataErrors=True}" />
+				<TextBox Grid.Row="1" Grid.Column="1" x:Name="VersionBox">
+                    <TextBox.Text>
+                        <Binding Path="PackageMetadata.Version" Converter="{StaticResource VersionConverter}" ValidatesOnDataErrors="True">
+                            <Binding.ValidationRules>
+                                <self:SemanticVersionValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
 
 				<!-- Title -->
 				<Label Grid.Row="2" Grid.Column="0" Target="TitleBox" Style="{StaticResource LabelStyle}" Content="_Title" />

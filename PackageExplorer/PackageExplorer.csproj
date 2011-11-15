@@ -205,6 +205,7 @@
     <Compile Include="Utilities\UriHelper.cs" />
     <Compile Include="Interop\WindowPlacement.cs" />
     <Compile Include="Interop\WindowPlacementHelper.cs" />
+    <Compile Include="Wpf\SemanticVersionValidationRule.cs" />
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
