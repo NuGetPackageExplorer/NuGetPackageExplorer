@@ -18,12 +18,12 @@ namespace PackageExplorerViewModel
         private bool _hasError;
         private int _percentComplete;
         private string _publishKey;
-        private bool? _pushOnly = false;
+        private bool? _useV1Protocol = false;
         private string _selectedPublishItem;
         private bool _showProgress;
         private string _status;
         private bool _suppressReadingApiKey;
-        private GalleryServer _uploadHelper;
+        private IGalleryServer _uploadHelper;
 
         public PublishPackageViewModel(
             MruPackageSourceManager mruSourceManager,
@@ -98,15 +98,15 @@ namespace PackageExplorerViewModel
             get { return _mruSourceManager.PackageSources; }
         }
 
-        public bool? PushOnly
+        public bool? UseV1Protocol
         {
-            get { return _pushOnly; }
+            get { return _useV1Protocol; }
             set
             {
-                if (_pushOnly != value)
+                if (_useV1Protocol != value)
                 {
-                    _pushOnly = value;
-                    OnPropertyChanged("PushOnly");
+                    _useV1Protocol = value;
+                    OnPropertyChanged("UseV1Protocol");
                 }
             }
         }
@@ -173,16 +173,16 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public GalleryServer GalleryServer
+        public IGalleryServer GalleryServer
         {
             get
             {
                 if (_uploadHelper == null ||
-                    !PublishUrl.Equals(_uploadHelper.OriginalSource, StringComparison.OrdinalIgnoreCase))
+                    !PublishUrl.Equals(_uploadHelper.Source, StringComparison.OrdinalIgnoreCase) ||
+                    (bool)UseV1Protocol != _uploadHelper.IsV1Protocol)
                 {
-                    _uploadHelper = new GalleryServer(
-                        HttpUtility.CreateUserAgentString(Constants.UserAgentClient),
-                        PublishUrl);
+                    _uploadHelper = GalleryServerFactory.CreateGalleryServer(
+                        PublishUrl, HttpUtility.CreateUserAgentString(Constants.UserAgentClient), (bool)UseV1Protocol);
                 }
                 return _uploadHelper;
             }
@@ -207,7 +207,7 @@ namespace PackageExplorerViewModel
         {
             ShowProgress = false;
             HasError = false;
-            Status = (PushOnly == true) ? "Package pushed successfully." : "Package published successfully.";
+            Status = (UseV1Protocol == true) ? "Package pushed successfully." : "Package published successfully.";
             _settingsManager.WriteApiKey(PublishUrl, PublishKey);
 
             CanPublish = true;
@@ -242,11 +242,7 @@ namespace PackageExplorerViewModel
 
             try
             {
-                GalleryServer.CreatePackage(
-                    PublishKey,
-                    fileStream,
-                    this,
-                    PushOnly == true ? null : _package);
+                GalleryServer.PushPackage(PublishKey, fileStream, this, _package);
             }
             catch (WebException e)
             {

@@ -103,6 +103,8 @@
     <Compile Include="Extensions\CollectionExtensions.cs" />
     <Compile Include="Utility\CryptoHashProvider.cs" />
     <Compile Include="Utility\GalleryServer.cs" />
+    <Compile Include="Utility\GalleryServer2.cs" />
+    <Compile Include="Utility\IGalleryServer.cs" />
     <Compile Include="Utility\IHashProvider.cs" />
     <Compile Include="Authoring\Manifest.cs" />
     <Compile Include="Authoring\ManifestDependency.cs" />
@@ -116,6 +118,7 @@
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\PackageExtensions.cs" />
     <Compile Include="Utility\IProgressProvider.cs" />
+    <Compile Include="Utility\MultipartWebRequest.cs" />
     <Compile Include="Utility\PackageIdValidator.cs" />
     <Compile Include="Utility\PackageUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

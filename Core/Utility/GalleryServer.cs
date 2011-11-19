@@ -8,7 +8,7 @@ using System.Runtime.Serialization.Json;
 
 namespace NuGet
 {
-    public class GalleryServer
+    public class GalleryServer : IGalleryServer
     {
         private const string CreatePackageService = "PackageFiles";
         private const string PackageService = "Packages";
@@ -17,15 +17,15 @@ namespace NuGet
         private readonly string _originalSource;
         private readonly string _userAgent;
 
-        public GalleryServer(string userAgent, string galleryServerSource)
+        public GalleryServer(string source, string userAgent)
         {
-            if (string.IsNullOrEmpty(galleryServerSource))
+            if (string.IsNullOrEmpty(source))
             {
-                throw new ArgumentNullException("galleryServerSource");
+                throw new ArgumentNullException("source");
             }
 
-            _originalSource = galleryServerSource.Trim();
-            _baseGalleryServerUrl = GetSafeRedirectedUri(galleryServerSource);
+            _originalSource = source.Trim();
+            _baseGalleryServerUrl = GetSafeRedirectedUri(source);
             if (_baseGalleryServerUrl.EndsWith("/", StringComparison.Ordinal))
             {
                 _baseGalleryServerUrl = _baseGalleryServerUrl.Substring(0, _baseGalleryServerUrl.Length - 1);
@@ -33,7 +33,15 @@ namespace NuGet
             _userAgent = userAgent;
         }
 
-        public string OriginalSource
+        public bool IsV1Protocol
+        {
+            get
+            {
+                return true;
+            }
+        }
+
+        public string Source
         {
             get { return _originalSource; }
         }
@@ -42,13 +50,12 @@ namespace NuGet
             "Microsoft.Reliability",
             "CA2000:Dispose objects before losing scope",
             Justification = "We dispose it in the Completed event handler.")]
-        public void CreatePackage(string apiKey, Stream packageStream, IObserver<int> progressObserver,
-                                  IPackageMetadata metadata = null)
+        public void PushPackage(string apiKey, Stream packageStream, IObserver<int> progressObserver, IPackageMetadata package)
         {
             var state = new PublishState
                         {
                             PublishKey = apiKey,
-                            PackageMetadata = metadata,
+                            PackageMetadata = package,
                             ProgressObserver = progressObserver
                         };
 
@@ -136,14 +143,7 @@ namespace NuGet
             }
             else if (!e.Cancelled)
             {
-                if (state.PackageMetadata != null)
-                {
-                    PublishPackage(state);
-                }
-                else
-                {
-                    state.ProgressObserver.OnCompleted();
-                }
+                PublishPackage(state);
             }
 
             var client = (WebClient)sender;
