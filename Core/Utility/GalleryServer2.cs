@@ -8,6 +8,7 @@ namespace NuGet
     {
         private const string ServiceEndpoint = "/api/v2/package";
         private const string ApiKeyHeader = "X-NuGet-ApiKey";
+        private static readonly HttpStatusCode[] AcceptableStatusCodes = new[] { HttpStatusCode.OK, HttpStatusCode.Created };
 
         private readonly Lazy<Uri> _baseUri;
         private readonly string _source;
@@ -39,7 +40,7 @@ namespace NuGet
 
         public void PushPackage(string apiKey, Stream packageStream, IObserver<int> progressObserver, IPackageMetadata package)
         {
-            HttpClient client = GetClient("", "POST", "application/octet-stream");
+            HttpClient client = GetClient("", "PUT", "application/octet-stream");
 
             client.SendingRequest += (sender, e) =>
                 {
@@ -116,10 +117,10 @@ namespace NuGet
                 response = e.Response;
 
                 var httpResponse = (HttpWebResponse)e.Response;
-                if (httpResponse != null && httpResponse.StatusCode != HttpStatusCode.OK)
+                if (httpResponse != null && 
+                    Array.IndexOf(AcceptableStatusCodes, httpResponse.StatusCode) != -1)
                 {
                     Exception error = new WebException(httpResponse.StatusDescription, e);
-                    //throw new InvalidOperationException(httpResponse.StatusDescription, e);
                     progressObserver.OnError(error);
                 }
             }
