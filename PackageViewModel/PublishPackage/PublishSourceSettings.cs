@@ -6,7 +6,7 @@ namespace PackageExplorerViewModel
 {
     internal class PublishSourceSettings : ISourceSettings
     {
-        private const string NuGetPublishFeed = "http://go.microsoft.com/fwlink/?LinkID=207106";
+        private const string NuGetPublishFeed = "https://nuget.org";
 
         private readonly ISettingsManager _settingsManager;
 

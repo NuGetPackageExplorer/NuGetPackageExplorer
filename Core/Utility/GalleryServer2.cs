@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Net;
+using NuGet.Resources;
 
 namespace NuGet
 {
@@ -8,7 +10,6 @@ namespace NuGet
     {
         private const string ServiceEndpoint = "/api/v2/package";
         private const string ApiKeyHeader = "X-NuGet-ApiKey";
-        private static readonly HttpStatusCode[] AcceptableStatusCodes = new[] { HttpStatusCode.OK, HttpStatusCode.Created };
 
         private readonly Lazy<Uri> _baseUri;
         private readonly string _source;
@@ -51,12 +52,12 @@ namespace NuGet
                     request.Headers.Add(ApiKeyHeader, apiKey);
 
                     var multiPartRequest = new MultipartWebRequest();
-                    multiPartRequest.AddFile(() => packageStream, "package");
+                    multiPartRequest.AddFile(packageStream, "package");
 
                     multiPartRequest.CreateMultipartRequest(request);
                 };
 
-            EnsureSuccessfulResponse(client, progressObserver);
+            EnsureSuccessfulResponse(client, HttpStatusCode.Created, progressObserver);
         }
 
         private HttpClient GetClient(string path, string method, string contentType)
@@ -72,7 +73,7 @@ namespace NuGet
 
             if (!String.IsNullOrEmpty(_userAgent))
             {
-                client.UserAgent = HttpUtility.CreateUserAgentString(_userAgent);
+                client.UserAgent = _userAgent;
             }
 
             return client;
@@ -93,18 +94,24 @@ namespace NuGet
             return requestUri;
         }
 
-        private static void EnsureSuccessfulResponse(HttpClient client, IObserver<int> progressObserver)
+        private static void EnsureSuccessfulResponse(HttpClient client, HttpStatusCode expectedStatusCode, IObserver<int> progressObserver)
         {
             client.ProgressAvailable += (sender, e) =>
             {
                 progressObserver.OnNext(e.PercentComplete);
             };
 
-            WebResponse response = null;
+            HttpWebResponse response = null;
             try
             {
                 progressObserver.OnNext(0);
-                response = client.GetResponse();
+                response = (HttpWebResponse)client.GetResponse();
+                if (response != null && expectedStatusCode != response.StatusCode)
+                {
+                    throw new WebException(
+                        String.Format(CultureInfo.CurrentCulture, NuGetResources.PackageServerError,
+                                      response.StatusDescription, String.Empty));
+                }
                 progressObserver.OnCompleted();
             }
             catch (WebException e)
@@ -114,13 +121,12 @@ namespace NuGet
                     throw;
                 }
 
-                response = e.Response;
-
-                var httpResponse = (HttpWebResponse)e.Response;
-                if (httpResponse != null && 
-                    Array.IndexOf(AcceptableStatusCodes, httpResponse.StatusCode) != -1)
+                response = (HttpWebResponse)e.Response;
+                if (response != null && expectedStatusCode != response.StatusCode)
                 {
-                    Exception error = new WebException(httpResponse.StatusDescription, e);
+                    Exception error = new WebException(
+                        String.Format(CultureInfo.CurrentCulture, NuGetResources.PackageServerError,
+                                      response.StatusDescription, e.Message), e);
                     progressObserver.OnError(error);
                 }
             }

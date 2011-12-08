@@ -204,4 +204,8 @@
   <data name="Manifest_IdMaxLengthExceeded" xml:space="preserve">
     <value>Package Id cannot exceed 100 characters.</value>
   </data>
+  <data name="PackageServerError" xml:space="preserve">
+    <value>Unable to process request. '{0}'. 
+{1}</value>
+  </data>
 </root>

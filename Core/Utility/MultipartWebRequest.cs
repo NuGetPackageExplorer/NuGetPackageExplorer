@@ -35,9 +35,9 @@ namespace NuGet
             _formData.Add(key, value);
         }
 
-        public void AddFile(Func<Stream> fileFactory, string fieldName, string contentType = "application/octet-stream")
+        public void AddFile(Stream fileFactory, string fieldName, string contentType = "application/octet-stream")
         {
-            _files.Add(new PostFileData { FileFactory = fileFactory, FieldName = fieldName, ContentType = contentType });
+            _files.Add(new PostFileData { FileStream = fileFactory, FieldName = fieldName, ContentType = contentType });
         }
 
         public void CreateMultipartRequest(WebRequest request)
@@ -48,7 +48,6 @@ namespace NuGet
             byte[] byteContent;
             using (var memoryStream = new MemoryStream())
             {
-
                 foreach (var item in _formData)
                 {
                     string header = String.Format(CultureInfo.InvariantCulture, FormDataTemplate, boundary, item.Key, item.Value);
@@ -63,10 +62,7 @@ namespace NuGet
                     string header = String.Format(CultureInfo.InvariantCulture, FileTemplate, boundary, file.FieldName, file.FieldName, file.ContentType);
                     byte[] headerBytes = Encoding.UTF8.GetBytes(header);
                     memoryStream.Write(headerBytes, 0, headerBytes.Length);
-                    using (Stream fileStream = file.FileFactory())
-                    {
-                        fileStream.CopyTo(memoryStream);
-                    }
+                    file.FileStream.CopyTo(memoryStream);
                     memoryStream.Write(newlineBytes, 0, newlineBytes.Length);
                 }
                 string trailer = String.Format(CultureInfo.InvariantCulture, "--{0}--", boundary);
@@ -84,7 +80,7 @@ namespace NuGet
 
         private sealed class PostFileData
         {
-            public Func<Stream> FileFactory { get; set; }
+            public Stream FileStream { get; set; }
 
             public string ContentType { get; set; }
 

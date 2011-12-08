@@ -72,7 +72,7 @@
 		</DockPanel>
         
 		<!-- Create only flag -->
-		<CheckBox Margin="10,5" IsChecked="{Binding PushOnly}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="_Use the v1 protocol for this url."></CheckBox>
+        <CheckBox Margin="10,5" IsChecked="{Binding UseV1Protocol}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="_Use the v1 protocol for this url."></CheckBox>
 
 		<!-- Progress bar -->
 		<ProgressBar Margin="10,5" Visibility="{Binding ShowProgress, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" DockPanel.Dock="Top" Height="22" Maximum="100" Value="{Binding PercentComplete, Mode=OneWay}" />
