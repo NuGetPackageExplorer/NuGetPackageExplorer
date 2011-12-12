@@ -8,6 +8,7 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 			<RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
 		<Grid.ColumnDefinitions>
@@ -44,7 +45,9 @@
 			</ListBox.ItemContainerStyle>
 		</ListBox>
 
-		<Border Grid.Row="2" Grid.ColumnSpan="2" Margin="0,20,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
+        <TextBlock Grid.Row="2" Grid.ColumnSpan="2" Margin="10,4,10,0" Text="To share your plugins, publish them to http://myget.org/F/npe" />
+
+		<Border Grid.Row="3" Grid.ColumnSpan="2" Margin="0,15,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
 			<DockPanel Margin="10,5">
 				<Button DockPanel.Dock="Right" Content="_Close" Margin="5,5,0,5" Padding="15,0" Click="Button_Click" IsCancel="True" />
 				<TextBlock Margin="5">
