@@ -71,10 +71,13 @@
 			</TextBox>
 		</DockPanel>
         
-		<!-- Create only flag -->
+		<!-- Use V1 protocol flag -->
         <CheckBox Margin="10,5" IsChecked="{Binding UseV1Protocol}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="_Use the v1 protocol for this url."></CheckBox>
-        
-		<!-- Status text -->
+
+        <!-- Progress bar -->
+        <ProgressBar Margin="10,5" IsIndeterminate="true" Visibility="{Binding ShowProgress, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" DockPanel.Dock="Top" Height="22" Maximum="100" Value="{Binding PercentComplete, Mode=OneWay}" />
+
+        <!-- Status text -->
 		<TextBlock Style="{StaticResource StatusTextStyle}" Text="{Binding Status}" Margin="10,5" Visibility="{Binding Status, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" DockPanel.Dock="Top" TextWrapping="Wrap" />
 
 		<Border DockPanel.Dock="Top" Margin="0,20,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">

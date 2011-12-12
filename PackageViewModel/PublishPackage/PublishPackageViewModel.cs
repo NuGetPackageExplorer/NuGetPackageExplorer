@@ -20,6 +20,7 @@ namespace PackageExplorerViewModel
         private string _publishKey;
         private bool? _useV1Protocol = true;
         private string _selectedPublishItem;
+        private bool _showProgress;
         private string _status;
         private bool _suppressReadingApiKey;
         private IGalleryServer _uploadHelper;
@@ -133,6 +134,19 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public bool ShowProgress
+        {
+            get { return _showProgress; }
+            set
+            {
+                if (_showProgress != value)
+                {
+                    _showProgress = value;
+                    OnPropertyChanged("ShowProgress");
+                }
+            }
+        }
+
         public bool CanPublish
         {
             get { return _canPublish; }
@@ -178,6 +192,7 @@ namespace PackageExplorerViewModel
 
         public void OnCompleted()
         {
+            ShowProgress = false;
             HasError = false;
             Status = (UseV1Protocol == true) ? "Package pushed successfully." : "Package published successfully.";
             _settingsManager.WriteApiKey(PublishUrl, PublishKey);
@@ -186,6 +201,7 @@ namespace PackageExplorerViewModel
 
         public void OnError(Exception error)
         {
+            ShowProgress = false;
             HasError = true;
             Status = error.Message;
             CanPublish = true;
@@ -199,6 +215,7 @@ namespace PackageExplorerViewModel
 
         public void PushPackage()
         {
+            ShowProgress = true;
             Status = "Publishing package...";
             HasError = false;
             CanPublish = false;
