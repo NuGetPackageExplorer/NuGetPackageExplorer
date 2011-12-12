@@ -36,6 +36,11 @@ namespace PackageExplorer
 
         public static Dictionary<string, string> GetRequestParameters(this Uri uri)
         {
+            if (uri == null)
+            {
+                return null;
+            }
+
             MatchCollection matches = Regex.Matches(uri.Query, @"[\?&](([^&=]+)=([^&=#]*))");
             return matches.Cast<Match>().ToDictionary(
                 m => Uri.UnescapeDataString(m.Groups[2].Value),

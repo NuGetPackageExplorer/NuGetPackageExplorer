@@ -87,11 +87,10 @@ namespace PackageExplorer
             const string PackageSourceParameter = "packagesource";
             const string PackageUrlParameter = "packageurl";
 
-            //var requestParameters = UriHelper.GetRequestParameters(new Uri("http://xyz?action=load-package&packageurl=http://www.myget.org/F/chucknorris/Download/Package/roundhouse/0.8.0.292&packagesource=http://www.myget.org/F/chucknorris/"));
             Dictionary<string, string> requestParameters =
                 ApplicationDeployment.CurrentDeployment.ActivationUri.GetRequestParameters();
 
-            if (requestParameters.Any() && requestParameters.ContainsKey(ActionParameter))
+            if (requestParameters != null && requestParameters.ContainsKey(ActionParameter))
             {
                 switch (requestParameters[ActionParameter].ToLowerInvariant())
                 {
