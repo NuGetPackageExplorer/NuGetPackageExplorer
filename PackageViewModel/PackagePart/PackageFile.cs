@@ -49,7 +49,7 @@ namespace PackageExplorerViewModel
             get
             {
                 var physicalFile = _file as PhysicalPackageFile;
-                return physicalFile != null ? physicalFile.SourcePath : null;
+                return (physicalFile != null && !physicalFile.IsTempFile) ? physicalFile.SourcePath : null;
             }
         }
 
@@ -131,7 +131,7 @@ namespace PackageExplorerViewModel
             Delete(false);
         }
 
-        public override IEnumerable<IPackageFile> GetFiles()
+        public override IEnumerable<PackageFile> GetFiles()
         {
             yield return this;
         }

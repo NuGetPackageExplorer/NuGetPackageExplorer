@@ -95,7 +95,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public override IEnumerable<IPackageFile> GetFiles()
+        public override IEnumerable<PackageFile> GetFiles()
         {
             return Children.SelectMany(p => p.GetFiles());
         }
@@ -194,7 +194,7 @@ namespace PackageExplorerViewModel
             return newFolder;
         }
 
-        public PackageFile AddFile(string filePath)
+        public PackageFile AddFile(string filePath, bool isTempFile)
         {
             if (!File.Exists(filePath))
             {
@@ -230,7 +230,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            var physicalFile = new PhysicalPackageFile
+            var physicalFile = new PhysicalPackageFile(isTempFile)
                                {
                                    SourcePath = filePath
                                };
@@ -292,7 +292,7 @@ namespace PackageExplorerViewModel
             // temporarily remove the old file in order to add a new file
             Children.Remove(oldFile);
 
-            PackageFile newFile = AddFile(newFilePath);
+            PackageFile newFile = AddFile(newFilePath, isTempFile: false);
             if (newFile != null)
             {
                 // new file added successfully, officially delete the old file by disposing it
@@ -335,7 +335,7 @@ namespace PackageExplorerViewModel
             PackageFolder childPackgeFolder = AddFolder(dirInfo.Name);
             foreach (FileInfo file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly))
             {
-                childPackgeFolder.AddFile(file.FullName);
+                childPackgeFolder.AddFile(file.FullName, isTempFile: false);
             }
             foreach (DirectoryInfo subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly))
             {

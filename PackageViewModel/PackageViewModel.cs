@@ -305,7 +305,7 @@ namespace PackageExplorerViewModel
             {
                 foreach (string file in selectedFiles)
                 {
-                    folder.AddFile(file);
+                    folder.AddFile(file, isTempFile: false);
                 }
             }
         }
@@ -977,7 +977,7 @@ namespace PackageExplorerViewModel
             if (result)
             {
                 string sourcePath = FileHelper.CreateTempFile(newName);
-                PackageFile file = folder.AddFile(sourcePath);
+                PackageFile file = folder.AddFile(sourcePath, isTempFile: true);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1011,7 +1011,7 @@ namespace PackageExplorerViewModel
             string sourcePath = FileHelper.CreateTempFile(scriptName, content);
 
             var toolsFolder = (PackageFolder) RootFolder[Constants.ToolsFolder];
-            PackageFile file = toolsFolder.AddFile(sourcePath);
+            PackageFile file = toolsFolder.AddFile(sourcePath, isTempFile: true);
             // file can be null if it collides with other files in the same directory
             if (file != null)
             {
@@ -1050,7 +1050,7 @@ namespace PackageExplorerViewModel
         }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        internal IEnumerable<IPackageFile> GetFiles()
+        internal IEnumerable<PackageFile> GetFiles()
         {
             return _packageRoot.GetFiles();
         }
@@ -1142,12 +1142,18 @@ namespace PackageExplorerViewModel
                 }
             }
 
+            string rootPath = Path.GetDirectoryName(fullpath);
+
             using (Stream fileStream = File.Create(fullpath))
             {
                 Manifest manifest = Manifest.Create(PackageMetadata);
                 manifest.Files = new List<ManifestFile>();
-                manifest.Files.AddRange(
-                    RootFolder.GetFiles().Select(f => new ManifestFile {Source = f.Path, Target = f.Path}));
+                manifest.Files.AddRange(RootFolder.GetFiles().Select(
+                    f => new ManifestFile {
+                            Source = !String.IsNullOrEmpty(f.OriginalPath) ? PathUtility.RelativePathTo(rootPath, f.OriginalPath) : f.Path, 
+                            Target = f.Path
+                        })
+                );
                 manifest.Save(fileStream);
             }
         }
@@ -1225,7 +1231,7 @@ namespace PackageExplorerViewModel
                             targetFolder = RootFolder;
                         }
 
-                        targetFolder.AddFile(file);
+                        targetFolder.AddFile(file, isTempFile: false);
                     }
                     else if (Directory.Exists(file))
                     {
@@ -1239,7 +1245,7 @@ namespace PackageExplorerViewModel
                 {
                     if (File.Exists(file))
                     {
-                        folder.AddFile(file);
+                        folder.AddFile(file, isTempFile: false);
                     }
                     else if (Directory.Exists(file))
                     {

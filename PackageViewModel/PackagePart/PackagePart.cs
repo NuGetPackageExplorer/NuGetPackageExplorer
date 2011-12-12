@@ -210,7 +210,7 @@ namespace PackageExplorerViewModel
             "Microsoft.Design",
             "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This method is potentially expensive.")]
-        public abstract IEnumerable<IPackageFile> GetFiles();
+        public abstract IEnumerable<PackageFile> GetFiles();
 
         protected void OnPropertyChanged(string propertyName)
         {

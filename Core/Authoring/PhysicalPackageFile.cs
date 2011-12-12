@@ -4,6 +4,21 @@ namespace NuGet
 {
     public sealed class PhysicalPackageFile : IPackageFile
     {
+        private readonly bool _isTempFile;
+
+        public PhysicalPackageFile(bool isTempFile)
+        {
+            _isTempFile = isTempFile;
+        }
+
+        public bool IsTempFile
+        {
+            get
+            {
+                return _isTempFile;
+            }
+        }
+
         /// <summary>
         /// Path on disk
         /// </summary>
