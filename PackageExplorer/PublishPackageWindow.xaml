@@ -73,9 +73,6 @@
         
 		<!-- Create only flag -->
         <CheckBox Margin="10,5" IsChecked="{Binding UseV1Protocol}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="_Use the v1 protocol for this url."></CheckBox>
-
-		<!-- Progress bar -->
-		<ProgressBar Margin="10,5" Visibility="{Binding ShowProgress, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" DockPanel.Dock="Top" Height="22" Maximum="100" Value="{Binding PercentComplete, Mode=OneWay}" />
         
 		<!-- Status text -->
 		<TextBlock Style="{StaticResource StatusTextStyle}" Text="{Binding Status}" Margin="10,5" Visibility="{Binding Status, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" DockPanel.Dock="Top" TextWrapping="Wrap" />

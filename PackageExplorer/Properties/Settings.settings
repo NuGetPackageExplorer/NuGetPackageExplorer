@@ -24,7 +24,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PublishPackageLocation" Type="System.String" Scope="User">
-      <Value Profile="(Default)">http://go.microsoft.com/fwlink/?LinkID=207106</Value>
+      <Value Profile="(Default)">https://nuget.org</Value>
     </Setting>
     <Setting Name="PackageChooserDialogWidth" Type="System.Double" Scope="User">
       <Value Profile="(Default)">630</Value>

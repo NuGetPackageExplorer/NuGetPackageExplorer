@@ -69,7 +69,6 @@ namespace NuGet
             var client = new WebClient();
             client.Headers[HttpRequestHeader.ContentType] = "application/octet-stream";
             client.Headers[HttpRequestHeader.UserAgent] = _userAgent;
-            client.UploadProgressChanged += OnUploadProgressChanged;
             client.UploadDataCompleted += OnCreatePackageCompleted;
             client.UploadDataAsync(url, "POST", packageStream.ReadAllBytes(), state);
         }
@@ -101,7 +100,6 @@ namespace NuGet
                 var client = new WebClient();
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
                 client.Headers[HttpRequestHeader.UserAgent] = _userAgent;
-                client.UploadProgressChanged += OnUploadProgressChanged;
                 client.UploadDataCompleted += OnPublishPackageCompleted;
                 client.UploadDataAsync(url, "POST", requestStream.ReadAllBytes(), state);
             }
@@ -177,13 +175,6 @@ namespace NuGet
 
             var client = (WebClient)sender;
             client.Dispose();
-        }
-
-        private void OnUploadProgressChanged(object sender, UploadProgressChangedEventArgs e)
-        {
-            var state = (PublishState)e.UserState;
-            // Hack: the UploadDataAsync only reports up to 50 percent. multiply by 2 to simulate 100. LOL
-            state.ProgressObserver.OnNext(Math.Min(100, 2 * e.ProgressPercentage));
         }
 
         private static string GetSafeRedirectedUri(string url)

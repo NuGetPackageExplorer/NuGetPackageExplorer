@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
@@ -16,11 +17,9 @@ namespace PackageExplorerViewModel
         private readonly ISettingsManager _settingsManager;
         private bool _canPublish = true;
         private bool _hasError;
-        private int _percentComplete;
         private string _publishKey;
-        private bool? _useV1Protocol = false;
+        private bool? _useV1Protocol = true;
         private string _selectedPublishItem;
-        private bool _showProgress;
         private string _status;
         private bool _suppressReadingApiKey;
         private IGalleryServer _uploadHelper;
@@ -134,32 +133,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public bool ShowProgress
-        {
-            get { return _showProgress; }
-            set
-            {
-                if (_showProgress != value)
-                {
-                    _showProgress = value;
-                    OnPropertyChanged("ShowProgress");
-                }
-            }
-        }
-
-        public int PercentComplete
-        {
-            get { return _percentComplete; }
-            set
-            {
-                if (_percentComplete != value)
-                {
-                    _percentComplete = value;
-                    OnPropertyChanged("PercentComplete");
-                }
-            }
-        }
-
         public bool CanPublish
         {
             get { return _canPublish; }
@@ -205,18 +178,14 @@ namespace PackageExplorerViewModel
 
         public void OnCompleted()
         {
-            ShowProgress = false;
             HasError = false;
             Status = (UseV1Protocol == true) ? "Package pushed successfully." : "Package published successfully.";
             _settingsManager.WriteApiKey(PublishUrl, PublishKey);
-
             CanPublish = true;
         }
 
         public void OnError(Exception error)
         {
-            PercentComplete = 100;
-            ShowProgress = false;
             HasError = true;
             Status = error.Message;
             CanPublish = true;
@@ -224,49 +193,48 @@ namespace PackageExplorerViewModel
 
         public void OnNext(int value)
         {
-            PercentComplete = value;
         }
 
         #endregion
 
         public void PushPackage()
         {
-            PercentComplete = 0;
-            ShowProgress = true;
-            Status = "Uploading package...";
+            Status = "Publishing package...";
             HasError = false;
             CanPublish = false;
 
-            Stream fileStream = _packageStream.Value;
-            fileStream.Seek(0, SeekOrigin.Begin);
+            // here we reuse the stream multiple times, so make sure to rewind it to beginning every time.
+            _packageStream.Value.Seek(0, SeekOrigin.Begin);
 
-            try
-            {
-                GalleryServer.PushPackage(PublishKey, fileStream, this, _package);
-            }
-            catch (WebException e)
-            {
-                if (e.Status == WebExceptionStatus.Timeout)
-                {
-                    OnError(e);
-                }
-            }
-            finally
-            {
-                // add the publish url to the list
-                _mruSourceManager.NotifyPackageSourceAdded(PublishUrl);
+            TaskScheduler uiTaskSchedulker = TaskScheduler.FromCurrentSynchronizationContext();
 
-                // this is to make sure the combox box doesn't goes blank after publishing
-                try
-                {
-                    _suppressReadingApiKey = true;
-                    SelectedPublishItem = PublishUrl;
-                }
-                finally
-                {
-                    _suppressReadingApiKey = false;
-                }
-            }
+            Task.Factory.StartNew(
+                    () => GalleryServer.PushPackage(PublishKey, _packageStream.Value, this, _package))
+                .ContinueWith(task =>
+                              {
+                                  if (task.IsFaulted)
+                                  {
+                                      var webException = task.Exception.GetBaseException() as WebException;
+                                      if (webException != null && webException.Status == WebExceptionStatus.Timeout)
+                                      {
+                                          OnError(task.Exception);
+                                      }
+                                  }
+
+                                  // add the publish url to the list
+                                  _mruSourceManager.NotifyPackageSourceAdded(PublishUrl);
+
+                                  // this is to make sure the combo box doesn't goes blank after publishing
+                                  try
+                                  {
+                                      _suppressReadingApiKey = true;
+                                      SelectedPublishItem = PublishUrl;
+                                  }
+                                  finally
+                                  {
+                                      _suppressReadingApiKey = false;
+                                  }
+                              }, uiTaskSchedulker);
         }
     }
 }

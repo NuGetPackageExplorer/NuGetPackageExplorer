@@ -96,15 +96,9 @@ namespace NuGet
 
         private static void EnsureSuccessfulResponse(HttpClient client, HttpStatusCode expectedStatusCode, IObserver<int> progressObserver)
         {
-            client.ProgressAvailable += (sender, e) =>
-            {
-                progressObserver.OnNext(e.PercentComplete);
-            };
-
             HttpWebResponse response = null;
             try
             {
-                progressObserver.OnNext(0);
                 response = (HttpWebResponse)client.GetResponse();
                 if (response != null && expectedStatusCode != response.StatusCode)
                 {
