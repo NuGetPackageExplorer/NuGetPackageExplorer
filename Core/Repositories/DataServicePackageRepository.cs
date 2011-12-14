@@ -2,6 +2,7 @@ using System;
 using System.Data.Services.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace NuGet
 {
@@ -10,6 +11,7 @@ namespace NuGet
         private readonly DataServiceContext _context;
         private readonly IHttpClient _httpClient;
         private DataServiceQuery<DataServicePackage> _query;
+        private Lazy<ISet<string>> _supportedProperties;
 
         public DataServicePackageRepository(IHttpClient httpClient)
         {
@@ -23,6 +25,7 @@ namespace NuGet
             _context = new DataServiceContext(httpClient.Uri);
             _context.SendingRequest += OnSendingRequest;
             _context.IgnoreMissingProperties = true;
+            _supportedProperties = new Lazy<ISet<string>>(() => _context.GetDataServiceMetadata());
         }
 
         #region IPackageRepository Members
@@ -35,6 +38,14 @@ namespace NuGet
         IQueryable<IPackage> IPackageRepository.GetPackages()
         {
             return GetPackages();
+        }
+
+        public bool SupportsPrereleasePackages
+        {
+            get
+            {
+                return _supportedProperties.Value != null && _supportedProperties.Value.Contains("IsAbsoluteLatestVersion");
+            }
         }
 
         #endregion

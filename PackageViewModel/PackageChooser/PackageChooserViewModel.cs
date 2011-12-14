@@ -475,8 +475,17 @@ namespace PackageExplorerViewModel
 
                         if (ShowLatestVersion)
                         {
-                            filteredQuery = query.
-                                Where(p => p.IsLatestVersion).
+                            IQueryable<DataServicePackage> latestQuery;
+                            if (_packageRepository.SupportsPrereleasePackages)
+                            {
+                                latestQuery = query.Where(p => p.IsAbsoluteLatestVersion);
+                            }
+                            else
+                            {
+                                latestQuery = query.Where(p => p.IsLatestVersion);
+                            }
+
+                            filteredQuery = latestQuery.
                                 Select(p => new PackageInfo
                                             {
                                                 Id = p.Id,

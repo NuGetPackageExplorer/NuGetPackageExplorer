@@ -20,6 +20,7 @@ namespace NuGet
         public string Version { get; set; }
         public string Authors { get; set; }
         public bool IsLatestVersion { get; set; }
+        public bool IsAbsoluteLatestVersion { get; set; }
         public DateTimeOffset LastUpdated { get; set; }
         public long PackageSize { get; set; }
         public string PackageHash { get; set; }

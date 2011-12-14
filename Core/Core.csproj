@@ -96,6 +96,7 @@
     <Compile Include="Packages\SimplePackage.cs" />
     <Compile Include="ProjectSystem\IFileSystem.cs" />
     <Compile Include="ProjectSystem\PhysicalFileSystem.cs" />
+    <Compile Include="Repositories\DataServiceMetadata.cs" />
     <Compile Include="Repositories\DataServicePackageRepository.cs" />
     <Compile Include="Repositories\IPackageRepository.cs" />
     <Compile Include="Repositories\MachineCache.cs" />
