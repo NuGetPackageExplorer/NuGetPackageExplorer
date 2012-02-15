@@ -180,7 +180,7 @@ namespace PackageExplorerViewModel
                 }
 
                 Name = newName;
-                PackageViewModel.NotifyChanges();
+                PackageViewModel.NotifyContentRenamed(this);
             }
         }
 

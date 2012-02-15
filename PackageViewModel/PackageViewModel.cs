@@ -1158,6 +1158,16 @@ namespace PackageExplorerViewModel
             }
         }
 
+        internal void NotifyContentRenamed(PackagePart packagePart)
+        {
+            if (CurrentFileInfo != null && CurrentFileInfo.File.IsDescendantOf(packagePart))
+            {
+                ShowFileContent(CurrentFileInfo.File);
+            }
+
+            NotifyChanges();
+        }
+
         internal void NotifyContentDeleted(PackagePart packagePart)
         {
             // if the deleted file is being shown in the content pane, close the content pane
