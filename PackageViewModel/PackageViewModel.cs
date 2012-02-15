@@ -1161,7 +1161,7 @@ namespace PackageExplorerViewModel
         internal void NotifyContentDeleted(PackagePart packagePart)
         {
             // if the deleted file is being shown in the content pane, close the content pane
-            if (CurrentFileInfo != null && CurrentFileInfo.File == packagePart)
+            if (CurrentFileInfo != null && CurrentFileInfo.File.IsDescendantOf(packagePart))
             {
                 CloseContentViewer();
             }

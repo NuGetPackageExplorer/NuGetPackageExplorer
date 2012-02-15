@@ -206,6 +206,30 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public bool IsDescendantOf(PackagePart container)
+        {
+            if (container == this)
+            {
+                return true;
+            }
+
+            if (container is PackageFile)
+            {
+                // a file cannot be an ancestor of another part
+                return false;
+            }
+
+            for (var cursor = this; cursor != null; cursor = cursor.Parent)
+            {
+                if (cursor == container)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         [SuppressMessage(
             "Microsoft.Design",
             "CA1024:UsePropertiesWhereAppropriate",
