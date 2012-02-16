@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using NuGet;
 
 namespace PackageExplorerViewModel
 {
-    internal class ShowAllVersionsQueryContext<T> : IQueryContext<T>
+    internal class ShowAllVersionsQueryContext<T> : IQueryContext<T> where T : IPackageInfoType
     {
         private readonly int _bufferSize;
         private readonly IEqualityComparer<T> _comparer;
@@ -80,6 +81,11 @@ namespace PackageExplorerViewModel
                         {
                             // if no item returned, we have reached the end.
                             yield break;
+                        }
+
+                        for (int j = 0; j < buffer.Length; j++)
+                        {
+                            buffer[j].ShowAll = true;
                         }
 
                         head = 0;

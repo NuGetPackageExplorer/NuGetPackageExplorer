@@ -492,6 +492,7 @@ namespace PackageExplorerViewModel
                                                 Version = p.Version,
                                                 Authors = p.Authors,
                                                 DownloadCount = p.DownloadCount,
+                                                VersionDownloadCount = p.VersionDownloadCount,
                                                 PackageHash = p.PackageHash,
                                                 PackageSize = p.PackageSize
                                             });
@@ -508,8 +509,8 @@ namespace PackageExplorerViewModel
                                                                   Id = p.Id,
                                                                   Version = p.Version,
                                                                   Authors = p.Authors,
-                                                                  VersionDownloadCount =
-                                                                      p.VersionDownloadCount,
+                                                                  DownloadCount = p.DownloadCount,
+                                                                  VersionDownloadCount = p.VersionDownloadCount,
                                                                   PackageHash = p.PackageHash,
                                                                   PackageSize = p.PackageSize
                                                               });

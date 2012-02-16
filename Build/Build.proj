@@ -177,7 +177,7 @@
   
   <Target Name="BuildPackages">
         <Exec
-            Command="&quot;$(NuGetExeToolPath)&quot; pack $(PackagesFolder)\NuGetPackageExplorer.Types.nuspec -OutputDirectory $(DropDirectory)"
+            Command="&quot;$(NuGetExeToolPath)&quot; pack &quot;$(PackagesFolder)\NuGetPackageExplorer.Types.nuspec&quot; -OutputDirectory &quot;$(DropDirectory)&quot;"
             WorkingDirectory="$(PackagesFolder)" />
   </Target>
 

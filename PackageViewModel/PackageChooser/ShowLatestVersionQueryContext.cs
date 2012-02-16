@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using NuGet;
 
 namespace PackageExplorerViewModel
 {
-    internal class ShowLatestVersionQueryContext<T> : IQueryContext<T>
+    internal class ShowLatestVersionQueryContext<T> : IQueryContext<T> where T : IPackageInfoType
     {
         private readonly int _pageSize;
         private readonly IQueryable<T> _source;
@@ -54,7 +55,12 @@ namespace PackageExplorerViewModel
 
         public IEnumerable<T> GetItemsForCurrentPage()
         {
-            return _source.Skip(_pageIndex*_pageSize).Take(_pageSize);
+            var results = _source.Skip(_pageIndex*_pageSize).Take(_pageSize);
+            foreach (var package in results)
+            {
+                package.ShowAll = false;
+                yield return package;
+            }
         }
 
         public bool MoveFirst()

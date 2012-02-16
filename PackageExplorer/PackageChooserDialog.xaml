@@ -149,6 +149,11 @@
 				<Style TargetType="ListViewItem">
 					<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 					<EventSetter Event="MouseDoubleClick" Handler="OkButton_Click" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsPrerelease, Mode=OneTime}" Value="true">
+                            <Setter Property="Foreground" Value="Maroon" />
+                        </DataTrigger>
+                    </Style.Triggers>
 				</Style>
 			</ListView.ItemContainerStyle>
 
