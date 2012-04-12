@@ -495,17 +495,7 @@ namespace PackageExplorerViewModel
 
                         if (ShowLatestVersion)
                         {
-                            IQueryable<IPackage> latestQuery;
-                            if (_packageRepository.SupportsPrereleasePackages)
-                            {
-                                latestQuery = query.Where(p => p.IsAbsoluteLatestVersion);
-                            }
-                            else
-                            {
-                                latestQuery = query.Where(p => p.IsLatestVersion);
-                            }
-
-                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(latestQuery, repository);
+                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: true);
 
                             _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(
                                 packageInfos,
@@ -514,8 +504,8 @@ namespace PackageExplorerViewModel
                         else
                         {
                             /* show all versions */
-                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository);
-
+                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: false);
+                            
                             _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
                                 packageInfos,
                                 ShowAllVersionsPageSize,
@@ -531,11 +521,26 @@ namespace PackageExplorerViewModel
                 );
         }
 
-        private static IQueryable<PackageInfo> GetPackageInfos(IQueryable<IPackage> latestQuery, IPackageRepository repository)
+        private static IQueryable<PackageInfo> GetPackageInfos(
+            IQueryable<IPackage> query, 
+            IPackageRepository repository,
+            bool getLatestVersions)
         {
             if (repository is DataServicePackageRepository)
             {
-                return latestQuery.Cast<DataServicePackage>().Select(p => new PackageInfo
+                if (getLatestVersions)
+                {
+                    if (repository.SupportsPrereleasePackages)
+                    {
+                        query = query.Where(p => p.IsAbsoluteLatestVersion);
+                    }
+                    else
+                    {
+                        query = query.Where(p => p.IsLatestVersion);
+                    }
+                }
+
+                return query.Cast<DataServicePackage>().Select(p => new PackageInfo
                                                         {
                                                             Id = p.Id,
                                                             Version = p.Version,
@@ -548,7 +553,13 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                return latestQuery.Cast<ZipPackage>().Select(p => new PackageInfo
+                if (getLatestVersions)
+                {
+                    query = query.GroupBy(p => p.Id, StringComparer.OrdinalIgnoreCase)
+                                 .Select(g => g.OrderByDescending(p => p.Version).First());
+                }
+
+                return query.Cast<ZipPackage>().Select(p => new PackageInfo
                                                     {
                                                         Id = p.Id,
                                                         Version = p.Version.ToString(),
