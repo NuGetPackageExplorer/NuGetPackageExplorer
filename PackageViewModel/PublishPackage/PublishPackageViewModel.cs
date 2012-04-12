@@ -9,7 +9,7 @@ using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {
-    public class PublishPackageViewModel : ViewModelBase, IObserver<int>
+    public sealed class PublishPackageViewModel : ViewModelBase, IObserver<int>, IDisposable
     {
         private readonly MruPackageSourceManager _mruSourceManager;
         private readonly IPackageMetadata _package;
@@ -35,6 +35,7 @@ namespace PackageExplorerViewModel
             _package = viewModel.PackageMetadata;
             _packageStream = new Lazy<Stream>(viewModel.GetCurrentPackageStream);
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
+            UseV1Protocol = _settingsManager.UseV1ProtocolForPublish;
         }
 
         public string PublishKey
@@ -252,6 +253,11 @@ namespace PackageExplorerViewModel
                                       _suppressReadingApiKey = false;
                                   }
                               }, uiTaskSchedulker);
+        }
+
+        public void Dispose()
+        {
+            _settingsManager.UseV1ProtocolForPublish = (bool)UseV1Protocol;
         }
     }
 }

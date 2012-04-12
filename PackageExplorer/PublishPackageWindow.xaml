@@ -42,7 +42,7 @@
 				<Run FontWeight="Bold" Text="{Binding Version, Mode=OneTime}" />
 			</TextBlock.Inlines>
 		</TextBlock>
-        
+		
 		<!-- Publish Url -->
 		<DockPanel DockPanel.Dock="Top" Margin="7,8,10,5">
 			<Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishUrl}" Content="Publish _Url:" />
@@ -56,7 +56,7 @@
 				</ComboBox.Text>
 			</ComboBox>
 		</DockPanel>
-                
+				
 		<!-- Publish key -->
 		<DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
 			<Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishKey}" Content="Publish _key:" />
@@ -70,14 +70,14 @@
 				</TextBox.Text>
 			</TextBox>
 		</DockPanel>
-        
+		
 		<!-- Use V1 protocol flag -->
-        <CheckBox Margin="10,5" IsChecked="{Binding UseV1Protocol}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="_Use the v1 protocol for this url." ToolTip="Uncheck to publish packages to the official NuGet gallery at https://nuget.org"></CheckBox>
+		<CheckBox Margin="10,5" IsChecked="{Binding UseV1Protocol, Mode=TwoWay, BindingGroupName=Nothing}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="_Use the v1 protocol for this url." ToolTip="Uncheck to publish packages to the official NuGet gallery at https://nuget.org"></CheckBox>
 
-        <!-- Progress bar -->
-        <ProgressBar Margin="10,5" IsIndeterminate="true" Visibility="{Binding ShowProgress, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" DockPanel.Dock="Top" Height="22" Maximum="100" Value="{Binding PercentComplete, Mode=OneWay}" />
+		<!-- Progress bar -->
+		<ProgressBar Margin="10,5" IsIndeterminate="true" Visibility="{Binding ShowProgress, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" DockPanel.Dock="Top" Height="22" Maximum="100" Value="{Binding PercentComplete, Mode=OneWay}" />
 
-        <!-- Status text -->
+		<!-- Status text -->
 		<TextBlock Style="{StaticResource StatusTextStyle}" Text="{Binding Status}" Margin="10,5" Visibility="{Binding Status, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" DockPanel.Dock="Top" TextWrapping="Wrap" />
 
 		<Border DockPanel.Dock="Top" Margin="0,20,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">

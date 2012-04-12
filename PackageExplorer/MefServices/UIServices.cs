@@ -208,8 +208,26 @@ namespace PackageExplorer
                              Owner = Window.Value,
                              DataContext = viewModel
                          };
+
+            var disposable = viewModel as IDisposable;
+            if (disposable != null)
+            {
+                dialog.Closed += OnDialogClosed;
+            }
+
             bool? result = dialog.ShowDialog();
             return result ?? false;
+        }
+
+        private void OnDialogClosed(object sender, EventArgs e)
+        {
+            var window = (Window)sender;
+            var disposable = window.DataContext as IDisposable;
+            if (disposable != null)
+            {
+                disposable.Dispose();
+            }
+            window.Closed -= OnDialogClosed;
         }
 
         public bool OpenFolderDialog(string title, string initialPath, out string selectedPath)

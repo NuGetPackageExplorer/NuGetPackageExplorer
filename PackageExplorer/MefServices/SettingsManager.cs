@@ -105,6 +105,18 @@ namespace PackageExplorer
             set { Settings.Default.ShowLatestVersionOfPackage = value; }
         }
 
+        public bool UseV1ProtocolForPublish
+        {
+            get
+            {
+                return Settings.Default.UseV1ProtocolForPublish;
+            }
+            set
+            {
+                Settings.Default.UseV1ProtocolForPublish = value;
+            }
+        }
+
         #endregion
     }
 }
