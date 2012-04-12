@@ -5,16 +5,22 @@ using NuGet;
 
 namespace PackageExplorerViewModel
 {
-    internal static class DataServicePackageRepositoryFactory
+    internal static class PackageRepositoryFactory
     {
         private static readonly Dictionary<string, IHttpClient> _httpClientCache = new Dictionary<string, IHttpClient>();
 
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public static DataServicePackageRepository CreateRepository(string source)
+        public static IPackageRepository CreateRepository(string source)
         {
             if (source == null)
             {
                 throw new ArgumentNullException("source");
+            }
+
+            var uri = new Uri(source);
+            if (uri.IsFile)
+            {
+                return new LocalPackageRepository(source);
             }
 
             IHttpClient packageSourceClient;

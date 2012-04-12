@@ -76,7 +76,7 @@
     <Compile Include="Types\IPackageChooser.cs" />
     <Compile Include="MruManager.cs" />
     <Compile Include="MruPackageSourceManager.cs" />
-    <Compile Include="PackageChooser\DataServicePackageRepositoryFactory.cs" />
+    <Compile Include="PackageChooser\PackageRepositoryFactory.cs" />
     <Compile Include="PackageChooser\IQueryContext.cs" />
     <Compile Include="PackageChooser\ShowLatestVersionQueryContext.cs" />
     <Compile Include="PackageChooser\ShowAllVersionsQueryContext.cs" />

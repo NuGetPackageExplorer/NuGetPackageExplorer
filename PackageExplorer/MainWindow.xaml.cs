@@ -265,7 +265,7 @@ namespace PackageExplorer
         private void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
             var parameter = (string) e.Parameter;
-            OpenPackageFromNuGetFeed(parameter);
+            OpenPackageFromRepository(parameter);
         }
 
         private void OpenPackageFromLocal()
@@ -288,16 +288,8 @@ namespace PackageExplorer
             }
         }
 
-        private void OpenPackageFromNuGetFeed(string searchTerm)
+        private void OpenPackageFromRepository(string searchTerm)
         {
-            if (!NetworkInterface.GetIsNetworkAvailable())
-            {
-                UIServices.Show(
-                    StringResources.NoNetworkConnection,
-                    MessageLevel.Warning);
-                return;
-            }
-
             bool canceled = AskToSaveCurrentFile();
             if (canceled)
             {
@@ -305,7 +297,16 @@ namespace PackageExplorer
             }
 
             PackageInfo selectedPackageInfo = PackageChooser.SelectPackage(searchTerm);
-            if (selectedPackageInfo != null)
+            if (selectedPackageInfo == null)
+            {
+                return;
+            }
+
+            if (selectedPackageInfo.IsLocalPackage)
+            {
+                OpenLocalPackage(selectedPackageInfo.DownloadUrl.LocalPath);
+            }
+            else 
             {
                 var packageVersion = new SemanticVersion(selectedPackageInfo.Version);
                 IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);

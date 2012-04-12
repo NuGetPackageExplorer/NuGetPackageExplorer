@@ -38,7 +38,7 @@ namespace NuGet
             return package.Id + " " + package.Version;
         }
 
-        public static IQueryable<DataServicePackage> Find(this IQueryable<DataServicePackage> packages,
+        public static IQueryable<IPackage> Find(this IQueryable<IPackage> packages,
                                                           params string[] searchTerms)
         {
             if (searchTerms == null)
@@ -58,7 +58,7 @@ namespace NuGet
         /// <summary>
         /// Constructs an expression to search for individual tokens in a search term in the Id and Description of packages
         /// </summary>
-        private static Expression<Func<DataServicePackage, bool>> BuildSearchExpression(IEnumerable<string> searchTerms)
+        private static Expression<Func<IPackage, bool>> BuildSearchExpression(IEnumerable<string> searchTerms)
         {
             Debug.Assert(searchTerms != null);
             ParameterExpression parameterExpression = Expression.Parameter(typeof(IPackageMetadata));
@@ -67,7 +67,7 @@ namespace NuGet
                                     from property in _packagePropertiesToSearch
                                     select BuildExpressionForTerm(parameterExpression, term, property)).Aggregate(
                                         Expression.OrElse);
-            return Expression.Lambda<Func<DataServicePackage, bool>>(condition, parameterExpression);
+            return Expression.Lambda<Func<IPackage, bool>>(condition, parameterExpression);
         }
 
         [SuppressMessage("Microsoft.Globalization", "CA1304:SpecifyCultureInfo", MessageId = "System.String.ToLower",

@@ -130,6 +130,31 @@ namespace PackageExplorerViewModel
             get { return Enumerable.Empty<AssemblyReference>(); }
         }
 
+        public bool IsAbsoluteLatestVersion
+        {
+            get { return false; }
+        }
+
+        public bool IsLatestVersion
+        {
+            get { return false; }
+        }
+
+        public DateTimeOffset LastUpdated
+        {
+            get { return DateTimeOffset.MinValue; }
+        }
+
+        public long PackageSize
+        {
+            get { return 0; }
+        }
+
+        public string PackageHash
+        {
+            get { return null; }
+        }
+
         #endregion
     }
 }

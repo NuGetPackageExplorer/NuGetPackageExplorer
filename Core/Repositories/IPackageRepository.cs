@@ -10,5 +10,7 @@ namespace NuGet
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This call might be expensive")]
         IQueryable<IPackage> GetPackages();
+
+        bool SupportsPrereleasePackages { get; }
     }
 }

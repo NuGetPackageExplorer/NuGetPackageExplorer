@@ -26,7 +26,7 @@ namespace PackageExplorerViewModel
         private int _endPackage;
         private bool _hasError;
         private bool _isEditable = true;
-        private DataServicePackageRepository _packageRepository;
+        private IPackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
         private bool _showLatestVersion;
         private string _sortColumn;
@@ -273,11 +273,11 @@ namespace PackageExplorerViewModel
         /// </summary>
         /// <returns></returns>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private DataServicePackageRepository GetPackageRepository(object state)
+        private IPackageRepository GetPackageRepository(object state)
         {
             if (_packageRepository == null)
             {
-                _packageRepository = DataServicePackageRepositoryFactory.CreateRepository(PackageSource);
+                _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
             }
 
             var token = (CancellationToken) state;
@@ -360,19 +360,25 @@ namespace PackageExplorerViewModel
 
             token.ThrowIfCancellationRequested();
 
-            DataServicePackageRepository repository = GetPackageRepository(token);
+            IPackageRepository repository = GetPackageRepository(token);
 
             token.ThrowIfCancellationRequested();
 
-            foreach (PackageInfo entity in result)
+            // this is the only way we can the download uri for each data service package
+            var dataServiceRepository = repository as DataServicePackageRepository;
+            if (dataServiceRepository != null)
             {
-                entity.DownloadUrl = repository.GetReadStreamUri(entity);
+                foreach (PackageInfo entity in result)
+                {
+                    entity.DownloadUrl = dataServiceRepository.GetReadStreamUri(entity);
+                }
             }
 
             token.ThrowIfCancellationRequested();
             return result;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void LoadPackages()
         {
             IsEditable = false;
@@ -384,7 +390,7 @@ namespace PackageExplorerViewModel
             CurrentCancellationTokenSource = new CancellationTokenSource();
             CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
 
-            Task.Factory.StartNew<DataServicePackageRepository>(
+            Task.Factory.StartNew<IPackageRepository>(
                 GetPackageRepository,
                 CurrentCancellationTokenSource.Token,
                 CurrentCancellationTokenSource.Token
@@ -411,7 +417,7 @@ namespace PackageExplorerViewModel
                             return;
                         }
 
-                        DataServicePackageRepository repository = task.Result;
+                        IPackageRepository repository = task.Result;
                         if (repository == null)
                         {
                             ClearMessage();
@@ -419,7 +425,23 @@ namespace PackageExplorerViewModel
                             return;
                         }
 
-                        IQueryable<DataServicePackage> query = repository.GetPackages();
+                        IQueryable<IPackage> query = null;
+
+                        try
+                        {
+                            query = repository.GetPackages();
+                        }
+                        catch (Exception error)
+                        {
+                            // only show error if user hasn't canceled this request
+                            if (usedTokenSource == CurrentCancellationTokenSource)
+                            {
+                                ShowMessage(error.GetBaseException().Message, isError: true);
+                                RestoreUI();
+                            }
+                            return;
+                        }
+
                         if (!String.IsNullOrEmpty(_currentSearch))
                         {
                             query = query.Find(_currentSearch.Split(' '));
@@ -436,13 +458,13 @@ namespace PackageExplorerViewModel
                                             : query.OrderBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                                 break;
 
-                            case "Authors":
-                                query = SortDirection == ListSortDirection.Descending
-                                            ? query.OrderByDescending(p => p.Authors).ThenBy(p => p.Id).
-                                                  ThenByDescending(p => p.LastUpdated)
-                                            : query.OrderBy(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(
-                                                p => p.LastUpdated);
-                                break;
+                            //case "Authors":
+                            //    query = SortDirection == ListSortDirection.Descending
+                            //                ? query.OrderByDescending(p => p.Authors).ThenBy(p => p.Id).
+                            //                      ThenByDescending(p => p.LastUpdated)
+                            //                : query.OrderBy(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(
+                            //                    p => p.LastUpdated);
+                            //    break;
 
                             case "VersionDownloadCount":
                                 query = SortDirection == ListSortDirection.Descending
@@ -471,11 +493,9 @@ namespace PackageExplorerViewModel
                                 break;
                         }
 
-                        IQueryable<PackageInfo> filteredQuery;
-
                         if (ShowLatestVersion)
                         {
-                            IQueryable<DataServicePackage> latestQuery;
+                            IQueryable<IPackage> latestQuery;
                             if (_packageRepository.SupportsPrereleasePackages)
                             {
                                 latestQuery = query.Where(p => p.IsAbsoluteLatestVersion);
@@ -485,38 +505,19 @@ namespace PackageExplorerViewModel
                                 latestQuery = query.Where(p => p.IsLatestVersion);
                             }
 
-                            filteredQuery = latestQuery.
-                                Select(p => new PackageInfo
-                                            {
-                                                Id = p.Id,
-                                                Version = p.Version,
-                                                Authors = p.Authors,
-                                                DownloadCount = p.DownloadCount,
-                                                VersionDownloadCount = p.VersionDownloadCount,
-                                                PackageHash = p.PackageHash,
-                                                PackageSize = p.PackageSize
-                                            });
+                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(latestQuery, repository);
 
                             _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(
-                                filteredQuery,
+                                packageInfos,
                                 ShowLatestVersionPageSize);
                         }
                         else
                         {
                             /* show all versions */
-                            filteredQuery = query.Select(p => new PackageInfo
-                                                              {
-                                                                  Id = p.Id,
-                                                                  Version = p.Version,
-                                                                  Authors = p.Authors,
-                                                                  DownloadCount = p.DownloadCount,
-                                                                  VersionDownloadCount = p.VersionDownloadCount,
-                                                                  PackageHash = p.PackageHash,
-                                                                  PackageSize = p.PackageSize
-                                                              });
+                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository);
 
                             _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
-                                filteredQuery,
+                                packageInfos,
                                 ShowAllVersionsPageSize,
                                 PageBuffer,
                                 PackageInfoEqualityComparer.Instance);
@@ -528,6 +529,37 @@ namespace PackageExplorerViewModel
                     TaskContinuationOptions.None,
                     uiScheduler
                 );
+        }
+
+        private static IQueryable<PackageInfo> GetPackageInfos(IQueryable<IPackage> latestQuery, IPackageRepository repository)
+        {
+            if (repository is DataServicePackageRepository)
+            {
+                return latestQuery.Cast<DataServicePackage>().Select(p => new PackageInfo
+                                                        {
+                                                            Id = p.Id,
+                                                            Version = p.Version,
+                                                            Authors = p.Authors,
+                                                            DownloadCount = p.DownloadCount,
+                                                            VersionDownloadCount = p.VersionDownloadCount,
+                                                            PackageHash = p.PackageHash,
+                                                            PackageSize = p.PackageSize
+                                                        });
+            }
+            else
+            {
+                return latestQuery.Cast<ZipPackage>().Select(p => new PackageInfo
+                                                    {
+                                                        Id = p.Id,
+                                                        Version = p.Version.ToString(),
+                                                        Authors = String.Join(", ", p.Authors),
+                                                        DownloadCount = p.DownloadCount,
+                                                        VersionDownloadCount = p.VersionDownloadCount,
+                                                        PackageHash = p.PackageHash,
+                                                        PackageSize = p.PackageSize,
+                                                        DownloadUrl = new Uri(p.Source)
+                                                    });
+            }
         }
 
         private void Search(string searchTerm)
@@ -560,7 +592,7 @@ namespace PackageExplorerViewModel
 
         private void Sort(string column)
         {
-            if (column == "Version")
+            if (column == "Version" || column == "Authors")
             {
                 return;
             }

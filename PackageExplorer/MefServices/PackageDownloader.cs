@@ -26,8 +26,7 @@ namespace PackageExplorer
 
         #region IPackageDownloader Members
 
-        public void Download(Uri downloadUri, string packageId, SemanticVersion packageVersion,
-                             Action<IPackage> callback)
+        public void Download(Uri downloadUri, string packageId, SemanticVersion packageVersion, Action<IPackage> callback)
         {
             string progressDialogText = Resources.Resources.Dialog_DownloadingPackage;
             if (!string.IsNullOrEmpty(packageId))

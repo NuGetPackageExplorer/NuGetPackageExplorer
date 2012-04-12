@@ -197,7 +197,7 @@
 				</GridView>
 			</ListView.View>
 		</ListView>
-
+        
 		<!-- Checkbox: Show latest version of each Id -->
 		<CheckBox Margin="0,0,0,8" Grid.Row="3" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowLatestVersion}" HorizontalAlignment="Left" Content="Only _show latest version of each package Id." Checked="OnShowLatestVersionValueChanged" Unchecked="OnShowLatestVersionValueChanged" />
 

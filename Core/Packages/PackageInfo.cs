@@ -47,6 +47,14 @@ namespace NuGet
             }
         }
 
+        public bool IsLocalPackage
+        {
+            get
+            {
+                return DownloadUrl.IsFile;
+            }
+        }
+
         public DataServicePackage AsDataServicePackage()
         {
             return new DataServicePackage

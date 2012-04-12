@@ -19,15 +19,22 @@ namespace NuGet
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
         private readonly Func<Stream> _streamFactory;
+        private readonly string _filePath;
 
-        public ZipPackage(string fileName)
+        public ZipPackage(string filePath)
         {
-            if (String.IsNullOrEmpty(fileName))
+            if (String.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentException("Argument cannot be null.", "fileName");
+                throw new ArgumentException("Argument cannot be null.", "filePath");
             }
-            _streamFactory = () => File.OpenRead(fileName);
+            _filePath = filePath;
+            _streamFactory = () => File.OpenRead(filePath);
             EnsureManifest();
+        }
+
+        public string Source
+        {
+            get { return _filePath; }
         }
 
         #region IPackage Members
@@ -55,12 +62,12 @@ namespace NuGet
 
         public int DownloadCount
         {
-            get { return -1; }
+            get { return 0; }
         }
 
         public int VersionDownloadCount
         {
-            get { return -1; }
+            get { return 0; }
         }
 
         public bool RequireLicenseAcceptance { get; set; }
@@ -76,6 +83,47 @@ namespace NuGet
         public string Tags { get; set; }
 
         public string Copyright { get; set; }
+
+        public bool IsAbsoluteLatestVersion
+        {
+            get { return true; }
+        }
+
+        public bool IsLatestVersion
+        {
+            get { return this.IsReleaseVersion(); }
+        }
+
+        private DateTimeOffset? _lastUpdated;
+        public DateTimeOffset LastUpdated
+        {
+            get 
+            {
+                if (_lastUpdated == null)
+                {
+                    _lastUpdated = File.GetLastWriteTimeUtc(_filePath);
+                }
+                return _lastUpdated.Value;
+            }
+        }
+
+        private long? _packageSize;
+        public long PackageSize
+        {
+            get 
+            {
+                if (_packageSize == null)
+                {
+                    _packageSize = new FileInfo(_filePath).Length;
+                }
+                return _packageSize.Value;
+            }
+        }
+
+        public string PackageHash
+        {
+            get { return null; }
+        }
 
         public IEnumerable<AssemblyReference> References { get; set; }
 

@@ -110,6 +110,31 @@ namespace NuGet
             get { return -1; }
         }
 
+        public bool IsAbsoluteLatestVersion
+        {
+            get { return true; }
+        }
+
+        public bool IsLatestVersion
+        {
+            get { return true; }
+        }
+
+        public DateTimeOffset LastUpdated
+        {
+            get { return DateTimeOffset.UtcNow; }
+        }
+
+        public long PackageSize
+        {
+            get { return 0; }
+        }
+
+        public string PackageHash
+        {
+            get { return null; }
+        }
+
         #endregion
 
         #region Nested type: SafeEnumerable

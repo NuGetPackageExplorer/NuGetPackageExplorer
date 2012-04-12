@@ -27,6 +27,14 @@ namespace NuGet
 
         #region IPackageRepository Members
 
+        public bool SupportsPrereleasePackages
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public string Source
         {
             get { return _cacheRoot; }

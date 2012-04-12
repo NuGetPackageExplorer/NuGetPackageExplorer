@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -6,6 +7,14 @@ namespace NuGet
 {
     public interface IPackage : IPackageMetadata, IServerPackageMetadata
     {
+        bool IsAbsoluteLatestVersion { get; }
+
+        bool IsLatestVersion { get; }
+
+        DateTimeOffset LastUpdated { get; }
+
+        long PackageSize { get; }
+
         IEnumerable<IPackageAssemblyReference> AssemblyReferences { get; }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",

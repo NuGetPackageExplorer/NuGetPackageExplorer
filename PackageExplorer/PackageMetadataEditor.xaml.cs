@@ -140,14 +140,6 @@ namespace PackageExplorer
 
         private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
         {
-            if (!NetworkInterface.GetIsNetworkAvailable())
-            {
-                UIServices.Show(
-                    PackageExplorer.Resources.Resources.NoNetworkConnection,
-                    MessageLevel.Warning);
-                return;
-            }
-
             PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
             if (selectedPackage != null)
             {
