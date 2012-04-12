@@ -172,7 +172,7 @@
 						<TextBlock Visibility="{Binding Items.Count, ElementName=FrameworkAssemblyItems, Converter={StaticResource countConverter}}" Text="{x:Static resources:Resources.Dialog_FrameworkAssembliesLabel}" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />
 
 						<ItemsControl x:Name="FrameworkAssemblyItems" Margin="25,5,0,0" ItemsSource="{Binding FrameworkAssemblies}" ItemTemplate="{StaticResource SimpleTextItemTemplate}"></ItemsControl>
-                        
+						
 						<!-- Package Assembly References -->
 						<TextBlock Visibility="{Binding Items.Count, ElementName=PackageAssemblyReferences, Converter={StaticResource countConverter}}" Text="Filtered Assembly References:" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />
 
@@ -202,6 +202,11 @@
 						<Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
 						<Setter TargetName="ItemIcon" Property="Source" Value="{StaticResource ScriptImageSource}" />
 					</DataTrigger>
+
+					<DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="README.TXT">
+						<Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
+						<Setter TargetName="ItemIcon" Property="Source" Value="Images/books.png" />
+					</DataTrigger>
 				</DataTemplate.Triggers>
 			</DataTemplate>
 
@@ -227,10 +232,10 @@
 						<Setter TargetName="ItemIcon" Property="Source" Value="Images/Tools.png" />
 					</DataTrigger>
 
-                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="SRC">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/source.png" />
-                    </DataTrigger>
-                </HierarchicalDataTemplate.Triggers>
+					<DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="SRC">
+						<Setter TargetName="ItemIcon" Property="Source" Value="Images/source.png" />
+					</DataTrigger>
+				</HierarchicalDataTemplate.Triggers>
 			</HierarchicalDataTemplate>
 		</ResourceDictionary>
 	</UserControl.Resources>
@@ -261,7 +266,7 @@
 		</HeaderedContentControl>
 
 		<GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="3" ShowsPreview="True" ResizeBehavior="PreviousAndNext" Width="4" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-        
+		
 		<!-- package content tree view -->
 		<HeaderedContentControl Margin="1,0,0,0" Grid.Column="2" Header="Package contents">
 			<TreeView x:Name="PackagesTreeView" ItemsSource="{Binding PackageParts}" BorderThickness="0" Margin="0,4,0,0" DragOver="OnTreeViewItemDragOver" Drop="OnTreeViewItemDrop" SelectedItemChanged="OnTreeViewSelectedItemChanged" PreviewMouseRightButtonDown="TreeView_PreviewMouseRightButtonDown">
@@ -304,12 +309,12 @@
 								<self:GrayscaleImage Source="Images/Tools.png" />
 							</self:GrayscaleMenuItem.Icon>
 						</self:GrayscaleMenuItem>
-                        <self:GrayscaleMenuItem Header="Add _Src Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="src">
-                            <self:GrayscaleMenuItem.Icon>
-                                <self:GrayscaleImage Source="Images/Source.png" />
-                            </self:GrayscaleMenuItem.Icon>
-                        </self:GrayscaleMenuItem>
-                    </ContextMenu>
+						<self:GrayscaleMenuItem Header="Add _Src Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="src">
+							<self:GrayscaleMenuItem.Icon>
+								<self:GrayscaleImage Source="Images/Source.png" />
+							</self:GrayscaleMenuItem.Icon>
+						</self:GrayscaleMenuItem>
+					</ContextMenu>
 				</TreeView.ContextMenu>
 			</TreeView>
 		</HeaderedContentControl>
@@ -324,7 +329,7 @@
 		</Button>
 
 		<GridSplitter Grid.Column="3" Grid.Row="0" Grid.RowSpan="3" ShowsPreview="True" ResizeBehavior="PreviousAndNext" Width="4" Visibility="{Binding ShowPackageAnalysis, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
-        
+		
 		<!-- Package Analyzer pane -->
 		<HeaderedContentControl x:Name="PackageAnalyzerContainer" Header="Package Analysis" Grid.Row="0" Grid.Column="4" Grid.RowSpan="3" Visibility="{Binding ShowPackageAnalysis, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" Padding="0" Margin="2,0,0,0" IsVisibleChanged="PackageAnalyzerContainer_IsVisibleChanged"></HeaderedContentControl>
 

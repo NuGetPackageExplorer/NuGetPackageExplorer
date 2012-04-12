@@ -299,6 +299,7 @@
     <Resource Include="Images\Edit_UndoHS.png" />
     <Resource Include="Images\GoToPrevious.png" />
     <Resource Include="Images\source.png" />
+    <Resource Include="Images\Books.png" />
     <Content Include="Resources\fxAssemblies.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
