@@ -79,7 +79,7 @@ namespace PackageExplorer
                 if (stringValue != null)
                 {
                     char[] invalidChars = Path.GetInvalidFileNameChars();
-                    if (invalidChars.Any(c => stringValue.Contains(c)))
+                    if (invalidChars.Any(stringValue.Contains))
                     {
                         return new ValidationResult(false, "Invalid char found in the name.");
                     }

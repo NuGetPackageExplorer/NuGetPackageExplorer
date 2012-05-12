@@ -4,7 +4,7 @@ using NuGetPackageExplorer.Types;
 
 namespace PackageExplorer
 {
-    [PackageContentViewerMetadata(100, ".dll", ".exe")]
+    [PackageContentViewerMetadata(100, ".dll", ".exe", ".winmd")]
     internal class AssemblyFileViewer : IPackageContentViewer
     {
         #region IPackageContentViewer Members

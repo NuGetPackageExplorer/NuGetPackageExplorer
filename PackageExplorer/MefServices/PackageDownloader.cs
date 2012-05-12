@@ -67,7 +67,7 @@ namespace PackageExplorer
 
             // report progress must be done via UI thread
             Action<int, string> reportProgress =
-                (percent, description) => { UIServices.BeginInvoke(() => _progressDialog.ReportProgress(percent, null, description)); };
+                (percent, description) => UIServices.BeginInvoke(() => _progressDialog.ReportProgress(percent, null, description));
 
             // download package on background thread
             TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
@@ -115,7 +115,7 @@ namespace PackageExplorer
                 cancelToken.ThrowIfCancellationRequested();
                 using (Stream requestStream = response.GetResponseStream())
                 {
-                    int chunkSize = 4*1024;
+                    const int chunkSize = 4*1024;
                     var totalBytes = (int) response.ContentLength;
                     var buffer = new byte[chunkSize];
                     int readSoFar = 0;

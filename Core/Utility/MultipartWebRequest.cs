@@ -74,7 +74,7 @@ namespace NuGet
             request.ContentLength = byteContent.Length;
             using (Stream requestStream = request.GetRequestStream())
             {
-                requestStream.Write(byteContent, 0, (int)byteContent.Length);
+                requestStream.Write(byteContent, 0, byteContent.Length);
             }
         }
 

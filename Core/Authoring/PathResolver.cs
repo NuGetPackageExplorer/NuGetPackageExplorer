@@ -13,7 +13,7 @@ namespace NuGet
         /// </summary>
         /// <param name="source">The collection of files to match.</param>
         /// <param name="getPath">Function that returns the path to filter a package file </param>
-        /// <param name="wildcard">The wildcard to apply to match the path with.</param>
+        /// <param name="wildcards">The wildcard to apply to match the path with.</param>
         /// <returns></returns>
         public static IEnumerable<T> GetMatches<T>(IEnumerable<T> source, Func<T, string> getPath,
                                                    IEnumerable<string> wildcards) where T : IPackageFile
@@ -33,7 +33,7 @@ namespace NuGet
                                                  IEnumerable<string> wildcards) where T : IPackageFile
         {
             var matchedFiles = new HashSet<T>(GetMatches(source, getPath, wildcards));
-            source.RemoveAll(p => matchedFiles.Contains(p));
+            source.RemoveAll(matchedFiles.Contains);
         }
 
         public static string NormalizeWildcard(string basePath, string wildcard)

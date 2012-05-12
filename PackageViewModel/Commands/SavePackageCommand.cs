@@ -48,7 +48,7 @@ namespace PackageExplorerViewModel
             {
                 // validate the package to see if there is any error before actually creating the package.
                 PackageIssue firstIssue =
-                    ViewModel.Validate().Where(p => p.Level == PackageIssueLevel.Error).FirstOrDefault();
+                    ViewModel.Validate().FirstOrDefault(p => p.Level == PackageIssueLevel.Error);
                 if (firstIssue != null)
                 {
                     ViewModel.UIServices.Show(
@@ -121,7 +121,7 @@ namespace PackageExplorerViewModel
         {
             string packageName = ViewModel.PackageMetadata + NuGet.Constants.PackageExtension;
             string title = "Save " + packageName;
-            string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
+            const string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
             string selectedPackagePath;
             int filterIndex;
             string initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;
@@ -160,7 +160,7 @@ namespace PackageExplorerViewModel
         {
             string packageName = ViewModel.PackageMetadata + NuGet.Constants.ManifestExtension;
             string title = "Save " + packageName;
-            string filter = "NuGet manifest file (*.nuspec)|*.nuspec|All files (*.*)|*.*";
+            const string filter = "NuGet manifest file (*.nuspec)|*.nuspec|All files (*.*)|*.*";
             string selectedPath;
             int filterIndex;
             string initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;

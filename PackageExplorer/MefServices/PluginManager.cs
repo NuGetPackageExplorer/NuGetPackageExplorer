@@ -152,7 +152,7 @@ namespace PackageExplorer
                 // creates the plugins directory if it doesn't exist
                 string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 DirectoryInfo nugetDirectory = CreateChildDirectory(new DirectoryInfo(localAppData), NuGetDirectoryName);
-                pluginDirectoryInfo = CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
+                CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
             }
 
             _plugins = new List<PluginInfo>(GetAllPlugins());
@@ -227,19 +227,16 @@ namespace PackageExplorer
 
         private DirectoryInfo CreateChildDirectory(DirectoryInfo parentInfo, string path)
         {
-            DirectoryInfo child = parentInfo.EnumerateDirectories(path, SearchOption.TopDirectoryOnly).FirstOrDefault();
-            if (child == null)
-            {
-                // if the child directory doesn't exist, create it
-                child = parentInfo.CreateSubdirectory(path);
-            }
+            // if the child directory doesn't exist, create it
+            DirectoryInfo child = parentInfo.EnumerateDirectories(path, SearchOption.TopDirectoryOnly).FirstOrDefault() ??
+                                  parentInfo.CreateSubdirectory(path);
             return child;
         }
 
         private PluginInfo ConvertFromDirectoryToPluginInfo(DirectoryInfo directory)
         {
             string name = directory.Name;
-            string regex = @"^(.+)\[(.+?)\]$";
+            const string regex = @"^(.+)\[(.+?)\]$";
             Match match = Regex.Match(name, regex);
             if (match.Success)
             {

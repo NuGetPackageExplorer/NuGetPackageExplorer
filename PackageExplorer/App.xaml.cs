@@ -5,7 +5,6 @@ using System.ComponentModel.Composition.Hosting;
 using System.Deployment.Application;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using NuGet;
 using PackageExplorer.Properties;
@@ -60,8 +59,7 @@ namespace PackageExplorer
                 }
             }
 
-            if (AppDomain.CurrentDomain.SetupInformation != null &&
-                AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
+            if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
             {
                 // click-once deployment
                 string[] activationData = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;

@@ -425,7 +425,7 @@ namespace PackageExplorerViewModel
                             return;
                         }
 
-                        IQueryable<IPackage> query = null;
+                        IQueryable<IPackage> query;
 
                         try
                         {

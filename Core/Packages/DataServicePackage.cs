@@ -67,7 +67,7 @@ namespace NuGet
 
         public bool RequireLicenseAcceptance
         {
-            get { return CorePackage == null ? false : CorePackage.RequireLicenseAcceptance; }
+            get { return CorePackage != null && CorePackage.RequireLicenseAcceptance; }
         }
 
         public string Description

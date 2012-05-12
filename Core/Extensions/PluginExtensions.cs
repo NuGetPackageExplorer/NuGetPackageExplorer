@@ -34,7 +34,7 @@ namespace NuGet
                     {
                         using (Stream packageStream = file.GetStream())
                         {
-                            file.GetStream().CopyTo(stream);
+                            packageStream.CopyTo(stream);
                         }
                     }
 

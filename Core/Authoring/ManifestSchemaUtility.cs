@@ -30,7 +30,7 @@ namespace NuGet
                                                                    {
                                                                        SchemaVersionV1,
                                                                        SchemaVersionV2,
-                                                                       SchemaVersionV3,
+                                                                       SchemaVersionV3
                                                                    };
 
         // Mapping from schema to resource name

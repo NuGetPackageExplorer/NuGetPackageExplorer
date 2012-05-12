@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -88,7 +87,7 @@ namespace PackageExplorer
 
         private void PopulateFrameworkAssemblyNames()
         {
-            string fxAssemblyPath = "Resources/fxAssemblies.txt";
+            const string fxAssemblyPath = "Resources/fxAssemblies.txt";
             if (File.Exists(fxAssemblyPath))
             {
                 try

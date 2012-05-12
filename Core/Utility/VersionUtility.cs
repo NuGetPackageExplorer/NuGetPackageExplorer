@@ -90,7 +90,7 @@ namespace NuGet
             // {Identifier}{Version}-{Profile}
 
             // Split the framework name into 3 parts, identifier, version and profile.
-            string identifierPart = null;
+            string identifierPart;
             string versionPart = null;
 
             string[] parts = frameworkName.Split('-');
@@ -140,7 +140,7 @@ namespace NuGet
                 }
             }
 
-            Version version = null;
+            Version version;
             // We support version formats that are integers (40 becomes 4.0)
             int versionNumber;
             if (Int32.TryParse(versionPart, out versionNumber))
@@ -153,7 +153,7 @@ namespace NuGet
 
                 // Make sure it has at least 2 digits so it parses as a valid version
                 versionPart = versionPart.PadRight(2, '0');
-                versionPart = String.Join(".", versionPart.Select(ch => ch.ToString()));
+                versionPart = String.Join(".", versionPart.Select(ch => ch.ToString(CultureInfo.InvariantCulture)));
             }
 
             // If we can't parse the version then use the default
@@ -341,7 +341,6 @@ namespace NuGet
 
         public static bool TryParseVersion(string versionValue, out SemanticVersion version)
         {
-            version = null;
             if (!SemanticVersion.TryParse(versionValue, out version))
             {
                 // Support integer version numbers (i.e 1 -> 1.0)

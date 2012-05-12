@@ -74,9 +74,9 @@ namespace NuGet
 
         public byte[] DownloadData()
         {
-            const int ChunkSize = 1024*4; // 4KB
+            const int chunkSize = 1024*4; // 4KB
 
-            byte[] buffer = null;
+            byte[] buffer;
             using (WebResponse response = GetResponse())
             {
                 // Total response length
@@ -89,7 +89,7 @@ namespace NuGet
                     {
                         using (var memoryStream = new MemoryStream())
                         {
-                            stream.CopyTo(memoryStream, ChunkSize);
+                            stream.CopyTo(memoryStream, chunkSize);
                             buffer = memoryStream.ToArray();
                         }
 
@@ -105,7 +105,7 @@ namespace NuGet
                         while (totalReadSoFar < length)
                         {
                             int bytesRead = stream.Read(buffer, totalReadSoFar,
-                                                        Math.Min(length - totalReadSoFar, ChunkSize));
+                                                        Math.Min(length - totalReadSoFar, chunkSize));
                             if (bytesRead == 0)
                             {
                                 break;

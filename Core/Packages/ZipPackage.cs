@@ -11,10 +11,10 @@ namespace NuGet
     {
         private const string AssemblyReferencesDir = "lib";
         private const string ResourceAssemblyExtension = ".resources.dll";
-        private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe"};
+        private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe", ".winmd"};
 
         // paths to exclude
-        private static readonly string[] _excludePaths = new[] {"_rels", "package"};
+        private static readonly string[] ExcludePaths = new[] {"_rels", "package"};
 
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
@@ -233,7 +233,7 @@ namespace NuGet
         {
             string path = UriUtility.GetPath(part.Uri);
             // We exclude any opc files and the manifest file (.nuspec)
-            return !_excludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
+            return !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
         }
 

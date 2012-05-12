@@ -27,6 +27,7 @@ namespace NuGet
         public bool VerifyHash(byte[] data, byte[] hash)
         {
             byte[] dataHash = CalculateHash(data);
+
             for (int i = 0; i < dataHash.Length; i++)
             {
                 if (dataHash[i] != hash[i])

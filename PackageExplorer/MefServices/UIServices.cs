@@ -262,7 +262,7 @@ namespace PackageExplorer
         {
             if (numberOfItemsLeft < 0)
             {
-                throw new ArgumentOutOfRangeException("numberofItemsLeft");
+                throw new ArgumentOutOfRangeException("numberOfItemsLeft");
             }
 
             string mainInstruction = String.Format(

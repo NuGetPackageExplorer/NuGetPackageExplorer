@@ -39,7 +39,7 @@ namespace NuGet
                 return null;
             }
 
-            XDocument schemaDocument = null;
+            XDocument schemaDocument;
 
             try
             {

@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Windows.Input;
-using NuGet;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel

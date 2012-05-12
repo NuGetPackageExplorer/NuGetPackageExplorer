@@ -25,7 +25,7 @@ namespace PackageExplorer
 
         public static string SaveWindowPlacementToSettings(this Window window)
         {
-            var wp = new WindowPlacement();
+            WindowPlacement wp;
             IntPtr hwnd = new WindowInteropHelper(window).Handle;
 
             NativeMethods.GetWindowPlacement(hwnd, out wp);

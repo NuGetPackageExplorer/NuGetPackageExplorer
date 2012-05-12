@@ -599,7 +599,7 @@ namespace PackageExplorer
                 var filenames = value as string[];
                 if (filenames != null && filenames.Length > 0)
                 {
-                    string firstFile = filenames.FirstOrDefault(f => FileUtility.IsSupportedFile(f));
+                    string firstFile = filenames.FirstOrDefault(FileUtility.IsSupportedFile);
                     if (firstFile != null)
                     {
                         e.Handled = true;

@@ -184,7 +184,7 @@ namespace NuGet
             {
                 return false;
             }
-            RegexOptions regexFlags = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
+            const RegexOptions regexFlags = RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture;
             var semVerRegex = new Regex(regex, regexFlags);
 
             Match match = semVerRegex.Match(version.Trim());

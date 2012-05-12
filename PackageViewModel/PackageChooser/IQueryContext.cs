@@ -2,7 +2,7 @@
 
 namespace PackageExplorerViewModel
 {
-    internal interface IQueryContext<T>
+    internal interface IQueryContext<out T>
     {
         int BeginPackage { get; }
         int EndPackage { get; }

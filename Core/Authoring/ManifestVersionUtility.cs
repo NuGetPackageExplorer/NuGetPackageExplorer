@@ -62,15 +62,11 @@ namespace NuGet
             if (typeof(IList).IsAssignableFrom(property.PropertyType))
             {
                 var list = (IList) value;
-                if (list != null)
+                if (list.Count > 0)
                 {
-                    if (list.Count > 0)
-                    {
-                        return Math.Max(version, VisitList(list));
-                    }
-                    return version;
+                    return Math.Max(version, VisitList(list));
                 }
-                return DefaultVersion;
+                return version;
             }
 
             if (property.PropertyType == typeof(string))

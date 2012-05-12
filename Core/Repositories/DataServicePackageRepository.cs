@@ -11,7 +11,7 @@ namespace NuGet
         private readonly DataServiceContext _context;
         private readonly IHttpClient _httpClient;
         private DataServiceQuery<DataServicePackage> _query;
-        private Lazy<ISet<string>> _supportedProperties;
+        private readonly Lazy<ISet<string>> _supportedProperties;
 
         public DataServicePackageRepository(IHttpClient httpClient)
         {

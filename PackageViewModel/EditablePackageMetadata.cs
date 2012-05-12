@@ -42,7 +42,7 @@ namespace PackageExplorerViewModel
             {
                 if (String.IsNullOrWhiteSpace(value))
                 {
-                    string message = "Authors is required.";
+                    const string message = "Authors is required.";
                     SetError("Authors", message);
                     throw new ArgumentException(message);
                 }
@@ -133,7 +133,7 @@ namespace PackageExplorerViewModel
             {
                 if (value == null)
                 {
-                    string message = "Version is required.";
+                    const string message = "Version is required.";
                     SetError("Version", message);
                     throw new ArgumentException(message);
                 }
@@ -220,7 +220,7 @@ namespace PackageExplorerViewModel
             {
                 if (String.IsNullOrWhiteSpace(value))
                 {
-                    string message = "Description is required.";
+                    const string message = "Description is required.";
                     SetError("Description", message);
                     throw new ArgumentException(message);
                 }
@@ -397,8 +397,7 @@ namespace PackageExplorerViewModel
             {
                 if (RequireLicenseAcceptance && LicenseUrl == null)
                 {
-                    string message = "Enabling license acceptance requires a license url.";
-                    return message;
+                    return "Enabling license acceptance requires a license url.";
                 }
             }
 

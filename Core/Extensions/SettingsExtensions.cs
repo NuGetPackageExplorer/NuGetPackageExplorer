@@ -2,13 +2,11 @@
 using System.Security.Cryptography;
 using System.Text;
 
-//using Microsoft.Internal.Web.Utils;
-
 namespace NuGet
 {
     public static class SettingsExtensions
     {
-        private static string _entropy = "NuGet";
+        private const string Entropy = "NuGet";
 
         public static string GetDecryptedValue(this ISettings settings, string section, string key)
         {
@@ -32,7 +30,7 @@ namespace NuGet
                 return String.Empty;
             }
             byte[] encrpytedByteArray = Convert.FromBase64String(encrpytedString);
-            byte[] decryptedByteArray = ProtectedData.Unprotect(encrpytedByteArray, StringToBytes(_entropy),
+            byte[] decryptedByteArray = ProtectedData.Unprotect(encrpytedByteArray, StringToBytes(Entropy),
                                                                 DataProtectionScope.CurrentUser);
             return BytesToString(decryptedByteArray);
         }
@@ -59,7 +57,7 @@ namespace NuGet
             else
             {
                 byte[] decryptedByteArray = StringToBytes(value);
-                byte[] encryptedByteArray = ProtectedData.Protect(decryptedByteArray, StringToBytes(_entropy),
+                byte[] encryptedByteArray = ProtectedData.Protect(decryptedByteArray, StringToBytes(Entropy),
                                                                   DataProtectionScope.CurrentUser);
                 string encryptedString = Convert.ToBase64String(encryptedByteArray);
                 settings.SetValue(section, key, encryptedString);

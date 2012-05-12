@@ -116,7 +116,7 @@ namespace NuGet
                 }
 
                 response = (HttpWebResponse)e.Response;
-                if (response != null && expectedStatusCode != response.StatusCode)
+                if (expectedStatusCode != response.StatusCode)
                 {
                     Exception error = new WebException(
                         String.Format(CultureInfo.CurrentCulture, NuGetResources.PackageServerError,
@@ -136,7 +136,7 @@ namespace NuGet
 
         private Uri ResolveBaseUrl()
         {
-            Uri uri = null;
+            Uri uri;
 
             try
             {

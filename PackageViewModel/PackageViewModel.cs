@@ -639,7 +639,7 @@ namespace PackageExplorerViewModel
         {
             string selectedFileName;
             string title = "Save " + file.Name;
-            string filter = "All files (*.*)|*.*";
+            const string filter = "All files (*.*)|*.*";
             int filterIndex;
             if (UIServices.OpenSaveFileDialog(title, file.Name, /* initial directory */ null, filter, /* overwritePrompt */ true, 
                                               out selectedFileName, out filterIndex))
@@ -697,7 +697,7 @@ namespace PackageExplorerViewModel
             }
 
             // validate the package to see if there is any error before actually creating the package.
-            PackageIssue firstIssue = Validate().Where(p => p.Level == PackageIssueLevel.Error).FirstOrDefault();
+            PackageIssue firstIssue = Validate().FirstOrDefault(p => p.Level == PackageIssueLevel.Error);
             if (firstIssue != null)
             {
                 UIServices.Show(
@@ -875,9 +875,7 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            return file != null &&
-                   (file.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
-                    file.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) &&
+            return FileHelper.IsAssembly(file.Name) &&
                    (IsInEditMetadataMode || !PackageMetadata.ContainsAssemblyReference(file.Name));
         }
 
@@ -1196,7 +1194,7 @@ namespace PackageExplorerViewModel
                     string file = fileNames[i];
                     if (File.Exists(file))
                     {
-                        bool movingFile = false;
+                        bool movingFile;
 
                         PackageFolder targetFolder;
                         string guessFolderName = FileHelper.GuessFolderNameFromFile(file);
