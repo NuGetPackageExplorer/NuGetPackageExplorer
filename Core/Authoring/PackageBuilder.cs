@@ -143,6 +143,8 @@ namespace NuGet
                 package.PackageProperties.Version = Version.ToString();
                 package.PackageProperties.Language = Language;
                 package.PackageProperties.Keywords = ((IPackageMetadata) this).Tags;
+                package.PackageProperties.Title = Title;
+                package.PackageProperties.Subject = "NuGet Package Explorer";
             }
         }
 
