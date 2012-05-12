@@ -917,12 +917,24 @@ namespace PackageExplorerViewModel
 
         private void EditFileCommandExecute(PackagePart file)
         {
+            // before editing file, try to commit metadata pending changes to avoid data loss
+            if (IsInEditMetadataMode)
+            {
+                bool isMetadataValid = ApplyEditExecute();
+                if (!isMetadataValid)
+                {
+                    UIServices.Show(Resources.EditFormHasInvalidInput, MessageLevel.Error);
+                    return;
+                }
+            }
+
             FileEditorViewModel = new FileEditorViewModel(this, file as PackageFile);
         }
 
         private bool CanEditFileCommandExecute(PackagePart file)
         {
-            return (file is PackageFile) && !IsInEditMetadataMode && !IsInEditFileMode &&
+            return (file is PackageFile) && 
+                   !IsInEditFileMode &&
                    !FileHelper.IsBinaryFile(file.Path);
         }
 
