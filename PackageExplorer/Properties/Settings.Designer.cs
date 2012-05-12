@@ -49,7 +49,7 @@ namespace PackageExplorer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("https://go.microsoft.com/fwlink/?LinkID=230477")]
+        [global::System.Configuration.DefaultSettingValueAttribute("https://nuget.org/api/v2/")]
         public string PackageSource {
             get {
                 return ((string)(this["PackageSource"]));
