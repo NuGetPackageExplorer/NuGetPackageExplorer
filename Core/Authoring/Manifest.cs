@@ -101,29 +101,11 @@ namespace NuGet
             // Validate the schema
             ValidateManifestSchema(document, schemeNamespace);
 
-            var serializer = new XmlSerializer(typeof(Manifest), schemeNamespace);
-            var manifest = (Manifest) serializer.Deserialize(document.CreateReader());
-
-            // Convert <file source="Foo.cs;.\src\bar.cs" target="content" /> to multiple individual items.
-            // Do this before validating to ensure validation for files still works as before.
-            manifest.SplitManifestFiles();
+            // Serialize it
+            var manifest = ManifestReader.ReadManifest(document);
 
             // Validate before returning
             Validate(manifest);
-
-            // Trim fields in case they have extra whitespace
-            manifest.Metadata.Id = manifest.Metadata.Id.SafeTrim();
-            // validate the package Id early to avoid any further processing
-            PackageIdValidator.ValidatePackageId(manifest.Metadata.Id);
-            manifest.Metadata.Title = manifest.Metadata.Title.SafeTrim();
-            manifest.Metadata.Authors = manifest.Metadata.Authors.SafeTrim();
-            manifest.Metadata.Owners = manifest.Metadata.Owners.SafeTrim();
-            manifest.Metadata.Description = manifest.Metadata.Description.SafeTrim();
-            manifest.Metadata.Summary = manifest.Metadata.Summary.SafeTrim();
-            manifest.Metadata.ReleaseNotes = manifest.Metadata.ReleaseNotes.SafeTrim();
-            manifest.Metadata.Language = manifest.Metadata.Language.SafeTrim();
-            manifest.Metadata.Tags = manifest.Metadata.Tags.SafeTrim();
-            manifest.Metadata.Copyright = manifest.Metadata.Copyright.SafeTrim();
 
             return manifest;
         }
@@ -150,12 +132,12 @@ namespace NuGet
             {
                 ManifestFile manifestFile = Files[i];
                 // Multiple sources can be specified by using semi-colon separated values. 
-                string[] sources = manifestFile.Source.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+                string[] sources = manifestFile.Source.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
                 // Set the source value of the current manifest file to the first item in the list of values
                 manifestFile.Source = sources.FirstOrDefault();
                 // Add a ManifestFile for all other items
                 Files.AddRange(from item in sources.Skip(1)
-                               select new ManifestFile {Source = item, Target = manifestFile.Target});
+                               select new ManifestFile { Source = item, Target = manifestFile.Target });
             }
         }
 
@@ -246,7 +228,7 @@ namespace NuGet
             }
             return (from reference in metadata.References
                     where reference != null && reference.File != null
-                    select new ManifestReference {File = reference.File.Trim()}).ToList();
+                    select new ManifestReference { File = reference.File.Trim() }).ToList();
         }
 
         private static string GetCommaSeparatedString(IEnumerable<string> values)

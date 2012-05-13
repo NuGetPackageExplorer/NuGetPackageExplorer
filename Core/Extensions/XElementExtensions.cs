@@ -43,6 +43,16 @@ namespace NuGet
             return child != null ? child.Value : null;
         }
 
+        public static IEnumerable<XElement> ElementsNoNamespace(this XContainer container, string localName)
+        {
+            return container.Elements().Where(e => e.Name.LocalName == localName);
+        }
+
+        public static IEnumerable<XElement> ElementsNoNamespace(this IEnumerable<XContainer> source, string localName)
+        {
+            return source.Elements().Where(e => e.Name.LocalName == localName);
+        }
+
         // REVIEW: We can use a stack if the perf is bad for Except and MergeWith
         public static XElement Except(this XElement source, XElement target)
         {

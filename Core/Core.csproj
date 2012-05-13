@@ -60,6 +60,7 @@
     <Compile Include="Authoring\IPackageBuilder.cs" />
     <Compile Include="Authoring\ManifestFileList.cs" />
     <Compile Include="Authoring\ManifestFrameworkAssembly.cs" />
+    <Compile Include="Authoring\ManifestReader.cs" />
     <Compile Include="Authoring\ManifestReference.cs" />
     <Compile Include="Authoring\ManifestSchemaUtility.cs" />
     <Compile Include="Authoring\ManifestVersionAttribute.cs" />
