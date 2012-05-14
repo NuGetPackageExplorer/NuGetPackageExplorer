@@ -342,7 +342,7 @@ namespace PackageExplorer
             var visibilityBinding = new Binding("Path")
                                     {
                                         Converter = new StringToVisibilityConverter(),
-                                        ConverterParameter = "lib"
+                                        ConverterParameter = "lib;content;tools"
                                     };
 
             var commandBinding = new Binding("AddContentFolderCommand");

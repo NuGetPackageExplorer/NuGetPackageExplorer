@@ -1020,12 +1020,15 @@ namespace PackageExplorerViewModel
                                  : Constants.ContentForInstall;
             string sourcePath = FileHelper.CreateTempFile(scriptName, content);
 
-            var toolsFolder = (PackageFolder) RootFolder[Constants.ToolsFolder];
-            PackageFile file = toolsFolder.AddFile(sourcePath, isTempFile: true);
-            // file can be null if it collides with other files in the same directory
-            if (file != null)
+            var selectedFolder = SelectedItem as PackageFolder;
+            if (selectedFolder != null)
             {
-                EditFileCommandExecute(file);
+                PackageFile file = selectedFolder.AddFile(sourcePath, isTempFile: true);
+                // file can be null if it collides with other files in the same directory
+                if (file != null)
+                {
+                    EditFileCommandExecute(file);
+                }
             }
         }
 

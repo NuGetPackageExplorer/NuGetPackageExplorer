@@ -39,18 +39,19 @@
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Header="Add install.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="install.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}">
+                <MenuItem Header="Add install.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="install.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}">
                     <MenuItem.Icon>
                         <Image Source="Images/script.png" />
                     </MenuItem.Icon>
                 </MenuItem>
 
-                <MenuItem Header="Add uninstall.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="uninstall.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}">
+                <MenuItem Header="Add uninstall.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="uninstall.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}">
                     <MenuItem.Icon>
                         <Image Source="Images/script.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}" />
+                
+                <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}" />
 
                 <MenuItem Header="Add _New File..." Command="{Binding AddNewFileCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Add Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding}" />
