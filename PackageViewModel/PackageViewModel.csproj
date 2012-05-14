@@ -56,6 +56,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="EmptyPackage.cs" />
     <Compile Include="FileEditorViewModel.cs" />
+    <Compile Include="PackagePart\EmptyFolderFile.cs" />
     <Compile Include="Utilities\FileHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PackageAnalyzer\NonAssemblyInsideLibRule.cs" />

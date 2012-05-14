@@ -88,7 +88,7 @@ namespace NuGet
                    where searchRegex.IsMatch(file)
                    select new PhysicalPackageFile(isTempFile: false)
                           {
-                              SourcePath = file,
+                              OriginalPath = file,
                               TargetPath =
                                   ResolvePackagePath(basePathToEnumerate, searchPath, file,
                                                      targetPath)

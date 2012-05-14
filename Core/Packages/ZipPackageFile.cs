@@ -29,6 +29,11 @@ namespace NuGet
 
         #region IPackageFile Members
 
+        public string OriginalPath
+        {
+            get { return null; }
+        }
+
         public string Path
         {
             get { return _path; }

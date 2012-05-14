@@ -7,6 +7,8 @@ namespace NuGet
     {
         string Path { get; }
 
+        string OriginalPath { get; }
+
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This might be expensive")]
         Stream GetStream();

@@ -316,7 +316,7 @@ namespace NuGet
             foreach (string item in exclusions)
             {
                 string wildCard = PathResolver.NormalizeWildcard(basePath, item);
-                PathResolver.FilterPackageFiles(searchFiles, p => p.SourcePath, new[] {wildCard});
+                PathResolver.FilterPackageFiles(searchFiles, p => p.OriginalPath, new[] {wildCard});
             }
         }
 
