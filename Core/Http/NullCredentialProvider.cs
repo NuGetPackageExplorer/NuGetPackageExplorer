@@ -18,7 +18,7 @@ namespace NuGet
 
         #region ICredentialProvider Members
 
-        public ICredentials GetCredentials(Uri uri, IWebProxy proxy)
+        public ICredentials GetCredentials(Uri uri, IWebProxy proxy, CredentialType credentialType, bool retrying)
         {
             return null;
         }

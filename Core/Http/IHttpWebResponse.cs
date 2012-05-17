@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Collections.Specialized;
 
 namespace NuGet
 {
@@ -9,5 +10,6 @@ namespace NuGet
         HttpStatusCode StatusCode { get; }
         Uri ResponseUri { get; }
         string AuthenticationType { get; }
+        NameValueCollection Headers { get; }
     }
 }

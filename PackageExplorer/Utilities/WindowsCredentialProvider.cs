@@ -11,7 +11,7 @@ namespace PackageExplorer
     {
         #region ICredentialProvider Members
 
-        public ICredentials GetCredentials(Uri uri, IWebProxy proxy)
+        public ICredentials GetCredentials(Uri uri, IWebProxy proxy, CredentialType credentialType, bool retrying)
         {
             if (uri == null)
             {
@@ -34,8 +34,9 @@ namespace PackageExplorer
             using (var dialog = new CredentialDialog())
             {
                 dialog.Target = credentialsTarget;
-                dialog.WindowTitle = string.Format(CultureInfo.CurrentCulture, Resources.Resources.ProxyConnectToMessage,
-                                                   proxyHost);
+                dialog.WindowTitle = string.Format(
+                    CultureInfo.CurrentCulture, Resources.Resources.ProxyConnectToMessage, proxyHost);
+
                 dialog.MainInstruction = dialog.WindowTitle;
                 dialog.ShowUIForSavedCredentials = forcePrompt;
                 dialog.ShowSaveCheckBox = true;

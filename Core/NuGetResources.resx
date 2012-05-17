@@ -208,4 +208,7 @@
     <value>Unable to process request. '{0}'. 
 {1}</value>
   </data>
+  <data name="UnableToLocateWIF" xml:space="preserve">
+    <value>Connection to feed '{0}' requires the Windows Identity Foundation runtime to be installed.</value>
+  </data>
 </root>

@@ -105,8 +105,7 @@ namespace PackageExplorer
             var httpClient = new RedirectedHttpClient(url)
                              {
                                  UserAgent =
-                                     HttpUtility.CreateUserAgentString(
-                                         Constants.UserAgentClient),
+                                     HttpUtility.CreateUserAgentString(Constants.UserAgentClient),
                                  AcceptCompression = false
                              };
 

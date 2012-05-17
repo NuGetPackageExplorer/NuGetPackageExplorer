@@ -130,6 +130,7 @@ namespace NuGet
             // Used the cached credentials and proxy we have
             request.Credentials = CredentialStore.Instance.GetCredentials(Uri);
             request.Proxy = ProxyCache.Instance.GetProxy(Uri);
+            STSAuthHelper.PrepareSTSRequest(request);
         }
 
         private void InitializeRequestProperties(WebRequest request)
@@ -137,7 +138,7 @@ namespace NuGet
             var httpRequest = request as HttpWebRequest;
             if (httpRequest != null)
             {
-                httpRequest.UserAgent = UserAgent;
+                httpRequest.UserAgent = UserAgent ?? HttpUtility.CreateUserAgentString("NuGet Package Explorer");
                 httpRequest.CookieContainer = new CookieContainer();
                 if (AcceptCompression)
                 {

@@ -7,9 +7,9 @@ namespace NuGet
     {
         private static readonly string[] _authenticationSchemes = new[] {"Basic", "NTLM", "Negotiate"};
 
-        internal static ICredentials GetCredentials(this ICredentialProvider provider, WebRequest request)
+        internal static ICredentials GetCredentials(this ICredentialProvider provider, WebRequest request, CredentialType credentialType, bool retrying = false)
         {
-            return provider.GetCredentials(request.RequestUri, request.Proxy);
+            return provider.GetCredentials(request.RequestUri, request.Proxy, credentialType, retrying);
         }
 
         internal static ICredentials AsCredentialCache(this ICredentials credentials, Uri uri)
