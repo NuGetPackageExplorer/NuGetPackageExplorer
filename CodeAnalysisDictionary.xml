@@ -41,6 +41,7 @@
             <Acronym>DTE</Acronym>
             <Acronym>TFS</Acronym>
             <Acronym>MRU</Acronym>
+            <Acronym>STS</Acronym>
         </CasingExceptions>
     </Acronyms>
 </Dictionary>
