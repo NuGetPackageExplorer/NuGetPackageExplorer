@@ -55,6 +55,11 @@ namespace NuGet
             return packages.Where(BuildSearchExpression(nonNullTerms));
         }
 
+        public static bool IsListed(this IPackage package)
+        {
+            return package.Published > Constants.Unpublished;
+        }
+
         /// <summary>
         /// Constructs an expression to search for individual tokens in a search term in the Id and Description of packages
         /// </summary>

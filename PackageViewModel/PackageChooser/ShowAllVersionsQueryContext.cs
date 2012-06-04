@@ -16,14 +16,16 @@ namespace PackageExplorerViewModel
         private readonly Lazy<int> _totalItemCount;
         private int _nextSkip;
         private int _skip;
+        private bool _showUnlistedPackages;
 
-        public ShowAllVersionsQueryContext(IQueryable<T> source, int pageSize, int bufferSize,
+        public ShowAllVersionsQueryContext(IQueryable<T> source, int pageSize, int bufferSize, bool showUnlistedPackages,
                                            IEqualityComparer<T> comparer)
         {
             _source = source;
             _bufferSize = bufferSize;
             _comparer = comparer;
             _pageSize = pageSize;
+            _showUnlistedPackages = showUnlistedPackages;
             _totalItemCount = new Lazy<int>(_source.Count);
         }
 
@@ -92,7 +94,8 @@ namespace PackageExplorerViewModel
                         skipCursor += buffer.Length;
                     }
 
-                    if (firstItem || _comparer.Equals(buffer[head], lastItem))
+                    if ((firstItem || _comparer.Equals(buffer[head], lastItem)) &&
+                        (_showUnlistedPackages || !buffer[head].IsUnlisted))
                     {
                         yield return buffer[head];
                         lastItem = buffer[head];

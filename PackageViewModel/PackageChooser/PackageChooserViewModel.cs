@@ -29,6 +29,7 @@ namespace PackageExplorerViewModel
         private IPackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
         private bool _showLatestVersion;
+        private bool _showUnlistedPackages;
         private string _sortColumn;
         private ListSortDirection _sortDirection;
         private string _statusContent;
@@ -122,6 +123,21 @@ namespace PackageExplorerViewModel
                     OnPropertyChanged("ShowLatestVersion");
 
                     OnShowLatestVersionChanged();
+                }
+            }
+        }
+
+        public bool ShowUnlistedPackages
+        {
+            get { return _showUnlistedPackages; }
+            set
+            {
+                if (_showUnlistedPackages != value)
+                {
+                    _showUnlistedPackages = value;
+                    OnPropertyChanged("ShowUnlistedPackages");
+
+                    OnShowUnlistedPackagesChange();
                 }
             }
         }
@@ -266,6 +282,11 @@ namespace PackageExplorerViewModel
             {
                 Sort(SortColumn, SortDirection);
             }
+        }
+
+        private void OnShowUnlistedPackagesChange()
+        {
+            Sort(SortColumn, SortDirection);
         }
 
         /// <summary>
@@ -499,6 +520,7 @@ namespace PackageExplorerViewModel
 
                             _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(
                                 packageInfos,
+                                ShowUnlistedPackages,
                                 ShowLatestVersionPageSize);
                         }
                         else
@@ -510,6 +532,7 @@ namespace PackageExplorerViewModel
                                 packageInfos,
                                 ShowAllVersionsPageSize,
                                 PageBuffer,
+                                ShowUnlistedPackages,
                                 PackageInfoEqualityComparer.Instance);
                         }
 
@@ -548,7 +571,8 @@ namespace PackageExplorerViewModel
                                                             DownloadCount = p.DownloadCount,
                                                             VersionDownloadCount = p.VersionDownloadCount,
                                                             PackageHash = p.PackageHash,
-                                                            PackageSize = p.PackageSize
+                                                            PackageSize = p.PackageSize,
+                                                            Published = p.Published
                                                         });
             }
             else
@@ -556,7 +580,8 @@ namespace PackageExplorerViewModel
                 if (getLatestVersions)
                 {
                     query = query.GroupBy(p => p.Id, StringComparer.OrdinalIgnoreCase)
-                                 .Select(g => g.OrderByDescending(p => p.Version).First());
+                                 .Select(g => g.OrderByDescending(p => p.Version)
+                                 .First());
                 }
 
                 return query.Cast<ZipPackage>().Select(p => new PackageInfo
@@ -568,7 +593,8 @@ namespace PackageExplorerViewModel
                                                         VersionDownloadCount = p.VersionDownloadCount,
                                                         PackageHash = p.PackageHash,
                                                         PackageSize = p.PackageSize,
-                                                        DownloadUrl = new Uri(p.Source)
+                                                        DownloadUrl = new Uri(p.Source),
+                                                        Published = p.Published
                                                     });
             }
         }

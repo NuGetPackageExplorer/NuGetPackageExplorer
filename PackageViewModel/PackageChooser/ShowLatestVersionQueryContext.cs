@@ -12,17 +12,19 @@ namespace PackageExplorerViewModel
         private readonly IQueryable<T> _source;
         private readonly Lazy<int> _totalItemCount;
         private int _pageIndex;
+        private bool _showUnlistedPackages;
 
-        public ShowLatestVersionQueryContext(IQueryable<T> source, int pageSize)
+        public ShowLatestVersionQueryContext(IQueryable<T> source, bool showUnlistedPackages, int pageSize)
         {
             _source = source;
             _pageSize = pageSize;
+            _showUnlistedPackages = showUnlistedPackages;
             _totalItemCount = new Lazy<int>(_source.Count);
         }
 
         private int PageCount
         {
-            get { return (TotalItemCount + (_pageSize - 1))/_pageSize; }
+            get { return (TotalItemCount + (_pageSize - 1)) / _pageSize; }
         }
 
         #region IQueryContext<T> Members
@@ -45,17 +47,17 @@ namespace PackageExplorerViewModel
 
         public int BeginPackage
         {
-            get { return Math.Min(TotalItemCount, _pageIndex*_pageSize + 1); }
+            get { return Math.Min(TotalItemCount, _pageIndex * _pageSize + 1); }
         }
 
         public int EndPackage
         {
-            get { return Math.Min(TotalItemCount, (_pageIndex + 1)*_pageSize); }
+            get { return Math.Min(TotalItemCount, (_pageIndex + 1) * _pageSize); }
         }
 
         public IEnumerable<T> GetItemsForCurrentPage()
         {
-            var results = _source.Skip(_pageIndex*_pageSize).Take(_pageSize);
+            var results = _source.Skip(_pageIndex * _pageSize).Take(_pageSize);
             foreach (var package in results)
             {
                 package.ShowAll = false;

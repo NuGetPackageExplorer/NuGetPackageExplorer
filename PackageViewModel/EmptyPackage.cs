@@ -155,6 +155,11 @@ namespace PackageExplorerViewModel
             get { return null; }
         }
 
+        public DateTimeOffset? Published
+        {
+            get { return DateTimeOffset.Now; }
+        }
+
         #endregion
     }
 }

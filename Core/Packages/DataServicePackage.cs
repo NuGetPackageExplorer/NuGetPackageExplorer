@@ -24,6 +24,7 @@ namespace NuGet
         public DateTimeOffset LastUpdated { get; set; }
         public long PackageSize { get; set; }
         public string PackageHash { get; set; }
+        public DateTimeOffset? Published { get; set; }
 
         public IPackage CorePackage { get; set; }
 

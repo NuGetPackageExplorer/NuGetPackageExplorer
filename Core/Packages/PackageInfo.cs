@@ -6,6 +6,7 @@ namespace NuGet
     public interface IPackageInfoType
     {
         bool ShowAll { get; set; }
+        bool IsUnlisted { get; }
     }
 
     [DataServiceKey("Id", "Version")]
@@ -21,6 +22,7 @@ namespace NuGet
         public Uri DownloadUrl { get; set; }
         public long PackageSize { get; set; }
         public bool ShowAll { get; set; }
+        public DateTimeOffset? Published { get; set; }
 
         private bool? _isPrerelease;
 
@@ -36,6 +38,14 @@ namespace NuGet
                 }
 
                 return _isPrerelease.Value;
+            }
+        }
+
+        public bool IsUnlisted
+        {
+            get
+            {
+                return Published == Constants.Unpublished;
             }
         }
 
@@ -64,7 +74,8 @@ namespace NuGet
                        Authors = Authors,
                        VersionDownloadCount = VersionDownloadCount,
                        DownloadCount = DownloadCount,
-                       PackageHash = PackageHash
+                       PackageHash = PackageHash,
+                       Published = Published
                    };
         }
     }

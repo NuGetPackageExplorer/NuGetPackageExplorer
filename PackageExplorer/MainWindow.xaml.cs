@@ -313,8 +313,7 @@ namespace PackageExplorer
 
                 Action<IPackage> processPackageAction = (package) =>
                                                         {
-                                                            DataServicePackage servicePackage =
-                                                                selectedPackageInfo.AsDataServicePackage();
+                                                            DataServicePackage servicePackage = selectedPackageInfo.AsDataServicePackage();
                                                             servicePackage.CorePackage = package;
                                                             LoadPackage(servicePackage,
                                                                         selectedPackageInfo.DownloadUrl.ToString(),

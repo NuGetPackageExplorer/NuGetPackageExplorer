@@ -15,6 +15,8 @@ namespace NuGet
 
         long PackageSize { get; }
 
+        DateTimeOffset? Published { get; }
+
         IEnumerable<IPackageAssemblyReference> AssemblyReferences { get; }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",

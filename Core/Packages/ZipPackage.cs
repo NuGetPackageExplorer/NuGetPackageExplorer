@@ -27,6 +27,12 @@ namespace NuGet
             {
                 throw new ArgumentException("Argument cannot be null.", "filePath");
             }
+
+            if (!File.Exists(filePath))
+            {
+                throw new ArgumentException("File doesn't exist at '" + filePath + "'.", "filePath");
+            }
+
             _filePath = filePath;
             _streamFactory = () => File.OpenRead(filePath);
             EnsureManifest();
@@ -54,6 +60,12 @@ namespace NuGet
         public Uri LicenseUrl { get; set; }
 
         public Uri ProjectUrl { get; set; }
+
+        public DateTimeOffset? Published
+        {
+            get;
+            set;
+        }
 
         public Uri ReportAbuseUrl
         {
@@ -209,6 +221,7 @@ namespace NuGet
                     Dependencies = metadata.Dependencies;
                     FrameworkAssemblies = metadata.FrameworkAssemblies;
                     References = metadata.References;
+                    Published = File.GetLastWriteTimeUtc(_filePath);
 
                     // Ensure tags start and end with an empty " " so we can do contains filtering reliably
                     if (!String.IsNullOrEmpty(Tags))

@@ -23,6 +23,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -106,7 +107,7 @@
             <self:GrayscaleImage Source="Images/clear.png" Stretch="None" />
         </self:GrayscaleButton>
 
-        <!-- Error message. -->
+        <!-- Error message -->
         <TextBlock 
             Grid.Row="2" 
             Grid.ColumnSpan="2" 
@@ -176,6 +177,10 @@
                         <DataTrigger Binding="{Binding IsPrerelease, Mode=OneTime}" Value="true">
                             <Setter Property="Foreground" Value="Maroon" />
                         </DataTrigger>
+
+                        <DataTrigger Binding="{Binding IsUnlisted, Mode=OneTime}" Value="true">
+                            <Setter Property="FontStyle" Value="Italic" />
+                        </DataTrigger>
                     </Style.Triggers>
                 </Style>
             </ListView.ItemContainerStyle>
@@ -224,20 +229,23 @@
         <!-- Checkbox: Show latest version of each Id -->
         <CheckBox Margin="0,0,0,8" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowLatestVersion}" HorizontalAlignment="Left" Content="Only _show latest version of each package Id." Checked="OnShowLatestVersionValueChanged" Unchecked="OnShowLatestVersionValueChanged" />
 
+        <!-- Checkbox: Show unlisted version of each Id  -->
+        <CheckBox Margin="0,0,0,8" Grid.Row="5" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowUnlistedPackages}" HorizontalAlignment="Left" Content="Show unlisted packages." Checked="OnShowUnlistedValueChanged" Unchecked="OnShowUnlistedValueChanged" />
+
         <!-- Background color for the footer -->
-        <Border Grid.Row="5" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
+        <Border Grid.Row="6" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
 
         <!-- Status message, e.g. Loadding, Connecting etc.-->
         <TextBlock 
             Text="{Binding StatusContent, Mode=OneWay}" 
-            Grid.Row="5" 
+            Grid.Row="6" 
             VerticalAlignment="Center" 
             TextTrimming="WordEllipsis"
             Visibility="{Binding HasError, Mode=OneWay, Converter={StaticResource invertedBoolToVis}}">
         </TextBlock>
 
         <!-- OK and Cancel buttons -->
-        <UniformGrid HorizontalAlignment="Right" Grid.Row="5" Grid.Column="1" Rows="1" Columns="3">
+        <UniformGrid HorizontalAlignment="Right" Grid.Row="6" Grid.Column="1" Rows="1" Columns="3">
             <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,0">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource andConverter}">

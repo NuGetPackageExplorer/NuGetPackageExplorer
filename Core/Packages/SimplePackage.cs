@@ -73,6 +73,11 @@ namespace NuGet
 
         public Uri LicenseUrl { get; private set; }
 
+        public DateTimeOffset? Published
+        {
+            get { return DateTimeOffset.Now; }
+        }
+
         public Uri ProjectUrl { get; private set; }
 
         public bool RequireLicenseAcceptance { get; private set; }

@@ -207,6 +207,11 @@ namespace PackageExplorer
             e.Handled = true;
         }
 
+        private void OnShowUnlistedValueChanged(object sender, RoutedEventArgs e)
+        {
+
+        }
+
         private void StandardDialog_Closing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
@@ -272,5 +277,7 @@ namespace PackageExplorer
                 }
             }
         }
+
+
     }
 }
