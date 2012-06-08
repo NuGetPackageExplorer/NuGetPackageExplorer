@@ -105,6 +105,12 @@ namespace PackageExplorer
             set { Settings.Default.ShowLatestVersionOfPackage = value; }
         }
 
+        public bool ShowUnlistedPackages
+        {
+            get { return Settings.Default.ShowUnlistedPackages; }
+            set { Settings.Default.ShowUnlistedPackages = value; }
+        }
+
         public bool UseV1ProtocolForPublish
         {
             get

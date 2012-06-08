@@ -72,6 +72,7 @@ namespace PackageExplorerViewModel
             var model = new PackageChooserViewModel(
                 new MruPackageSourceManager(new PackageSourceSettings(SettingsManager)),
                 SettingsManager.ShowLatestVersionOfPackage,
+                SettingsManager.ShowUnlistedPackages,
                 fixedPackageSource);
             model.PropertyChanged += OnPackageChooserViewModelPropertyChanged;
             return model;
@@ -86,10 +87,15 @@ namespace PackageExplorerViewModel
 
         private void OnPackageChooserViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
+            var model = (PackageChooserViewModel)sender;
+
             if (e.PropertyName == "ShowLatestVersion")
             {
-                var model = (PackageChooserViewModel) sender;
                 SettingsManager.ShowLatestVersionOfPackage = model.ShowLatestVersion;
+            }
+            else if (e.PropertyName == "ShowUnlistedPackages")
+            {
+                SettingsManager.ShowUnlistedPackages = model.ShowUnlistedPackages;
             }
         }
     }

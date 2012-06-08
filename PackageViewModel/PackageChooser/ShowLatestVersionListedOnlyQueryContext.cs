@@ -6,26 +6,21 @@ using NuGet;
 
 namespace PackageExplorerViewModel
 {
-    internal class ShowAllVersionsQueryContext<T> : IQueryContext<T> where T : IPackageInfoType
+    internal class ShowLatestVersionsListedOnlyQueryContext<T> : IQueryContext<T> where T : IPackageInfoType
     {
         private readonly int _bufferSize;
-        private readonly IEqualityComparer<T> _comparer;
         private readonly int _pageSize;
         private readonly Stack<int> _skipHistory = new Stack<int>();
         private readonly IQueryable<T> _source;
         private readonly Lazy<int> _totalItemCount;
         private int _nextSkip;
         private int _skip;
-        private bool _showUnlistedPackages;
 
-        public ShowAllVersionsQueryContext(
-            IQueryable<T> source, int pageSize, int bufferSize, bool showUnlistedPackages, IEqualityComparer<T> comparer)
+        public ShowLatestVersionsListedOnlyQueryContext(IQueryable<T> source, int pageSize)
         {
             _source = source;
-            _bufferSize = bufferSize;
-            _comparer = comparer;
+            _bufferSize = pageSize;
             _pageSize = pageSize;
-            _showUnlistedPackages = showUnlistedPackages;
             _totalItemCount = new Lazy<int>(_source.Count);
         }
 
@@ -65,20 +60,18 @@ namespace PackageExplorerViewModel
         public IEnumerable<T> GetItemsForCurrentPage()
         {
             T[] buffer = null;
-            int skipCursor = _nextSkip = _skip;
+            _nextSkip = _skip;
             int head = 0;
             for (int i = 0;
                  i < _pageSize && (!_totalItemCount.IsValueCreated || _nextSkip < _totalItemCount.Value);
                  i++)
             {
-                bool firstItem = true;
-                T lastItem = default(T);
                 while (!_totalItemCount.IsValueCreated || _nextSkip < _totalItemCount.Value)
                 {
                     if (buffer == null || head >= buffer.Length)
                     {
                         // read the next batch
-                        buffer = _source.Skip(skipCursor).Take(_bufferSize).ToArray();
+                        buffer = _source.Skip(_nextSkip).Take(_bufferSize).ToArray();
                         if (buffer.Length == 0)
                         {
                             // if no item returned, we have reached the end.
@@ -87,27 +80,22 @@ namespace PackageExplorerViewModel
 
                         for (int j = 0; j < buffer.Length; j++)
                         {
-                            buffer[j].ShowAll = true;
+                            buffer[j].ShowAll = false;
                         }
 
                         head = 0;
-                        skipCursor += buffer.Length;
                     }
 
-                    if (firstItem || _comparer.Equals(buffer[head], lastItem))
+                    if (buffer[head].IsUnlisted)
                     {
-                        if (_showUnlistedPackages || !buffer[head].IsUnlisted)
-                        {
-                            yield return buffer[head];
-                            lastItem = buffer[head];                            
-                            firstItem = false;
-                        }
-
                         head++;
                         _nextSkip++;
                     }
                     else
                     {
+                        yield return buffer[head];
+                        head++;
+                        _nextSkip++;
                         break;
                     }
                 }

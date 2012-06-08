@@ -16,8 +16,7 @@ using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using Constants = NuGet.Constants;
-using LazyPackageCommand =
-    System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
+using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
 
 namespace PackageExplorer

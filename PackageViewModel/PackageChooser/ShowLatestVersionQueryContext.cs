@@ -12,13 +12,11 @@ namespace PackageExplorerViewModel
         private readonly IQueryable<T> _source;
         private readonly Lazy<int> _totalItemCount;
         private int _pageIndex;
-        private bool _showUnlistedPackages;
 
-        public ShowLatestVersionQueryContext(IQueryable<T> source, bool showUnlistedPackages, int pageSize)
+        public ShowLatestVersionQueryContext(IQueryable<T> source, int pageSize)
         {
             _source = source;
             _pageSize = pageSize;
-            _showUnlistedPackages = showUnlistedPackages;
             _totalItemCount = new Lazy<int>(_source.Count);
         }
 

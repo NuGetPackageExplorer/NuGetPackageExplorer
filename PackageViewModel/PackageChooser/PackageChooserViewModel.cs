@@ -38,6 +38,7 @@ namespace PackageExplorerViewModel
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
             bool showLatestVersion,
+            bool showUnlistedPackages,
             string fixedPackageSource)
         {
             if (packageSourceManager == null)
@@ -46,6 +47,7 @@ namespace PackageExplorerViewModel
             }
 
             _showLatestVersion = showLatestVersion;
+            _showUnlistedPackages = showUnlistedPackages;
             _fixedPackageSource = fixedPackageSource;
             Packages = new ObservableCollection<PackageInfo>();
             SortCommand = new RelayCommand<string>(Sort, CanSort);
@@ -121,9 +123,18 @@ namespace PackageExplorerViewModel
                 {
                     _showLatestVersion = value;
                     OnPropertyChanged("ShowLatestVersion");
+                    OnPropertyChanged("ShowAllVersions");
 
                     OnShowLatestVersionChanged();
                 }
+            }
+        }
+
+        public bool ShowAllVersions
+        {
+            get
+            {
+                return !ShowLatestVersion;
             }
         }
 
@@ -301,7 +312,7 @@ namespace PackageExplorerViewModel
                 _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
             }
 
-            var token = (CancellationToken) state;
+            var token = (CancellationToken)state;
             token.ThrowIfCancellationRequested();
             return _packageRepository;
         }
@@ -368,7 +379,7 @@ namespace PackageExplorerViewModel
 
         private IList<PackageInfo> QueryPackages(object state)
         {
-            var token = (CancellationToken) state;
+            var token = (CancellationToken)state;
 
             // HACK: trigger calling TotalItemCount asynchronously so that the request for $count
             // can run in parallel with the request for packages
@@ -517,11 +528,7 @@ namespace PackageExplorerViewModel
                         if (ShowLatestVersion)
                         {
                             IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: true);
-
-                            _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(
-                                packageInfos,
-                                ShowUnlistedPackages,
-                                ShowLatestVersionPageSize);
+                            _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(packageInfos, ShowLatestVersionPageSize);
                         }
                         else
                         {
@@ -545,7 +552,7 @@ namespace PackageExplorerViewModel
         }
 
         private static IQueryable<PackageInfo> GetPackageInfos(
-            IQueryable<IPackage> query, 
+            IQueryable<IPackage> query,
             IPackageRepository repository,
             bool getLatestVersions)
         {
@@ -839,7 +846,7 @@ namespace PackageExplorerViewModel
 
         private bool CanMoveLast()
         {
-            return EndPackage < TotalPackageCount && ShowLatestVersion;
+            return EndPackage < TotalPackageCount && ShowLatestVersion && ShowUnlistedPackages;
         }
 
         private bool CanMoveNext()
