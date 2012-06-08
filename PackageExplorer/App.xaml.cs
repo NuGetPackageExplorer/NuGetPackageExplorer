@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Deployment.Application;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Windows;
@@ -59,7 +57,8 @@ namespace PackageExplorer
                 }
             }
 
-            if (AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
+            if (AppDomain.CurrentDomain.SetupInformation != null &&
+                AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
             {
                 // click-once deployment
                 string[] activationData = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
@@ -68,43 +67,6 @@ namespace PackageExplorer
                     string file = activationData[0];
                     LoadFile(window, file);
                     return;
-                }
-            }
-
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                // click-once with command in the URL
-                ProcessUrlParameters(window);
-            }
-        }
-
-        private static void ProcessUrlParameters(MainWindow window)
-        {
-            const string ActionParameter = "action";
-            const string LoadPackageAction = "load-package";
-            const string PackageSourceParameter = "packagesource";
-            const string PackageUrlParameter = "packageurl";
-
-            Dictionary<string, string> requestParameters =
-                ApplicationDeployment.CurrentDeployment.ActivationUri.GetRequestParameters();
-
-            if (requestParameters != null && requestParameters.ContainsKey(ActionParameter))
-            {
-                switch (requestParameters[ActionParameter].ToLowerInvariant())
-                {
-                    case LoadPackageAction:
-                        string packageSourceValue;
-                        if (requestParameters.TryGetValue(PackageSourceParameter, out packageSourceValue))
-                        {
-                            window.SetActivePackagePublishSource(packageSourceValue);
-                        }
-
-                        string packageUrlValue;
-                        if (requestParameters.TryGetValue(PackageUrlParameter, out packageUrlValue))
-                        {
-                            window.DownloadAndOpenDataServicePackage(packageUrlValue);
-                        }
-                        break;
                 }
             }
         }

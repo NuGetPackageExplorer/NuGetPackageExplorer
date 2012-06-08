@@ -131,25 +131,6 @@ namespace PackageExplorer
             };
         }
 
-        internal void SetActivePackagePublishSource(string packagePublishSource)
-        {
-            if (String.IsNullOrEmpty(packagePublishSource))
-            {
-                return;
-            }
-
-            if (UIServices.Confirm(
-                "Add Package Source",
-                string.Format(
-                    CultureInfo.CurrentCulture,
-                    StringResources.Dialog_SetActivePackagePublishSource,
-                    packagePublishSource),
-                isWarning: true))
-            {
-                SettingsManager.ActivePublishSource = packagePublishSource;
-            }
-        }
-
         private bool OpenLocalPackageCore(string packagePath)
         {
             IPackage package = null;
@@ -493,8 +474,7 @@ namespace PackageExplorer
             DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
         }
 
-        internal void DownloadAndOpenDataServicePackage(string packageUrl, string id = null,
-                                                        SemanticVersion version = null)
+        internal void DownloadAndOpenDataServicePackage(string packageUrl, string id = null, SemanticVersion version = null)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
