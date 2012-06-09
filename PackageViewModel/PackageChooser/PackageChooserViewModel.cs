@@ -326,7 +326,15 @@ namespace PackageExplorerViewModel
         {
             Debug.Assert(_currentQuery != null);
 
-            TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            TaskScheduler uiScheduler;
+            try
+            {
+                uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            }
+            catch (Exception)
+            {
+                uiScheduler = TaskScheduler.Current;
+            }
 
             IsEditable = false;
             ShowMessage(Resources.LoadingMessage, false);

@@ -97,7 +97,7 @@ namespace NuGet
             {
                 _valueFactory = new Lazy<object>(valueFactory);
                 _absoluteExpiration = absoluteExpiration;
-                _expires = expires.Ticks;
+                _expires = DateTime.UtcNow.Ticks + expires.Ticks;
             }
 
             public object Value
