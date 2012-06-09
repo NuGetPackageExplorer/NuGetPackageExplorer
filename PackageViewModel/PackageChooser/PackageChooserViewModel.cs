@@ -331,7 +331,7 @@ namespace PackageExplorerViewModel
             {
                 uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             }
-            catch (Exception)
+            catch (InvalidOperationException)
             {
                 uiScheduler = TaskScheduler.Current;
             }
