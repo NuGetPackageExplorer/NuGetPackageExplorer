@@ -1,299 +1,285 @@
 ﻿<UserControl x:Class="PackageExplorer.PackageMetadataEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:self="clr-namespace:PackageExplorer" xmlns:types="clr-namespace:NuGet;assembly=NuGetPackageExplorer.Types" IsVisibleChanged="PackageMetadataEditor_IsVisibleChanged" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
 
-	<UserControl.Resources>
-		<self:VersionConverter x:Key="VersionConverter" />
-		<self:VersionSpecConverter x:Key="VersionSpecConverter" />
-		<self:UriConverter x:Key="UriConverter" />
-		<self:FrameworkAssemblyReferenceConverter x:Key="FrameworkNameConverter" />
+    <UserControl.Resources>
+        <self:VersionConverter x:Key="VersionConverter" />
+        <self:VersionSpecConverter x:Key="VersionSpecConverter" />
+        <self:UriConverter x:Key="UriConverter" />
+        <self:FrameworkAssemblyReferenceConverter x:Key="FrameworkNameConverter" />
 
-		<Style x:Key="ImageStyle" TargetType="{x:Type Image}">
-			<Setter Property="Width" Value="16" />
-			<Setter Property="Height" Value="16" />
-			<Setter Property="Stretch" Value="Uniform" />
-		</Style>
+        <Style x:Key="ImageStyle" TargetType="{x:Type Image}">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Stretch" Value="Uniform" />
+        </Style>
 
-		<Style TargetType="{x:Type Label}" x:Key="LabelStyle">
-			<Setter Property="Margin" Value="0, 2, 0, 0" />
-		</Style>
+        <Style TargetType="{x:Type Label}" x:Key="LabelStyle">
+            <Setter Property="Margin" Value="0, 2, 0, 0" />
+        </Style>
 
-		<Style TargetType="{x:Type Label}" x:Key="RequiredLabelStyle" BasedOn="{StaticResource LabelStyle}">
-			<Setter Property="FontWeight" Value="Bold" />
-		</Style>
+        <Style TargetType="{x:Type Label}" x:Key="RequiredLabelStyle" BasedOn="{StaticResource LabelStyle}">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
 
-		<Style TargetType="{x:Type CheckBox}" x:Key="CheckBoxStyle">
-			<Setter Property="Margin" Value="5, 4, 3, 2" />
-		</Style>
+        <Style TargetType="{x:Type CheckBox}" x:Key="CheckBoxStyle">
+            <Setter Property="Margin" Value="5, 4, 3, 2" />
+        </Style>
 
-		<Style TargetType="{x:Type ComboBox}" x:Key="ComboBoxStyle">
-			<Setter Property="Margin" Value="0, 4, 3, 0" />
-		</Style>
+        <Style TargetType="{x:Type ComboBox}" x:Key="ComboBoxStyle">
+            <Setter Property="Margin" Value="0, 4, 3, 0" />
+        </Style>
 
-		<DataTemplate DataType="{x:Type types:PackageDependency}" x:Key="PackageDependencyTemplate">
-			<Grid Margin="0,4,0,0">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="3*" />
-					<ColumnDefinition Width="2*" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
+        <DataTemplate DataType="{x:Type types:PackageDependency}" x:Key="PackageDependencyTemplate">
+            <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-				<TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Id, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
-				<TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding VersionSpec, Converter={StaticResource VersionSpecConverter}, TargetNullValue='(not set)', Mode=OneWay}" />
-				<Button Grid.Column="2" ToolTipService.ToolTip="Remove this dependency" Click="RemoveDependencyButtonClicked">
-					<Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
-				</Button>
-			</Grid>
-		</DataTemplate>
+                <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Id, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding VersionSpec, Converter={StaticResource VersionSpecConverter}, TargetNullValue='(not set)', Mode=OneWay}" />
+                <Button Grid.Column="2" ToolTipService.ToolTip="Remove this dependency" Click="RemoveDependencyButtonClicked">
+                    <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
+                </Button>
+            </Grid>
+        </DataTemplate>
 
-		<DataTemplate DataType="{x:Type types:FrameworkAssemblyReference}" x:Key="FrameworkAssemblyTemplate">
-			<Grid Margin="0,4,0,0">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="*" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
+        <DataTemplate DataType="{x:Type types:FrameworkAssemblyReference}" x:Key="FrameworkAssemblyTemplate">
+            <Grid Margin="0,4,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-				<TextBlock Grid.Column="0" Text="{Binding AssemblyName, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
-				<TextBlock Grid.Column="1" Margin="4,0,4,0" Text="{Binding DisplayString}" TextTrimming="CharacterEllipsis" />
-				<Button Grid.Column="2" ToolTipService.ToolTip="Remove this framework assembly" Click="RemoveFrameworkAssemblyButtonClicked">
-					<Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
-				</Button>
-			</Grid>
-		</DataTemplate>
+                <TextBlock Grid.Column="0" Text="{Binding AssemblyName, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
+                <TextBlock Grid.Column="1" Margin="4,0,4,0" Text="{Binding DisplayString}" TextTrimming="CharacterEllipsis" />
+                <Button Grid.Column="2" ToolTipService.ToolTip="Remove this framework assembly" Click="RemoveFrameworkAssemblyButtonClicked">
+                    <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
+                </Button>
+            </Grid>
+        </DataTemplate>
 
-		<DataTemplate x:Key="FilteredAssemblyReferencesTemplate">
-			<DockPanel Margin="0,4,0,0">
-				<Button DockPanel.Dock="Right" Click="RemoveFilteredAssemblyReferenceClicked" ToolTip="Remove this assembly name">
-					<Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
-				</Button>
+        <DataTemplate x:Key="FilteredAssemblyReferencesTemplate">
+            <DockPanel Margin="0,4,0,0">
+                <Button DockPanel.Dock="Right" Click="RemoveFilteredAssemblyReferenceClicked" ToolTip="Remove this assembly name">
+                    <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
+                </Button>
 
-				<TextBlock Text="{Binding Mode=OneWay}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" />
-			</DockPanel>
-		</DataTemplate>
-	</UserControl.Resources>
+                <TextBlock Text="{Binding Mode=OneWay}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" />
+            </DockPanel>
+        </DataTemplate>
+    </UserControl.Resources>
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Validation.ErrorTemplate="{x:Null}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="*" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-		<ScrollViewer VerticalScrollBarVisibility="Auto">
-			<Grid Validation.ErrorTemplate="{x:Null}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="*" />
-				</Grid.ColumnDefinitions>
+            <Grid.BindingGroup>
+                <BindingGroup x:Name="PackageMetadataGroup" NotifyOnValidationError="True">
+                    <BindingGroup.ValidationRules>
+                        <DataErrorValidationRule />
+                    </BindingGroup.ValidationRules>
+                </BindingGroup>
+            </Grid.BindingGroup>
 
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="*" />
-				</Grid.RowDefinitions>
+            <!-- Id -->
+            <Label Grid.Row="0" Grid.Column="0" Target="IdBox" Style="{StaticResource RequiredLabelStyle}" Content="_Id" />
+            <TextBox Grid.Row="0" Grid.Column="1" x:Name="IdBox" MaxLength="100" Text="{Binding PackageMetadata.Id, ValidatesOnDataErrors=True}" />
 
-				<Grid.BindingGroup>
-					<BindingGroup x:Name="PackageMetadataGroup" NotifyOnValidationError="True">
-						<BindingGroup.ValidationRules>
-							<DataErrorValidationRule />
-						</BindingGroup.ValidationRules>
-					</BindingGroup>
-				</Grid.BindingGroup>
+            <!-- Version -->
+            <Label Grid.Row="1" Grid.Column="0" Target="VersionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Version" />
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="VersionBox">
+                <TextBox.Text>
+                    <Binding Path="PackageMetadata.Version" Converter="{StaticResource VersionConverter}" ValidatesOnDataErrors="True">
+                        <Binding.ValidationRules>
+                            <self:SemanticVersionValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
-				<!-- Id -->
-				<Label Grid.Row="0" Grid.Column="0" Target="IdBox" Style="{StaticResource RequiredLabelStyle}" Content="_Id" />
-				<TextBox Grid.Row="0" Grid.Column="1" x:Name="IdBox" MaxLength="100" Text="{Binding PackageMetadata.Id, ValidatesOnDataErrors=True}" />
+            <!-- Title -->
+            <Label Grid.Row="2" Grid.Column="0" Target="TitleBox" Style="{StaticResource LabelStyle}" Content="_Title" />
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="TitleBox" Text="{Binding PackageMetadata.Title}" />
 
-				<!-- Version -->
-				<Label Grid.Row="1" Grid.Column="0" Target="VersionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Version" />
-				<TextBox Grid.Row="1" Grid.Column="1" x:Name="VersionBox">
-                    <TextBox.Text>
-                        <Binding Path="PackageMetadata.Version" Converter="{StaticResource VersionConverter}" ValidatesOnDataErrors="True">
-                            <Binding.ValidationRules>
-                                <self:SemanticVersionValidationRule />
-                            </Binding.ValidationRules>
-                        </Binding>
-                    </TextBox.Text>
-                </TextBox>
+            <!-- Authors -->
+            <Label Grid.Row="3" Grid.Column="0" Target="AuthorsBox" Style="{StaticResource RequiredLabelStyle}" Content="_Authors" />
+            <TextBox Grid.Row="3" Grid.Column="1" x:Name="AuthorsBox" Text="{Binding PackageMetadata.Authors, ValidatesOnDataErrors=True}" />
 
-				<!-- Title -->
-				<Label Grid.Row="2" Grid.Column="0" Target="TitleBox" Style="{StaticResource LabelStyle}" Content="_Title" />
-				<TextBox Grid.Row="2" Grid.Column="1" x:Name="TitleBox" Text="{Binding PackageMetadata.Title}" />
+            <!-- Owners -->
+            <Label Grid.Row="4" Grid.Column="0" Target="OwnersBox" Style="{StaticResource LabelStyle}" Content="_Owners" />
+            <TextBox Grid.Row="4" Grid.Column="1" x:Name="OwnersBox" Text="{Binding PackageMetadata.Owners}" />
 
-				<!-- Authors -->
-				<Label Grid.Row="3" Grid.Column="0" Target="AuthorsBox" Style="{StaticResource RequiredLabelStyle}" Content="_Authors" />
-				<TextBox Grid.Row="3" Grid.Column="1" x:Name="AuthorsBox" Text="{Binding PackageMetadata.Authors, ValidatesOnDataErrors=True}" />
+            <!-- IconUrl -->
+            <Label Grid.Row="5" Grid.Column="0" Target="IconUrlBox" Style="{StaticResource LabelStyle}" Content="Icon _Url" />
+            <TextBox Grid.Row="5" Grid.Column="1" x:Name="IconUrlBox" Text="{Binding PackageMetadata.IconUrl, Converter={StaticResource UriConverter}}" />
 
-				<!-- Owners -->
-				<Label Grid.Row="4" Grid.Column="0" Target="OwnersBox" Style="{StaticResource LabelStyle}" Content="_Owners" />
-				<TextBox Grid.Row="4" Grid.Column="1" x:Name="OwnersBox" Text="{Binding PackageMetadata.Owners}" />
+            <!-- ProjectUrl -->
+            <Label Grid.Row="6" Grid.Column="0" Target="ProjectUrlBox" Style="{StaticResource LabelStyle}" Content="_Project Url" />
+            <TextBox Grid.Row="6" Grid.Column="1" x:Name="ProjectUrlBox" Text="{Binding PackageMetadata.ProjectUrl, Converter={StaticResource UriConverter}}" />
 
-				<!-- IconUrl -->
-				<Label Grid.Row="5" Grid.Column="0" Target="IconUrlBox" Style="{StaticResource LabelStyle}" Content="Icon _Url" />
-				<TextBox Grid.Row="5" Grid.Column="1" x:Name="IconUrlBox" Text="{Binding PackageMetadata.IconUrl, Converter={StaticResource UriConverter}}" />
+            <!-- Require License Acceptane -->
+            <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding PackageMetadata.RequireLicenseAcceptance}" Content="_Requires License Acceptance" Style="{StaticResource CheckBoxStyle}" />
 
-				<!-- ProjectUrl -->
-				<Label Grid.Row="6" Grid.Column="0" Target="ProjectUrlBox" Style="{StaticResource LabelStyle}" Content="_Project Url" />
-				<TextBox Grid.Row="6" Grid.Column="1" x:Name="ProjectUrlBox" Text="{Binding PackageMetadata.ProjectUrl, Converter={StaticResource UriConverter}}" />
+            <!-- LicenseUrl -->
+            <Label Grid.Row="9" Grid.Column="0" Target="LicenseUrlBox" Style="{StaticResource LabelStyle}" Content="_License Url" />
+            <TextBox Grid.Row="9" Grid.Column="1" x:Name="LicenseUrlBox" Text="{Binding PackageMetadata.LicenseUrl, Converter={StaticResource UriConverter}, ValidatesOnDataErrors=true}" />
 
-				<!-- Require License Acceptane -->
-				<CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" IsChecked="{Binding PackageMetadata.RequireLicenseAcceptance}" Content="_Requires License Acceptance" Style="{StaticResource CheckBoxStyle}" />
+            <!-- Summary -->
+            <Label Grid.Row="10" Grid.Column="0" Target="SummaryBox" Style="{StaticResource LabelStyle}" Content="_Summary" />
+            <TextBox Grid.Row="10" Grid.Column="1" Height="80" MaxLength="200" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="SummaryBox" Text="{Binding PackageMetadata.Summary}" AcceptsReturn="True" />
 
-				<!-- LicenseUrl -->
-				<Label Grid.Row="9" Grid.Column="0" Target="LicenseUrlBox" Style="{StaticResource LabelStyle}" Content="_License Url" />
-				<TextBox Grid.Row="9" Grid.Column="1" x:Name="LicenseUrlBox" Text="{Binding PackageMetadata.LicenseUrl, Converter={StaticResource UriConverter}, ValidatesOnDataErrors=true}" />
+            <!-- Description -->
+            <Label Grid.Row="11" Grid.Column="0" Target="DescriptionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Description" />
+            <TextBox Grid.Row="11" Grid.Column="1" Height="80" MaxLength="2000" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="DescriptionBox" Text="{Binding PackageMetadata.Description, ValidatesOnDataErrors=True}" AcceptsReturn="True" />
 
-				<!-- Summary -->
-				<Label Grid.Row="10" Grid.Column="0" Target="SummaryBox" Style="{StaticResource LabelStyle}" Content="_Summary" />
-				<TextBox Grid.Row="10" Grid.Column="1" Height="80" MaxLength="200" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="SummaryBox" Text="{Binding PackageMetadata.Summary}" AcceptsReturn="True" />
+            <!-- Release Notes -->
+            <Label Grid.Row="12" Grid.Column="0" Target="ReleaseNotesBox" Style="{StaticResource LabelStyle}" Content="_Release Notes" />
+            <TextBox Grid.Row="12" Grid.Column="1" Height="80" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="ReleaseNotesBox" Text="{Binding PackageMetadata.ReleaseNotes}" AcceptsReturn="True" />
 
-				<!-- Description -->
-				<Label Grid.Row="11" Grid.Column="0" Target="DescriptionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Description" />
-				<TextBox Grid.Row="11" Grid.Column="1" Height="80" MaxLength="2000" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="DescriptionBox" Text="{Binding PackageMetadata.Description, ValidatesOnDataErrors=True}" AcceptsReturn="True" />
+            <!-- Copyright -->
+            <Label Grid.Row="13" Grid.Column="0" Target="CopyrightBox" Style="{StaticResource LabelStyle}" Content="Cop_yright" />
+            <TextBox Grid.Row="13" Grid.Column="1" x:Name="CopyrightBox" Text="{Binding PackageMetadata.Copyright, ValidatesOnDataErrors=true}" />
 
-				<!-- Release Notes -->
-				<Label Grid.Row="12" Grid.Column="0" Target="ReleaseNotesBox" Style="{StaticResource LabelStyle}" Content="_Release Notes" />
-				<TextBox Grid.Row="12" Grid.Column="1" Height="80" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="ReleaseNotesBox" Text="{Binding PackageMetadata.ReleaseNotes}" AcceptsReturn="True" />
-                
-				<!-- Copyright -->
-				<Label Grid.Row="13" Grid.Column="0" Target="CopyrightBox" Style="{StaticResource LabelStyle}" Content="Cop_yright" />
-				<TextBox Grid.Row="13" Grid.Column="1" x:Name="CopyrightBox" Text="{Binding PackageMetadata.Copyright, ValidatesOnDataErrors=true}" />
+            <!-- Language -->
+            <Label Grid.Row="14" Grid.Column="0" Target="LanguageBox" Style="{StaticResource LabelStyle}" Content="La_nguage" />
+            <ComboBox Grid.Row="14" Grid.Column="1" x:Name="LanguageBox" Text="{Binding PackageMetadata.Language}" IsEditable="true" IsReadOnly="False" Width="120" HorizontalAlignment="Left" Style="{StaticResource ComboBoxStyle}" />
 
-				<!-- Language -->
-				<Label Grid.Row="14" Grid.Column="0" Target="LanguageBox" Style="{StaticResource LabelStyle}" Content="La_nguage" />
-				<ComboBox Grid.Row="14" Grid.Column="1" x:Name="LanguageBox" Text="{Binding PackageMetadata.Language}" IsEditable="true" IsReadOnly="False" Width="120" HorizontalAlignment="Left" Style="{StaticResource ComboBoxStyle}" />
+            <!-- Tags -->
+            <Label Grid.Row="15" Grid.Column="0" Target="TagsBox" Style="{StaticResource LabelStyle}" Content="Ta_gs" />
+            <TextBox Grid.Row="15" Grid.Column="1" x:Name="TagsBox" Text="{Binding PackageMetadata.Tags}" />
 
-				<!-- Tags -->
-				<Label Grid.Row="15" Grid.Column="0" Target="TagsBox" Style="{StaticResource LabelStyle}" Content="Ta_gs" />
-				<TextBox Grid.Row="15" Grid.Column="1" x:Name="TagsBox" Text="{Binding PackageMetadata.Tags}" />
+            <!-- Dependencies -->
+            <Border Grid.Row="16" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
+                <Grid Margin="3,4,3,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.BindingGroup>
+                        <BindingGroup x:Name="NewPackageDependencyGroup" Name="NewPackageDependency" NotifyOnValidationError="True" />
+                    </Grid.BindingGroup>
+                    <Validation.ErrorTemplate>
+                        <ControlTemplate></ControlTemplate>
+                    </Validation.ErrorTemplate>
 
-				<!-- Dependencies -->
-				<Border Grid.Row="16" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
-					<Grid Margin="3,4,3,0">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="3*" />
-							<ColumnDefinition Width="2*" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-						<Grid.BindingGroup>
-							<BindingGroup x:Name="NewPackageDependencyGroup" Name="NewPackageDependency" NotifyOnValidationError="True" />
-						</Grid.BindingGroup>
-						<Validation.ErrorTemplate>
-							<ControlTemplate></ControlTemplate>
-						</Validation.ErrorTemplate>
+                    <TextBlock Grid.Column="1" Text="Id" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                    <TextBlock Grid.Column="2" Text="Version" FontWeight="SemiBold" HorizontalAlignment="Center" />
 
-						<TextBlock Grid.Column="1" Text="Id" FontWeight="SemiBold" HorizontalAlignment="Center" />
-						<TextBlock Grid.Column="2" Text="Version" FontWeight="SemiBold" HorizontalAlignment="Center" />
+                    <ItemsControl x:Name="DependencyList" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" ItemTemplate="{StaticResource PackageDependencyTemplate}"></ItemsControl>
 
-						<ItemsControl x:Name="DependencyList" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" ItemTemplate="{StaticResource PackageDependencyTemplate}"></ItemsControl>
+                    <Button Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" ToolTipService.ToolTip="Select dependency from NuGet feed" Click="SelectDependencyButtonClicked">
+                        <Image Style="{StaticResource ImageStyle}" Source="Images/properties.png"></Image>
+                    </Button>
 
-						<Button Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" ToolTipService.ToolTip="Select dependency from NuGet feed" Click="SelectDependencyButtonClicked">
-							<Image Style="{StaticResource ImageStyle}" Source="Images/properties.png"></Image>
-						</Button>
+                    <TextBox x:Name="NewDependencyId" Text="{Binding Id, BindingGroupName=NewPackageDependency}" Margin="2" Grid.Column="1" Grid.Row="2" />
+                    <TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, BindingGroupName=NewPackageDependency, Converter={StaticResource VersionSpecConverter}}" Margin="2" Grid.Column="2" Grid.Row="2" />
 
-						<TextBox x:Name="NewDependencyId" Text="{Binding Id, BindingGroupName=NewPackageDependency}" Margin="2" Grid.Column="1" Grid.Row="2" />
-						<TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, BindingGroupName=NewPackageDependency, Converter={StaticResource VersionSpecConverter}}" Margin="2" Grid.Column="2" Grid.Row="2" />
+                    <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency" Click="AddDependencyButtonClicked">
+                        <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
+                        <self:GrayscaleButton.IsEnabled>
+                            <Binding Path="Text" ElementName="NewDependencyId" Converter="{StaticResource nullToBoolConverter}" Mode="OneWay" />
+                        </self:GrayscaleButton.IsEnabled>
+                    </self:GrayscaleButton>
+                </Grid>
+            </Border>
 
-						<self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency" Click="AddDependencyButtonClicked">
-							<self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
-							<self:GrayscaleButton.IsEnabled>
-								<Binding Path="Text" ElementName="NewDependencyId" Converter="{StaticResource nullToBoolConverter}" Mode="OneWay" />
-							</self:GrayscaleButton.IsEnabled>
-						</self:GrayscaleButton>
-					</Grid>
-				</Border>
+            <!-- Header text for Dependencies -->
+            <TextBlock Text="Dependencies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="16" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
-				<!-- Header text for Dependencies -->
-				<TextBlock Text="Dependencies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="16" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
-                
-				<!-- Framework assemblies -->
-				<Border Grid.Row="17" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
-					<Grid Margin="3,4,3,0">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
+            <!-- Framework assemblies -->
+            <Border Grid.Row="17" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
+                <Grid Margin="3,4,3,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-						<TextBlock Grid.Column="0" Text="Assembly name" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,3" />
-						<TextBlock Grid.Column="1" Text="Supported frameworks" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,3" />
+                    <TextBlock Grid.Column="0" Text="Assembly name" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,3" />
+                    <TextBlock Grid.Column="1" Text="Supported frameworks" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,3" />
 
-						<ItemsControl x:Name="FrameworkAssembliesList" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemTemplate="{StaticResource FrameworkAssemblyTemplate}"></ItemsControl>
+                    <ItemsControl x:Name="FrameworkAssembliesList" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemTemplate="{StaticResource FrameworkAssemblyTemplate}"></ItemsControl>
 
-						<ComboBox x:Name="NewAssemblyName" Text="{Binding AssemblyName, BindingGroupName=NewFrameworkAssembly, NotifyOnValidationError=True}" Margin="2" IsEditable="true" IsReadOnly="False" Grid.Column="0" Grid.Row="2" />
+                    <ComboBox x:Name="NewAssemblyName" Text="{Binding AssemblyName, BindingGroupName=NewFrameworkAssembly, NotifyOnValidationError=True}" Margin="2" IsEditable="true" IsReadOnly="False" Grid.Column="0" Grid.Row="2" />
 
-						<TextBox x:Name="NewSupportedFramework" Text="{Binding SupportedFrameworks, UpdateSourceTrigger=Explicit, Converter={StaticResource FrameworkNameConverter}, NotifyOnValidationError=True, BindingGroupName=NewFrameworkAssembly}" Margin="2" Grid.Column="1" Grid.Row="2" />
+                    <TextBox x:Name="NewSupportedFramework" Text="{Binding SupportedFrameworks, UpdateSourceTrigger=Explicit, Converter={StaticResource FrameworkNameConverter}, NotifyOnValidationError=True, BindingGroupName=NewFrameworkAssembly}" Margin="2" Grid.Column="1" Grid.Row="2" />
 
-						<self:GrayscaleButton Margin="0,2,0,2" Grid.Column="2" Grid.Row="2" ToolTipService.ToolTip="Add new framework assembly" Click="AddFrameworkAssemblyButtonClicked">
-							<self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
-							<Button.IsEnabled>
-								<Binding ElementName="NewAssemblyName" Path="Text" Converter="{StaticResource nullToBoolConverter}" />
-							</Button.IsEnabled>
-						</self:GrayscaleButton>
-					</Grid>
-				</Border>
+                    <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="2" Grid.Row="2" ToolTipService.ToolTip="Add new framework assembly" Click="AddFrameworkAssemblyButtonClicked">
+                        <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
+                        <Button.IsEnabled>
+                            <Binding ElementName="NewAssemblyName" Path="Text" Converter="{StaticResource nullToBoolConverter}" />
+                        </Button.IsEnabled>
+                    </self:GrayscaleButton>
+                </Grid>
+            </Border>
 
-				<!-- Header text for Framework assemblies -->
-				<TextBlock Text="Framework assemblies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="17" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+            <!-- Header text for Framework assemblies -->
+            <TextBlock Text="Framework assemblies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="17" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
-				<!-- Filtered assembly references -->
-				<Border Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
-					<Grid Margin="3,4,3,0">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
+            <!-- Filtered assembly references -->
+            <Border Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
+                <Grid Margin="3,4,3,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-						<ItemsControl x:Name="AssemblyReferencesList" Grid.ColumnSpan="2" ItemTemplate="{StaticResource FilteredAssemblyReferencesTemplate}"></ItemsControl>
+                    <ItemsControl x:Name="AssemblyReferencesList" Grid.ColumnSpan="2" ItemTemplate="{StaticResource FilteredAssemblyReferencesTemplate}"></ItemsControl>
 
-						<TextBox x:Name="NewReferenceFileName" Margin="2" Grid.Column="0" Grid.Row="1" />
+                    <TextBox x:Name="NewReferenceFileName" Margin="2" Grid.Column="0" Grid.Row="1" />
 
-						<self:GrayscaleButton Margin="0,2,0,2" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding Text, ElementName=NewReferenceFileName, Converter={StaticResource nullToBoolConverter}}" ToolTipService.ToolTip="Add new filtered assembly reference" Click="AddReferenceFileNameClicked">
-							<self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
-						</self:GrayscaleButton>
-					</Grid>
-				</Border>
+                    <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding Text, ElementName=NewReferenceFileName, Converter={StaticResource nullToBoolConverter}}" ToolTipService.ToolTip="Add new filtered assembly reference" Click="AddReferenceFileNameClicked">
+                        <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
+                    </self:GrayscaleButton>
+                </Grid>
+            </Border>
 
-				<!-- Header text for Filtered assembly references -->
-				<TextBlock Text="Filtered assembly references" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
-			</Grid>
-		</ScrollViewer>
-
-		<!-- Button -->
-		<UniformGrid Grid.Row="1" HorizontalAlignment="Center" Margin="0,8,0,0" Rows="1" Columns="2">
-			<Button Content="OK" Padding="15,0" Margin="0,0,5,0" Command="{Binding ApplyEditCommand}" />
-			<Button Padding="15,0" Content="Cancel" Margin="5,0,0,0" Command="{Binding CancelEditCommand}" />
-		</UniformGrid>
-	</Grid>
+            <!-- Header text for Filtered assembly references -->
+            <TextBlock Text="Filtered assembly references" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+        </Grid>
+    </ScrollViewer>
 </UserControl>

@@ -76,15 +76,6 @@
             <DataTemplate x:Key="PackageDetailTemplate">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="8">
-                        <TextBlock 
-                            VerticalAlignment="Top"
-                            HorizontalAlignment="Right"
-                            DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:MainWindow}}}">
-                            <Hyperlink Command="{Binding EditCommand, Mode=OneWay}">
-                                <Run Text="Edit" />
-                            </Hyperlink>
-                        </TextBlock>
-
                         <Border BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Background="White" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconUrl}" Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
                             <Image Source="{Binding IconUrl, TargetNullValue={x:Null}}" Width="32" Height="32" Stretch="Fill" StretchDirection="DownOnly" />
                         </Border>
@@ -278,11 +269,51 @@
         </Grid.ColumnDefinitions>
 
         <!-- package metadata -->
-        <HeaderedContentControl Grid.RowSpan="3" Margin="0,0,1,0" Header="Package metadata" FlowDirection="LeftToRight">
+        <HeaderedContentControl Grid.RowSpan="3" Margin="0,0,1,0" Padding="0" Header="Package metadata" FlowDirection="LeftToRight">
             <Grid>
-                <ContentControl Content="{Binding PackageMetadata}" ContentTemplate="{StaticResource PackageDetailTemplate}" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}"></ContentControl>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
 
-                <self:PackageMetadataEditor x:Name="PackageMetadataEditor" Margin="0,8,0,3" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" />
+                <!-- Toolbar for package metadata pane --> 
+                <Border Grid.Row="0" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Button 
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                            Command="{Binding EditCommand, Mode=OneWay}" 
+                            Margin="2,1,1,2" 
+                            Padding="3"
+                            Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}}"
+                            ToolTipService.ToolTip="Edit metadata">
+                            <Image Source="Images/EditHS.png" />
+                        </Button>
+
+                        <Button 
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                            Margin="2,1,1,2" 
+                            Padding="3" 
+                            ToolTipService.ToolTip="Save"
+                            Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource boolToVis}}"
+                            Command="{Binding ApplyEditCommand}">
+                            <Image Source="Images/Validate.png" />
+                        </Button>
+                        
+                        <Button 
+                            Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
+                            Margin="1,1,1,2" 
+                            Padding="3"
+                            ToolTipService.ToolTip="Cancel"
+                            Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource boolToVis}}"
+                            Command="{Binding CancelEditCommand}">
+                            <Image Source="Images/Cancel.png" />
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <ContentControl Grid.Row="1" Content="{Binding PackageMetadata}" ContentTemplate="{StaticResource PackageDetailTemplate}" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}"></ContentControl>
+
+                <self:PackageMetadataEditor x:Name="PackageMetadataEditor" Grid.Row="1" Margin="4,12,4,7" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" />
             </Grid>
         </HeaderedContentControl>
 

@@ -300,6 +300,8 @@
     <Resource Include="Images\GoToPrevious.png" />
     <Resource Include="Images\source.png" />
     <Resource Include="Images\Books.png" />
+    <Resource Include="Images\Cancel.png" />
+    <Resource Include="Images\Validate.png" />
     <Content Include="Resources\fxAssemblies.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
