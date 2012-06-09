@@ -22,7 +22,7 @@ namespace NuGet
         /// <summary>
         /// Path on disk
         /// </summary>
-        public string OriginalPath { get; set; }
+        public string SourcePath { get; set; }
 
         /// <summary>
         /// Path in package
@@ -38,7 +38,7 @@ namespace NuGet
 
         public Stream GetStream()
         {
-            return File.OpenRead(OriginalPath);
+            return File.OpenRead(SourcePath);
         }
 
         #endregion

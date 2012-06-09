@@ -42,14 +42,14 @@ namespace PackageExplorerViewModel
         }
 
         /// <summary>
-        /// Returns the path on disk if this file is a PhysicalPackageFile. Otherwise, returns null;
+        /// Returns the path on this if this file is a PhysicalPackageFile. Otherwise, returns null;
         /// </summary>
         public string OriginalPath
         {
             get
             {
                 var physicalFile = _file as PhysicalPackageFile;
-                return (physicalFile != null && !physicalFile.IsTempFile) ? physicalFile.OriginalPath : null;
+                return (physicalFile != null && !physicalFile.IsTempFile) ? physicalFile.SourcePath : null;
             }
         }
 
@@ -96,8 +96,8 @@ namespace PackageExplorerViewModel
 
         private void WatchPhysicalFile(PhysicalPackageFile physicalFile)
         {
-            string folderPath = System.IO.Path.GetDirectoryName(physicalFile.OriginalPath);
-            string fileName = System.IO.Path.GetFileName(physicalFile.OriginalPath);
+            string folderPath = System.IO.Path.GetDirectoryName(physicalFile.SourcePath);
+            string fileName = System.IO.Path.GetFileName(physicalFile.SourcePath);
 
             _watcher = new FileSystemWatcher(folderPath, fileName)
                        {
@@ -131,7 +131,7 @@ namespace PackageExplorerViewModel
             Delete(false);
         }
 
-        public override IEnumerable<IPackageFile> GetFiles()
+        public override IEnumerable<PackageFile> GetFiles()
         {
             yield return this;
         }

@@ -36,12 +36,7 @@ namespace PackageExplorerViewModel
                 if (parsedPaths[i].Item2.Length == level + 1)
                 {
                     // it's a file
-                    // Starting from nuget 2.0, they use a dummy file with the name "_._" to represent
-                    // an empty folder. Therefore, we just ignore it. 
-                    if (!s.Equals("_._", StringComparison.OrdinalIgnoreCase))
-                    {
-                        root.Children.Add(new PackageFile(parsedPaths[i].Item1, s, root));
-                    }
+                    root.Children.Add(new PackageFile(parsedPaths[i].Item1, s, root));
                     i++;
                 }
                 else

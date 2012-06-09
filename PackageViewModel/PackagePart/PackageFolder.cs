@@ -95,16 +95,9 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public override IEnumerable<IPackageFile> GetFiles()
+        public override IEnumerable<PackageFile> GetFiles()
         {
-            if (Children.Count == 0)
-            {
-                return new [] { new EmptyFolderFile(this) };
-            }
-            else
-            {
-                return Children.SelectMany(p => p.GetFiles());
-            }
+            return Children.SelectMany(p => p.GetFiles());
         }
 
         public void RemoveChild(PackagePart child)
@@ -239,7 +232,7 @@ namespace PackageExplorerViewModel
 
             var physicalFile = new PhysicalPackageFile(isTempFile)
                                {
-                                   OriginalPath = filePath
+                                   SourcePath = filePath
                                };
             var newFile = new PackageFile(physicalFile, newFileName, this);
             physicalFile.TargetPath = newFile.Path;

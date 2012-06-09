@@ -17,7 +17,7 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            foreach (IPackageFile file in package.GetFiles())
+            foreach (PackageFile file in package.GetFiles())
             {
                 string path = file.Path;
                 if (!path.EndsWith(ScriptExtension, StringComparison.OrdinalIgnoreCase))

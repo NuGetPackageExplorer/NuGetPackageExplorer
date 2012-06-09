@@ -5,7 +5,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
-using NuGet;
 
 namespace PackageExplorerViewModel
 {
@@ -234,7 +233,7 @@ namespace PackageExplorerViewModel
             "Microsoft.Design",
             "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This method is potentially expensive.")]
-        public abstract IEnumerable<IPackageFile> GetFiles();
+        public abstract IEnumerable<PackageFile> GetFiles();
 
         protected void OnPropertyChanged(string propertyName)
         {
