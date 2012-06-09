@@ -854,7 +854,7 @@ namespace PackageExplorerViewModel
 
         private bool CanMoveLast()
         {
-            return EndPackage < TotalPackageCount && ShowLatestVersion && ShowUnlistedPackages;
+            return EndPackage < TotalPackageCount && ShowLatestVersion;
         }
 
         private bool CanMoveNext()
