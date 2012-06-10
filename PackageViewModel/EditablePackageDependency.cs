@@ -41,6 +41,7 @@ namespace PackageExplorerViewModel
                 {
                     _versionSpec = value;
                     RaisePropertyChange("VersionSpec");
+                    RaisePropertyChange("Id");
                 }
             }
         }
@@ -79,12 +80,12 @@ namespace PackageExplorerViewModel
             {
                 if (String.IsNullOrEmpty(Id))
                 {
-                    return null;
+                    return VersionSpec != null ? "Package id must not be empty." : (string)null;
                 }
 
                 if (!PackageIdValidator.IsValidPackageId(Id))
                 {
-                    return "Value '" + Id + "' cannot be converted.";
+                    return "'" + Id + "' is an invalid package id.";
                 }
             }
 

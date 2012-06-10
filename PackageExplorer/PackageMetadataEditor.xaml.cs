@@ -126,15 +126,31 @@ namespace PackageExplorer
 
         private void AddDependencyButtonClicked(object sender, RoutedEventArgs e)
         {
+            AddPendingDependency();
+        }
+
+        // return true = pending dependency added
+        // return false = pending dependency is invalid
+        // return null = no pending dependency
+        private bool? AddPendingDependency()
+        {
+            if (String.IsNullOrEmpty(NewDependencyId.Text) &&
+                String.IsNullOrEmpty(NewDependencyVersion.Text))
+            {
+                return null;
+            }
+
             if (!NewPackageDependencyGroup.UpdateSources())
             {
-                return;
+                return false;
             }
 
             _packageDependencies.Add(_newPackageDependency.AsReadOnly());
 
             // after dependency is added, clear the textbox
             ClearDependencyTextBox();
+
+            return true;
         }
 
         private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
@@ -149,24 +165,32 @@ namespace PackageExplorer
 
         private void AddFrameworkAssemblyButtonClicked(object sender, RoutedEventArgs args)
         {
-            BindingExpression bindingExpression = NewSupportedFramework.GetBindingExpression(TextBox.TextProperty);
-            if (!bindingExpression.ValidateWithoutUpdate())
-            {
-                return;
-            }
+            AddPendingFrameworkAssembly();
+        }
 
-            if (bindingExpression.HasError)
+        // return true = pending assembly added
+        // return false = pending assembly is invalid
+        // return null = no pending asesmbly
+        private bool? AddPendingFrameworkAssembly()
+        {
+            if (String.IsNullOrEmpty(NewAssemblyName.Text) &&
+                String.IsNullOrEmpty(NewSupportedFramework.Text))
             {
-                return;
+                return null;
             }
 
             string displayString = NewSupportedFramework.Text.Trim();
 
-            bindingExpression.UpdateSource();
+            if (!NewFrameworkAssembly.UpdateSources())
+            {
+                return false;
+            }
             _frameworkAssemblies.Add(_newFrameworkAssembly.AsReadOnly(displayString));
 
             // after framework assembly is added, clear the textbox
             ClearFrameworkAssemblyTextBox();
+
+            return true;
         }
 
         private void AddReferenceFileNameClicked(object sender, RoutedEventArgs e)
@@ -192,6 +216,18 @@ namespace PackageExplorer
 
         bool IPackageEditorService.CommitEdit()
         {
+            bool? addPendingDependency = AddPendingDependency();
+            if (addPendingDependency == false)
+            {
+                return false;
+            }
+
+            bool? addPendingAssembly = AddPendingFrameworkAssembly();
+            if (addPendingAssembly == false)
+            {
+                return false;
+            }
+
             bool valid = PackageMetadataGroup.CommitEdit();
             if (valid)
             {

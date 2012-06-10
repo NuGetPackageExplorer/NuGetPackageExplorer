@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Versioning;
@@ -6,7 +7,7 @@ using NuGet;
 
 namespace PackageExplorerViewModel
 {
-    public class EditableFrameworkAssemblyReference : INotifyPropertyChanged
+    public class EditableFrameworkAssemblyReference : INotifyPropertyChanged, IDataErrorInfo
     {
         private string _assemblyName;
 
@@ -34,6 +35,7 @@ namespace PackageExplorerViewModel
                 {
                     _supportedFrameworks = value;
                     RaisePropertyChange("SupportedFrameworks");
+                    RaisePropertyChange("AssemblyName");
                 }
             }
         }
@@ -55,6 +57,27 @@ namespace PackageExplorerViewModel
         public FrameworkAssemblyReference AsReadOnly(string displayValue)
         {
             return new FrameworkAssemblyReference(AssemblyName, SupportedFrameworks, displayValue);
+        }
+
+        public string Error
+        {
+            get { return null; }
+        }
+
+        public string this[string columnName]
+        {
+            get
+            {
+                if (columnName == "AssemblyName")
+                {
+                    if (String.IsNullOrEmpty(AssemblyName))
+                    {
+                        return _supportedFrameworks == null ? (string)null : "Assembly name must not be empty.";
+                    }
+                }
+
+                return null;
+            }
         }
     }
 }

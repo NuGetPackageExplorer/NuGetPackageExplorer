@@ -206,8 +206,8 @@
                         <Image Style="{StaticResource ImageStyle}" Source="Images/properties.png"></Image>
                     </Button>
 
-                    <TextBox x:Name="NewDependencyId" Text="{Binding Id, BindingGroupName=NewPackageDependency}" Margin="2" Grid.Column="1" Grid.Row="2" />
-                    <TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, BindingGroupName=NewPackageDependency, Converter={StaticResource VersionSpecConverter}}" Margin="2" Grid.Column="2" Grid.Row="2" />
+                    <TextBox x:Name="NewDependencyId" Text="{Binding Id, BindingGroupName=NewPackageDependency, ValidatesOnDataErrors=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
+                    <TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, BindingGroupName=NewPackageDependency, ValidatesOnDataErrors=True, Converter={StaticResource VersionSpecConverter}}" Margin="2" Grid.Column="2" Grid.Row="2" />
 
                     <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency" Click="AddDependencyButtonClicked">
                         <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
@@ -235,14 +235,22 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
+                    <Validation.ErrorTemplate>
+                        <ControlTemplate></ControlTemplate>
+                    </Validation.ErrorTemplate>
+
+                    <Grid.BindingGroup>
+                        <BindingGroup x:Name="NewFrameworkAssembly" Name="NewFrameworkAssembly" NotifyOnValidationError="True" />
+                    </Grid.BindingGroup>
+
                     <TextBlock Grid.Column="0" Text="Assembly name" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,3" />
                     <TextBlock Grid.Column="1" Text="Supported frameworks" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,3" />
 
                     <ItemsControl x:Name="FrameworkAssembliesList" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemTemplate="{StaticResource FrameworkAssemblyTemplate}"></ItemsControl>
 
-                    <ComboBox x:Name="NewAssemblyName" Text="{Binding AssemblyName, BindingGroupName=NewFrameworkAssembly, NotifyOnValidationError=True}" Margin="2" IsEditable="true" IsReadOnly="False" Grid.Column="0" Grid.Row="2" />
+                    <ComboBox x:Name="NewAssemblyName" Text="{Binding AssemblyName, UpdateSourceTrigger=Explicit, BindingGroupName=NewFrameworkAssembly, NotifyOnValidationError=True, ValidatesOnDataErrors=True}" Margin="2" IsEditable="true" IsReadOnly="False" Grid.Column="0" Grid.Row="2" />
 
-                    <TextBox x:Name="NewSupportedFramework" Text="{Binding SupportedFrameworks, UpdateSourceTrigger=Explicit, Converter={StaticResource FrameworkNameConverter}, NotifyOnValidationError=True, BindingGroupName=NewFrameworkAssembly}" Margin="2" Grid.Column="1" Grid.Row="2" />
+                    <TextBox x:Name="NewSupportedFramework" Text="{Binding SupportedFrameworks, UpdateSourceTrigger=Explicit, BindingGroupName=NewFrameworkAssembly, Converter={StaticResource FrameworkNameConverter}, NotifyOnValidationError=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
 
                     <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="2" Grid.Row="2" ToolTipService.ToolTip="Add new framework assembly" Click="AddFrameworkAssemblyButtonClicked">
                         <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
