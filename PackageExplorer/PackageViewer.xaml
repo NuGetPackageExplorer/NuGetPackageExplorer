@@ -26,7 +26,11 @@
                 <Separator />
                 <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Re_place with..." Command="{Binding ReplaceCommand}" CommandParameter="{Binding}" />
-                <MenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
+                <self:GrayscaleMenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/Delete.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
 
                 <Separator />
                 <MenuItem Header="Add to Filtered Assembly References" Command="{Binding AddAsAssemblyReferenceCommand}" CommandParameter="{Binding}" />
@@ -61,7 +65,11 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
-                <MenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}" />
+                <self:GrayscaleMenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/Delete.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
             </ContextMenu>
 
             <DataTemplate x:Key="SimpleTextItemTemplate">

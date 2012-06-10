@@ -186,7 +186,11 @@
                     </self:GrayscaleMenuItem>
                 </MenuItem>
                 <MenuItem Header="_Rename..." Command="{Binding RenameContentCommand}" InputGestureText="F2" />
-                <MenuItem Header="_Delete..." Command="{Binding DeleteContentCommand}" InputGestureText="Delete" />
+                <self:GrayscaleMenuItem Header="_Delete..." Command="{Binding DeleteContentCommand}" InputGestureText="Delete">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/Delete.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
             </MenuItem>
 
             <MenuItem Header="_Tools" DisplayMemberPath="Metadata.Text" ItemContainerStyleSelector="{StaticResource PackageCommandItemStyleSelector}">
