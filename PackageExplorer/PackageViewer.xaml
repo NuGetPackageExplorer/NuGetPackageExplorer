@@ -277,13 +277,13 @@
                 </Grid.RowDefinitions>
 
                 <!-- Toolbar for package metadata pane --> 
-                <Border Grid.Row="0" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
+                <Border Grid.Row="0" Background="#BCC7D8" Padding="3" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
                     <StackPanel Orientation="Horizontal">
                         <Button 
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
                             Command="{Binding EditCommand, Mode=OneWay}" 
-                            Margin="2,1,1,2" 
-                            Padding="3"
+                            Margin="2,0,0,0" 
+                            Padding="1,0,0,0"
                             Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}}"
                             ToolTipService.ToolTip="Edit metadata">
                             <Image Source="Images/EditHS.png" />
@@ -291,8 +291,8 @@
 
                         <Button 
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                            Margin="2,1,1,2" 
-                            Padding="3" 
+                            Margin="2,0,0,0"
+                            Padding="0" 
                             ToolTipService.ToolTip="Save"
                             Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource boolToVis}}"
                             Command="{Binding ApplyEditCommand}">
@@ -301,8 +301,8 @@
                         
                         <Button 
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
-                            Margin="1,1,1,2" 
-                            Padding="3"
+                            Margin="1,0,0,0"
+                            Padding="0"
                             ToolTipService.ToolTip="Cancel"
                             Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource boolToVis}}"
                             Command="{Binding CancelEditCommand}">
