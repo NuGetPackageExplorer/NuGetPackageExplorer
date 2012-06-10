@@ -104,7 +104,7 @@
             </self:GrayscaleMenuItem>
 
             <self:GrayscaleMenuItem Header="_Edit" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
-                <self:GrayscaleMenuItem Header="Edit _Package Metadata" InputGestureText="Ctrl+K" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}">
+                <self:GrayscaleMenuItem Header="Edit _Metadata" InputGestureText="Ctrl+K" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}">
                     <self:GrayscaleMenuItem.Icon>
                         <self:GrayscaleImage Source="Images/EditHS.png" />
                     </self:GrayscaleMenuItem.Icon>
