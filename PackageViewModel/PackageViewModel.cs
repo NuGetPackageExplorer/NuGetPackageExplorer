@@ -1332,6 +1332,7 @@ namespace PackageExplorerViewModel
             ViewContentCommand.Execute(file);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.ConfirmCloseEditor(System.String,System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         internal bool SaveMetadataAfterEditSource(string editedFilePath)
         {
             if (!File.Exists(editedFilePath))

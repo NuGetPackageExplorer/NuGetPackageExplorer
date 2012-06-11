@@ -44,10 +44,5 @@ namespace PackageExplorerViewModel
         {
             return _packageViewModel.SaveMetadataAfterEditSource(editedFilePath);
         }
-
-        public bool AskToSaveOnClose
-        {
-            get { return false; }
-        }
     }
 }

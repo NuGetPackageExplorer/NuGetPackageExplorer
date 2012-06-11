@@ -197,10 +197,5 @@ namespace PackageExplorerViewModel
 
             return true;
         }
-
-        public bool AskToSaveOnClose
-        {
-            get { return true; }
-        }
     }
 }
