@@ -309,11 +309,19 @@ namespace PackageExplorerViewModel
         {
             if (_packageRepository == null)
             {
-                _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+                try
+                {
+                    _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+                }
+                catch (Exception)
+                {
+                    return null;
+                }
             }
 
             var token = (CancellationToken)state;
             token.ThrowIfCancellationRequested();
+
             return _packageRepository;
         }
 
@@ -497,14 +505,6 @@ namespace PackageExplorerViewModel
                                             ? query.OrderByDescending(p => p.Id).ThenByDescending(p => p.LastUpdated)
                                             : query.OrderBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
                                 break;
-
-                            //case "Authors":
-                            //    query = SortDirection == ListSortDirection.Descending
-                            //                ? query.OrderByDescending(p => p.Authors).ThenBy(p => p.Id).
-                            //                      ThenByDescending(p => p.LastUpdated)
-                            //                : query.OrderBy(p => p.Authors).ThenBy(p => p.Id).ThenByDescending(
-                            //                    p => p.LastUpdated);
-                            //    break;
 
                             case "VersionDownloadCount":
                                 query = SortDirection == ListSortDirection.Descending
