@@ -110,6 +110,13 @@
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
 
+                <self:GrayscaleMenuItem Header="Edit Metadata _Source" Command="{Binding EditMetadataSourceCommand, FallbackValue={StaticResource DisabledCommand}}">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleImage Source="Images/EditSource.png" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
+
+
                 <MenuItem Visibility="{Binding SelectedItem, Converter={StaticResource PackagePartConverter}, ConverterParameter=file, FallbackValue=Collapsed}" Command="{Binding EditFileCommand}" CommandParameter="{Binding SelectedItem, FallbackValue={x:Null}}">
                     <MenuItem.Header>
                         <TextBlock Text="{Binding SelectedItem.Name, Mode=OneWay, FallbackValue='', StringFormat='Edit \'{0}\'', Converter={StaticResource StringShorternerConverter}, ConverterParameter=35}" />

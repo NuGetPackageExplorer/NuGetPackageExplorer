@@ -8,15 +8,10 @@ using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {
-    public class PackageFile : PackagePart, IPackageFile
+    public class PackageFile : PackagePart, IPackageFile, IEditablePackageFile
     {
         private readonly IPackageFile _file;
         private FileSystemWatcher _watcher;
-
-        public PackageFile(IPackageFile file, string name, PackageViewModel viewModel)
-            : this(file, name, null, viewModel)
-        {
-        }
 
         public PackageFile(IPackageFile file, string name, PackageFolder parent)
             : this(file, name, parent, parent.PackageViewModel)
@@ -83,7 +78,11 @@ namespace PackageExplorerViewModel
             get { return PackageViewModel.EditFileCommand; }
         }
 
-        public RelayCommand ReplaceCommand { get; private set; }
+        public RelayCommand ReplaceCommand
+        {
+            get;
+            private set;
+        }
 
         #region IPackageFile Members
 
@@ -182,6 +181,26 @@ namespace PackageExplorerViewModel
                 _watcher = null;
             }
             base.Dispose(disposing);
+        }
+
+        public bool Save(string editedFilePath)
+        {
+            if (!String.Equals(OriginalPath, editedFilePath, StringComparison.OrdinalIgnoreCase))
+            {
+                ReplaceWith(editedFilePath);
+            }
+            else if (PackageViewModel.IsShowingFileContent(this))
+            {
+                // force a refresh to show new content
+                PackageViewModel.ShowFileContent(this);
+            }
+
+            return true;
+        }
+
+        public bool AskToSaveOnClose
+        {
+            get { return true; }
         }
     }
 }

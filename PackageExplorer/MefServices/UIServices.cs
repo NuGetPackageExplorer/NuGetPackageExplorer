@@ -1,4 +1,4 @@
-﻿    using System;
+﻿using System;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Runtime.CompilerServices;
@@ -125,7 +125,7 @@ namespace PackageExplorer
             }
         }
 
-        public bool? ConfirmWithCancel(string message, string title)
+        public bool? ConfirmWithCancel(string title, string message)
         {
             if (OSSupportsTaskDialogs)
             {
@@ -147,6 +147,24 @@ namespace PackageExplorer
                 {
                     return result == MessageBoxResult.Yes;
                 }
+            }
+        }
+
+        public bool ConfirmCloseEditor(string title, string message)
+        {
+            if (OSSupportsTaskDialogs)
+            {
+                return ConfirmCloseEditorUsingTaskDialog(title, message);
+            }
+            else
+            {
+                var result = MessageBox.Show(
+                    message,
+                    Resources.Resources.Dialog_Title,
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Error);
+
+                return result == MessageBoxResult.Yes;
             }
         }
 
@@ -277,7 +295,7 @@ namespace PackageExplorer
             }
             else
             {
-                bool? answer = ConfirmWithCancel(mainInstruction, Resources.Resources.Dialog_Title);
+                bool? answer = ConfirmWithCancel(Resources.Resources.Dialog_Title, mainInstruction);
                 return Tuple.Create(answer, false);
             }
         }
@@ -294,16 +312,20 @@ namespace PackageExplorer
                 dialog.Content = message;
                 dialog.AllowDialogCancellation = true;
                 dialog.CenterParent = true;
+                //dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
                 if (isWarning)
                 {
                     dialog.MainIcon = TaskDialogIcon.Warning;
                 }
 
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.Yes));
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
+                var yesButton = new TaskDialogButton("Yes");
+                var noButton = new TaskDialogButton("No");
+
+                dialog.Buttons.Add(yesButton);
+                dialog.Buttons.Add(noButton);
 
                 TaskDialogButton result = dialog.ShowDialog();
-                return result != null && result.ButtonType == ButtonType.Yes;
+                return result == yesButton;
             }
         }
 
@@ -318,29 +340,27 @@ namespace PackageExplorer
                 dialog.Content = message;
                 dialog.CenterParent = true;
                 dialog.MainIcon = TaskDialogIcon.Warning;
+                //dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
 
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.Yes));
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.No));
-                dialog.Buttons.Add(new TaskDialogButton(ButtonType.Cancel));
+                var yesButton = new TaskDialogButton("Yes");
+                var noButton = new TaskDialogButton("No");
+                var cancelButton = new TaskDialogButton("Cancel");
+
+                dialog.Buttons.Add(yesButton);
+                dialog.Buttons.Add(noButton);
+                dialog.Buttons.Add(cancelButton);
 
                 TaskDialogButton result = dialog.ShowDialog();
-
-                if (result == null)
-                {
-                    return null;
-                }
-                else if (result.ButtonType == ButtonType.Yes)
+                if (result == yesButton)
                 {
                     return true;
                 }
-                else if (result.ButtonType == ButtonType.No)
+                else if (result == noButton)
                 {
                     return false;
                 }
-                else
-                {
-                    return null;
-                }
+
+                return null;
             }
         }
 
@@ -404,6 +424,38 @@ namespace PackageExplorer
 
             bool remember = dialog.IsVerificationChecked;
             return Tuple.Create(movingFile, remember);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private bool ConfirmCloseEditorUsingTaskDialog(string title, string message)
+        {
+            using (var dialog = new TaskDialog())
+            {
+                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.MainInstruction = title;
+                dialog.Content = message;
+                dialog.AllowDialogCancellation = false;
+                dialog.CenterParent = true;
+                dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
+
+                var yesButton = new TaskDialogButton
+                                {
+                                    Text = "Yes",
+                                    CommandLinkNote = "Return to package view and lose all your changes."
+                                };
+
+                var noButton = new TaskDialogButton
+                               {
+                                   Text = "No",
+                                   CommandLinkNote = "Stay at the metadata editor and fix the error."
+                               };
+
+                dialog.Buttons.Add(yesButton);
+                dialog.Buttons.Add(noButton);
+
+                TaskDialogButton result = dialog.ShowDialog();
+                return result == yesButton;
+            }
         }
     }
 }

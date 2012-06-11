@@ -361,8 +361,7 @@ namespace PackageExplorer
             if (HasUnsavedChanges || (IsInEditFileMode && viewModel.FileEditorViewModel.HasEdit))
             {
                 // if there is unsaved changes, ask user for confirmation
-                bool? result = UIServices.ConfirmWithCancel(StringResources.Dialog_SaveQuestion,
-                                                            "You have unsaved changes in the current package.");
+                bool? result = UIServices.ConfirmWithCancel("You have unsaved changes in the current package.", StringResources.Dialog_SaveQuestion);
 
                 if (result == null)
                 {

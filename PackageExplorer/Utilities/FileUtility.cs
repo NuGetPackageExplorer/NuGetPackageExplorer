@@ -30,6 +30,10 @@ namespace PackageExplorer
                 name = Path.GetFileNameWithoutExtension(name);
                 extension = Path.GetExtension(name).ToUpperInvariant();
             }
+            else if (extension == ".NUSPEC")
+            {
+                extension = ".XML";
+            }
 
             return HighlightingManager.Instance.GetDefinitionByExtension(extension);
         }

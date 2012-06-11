@@ -22,7 +22,7 @@ namespace PackageExplorerViewModel
         private readonly IMruManager _mruManager;
         private readonly IPackage _package;
         private readonly ObservableCollection<PackageIssue> _packageIssues = new ObservableCollection<PackageIssue>();
-        private readonly EditablePackageMetadata _packageMetadata;
+        private EditablePackageMetadata _packageMetadata;
         private readonly PackageFolder _packageRoot;
         private readonly IList<Lazy<IPackageRule>> _packageRules;
         private readonly ISettingsManager _settingsManager;
@@ -40,6 +40,7 @@ namespace PackageExplorerViewModel
         private RelayCommand<object> _deleteContentCommand;
         private ICommand _editCommand;
         private ICommand _editFileCommand;
+        private ICommand _editMetadataSourceCommand;
         private ICommand _executePackageCommand;
         private RelayCommand _exportCommand;
         private FileEditorViewModel _fileEditorViewModel;
@@ -155,6 +156,14 @@ namespace PackageExplorerViewModel
         public EditablePackageMetadata PackageMetadata
         {
             get { return _packageMetadata; }
+            private set
+            {
+                if (_packageMetadata != value)
+                {
+                    _packageMetadata = value;
+                    OnPropertyChanged("PackageMetadata");
+                }
+            }
         }
 
         public bool ShowContentViewer
@@ -945,6 +954,43 @@ namespace PackageExplorerViewModel
 
         #endregion
 
+        #region EditMetadataSourceCommand
+
+        public ICommand EditMetadataSourceCommand
+        {
+            get
+            {
+                if (_editMetadataSourceCommand == null)
+                {
+                    _editMetadataSourceCommand = new RelayCommand(EditMetadataSourceCommandExecute, CanEditMetadataSourceCommandExecute);
+                }
+
+                return _editMetadataSourceCommand;
+            }
+        }
+
+        private void EditMetadataSourceCommandExecute()
+        {
+            FileEditorViewModel = new FileEditorViewModel(this, CreatePackageMetadataFile());
+        }
+
+        private bool CanEditMetadataSourceCommandExecute()
+        {
+            return !IsInEditFileMode && !IsInEditMetadataMode;
+        }
+
+        private IEditablePackageFile CreatePackageMetadataFile()
+        {
+            string packageName = PackageMetadata + NuGet.Constants.ManifestExtension;
+            string filePath = Path.GetTempFileName();
+            
+            ExportManifest(filePath, askForConfirmation: false);
+
+            return new PackageMetadataFile(packageName, filePath, this);
+        }
+
+        #endregion
+
         #region AddNewFileCommand
 
         public ICommand AddNewFileCommand
@@ -1077,10 +1123,8 @@ namespace PackageExplorerViewModel
             {
                 return File.OpenRead(tempFile);
             }
-            else
-            {
-                return null;
-            }
+
+            return null;
         }
 
         public void BeginEdit()
@@ -1142,9 +1186,9 @@ namespace PackageExplorerViewModel
             ExportManifest(Path.Combine(rootPath, PackageMetadata + ".nuspec"));
         }
 
-        internal void ExportManifest(string fullpath)
+        internal void ExportManifest(string fullpath, bool askForConfirmation = true)
         {
-            if (File.Exists(fullpath))
+            if (File.Exists(fullpath) && askForConfirmation)
             {
                 bool confirmed = UIServices.Confirm(
                     Resources.ConfirmToReplaceFile_Title,
@@ -1286,6 +1330,37 @@ namespace PackageExplorerViewModel
         internal void ShowFileContent(PackageFile file)
         {
             ViewContentCommand.Execute(file);
+        }
+
+        internal bool SaveMetadataAfterEditSource(string editedFilePath)
+        {
+            if (!File.Exists(editedFilePath))
+            {
+                return true;
+            }
+
+            using (Stream metadataFileStream = File.OpenRead(editedFilePath))
+            {
+                try
+                {
+                    Manifest manifest = Manifest.ReadFrom(metadataFileStream);
+                    var newMetadata = new EditablePackageMetadata(manifest.Metadata);
+                    PackageMetadata = newMetadata;
+
+                    return true;
+                }
+                catch (Exception exception)
+                {
+                    bool confirmExit = UIServices.ConfirmCloseEditor(
+                        "There is an error in the metadata source.", 
+                        exception.GetBaseException().Message + 
+                        Environment.NewLine +
+                        Environment.NewLine +
+                        "Do you want to cancel your changes and return?");
+
+                    return confirmExit;
+                }
+            }
         }
     }
 }

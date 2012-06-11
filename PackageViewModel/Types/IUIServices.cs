@@ -25,11 +25,13 @@ namespace NuGetPackageExplorer.Types
 
         bool Confirm(string title, string message);
         bool Confirm(string title, string message, bool isWarning);
-        bool? ConfirmWithCancel(string message, string title);
+        bool? ConfirmWithCancel(string title, string message);
         void Show(string message, MessageLevel messageLevel);
 
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft);
+
+        bool ConfirmCloseEditor(string title, string message);
 
         void BeginInvoke(Action action);
     }
