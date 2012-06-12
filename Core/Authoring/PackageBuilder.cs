@@ -235,7 +235,10 @@ namespace NuGet
 
             Dependencies.AddRange(metadata.Dependencies);
             FrameworkReferences.AddRange(metadata.FrameworkAssemblies);
-            PackageAssemblyReferences.AddRange(manifest.Metadata.References.Select(r => new AssemblyReference(r.File)));
+            if (metadata.References != null)
+            {
+                PackageAssemblyReferences.AddRange(metadata.References.Select(r => new AssemblyReference(r.File)));
+            }
 
             // If there's no base path then ignore the files node
             if (basePath != null)
