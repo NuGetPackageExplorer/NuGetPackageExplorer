@@ -86,13 +86,8 @@ namespace NuGet
             IEnumerable<string> files = Directory.EnumerateFiles(basePathToEnumerate, "*.*", searchOption);
             return from file in files
                    where searchRegex.IsMatch(file)
-                   select new PhysicalPackageFile(isTempFile: false)
-                          {
-                              SourcePath = file,
-                              TargetPath =
-                                  ResolvePackagePath(basePathToEnumerate, searchPath, file,
-                                                     targetPath)
-                          };
+                   let targetPathInPackage = ResolvePackagePath(basePathToEnumerate, searchPath, file, targetPath)
+                   select new PhysicalPackageFile(isTempFile: false, originalPath: file, targetPath: targetPathInPackage);
         }
 
         internal static string GetPathToEnumerateFrom(string basePath, string searchPath)

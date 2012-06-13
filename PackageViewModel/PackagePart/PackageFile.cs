@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Runtime.Versioning;
 using System.Windows.Input;
 using NuGet;
 using NuGetPackageExplorer.Types;
@@ -36,17 +37,41 @@ namespace PackageExplorerViewModel
             ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsInEditFileMode);
         }
 
+        #region IPackageFile members
+
         /// <summary>
-        /// Returns the path on this if this file is a PhysicalPackageFile. Otherwise, returns null;
+        /// Returns the path on disk if this file is a PhysicalPackageFile. Otherwise, returns null;
         /// </summary>
         public string OriginalPath
         {
             get
             {
                 var physicalFile = _file as PhysicalPackageFile;
-                return (physicalFile != null && !physicalFile.IsTempFile) ? physicalFile.SourcePath : null;
+                return (physicalFile != null && !physicalFile.IsTempFile) ? physicalFile.OriginalPath : null;
             }
         }
+
+        public string EffectivePath
+        {
+            get { return _file.EffectivePath; }
+        }
+
+        public FrameworkName TargetFramework
+        {
+            get { return _file.TargetFramework; }
+        }
+
+        public IEnumerable<FrameworkName> SupportedFrameworks
+        {
+            get { return _file.SupportedFrameworks; }
+        }
+
+        public Stream GetStream()
+        {
+            return _file.GetStream();
+        }
+
+        #endregion
 
         public ICommand ViewCommand
         {
@@ -84,19 +109,10 @@ namespace PackageExplorerViewModel
             private set;
         }
 
-        #region IPackageFile Members
-
-        public Stream GetStream()
-        {
-            return _file.GetStream();
-        }
-
-        #endregion
-
         private void WatchPhysicalFile(PhysicalPackageFile physicalFile)
         {
-            string folderPath = System.IO.Path.GetDirectoryName(physicalFile.SourcePath);
-            string fileName = System.IO.Path.GetFileName(physicalFile.SourcePath);
+            string folderPath = System.IO.Path.GetDirectoryName(physicalFile.OriginalPath);
+            string fileName = System.IO.Path.GetFileName(physicalFile.OriginalPath);
 
             _watcher = new FileSystemWatcher(folderPath, fileName)
                        {
@@ -130,7 +146,7 @@ namespace PackageExplorerViewModel
             Delete(false);
         }
 
-        public override IEnumerable<PackageFile> GetFiles()
+        public override IEnumerable<IPackageFile> GetFiles()
         {
             yield return this;
         }
@@ -171,18 +187,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (_watcher != null)
-            {
-                _watcher.Deleted -= OnFileDeleted;
-                _watcher.Renamed -= OnFileDeleted;
-                _watcher.Dispose();
-                _watcher = null;
-            }
-            base.Dispose(disposing);
-        }
-
         public bool Save(string editedFilePath)
         {
             if (!String.Equals(OriginalPath, editedFilePath, StringComparison.OrdinalIgnoreCase))
@@ -196,6 +200,18 @@ namespace PackageExplorerViewModel
             }
 
             return true;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (_watcher != null)
+            {
+                _watcher.Deleted -= OnFileDeleted;
+                _watcher.Renamed -= OnFileDeleted;
+                _watcher.Dispose();
+                _watcher = null;
+            }
+            base.Dispose(disposing);
         }
     }
 }

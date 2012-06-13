@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="nuspec"
+    targetNamespace="{0}"
+    elementFormDefault="qualified"
+    xmlns="{0}"
+    xmlns:mstns="{0}"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+    <xs:complexType name="dependency">
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attribute name="version" type="xs:string" use="optional" />
+    </xs:complexType>
 
-<xs:schema id="nuspec" targetNamespace="{0}" elementFormDefault="qualified" xmlns="{0}" xmlns:mstns="{0}" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:complexType name="dependencyGroup">
+        <xs:sequence>
+            <xs:element name="dependency" minOccurs="0" maxOccurs="unbounded" type="dependency">
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="targetFramework" type="xs:string" use="optional" />
+    </xs:complexType>
+    
     <xs:element name="package">
         <xs:complexType>
             <xs:sequence>
@@ -25,12 +43,10 @@
                             <xs:element name="dependencies" maxOccurs="1" minOccurs="0">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="dependency" minOccurs="0" maxOccurs="unbounded">
-                                            <xs:complexType>
-                                                <xs:attribute name="id" type="xs:string" use="required" />
-                                                <xs:attribute name="version" type="xs:string" use="optional" />
-                                            </xs:complexType>
-                                        </xs:element>
+                                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                            <xs:element name="dependency" type="dependency" />
+                                            <xs:element name="group" type="dependencyGroup" />
+                                        </xs:choice>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>

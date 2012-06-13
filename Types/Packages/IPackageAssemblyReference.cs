@@ -2,10 +2,8 @@ using System.Runtime.Versioning;
 
 namespace NuGet
 {
-    public interface IPackageAssemblyReference : IPackageFile, IFrameworkTargetable
+    public interface IPackageAssemblyReference : IPackageFile
     {
-        FrameworkName TargetFramework { get; }
-
         string Name { get; }
     }
 }

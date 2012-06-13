@@ -53,10 +53,20 @@ namespace NuGet
 
         public void Save(Stream stream)
         {
-            Save(stream, validate: true);
+            Save(stream, validate: true, minimumManifestVersion: 1);
         }
 
-        public void Save(Stream stream, bool validate)
+        /// <summary>
+        /// Saves the current manifest to the specified stream.
+        /// </summary>
+        /// <param name="stream">The target stream.</param>
+        /// <param name="minimumManifestVersion">The minimum manifest version that this class must use when saving.</param>
+        public void Save(Stream stream, int minimumManifestVersion)
+        {
+            Save(stream, validate: true, minimumManifestVersion: minimumManifestVersion);
+        }
+
+        public void Save(Stream stream, bool validate, int minimumManifestVersion)
         {
             if (validate)
             {
@@ -64,7 +74,7 @@ namespace NuGet
                 Validate(this);
             }
 
-            int version = ManifestVersionUtility.GetManifestVersion(Metadata);
+            int version = Math.Max(minimumManifestVersion, ManifestVersionUtility.GetManifestVersion(Metadata));
             string schemaNamespace = ManifestSchemaUtility.GetSchemaNamespace(version);
 
             // Define the namespaces to use when serializing

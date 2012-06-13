@@ -76,6 +76,45 @@ namespace NuGet
             return null;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "1#")]
+        public static FrameworkName ParseFrameworkNameFromFilePath(string filePath, out string effectivePath)
+        {
+            var knownFolders = new string[] 
+            { 
+                Constants.ContentDirectory,
+                Constants.LibDirectory,
+                Constants.ToolsDirectory
+            };
+
+            for (int i = 0; i < knownFolders.Length; i++)
+            {
+                string folderPrefix = knownFolders[i] + System.IO.Path.DirectorySeparatorChar;
+                if (filePath.Length > folderPrefix.Length &&
+                    filePath.StartsWith(folderPrefix, StringComparison.OrdinalIgnoreCase))
+                {
+                    string frameworkPart = filePath.Substring(folderPrefix.Length);
+
+                    try
+                    {
+                        return VersionUtility.ParseFrameworkFolderName(
+                            frameworkPart,
+                            strictParsing: knownFolders[i] != Constants.ContentDirectory,
+                            effectivePath: out effectivePath);
+                    }
+                    catch (ArgumentException)
+                    {
+                        // if the parsing fails, we treat it as if this file
+                        // doesn't have target framework.
+                        effectivePath = frameworkPart;
+                        return null;
+                    }
+                }
+            }
+
+            effectivePath = filePath;
+            return null;
+        }
+
         /// <summary>
         /// This function tries to normalize a string that represents framework version names into
         /// something a framework name that the package manager understands.
@@ -178,7 +217,6 @@ namespace NuGet
 
             return new FrameworkName(identifierPart, version, profilePart);
         }
-
 
         /// <summary>
         /// The version string is either a simple version or an arithmetic range
@@ -318,7 +356,21 @@ namespace NuGet
             return name + "-" + frameworkName.Profile;
         }
 
-        internal static FrameworkName ParseFrameworkFolderName(string path)
+        public static FrameworkName ParseFrameworkFolderName(string path)
+        {
+            string effectivePath;
+            return ParseFrameworkFolderName(path, strictParsing: true, effectivePath: out effectivePath);
+        }
+
+        /// <summary>
+        /// Parses the specified string into FrameworkName object.
+        /// </summary>
+        /// <param name="path">The string to be parse.</param>
+        /// <param name="strictParsing">if set to <c>true</c>, parse the first folder of path even if it is unrecognized framework.</param>
+        /// <param name="effectivePath">returns the path after the parsed target framework</param>
+        /// <returns></returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "2#")]
+        public static FrameworkName ParseFrameworkFolderName(string path, bool strictParsing, out string effectivePath)
         {
             // The path for a reference might look like this for assembly foo.dll:            
             // foo.dll
@@ -328,12 +380,21 @@ namespace NuGet
             // {FrameworkName}{Version}\sub1\sub2\foo.dll
 
             // Get the target framework string if specified
-            string targetFrameworkString =
-                Path.GetDirectoryName(path).Split(Path.DirectorySeparatorChar).FirstOrDefault();
+            string targetFrameworkString = Path.GetDirectoryName(path).Split(Path.DirectorySeparatorChar).First();
 
-            if (!String.IsNullOrEmpty(targetFrameworkString))
+            effectivePath = path;
+
+            if (String.IsNullOrEmpty(targetFrameworkString))
             {
-                return ParseFrameworkName(targetFrameworkString);
+                return null;
+            }
+
+            var targetFramework = ParseFrameworkName(targetFrameworkString);
+            if (strictParsing || targetFramework != UnsupportedFrameworkName)
+            {
+                // skip past the framework folder and the character \
+                effectivePath = path.Substring(targetFrameworkString.Length + 1);
+                return targetFramework;
             }
 
             return null;

@@ -15,13 +15,11 @@ namespace NuGet
     {
         private string _owners;
 
-        [Required(ErrorMessageResourceType = typeof(NuGetResources),
-            ErrorMessageResourceName = "Manifest_RequiredMetadataMissing")]
+        [Required(ErrorMessageResourceType = typeof(NuGetResources), ErrorMessageResourceName = "Manifest_RequiredMetadataMissing")]
         [XmlElement("version")]
         public string Version { get; set; }
 
-        [Required(ErrorMessageResourceType = typeof(NuGetResources),
-            ErrorMessageResourceName = "Manifest_RequiredMetadataMissing")]
+        [Required(ErrorMessageResourceType = typeof(NuGetResources), ErrorMessageResourceName = "Manifest_RequiredMetadataMissing")]
         [XmlElement("authors")]
         public string Authors { get; set; }
 
@@ -36,42 +34,33 @@ namespace NuGet
             set { _owners = value; }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings",
-            Justification = "Xml deserialziation can't handle uris")]
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Xml deserialziation can't handle uris")]
         [XmlElement("licenseUrl")]
         public string LicenseUrl { get; set; }
 
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings",
-            Justification = "Xml deserialziation can't handle uris")]
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Xml deserialziation can't handle uris")]
         [XmlElement("projectUrl")]
         public string ProjectUrl { get; set; }
 
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings",
-            Justification = "Xml deserialziation can't handle uris")]
+        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Xml deserialziation can't handle uris")]
         [XmlElement("iconUrl")]
         public string IconUrl { get; set; }
 
-        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists",
-            Justification = "It's easier to create a list")]
-        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly",
-            Justification = "This is needed for xml serialization")]
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "It's easier to create a list")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is needed for xml serialization")]
         [XmlArray("dependencies")]
         [XmlArrayItem("dependency")]
         public List<ManifestDependency> Dependencies { get; set; }
 
-        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists",
-            Justification = "It's easier to create a list")]
-        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly",
-            Justification = "This is needed for xml serialization")]
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "It's easier to create a list")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is needed for xml serialization")]
         [XmlArray("references")]
         [XmlArrayItem("reference")]
         [ManifestVersion(2)]
         public List<ManifestReference> References { get; set; }
 
-        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists",
-            Justification = "It's easier to create a list")]
-        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly",
-            Justification = "This is needed for xml serialization")]
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists", Justification = "It's easier to create a list")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly", Justification = "This is needed for xml serialization")]
         [XmlArray("frameworkAssemblies")]
         [XmlArrayItem("frameworkAssembly")]
         public List<ManifestFrameworkAssembly> FrameworkAssemblies { get; set; }

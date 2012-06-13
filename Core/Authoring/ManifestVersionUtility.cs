@@ -8,8 +8,9 @@ namespace NuGet
 {
     internal class ManifestVersionUtility
     {
-        private const int DefaultVersion = 1;
-        private const int SemverVersion = 3;
+        public const int DefaultVersion = 1;
+        public const int SemverVersion = 3;
+        public const int TargetFrameworkSupportVersion = 4;
 
         private static readonly Type[] _xmlAttributes = new[]
                                                         {

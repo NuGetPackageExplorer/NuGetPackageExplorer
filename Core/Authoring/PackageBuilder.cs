@@ -128,10 +128,15 @@ namespace NuGet
             ValidateDependencies(Version, Dependencies);
             ValidateReferenceAssemblies(Files, PackageAssemblyReferences);
 
+            bool requiresNewTargetFrameworkSchema = RequiresNewTargetFrameworkSchema(Files);
+
             using (Package package = Package.Open(stream, FileMode.Create))
             {
                 // Validate and write the manifest
-                WriteManifest(package);
+                WriteManifest(package,
+                    requiresNewTargetFrameworkSchema ?
+                        ManifestVersionUtility.TargetFrameworkSupportVersion :
+                        ManifestVersionUtility.DefaultVersion);
 
                 // Write the files to the package
                 WriteFiles(package);
@@ -146,6 +151,28 @@ namespace NuGet
                 package.PackageProperties.Title = Title;
                 package.PackageProperties.Subject = "NuGet Package Explorer";
             }
+        }
+
+        private static bool RequiresNewTargetFrameworkSchema(ICollection<IPackageFile> files)
+        {
+            // check if any file under Content or Tools has TargetFramework defined
+            bool hasContentOrTool = files.Any(
+                f => f.TargetFramework != null &&
+                     (f.Path.StartsWith(Constants.ContentDirectory + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) ||
+                      f.Path.StartsWith(Constants.ToolsDirectory + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)));
+
+            if (hasContentOrTool)
+            {
+                return true;
+            }
+
+            // now check if the Lib folder has any empty framework folder
+            bool hasEmptyLibFolder = files.Any(
+                f => f.TargetFramework != null &&
+                     f.Path.StartsWith(Constants.LibDirectory + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) &&
+                     f.EffectivePath == Constants.PackageEmptyFileName);
+
+            return hasEmptyLibFolder;
         }
 
         #endregion
@@ -257,7 +284,7 @@ namespace NuGet
             }
         }
 
-        private void WriteManifest(Package package)
+        private void WriteManifest(Package package, int minimumManifestVersion)
         {
             Uri uri = UriUtility.CreatePartUri(Id + Constants.ManifestExtension);
 
@@ -276,7 +303,7 @@ namespace NuGet
                     manifest.Metadata.References = new List<ManifestReference>(
                         PackageAssemblyReferences.Select(reference => new ManifestReference {File = reference.File}));
                 }
-                manifest.Save(stream);
+                manifest.Save(stream, minimumManifestVersion);
             }
         }
 
@@ -319,7 +346,7 @@ namespace NuGet
             foreach (string item in exclusions)
             {
                 string wildCard = PathResolver.NormalizeWildcard(basePath, item);
-                PathResolver.FilterPackageFiles(searchFiles, p => p.SourcePath, new[] {wildCard});
+                PathResolver.FilterPackageFiles(searchFiles, p => p.OriginalPath, new[] {wildCard});
             }
         }
 

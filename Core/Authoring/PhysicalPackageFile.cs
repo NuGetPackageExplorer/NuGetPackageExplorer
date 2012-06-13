@@ -2,13 +2,16 @@ using System.IO;
 
 namespace NuGet
 {
-    public sealed class PhysicalPackageFile : IPackageFile
+    public sealed class PhysicalPackageFile : PackageFileBase
     {
         private readonly bool _isTempFile;
+        private readonly string _originalPath;
 
-        public PhysicalPackageFile(bool isTempFile)
+        public PhysicalPackageFile(bool isTempFile, string originalPath, string targetPath)
+            : base(targetPath)
         {
             _isTempFile = isTempFile;
+            _originalPath = originalPath;
         }
 
         public bool IsTempFile
@@ -22,30 +25,22 @@ namespace NuGet
         /// <summary>
         /// Path on disk
         /// </summary>
-        public string SourcePath { get; set; }
-
-        /// <summary>
-        /// Path in package
-        /// </summary>
-        public string TargetPath { get; set; }
-
-        #region IPackageFile Members
-
-        string IPackageFile.Path
+        public override string OriginalPath 
         {
-            get { return TargetPath; }
+            get
+            {
+                return _originalPath;
+            }
         }
-
-        public Stream GetStream()
+       
+        public override Stream GetStream()
         {
-            return File.OpenRead(SourcePath);
+            return File.OpenRead(_originalPath);
         }
-
-        #endregion
 
         public override string ToString()
         {
-            return TargetPath;
+            return Path;
         }
     }
 }

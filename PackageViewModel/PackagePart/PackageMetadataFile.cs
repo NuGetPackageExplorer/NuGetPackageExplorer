@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Runtime.Versioning;
 
 namespace PackageExplorerViewModel
 {
@@ -43,6 +45,21 @@ namespace PackageExplorerViewModel
         public bool Save(string editedFilePath)
         {
             return _packageViewModel.SaveMetadataAfterEditSource(editedFilePath);
+        }
+
+        public string EffectivePath
+        {
+            get { return _name; }
+        }
+
+        public FrameworkName TargetFramework
+        {
+            get { return null; }
+        }
+
+        public IEnumerable<FrameworkName> SupportedFrameworks
+        {
+            get { return new FrameworkName[0]; }
         }
     }
 }

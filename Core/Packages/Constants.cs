@@ -10,6 +10,11 @@ namespace NuGet
         public static readonly string PackageExtension = ".nupkg";
         public static readonly string ManifestExtension = ".nuspec";
         public static readonly string ContentDirectory = "content";
+        public static readonly string LibDirectory = "lib";
+        public static readonly string ToolsDirectory = "tools";
+
+        // Starting from nuget 2.0, we use a file with the special name '_._' to represent an empty folder.
+        public const string PackageEmptyFileName = "_._";
 
         // This is temporary until we fix the gallery to have proper first class support for this.
         // The magic unpublished date is 1900-01-01T00:00:00

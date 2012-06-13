@@ -1109,7 +1109,7 @@ namespace PackageExplorerViewModel
         }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        internal IEnumerable<PackageFile> GetFiles()
+        internal IEnumerable<IPackageFile> GetFiles()
         {
             return _packageRoot.GetFiles();
         }

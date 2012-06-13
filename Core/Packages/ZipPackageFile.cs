@@ -2,15 +2,16 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Packaging;
+using System.Runtime.Versioning;
 
 namespace NuGet
 {
-    internal class ZipPackageFile : IPackageFile
+    internal class ZipPackageFile : PackageFileBase
     {
-        private readonly string _path;
         private readonly Func<MemoryStream> _streamFactory;
 
-        public ZipPackageFile(PackagePart part)
+        public ZipPackageFile(PackagePart part) 
+            : base(UriUtility.GetPath(part.Uri))
         {
             Debug.Assert(part != null, "part should not be null");
 
@@ -23,23 +24,13 @@ namespace NuGet
                     buffer = stream.ToArray();
                 }
             }
-            _path = UriUtility.GetPath(part.Uri);
             _streamFactory = () => new MemoryStream(buffer);
         }
 
-        #region IPackageFile Members
-
-        public string Path
-        {
-            get { return _path; }
-        }
-
-        public Stream GetStream()
+        public override Stream GetStream()
         {
             return _streamFactory();
         }
-
-        #endregion
 
         public override string ToString()
         {
