@@ -174,7 +174,7 @@
                         <!-- Dependencies list -->
                         <TextBlock Text="{x:Static resources:Resources.Dialog_DependenciesLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                        <ItemsControl x:Name="DependencyItems" Margin="25,5,0,0" ItemsSource="{Binding Dependencies}">
+                        <ItemsControl x:Name="DependencyItems" Margin="25,5,0,0" ItemsSource="{Binding DependencySets}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock ToolTip="Open this package from online feed.">

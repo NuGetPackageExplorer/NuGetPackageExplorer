@@ -140,16 +140,11 @@ namespace NuGet
                                       Id = metadata.Id.SafeTrim(),
                                       Version = metadata.Version.ToStringSafe(),
                                       Title = metadata.Title.SafeTrim(),
-                                      Authors =
-                                          GetCommaSeparatedString(metadata.Authors),
-                                      Owners =
-                                          GetCommaSeparatedString(metadata.Owners) ??
-                                          GetCommaSeparatedString(metadata.Authors),
-                                      Tags =
-                                          String.IsNullOrEmpty(metadata.Tags)
-                                              ? null
-                                              : metadata.Tags.SafeTrim(),
-                                      LicenseUrl =
+                                      Authors = GetCommaSeparatedString(metadata.Authors),
+                                      Owners = GetCommaSeparatedString(metadata.Owners) ??
+                                               GetCommaSeparatedString(metadata.Authors),
+                                      Tags = String.IsNullOrEmpty(metadata.Tags) ? null : metadata.Tags.SafeTrim(),
+                                      LicenseUrl = 
                                           metadata.LicenseUrl != null
                                               ? metadata.LicenseUrl.OriginalString.
                                                     SafeTrim()
@@ -164,32 +159,47 @@ namespace NuGet
                                               ? metadata.IconUrl.OriginalString.
                                                     SafeTrim()
                                               : null,
-                                      RequireLicenseAcceptance =
-                                          metadata.RequireLicenseAcceptance,
+                                      RequireLicenseAcceptance = metadata.RequireLicenseAcceptance,
                                       Description = metadata.Description.SafeTrim(),
                                       Copyright = metadata.Copyright.SafeTrim(),
                                       Summary = metadata.Summary.SafeTrim(),
                                       ReleaseNotes = metadata.ReleaseNotes.SafeTrim(),
                                       Language = metadata.Language.SafeTrim(),
-                                      Dependencies = CreateDependencies(metadata),
-                                      FrameworkAssemblies =
-                                          CreateFrameworkAssemblies(metadata),
+                                      DependencySets = CreateDependencySet(metadata),
+                                      FrameworkAssemblies = CreateFrameworkAssemblies(metadata),
                                       References = CreateReferences(metadata)
                                   }
                    };
         }
 
-        private static List<ManifestDependency> CreateDependencies(IPackageMetadata metadata)
+        private static List<ManifestDependencySet> CreateDependencySet(IPackageMetadata metadata)
         {
-            return metadata.Dependencies == null ||
-                   !metadata.Dependencies.Any()
-                       ? null
-                       : (from d in metadata.Dependencies
-                          select new ManifestDependency
-                                 {
-                                     Id = d.Id.SafeTrim(),
-                                     Version = d.VersionSpec.ToStringSafe()
-                                 }).ToList();
+            if (metadata.DependencySets == null)
+            {
+                return null;
+            }
+
+            return (from dependencySet in metadata.DependencySets
+                    select new ManifestDependencySet
+                    {
+                        TargetFramework = dependencySet.TargetFramework != null ? VersionUtility.GetFrameworkString(dependencySet.TargetFramework) : null,
+                        Dependencies = CreateDependencies(dependencySet.Dependencies)
+                    }).ToList();
+        }
+
+        private static List<ManifestDependency> CreateDependencies(ICollection<PackageDependency> dependencies)
+        {
+            if (dependencies == null)
+            {
+                return new List<ManifestDependency>(0);
+            }
+
+            return (from dependency in dependencies
+                    select new ManifestDependency
+                    {
+                        Id = dependency.Id.SafeTrim(),
+                        Version = dependency.VersionSpec.ToStringSafe()
+                    }).ToList();
         }
 
         private static List<ManifestFrameworkAssembly> CreateFrameworkAssemblies(IPackageMetadata metadata)
@@ -310,7 +320,10 @@ namespace NuGet
             // Run all data annotations validations
             TryValidate(manifest.Metadata, results);
             TryValidate(manifest.Files, results);
-            TryValidate(manifest.Metadata.Dependencies, results);
+            if (manifest.Metadata.DependencySets != null)
+            {
+                TryValidate(manifest.Metadata.DependencySets.SelectMany(d => d.Dependencies), results);
+            }
             TryValidate(manifest.Metadata.References, results);
 
             if (results.Any())
@@ -319,25 +332,26 @@ namespace NuGet
                 throw new ValidationException(message);
             }
 
-            // Validate additonal dependency rules dependencies
-            ValidateDependencies(manifest.Metadata);
+            // Validate additional dependency rules dependencies
+            ValidateDependencySets(manifest.Metadata);
         }
 
-        private static void ValidateDependencies(IPackageMetadata metadata)
+        private static void ValidateDependencySets(IPackageMetadata metadata)
         {
-            var dependencySet = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (PackageDependency dependency in metadata.Dependencies)
+            foreach (var dependencySet in metadata.DependencySets)
             {
-                // Throw an error if this dependency has been defined more than once
-                if (!dependencySet.Add(dependency.Id))
+                var dependencyHash = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var dependency in dependencySet.Dependencies)
                 {
-                    throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                                                                      NuGetResources.DuplicateDependenciesDefined,
-                                                                      metadata.Id, dependency.Id));
-                }
+                    // Throw an error if this dependency has been defined more than once
+                    if (!dependencyHash.Add(dependency.Id))
+                    {
+                        throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, NuGetResources.DuplicateDependenciesDefined, metadata.Id, dependency.Id));
+                    }
 
-                // Validate the dependency version
-                ValidateDependencyVersion(dependency);
+                    // Validate the dependency version
+                    ValidateDependencyVersion(dependency);
+                }
             }
         }
 
@@ -348,20 +362,17 @@ namespace NuGet
                 if (dependency.VersionSpec.MinVersion != null &&
                     dependency.VersionSpec.MaxVersion != null)
                 {
+
                     if ((!dependency.VersionSpec.IsMaxInclusive ||
                          !dependency.VersionSpec.IsMinInclusive) &&
                         dependency.VersionSpec.MaxVersion == dependency.VersionSpec.MinVersion)
                     {
-                        throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                                                                          NuGetResources.DependencyHasInvalidVersion,
-                                                                          dependency.Id));
+                        throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, NuGetResources.DependencyHasInvalidVersion, dependency.Id));
                     }
 
                     if (dependency.VersionSpec.MaxVersion < dependency.VersionSpec.MinVersion)
                     {
-                        throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                                                                          NuGetResources.DependencyHasInvalidVersion,
-                                                                          dependency.Id));
+                        throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, NuGetResources.DependencyHasInvalidVersion, dependency.Id));
                     }
                 }
             }

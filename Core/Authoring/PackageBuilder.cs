@@ -38,7 +38,7 @@ namespace NuGet
         public PackageBuilder()
         {
             Files = new Collection<IPackageFile>();
-            Dependencies = new Collection<PackageDependency>();
+            DependencySets = new Collection<PackageDependencySet>();
             FrameworkReferences = new Collection<FrameworkAssemblyReference>();
             PackageAssemblyReferences = new Collection<AssemblyReference>();
             Authors = new HashSet<string>();
@@ -51,7 +51,6 @@ namespace NuGet
         public ISet<string> Owners { get; private set; }
         public ISet<string> Tags { get; private set; }
 
-        public Collection<PackageDependency> Dependencies { get; private set; }
         public Collection<AssemblyReference> PackageAssemblyReferences { get; private set; }
 
         public Collection<FrameworkAssemblyReference> FrameworkReferences { get; private set; }
@@ -82,7 +81,17 @@ namespace NuGet
 
         public string Language { get; set; }
 
-        public Collection<IPackageFile> Files { get; private set; }
+        public Collection<PackageDependencySet> DependencySets
+        {
+            get;
+            private set;
+        }
+
+        public Collection<IPackageFile> Files 
+        { 
+            get; 
+            private set; 
+        }
 
         IEnumerable<string> IPackageMetadata.Authors
         {
@@ -104,9 +113,12 @@ namespace NuGet
             get { return PackageAssemblyReferences; }
         }
 
-        IEnumerable<PackageDependency> IPackageMetadata.Dependencies
+        IEnumerable<PackageDependencySet> IPackageMetadata.DependencySets
         {
-            get { return Dependencies; }
+            get
+            {
+                return DependencySets;
+            }
         }
 
         IEnumerable<FrameworkAssemblyReference> IPackageMetadata.FrameworkAssemblies
@@ -120,21 +132,21 @@ namespace NuGet
             PackageIdValidator.ValidatePackageId(Id);
 
             // Throw if the package doesn't contain any dependencies nor content
-            if (!Files.Any() && !Dependencies.Any() && !FrameworkReferences.Any())
+            if (!Files.Any() && !DependencySets.Any() && !FrameworkReferences.Any())
             {
                 throw new InvalidOperationException(NuGetResources.CannotCreateEmptyPackage);
             }
 
-            ValidateDependencies(Version, Dependencies);
+            ValidateDependencySets(Version, DependencySets);
             ValidateReferenceAssemblies(Files, PackageAssemblyReferences);
 
-            bool requiresNewTargetFrameworkSchema = RequiresNewTargetFrameworkSchema(Files);
+            bool requiresV4TargetFrameworkSchema = RequiresV4TargetFrameworkSchema(Files);
 
             using (Package package = Package.Open(stream, FileMode.Create))
             {
                 // Validate and write the manifest
                 WriteManifest(package,
-                    requiresNewTargetFrameworkSchema ?
+                    requiresV4TargetFrameworkSchema ?
                         ManifestVersionUtility.TargetFrameworkSupportVersion :
                         ManifestVersionUtility.DefaultVersion);
 
@@ -153,7 +165,7 @@ namespace NuGet
             }
         }
 
-        private static bool RequiresNewTargetFrameworkSchema(ICollection<IPackageFile> files)
+        private static bool RequiresV4TargetFrameworkSchema(ICollection<IPackageFile> files)
         {
             // check if any file under Content or Tools has TargetFramework defined
             bool hasContentOrTool = files.Any(
@@ -177,7 +189,7 @@ namespace NuGet
 
         #endregion
 
-        internal static void ValidateDependencies(SemanticVersion version, IEnumerable<PackageDependency> dependencies)
+        internal static void ValidateDependencySets(SemanticVersion version, IEnumerable<PackageDependencySet> dependencies)
         {
             if (version == null)
             {
@@ -188,12 +200,10 @@ namespace NuGet
             if (String.IsNullOrEmpty(version.SpecialVersion))
             {
                 // If we are creating a production package, do not allow any of the dependencies to be a prerelease version.
-                PackageDependency prereleaseDependency = dependencies.FirstOrDefault(IsPrereleaseDependency);
+                var prereleaseDependency = dependencies.SelectMany(set => set.Dependencies).FirstOrDefault(IsPrereleaseDependency);
                 if (prereleaseDependency != null)
                 {
-                    throw new InvalidDataException(String.Format(CultureInfo.CurrentCulture,
-                                                                 NuGetResources.Manifest_InvalidPrereleaseDependency,
-                                                                 prereleaseDependency));
+                    throw new InvalidDataException(String.Format(CultureInfo.CurrentCulture, NuGetResources.Manifest_InvalidPrereleaseDependency, prereleaseDependency.ToString()));
                 }
             }
         }
@@ -226,10 +236,8 @@ namespace NuGet
             IVersionSpec versionSpec = dependency.VersionSpec;
             if (versionSpec != null)
             {
-                return (versionSpec.MinVersion != null &&
-                        !String.IsNullOrEmpty(dependency.VersionSpec.MinVersion.SpecialVersion)) ||
-                       (versionSpec.MaxVersion != null &&
-                        !String.IsNullOrEmpty(dependency.VersionSpec.MaxVersion.SpecialVersion));
+                return (versionSpec.MinVersion != null && !String.IsNullOrEmpty(dependency.VersionSpec.MinVersion.SpecialVersion)) ||
+                       (versionSpec.MaxVersion != null && !String.IsNullOrEmpty(dependency.VersionSpec.MaxVersion.SpecialVersion));
             }
             return false;
         }
@@ -260,7 +268,7 @@ namespace NuGet
                 Tags.AddRange(ParseTags(metadata.Tags));
             }
 
-            Dependencies.AddRange(metadata.Dependencies);
+            DependencySets.AddRange(metadata.DependencySets);
             FrameworkReferences.AddRange(metadata.FrameworkAssemblies);
             if (metadata.References != null)
             {
@@ -376,7 +384,7 @@ namespace NuGet
             return from tag in tags.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries)
                    select tag.Trim();
         }
-
+        
         public IPackage Build()
         {
             return new SimplePackage(this);

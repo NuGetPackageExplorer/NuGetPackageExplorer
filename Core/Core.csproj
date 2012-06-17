@@ -60,6 +60,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Authoring\IPackageBuilder.cs" />
+    <Compile Include="Authoring\ManifestDependencySet.cs" />
     <Compile Include="Authoring\ManifestFileList.cs" />
     <Compile Include="Authoring\ManifestFrameworkAssembly.cs" />
     <Compile Include="Authoring\ManifestReader.cs" />

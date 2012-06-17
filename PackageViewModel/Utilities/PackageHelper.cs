@@ -71,7 +71,7 @@ namespace PackageExplorerViewModel
             builder.Copyright = source.Copyright;
             builder.Language = source.Language;
             builder.Tags.AddRange(ParseTags(source.Tags));
-            builder.Dependencies.AddRange(source.Dependencies);
+            builder.DependencySets.AddRange(source.DependencySets);
             builder.FrameworkReferences.AddRange(source.FrameworkAssemblies);
             builder.PackageAssemblyReferences.AddRange(source.References);
         }

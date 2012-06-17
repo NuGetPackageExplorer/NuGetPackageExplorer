@@ -101,9 +101,12 @@ namespace NuGet
             get { return CorePackage == null ? null : CorePackage.Tags; }
         }
 
-        public IEnumerable<PackageDependency> Dependencies
+        public IEnumerable<PackageDependencySet> DependencySets
         {
-            get { return CorePackage == null ? Enumerable.Empty<PackageDependency>() : CorePackage.Dependencies; }
+            get
+            {
+                return CorePackage == null ? Enumerable.Empty<PackageDependencySet>() : CorePackage.DependencySets;
+            }
         }
 
         IEnumerable<string> IPackageMetadata.Authors

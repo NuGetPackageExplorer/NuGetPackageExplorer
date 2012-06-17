@@ -139,7 +139,11 @@ namespace NuGet
 
         public IEnumerable<AssemblyReference> References { get; set; }
 
-        public IEnumerable<PackageDependency> Dependencies { get; set; }
+        public IEnumerable<PackageDependencySet> DependencySets
+        {
+            get;
+            set;
+        }
 
         public IEnumerable<IPackageAssemblyReference> AssemblyReferences
         {
@@ -218,7 +222,7 @@ namespace NuGet
                     Copyright = metadata.Copyright;
                     Language = metadata.Language;
                     Tags = metadata.Tags;
-                    Dependencies = metadata.Dependencies;
+                    DependencySets = metadata.DependencySets;
                     FrameworkAssemblies = metadata.FrameworkAssemblies;
                     References = metadata.References;
                     Published = File.GetLastWriteTimeUtc(_filePath);

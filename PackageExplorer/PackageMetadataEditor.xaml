@@ -202,14 +202,14 @@
 
                     <ItemsControl x:Name="DependencyList" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" ItemTemplate="{StaticResource PackageDependencyTemplate}"></ItemsControl>
 
-                    <Button Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" ToolTipService.ToolTip="Select dependency from NuGet feed" Click="SelectDependencyButtonClicked">
+                    <Button Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" ToolTipService.ToolTip="Select dependency from NuGet feed">
                         <Image Style="{StaticResource ImageStyle}" Source="Images/properties.png"></Image>
                     </Button>
 
                     <TextBox x:Name="NewDependencyId" Text="{Binding Id, BindingGroupName=NewPackageDependency, ValidatesOnDataErrors=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
                     <TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, BindingGroupName=NewPackageDependency, ValidatesOnDataErrors=True, Converter={StaticResource VersionSpecConverter}}" Margin="2" Grid.Column="2" Grid.Row="2" />
 
-                    <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency" Click="AddDependencyButtonClicked">
+                    <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency">
                         <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
                         <self:GrayscaleButton.IsEnabled>
                             <Binding Path="Text" ElementName="NewDependencyId" Converter="{StaticResource nullToBoolConverter}" Mode="OneWay" />

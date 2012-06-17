@@ -14,23 +14,32 @@ namespace NuGet
 
         private static readonly Type[] _xmlAttributes = new[]
                                                         {
-                                                            typeof(XmlElementAttribute), typeof(XmlAttributeAttribute),
+                                                            typeof(XmlElementAttribute), 
+                                                            typeof(XmlAttributeAttribute),
                                                             typeof(XmlArrayAttribute)
                                                         };
 
         public static int GetManifestVersion(ManifestMetadata metadata)
         {
-            return Math.Max(VisitObject(metadata), GetVersionPropertyVersion(metadata));
+            return Math.Max(VisitObject(metadata), GetVersionFromMetadata(metadata));
         }
 
-        private static int GetVersionPropertyVersion(ManifestMetadata metadata)
+        private static int GetVersionFromMetadata(ManifestMetadata metadata)
         {
+            bool dependencyHasTargetFramework =
+                metadata.DependencySets != null &&
+                metadata.DependencySets.Any(d => d.TargetFramework != null);
+            if (dependencyHasTargetFramework)
+            {
+                return TargetFrameworkSupportVersion;
+            }
+
             SemanticVersion semanticVersion;
-            if (SemanticVersion.TryParse(metadata.Version, out semanticVersion) &&
-                !String.IsNullOrEmpty(semanticVersion.SpecialVersion))
+            if (SemanticVersion.TryParse(metadata.Version, out semanticVersion) && !String.IsNullOrEmpty(semanticVersion.SpecialVersion))
             {
                 return SemverVersion;
             }
+
             return DefaultVersion;
         }
 

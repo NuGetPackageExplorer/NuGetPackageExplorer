@@ -20,8 +20,7 @@ namespace PackageExplorer
         private ObservableCollection<string> _filteredAssemblyReferences;
         private ObservableCollection<FrameworkAssemblyReference> _frameworkAssemblies;
         private EditableFrameworkAssemblyReference _newFrameworkAssembly;
-        private EditablePackageDependency _newPackageDependency;
-        private ObservableCollection<PackageDependency> _packageDependencies;
+        private ObservableCollection<PackageDependencySet> _packageDependencySets;
 
         public PackageMetadataEditor()
         {
@@ -37,7 +36,6 @@ namespace PackageExplorer
         {
             if (Visibility == Visibility.Visible)
             {
-                ClearDependencyTextBox();
                 ClearFrameworkAssemblyTextBox();
                 ClearFilteredAssemblyReferenceTextBox();
                 PrepareBindings();
@@ -48,8 +46,8 @@ namespace PackageExplorer
         {
             var viewModel = (PackageViewModel) DataContext;
 
-            _packageDependencies = new ObservableCollection<PackageDependency>(viewModel.PackageMetadata.Dependencies);
-            DependencyList.ItemsSource = _packageDependencies;
+            _packageDependencySets = new ObservableCollection<PackageDependencySet>(viewModel.PackageMetadata.DependencySets);
+            DependencyList.ItemsSource = _packageDependencySets;
 
             _frameworkAssemblies =
                 new ObservableCollection<FrameworkAssemblyReference>(viewModel.PackageMetadata.FrameworkAssemblies);
@@ -58,12 +56,6 @@ namespace PackageExplorer
             _filteredAssemblyReferences =
                 new ObservableCollection<string>(viewModel.PackageMetadata.PackageAssemblyReferences.Select(f => f.File));
             AssemblyReferencesList.ItemsSource = _filteredAssemblyReferences;
-        }
-
-        private void ClearDependencyTextBox()
-        {
-            _newPackageDependency = new EditablePackageDependency();
-            NewDependencyId.DataContext = NewDependencyVersion.DataContext = _newPackageDependency;
         }
 
         private void ClearFrameworkAssemblyTextBox()
@@ -80,9 +72,9 @@ namespace PackageExplorer
         private void PopulateLanguagesForLanguageBox()
         {
             LanguageBox.ItemsSource =
-                CultureInfo.GetCultures(CultureTypes.SpecificCultures).Select(c => c.Name).OrderBy(p => p,
-                                                                                                   StringComparer.
-                                                                                                       OrdinalIgnoreCase);
+                CultureInfo.GetCultures(CultureTypes.SpecificCultures)
+                    .Select(c => c.Name)
+                    .OrderBy(p => p, StringComparer.OrdinalIgnoreCase);
         }
 
         private void PopulateFrameworkAssemblyNames()
@@ -104,9 +96,9 @@ namespace PackageExplorer
         private void RemoveDependencyButtonClicked(object sender, RoutedEventArgs e)
         {
             var button = (Button) sender;
-            var item = (PackageDependency) button.DataContext;
+            var item = (PackageDependencySet) button.DataContext;
 
-            _packageDependencies.Remove(item);
+            _packageDependencySets.Remove(item);
         }
 
         private void RemoveFrameworkAssemblyButtonClicked(object sender, RoutedEventArgs e)
@@ -124,44 +116,44 @@ namespace PackageExplorer
             _filteredAssemblyReferences.Remove(reference);
         }
 
-        private void AddDependencyButtonClicked(object sender, RoutedEventArgs e)
-        {
-            AddPendingDependency();
-        }
+        //private void AddDependencyButtonClicked(object sender, RoutedEventArgs e)
+        //{
+        //    AddPendingDependency();
+        //}
 
-        // return true = pending dependency added
-        // return false = pending dependency is invalid
-        // return null = no pending dependency
-        private bool? AddPendingDependency()
-        {
-            if (String.IsNullOrEmpty(NewDependencyId.Text) &&
-                String.IsNullOrEmpty(NewDependencyVersion.Text))
-            {
-                return null;
-            }
+        //// return true = pending dependency added
+        //// return false = pending dependency is invalid
+        //// return null = no pending dependency
+        //private bool? AddPendingDependency()
+        //{
+        //    if (String.IsNullOrEmpty(NewDependencyId.Text) &&
+        //        String.IsNullOrEmpty(NewDependencyVersion.Text))
+        //    {
+        //        return null;
+        //    }
 
-            if (!NewPackageDependencyGroup.UpdateSources())
-            {
-                return false;
-            }
+        //    if (!NewPackageDependencyGroup.UpdateSources())
+        //    {
+        //        return false;
+        //    }
 
-            _packageDependencies.Add(_newPackageDependency.AsReadOnly());
+        //    _packageDependencySets.Add(_newPackageDependency.AsReadOnly());
 
-            // after dependency is added, clear the textbox
-            ClearDependencyTextBox();
+        //    // after dependency is added, clear the textbox
+        //    ClearDependencyTextBox();
 
-            return true;
-        }
+        //    return true;
+        //}
 
-        private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
-        {
-            PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
-            if (selectedPackage != null)
-            {
-                _newPackageDependency.Id = selectedPackage.Id;
-                _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version);
-            }
-        }
+        //private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
+        //{
+        //    PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
+        //    if (selectedPackage != null)
+        //    {
+        //        _newPackageDependency.Id = selectedPackage.Id;
+        //        _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version);
+        //    }
+        //}
 
         private void AddFrameworkAssemblyButtonClicked(object sender, RoutedEventArgs args)
         {
@@ -216,12 +208,6 @@ namespace PackageExplorer
 
         bool IPackageEditorService.CommitEdit()
         {
-            bool? addPendingDependency = AddPendingDependency();
-            if (addPendingDependency == false)
-            {
-                return false;
-            }
-
             bool? addPendingAssembly = AddPendingFrameworkAssembly();
             if (addPendingAssembly == false)
             {
@@ -232,7 +218,7 @@ namespace PackageExplorer
             if (valid)
             {
                 var viewModel = (PackageViewModel) DataContext;
-                _packageDependencies.CopyTo(viewModel.PackageMetadata.Dependencies);
+                _packageDependencySets.CopyTo(viewModel.PackageMetadata.DependencySets);
                 _frameworkAssemblies.CopyTo(viewModel.PackageMetadata.FrameworkAssemblies);
                 _filteredAssemblyReferences.Distinct().Select(s => new AssemblyReference(s)).CopyTo(
                     viewModel.PackageMetadata.PackageAssemblyReferences);

@@ -100,9 +100,9 @@ namespace PackageExplorerViewModel
             get { return null; }
         }
 
-        public IEnumerable<PackageDependency> Dependencies
+        public IEnumerable<PackageDependencySet> DependencySets
         {
-            get { return Enumerable.Empty<PackageDependency>(); }
+            get { return Enumerable.Empty<PackageDependencySet>(); }
         }
 
         public Uri ReportAbuseUrl

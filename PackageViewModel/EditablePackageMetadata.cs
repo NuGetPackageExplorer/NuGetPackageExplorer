@@ -71,7 +71,7 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<AssemblyReference> PackageAssemblyReferences { get; private set; }
 
-        public ObservableCollection<PackageDependency> Dependencies { get; private set; }
+        public ObservableCollection<PackageDependencySet> DependencySets { get; private set; }
 
         public ObservableCollection<FrameworkAssemblyReference> FrameworkAssemblies { get; private set; }
 
@@ -310,9 +310,9 @@ namespace PackageExplorerViewModel
             get { return SplitString(Owners); }
         }
 
-        IEnumerable<PackageDependency> IPackageMetadata.Dependencies
+        IEnumerable<PackageDependencySet> IPackageMetadata.DependencySets
         {
-            get { return Dependencies; }
+            get { return DependencySets; }
         }
 
         IEnumerable<FrameworkAssemblyReference> IPackageMetadata.FrameworkAssemblies
@@ -344,7 +344,7 @@ namespace PackageExplorerViewModel
             Copyright = source.Copyright;
             Language = source.Language;
             Tags = source.Tags;
-            Dependencies = new ObservableCollection<PackageDependency>(source.Dependencies);
+            DependencySets = new ObservableCollection<PackageDependencySet>(source.DependencySets);
             FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkAssemblies);
             PackageAssemblyReferences = new ObservableCollection<AssemblyReference>();
             if (source.References != null)

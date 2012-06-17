@@ -20,7 +20,9 @@ namespace PackageExplorerViewModel.Rules
                 return new PackageIssue[0];
             }
 
-            return package.Dependencies.Where(IsPrereleaseDependency).Select(CreatePackageIssue);
+            return package.DependencySets.SelectMany(p => p.Dependencies)
+                                         .Where(IsPrereleaseDependency)
+                                         .Select(CreatePackageIssue);
         }
 
         #endregion
