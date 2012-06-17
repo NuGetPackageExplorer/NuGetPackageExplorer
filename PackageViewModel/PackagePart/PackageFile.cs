@@ -44,11 +44,7 @@ namespace PackageExplorerViewModel
         /// </summary>
         public string OriginalPath
         {
-            get
-            {
-                var physicalFile = _file as PhysicalPackageFile;
-                return (physicalFile != null && !physicalFile.IsTempFile) ? physicalFile.OriginalPath : null;
-            }
+            get { return _file.OriginalPath; }
         }
 
         public string EffectivePath

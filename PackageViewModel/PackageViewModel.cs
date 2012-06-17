@@ -984,7 +984,7 @@ namespace PackageExplorerViewModel
             string packageName = PackageMetadata + NuGet.Constants.ManifestExtension;
             string filePath = Path.GetTempFileName();
             
-            ExportManifest(filePath, askForConfirmation: false);
+            ExportManifest(filePath, askForConfirmation: false, includeFilesSection: false);
 
             return new PackageMetadataFile(packageName, filePath, this);
         }
@@ -1186,7 +1186,7 @@ namespace PackageExplorerViewModel
             ExportManifest(Path.Combine(rootPath, PackageMetadata + ".nuspec"));
         }
 
-        internal void ExportManifest(string fullpath, bool askForConfirmation = true)
+        internal void ExportManifest(string fullpath, bool askForConfirmation = true, bool includeFilesSection = true)
         {
             if (File.Exists(fullpath) && askForConfirmation)
             {
@@ -1204,13 +1204,19 @@ namespace PackageExplorerViewModel
             using (Stream fileStream = File.Create(fullpath))
             {
                 Manifest manifest = Manifest.Create(PackageMetadata);
-                manifest.Files = new List<ManifestFile>();
-                manifest.Files.AddRange(RootFolder.GetFiles().Select(
-                    f => new ManifestFile {
-                            Source = !String.IsNullOrEmpty(f.OriginalPath) ? PathUtility.RelativePathTo(rootPath, f.OriginalPath) : f.Path, 
+                if (includeFilesSection)
+                {
+                    string tempPath = Path.GetTempPath();
+
+                    manifest.Files = new List<ManifestFile>();
+                    manifest.Files.AddRange(RootFolder.GetFiles().Select(
+                        f => new ManifestFile
+                        {
+                            Source = String.IsNullOrEmpty(f.OriginalPath) || f.OriginalPath.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath),
                             Target = f.Path
                         })
-                );
+                    );
+                }
                 manifest.Save(fileStream);
             }
         }
