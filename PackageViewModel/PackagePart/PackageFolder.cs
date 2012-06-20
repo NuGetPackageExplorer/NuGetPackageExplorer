@@ -99,7 +99,15 @@ namespace PackageExplorerViewModel
         {
             if (Children.Count == 0)
             {
-                return new [] { new EmptyFolderFile(this) };
+                if (Parent != null)
+                {
+                    // only treat this folder as an empty folder if it's NOT the root folder.
+                    return new[] { new EmptyFolderFile(this) };
+                }
+                else
+                {
+                    return new IPackageFile[0];
+                }
             }
             else
             {
