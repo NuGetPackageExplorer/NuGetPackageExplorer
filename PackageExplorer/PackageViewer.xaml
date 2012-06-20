@@ -1,4 +1,18 @@
-﻿<UserControl x:Class="PackageExplorer.PackageViewer" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:self="clr-namespace:PackageExplorer" xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" xmlns:resources="clr-namespace:PackageExplorer.Resources" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" Margin="5,7,5,7" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl 
+    x:Class="PackageExplorer.PackageViewer" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:self="clr-namespace:PackageExplorer" 
+    xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" 
+    xmlns:resources="clr-namespace:PackageExplorer.Resources" 
+    xmlns:types="clr-namespace:NuGet;assembly=NuGetPackageExplorer.Types"
+    Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
+    Margin="5,7,5,7"
+    mc:Ignorable="d" 
+    d:DesignHeight="300" 
+    d:DesignWidth="300">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -15,6 +29,39 @@
             <self:FrameworkNameConverter x:Key="frameworkConverter" />
             <self:NormalizeTextConverter x:Key="NormalizeTextConverter" />
             <self:BooleanToStringConverter x:Key="BooleanConverter" />
+            <self:DependencySetConverter x:Key="DependencySetConverter" />
+
+            <DataTemplate DataType="{x:Type types:PackageDependency}">
+                <TextBlock ToolTip="Open this package from online feed.">
+                    <Hyperlink Command="Find" CommandParameter="{Binding Id, Mode=OneWay}">
+                        <Run Text="{Binding Mode=OneWay}"></Run>
+                    </Hyperlink>
+                </TextBlock>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type types:PackageDependencySet}">
+                <Grid Margin="0,0,0,8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static resources:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <ItemsControl
+                        x:Name="dependenciesList"
+                        Grid.Row="1"
+                        Margin="20,0,0,0"
+                        ItemsSource="{Binding Dependencies}" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Margin="20,0,0,0"
+                        Visibility="{Binding Items.Count, ElementName=dependenciesList, Converter={StaticResource invertedCountConverter}}"
+                        Style="{StaticResource NoDependencyTextBoxStyle}" 
+                        Text="{x:Static resources:Resources.Dialog_NoDependencyLabel}">
+                    </TextBlock>
+                </Grid>
+            </DataTemplate>
 
             <ContextMenu x:Key="SharedContextMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="_View Content" InputGestureText="Enter" Command="{Binding ViewCommand}" CommandParameter="{Binding}" FontWeight="SemiBold" />
@@ -174,16 +221,7 @@
                         <!-- Dependencies list -->
                         <TextBlock Text="{x:Static resources:Resources.Dialog_DependenciesLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                        <ItemsControl x:Name="DependencyItems" Margin="25,5,0,0" ItemsSource="{Binding DependencySets}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBlock ToolTip="Open this package from online feed.">
-                                        <Hyperlink Command="Find" CommandParameter="{Binding Id, Mode=OneWay}">
-                                            <Run Text="{Binding Mode=OneWay}"></Run>
-                                        </Hyperlink>
-                                    </TextBlock>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
+                        <ItemsControl x:Name="DependencyItems" Margin="25,5,0,0" ItemsSource="{Binding DependencySets, Converter={StaticResource DependencySetConverter}}">
                         </ItemsControl>
 
                         <TextBlock Margin="25,5,0,0" Visibility="{Binding Items.Count, ElementName=DependencyItems, Converter={StaticResource invertedCountConverter}}" Style="{StaticResource NoDependencyTextBoxStyle}" Text="{x:Static resources:Resources.Dialog_NoDependencyLabel}"></TextBlock>

@@ -123,10 +123,14 @@
       <DependentUpon>ContentViewerPane.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BooleanToStringConverter.cs" />
+    <Compile Include="Converters\DependencySetConverter.cs" />
     <Compile Include="Converters\IntegerToBooleanConverter.cs" />
     <Compile Include="Converters\FileSizeConverter.cs" />
     <Compile Include="Converters\NormalizeTextConverter.cs" />
     <Compile Include="Converters\StringShorternerConverter.cs" />
+    <Compile Include="PackageDependencyEditor.xaml.cs">
+      <DependentUpon>PackageDependencyEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.partial.cs">
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
@@ -245,6 +249,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PackageChooserDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageDependencyEditor.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

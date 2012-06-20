@@ -27,20 +27,21 @@ namespace PackageExplorer
                     "Siverlight",
                     new[]
                     {
-                        "(no version)", "sl", "v2.0", "sl2", "v3.0", "sl30", "v4.0",
-                        "sl40", "v5.0", "sl50"
+                        "(no version)", "sl", "v2.0", "sl2", "v3.0", "sl30", "v4.0", "sl40", "v5.0", "sl50"
                     }
-                    },
-                {"WinRT", new[] {"(no version)", "winrt", "v4.5", "winrt45"}},
+                },
+                {
+                    "WinRT", 
+                    new[] { "(no version)", "winrt", "v4.5", "winrt45" }
+                },
                 {
                     ".NET",
                     new[]
                     {
                         "(no version)", "net", "v1.0", "net10", "v1.1", "net11", "v2.0",
-                        "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40", "v4.5"
-                        , "net45"
+                        "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40", "v4.5", "net45"
                     }
-                    }
+                }
             };
 
         private double _analysisPaneWidth = 250; // default width for package analysis pane
@@ -65,7 +66,7 @@ namespace PackageExplorer
         {
             Settings settings = Settings.Default;
 
-            if ((bool) e.NewValue)
+            if ((bool)e.NewValue)
             {
                 ContentGrid.RowDefinitions[0].Height = new GridLength(settings.PackageContentHeight, GridUnitType.Star);
                 ContentGrid.RowDefinitions[2].Height = new GridLength(settings.ContentViewerHeight, GridUnitType.Star);
@@ -90,7 +91,7 @@ namespace PackageExplorer
         {
             const double analysisPaneMinWidth = 250;
 
-            if ((bool) e.NewValue)
+            if ((bool)e.NewValue)
             {
                 double metadataWidth = ContentGrid.ColumnDefinitions[0].ActualWidth;
                 double contentsWidth = ContentGrid.ColumnDefinitions[2].ActualWidth;
@@ -104,10 +105,10 @@ namespace PackageExplorer
                     ContentGrid.ColumnDefinitions[0].MinWidth,
                     totalWidth - newContentsWidth - _analysisPaneWidth);
 
-                ContentGrid.ColumnDefinitions[0].Width = new GridLength(newMetadataWidth/totalWidth, GridUnitType.Star);
-                ContentGrid.ColumnDefinitions[2].Width = new GridLength(newContentsWidth/totalWidth, GridUnitType.Star);
+                ContentGrid.ColumnDefinitions[0].Width = new GridLength(newMetadataWidth / totalWidth, GridUnitType.Star);
+                ContentGrid.ColumnDefinitions[2].Width = new GridLength(newContentsWidth / totalWidth, GridUnitType.Star);
                 ContentGrid.ColumnDefinitions[4].MinWidth = analysisPaneMinWidth;
-                ContentGrid.ColumnDefinitions[4].Width = new GridLength(_analysisPaneWidth/totalWidth, GridUnitType.Star);
+                ContentGrid.ColumnDefinitions[4].Width = new GridLength(_analysisPaneWidth / totalWidth, GridUnitType.Star);
 
                 if (PackageAnalyzerContainer.Content == null)
                 {
@@ -123,8 +124,8 @@ namespace PackageExplorer
 
                 double newContentsWidth = contentsWidth + _analysisPaneWidth;
 
-                ContentGrid.ColumnDefinitions[0].Width = new GridLength(metadataWidth/totalWidth, GridUnitType.Star);
-                ContentGrid.ColumnDefinitions[2].Width = new GridLength(newContentsWidth/totalWidth, GridUnitType.Star);
+                ContentGrid.ColumnDefinitions[0].Width = new GridLength(metadataWidth / totalWidth, GridUnitType.Star);
+                ContentGrid.ColumnDefinitions[2].Width = new GridLength(newContentsWidth / totalWidth, GridUnitType.Star);
                 ContentGrid.ColumnDefinitions[4].MinWidth = 0;
                 ContentGrid.ColumnDefinitions[4].Width = new GridLength(0, GridUnitType.Star);
             }
@@ -150,11 +151,11 @@ namespace PackageExplorer
 
         private void OnTreeViewItemDoubleClick(object sender, RoutedEventArgs args)
         {
-            var item = (TreeViewItem) sender;
+            var item = (TreeViewItem)sender;
             var file = item.DataContext as PackageFile;
             if (file != null)
             {
-                ICommand command = ((PackageViewModel) DataContext).ViewContentCommand;
+                ICommand command = ((PackageViewModel)DataContext).ViewContentCommand;
                 command.Execute(file);
 
                 args.Handled = true;
@@ -163,7 +164,7 @@ namespace PackageExplorer
 
         private void TreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var tv = (TreeView) sender;
+            var tv = (TreeView)sender;
             IInputElement element = tv.InputHitTest(e.GetPosition(tv));
             while (!((element is TreeView) || element == null))
             {
@@ -174,13 +175,13 @@ namespace PackageExplorer
 
                 if (element is FrameworkElement)
                 {
-                    var fe = (FrameworkElement) element;
-                    element = (IInputElement) (fe.Parent ?? fe.TemplatedParent);
+                    var fe = (FrameworkElement)element;
+                    element = (IInputElement)(fe.Parent ?? fe.TemplatedParent);
                 }
                 else if (element is FrameworkContentElement)
                 {
-                    var fe = (FrameworkContentElement) element;
-                    element = (IInputElement) fe.Parent;
+                    var fe = (FrameworkContentElement)element;
+                    element = (IInputElement)fe.Parent;
                 }
                 else
                 {
@@ -332,7 +333,7 @@ namespace PackageExplorer
         private void PackageFolderContextMenu_Opened(object sender, RoutedEventArgs e)
         {
             // dynamically add predefined framework folders
-            var menu = (ContextMenu) sender;
+            var menu = (ContextMenu)sender;
             AddFrameworkFoldersToContextMenu(menu);
             menu.Opened -= PackageFolderContextMenu_Opened;
         }

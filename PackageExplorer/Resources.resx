@@ -188,6 +188,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="MoveContentFileToFolderExplanation" xml:space="preserve">
     <value>NuGet does not do anything special with files at the package root. The extension of this file indicates that it is intended to be placed in the '{0}' folder. </value>
   </data>
+  <data name="NoFxDependencyGroup" xml:space="preserve">
+    <value>(not framework specific)</value>
+  </data>
   <data name="NoNetworkConnection" xml:space="preserve">
     <value>Network connection is not detected.</value>
   </data>
