@@ -29,6 +29,7 @@ namespace PackageExplorer
             Editor.Options.CutCopyWholeLine = false;
             Editor.Options.EnableEmailHyperlinks = false;
             Editor.Options.EnableHyperlinks = false;
+            Editor.Options.ConvertTabsToSpaces = true;
 
             Editor.TextArea.SelectionCornerRadius = 0;
         }

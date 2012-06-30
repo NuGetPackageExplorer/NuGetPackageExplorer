@@ -141,6 +141,7 @@
 				</ComboBox>
 			</ToolBar>
 		</Border>
+        
 		<StatusBar Padding="0,2,0,2" DockPanel.Dock="Bottom" Background="#293955" Foreground="#CCFFFFFF">
 			<StatusBarItem Content="{Binding FileInEdit.Path, FallbackValue=Ready, Mode=OneWay}" />
 			<StatusBarItem HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,3,0" Visibility="{Binding HasEdit, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}">
@@ -150,6 +151,16 @@
 			</StatusBarItem>
 		</StatusBar>
 
-		<ae:TextEditor x:Name="Editor" Margin="5" Padding="5,2,5,5" HorizontalScrollBarVisibility="Auto" IsModified="{Binding HasEdit, Mode=TwoWay}" WordWrap="{Binding WordWrap, Source={x:Static settings:Settings.Default}, Mode=OneWay}" ShowLineNumbers="{Binding ShowLineNumbers, Source={x:Static settings:Settings.Default}, Mode=OneWay}" SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}" FontFamily="{Binding SelectedItem, ElementName=FontChoice}" />
+		<ae:TextEditor 
+            x:Name="Editor" 
+            Margin="5" 
+            Padding="5,2,5,5" 
+            HorizontalScrollBarVisibility="Auto" 
+            IsModified="{Binding HasEdit, Mode=TwoWay}" 
+            WordWrap="{Binding WordWrap, Source={x:Static settings:Settings.Default}, Mode=OneWay}" 
+            ShowLineNumbers="{Binding ShowLineNumbers, Source={x:Static settings:Settings.Default}, Mode=OneWay}" 
+            SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}" 
+            FontFamily="{Binding SelectedItem, ElementName=FontChoice}"
+            />
 	</DockPanel>
 </UserControl>

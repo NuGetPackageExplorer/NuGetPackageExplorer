@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
@@ -83,7 +84,12 @@ namespace NuGet
 
             // Need to force the namespace here again as the default in order to get the XML output clean
             var serializer = new XmlSerializer(typeof(Manifest), schemaNamespace);
-            serializer.Serialize(stream, this, ns);
+            using (var xmlWriter = new XmlTextWriter(stream, Encoding.Unicode))
+            {
+                xmlWriter.Indentation = 4;
+                xmlWriter.Formatting = Formatting.Indented;
+                serializer.Serialize(xmlWriter, this, ns);
+            }
         }
 
         // http://msdn.microsoft.com/en-us/library/53b8022e(VS.71).aspx
