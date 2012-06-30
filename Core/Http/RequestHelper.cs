@@ -39,7 +39,11 @@ namespace NuGet
                     request.Credentials = credentialCache.GetCredentials(request.RequestUri);
 
                     // If there are no cached credentials, use the default ones
-                    request.UseDefaultCredentials = (request.Credentials == null);
+                    if (request.Credentials == null)
+                    {
+                        request.UseDefaultCredentials = true;
+                    }
+
                 }
                 else if (previousStatusCode == HttpStatusCode.ProxyAuthenticationRequired)
                 {
