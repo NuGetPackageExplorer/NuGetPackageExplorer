@@ -1,4 +1,12 @@
-﻿<UserControl x:Class="PackageExplorer.PackageMetadataEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:self="clr-namespace:PackageExplorer" xmlns:types="clr-namespace:NuGet;assembly=NuGetPackageExplorer.Types" IsVisibleChanged="PackageMetadataEditor_IsVisibleChanged" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
+﻿<UserControl 
+    x:Class="PackageExplorer.PackageMetadataEditor" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:self="clr-namespace:PackageExplorer" 
+    xmlns:types="clr-namespace:NuGet;assembly=NuGetPackageExplorer.Types" 
+    IsVisibleChanged="PackageMetadataEditor_IsVisibleChanged" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
         <self:VersionConverter x:Key="VersionConverter" />
@@ -27,22 +35,6 @@
         <Style TargetType="{x:Type ComboBox}" x:Key="ComboBoxStyle">
             <Setter Property="Margin" Value="0, 4, 3, 0" />
         </Style>
-
-        <DataTemplate DataType="{x:Type types:PackageDependency}" x:Key="PackageDependencyTemplate">
-            <Grid Margin="0,4,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="3*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Id, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
-                <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding VersionSpec, Converter={StaticResource VersionSpecConverter}, TargetNullValue='(not set)', Mode=OneWay}" />
-                <Button Grid.Column="2" ToolTipService.ToolTip="Remove this dependency" Click="RemoveDependencyButtonClicked">
-                    <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
-                </Button>
-            </Grid>
-        </DataTemplate>
 
         <DataTemplate DataType="{x:Type types:FrameworkAssemblyReference}" x:Key="FrameworkAssemblyTemplate">
             <Grid Margin="0,4,0,0">
@@ -177,50 +169,8 @@
             <TextBox Grid.Row="15" Grid.Column="1" x:Name="TagsBox" Text="{Binding PackageMetadata.Tags}" />
 
             <!-- Dependencies -->
-            <Border Grid.Row="16" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
-                <Grid Margin="3,4,3,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="3*" />
-                        <ColumnDefinition Width="2*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.BindingGroup>
-                        <BindingGroup x:Name="NewPackageDependencyGroup" Name="NewPackageDependency" NotifyOnValidationError="True" />
-                    </Grid.BindingGroup>
-                    <Validation.ErrorTemplate>
-                        <ControlTemplate></ControlTemplate>
-                    </Validation.ErrorTemplate>
-
-                    <TextBlock Grid.Column="1" Text="Id" FontWeight="SemiBold" HorizontalAlignment="Center" />
-                    <TextBlock Grid.Column="2" Text="Version" FontWeight="SemiBold" HorizontalAlignment="Center" />
-
-                    <ItemsControl x:Name="DependencyList" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" ItemTemplate="{StaticResource PackageDependencyTemplate}"></ItemsControl>
-
-                    <Button Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" ToolTipService.ToolTip="Select dependency from NuGet feed">
-                        <Image Style="{StaticResource ImageStyle}" Source="Images/properties.png"></Image>
-                    </Button>
-
-                    <TextBox x:Name="NewDependencyId" Text="{Binding Id, BindingGroupName=NewPackageDependency, ValidatesOnDataErrors=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
-                    <TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, BindingGroupName=NewPackageDependency, ValidatesOnDataErrors=True, Converter={StaticResource VersionSpecConverter}}" Margin="2" Grid.Column="2" Grid.Row="2" />
-
-                    <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency">
-                        <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
-                        <self:GrayscaleButton.IsEnabled>
-                            <Binding Path="Text" ElementName="NewDependencyId" Converter="{StaticResource nullToBoolConverter}" Mode="OneWay" />
-                        </self:GrayscaleButton.IsEnabled>
-                    </self:GrayscaleButton>
-                </Grid>
-            </Border>
-
-            <!-- Header text for Dependencies -->
-            <TextBlock Text="Dependencies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="16" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
-
+            <Button HorizontalAlignment="Center" Grid.Row="16" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,0" Content="Edit dependencies" Click="EditDependenciesButtonClicked" />
+            
             <!-- Framework assemblies -->
             <Border Grid.Row="17" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
                 <Grid Margin="3,4,3,0">

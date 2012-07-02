@@ -272,7 +272,5 @@ namespace PackageExplorer
                 }
             }
         }
-
-
     }
 }

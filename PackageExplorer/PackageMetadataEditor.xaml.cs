@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using NuGet;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
@@ -20,7 +20,7 @@ namespace PackageExplorer
         private ObservableCollection<string> _filteredAssemblyReferences;
         private ObservableCollection<FrameworkAssemblyReference> _frameworkAssemblies;
         private EditableFrameworkAssemblyReference _newFrameworkAssembly;
-        private ObservableCollection<PackageDependencySet> _packageDependencySets;
+        private ICollection<PackageDependencySet> _dependencySets;
 
         public PackageMetadataEditor()
         {
@@ -46,8 +46,7 @@ namespace PackageExplorer
         {
             var viewModel = (PackageViewModel) DataContext;
 
-            _packageDependencySets = new ObservableCollection<PackageDependencySet>(viewModel.PackageMetadata.DependencySets);
-            DependencyList.ItemsSource = _packageDependencySets;
+            _dependencySets = viewModel.PackageMetadata.DependencySets;
 
             _frameworkAssemblies =
                 new ObservableCollection<FrameworkAssemblyReference>(viewModel.PackageMetadata.FrameworkAssemblies);
@@ -91,14 +90,6 @@ namespace PackageExplorer
                     // ignore exception
                 }
             }
-        }
-
-        private void RemoveDependencyButtonClicked(object sender, RoutedEventArgs e)
-        {
-            var button = (Button) sender;
-            var item = (PackageDependencySet) button.DataContext;
-
-            _packageDependencySets.Remove(item);
         }
 
         private void RemoveFrameworkAssemblyButtonClicked(object sender, RoutedEventArgs e)
@@ -218,7 +209,7 @@ namespace PackageExplorer
             if (valid)
             {
                 var viewModel = (PackageViewModel) DataContext;
-                _packageDependencySets.CopyTo(viewModel.PackageMetadata.DependencySets);
+                viewModel.PackageMetadata.DependencySets = _dependencySets;
                 _frameworkAssemblies.CopyTo(viewModel.PackageMetadata.FrameworkAssemblies);
                 _filteredAssemblyReferences.Distinct().Select(s => new AssemblyReference(s)).CopyTo(
                     viewModel.PackageMetadata.PackageAssemblyReferences);
@@ -236,5 +227,21 @@ namespace PackageExplorer
         }
 
         #endregion
+
+        private void EditDependenciesButtonClicked(object sender, RoutedEventArgs e)
+        {
+            var viewModel = (PackageViewModel)DataContext;
+
+            var editor = new PackageDependencyEditor(_dependencySets)
+            {
+                Owner = Window.GetWindow(this),
+                PackageChooser = PackageChooser
+            };
+            var result = editor.ShowDialog();
+            if (result == true)
+            {
+                _dependencySets = editor.GetEditedDependencySets();
+            }
+        }
     }
 }

@@ -51,6 +51,19 @@ namespace NuGet
                 {"Full", String.Empty}
             };
 
+        private static readonly Dictionary<string, string> _identifierToFrameworkFolder = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
+            { NetFrameworkIdentifier, "net" },
+            { ".NETMicroFramework", "netmf" },
+            { "Silverlight", "sl" },
+            { ".NETCore", "winrt"}
+        };
+
+        private static readonly Dictionary<string, string> _identifierToProfileFolder = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
+            { "WindowsPhone", "wp" },
+            { "WindowsPhone71", "wp71" },
+            { "CompactFramework", "cf" }
+        };
+
         private static Version DefaultTargetFrameworkVersion
         {
             get
@@ -412,6 +425,31 @@ namespace NuGet
                 }
             }
             return version != null;
+        }
+
+        public static string GetShortFrameworkName(FrameworkName frameworkName)
+        {
+            string name;
+            if (!_identifierToFrameworkFolder.TryGetValue(frameworkName.Identifier, out name))
+            {
+                name = frameworkName.Identifier;
+            }
+
+            // Remove the . from versions
+            name += frameworkName.Version.ToString().Replace(".", String.Empty);
+
+            if (String.IsNullOrEmpty(frameworkName.Profile))
+            {
+                return name;
+            }
+
+            string profile;
+            if (!_identifierToProfileFolder.TryGetValue(frameworkName.Profile, out profile))
+            {
+                profile = frameworkName.Profile;
+            }
+
+            return name + "-" + profile;
         }
     }
 }

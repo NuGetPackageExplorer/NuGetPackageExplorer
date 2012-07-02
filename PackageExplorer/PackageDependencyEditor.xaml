@@ -3,13 +3,138 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:PackageExplorer" 
         xmlns:settings="clr-namespace:PackageExplorer.Properties"
-        Title="PackageDependencyEditor" 
+        xmlns:types="clr-namespace:NuGet;assembly=NuGetPackageExplorer.Types"                      
+        Title="Package Dependency Editor" 
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
         FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}, Mode=OneWay}" 
         MinHeight="300" 
         MinWidth="450">
-    <Grid Margin="10">
+    
+    <self:StandardDialog.Resources>
+        <self:VersionSpecConverter x:Key="VersionSpecConverter" />
+        <self:TargetFrameworkConverter x:Key="TargetFrameworkConverter" />
+
+        <Style x:Key="ImageStyle" TargetType="{x:Type Image}">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Stretch" Value="Uniform" />
+        </Style>
         
+        <DataTemplate DataType="{x:Type types:PackageDependencySet}" x:Key="PackageDependencySetTemplate">
+            <TextBlock Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, TargetNullValue='[no target framework]'}" />
+        </DataTemplate>
+    </self:StandardDialog.Resources>
+    
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Groups label -->
+        <Label Content="_Groups" Target="DependencyGroupList" FontWeight="SemiBold" />
+        
+        <!-- buttons to add/remove group -->
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+            <Button ToolTip="Add a new group" Click="OnAddGroupClicked" Margin="0,0,4,0">
+                <Image Source="Images/Add.png" />
+            </Button>
+
+            <self:GrayscaleButton ToolTip="Delete the selected group" Click="OnRemoveGroupClicked" IsEnabled="{Binding SelectedItem, ElementName=DependencyGroupList, Converter={StaticResource nullToBoolConverter}}">
+                <self:GrayscaleImage Source="Images/delete.png" />
+            </self:GrayscaleButton>
+        </StackPanel>
+        
+        <!-- Dependency group listbox -->
+        <ListBox x:Name="DependencyGroupList" Margin="0,0,0,10" Grid.Row="1" BorderThickness="1" ItemsSource="{Binding}" ItemTemplate="{StaticResource PackageDependencySetTemplate}">
+        </ListBox>
+        
+        <!-- Group details label -->
+        <Label Content="Group _details" FontWeight="SemiBold" Grid.Column="1" HorizontalAlignment="Center">
+        </Label>
+        
+        <!-- group details -->
+        <Grid Margin="6,0,3,10" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding SelectedItem, ElementName=DependencyGroupList, Converter={StaticResource nullToBoolConverter}}" DataContext="{Binding SelectedItem, ElementName=DependencyGroupList}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!-- target framework textbox -->
+            <DockPanel Grid.ColumnSpan="4" LastChildFill="True">
+                <Label DockPanel.Dock="Left" Content="_Target framework" Target="TargetFrameworkBox" />
+                <TextBox x:Name="TargetFrameworkBox" Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, UpdateSourceTrigger=LostFocus}" />
+            </DockPanel>
+
+            <ListView 
+                x:Name="DependencyList" 
+                ItemsSource="{Binding Dependencies}" 
+                Margin="0,4"
+                Grid.Row="1" 
+                Grid.ColumnSpan="4">
+                <ListView.View>
+                    <GridView AllowsColumnReorder="False">
+                        <GridViewColumn Header="Id" DisplayMemberBinding="{Binding Id}" Width="180">
+                        </GridViewColumn>
+                        
+                        <GridViewColumn Header="Version" Width="130">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding VersionSpec, Converter={StaticResource VersionSpecConverter}, TargetNullValue='(not set)', Mode=OneWay}" TextAlignment="Center" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        
+                        <GridViewColumn Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock ToolTipService.ToolTip="Delete this dependency" TextAlignment="Center">
+                                        <Hyperlink Click="RemoveDependencyButtonClicked">delete</Hyperlink>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" ToolTipService.ToolTip="Select dependency from NuGet feed">
+                <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/properties.png" />
+            </self:GrayscaleButton>
+
+            <TextBox x:Name="NewDependencyId" Margin="2" Grid.Column="1" Grid.Row="2" />
+            <TextBox x:Name="NewDependencyVersion" Margin="2" Grid.Column="2" Grid.Row="2" />
+
+            <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency">
+                <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
+                <self:GrayscaleButton.IsEnabled>
+                    <Binding Path="Text" ElementName="NewDependencyId" Converter="{StaticResource nullToBoolConverter}" Mode="OneWay" />
+                </self:GrayscaleButton.IsEnabled>
+            </self:GrayscaleButton>
+        </Grid>
+        
+        <!-- Background color for the footer -->
+        <Border Grid.Row="3" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
+        
+        <!-- OK and Cancel buttons -->
+        <UniformGrid HorizontalAlignment="Right" Grid.Row="3" Grid.ColumnSpan="2" Rows="1" Columns="2">
+            <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,0" />
+            <Button Content="Cancel" Command="{Binding CancelCommand, Mode=OneWay}" Click="CancelButton_Click" Margin="5,10,5,0" Padding="15,0" />
+        </UniformGrid>
     </Grid>
 </self:StandardDialog>

@@ -25,6 +25,7 @@ namespace PackageExplorerViewModel
         private string _tags;
         private string _title;
         private SemanticVersion _version;
+        private ICollection<PackageDependencySet> _dependencySets;
 
         public EditablePackageMetadata()
         {
@@ -71,7 +72,21 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<AssemblyReference> PackageAssemblyReferences { get; private set; }
 
-        public ObservableCollection<PackageDependencySet> DependencySets { get; private set; }
+        public ICollection<PackageDependencySet> DependencySets 
+        {
+            get
+            {
+                return _dependencySets;
+            }
+            set
+            {
+                if (_dependencySets != value)
+                {
+                    _dependencySets = value;
+                    RaisePropertyChange("DependencySets");
+                }
+            }
+        }
 
         public ObservableCollection<FrameworkAssemblyReference> FrameworkAssemblies { get; private set; }
 
