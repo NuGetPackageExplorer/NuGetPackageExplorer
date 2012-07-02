@@ -26,6 +26,12 @@
         <DataTemplate DataType="{x:Type types:PackageDependencySet}" x:Key="PackageDependencySetTemplate">
             <TextBlock Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, TargetNullValue='[no target framework]'}" />
         </DataTemplate>
+
+        <ControlTemplate x:Key="ListViewItemTemplate" TargetType="{x:Type ListViewItem}">
+            <Border>
+                <GridViewRowPresenter />
+            </Border>
+        </ControlTemplate>
     </self:StandardDialog.Resources>
 
     <Grid Margin="10">
@@ -102,6 +108,7 @@
                 <ListView.ItemContainerStyle>
                     <Style TargetType="ListViewItem">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Template" Value="{StaticResource ListViewItemTemplate}" />
                     </Style>
                 </ListView.ItemContainerStyle>
                     
