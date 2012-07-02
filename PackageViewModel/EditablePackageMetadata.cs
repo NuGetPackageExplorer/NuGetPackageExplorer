@@ -72,6 +72,7 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<AssemblyReference> PackageAssemblyReferences { get; private set; }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ICollection<PackageDependencySet> DependencySets 
         {
             get

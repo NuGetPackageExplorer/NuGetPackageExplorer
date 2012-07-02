@@ -107,45 +107,6 @@ namespace PackageExplorer
             _filteredAssemblyReferences.Remove(reference);
         }
 
-        //private void AddDependencyButtonClicked(object sender, RoutedEventArgs e)
-        //{
-        //    AddPendingDependency();
-        //}
-
-        //// return true = pending dependency added
-        //// return false = pending dependency is invalid
-        //// return null = no pending dependency
-        //private bool? AddPendingDependency()
-        //{
-        //    if (String.IsNullOrEmpty(NewDependencyId.Text) &&
-        //        String.IsNullOrEmpty(NewDependencyVersion.Text))
-        //    {
-        //        return null;
-        //    }
-
-        //    if (!NewPackageDependencyGroup.UpdateSources())
-        //    {
-        //        return false;
-        //    }
-
-        //    _packageDependencySets.Add(_newPackageDependency.AsReadOnly());
-
-        //    // after dependency is added, clear the textbox
-        //    ClearDependencyTextBox();
-
-        //    return true;
-        //}
-
-        //private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
-        //{
-        //    PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
-        //    if (selectedPackage != null)
-        //    {
-        //        _newPackageDependency.Id = selectedPackage.Id;
-        //        _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version);
-        //    }
-        //}
-
         private void AddFrameworkAssemblyButtonClicked(object sender, RoutedEventArgs args)
         {
             AddPendingFrameworkAssembly();
@@ -183,6 +144,22 @@ namespace PackageExplorer
 
             // after reference name is added, clear the textbox
             ClearFilteredAssemblyReferenceTextBox();
+        }
+
+        private void EditDependenciesButtonClicked(object sender, RoutedEventArgs e)
+        {
+            var viewModel = (PackageViewModel)DataContext;
+
+            var editor = new PackageDependencyEditor(_dependencySets)
+            {
+                Owner = Window.GetWindow(this),
+                PackageChooser = PackageChooser
+            };
+            var result = editor.ShowDialog();
+            if (result == true)
+            {
+                _dependencySets = editor.GetEditedDependencySets();
+            }
         }
 
         #region IPackageEditorService
@@ -227,21 +204,5 @@ namespace PackageExplorer
         }
 
         #endregion
-
-        private void EditDependenciesButtonClicked(object sender, RoutedEventArgs e)
-        {
-            var viewModel = (PackageViewModel)DataContext;
-
-            var editor = new PackageDependencyEditor(_dependencySets)
-            {
-                Owner = Window.GetWindow(this),
-                PackageChooser = PackageChooser
-            };
-            var result = editor.ShowDialog();
-            if (result == true)
-            {
-                _dependencySets = editor.GetEditedDependencySets();
-            }
-        }
     }
 }

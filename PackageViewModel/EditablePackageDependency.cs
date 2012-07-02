@@ -41,7 +41,6 @@ namespace PackageExplorerViewModel
                 {
                     _versionSpec = value;
                     RaisePropertyChange("VersionSpec");
-                    RaisePropertyChange("Id");
                 }
             }
         }

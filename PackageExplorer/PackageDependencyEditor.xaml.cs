@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Documents;
 using NuGet;
 using NuGetPackageExplorer.Types;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
@@ -13,14 +15,16 @@ namespace PackageExplorer
     /// </summary>
     public partial class PackageDependencyEditor : StandardDialog
     {
-        private ObservableCollection<EditablePackageDependencySet> _dependencySets = 
-            new ObservableCollection<EditablePackageDependencySet>();
+        private ObservableCollection<EditablePackageDependencySet> _dependencySets = new ObservableCollection<EditablePackageDependencySet>();
+
+        private EditablePackageDependency _newPackageDependency;
 
         public PackageDependencyEditor()
         {
             InitializeComponent();
 
             DependencyGroupList.DataContext = _dependencySets;
+            ClearDependencyTextBox();
         }
 
         public PackageDependencyEditor(IEnumerable<PackageDependencySet> existingDependencySets)
@@ -41,6 +45,14 @@ namespace PackageExplorer
             return _dependencySets.Select(set => set.AsReadOnly()).ToArray();
         }
 
+        private EditablePackageDependencySet ActivePackageDependencySet
+        {
+            get
+            {
+                return (EditablePackageDependencySet)DependencyGroupList.SelectedItem;
+            }
+        }
+
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
@@ -53,24 +65,32 @@ namespace PackageExplorer
 
         private void RemoveDependencyButtonClicked(object sender, RoutedEventArgs e)
         {
-
+            var hyperlink = (Hyperlink)sender;
+            var selectedPackageDependency = (PackageDependency)hyperlink.DataContext;
+            if (selectedPackageDependency != null)
+            {
+                ActivePackageDependencySet.Dependencies.Remove(selectedPackageDependency);
+            }
         }
 
-        //private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
-        //{
-        //    PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
-        //    if (selectedPackage != null)
-        //    {
-        //        _newPackageDependency.Id = selectedPackage.Id;
-        //        _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version);
-        //    }
-        //}
+        private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
+        {
+            PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
+            if (selectedPackage != null)
+            {
+                _newPackageDependency.Id = selectedPackage.Id;
+                _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version);
+            }
+        }
 
         private void OnAddGroupClicked(object sender, RoutedEventArgs e)
         {
             _dependencySets.Add(new EditablePackageDependencySet());
 
-            DependencyGroupList.SelectedIndex = _dependencySets.Count - 1;
+            if (DependencyGroupList.SelectedIndex == -1)
+            {
+                DependencyGroupList.SelectedIndex = _dependencySets.Count - 1;
+            }
         }
 
         private void OnRemoveGroupClicked(object sender, RoutedEventArgs e)
@@ -88,14 +108,34 @@ namespace PackageExplorer
             }
         }
 
-        private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
+        private void AddDependencyButtonClicked(object sender, RoutedEventArgs e)
         {
-            PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
-            if (selectedPackage != null)
+            AddNewDependency();
+        }
+
+        private void AddNewDependency()
+        {
+            if (String.IsNullOrEmpty(NewDependencyId.Text) &&
+                String.IsNullOrEmpty(NewDependencyVersion.Text))
             {
-                _newPackageDependency.Id = selectedPackage.Id;
-                _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version);
+                return;
             }
+
+            if (!NewPackageDependencyGroup.UpdateSources())
+            {
+                return;
+            }
+
+            ActivePackageDependencySet.Dependencies.Add(_newPackageDependency.AsReadOnly());
+
+            // after dependency is added, clear the textbox
+            ClearDependencyTextBox();
+        }
+
+        private void ClearDependencyTextBox()
+        {
+            _newPackageDependency = new EditablePackageDependency();
+            NewDependencyId.DataContext = NewDependencyVersion.DataContext = _newPackageDependency;
         }
     }
 }
