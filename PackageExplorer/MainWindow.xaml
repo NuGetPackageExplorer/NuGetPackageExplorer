@@ -212,6 +212,9 @@
                                 <Image Source="images/cog.png" />
                             </MenuItem.Icon>
                         </MenuItem>
+                        <Separator />
+                        <MenuItem Header="Vi_ew NuGet download cache" Click="ViewDownloadCache_Click" />
+                        <MenuItem Header="Clea_r NuGet download cache" Click="ClearDownloadCache_Click" />
                     </CompositeCollection>
                 </MenuItem.ItemsSource>
 

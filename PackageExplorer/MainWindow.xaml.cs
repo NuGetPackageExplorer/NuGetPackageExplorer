@@ -18,6 +18,7 @@ using PackageExplorerViewModel;
 using Constants = NuGet.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
+using System.Diagnostics;
 
 namespace PackageExplorer
 {
@@ -539,6 +540,32 @@ namespace PackageExplorer
                 Settings.Default.FontSize = newFontSize;
 
                 e.Handled = true;
+            }
+        }
+
+        private void ViewDownloadCache_Click(object sender, EventArgs args)
+        {
+            string cacheSource = MachineCache.Default.Source;
+            if (Directory.Exists(cacheSource))
+            {
+                Process.Start(cacheSource);
+            }
+            else
+            {
+                UIServices.Show("The NuGet download cache does not exist.", MessageLevel.Information);
+            }
+        }
+
+        private void ClearDownloadCache_Click(object sender, EventArgs args)
+        {
+            bool result = MachineCache.Default.Clear();
+            if (result)
+            {
+                UIServices.Show("The NuGet download cache has been cleared successfully.", MessageLevel.Information);
+            }
+            else
+            {
+                UIServices.Show("The NuGet download cache does not exist.", MessageLevel.Information);
             }
         }
 
