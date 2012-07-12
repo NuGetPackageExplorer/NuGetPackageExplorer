@@ -106,6 +106,7 @@
     <Compile Include="Repositories\DataServiceMetadata.cs" />
     <Compile Include="Repositories\DataServicePackageRepository.cs" />
     <Compile Include="Repositories\IPackageRepository.cs" />
+    <Compile Include="Repositories\IPackageSearchable.cs" />
     <Compile Include="Repositories\LocalPackageRepository.cs" />
     <Compile Include="Repositories\MachineCache.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />

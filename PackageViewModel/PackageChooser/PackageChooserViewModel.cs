@@ -466,26 +466,38 @@ namespace PackageExplorerViewModel
                             return;
                         }
 
-                        IQueryable<IPackage> query;
-
-                        try
-                        {
-                            query = repository.GetPackages();
-                        }
-                        catch (Exception error)
-                        {
-                            // only show error if user hasn't canceled this request
-                            if (usedTokenSource == CurrentCancellationTokenSource)
-                            {
-                                ShowMessage(error.GetBaseException().Message, isError: true);
-                                RestoreUI();
-                            }
-                            return;
-                        }
+                        IQueryable<IPackage> query = null;
 
                         if (!String.IsNullOrEmpty(_currentSearch))
                         {
-                            query = query.Find(_currentSearch.Split(' '));
+                            IPackageSearchable searchableRepository = repository as IPackageSearchable;
+                            if (searchableRepository != null)
+                            {
+                                query = searchableRepository.Search(_currentSearch);
+                            }
+                        }
+
+                        if (query == null)
+                        {
+                            try
+                            {
+                                query = repository.GetPackages();
+                            }
+                            catch (Exception error)
+                            {
+                                // only show error if user hasn't canceled this request
+                                if (usedTokenSource == CurrentCancellationTokenSource)
+                                {
+                                    ShowMessage(error.GetBaseException().Message, isError: true);
+                                    RestoreUI();
+                                }
+                                return;
+                            }
+
+                            if (!String.IsNullOrEmpty(_currentSearch))
+                            {
+                                query = query.Find(_currentSearch.Split(' '));
+                            }
                         }
 
                         // When in Show All Versions mode, we can't sort by Last Updated or PackageSize. 

@@ -7,9 +7,15 @@ using System.Xml.Linq;
 
 namespace NuGet
 {
-    internal static class DataServiceMetadata
+    internal class DataServiceMetadata
     {
-        public static ISet<string> GetDataServiceMetadata(this DataServiceContext context)
+        public ISet<string> SupportedMethodNames { get; set; }
+        public ISet<string> SupportedProperties { get; set; }
+    }
+
+    internal static class DataServiceMetadataExtensions
+    {
+        public static DataServiceMetadata GetDataServiceMetadata(this DataServiceContext context)
         {
             Uri metadataUri = context.GetMetadataUri();
 
@@ -32,7 +38,7 @@ namespace NuGet
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        internal static ISet<string> ExtractMetadataFromSchema(string schema)
+        internal static DataServiceMetadata ExtractMetadataFromSchema(string schema)
         {
             if (String.IsNullOrEmpty(schema))
             {
@@ -54,7 +60,7 @@ namespace NuGet
             return ExtractMetadataInternal(schemaDocument);
         }
 
-        private static ISet<string> ExtractMetadataInternal(XDocument schemaDocument)
+        private static DataServiceMetadata ExtractMetadataInternal(XDocument schemaDocument)
         {
             // Get all entity containers
             var entityContainers = from e in schemaDocument.Descendants()
@@ -72,7 +78,7 @@ namespace NuGet
             {
                 return null;
             }
-
+            var packageEntityContainer = result.Container;
             var packageEntityTypeAttribute = result.EntitySet.Attribute("EntityType");
             string packageEntityName = null;
             if (packageEntityTypeAttribute != null)
@@ -80,7 +86,16 @@ namespace NuGet
                 packageEntityName = packageEntityTypeAttribute.Value;
             }
 
-            return new HashSet<string>(ExtractSupportedProperties(schemaDocument, packageEntityName), StringComparer.OrdinalIgnoreCase);
+            var metadata = new DataServiceMetadata
+            {
+                SupportedMethodNames = new HashSet<string>(
+                                               from e in packageEntityContainer.Elements()
+                                               where e.Name.LocalName == "FunctionImport"
+                                               select e.Attribute("Name").Value, StringComparer.OrdinalIgnoreCase),
+                SupportedProperties = new HashSet<string>(ExtractSupportedProperties(schemaDocument, packageEntityName),
+                                                          StringComparer.OrdinalIgnoreCase)
+            };
+            return metadata;
         }
 
         private static IEnumerable<string> ExtractSupportedProperties(XDocument schemaDocument, string packageEntityName)

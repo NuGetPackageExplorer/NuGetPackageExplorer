@@ -6,12 +6,12 @@ using System.Linq;
 
 namespace NuGet
 {
-    public class DataServicePackageRepository : IPackageRepository
+    public class DataServicePackageRepository : IPackageRepository, IPackageSearchable
     {
         private readonly DataServiceContext _context;
         private readonly IHttpClient _httpClient;
         private DataServiceQuery<DataServicePackage> _query;
-        private readonly Lazy<ISet<string>> _supportedProperties;
+        private readonly Lazy<DataServiceMetadata> _dataServiceMetadata;
 
         public DataServicePackageRepository(IHttpClient httpClient)
         {
@@ -25,7 +25,7 @@ namespace NuGet
             _context = new DataServiceContext(httpClient.Uri);
             _context.SendingRequest += OnSendingRequest;
             _context.IgnoreMissingProperties = true;
-            _supportedProperties = new Lazy<ISet<string>>(() => _context.GetDataServiceMetadata());
+            _dataServiceMetadata = new Lazy<DataServiceMetadata>(() => _context.GetDataServiceMetadata());
         }
 
         #region IPackageRepository Members
@@ -44,7 +44,17 @@ namespace NuGet
         {
             get
             {
-                return _supportedProperties.Value != null && _supportedProperties.Value.Contains("IsAbsoluteLatestVersion");
+                return _dataServiceMetadata.Value != null && 
+                       _dataServiceMetadata.Value.SupportedProperties.Contains("IsAbsoluteLatestVersion");
+            }
+        }
+
+        public bool SupportsSearch
+        {
+            get
+            {
+                return _dataServiceMetadata.Value != null &&
+                       _dataServiceMetadata.Value.SupportedMethodNames.Contains("Search", StringComparer.OrdinalIgnoreCase);
             }
         }
 
@@ -68,6 +78,20 @@ namespace NuGet
                 _query = _context.CreateQuery<DataServicePackage>(Constants.PackageServiceEntitySetName).IncludeTotalCount();
             }
             return _query;
+        }
+
+        public IQueryable<IPackage> Search(string searchTerm)
+        {
+            if (SupportsSearch)
+            {
+                return _context.CreateQuery<DataServicePackage>("Search")
+                               .AddQueryOption("searchTerm", "'" + searchTerm + "'")
+                               .AddQueryOption("targetFramework", "")
+                               .AddQueryOption("includePrerelease", "true")
+                               .IncludeTotalCount();
+            }
+
+            return GetPackages().Find(searchTerm.Split(' '));
         }
     }
 }
