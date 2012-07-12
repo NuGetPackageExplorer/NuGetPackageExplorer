@@ -397,8 +397,6 @@ namespace PackageExplorerViewModel
         {
             var token = (CancellationToken)state;
 
-            token.ThrowIfCancellationRequested();
-
             IList<PackageInfo> result = _currentQuery.GetItemsForCurrentPage().ToList();
 
             token.ThrowIfCancellationRequested();
