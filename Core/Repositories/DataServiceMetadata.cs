@@ -9,54 +9,51 @@ namespace NuGet
 {
     internal class DataServiceMetadata
     {
+        public static readonly DataServiceMetadata Empty = new DataServiceMetadata
+        {
+            SupportedMethodNames = new HashSet<string>(),
+            SupportedProperties = new HashSet<string>()
+        };
+
         public ISet<string> SupportedMethodNames { get; set; }
         public ISet<string> SupportedProperties { get; set; }
     }
 
     internal static class DataServiceMetadataExtensions
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static DataServiceMetadata GetDataServiceMetadata(this DataServiceContext context)
         {
-            Uri metadataUri = context.GetMetadataUri();
-
-            if (metadataUri == null)
-            {
-                return null;
-            }
-
-            // Make a request to the metadata uri and get the schema
-            var client = new HttpClient(metadataUri);
-            byte[] data = client.DownloadData();
-            if (data == null)
-            {
-                return null;
-            }
-
-            string schema = Encoding.UTF8.GetString(data);
-
-            return ExtractMetadataFromSchema(schema);
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        internal static DataServiceMetadata ExtractMetadataFromSchema(string schema)
-        {
-            if (String.IsNullOrEmpty(schema))
-            {
-                return null;
-            }
-
-            XDocument schemaDocument;
-
             try
             {
-                schemaDocument = XDocument.Parse(schema);
+                Uri metadataUri = context.GetMetadataUri();
+
+                if (metadataUri == null)
+                {
+                    return DataServiceMetadata.Empty;
+                }
+
+                // Make a request to the metadata uri and get the schema
+                var client = new HttpClient(metadataUri);
+                byte[] data = client.DownloadData();
+                if (data == null)
+                {
+                    return DataServiceMetadata.Empty;
+                }
+                
+                string schema = Encoding.UTF8.GetString(data);
+                return ExtractMetadataFromSchema(schema);
             }
             catch (Exception)
             {
-                // If the schema is malformed (for some reason) then just return empty list
-                return null;
+                return DataServiceMetadata.Empty;
             }
+        }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        private static DataServiceMetadata ExtractMetadataFromSchema(string schema)
+        {
+            XDocument schemaDocument = XDocument.Parse(schema);
             return ExtractMetadataInternal(schemaDocument);
         }
 

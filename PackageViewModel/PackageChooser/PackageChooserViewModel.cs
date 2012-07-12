@@ -309,14 +309,16 @@ namespace PackageExplorerViewModel
         {
             if (_packageRepository == null)
             {
-                try
-                {
-                    _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
-                }
-                catch (Exception)
-                {
-                    return null;
-                }
+                _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+
+                //try
+                //{
+                //    _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+                //}
+                //catch (Exception)
+                //{
+                //    return null;
+                //}
             }
 
             var token = (CancellationToken)state;
