@@ -102,10 +102,9 @@ namespace PackageExplorer
 
         private IPackage DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken)
         {
-            var httpClient = new RedirectedHttpClient(url)
+            var httpClient = new HttpClient(url)
                              {
-                                 UserAgent =
-                                     HttpUtility.CreateUserAgentString(Constants.UserAgentClient),
+                                 UserAgent = HttpUtility.CreateUserAgentString(Constants.UserAgentClient),
                                  AcceptCompression = false
                              };
 

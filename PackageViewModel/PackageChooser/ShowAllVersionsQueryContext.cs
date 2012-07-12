@@ -1,32 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Services.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NuGet;
 
 namespace PackageExplorerViewModel
 {
-    internal class ShowAllVersionsQueryContext<T> : IQueryContext<T> where T : IPackageInfoType
+    internal class ShowAllVersionsQueryContext<T> : QueryContextBase<T>, IQueryContext<T> where T : IPackageInfoType
     {
         private readonly int _bufferSize;
         private readonly IEqualityComparer<T> _comparer;
         private readonly int _pageSize;
         private readonly Stack<int> _skipHistory = new Stack<int>();
-        private readonly IQueryable<T> _source;
-        private readonly Lazy<int> _totalItemCount;
         private int _nextSkip;
         private int _skip;
         private bool _showUnlistedPackages;
 
         public ShowAllVersionsQueryContext(
             IQueryable<T> source, int pageSize, int bufferSize, bool showUnlistedPackages, IEqualityComparer<T> comparer)
+            : base(source)
         {
-            _source = source;
             _bufferSize = bufferSize;
             _comparer = comparer;
             _pageSize = pageSize;
             _showUnlistedPackages = showUnlistedPackages;
-            _totalItemCount = new Lazy<int>(_source.Count);
         }
 
         private int PageIndex
@@ -46,39 +44,24 @@ namespace PackageExplorerViewModel
             get { return _nextSkip; }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public int TotalItemCount
-        {
-            get
-            {
-                try
-                {
-                    return _totalItemCount.Value;
-                }
-                catch (Exception)
-                {
-                    return 0;
-                }
-            }
-        }
-
         public IEnumerable<T> GetItemsForCurrentPage()
         {
             T[] buffer = null;
             int skipCursor = _nextSkip = _skip;
             int head = 0;
             for (int i = 0;
-                 i < _pageSize && (!_totalItemCount.IsValueCreated || _nextSkip < _totalItemCount.Value);
+                 i < _pageSize && (!TotalItemCountReady || _nextSkip < TotalItemCount);
                  i++)
             {
                 bool firstItem = true;
                 T lastItem = default(T);
-                while (!_totalItemCount.IsValueCreated || _nextSkip < _totalItemCount.Value)
+                while (!TotalItemCountReady || _nextSkip < TotalItemCount)
                 {
                     if (buffer == null || head >= buffer.Length)
                     {
                         // read the next batch
-                        buffer = _source.Skip(skipCursor).Take(_bufferSize).ToArray();
+                        var pagedQuery = Source.Skip(skipCursor).Take(_bufferSize);
+                        buffer = LoadData(pagedQuery).ToArray();
                         if (buffer.Length == 0)
                         {
                             // if no item returned, we have reached the end.

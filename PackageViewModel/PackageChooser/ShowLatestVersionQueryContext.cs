@@ -1,23 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Services.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using NuGet;
 
 namespace PackageExplorerViewModel
 {
-    internal class ShowLatestVersionQueryContext<T> : IQueryContext<T> where T : IPackageInfoType
+    internal class ShowLatestVersionQueryContext<T> : QueryContextBase<T>, IQueryContext<T> where T : IPackageInfoType
     {
         private readonly int _pageSize;
-        private readonly IQueryable<T> _source;
-        private readonly Lazy<int> _totalItemCount;
         private int _pageIndex;
 
-        public ShowLatestVersionQueryContext(IQueryable<T> source, int pageSize)
+        public ShowLatestVersionQueryContext(IQueryable<T> source, int pageSize) 
+            : base(source)
         {
-            _source = source;
             _pageSize = pageSize;
-            _totalItemCount = new Lazy<int>(_source.Count);
         }
 
         private int PageCount
@@ -26,22 +24,6 @@ namespace PackageExplorerViewModel
         }
 
         #region IQueryContext<T> Members
-
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public int TotalItemCount
-        {
-            get
-            {
-                try
-                {
-                    return _totalItemCount.Value;
-                }
-                catch (Exception)
-                {
-                    return 0;
-                }
-            }
-        }
 
         public int BeginPackage
         {
@@ -55,8 +37,9 @@ namespace PackageExplorerViewModel
 
         public IEnumerable<T> GetItemsForCurrentPage()
         {
-            var results = _source.Skip(_pageIndex * _pageSize).Take(_pageSize);
-            foreach (var package in results)
+            var pagedQuery = Source.Skip(_pageIndex * _pageSize).Take(_pageSize);
+            var queryResponse = LoadData(pagedQuery);
+            foreach (var package in queryResponse)
             {
                 package.ShowAll = false;
                 yield return package;

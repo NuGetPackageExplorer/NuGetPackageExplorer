@@ -44,6 +44,7 @@
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Services.Client" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -56,6 +57,7 @@
     <Compile Include="Constants.cs" />
     <Compile Include="EmptyPackage.cs" />
     <Compile Include="FileEditorViewModel.cs" />
+    <Compile Include="PackageChooser\QueryContextBase.cs" />
     <Compile Include="PackagePart\EmptyFolderFile.cs" />
     <Compile Include="PackagePart\IEditablePackageFile.cs" />
     <Compile Include="PackagePart\PackageMetadataFile.cs" />

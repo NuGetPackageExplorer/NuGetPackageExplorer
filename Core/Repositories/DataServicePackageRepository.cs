@@ -65,7 +65,7 @@ namespace NuGet
         {
             if (_query == null)
             {
-                _query = _context.CreateQuery<DataServicePackage>(Constants.PackageServiceEntitySetName);
+                _query = _context.CreateQuery<DataServicePackage>(Constants.PackageServiceEntitySetName).IncludeTotalCount();
             }
             return _query;
         }

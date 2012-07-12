@@ -360,7 +360,8 @@ namespace PackageExplorerViewModel
             // QueryPackages() is scheduled on background thread. This is because this method
             // can be called from UI TaskScheduler from the LoadPackages() method
             Task.Factory.StartNew<IList<PackageInfo>>(
-                QueryPackages, token, token, TaskCreationOptions.None, TaskScheduler.Default).ContinueWith(
+                QueryPackages, token, token, TaskCreationOptions.None, TaskScheduler.Default)
+                .ContinueWith(
                     task =>
                     {
                         Exception exception = task.Exception;
@@ -384,8 +385,7 @@ namespace PackageExplorerViewModel
                         else
                         {
                             ClearMessage();
-                            ShowPackages(task.Result, _currentQuery.TotalItemCount, _currentQuery.BeginPackage,
-                                         _currentQuery.EndPackage);
+                            ShowPackages(task.Result, _currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
                         }
 
                         RestoreUI();
@@ -396,11 +396,6 @@ namespace PackageExplorerViewModel
         private IList<PackageInfo> QueryPackages(object state)
         {
             var token = (CancellationToken)state;
-
-            // HACK: trigger calling TotalItemCount asynchronously so that the request for $count
-            // can run in parallel with the request for packages
-            Func<int> getTotalItemCount = () => _currentQuery.TotalItemCount;
-            getTotalItemCount.BeginInvoke(null, null);
 
             token.ThrowIfCancellationRequested();
 
@@ -719,8 +714,8 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private void ShowPackages(IEnumerable<PackageInfo> packages, int totalPackageCount, int beginPackage,
-                                  int endPackage)
+        private void ShowPackages(
+            IEnumerable<PackageInfo> packages, int totalPackageCount, int beginPackage, int endPackage)
         {
             Packages.Clear();
             Packages.AddRange(packages);
