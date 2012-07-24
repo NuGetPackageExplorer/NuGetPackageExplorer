@@ -28,7 +28,7 @@ namespace PackageExplorer
                 {
                     return " (" + frameworkName + ")";
                 }
-                else
+                else if (!parts[0].Equals("content", StringComparison.OrdinalIgnoreCase))
                 {
                     return " (Unrecognized framework)";
                 }
