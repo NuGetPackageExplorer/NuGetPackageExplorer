@@ -63,7 +63,6 @@
     <Compile Include="PackagePart\PackageMetadataFile.cs" />
     <Compile Include="Utilities\FileHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="PackageAnalyzer\NonAssemblyInsideLibRule.cs" />
     <Compile Include="PackageAnalyzer\MisplacedTransformFileRule.cs" />
     <Compile Include="PackageAnalyzer\InvalidFrameworkFolderRule.cs" />
     <Compile Include="PackageAnalyzer\MisplacedScriptFileRule.cs" />
