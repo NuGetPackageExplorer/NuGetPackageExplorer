@@ -17,6 +17,7 @@
     <WarningLevel>4</WarningLevel>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <CodeAnalysisRuleSet>..\NuGetPackageExplorer.ruleset</CodeAnalysisRuleSet>
+    <TargetPlatformVersion>8.0</TargetPlatformVersion>
     <PublishUrl>..\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
@@ -398,6 +399,10 @@
     </FileAssociation>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CodeExecutor\CodeExecutor.csproj">
+      <Project>{0de0af9f-4d53-4900-8d15-f02c3542584f}</Project>
+      <Name>CodeExecutor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}</Project>
       <Name>Core</Name>

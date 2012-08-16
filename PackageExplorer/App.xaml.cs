@@ -7,6 +7,7 @@ using System.Windows;
 using NuGet;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
+using CodeExecutor;
 
 namespace PackageExplorer
 {
