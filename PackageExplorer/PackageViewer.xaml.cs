@@ -31,8 +31,8 @@ namespace PackageExplorer
                     }
                 },
                 {
-                    "WinRT", 
-                    new[] { "(no version)", "winrt", "v4.5", "winrt45" }
+                    "Windows", 
+                    new[] { "(no version)", "netcore", "Windows 8", "netcore45" }
                 },
                 {
                     ".NET",
