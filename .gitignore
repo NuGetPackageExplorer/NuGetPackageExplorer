@@ -20,3 +20,4 @@ src/Server/Server.Publish.xml
 DebugConstants.cs
 *.log
 packages/*
+publish/
