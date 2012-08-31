@@ -28,7 +28,7 @@
     <application>
       <!-- A list of all Windows versions that this application is designed to work with. Windows will automatically select the most compatible environment.-->
       <!-- If your application is designed to work with Windows 7, uncomment the following supportedOS node-->
-      <!--<supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}"/>-->
+      <supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}"/>
     </application>
   </compatibility>
   <!-- Enable themes for Windows common controls and dialogs (Windows XP and later) -->

@@ -21,7 +21,7 @@ namespace CodeExecutor
                 bool? result = null;
                 ExecuteRemotely(worker => result = worker.CheckIsNpeMetroInstalled(assemblyPath));
 
-                return result ?? false;
+                return result ?? true;
             }
         }
 

@@ -12,7 +12,8 @@
             <Using Namespace="System" />
             <Using Namespace="System.IO" />
             <Using Namespace="System.Linq" />
-            <Code Type="Fragment" Language="cs"><![CDATA[
+            <Code Type="Fragment" Language="cs">
+                <![CDATA[
                 if (!Directory.Exists(SearchDirectory)) {    
                     Log.LogError("Directory '{0}' does not exist.", SearchDirectory);
                     return false;
@@ -32,7 +33,7 @@
             </Code>
         </Task>
     </UsingTask>
-    
+
     <Choose>
         <When Condition="'$(Password)'==''">
             <PropertyGroup>
@@ -47,8 +48,8 @@
             </PropertyGroup>
         </Otherwise>
     </Choose>
-	
-	<PropertyGroup>
+
+    <PropertyGroup>
         <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
         <DeploymentUrl Condition="'$(DeploymentUrl)' == ''">http://nuget.codeplex.com/releases/clickonce/</DeploymentUrl>
         <NpeDeploymentUrl>http://npe.codeplex.com/releases/clickonce/</NpeDeploymentUrl>
@@ -72,51 +73,51 @@
         <LocalExecutableZipFileName>NpeLocalExecutable.zip</LocalExecutableZipFileName>
         <PackagesFolder>$(PackageExplorerRoot)\Packages</PackagesFolder>
         <NuGetExeToolPath>$(PackageExplorerRoot)\NuGet.exe</NuGetExeToolPath>
-	</PropertyGroup>
-	
-	<Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; BuildPackages; BuildLocalExecutableZip">
-	</Target>
-	
-	<Target Name="CheckTools">
+    </PropertyGroup>
+
+    <Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; BuildPackages; BuildLocalExecutableZip">
+    </Target>
+
+    <Target Name="CheckTools">
         <Error
             Condition="!Exists('$(ManifestToolPath)')"
             Text="Could not find the resource tool at $(ManifestToolPath). Cannot proceed." />
-            
+
         <Error
             Condition="!Exists('$(MageToolPath)')"
             Text="Could not find the resource tool at $(MageToolPath). Cannot proceed." />
-	</Target>
-	
-	<Target Name="BuildAndPublish">
+    </Target>
+
+    <Target Name="BuildAndPublish">
         <RemoveDir Directories="$(PublishedDirectory)" Condition="Exists('$(PublishedDirectory)')" ContinueOnError="True" />
         <MSBuild Projects="$(PackageExplorerRoot)\NuGetPackageExplorer.sln" Targets="Publish" />
-	</Target>
-	
+    </Target>
+
     <Target Name="ReportFxCopResults">
         <ItemGroup>
             <FxCopOutputItems Include="$(PackageExplorerRoot)\**\*.dll.CodeAnalysisLog.xml" />
         </ItemGroup>
         <Message Text="%(FxCopOutputItems.Identity)" />
     </Target>
-	
-	<Target Name="CreateDropDirectories">
+
+    <Target Name="CreateDropDirectories">
         <Message Text="Making the output directories for the compiled output at '$(DropDirectory)'." />
         <RemoveDir Directories="$(DropDirectory)" Condition="Exists('$(DropDirectory)')" ContinueOnError="True" />
         <MakeDir Directories="$(DropDirectory)" Condition="!Exists('$(DropDirectory)')" />
-        
+
         <RemoveDir Directories="$(DeployDirectory)" Condition="Exists('$(DeployDirectory)')" ContinueOnError="True" />
         <MakeDir Directories="$(DeployDirectory)" Condition="!Exists('$(DeployDirectory)')" />
-	</Target>
-	
-	<Target Name="CopyOutputsToDropDirectories">	
+    </Target>
+
+    <Target Name="CopyOutputsToDropDirectories">
         <CreateItem Include="$(PublishedDirectory)\**\*.*">
             <Output TaskParameter="Include" ItemName="PublishedFiles" />
         </CreateItem>
 
         <Copy SourceFiles="@(PublishedFiles)" DestinationFiles="@(PublishedFiles->'$(DeployDirectory)\%(RecursiveDir)%(FileName)%(Extension)')" />
-	</Target>
-	
-	<Target Name="AddVisualStyleManifestToDeployment">
+    </Target>
+
+    <Target Name="AddVisualStyleManifestToDeployment">
         <!-- Rename .deploy files dropping the extension. Required by mage.exe -->
         <CreateItem Include="$(DeployDirectory)\**\*.deploy">
             <Output TaskParameter="Include" ItemName="DeployedFiles" />
@@ -126,41 +127,41 @@
             <Output TaskParameter="CopiedFiles" ItemName="DeployFilesWithoutDeployExtension" />
         </Copy>
         <Delete Files="@(DeployedFiles)" />
-        
+
         <GetFirstDirectory SearchDirectory="$(DeployDirectory)\Application Files">
             <Output TaskParameter="FirstChildDirectoryName" PropertyName="FirstChildDirectoryName" />
         </GetFirstDirectory>
-        
+
         <CreateProperty Value="Application Files\$(FirstChildDirectoryName)">
             <Output TaskParameter="Value" PropertyName="ManifestCodeBase" />
         </CreateProperty>
-        
+
         <CreateProperty Value="$(DeployDirectory)\$(ManifestCodeBase)">
             <Output TaskParameter="Value" PropertyName="AppManifestDirectory" />
         </CreateProperty>
-        
+
         <!-- run mt.exe -->
-        <Exec 
-            Command="&quot;$(ManifestToolPath)&quot; -nologo -manifest &quot;$(ManifestFilePath)&quot; -outputresource:$(ExeFileName);#1" 
+        <Exec
+            Command="&quot;$(ManifestToolPath)&quot; -nologo -manifest &quot;$(ManifestFilePath)&quot; -outputresource:$(ExeFileName);#1"
             WorkingDirectory="$(AppManifestDirectory)" />
-            
+
         <!-- sign app manifest with mage.exe -->
         <Exec
             Command="&quot;$(MageToolPath)&quot; -u &quot;$(AppManifestFileName)&quot; -cf &quot;$(CertificateFilePath)&quot; -tr FullTrust -password &quot;$(CertificatePassword)&quot;"
             WorkingDirectory="$(AppManifestDirectory)" />
-        
-        <!-- Add the .deploy extension back --> 
+
+        <!-- Add the .deploy extension back -->
         <Copy SourceFiles="@(DeployFilesWithoutDeployExtension)" DestinationFiles="@(DeployFilesWithoutDeployExtension->'%(FullPath).deploy')" />
         <Delete Files="@(DeployFilesWithoutDeployExtension)" />
-        
+
         <!-- sign deployment manifest with mage.exe for nuget site -->
         <Exec
             Command="&quot;$(MageToolPath)&quot; -u &quot;$(DeploymentManifestFileName)&quot; -appc &quot;$(ManifestCodeBase)\$(AppManifestFileName)&quot; -appm &quot;$(AppManifestDirectory)\$(AppManifestFileName)&quot; -cf &quot;$(CertificateFilePath)&quot; -pub &quot;$(PublisherName)&quot; -pu &quot;$(DeploymentUrl)$(DeploymentManifestFileName)&quot; -password &quot;$(CertificatePassword)&quot;"
             WorkingDirectory="$(DeployDirectory)" />
 
         <!-- zip the whole thing for nuget site -->
-        <Exec 
-            Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(DeployZipFileName)&quot;" 
+        <Exec
+            Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(DeployZipFileName)&quot;"
             WorkingDirectory="$(DeployDirectory)" />
 
         <!-- sign deployment manifest with mage.exe for nuget package explorer site -->
@@ -173,13 +174,13 @@
             Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(DeployNpeZipFileName)&quot;"
             WorkingDirectory="$(DeployDirectory)" />
 
-  </Target>
-  
-  <Target Name="BuildPackages">
+    </Target>
+
+    <Target Name="BuildPackages">
         <Exec
             Command="&quot;$(NuGetExeToolPath)&quot; pack &quot;$(PackagesFolder)\NuGetPackageExplorer.Types.nuspec&quot; -OutputDirectory &quot;$(DropDirectory)&quot;"
             WorkingDirectory="$(PackagesFolder)" />
-  </Target>
+    </Target>
 
     <Target Name="BuildLocalExecutableZip">
         <Exec Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(LocalExecutableZipFileName)&quot; &quot;NuGetPackageExplorer.exe&quot; &quot;*.dll&quot; &quot;NuGetPackageExplorer.exe.config&quot;" WorkingDirectory="$(LocalExecutableDirectory)" />

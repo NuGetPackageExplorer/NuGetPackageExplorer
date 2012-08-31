@@ -322,6 +322,7 @@
     <Resource Include="Images\Cancel.png" />
     <Resource Include="Images\Validate.png" />
     <Resource Include="Images\EditSource.png" />
+    <Content Include="Windows8Shim.dll" />
     <Content Include="Resources\fxAssemblies.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
