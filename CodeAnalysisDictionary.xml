@@ -21,6 +21,7 @@
             <Word>Plugins</Word>
             <Word>Api</Word>
             <Word>Mru</Word>
+            <Word>Auth</Word>
         </Recognized>
         <Deprecated>
             <Term PreferredAlternate=""></Term>
