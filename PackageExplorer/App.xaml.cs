@@ -8,6 +8,8 @@ using NuGet;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using CodeExecutor;
+using NuGetPackageExplorer.Types;
+using System.Diagnostics;
 
 namespace PackageExplorer
 {
@@ -48,6 +50,8 @@ namespace PackageExplorer
             var window = Container.GetExportedValue<MainWindow>();
             window.Show();
 
+            CheckWindows8AndDisplayUpsellDialog();
+
             if (e.Args.Length > 0)
             {
                 string file = e.Args[0];
@@ -68,6 +72,27 @@ namespace PackageExplorer
                     string file = activationData[0];
                     LoadFile(window, file);
                     return;
+                }
+            }
+        }
+
+        private void CheckWindows8AndDisplayUpsellDialog()
+        {
+            if (NativeMethods.IsWindows8OrLater && Settings.Default.SolicitInstallNpeForWin8)
+            {
+                bool isInstalled = RemoteCodeExecutor.IsNpeMetroInstalled;
+                if (!isInstalled)
+                {
+                    IUIServices uiServices = Container.GetExportedValue<IUIServices>();
+                    bool? result = uiServices.AskToInstallNpeOnWindows8();
+
+                    // if result == null, remind user next time
+                    Settings.Default.SolicitInstallNpeForWin8 = (result != false);
+
+                    if (result == true)
+                    {
+                        Process.Start("ms-windows-store:PDP?PFN=50582LuanNguyen.NuGetPackageExplorer_w6y2tyx5bpzwa");
+                    }
                 }
             }
         }

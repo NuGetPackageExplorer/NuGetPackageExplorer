@@ -33,6 +33,8 @@ namespace NuGetPackageExplorer.Types
 
         bool ConfirmCloseEditor(string title, string message);
 
+        bool? AskToInstallNpeOnWindows8();
+
         void BeginInvoke(Action action);
     }
 }

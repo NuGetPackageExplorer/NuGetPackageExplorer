@@ -300,6 +300,51 @@ namespace PackageExplorer
             }
         }
 
+        public bool? AskToInstallNpeOnWindows8()
+        {
+            using (var dialog = new TaskDialog())
+            {
+                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.MainInstruction = "Great! You are running on Windows 8";
+                dialog.Content = "There is also a Windows Store app of NuGet Package Explorer that is designed to be touch friendly, fast and fluid. Do you want to install it now?";
+                dialog.AllowDialogCancellation = true;
+                dialog.CenterParent = true;
+                dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
+
+                var yesButton = new TaskDialogButton
+                {
+                    Text = "Yes",
+                    CommandLinkNote = "Go to the Store and install it now."
+                };
+
+                var noButton = new TaskDialogButton
+                {
+                    Text = "No",
+                    CommandLinkNote = "Don't bother."
+                };
+
+                var remindButton = new TaskDialogButton("Remind me next time");
+
+                dialog.Buttons.Add(yesButton);
+                dialog.Buttons.Add(noButton);
+                dialog.Buttons.Add(remindButton);
+
+                TaskDialogButton result = dialog.ShowDialog();
+                if (result == yesButton)
+                {
+                    return true;
+                }
+                else if (result == noButton) 
+                {
+                    return false;
+                }
+                else 
+                {
+                    return null;
+                }
+            }
+        }
+
         #endregion
 
         [MethodImpl(MethodImplOptions.NoInlining)]

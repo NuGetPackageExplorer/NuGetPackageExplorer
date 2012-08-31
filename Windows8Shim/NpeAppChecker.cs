@@ -1,4 +1,6 @@
-﻿using System.Security.Principal;
+﻿using System.Linq;
+using System.Security.Principal;
+using Windows.ApplicationModel;
 using Windows.Management.Deployment;
 
 namespace Windows8Shim
@@ -11,8 +13,10 @@ namespace Windows8Shim
             var userSecurityId = user.Owner.Value;
 
             var pm = new PackageManager();
-            var package = pm.FindPackageForUser(userSecurityId, "9238fdee-d032-4145-aac5-f55d90c440d9_1.0.0.0_neutral__ynymmkm2tp3bw");
-            return package != null;
+
+
+            var packages = pm.FindPackagesForUser(userSecurityId, "50582LuanNguyen.NuGetPackageExplorer_w6y2tyx5bpzwa");
+            return packages.Any();
         }
     }
 }
