@@ -22,6 +22,7 @@
             <Word>Api</Word>
             <Word>Mru</Word>
             <Word>Auth</Word>
+            <Word>Npe</Word>
         </Recognized>
         <Deprecated>
             <Term PreferredAlternate=""></Term>
