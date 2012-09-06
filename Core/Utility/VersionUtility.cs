@@ -13,36 +13,36 @@ namespace NuGet
     public static class VersionUtility
     {
         private const string NetFrameworkIdentifier = ".NETFramework";
-        private const string WinRTFrameworkIdentifier = ".NETCore";
-        [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")] public static readonly FrameworkName UnsupportedFrameworkName = new FrameworkName("Unsupported", new Version());
+        private const string NetCoreFrameworkIdentifier = ".NETCore";
+        private const string PortableFrameworkIdentifier = ".NETPortable";
+
+        [SuppressMessage("Microsoft.Security", "CA2104:DoNotDeclareReadOnlyMutableReferenceTypes")]
+        public static readonly FrameworkName UnsupportedFrameworkName = new FrameworkName("Unsupported", new Version());
         private static readonly Version _emptyVersion = new Version();
 
-        private static readonly Dictionary<string, string> _knownIdentifiers =
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, string> _knownIdentifiers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
-                {"NET", NetFrameworkIdentifier},
-                {".NET", NetFrameworkIdentifier},
-                {
-                    "NETFramework", NetFrameworkIdentifier
-                    },
-                {
-                    ".NETFramework",
-                    NetFrameworkIdentifier
-                    },
-                {"WinRT", WinRTFrameworkIdentifier},
-                {".NETCore", WinRTFrameworkIdentifier},
-                {"NETCore", WinRTFrameworkIdentifier},
-                {
-                    ".NETMicroFramework",
-                    ".NETMicroFramework"
-                    },
-                {"netmf", ".NETMicroFramework"},
-                {"SL", "Silverlight"},
-                {"Silverlight", "Silverlight"}
+                { "NET", NetFrameworkIdentifier },
+                { ".NET", NetFrameworkIdentifier },
+                { "NETFramework", NetFrameworkIdentifier },
+                { ".NETFramework", NetFrameworkIdentifier },
+                { "NETCore", NetCoreFrameworkIdentifier},
+                { ".NETCore", NetCoreFrameworkIdentifier},
+                { "WinRT", NetCoreFrameworkIdentifier},     // 'WinRT' is now deprecated. Use 'Windows' or 'win' instead.
+                { ".NETMicroFramework", ".NETMicroFramework" },
+                { "netmf", ".NETMicroFramework" },
+                { "SL", "Silverlight" },
+                { "Silverlight", "Silverlight" },
+                { ".NETPortable", PortableFrameworkIdentifier },
+                { "NETPortable", PortableFrameworkIdentifier },
+                { "portable", PortableFrameworkIdentifier },
+                { "wp", "WindowsPhone" },
+                { "WindowsPhone", "WindowsPhone" },
+                { "Windows", "Windows" },
+                { "win", "Windows" },
             };
 
-        private static readonly Dictionary<string, string> _knownProfiles =
-            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, string> _knownProfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 {"Client", "Client"},
                 {"WP", "WindowsPhone"},
@@ -55,7 +55,10 @@ namespace NuGet
             { NetFrameworkIdentifier, "net" },
             { ".NETMicroFramework", "netmf" },
             { "Silverlight", "sl" },
-            { ".NETCore", "netcore"}
+            { ".NETCore", "win"},
+            { "Windows", "win"},
+            { ".NETPortable", "portable" },
+            { "WindowsPhone", "wp"}
         };
 
         private static readonly Dictionary<string, string> _identifierToProfileFolder = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
@@ -228,7 +231,51 @@ namespace NuGet
                 identifierPart = NetFrameworkIdentifier;
             }
 
+            // if this is a .NET Portable framework name, validate the profile part to ensure it is valid
+            if (identifierPart.Equals(PortableFrameworkIdentifier, StringComparison.OrdinalIgnoreCase))
+            {
+                bool isValid = ValidatePortableFrameworkProfilePart(profilePart);
+                if (!isValid)
+                {
+                    return UnsupportedFrameworkName;
+                }
+            }
+
             return new FrameworkName(identifierPart, version, profilePart);
+        }
+
+        internal static bool ValidatePortableFrameworkProfilePart(string profilePart)
+        {
+            if (String.IsNullOrEmpty(profilePart))
+            {
+                return false;
+            }
+
+            if (profilePart.Contains('-'))
+            {
+                return false;
+            }
+
+            if (profilePart.Contains(' '))
+            {
+                return false;
+            }
+
+            string[] parts = profilePart.Split('+');
+            if (parts.Any(p => String.IsNullOrEmpty(p)))
+            {
+                return false;
+            }
+
+            // Prevent portable framework inside a portable framework - Inception
+            if (parts.Any(p => p.StartsWith("portable", StringComparison.OrdinalIgnoreCase)) ||
+                parts.Any(p => p.StartsWith("NETPortable", StringComparison.OrdinalIgnoreCase)) ||
+                parts.Any(p => p.StartsWith(".NETPortable", StringComparison.OrdinalIgnoreCase)))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -435,8 +482,12 @@ namespace NuGet
                 name = frameworkName.Identifier;
             }
 
-            // Remove the . from versions
-            name += frameworkName.Version.ToString().Replace(".", String.Empty);
+            // only show version part if it's > 0.0.0.0
+            if (frameworkName.Version > new Version())
+            {
+                // Remove the . from versions
+                name += frameworkName.Version.ToString().Replace(".", String.Empty);
+            }
 
             if (String.IsNullOrEmpty(frameworkName.Profile))
             {
