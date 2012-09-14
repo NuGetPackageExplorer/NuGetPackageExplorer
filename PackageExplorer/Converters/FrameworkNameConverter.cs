@@ -23,7 +23,23 @@ namespace PackageExplorer
             if (parts.Length == 2 && 
                 WellknownPackageFolders.Any(s => s.Equals(parts[0], StringComparison.OrdinalIgnoreCase)))
             {
-                FrameworkName frameworkName = VersionUtility.ParseFrameworkName(name);
+                FrameworkName frameworkName;
+                try
+                {
+                    frameworkName = VersionUtility.ParseFrameworkName(name);
+                }
+                catch (ArgumentException)
+                {
+                    if (parts[0].Equals("lib", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return " (Invalid framework)";
+                    }
+                    else
+                    {
+                        return String.Empty;
+                    }
+                }
+
                 if (frameworkName != VersionUtility.UnsupportedFrameworkName)
                 {
                     return " (" + frameworkName + ")";
