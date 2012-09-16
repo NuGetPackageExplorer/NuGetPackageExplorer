@@ -142,6 +142,9 @@
     <Compile Include="PackageDependencyEditor.xaml.cs">
       <DependentUpon>PackageDependencyEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PortableLibraryDialog.xaml.cs">
+      <DependentUpon>PortableLibraryDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.partial.cs">
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
@@ -276,6 +279,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PluginManagerDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PortableLibraryDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

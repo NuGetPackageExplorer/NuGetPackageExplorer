@@ -31,6 +31,8 @@ namespace NuGetPackageExplorer.Types
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft);
 
+        bool TrySelectPortableFramework(out string portableFramework);
+
         bool ConfirmCloseEditor(string title, string message);
 
         bool? AskToInstallNpeOnWindows8();

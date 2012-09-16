@@ -163,6 +163,14 @@ namespace PackageExplorerViewModel
 
         private void AddContentFolderExecute(string folderName)
         {
+            if (folderName == "portable")
+            {
+                if (!PackageViewModel.UIServices.TrySelectPortableFramework(out folderName))
+                {
+                    return;
+                }
+            }
+
             AddFolder(folderName);
         }
 

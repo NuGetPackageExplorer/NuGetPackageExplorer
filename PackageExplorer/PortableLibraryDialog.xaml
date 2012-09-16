@@ -1,0 +1,79 @@
+﻿<self:StandardDialog 
+        x:Class="PackageExplorer.PortableLibraryDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:PackageExplorer" 
+        xmlns:settings="clr-namespace:PackageExplorer.Properties"
+        xmlns:resources="clr-namespace:PackageExplorer.Resources"
+        FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" 
+        Title="Pick Target Frameworks"
+        WindowStartupLocation="CenterOwner" 
+        SizeToContent="WidthAndHeight" 
+        ShowInTaskbar="False"
+        MinWidth="300"
+        MinHeight="320">
+    
+    <self:StandardDialog.Resources>
+        <Style TargetType="{x:Type ComboBox}">
+            <Setter Property="Grid.Column" Value="1" />
+            <Setter Property="IsEditable" Value="False" />
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="Margin" Value="3,2,0,2" />
+            <Setter Property="SelectedIndex" Value="0" />
+        </Style>
+    </self:StandardDialog.Resources>
+    
+    <DockPanel LastChildFill="True">
+        <Label DockPanel.Dock="Top" Content="_Target frameworks:" />
+
+        <Border DockPanel.Dock="Bottom" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
+            <UniformGrid HorizontalAlignment="Right" Margin="10,5" Rows="1" Columns="2">
+                <Button x:Name="OKButton" IsDefault="True" Content="OK" Margin="5" IsEnabled="False" Click="OkButton_Click" />
+                <Button IsCancel="True" Content="Cancel" Margin="5,5,0,5" Padding="15,0" Click="CancelButton_Click" />
+            </UniformGrid>
+        </Border>
+
+        <Border BorderThickness="1" BorderBrush="DarkGray" Padding="4,4,4,30" Margin="4,0,4,4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!-- .NET Framework -->
+                <CheckBox x:Name="NetCheckBox" Grid.Row="0" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="NetFx" Grid.Row="0" IsEnabled="{Binding IsChecked, ElementName=NetCheckBox, Mode=OneWay}">
+                    <ComboBoxItem Tag="net4">.NET Framework 4 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="net403">.NET Framework 4.0.3 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="net45">.NET Framework 4.5 and higher</ComboBoxItem>
+                </ComboBox>
+
+                <!-- Silverlight -->
+                <CheckBox x:Name="SilverlightCheckBox" Grid.Row="1" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="SilverlightFx" Grid.Row="1" IsEnabled="{Binding IsChecked, ElementName=SilverlightCheckBox, Mode=OneWay}">
+                    <ComboBoxItem Tag="sl4">Silverlight 4 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="sl5">Silverlight 5</ComboBoxItem>
+                </ComboBox>
+
+                <!-- Windows Phone -->
+                <CheckBox x:Name="WPCheckBox" Grid.Row="2" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="WPFx" Grid.Row="2" IsEnabled="{Binding IsChecked, ElementName=WPCheckBox, Mode=OneWay}">
+                    <ComboBoxItem Tag="wp7">Windows Phone 7 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="wp71">Windows Phone 7.5 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="wp8">Windows Phone 8</ComboBoxItem>
+                </ComboBox>
+
+                <!-- .NET for Windows Store apps -->
+                <CheckBox x:Name="WindowsCheckBox" Grid.Row="3" Grid.ColumnSpan="2"  VerticalAlignment="Center" Content=".NET for Windows Store apps" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState">
+                </CheckBox>
+            </Grid>
+        </Border>
+    </DockPanel>
+</self:StandardDialog>

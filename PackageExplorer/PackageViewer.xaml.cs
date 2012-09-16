@@ -22,7 +22,14 @@ namespace PackageExplorer
         private static readonly Dictionary<string, string[]> _frameworkFolders =
             new Dictionary<string, string[]>
             {
-                {"Windows Phone", new[] {"v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71"}},
+                {
+                    "Portable Library",
+                    new string[0]
+                },
+                {
+                    "Windows Phone", 
+                    new[] {"v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71", "v8.0", "wp8"}
+                },
                 {
                     "Siverlight",
                     new[]
@@ -360,22 +367,30 @@ namespace PackageExplorer
             {
                 var item = new MenuItem
                            {
-                               Header =
-                                   String.Format(CultureInfo.CurrentCulture, "Add {0} folder", pair.Key),
+                               Header = String.Format(CultureInfo.CurrentCulture, "Add {0} folder", pair.Key),
                                Visibility = Visibility.Collapsed
                            };
                 item.SetBinding(VisibilityProperty, visibilityBinding);
 
                 string[] values = pair.Value;
-                for (int i = 0; i < values.Length; i += 2)
+                if (values.Length > 0)
                 {
-                    var childItem = new MenuItem
-                                    {
-                                        Header = values[i],
-                                        CommandParameter = values[i + 1]
-                                    };
-                    childItem.SetBinding(MenuItem.CommandProperty, commandBinding);
-                    item.Items.Add(childItem);
+                    for (int i = 0; i < values.Length; i += 2)
+                    {
+                        var childItem = new MenuItem
+                                        {
+                                            Header = values[i],
+                                            CommandParameter = values[i + 1]
+                                        };
+                        childItem.SetBinding(MenuItem.CommandProperty, commandBinding);
+                        item.Items.Add(childItem);
+                    }
+                }
+                else
+                {
+                    // HACK: portable library menu item
+                    item.SetBinding(MenuItem.CommandProperty, commandBinding);
+                    item.CommandParameter = "portable";
                 }
 
                 menu.Items.Insert(0, item);

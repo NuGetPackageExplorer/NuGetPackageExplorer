@@ -502,5 +502,25 @@ namespace PackageExplorer
                 return result == yesButton;
             }
         }
+
+        public bool TrySelectPortableFramework(out string portableFramework)
+        {
+            var dialog = new PortableLibraryDialog
+            {
+                Owner = Window.Value
+            };
+
+            bool? result = dialog.ShowDialog();
+            if (result ?? false)
+            {
+                portableFramework = dialog.GetSelectedFrameworkName();
+                return true;
+            }
+            else
+            {
+                portableFramework = null;
+                return false;
+            }
+        }
     }
 }
