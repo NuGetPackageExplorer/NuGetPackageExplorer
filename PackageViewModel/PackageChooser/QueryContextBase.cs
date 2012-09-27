@@ -39,7 +39,16 @@ namespace PackageExplorerViewModel
             if (!TotalItemCountReady && dataServiceQuery != null)
             {
                 var queryResponse = (QueryOperationResponse<T>)dataServiceQuery.Execute();
-                _totalItemCount = (int)queryResponse.TotalCount;
+                try
+                {
+                    _totalItemCount = (int)queryResponse.TotalCount;
+                }
+                catch (InvalidOperationException)
+                {
+                    // the server doesn't return $inlinecount value,
+                    // fall back to using $count query
+                    _totalItemCount = Source.Count();
+                }
                 return queryResponse;
             }
             else
