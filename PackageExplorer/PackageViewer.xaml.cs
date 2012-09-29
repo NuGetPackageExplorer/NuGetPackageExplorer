@@ -38,7 +38,7 @@ namespace PackageExplorer
                     }
                 },
                 {
-                    "Windows", 
+                    "Windows Store",
                     new[] { "(no version)", "netcore", "Windows 8", "netcore45" }
                 },
                 {
