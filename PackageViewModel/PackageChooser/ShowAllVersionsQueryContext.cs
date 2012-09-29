@@ -10,7 +10,8 @@ namespace PackageExplorerViewModel
     internal class ShowAllVersionsQueryContext<T> : QueryContextBase<T>, IQueryContext<T> where T : IPackageInfoType
     {
         private readonly int _bufferSize;
-        private readonly IEqualityComparer<T> _comparer;
+        private readonly IEqualityComparer<T> _equalityComparer;
+        private readonly Comparison<T> _comparer;
         private readonly int _pageSize;
         private readonly Stack<int> _skipHistory = new Stack<int>();
         private int _nextSkip;
@@ -18,10 +19,16 @@ namespace PackageExplorerViewModel
         private bool _showUnlistedPackages;
 
         public ShowAllVersionsQueryContext(
-            IQueryable<T> source, int pageSize, int bufferSize, bool showUnlistedPackages, IEqualityComparer<T> comparer)
+            IQueryable<T> source, 
+            int pageSize, 
+            int bufferSize, 
+            bool showUnlistedPackages, 
+            IEqualityComparer<T> equalityComparer,
+            Comparison<T> comparer)
             : base(source)
         {
             _bufferSize = bufferSize;
+            _equalityComparer = equalityComparer;
             _comparer = comparer;
             _pageSize = pageSize;
             _showUnlistedPackages = showUnlistedPackages;
@@ -47,6 +54,8 @@ namespace PackageExplorerViewModel
         public IEnumerable<T> GetItemsForCurrentPage()
         {
             T[] buffer = null;
+            var groupItems = new List<T>();
+
             int skipCursor = _nextSkip = _skip;
             int head = 0;
             for (int i = 0;
@@ -77,11 +86,11 @@ namespace PackageExplorerViewModel
                         skipCursor += buffer.Length;
                     }
 
-                    if (firstItem || _comparer.Equals(buffer[head], lastItem))
+                    if (firstItem || _equalityComparer.Equals(buffer[head], lastItem))
                     {
                         if (_showUnlistedPackages || !buffer[head].IsUnlisted)
                         {
-                            yield return buffer[head];
+                            groupItems.Add(buffer[head]);
                             lastItem = buffer[head];                            
                             firstItem = false;
                         }
@@ -91,9 +100,29 @@ namespace PackageExplorerViewModel
                     }
                     else
                     {
+                        if (groupItems.Count > 0)
+                        {
+                            groupItems.Sort(_comparer);
+                            foreach (T item in groupItems)
+                            {
+                                yield return item;
+                            }
+                            groupItems.Clear();
+                        }
+
                         break;
                     }
                 }
+            }
+
+            if (groupItems.Count > 0)
+            {
+                groupItems.Sort(_comparer);
+                foreach (T item in groupItems)
+                {
+                    yield return item;
+                }
+                groupItems.Clear();
             }
         }
 

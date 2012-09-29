@@ -13,8 +13,30 @@ namespace NuGet
     [HasStreamAttribute]
     public class PackageInfo : IPackageInfoType
     {
+        private string _version;
+        private SemanticVersion _semanticVersion;
+
         public string Id { get; set; }
-        public string Version { get; set; }
+        public string Version
+        {
+            get
+            {
+                return _version;
+            }
+            set
+            {
+                _version = value;
+
+                if (String.IsNullOrEmpty(_version))
+                {
+                    _semanticVersion = new SemanticVersion(0, 0, 0, 0);
+                }
+                else
+                {
+                    SemanticVersion.TryParse(_version, out _semanticVersion);
+                }
+            }
+        }
         public string Authors { get; set; }
         public int VersionDownloadCount { get; set; }
         public int DownloadCount { get; set; }
@@ -62,6 +84,14 @@ namespace NuGet
             get
             {
                 return DownloadUrl.IsFile;
+            }
+        }
+
+        public SemanticVersion SemanticVersion
+        {
+            get
+            {
+                return _semanticVersion;
             }
         }
 

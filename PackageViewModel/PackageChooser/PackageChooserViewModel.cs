@@ -546,7 +546,8 @@ namespace PackageExplorerViewModel
                                 ShowAllVersionsPageSize,
                                 PageBuffer,
                                 ShowUnlistedPackages,
-                                PackageInfoEqualityComparer.Instance);
+                                PackageInfoEqualityComparer.Instance,
+                                (a, b) => b.SemanticVersion.CompareTo(a.SemanticVersion));
                         }
 
                         LoadPage(CurrentCancellationTokenSource.Token);
