@@ -58,6 +58,15 @@ namespace NuGet
             }
         }
 
+        public bool SupportsSearchById
+        {
+            get
+            {
+                return _dataServiceMetadata.Value != null &&
+                       _dataServiceMetadata.Value.SupportedMethodNames.Contains("FindPackagesById", StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
         #endregion
 
         private void OnSendingRequest(object sender, SendingRequestEventArgs e)
@@ -82,16 +91,36 @@ namespace NuGet
 
         public IQueryable<IPackage> Search(string searchTerm)
         {
-            if (SupportsSearch)
+            if (searchTerm.StartsWith("id:", StringComparison.OrdinalIgnoreCase))
             {
-                return _context.CreateQuery<DataServicePackage>("Search")
-                               .AddQueryOption("searchTerm", "'" + searchTerm + "'")
-                               .AddQueryOption("targetFramework", "")
-                               .AddQueryOption("includePrerelease", "true")
-                               .IncludeTotalCount();
-            }
+                string id = searchTerm.Substring(3).Trim();
+                if (String.IsNullOrEmpty(id))
+                {
+                    return new IPackage[0].AsQueryable();
+                }
 
-            return GetPackages().Find(searchTerm.Split(' '));
+                if (SupportsSearchById)
+                {
+                    return _context.CreateQuery<DataServicePackage>("FindPackagesById")
+                                   .AddQueryOption("id", "'" + id + "'")
+                                   .IncludeTotalCount();
+                }
+
+                return GetPackages().FindPackagesById(id);
+            }
+            else
+            {
+                if (SupportsSearch)
+                {
+                    return _context.CreateQuery<DataServicePackage>("Search")
+                                   .AddQueryOption("searchTerm", "'" + searchTerm + "'")
+                                   .AddQueryOption("targetFramework", "")
+                                   .AddQueryOption("includePrerelease", "true")
+                                   .IncludeTotalCount();
+                }
+
+                return GetPackages().Find(searchTerm.Split(' '));
+            }
         }
     }
 }

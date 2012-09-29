@@ -38,8 +38,31 @@ namespace NuGet
             return package.Id + " " + package.Version;
         }
 
-        public static IQueryable<IPackage> Find(this IQueryable<IPackage> packages,
-                                                          params string[] searchTerms)
+        public static IQueryable<IPackage> Search(this IQueryable<IPackage> packages, string searchTerm)
+        {
+            if (searchTerm.StartsWith("id:", StringComparison.OrdinalIgnoreCase))
+            {
+                string id = searchTerm.Substring(3).Trim();
+                if (String.IsNullOrEmpty(id))
+                {
+                    return new IPackage[0].AsQueryable();
+                }
+
+                return FindPackagesById(packages, id);
+            }
+            else
+            {
+                return Find(packages, searchTerm.Split(' '));
+            }
+        }
+
+        public static IQueryable<IPackage> FindPackagesById(this IQueryable<IPackage> packages, string id)
+        {
+            id = id.ToLowerInvariant();
+            return packages.Where(p => p.Id.ToLower() == id);
+        }
+
+        public static IQueryable<IPackage> Find(this IQueryable<IPackage> packages, params string[] searchTerms)
         {
             if (searchTerms == null)
             {

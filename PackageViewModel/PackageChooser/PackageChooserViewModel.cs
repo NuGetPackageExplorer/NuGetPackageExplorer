@@ -310,15 +310,6 @@ namespace PackageExplorerViewModel
             if (_packageRepository == null)
             {
                 _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
-
-                //try
-                //{
-                //    _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
-                //}
-                //catch (Exception)
-                //{
-                //    return null;
-                //}
             }
 
             var token = (CancellationToken)state;
@@ -472,7 +463,7 @@ namespace PackageExplorerViewModel
 
                         if (!String.IsNullOrEmpty(_currentSearch))
                         {
-                            IPackageSearchable searchableRepository = repository as IPackageSearchable;
+                            var searchableRepository = repository as IPackageSearchable;
                             if (searchableRepository != null)
                             {
                                 query = searchableRepository.Search(_currentSearch);
@@ -498,7 +489,7 @@ namespace PackageExplorerViewModel
 
                             if (!String.IsNullOrEmpty(_currentSearch))
                             {
-                                query = query.Find(_currentSearch.Split(' '));
+                                query = query.Search(_currentSearch);
                             }
                         }
 

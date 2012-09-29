@@ -246,6 +246,10 @@ namespace PackageExplorer
         private void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
             var parameter = (string) e.Parameter;
+            if (!String.IsNullOrEmpty(parameter))
+            {
+                parameter = "id:" + parameter;
+            }
             OpenPackageFromRepository(parameter);
         }
 
