@@ -56,6 +56,7 @@ namespace NuGet
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1308:NormalizeStringsToUppercase")]
         public static IQueryable<IPackage> FindPackagesById(this IQueryable<IPackage> packages, string id)
         {
             id = id.ToLowerInvariant();
