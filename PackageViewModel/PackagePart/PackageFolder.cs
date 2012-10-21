@@ -102,7 +102,7 @@ namespace PackageExplorerViewModel
                 if (Parent != null)
                 {
                     // only treat this folder as an empty folder if it's NOT the root folder.
-                    return new[] { new EmptyFolderFile(this) };
+                    return new[] { new EmptyFolderFile(this.Path) };
                 }
                 else
                 {

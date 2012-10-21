@@ -329,17 +329,32 @@ namespace NuGet
 
         private void AddFiles(string basePath, string source, string destination, string exclude = null)
         {
-            List<PhysicalPackageFile> searchFiles =
-                PathResolver.ResolveSearchPattern(basePath, source, destination).ToList();
-            ExcludeFiles(searchFiles, basePath, exclude);
+            string fileName = Path.GetFileName(source);
 
-            if (!PathResolver.IsWildcardSearch(source) && !searchFiles.Any())
+            // treat empty files specially
+            if (Constants.PackageEmptyFileName.Equals(fileName, StringComparison.OrdinalIgnoreCase))
             {
-                throw new FileNotFoundException(String.Format(CultureInfo.CurrentCulture,
-                                                              NuGetResources.PackageAuthoring_FileNotFound,
-                                                              source));
+                string destinationPath = Path.GetDirectoryName(destination);
+                if (String.IsNullOrEmpty(destinationPath))
+                {
+                    destinationPath = Path.GetDirectoryName(source);
+                }
+                Files.Add(new EmptyFolderFile(destinationPath));
             }
-            Files.AddRange(searchFiles);
+            else
+            {
+                List<PhysicalPackageFile> searchFiles = PathResolver.ResolveSearchPattern(basePath, source, destination).ToList();
+                ExcludeFiles(searchFiles, basePath, exclude);
+
+                if (!PathResolver.IsWildcardSearch(source) && !searchFiles.Any())
+                {
+                    throw new FileNotFoundException(String.Format(CultureInfo.CurrentCulture,
+                                                                  NuGetResources.PackageAuthoring_FileNotFound,
+                                                                  source));
+                }
+
+                Files.AddRange(searchFiles);
+            }
         }
 
         private static void ExcludeFiles(List<PhysicalPackageFile> searchFiles, string basePath, string exclude)

@@ -58,7 +58,6 @@
     <Compile Include="EmptyPackage.cs" />
     <Compile Include="FileEditorViewModel.cs" />
     <Compile Include="PackageChooser\QueryContextBase.cs" />
-    <Compile Include="PackagePart\EmptyFolderFile.cs" />
     <Compile Include="PackagePart\IEditablePackageFile.cs" />
     <Compile Include="PackagePart\PackageMetadataFile.cs" />
     <Compile Include="Utilities\FileHelper.cs" />

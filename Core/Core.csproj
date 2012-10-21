@@ -97,6 +97,7 @@
     <Compile Include="NuGetConstants.cs" />
     <Compile Include="Packages\Constants.cs" />
     <Compile Include="Packages\DataServicePackage.cs" />
+    <Compile Include="Packages\EmptyFolderFile.cs" />
     <Compile Include="Packages\PackageFileBase.cs" />
     <Compile Include="Packages\PackageInfo.cs" />
     <Compile Include="Packages\PackageInfoEqualityComparer.cs" />
