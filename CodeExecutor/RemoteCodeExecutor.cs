@@ -32,11 +32,14 @@ namespace CodeExecutor
             {
                 // load CodeExecutor.dll into the other app domain
                 domain.Load(typeof(RemoteCodeExecutor).Assembly.GetName());
-                
+
                 var worker = (AppDomainWorker)domain.CreateInstanceFromAndUnwrap(
                     "CodeExecutor.dll", "CodeExecutor.AppDomainWorker");
 
                 workerAction(worker);
+            }
+            catch (Exception)
+            {
             }
             finally
             {
