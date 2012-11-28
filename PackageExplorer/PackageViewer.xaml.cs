@@ -39,7 +39,7 @@ namespace PackageExplorer
                 },
                 {
                     "Windows Store",
-                    new[] { "(no version)", "netcore", "Windows 8", "netcore45", "Windows 8 for JavaScript", "windows8-javascript", "Windows 8 for .NET", "windows8-managed" }
+                    new[] { "(no version)", "netcore", "Windows 8", "netcore45" }
                 },
                 {
                     ".NET Client profile",

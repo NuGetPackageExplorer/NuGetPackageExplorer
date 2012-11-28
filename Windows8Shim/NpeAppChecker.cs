@@ -13,8 +13,6 @@ namespace Windows8Shim
             var userSecurityId = user.Owner.Value;
 
             var pm = new PackageManager();
-
-
             var packages = pm.FindPackagesForUser(userSecurityId, "50582LuanNguyen.NuGetPackageExplorer_w6y2tyx5bpzwa");
             return packages.Any();
         }
