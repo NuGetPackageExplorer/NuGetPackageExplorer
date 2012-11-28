@@ -55,7 +55,11 @@ namespace PackageExplorer
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
+            bool canClose = String.IsNullOrEmpty(NewDependencyId.Text) || AddNewDependency();
+            if (canClose)
+            {
+                DialogResult = true;
+            }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -113,23 +117,25 @@ namespace PackageExplorer
             AddNewDependency();
         }
 
-        private void AddNewDependency()
+        private bool AddNewDependency()
         {
             if (String.IsNullOrEmpty(NewDependencyId.Text) &&
                 String.IsNullOrEmpty(NewDependencyVersion.Text))
             {
-                return;
+                return true;
             }
 
             if (!NewPackageDependencyGroup.UpdateSources())
             {
-                return;
+                return false;
             }
 
             ActivePackageDependencySet.Dependencies.Add(_newPackageDependency.AsReadOnly());
 
             // after dependency is added, clear the textbox
             ClearDependencyTextBox();
+
+            return true;
         }
 
         private void ClearDependencyTextBox()
