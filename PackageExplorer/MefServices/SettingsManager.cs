@@ -111,15 +111,15 @@ namespace PackageExplorer
             set { Settings.Default.ShowUnlistedPackages = value; }
         }
 
-        public bool UseV1ProtocolForPublish
+        public bool PublishAsUnlisted
         {
             get
             {
-                return Settings.Default.UseV1ProtocolForPublish;
+                return Settings.Default.PublishAsUnlisted;
             }
             set
             {
-                Settings.Default.UseV1ProtocolForPublish = value;
+                Settings.Default.PublishAsUnlisted = value;
             }
         }
 

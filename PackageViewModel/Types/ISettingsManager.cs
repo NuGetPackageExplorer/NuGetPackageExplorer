@@ -26,6 +26,6 @@ namespace NuGetPackageExplorer.Types
 
         string ReadApiKey(string source);
         void WriteApiKey(string source, string apiKey);
-        bool UseV1ProtocolForPublish { get; set; }
+        bool PublishAsUnlisted { get; set; }
     }
 }

@@ -1,237 +1,194 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Net;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Json;
+using NuGet.Resources;
 
 namespace NuGet
 {
-    public class GalleryServer : IGalleryServer
+    public class GalleryServer
     {
-        private const string CreatePackageService = "PackageFiles";
-        private const string PackageService = "Packages";
-        private const string PublishPackageService = "PublishedPackages/Publish";
-        private readonly string _baseGalleryServerUrl;
-        private readonly string _originalSource;
+        private const string ServiceEndpoint = "/api/v2/package";
+        private const string ApiKeyHeader = "X-NuGet-ApiKey";
+
+        private readonly Lazy<Uri> _baseUri;
+        private readonly string _source;
         private readonly string _userAgent;
 
         public GalleryServer(string source, string userAgent)
         {
-            if (string.IsNullOrEmpty(source))
+            if (String.IsNullOrEmpty(source))
             {
-                throw new ArgumentNullException("source");
+                throw new ArgumentException("Argument cannot be null or empty.", "source");
             }
-
-            _originalSource = source.Trim();
-            _baseGalleryServerUrl = GetSafeRedirectedUri(source);
-            if (_baseGalleryServerUrl.EndsWith("/", StringComparison.Ordinal))
-            {
-                _baseGalleryServerUrl = _baseGalleryServerUrl.Substring(0, _baseGalleryServerUrl.Length - 1);
-            }
+            _source = source;
             _userAgent = userAgent;
+            _baseUri = new Lazy<Uri>(ResolveBaseUrl);
         }
 
         public bool IsV1Protocol
         {
             get
             {
-                return true;
+                return false;
             }
         }
 
         public string Source
         {
-            get { return _originalSource; }
+            get { return _source; }
         }
 
-        [SuppressMessage(
-            "Microsoft.Reliability",
-            "CA2000:Dispose objects before losing scope",
-            Justification = "We dispose it in the Completed event handler.")]
-        public void PushPackage(string apiKey, Stream packageStream, IObserver<int> progressObserver, IPackageMetadata package)
+        public void PushPackage(string apiKey, Stream packageStream, IPackageMetadata package, bool pushAsUnlisted, IObserver<int> progressObserver)
         {
-            var state = new PublishState
-                        {
-                            PublishKey = apiKey,
-                            PackageMetadata = package,
-                            ProgressObserver = progressObserver
-                        };
+            HttpClient client = GetClient("", "PUT", "application/octet-stream");
 
-            var url =
-                new Uri(String.Format(CultureInfo.InvariantCulture, 
-                                      "{0}/{1}/{2}/nupkg",
-                                      _baseGalleryServerUrl,
-                                      CreatePackageService, 
-                                      apiKey));
-
-            var client = new WebClient();
-            client.Headers[HttpRequestHeader.ContentType] = "application/octet-stream";
-            client.Headers[HttpRequestHeader.UserAgent] = _userAgent;
-            client.UploadDataCompleted += OnCreatePackageCompleted;
-            client.UploadDataAsync(url, "POST", packageStream.ReadAllBytes(), state);
-        }
-
-        [SuppressMessage(
-            "Microsoft.Reliability",
-            "CA2000:Dispose objects before losing scope",
-            Justification = "We dispose it in the Completed event handler.")]
-        private void PublishPackage(PublishState state)
-        {
-            var url = new Uri(String.Format(CultureInfo.InvariantCulture,
-                                              "{0}/{1}",
-                                              _baseGalleryServerUrl,
-                                              PublishPackageService));
-
-            using (Stream requestStream = new MemoryStream())
-            {
-                var data = new PublishData
-                           {
-                               Key = state.PublishKey,
-                               Id = state.PackageMetadata.Id,
-                               Version = state.PackageMetadata.Version.ToString()
-                           };
-
-                var jsonSerializer = new DataContractJsonSerializer(typeof(PublishData));
-                jsonSerializer.WriteObject(requestStream, data);
-                requestStream.Seek(0, SeekOrigin.Begin);
-
-                var client = new WebClient();
-                client.Headers[HttpRequestHeader.ContentType] = "application/json";
-                client.Headers[HttpRequestHeader.UserAgent] = _userAgent;
-                client.UploadDataCompleted += OnPublishPackageCompleted;
-                client.UploadDataAsync(url, "POST", requestStream.ReadAllBytes(), state);
-            }
-        }
-
-        [SuppressMessage("Microsoft.Usage", "CA2201:DoNotRaiseReservedExceptionTypes")]
-        private void OnCreatePackageCompleted(object sender, UploadDataCompletedEventArgs e)
-        {
-            var state = (PublishState)e.UserState;
-            if (e.Error != null)
-            {
-                Exception error = e.Error;
-
-                var webException = e.Error as WebException;
-                if (webException != null)
+            client.SendingRequest += (sender, e) =>
                 {
-                    var response = (HttpWebResponse)webException.Response;
-                    if (response != null)
-                    {
-                        if (response.StatusCode == HttpStatusCode.InternalServerError ||
-                            response.StatusCode == HttpStatusCode.Unauthorized)
-                        {
-                            // real error message is contained inside the response body
-                            using (Stream stream = response.GetResponseStream())
-                            {
-                                string errorMessage = stream.ReadToEnd();
-                                error = new ApplicationException(errorMessage);
-                            }
-                        }
-                        else if (response.StatusCode == HttpStatusCode.Forbidden)
-                        {
-                            // this is for myget.org when the api key is invalid
-                            error = new ApplicationException(response.StatusDescription);
-                        }
-                    }
-                }
+                    var request = (HttpWebRequest)e.Request;
 
-                state.ProgressObserver.OnError(error);
-            }
-            else if (!e.Cancelled)
+                    // Set the timeout to the same as the read write timeout (5 mins is the default)
+                    request.Timeout = request.ReadWriteTimeout;
+                    request.Headers.Add(ApiKeyHeader, apiKey);
+
+                    var multiPartRequest = new MultipartWebRequest();
+                    multiPartRequest.AddFile(packageStream, "package");
+
+                    multiPartRequest.CreateMultipartRequest(request);
+                };
+
+            bool successful = EnsureSuccessfulResponse(client, progressObserver, HttpStatusCode.Created);
+            if (pushAsUnlisted && successful)
             {
-                PublishPackage(state);
+                DeletePackage(apiKey, package.Id, package.Version.ToString(), progressObserver);
             }
-
-            var client = (WebClient)sender;
-            client.Dispose();
         }
 
-        private void OnPublishPackageCompleted(object sender, UploadDataCompletedEventArgs e)
+        public void DeletePackage(string apiKey, string packageId, string packageVersion, IObserver<int> progressObserver)
         {
-            var state = (PublishState)e.UserState;
-            if (e.Error != null)
+            // Review: Do these values need to be encoded in any way?
+            var url = String.Join("/", packageId, packageVersion);
+            HttpClient client = GetClient(url, "DELETE", "text/html");
+
+            client.SendingRequest += (sender, e) =>
             {
-                Exception error = e.Error;
-
-                var webException = e.Error as WebException;
-                if (webException != null)
-                {
-                    // real error message is contained inside the response body
-                    using (Stream stream = webException.Response.GetResponseStream())
-                    {
-                        string errorMessage = stream.ReadToEnd();
-                        error = new WebException(errorMessage, webException, webException.Status, webException.Response);
-                    }
-                }
-
-                state.ProgressObserver.OnError(error);
-            }
-            else if (!e.Cancelled)
-            {
-                state.ProgressObserver.OnCompleted();
-            }
-
-            var client = (WebClient)sender;
-            client.Dispose();
+                var request = (HttpWebRequest)e.Request;
+                request.Headers.Add(ApiKeyHeader, apiKey);
+            };
+            EnsureSuccessfulResponse(client, progressObserver);
         }
 
-        private static string GetSafeRedirectedUri(string url)
+        private HttpClient GetClient(string path, string method, string contentType)
         {
+            var baseUrl = _baseUri.Value;
+            Uri requestUri = GetServiceEndpointUrl(baseUrl, path);
+
+            var client = new HttpClient(requestUri)
+            {
+                ContentType = contentType,
+                Method = method
+            };
+
+            if (!String.IsNullOrEmpty(_userAgent))
+            {
+                client.UserAgent = _userAgent;
+            }
+
+            return client;
+        }
+
+        internal static Uri GetServiceEndpointUrl(Uri baseUrl, string path)
+        {
+            Uri requestUri;
+            if (String.IsNullOrEmpty(baseUrl.AbsolutePath.TrimStart('/')))
+            {
+                // If there's no host portion specified, append the url to the client.
+                requestUri = new Uri(baseUrl, ServiceEndpoint + '/' + path);
+            }
+            else
+            {
+                requestUri = new Uri(baseUrl, path);
+            }
+            return requestUri;
+        }
+
+        private static bool EnsureSuccessfulResponse(HttpClient client, IObserver<int> progressObserver, HttpStatusCode? expectedStatusCode = null)
+        {
+            HttpWebResponse response = null;
             try
             {
-                var uri = new Uri(url);
-                var client = new RedirectedHttpClient(uri);
-                return client.Uri.ToString();
+                progressObserver.OnNext(0);
+                response = (HttpWebResponse)client.GetResponse();
+                if (response != null &&
+                    ((expectedStatusCode.HasValue && expectedStatusCode.Value != response.StatusCode) ||
+
+                    // If expected status code isn't provided, just look for anything 400 (Client Errors) or higher (incl. 500-series, Server Errors)
+                    // 100-series is protocol changes, 200-series is success, 300-series is redirect.
+                    (!expectedStatusCode.HasValue && (int)response.StatusCode >= 400)))
+                {
+                    throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, NuGetResources.PackageServerError, response.StatusDescription, String.Empty));
+                }
+                progressObserver.OnCompleted();
+                return true;
             }
             catch (WebException e)
             {
-                if (WebExceptionStatus.Timeout == e.Status)
+                if (e.Response == null)
                 {
-                    // rethrow the error because if ran into a timeout issue then
-                    // we don't want the code to continue as there is not going to be any good
-                    // result if we can't return a valid url to the caller.
                     throw;
                 }
-                // we are assuming here that we just got a 403 - Forbidden: Access is denied error
-                // because we are navigating to the publish url of the Gallery Server so we simply
-                // catch the error and return the response url of the response that can be used for publishing
-                // the reason why we get this error is because this is a POST action and IIS gives us this error
-                // because it thinks that we are trying to navigate to a page.
-                if (e.Response != null && e.Response.ResponseUri != null)
+
+                response = (HttpWebResponse)e.Response;
+                if (expectedStatusCode != response.StatusCode)
                 {
-                    return e.Response.ResponseUri.ToString();
+                    Exception error = new WebException(
+                        String.Format(CultureInfo.CurrentCulture, NuGetResources.PackageServerError, response.StatusDescription, e.Message), e);
+                    progressObserver.OnError(error);
                 }
-                else
+
+                return false;
+            }
+            finally
+            {
+                if (response != null)
                 {
-                    return url;
+                    response.Close();
+                    response = null;
                 }
             }
         }
 
-        #region Nested type: PublishState
-
-        private class PublishState
+        private Uri ResolveBaseUrl()
         {
-            public string PublishKey { get; set; }
-            public IObserver<int> ProgressObserver { get; set; }
-            public IPackageMetadata PackageMetadata { get; set; }
+            Uri uri;
+
+            try
+            {
+                var client = new RedirectedHttpClient(new Uri(Source));
+                uri = client.Uri;
+            }
+            catch (WebException ex)
+            {
+                var response = (HttpWebResponse)ex.Response;
+                if (response == null)
+                {
+                    throw;
+                }
+
+                uri = response.ResponseUri;
+            }
+
+            return EnsureTrailingSlash(uri);
         }
 
-        #endregion
-    }
-
-    [DataContract]
-    public class PublishData
-    {
-        [DataMember(Name = "key")]
-        public string Key { get; set; }
-
-        [DataMember(Name = "id")]
-        public string Id { get; set; }
-
-        [DataMember(Name = "version")]
-        public string Version { get; set; }
+        private static Uri EnsureTrailingSlash(Uri uri)
+        {
+            string value = uri.OriginalString;
+            if (!value.EndsWith("/", StringComparison.OrdinalIgnoreCase))
+            {
+                value += "/";
+            }
+            return new Uri(value);
+        }
     }
 }

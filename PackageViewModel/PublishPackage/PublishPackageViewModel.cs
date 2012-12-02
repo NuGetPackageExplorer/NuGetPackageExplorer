@@ -18,12 +18,12 @@ namespace PackageExplorerViewModel
         private bool _canPublish = true;
         private bool _hasError;
         private string _publishKey;
-        private bool? _useV1Protocol = true;
+        private bool? _publishAsUnlisted = true;
         private string _selectedPublishItem;
         private bool _showProgress;
         private string _status;
         private bool _suppressReadingApiKey;
-        private IGalleryServer _uploadHelper;
+        private GalleryServer _uploadHelper;
 
         public PublishPackageViewModel(
             MruPackageSourceManager mruSourceManager,
@@ -35,7 +35,7 @@ namespace PackageExplorerViewModel
             _package = viewModel.PackageMetadata;
             _packageStream = new Lazy<Stream>(viewModel.GetCurrentPackageStream);
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
-            UseV1Protocol = _settingsManager.UseV1ProtocolForPublish;
+            PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
         }
 
         public string PublishKey
@@ -99,15 +99,15 @@ namespace PackageExplorerViewModel
             get { return _mruSourceManager.PackageSources; }
         }
 
-        public bool? UseV1Protocol
+        public bool? PublishAsUnlisted
         {
-            get { return _useV1Protocol; }
+            get { return _publishAsUnlisted; }
             set
             {
-                if (_useV1Protocol != value)
+                if (_publishAsUnlisted != value)
                 {
-                    _useV1Protocol = value;
-                    OnPropertyChanged("UseV1Protocol");
+                    _publishAsUnlisted = value;
+                    OnPropertyChanged("PublishAsUnlisted");
                 }
             }
         }
@@ -161,16 +161,14 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public IGalleryServer GalleryServer
+        public GalleryServer GalleryServer
         {
             get
             {
                 if (_uploadHelper == null ||
-                    !PublishUrl.Equals(_uploadHelper.Source, StringComparison.OrdinalIgnoreCase) ||
-                    (bool)UseV1Protocol != _uploadHelper.IsV1Protocol)
+                    !PublishUrl.Equals(_uploadHelper.Source, StringComparison.OrdinalIgnoreCase))
                 {
-                    _uploadHelper = GalleryServerFactory.CreateGalleryServer(
-                        PublishUrl, HttpUtility.CreateUserAgentString(Constants.UserAgentClient), (bool)UseV1Protocol);
+                    _uploadHelper = new GalleryServer(PublishUrl, HttpUtility.CreateUserAgentString(Constants.UserAgentClient));
                 }
                 return _uploadHelper;
             }
@@ -195,7 +193,7 @@ namespace PackageExplorerViewModel
         {
             ShowProgress = false;
             HasError = false;
-            Status = (UseV1Protocol == true) ? "Package pushed successfully." : "Package published successfully.";
+            Status = (PublishAsUnlisted == true) ? "Package published and unlisted successfully." : "Package published successfully.";
             _settingsManager.WriteApiKey(PublishUrl, PublishKey);
             CanPublish = true;
         }
@@ -217,7 +215,7 @@ namespace PackageExplorerViewModel
         public void PushPackage()
         {
             ShowProgress = true;
-            Status = "Publishing package...";
+            Status = (PublishAsUnlisted == true) ? "Publishing and unlisting package..." : "Publishing package...";
             HasError = false;
             CanPublish = false;
 
@@ -227,7 +225,7 @@ namespace PackageExplorerViewModel
             TaskScheduler uiTaskSchedulker = TaskScheduler.FromCurrentSynchronizationContext();
 
             Task.Factory.StartNew(
-                    () => GalleryServer.PushPackage(PublishKey, _packageStream.Value, this, _package))
+                    () => GalleryServer.PushPackage(PublishKey, _packageStream.Value, _package, PublishAsUnlisted ?? false, this))
                 .ContinueWith(task =>
                               {
                                   if (task.IsFaulted)
@@ -257,7 +255,7 @@ namespace PackageExplorerViewModel
 
         public void Dispose()
         {
-            _settingsManager.UseV1ProtocolForPublish = (bool)UseV1Protocol;
+            _settingsManager.PublishAsUnlisted = (bool)PublishAsUnlisted;
         }
     }
 }
