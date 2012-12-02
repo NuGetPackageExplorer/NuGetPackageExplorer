@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using NuGet;
 
 namespace NuGet
 {
@@ -12,7 +11,7 @@ namespace NuGet
 
         public override Stream GetStream()
         {
-            return new MemoryStream(new byte[0]);
+            return Stream.Null;
         }
     }
 }

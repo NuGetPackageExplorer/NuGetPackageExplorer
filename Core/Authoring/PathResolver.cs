@@ -47,23 +47,33 @@ namespace NuGet
             return new Regex('^'
                              + Regex.Escape(wildcard)
                                    .Replace(@"\*\*\\", ".*")
-                                   //For recursive wildcards \**\, include the current directory.
+                //For recursive wildcards \**\, include the current directory.
                                    .Replace(@"\*\*", ".*")
-                                   // For recursive wildcards that don't end in a slash e.g. **.txt would be treated as a .txt file at any depth
+                // For recursive wildcards that don't end in a slash e.g. **.txt would be treated as a .txt file at any depth
                                    .Replace(@"\*", @"[^\\]*(\\)?")
-                                   // For non recursive searches, limit it any character that is not a directory separator
+                // For non recursive searches, limit it any character that is not a directory separator
                                    .Replace(@"\?", ".") // ? translates to a single any character
                              + '$', RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture);
         }
 
-        internal static IEnumerable<PhysicalPackageFile> ResolveSearchPattern(string basePath, string searchPath,
-                                                                              string targetPath)
+        internal static IEnumerable<PackageFileBase> ResolveSearchPattern(string basePath, string searchPath, string targetPath)
         {
             if (!searchPath.StartsWith(@"\\", StringComparison.OrdinalIgnoreCase))
             {
                 // If we aren't dealing with network paths, trim the leading slash. 
                 searchPath = searchPath.TrimStart(Path.DirectorySeparatorChar);
             }
+
+            bool searchDirectory = false;
+
+            // If the searchPath ends with \ or /, we treat searchPath as a directory,   
+            // and will include everything under it, recursively   
+            if (IsDirectoryPath(searchPath))
+            {
+                searchPath = searchPath + "**" + Path.DirectorySeparatorChar + "*";
+                searchDirectory = true;
+            }
+
             basePath = NormalizeBasePath(basePath, ref searchPath);
             string basePathToEnumerate = GetPathToEnumerateFrom(basePath, searchPath);
 
@@ -84,10 +94,18 @@ namespace NuGet
 
             // Starting from the base path, enumerate over all files and match it using the wildcard expression provided by the user.
             IEnumerable<string> files = Directory.EnumerateFiles(basePathToEnumerate, "*.*", searchOption);
-            return from file in files
-                   where searchRegex.IsMatch(file)
-                   let targetPathInPackage = ResolvePackagePath(basePathToEnumerate, searchPath, file, targetPath)
-                   select new PhysicalPackageFile(isTempFile: false, originalPath: file, targetPath: targetPathInPackage);
+            IEnumerable<PackageFileBase> matchedFiles =
+                from file in files
+                where searchRegex.IsMatch(file)
+                let targetPathInPackage = ResolvePackagePath(basePathToEnumerate, searchPath, file, targetPath)
+                select new PhysicalPackageFile(isTempFile: false, originalPath: file, targetPath: targetPathInPackage);
+
+            if (searchDirectory && IsEmptyDirectory(basePathToEnumerate))
+            {
+                matchedFiles = matchedFiles.Concat(new[] { new EmptyFolderFile(targetPath ?? String.Empty) });
+            }
+
+            return matchedFiles;
         }
 
         internal static string GetPathToEnumerateFrom(string basePath, string searchPath)
@@ -130,11 +148,12 @@ namespace NuGet
                                                   string targetPath)
         {
             string packagePath;
+            bool isDirectorySearch = IsDirectoryPath(searchPattern);
             bool isWildcardSearch = IsWildcardSearch(searchPattern);
             bool isRecursiveWildcardSearch = isWildcardSearch &&
                                              searchPattern.IndexOf("**", StringComparison.OrdinalIgnoreCase) != -1;
 
-            if (isRecursiveWildcardSearch && fullPath.StartsWith(searchDirectory, StringComparison.OrdinalIgnoreCase))
+            if ((isRecursiveWildcardSearch || isDirectorySearch) && fullPath.StartsWith(searchDirectory, StringComparison.OrdinalIgnoreCase))
             {
                 // The search pattern is recursive. Preserve the non-wildcard portion of the path.
                 // e.g. Search: X:\foo\**\*.cs results in SearchDirectory: X:\foo and a file path of X:\foo\bar\biz\boz.cs
@@ -180,6 +199,16 @@ namespace NuGet
         internal static bool IsWildcardSearch(string filter)
         {
             return filter.IndexOf('*') != -1;
+        }
+
+        internal static bool IsDirectoryPath(string path)
+        {
+            return path != null && path.Length > 1 && path[path.Length - 1] == Path.DirectorySeparatorChar;
+        }
+
+        private static bool IsEmptyDirectory(string directory)
+        {
+            return !Directory.EnumerateFileSystemEntries(directory).Any();
         }
     }
 }
