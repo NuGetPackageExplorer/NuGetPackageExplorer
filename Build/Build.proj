@@ -75,6 +75,10 @@
         <NuGetExeToolPath>$(PackageExplorerRoot)\NuGet.exe</NuGetExeToolPath>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <ManifestToolPath Condition="!Exists('$ManifestToolPath')">$(ProgramFiles)\Windows Kits\8.0\bin\x86\mt.exe</ManifestToolPath>
+    </PropertyGroup>
+
     <Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; BuildPackages; BuildLocalExecutableZip">
     </Target>
 

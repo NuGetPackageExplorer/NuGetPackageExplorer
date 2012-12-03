@@ -26,14 +26,6 @@ namespace NuGet
             _baseUri = new Lazy<Uri>(ResolveBaseUrl);
         }
 
-        public bool IsV1Protocol
-        {
-            get
-            {
-                return false;
-            }
-        }
-
         public string Source
         {
             get { return _source; }
