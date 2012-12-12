@@ -166,11 +166,12 @@ namespace PackageExplorerViewModel
 
         public void Rename(string newName)
         {
-            if (Name != newName)
+            if (!Name.Equals(newName, StringComparison.Ordinal))
             {
                 if (Parent != null)
                 {
-                    if (Parent.ContainsFile(newName) || Parent.ContainsFolder(newName))
+                    if (!Name.Equals(newName, StringComparison.OrdinalIgnoreCase) &&
+                        (Parent.ContainsFile(newName) || Parent.ContainsFolder(newName)))
                     {
                         PackageViewModel.UIServices.Show(
                             String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, newName),
