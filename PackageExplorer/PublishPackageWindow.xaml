@@ -61,13 +61,6 @@
 		<DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
 			<Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishKey}" Content="Publish _key:" />
 			<TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0">
-				<TextBox.Text>
-					<Binding Path="PublishKey">
-						<Binding.ValidationRules>
-							<self:PublishApiKeyValidationRule />
-						</Binding.ValidationRules>
-					</Binding>
-				</TextBox.Text>
 			</TextBox>
 		</DockPanel>
 		
