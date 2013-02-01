@@ -140,6 +140,11 @@ namespace NuGet
             get { return null; }
         }
 
+        public Version RequiredMinVersion
+        {
+            get { return null; }
+        }
+
         #endregion
 
         #region Nested type: SafeEnumerable

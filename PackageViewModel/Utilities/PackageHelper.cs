@@ -74,6 +74,7 @@ namespace PackageExplorerViewModel
             builder.DependencySets.AddRange(source.DependencySets);
             builder.FrameworkReferences.AddRange(source.FrameworkAssemblies);
             builder.PackageAssemblyReferences.AddRange(source.References);
+            builder.RequiredMinVersion = source.RequiredMinVersion;
         }
 
         public static IPackage BuildPackage(IPackageMetadata metadata, IEnumerable<IPackageFile> files)

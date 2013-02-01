@@ -160,6 +160,14 @@ namespace PackageExplorerViewModel
             get { return DateTimeOffset.Now; }
         }
 
+        public Version RequiredMinVersion
+        {
+            get
+            {
+                return null;
+            }
+        }
+
         #endregion
     }
 }

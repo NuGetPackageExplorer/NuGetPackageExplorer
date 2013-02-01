@@ -126,6 +126,12 @@ namespace NuGet
             }
         }
 
+        public Version RequiredMinVersion
+        {
+            get;
+            set;
+        }
+
         public IEnumerable<AssemblyReference> References
         {
             get { return CorePackage == null ? Enumerable.Empty<AssemblyReference>() : CorePackage.References; }

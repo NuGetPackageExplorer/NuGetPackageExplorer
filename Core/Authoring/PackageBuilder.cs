@@ -93,6 +93,12 @@ namespace NuGet
             private set; 
         }
 
+        public Version RequiredMinVersion
+        {
+            get;
+            set;
+        }
+
         IEnumerable<string> IPackageMetadata.Authors
         {
             get { return Authors; }
@@ -262,6 +268,7 @@ namespace NuGet
             ReleaseNotes = metadata.ReleaseNotes;
             Language = metadata.Language;
             Copyright = metadata.Copyright;
+            RequiredMinVersion = metadata.RequiredMinVersion;
 
             if (metadata.Tags != null)
             {

@@ -214,4 +214,10 @@
   <data name="Manifest_DependenciesHasMixedElements" xml:space="preserve">
     <value>&lt;dependencies&gt; element must not contain both &lt;group&gt; and &lt;dependency&gt; child elements.</value>
   </data>
+  <data name="Manifest_InvalidRequiredMinVersion" xml:space="preserve">
+    <value>The 'requiredMinVersion' attribute in the package manifest has invalid value. It must be a valid version string.</value>
+  </data>
+  <data name="UnknownSchemaVersion" xml:space="preserve">
+    <value>Unknown schema version '{0}'.</value>
+  </data>
 </root>

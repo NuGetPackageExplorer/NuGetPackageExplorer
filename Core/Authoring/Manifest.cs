@@ -173,7 +173,8 @@ namespace NuGet
                                       Language = metadata.Language.SafeTrim(),
                                       DependencySets = CreateDependencySet(metadata),
                                       FrameworkAssemblies = CreateFrameworkAssemblies(metadata),
-                                      References = CreateReferences(metadata)
+                                      References = CreateReferences(metadata),
+                                      RequiredMinVersionString = metadata.RequiredMinVersion.ToStringSafe()
                                   }
                    };
         }
@@ -251,11 +252,7 @@ namespace NuGet
             CheckSchemaVersion(document);
 
             // Create the schema set
-            var schemaSet = new XmlSchemaSet();
-            using (Stream schemaStream = ManifestSchemaUtility.GetSchemaStream(schemaNamespace))
-            {
-                schemaSet.Add(schemaNamespace, XmlReader.Create(schemaStream));
-            }
+            var schemaSet = ManifestSchemaUtility.GetManifestSchemaSet(schemaNamespace);
 
             // Validate the document
             document.Validate(schemaSet, (sender, e) =>

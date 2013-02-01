@@ -74,6 +74,7 @@
                                 </xs:complexType>
                             </xs:element>
                         </xs:all>
+                        <xs:attribute name="requiredMinVersion" use="optional" type="xs:string" />
                     </xs:complexType>
                 </xs:element>
                 <xs:element name="files" minOccurs="0" maxOccurs="1" nillable="true">

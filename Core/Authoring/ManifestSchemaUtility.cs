@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.IO;
-using System.Reflection;
+using System.Linq;
+using System.Xml;
+using System.Xml.Schema;
 using NuGet.Resources;
 
 namespace NuGet
 {
     internal static class ManifestSchemaUtility
     {
-        private const string SchemaNamespaceToken = "!!Schema version!!";
-
         /// <summary>
         /// Baseline schema 
         /// </summary>
@@ -32,54 +32,68 @@ namespace NuGet
         /// </summary>
         internal const string SchemaVersionV4 = "http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd";
 
-        private static readonly string[] VersionToSchemaMappings = new[]
-                                                                   {
-                                                                       SchemaVersionV1,
-                                                                       SchemaVersionV2,
-                                                                       SchemaVersionV3,
-                                                                       SchemaVersionV4,
-                                                                   };
+        /// <summary>
+        /// Added 'targetFramework' attribute for 'references' elements.
+        /// Added 'requiredMinVersion' attribute
+        /// </summary>
+        internal const string SchemaVersionV5 = "http://schemas.microsoft.com/packaging/2013/01/nuspec.xsd";
 
-        // Mapping from schema to resource name
-        private static readonly Dictionary<string, string> SchemaToResourceMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {
-            { SchemaVersionV1, "NuGet.Authoring.nuspec.xsd" },
-            { SchemaVersionV2, "NuGet.Authoring.nuspec.xsd" },
-            { SchemaVersionV3, "NuGet.Authoring.nuspec.xsd" },
-            { SchemaVersionV4, "NuGet.Authoring.nuspec.xsd" },
+        private static readonly string[] VersionToSchemaMappings = new[] {
+            SchemaVersionV1,
+            SchemaVersionV2,
+            SchemaVersionV3,
+            SchemaVersionV4,
+            SchemaVersionV5,
         };
+
+        private static ConcurrentDictionary<string, XmlSchemaSet> _manifestSchemaSetCache = new ConcurrentDictionary<string, XmlSchemaSet>(StringComparer.OrdinalIgnoreCase);
+
+        public static int GetVersionFromNamespace(string @namespace)
+        {
+            int index = Math.Max(0, Array.IndexOf(VersionToSchemaMappings, @namespace));
+
+            // we count version from 1 instead of 0
+            return index + 1;
+        }
 
         public static string GetSchemaNamespace(int version)
         {
             // Versions are internally 0-indexed but stored with a 1 index so decrement it by 1
             if (version <= 0 || version > VersionToSchemaMappings.Length)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
-                                                                  "Unknown schema version '{0}'.", version));
+                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, NuGetResources.UnknownSchemaVersion, version));
             }
             return VersionToSchemaMappings[version - 1];
         }
 
-        public static Stream GetSchemaStream(string schemaNamespace)
+        public static XmlSchemaSet GetManifestSchemaSet(string schemaNamespace)
         {
-            string schemaResourceName;
-            if (!SchemaToResourceMappings.TryGetValue(schemaNamespace, out schemaResourceName))
+            return _manifestSchemaSetCache.GetOrAdd(schemaNamespace, schema =>
             {
-                throw new ArgumentException(String.Format(CultureInfo.CurrentCulture,
-                                                          NuGetResources.Manifest_InvalidSchemaNamespace,
-                                                          schemaNamespace));
-            }
-            // Update the xsd with the right schema namespace
-            Assembly assembly = typeof(Manifest).Assembly;
-            using (var reader = new StreamReader(assembly.GetManifestResourceStream(schemaResourceName)))
-            {
-                string content = reader.ReadToEnd();
-                return String.Format(CultureInfo.InvariantCulture, content, schemaNamespace).AsStream();
-            }
+                const string schemaResourceName = "NuGet.Authoring.nuspec.xsd";
+
+                string formattedContent;
+
+                // Update the xsd with the right schema namespace
+                var assembly = typeof(Manifest).Assembly;
+                using (var reader = new StreamReader(assembly.GetManifestResourceStream(schemaResourceName)))
+                {
+                    string content = reader.ReadToEnd();
+                    formattedContent = String.Format(CultureInfo.InvariantCulture, content, schema);
+                }
+
+                using (var reader = new StringReader(formattedContent))
+                {
+                    var schemaSet = new XmlSchemaSet();
+                    schemaSet.Add(schema, XmlReader.Create(reader));
+                    return schemaSet;
+                }
+            });
         }
 
         public static bool IsKnownSchema(string schemaNamespace)
         {
-            return SchemaToResourceMappings.ContainsKey(schemaNamespace);
+            return VersionToSchemaMappings.Contains(schemaNamespace, StringComparer.OrdinalIgnoreCase);
         }
     }
 }
