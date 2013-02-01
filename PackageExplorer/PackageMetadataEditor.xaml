@@ -10,6 +10,7 @@
 
     <UserControl.Resources>
         <self:VersionConverter x:Key="VersionConverter" />
+        <self:NetVersionConverter x:Key="NetVersionConverter" />
         <self:VersionSpecConverter x:Key="VersionSpecConverter" />
         <self:UriConverter x:Key="UriConverter" />
         <self:FrameworkAssemblyReferenceConverter x:Key="FrameworkNameConverter" />
@@ -90,6 +91,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -100,7 +102,7 @@
                     </BindingGroup.ValidationRules>
                 </BindingGroup>
             </Grid.BindingGroup>
-
+            
             <!-- Id -->
             <Label Grid.Row="0" Grid.Column="0" Target="IdBox" Style="{StaticResource RequiredLabelStyle}" Content="_Id" />
             <TextBox Grid.Row="0" Grid.Column="1" x:Name="IdBox" MaxLength="100" Text="{Binding PackageMetadata.Id, ValidatesOnDataErrors=True}" />
@@ -238,6 +240,18 @@
 
             <!-- Header text for Filtered assembly references -->
             <TextBlock Text="Filtered assembly references" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+
+            <!-- Required Min Version -->
+            <Label Grid.Row="19" Grid.Column="0" Target="MinVersionBox" Style="{StaticResource LabelStyle}" Content="_Min version" />
+            <TextBox Grid.Row="19" Grid.Column="1" x:Name="MinVersionBox" MaxLength="100">
+                <TextBox.Text>
+                    <Binding Path="PackageMetadata.RequiredMinVersion" Converter="{StaticResource NetVersionConverter}" ValidatesOnDataErrors="True">
+                        <Binding.ValidationRules>
+                            <self:NetSemanticVersionValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
         </Grid>
     </ScrollViewer>
 </UserControl>

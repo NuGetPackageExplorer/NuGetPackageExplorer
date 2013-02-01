@@ -141,6 +141,9 @@
   <data name="Dialog_LanguageLabel" xml:space="preserve">
     <value>Language:</value>
   </data>
+  <data name="Dialog_MinVersionLabel" xml:space="preserve">
+    <value>Required min version:</value>
+  </data>
   <data name="Dialog_MoreInfo" xml:space="preserve">
     <value>Package Information</value>
   </data>

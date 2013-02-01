@@ -135,6 +135,12 @@
                             <Image Source="{Binding IconUrl, TargetNullValue={x:Null}}" Width="32" Height="32" Stretch="Fill" StretchDirection="DownOnly" />
                         </Border>
 
+                        <!-- Required min version -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding RequiredMinVersion, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_MinVersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding RequiredMinVersion}" Style="{StaticResource DetailMetadataValueStyle}" />
+                        </StackPanel>
+
                         <!-- Id -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_IdLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />

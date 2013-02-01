@@ -6,7 +6,7 @@ using NuGet;
 
 namespace PackageExplorer
 {
-    [ValueConversion(typeof(Version), typeof(string))]
+    [ValueConversion(typeof(SemanticVersion), typeof(string))]
     public class VersionConverter : IValueConverter
     {
         #region IValueConverter Members
