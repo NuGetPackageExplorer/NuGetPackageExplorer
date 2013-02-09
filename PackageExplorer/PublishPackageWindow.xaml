@@ -60,7 +60,7 @@
 		<!-- Publish key -->
 		<DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
 			<Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishKey}" Content="Publish _key:" />
-			<TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0">
+			<TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0" Text="{Binding PublishKey}">
 			</TextBox>
 		</DockPanel>
 		
