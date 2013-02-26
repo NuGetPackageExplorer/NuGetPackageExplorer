@@ -96,7 +96,7 @@ namespace NuGet
 
         public string Copyright { get; set; }
 
-        public Version RequiredMinVersion
+        public Version MinClientVersion
         {
             get;
             private set;
@@ -232,7 +232,7 @@ namespace NuGet
                     FrameworkAssemblies = metadata.FrameworkAssemblies;
                     References = metadata.References;
                     Published = File.GetLastWriteTimeUtc(_filePath);
-                    RequiredMinVersion = metadata.RequiredMinVersion;
+                    MinClientVersion = metadata.MinClientVersion;
 
                     // Ensure tags start and end with an empty " " so we can do contains filtering reliably
                     if (!String.IsNullOrEmpty(Tags))

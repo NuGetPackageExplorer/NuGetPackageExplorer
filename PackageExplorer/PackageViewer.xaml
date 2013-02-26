@@ -136,9 +136,9 @@
                         </Border>
 
                         <!-- Required min version -->
-                        <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding RequiredMinVersion, Converter={StaticResource NullToVisibilityConverter}}">
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding MinClientVersion, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_MinVersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                            <TextBlock Text="{Binding RequiredMinVersion}" Style="{StaticResource DetailMetadataValueStyle}" />
+                            <TextBlock Text="{Binding MinClientVersion}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>
 
                         <!-- Id -->

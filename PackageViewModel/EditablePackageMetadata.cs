@@ -26,7 +26,7 @@ namespace PackageExplorerViewModel
         private string _title;
         private SemanticVersion _version;
         private ICollection<PackageDependencySet> _dependencySets;
-        private Version _requiredMinVersion;
+        private Version _minClientVersion;
 
         public EditablePackageMetadata()
         {
@@ -317,15 +317,15 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public Version RequiredMinVersion
+        public Version MinClientVersion
         {
-            get { return _requiredMinVersion; }
+            get { return _minClientVersion; }
             set
             {
-                if (_requiredMinVersion != value)
+                if (_minClientVersion != value)
                 {
-                    _requiredMinVersion = value;
-                    RaisePropertyChange("RequiredMinVersion");
+                    _minClientVersion = value;
+                    RaisePropertyChange("MinClientVersion");
                 }
             }
         }
@@ -377,7 +377,7 @@ namespace PackageExplorerViewModel
             DependencySets = new ObservableCollection<PackageDependencySet>(source.DependencySets);
             FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkAssemblies);
             PackageAssemblyReferences = new ObservableCollection<AssemblyReference>();
-            RequiredMinVersion = source.RequiredMinVersion;
+            MinClientVersion = source.MinClientVersion;
             if (source.References != null)
             {
                 PackageAssemblyReferences.AddRange(source.References);

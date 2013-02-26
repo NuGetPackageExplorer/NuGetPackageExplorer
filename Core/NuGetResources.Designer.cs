@@ -196,11 +196,11 @@ namespace NuGet.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The &apos;requiredMinVersion&apos; attribute in the package manifest has invalid value. It must be a valid version string..
+        ///   Looks up a localized string similar to The &apos;minClientVersion&apos; attribute in the package manifest has invalid value. It must be a valid version string..
         /// </summary>
-        internal static string Manifest_InvalidRequiredMinVersion {
+        internal static string Manifest_InvalidMinClientVersion {
             get {
-                return ResourceManager.GetString("Manifest_InvalidRequiredMinVersion", resourceCulture);
+                return ResourceManager.GetString("Manifest_InvalidMinClientVersion", resourceCulture);
             }
         }
         

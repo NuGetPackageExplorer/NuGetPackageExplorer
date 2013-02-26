@@ -14,28 +14,28 @@ namespace NuGet
     public class ManifestMetadata : IPackageMetadata, IValidatableObject
     {
         private string _owners;
-        private string _requiredMinVersionString;
+        private string _minClientVersionString;
 
-        [XmlAttribute("requiredMinVersion")]
+        [XmlAttribute("minClientVersion")]
         [ManifestVersion(5)]
-        public string RequiredMinVersionString
+        public string MinClientVersionString
         {
-            get { return _requiredMinVersionString; }
+            get { return _minClientVersionString; }
             set
             {
                 Version version = null;
                 if (!String.IsNullOrEmpty(value) && !System.Version.TryParse(value, out version))
                 {
-                    throw new ArgumentException(NuGetResources.Manifest_InvalidRequiredMinVersion);
+                    throw new ArgumentException(NuGetResources.Manifest_InvalidMinClientVersion);
                 }
 
-                _requiredMinVersionString = value;
-                RequiredMinVersion = version;
+                _minClientVersionString = value;
+                MinClientVersion = version;
             }
         }
 
         [XmlIgnore]
-        public Version RequiredMinVersion { get; private set; }
+        public Version MinClientVersion { get; private set; }
 
         [Required(ErrorMessageResourceType = typeof(NuGetResources), ErrorMessageResourceName = "Manifest_RequiredMetadataMissing")]
         [XmlElement("id")]

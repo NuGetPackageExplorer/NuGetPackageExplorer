@@ -140,7 +140,7 @@ namespace NuGet
             get { return null; }
         }
 
-        public Version RequiredMinVersion
+        public Version MinClientVersion
         {
             get { return null; }
         }

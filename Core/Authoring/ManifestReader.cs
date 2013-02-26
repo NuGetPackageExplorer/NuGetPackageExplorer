@@ -22,7 +22,7 @@ namespace NuGet
         {
             var manifestMetadata = new ManifestMetadata();
             manifestMetadata.DependencySets = new List<ManifestDependencySet>();
-            manifestMetadata.RequiredMinVersionString = xElement.GetOptionalAttributeValue("requiredMinVersion");
+            manifestMetadata.MinClientVersionString = xElement.GetOptionalAttributeValue("minClientVersion");
 
             XNode node = xElement.FirstNode;
             while (node != null)

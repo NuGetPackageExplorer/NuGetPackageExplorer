@@ -160,7 +160,7 @@ namespace PackageExplorerViewModel
             get { return DateTimeOffset.Now; }
         }
 
-        public Version RequiredMinVersion
+        public Version MinClientVersion
         {
             get
             {

@@ -126,7 +126,7 @@ namespace NuGet
             }
         }
 
-        public Version RequiredMinVersion
+        public Version MinClientVersion
         {
             get;
             set;

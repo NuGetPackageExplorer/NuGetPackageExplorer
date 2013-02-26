@@ -27,6 +27,6 @@ namespace NuGet
         IEnumerable<PackageDependencySet> DependencySets { get; }
         IEnumerable<AssemblyReference> References { get; }
 
-        Version RequiredMinVersion { get; }
+        Version MinClientVersion { get; }
     }
 }

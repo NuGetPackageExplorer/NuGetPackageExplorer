@@ -245,7 +245,7 @@
             <Label Grid.Row="19" Grid.Column="0" Target="MinVersionBox" Style="{StaticResource LabelStyle}" Content="_Min version" />
             <TextBox Grid.Row="19" Grid.Column="1" x:Name="MinVersionBox" MaxLength="100">
                 <TextBox.Text>
-                    <Binding Path="PackageMetadata.RequiredMinVersion" Converter="{StaticResource NetVersionConverter}" ValidatesOnDataErrors="True">
+                    <Binding Path="PackageMetadata.MinClientVersion" Converter="{StaticResource NetVersionConverter}" ValidatesOnDataErrors="True">
                         <Binding.ValidationRules>
                             <self:NetSemanticVersionValidationRule />
                         </Binding.ValidationRules>
