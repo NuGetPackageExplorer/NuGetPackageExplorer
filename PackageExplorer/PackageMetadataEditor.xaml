@@ -90,9 +90,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <Grid.BindingGroup>
@@ -102,14 +99,26 @@
                     </BindingGroup.ValidationRules>
                 </BindingGroup>
             </Grid.BindingGroup>
-            
+
+            <!-- Min client Version -->
+            <Label Grid.Row="0" Grid.Column="0" Target="MinVersionBox" Style="{StaticResource LabelStyle}" Content="_Min version" />
+            <TextBox Grid.Row="0" Grid.Column="1" x:Name="MinVersionBox" MaxLength="100">
+                <TextBox.Text>
+                    <Binding Path="PackageMetadata.MinClientVersion" Converter="{StaticResource NetVersionConverter}" ValidatesOnDataErrors="True">
+                        <Binding.ValidationRules>
+                            <self:NetSemanticVersionValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
+
             <!-- Id -->
-            <Label Grid.Row="0" Grid.Column="0" Target="IdBox" Style="{StaticResource RequiredLabelStyle}" Content="_Id" />
-            <TextBox Grid.Row="0" Grid.Column="1" x:Name="IdBox" MaxLength="100" Text="{Binding PackageMetadata.Id, ValidatesOnDataErrors=True}" />
+            <Label Grid.Row="1" Grid.Column="0" Target="IdBox" Style="{StaticResource RequiredLabelStyle}" Content="_Id" />
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="IdBox" MaxLength="100" Text="{Binding PackageMetadata.Id, ValidatesOnDataErrors=True}" />
 
             <!-- Version -->
-            <Label Grid.Row="1" Grid.Column="0" Target="VersionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Version" />
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="VersionBox">
+            <Label Grid.Row="2" Grid.Column="0" Target="VersionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Version" />
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="VersionBox">
                 <TextBox.Text>
                     <Binding Path="PackageMetadata.Version" Converter="{StaticResource VersionConverter}" ValidatesOnDataErrors="True">
                         <Binding.ValidationRules>
@@ -120,24 +129,24 @@
             </TextBox>
 
             <!-- Title -->
-            <Label Grid.Row="2" Grid.Column="0" Target="TitleBox" Style="{StaticResource LabelStyle}" Content="_Title" />
-            <TextBox Grid.Row="2" Grid.Column="1" x:Name="TitleBox" Text="{Binding PackageMetadata.Title}" />
+            <Label Grid.Row="3" Grid.Column="0" Target="TitleBox" Style="{StaticResource LabelStyle}" Content="_Title" />
+            <TextBox Grid.Row="3" Grid.Column="1" x:Name="TitleBox" Text="{Binding PackageMetadata.Title}" />
 
             <!-- Authors -->
-            <Label Grid.Row="3" Grid.Column="0" Target="AuthorsBox" Style="{StaticResource RequiredLabelStyle}" Content="_Authors" />
-            <TextBox Grid.Row="3" Grid.Column="1" x:Name="AuthorsBox" Text="{Binding PackageMetadata.Authors, ValidatesOnDataErrors=True}" />
+            <Label Grid.Row="4" Grid.Column="0" Target="AuthorsBox" Style="{StaticResource RequiredLabelStyle}" Content="_Authors" />
+            <TextBox Grid.Row="4" Grid.Column="1" x:Name="AuthorsBox" Text="{Binding PackageMetadata.Authors, ValidatesOnDataErrors=True}" />
 
             <!-- Owners -->
-            <Label Grid.Row="4" Grid.Column="0" Target="OwnersBox" Style="{StaticResource LabelStyle}" Content="_Owners" />
-            <TextBox Grid.Row="4" Grid.Column="1" x:Name="OwnersBox" Text="{Binding PackageMetadata.Owners}" />
+            <Label Grid.Row="5" Grid.Column="0" Target="OwnersBox" Style="{StaticResource LabelStyle}" Content="_Owners" />
+            <TextBox Grid.Row="5" Grid.Column="1" x:Name="OwnersBox" Text="{Binding PackageMetadata.Owners}" />
 
             <!-- IconUrl -->
-            <Label Grid.Row="5" Grid.Column="0" Target="IconUrlBox" Style="{StaticResource LabelStyle}" Content="Icon _Url" />
-            <TextBox Grid.Row="5" Grid.Column="1" x:Name="IconUrlBox" Text="{Binding PackageMetadata.IconUrl, Converter={StaticResource UriConverter}}" />
+            <Label Grid.Row="6" Grid.Column="0" Target="IconUrlBox" Style="{StaticResource LabelStyle}" Content="Icon _Url" />
+            <TextBox Grid.Row="6" Grid.Column="1" x:Name="IconUrlBox" Text="{Binding PackageMetadata.IconUrl, Converter={StaticResource UriConverter}}" />
 
             <!-- ProjectUrl -->
-            <Label Grid.Row="6" Grid.Column="0" Target="ProjectUrlBox" Style="{StaticResource LabelStyle}" Content="_Project Url" />
-            <TextBox Grid.Row="6" Grid.Column="1" x:Name="ProjectUrlBox" Text="{Binding PackageMetadata.ProjectUrl, Converter={StaticResource UriConverter}}" />
+            <Label Grid.Row="7" Grid.Column="0" Target="ProjectUrlBox" Style="{StaticResource LabelStyle}" Content="_Project Url" />
+            <TextBox Grid.Row="7" Grid.Column="1" x:Name="ProjectUrlBox" Text="{Binding PackageMetadata.ProjectUrl, Converter={StaticResource UriConverter}}" />
 
             <!-- Require License Acceptane -->
             <CheckBox Grid.Row="8" Grid.Column="0" Grid.ColumnSpan="2" VerticalContentAlignment="Center" IsChecked="{Binding PackageMetadata.RequireLicenseAcceptance}" Content="_Requires License Acceptance" Style="{StaticResource CheckBoxStyle}" />
@@ -240,18 +249,6 @@
 
             <!-- Header text for Filtered assembly references -->
             <TextBlock Text="Filtered assembly references" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
-
-            <!-- Required Min Version -->
-            <Label Grid.Row="19" Grid.Column="0" Target="MinVersionBox" Style="{StaticResource LabelStyle}" Content="_Min version" />
-            <TextBox Grid.Row="19" Grid.Column="1" x:Name="MinVersionBox" MaxLength="100">
-                <TextBox.Text>
-                    <Binding Path="PackageMetadata.MinClientVersion" Converter="{StaticResource NetVersionConverter}" ValidatesOnDataErrors="True">
-                        <Binding.ValidationRules>
-                            <self:NetSemanticVersionValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
         </Grid>
     </ScrollViewer>
 </UserControl>

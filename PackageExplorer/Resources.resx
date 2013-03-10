@@ -142,7 +142,7 @@
     <value>Language:</value>
   </data>
   <data name="Dialog_MinVersionLabel" xml:space="preserve">
-    <value>Required min version:</value>
+    <value>Min client version:</value>
   </data>
   <data name="Dialog_MoreInfo" xml:space="preserve">
     <value>Package Information</value>

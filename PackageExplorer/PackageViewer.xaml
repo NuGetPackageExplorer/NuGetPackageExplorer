@@ -135,7 +135,7 @@
                             <Image Source="{Binding IconUrl, TargetNullValue={x:Null}}" Width="32" Height="32" Stretch="Fill" StretchDirection="DownOnly" />
                         </Border>
 
-                        <!-- Required min version -->
+                        <!-- Min client version -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding MinClientVersion, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_MinVersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding MinClientVersion}" Style="{StaticResource DetailMetadataValueStyle}" />
