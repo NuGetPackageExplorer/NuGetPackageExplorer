@@ -420,6 +420,11 @@
                                 <self:GrayscaleImage Source="Images/Tools.png" />
                             </self:GrayscaleMenuItem.Icon>
                         </self:GrayscaleMenuItem>
+                        <self:GrayscaleMenuItem Header="Add _Build Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="build">
+                            <self:GrayscaleMenuItem.Icon>
+                                <self:GrayscaleImage Source="Images/Tools.png" />
+                            </self:GrayscaleMenuItem.Icon>
+                        </self:GrayscaleMenuItem>
                         <self:GrayscaleMenuItem Header="Add _Src Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="src">
                             <self:GrayscaleMenuItem.Icon>
                                 <self:GrayscaleImage Source="Images/Source.png" />
