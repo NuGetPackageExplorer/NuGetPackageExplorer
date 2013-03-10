@@ -14,7 +14,7 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var items = (IEnumerable<object>) value;
-            return items.OfType<PackageInfo>().Aggregate(0, (sum, p) => sum + p.VersionDownloadCount).ToString(culture);
+            return items.OfType<PackageInfo>().Aggregate(0, (sum, p) => sum + p.VersionDownloadCount).ToString("N0", culture);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
