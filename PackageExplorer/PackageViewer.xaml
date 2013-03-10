@@ -104,6 +104,20 @@
                 
                 <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}" />
 
+                <MenuItem Header="Add .props file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".props" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}">
+                    <MenuItem.Icon>
+                        <Image Source="Images/script.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem Header="Add .targets file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".targets" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}">
+                    <MenuItem.Icon>
+                        <Image Source="Images/script.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}" />
+
                 <MenuItem Header="Add _New File..." Command="{Binding AddNewFileCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Add Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Add Ne_w Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding}">
@@ -294,6 +308,10 @@
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS">
                         <Setter TargetName="ItemIcon" Property="Source" Value="Images/Tools.png" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILD">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Cog.png" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="SRC">

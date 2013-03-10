@@ -12,6 +12,7 @@ namespace NuGet
         public static readonly string ContentDirectory = "content";
         public static readonly string LibDirectory = "lib";
         public static readonly string ToolsDirectory = "tools";
+        public static readonly string BuildDirectory = "build";
 
         // Starting from nuget 2.0, we use a file with the special name '_._' to represent an empty folder.
         public const string PackageEmptyFileName = "_._";

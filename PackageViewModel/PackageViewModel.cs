@@ -34,6 +34,7 @@ namespace PackageExplorerViewModel
         private ICommand _addNewFileCommand;
         private ICommand _addNewFolderCommand;
         private ICommand _addScriptCommand;
+        private ICommand _addBuildFileCommand;
         private ICommand _applyEditCommand;
         private ICommand _cancelEditCommand;
         private FileContentInfo _currentFileInfo;
@@ -1085,13 +1086,60 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            if (RootFolder.ContainsFolder(Constants.ToolsFolder))
+            if (RootFolder.ContainsFolder(NuGet.Constants.ToolsDirectory))
             {
-                var tools = (PackageFolder) RootFolder[Constants.ToolsFolder];
+                var tools = (PackageFolder)RootFolder[NuGet.Constants.ToolsDirectory];
                 return !tools.ContainsFile(scriptName);
             }
 
             return false;
+        }
+
+        #endregion
+
+        #region AddBuildFileCommand
+
+        public ICommand AddBuildFileCommand
+        {
+            get
+            {
+                if (_addBuildFileCommand == null)
+                {
+                    _addBuildFileCommand = new RelayCommand<string>(AddBuildFileCommandExecute, AddBuildFileCommandCanExecute);
+                }
+
+                return _addBuildFileCommand;
+            }
+        }
+
+        private bool AddBuildFileCommandCanExecute(string extension)
+        {
+            if (RootFolder.ContainsFolder(NuGet.Constants.BuildDirectory))
+            {
+                string fileName = PackageMetadata.Id + extension;
+
+                var tools = (PackageFolder)RootFolder[NuGet.Constants.BuildDirectory];
+                return !tools.ContainsFile(fileName);
+            }
+
+            return false;
+        }
+
+        private void AddBuildFileCommandExecute(string extension)
+        {
+            string fileName = PackageMetadata.Id + extension;
+            string sourcePath = FileHelper.CreateTempFile(fileName, Constants.ContentForBuildFile);
+
+            var selectedFolder = SelectedItem as PackageFolder;
+            if (selectedFolder != null)
+            {
+                PackageFile file = selectedFolder.AddFile(sourcePath, isTempFile: true);
+                // file can be null if it collides with other files in the same directory
+                if (file != null)
+                {
+                    EditFileCommandExecute(file);
+                }
+            }
         }
 
         #endregion

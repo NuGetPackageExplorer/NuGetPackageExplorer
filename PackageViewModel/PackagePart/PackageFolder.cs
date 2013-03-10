@@ -50,6 +50,11 @@ namespace PackageExplorerViewModel
             get { return PackageViewModel.AddScriptCommand; }
         }
 
+        public ICommand AddBuildFileCommand
+        {
+            get { return PackageViewModel.AddBuildFileCommand; }
+        }
+
         public ICommand AddContentFolderCommand
         {
             get

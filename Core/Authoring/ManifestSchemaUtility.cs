@@ -48,14 +48,6 @@ namespace NuGet
 
         private static ConcurrentDictionary<string, XmlSchemaSet> _manifestSchemaSetCache = new ConcurrentDictionary<string, XmlSchemaSet>(StringComparer.OrdinalIgnoreCase);
 
-        public static int GetVersionFromNamespace(string @namespace)
-        {
-            int index = Math.Max(0, Array.IndexOf(VersionToSchemaMappings, @namespace));
-
-            // we count version from 1 instead of 0
-            return index + 1;
-        }
-
         public static string GetSchemaNamespace(int version)
         {
             // Versions are internally 0-indexed but stored with a 1 index so decrement it by 1
