@@ -149,7 +149,9 @@
     <Compile Include="Properties\Settings.partial.cs">
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="TextEditor\TextHighlightingDefinition.cs" />
     <Compile Include="Utilities\StreamUtility.cs" />
+    <Compile Include="TextEditor\SyntaxHighlightingHelper.cs" />
     <Compile Include="Wpf\NetSemanticVersionValidationRule.cs" />
     <Compile Include="Wpf\PackageCommandItemContainerSelector.cs" />
     <Compile Include="Converters\PackageInfoDownloadCountConverter.cs" />
@@ -332,6 +334,7 @@
     <Resource Include="Images\EditSource.png" />
     <Resource Include="Images\build.png" />
     <Resource Include="Images\props.png" />
+    <Resource Include="Images\FindHS.png" />
     <Content Include="Windows8Shim.dll" />
     <Content Include="Resources\fxAssemblies.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

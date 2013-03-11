@@ -18,24 +18,5 @@ namespace PackageExplorer
             return extension.Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase) ||
                    extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase);
         }
-
-        public static IHighlightingDefinition DeduceHighligtingDefinition(string name)
-        {
-            string extension = Path.GetExtension(name).ToUpperInvariant();
-
-            // if the extension is .pp or .transform, it is NuGet transform files.
-            // in which case, we strip out this extension and examine the real extension instead
-            if (extension == ".PP" || extension == ".TRANSFORM")
-            {
-                name = Path.GetFileNameWithoutExtension(name);
-                extension = Path.GetExtension(name).ToUpperInvariant();
-            }
-            else if (extension == ".NUSPEC")
-            {
-                extension = ".XML";
-            }
-
-            return HighlightingManager.Instance.GetDefinitionByExtension(extension);
-        }
     }
 }

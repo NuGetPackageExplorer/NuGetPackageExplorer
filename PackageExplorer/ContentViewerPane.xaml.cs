@@ -14,6 +14,8 @@ namespace PackageExplorer
         {
             InitializeComponent();
 
+            SyntaxHighlightingHelper.RegisterHightingExtensions();
+
             // set the Syntax Highlighting definitions
             LanguageBox.ItemsSource = HighlightingManager.Instance.HighlightingDefinitions;
 
@@ -29,7 +31,7 @@ namespace PackageExplorer
             var info = (FileContentInfo) DataContext;
             if (info != null && info.IsTextFile)
             {
-                LanguageBox.SelectedItem = FileUtility.DeduceHighligtingDefinition(info.File.Name);
+                LanguageBox.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(info.File.Name);
                 contentBox.ScrollToHome();
                 contentBox.Load(StreamUtility.ToStream((string) info.Content));
             }

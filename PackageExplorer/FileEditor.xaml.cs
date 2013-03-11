@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Search;
 using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
@@ -18,6 +19,8 @@ namespace PackageExplorer
         {
             InitializeComponent();
 
+            SyntaxHighlightingHelper.RegisterHightingExtensions();
+
             // set the Syntax Highlighting definitions
             SyntaxDefinitions.ItemsSource = HighlightingManager.Instance.HighlightingDefinitions;
 
@@ -31,6 +34,7 @@ namespace PackageExplorer
             Editor.Options.EnableHyperlinks = false;
             Editor.Options.ConvertTabsToSpaces = true;
 
+            Editor.TextArea.DefaultInputHandler.NestedInputHandlers.Add(new SearchInputHandler(Editor.TextArea));
             Editor.TextArea.SelectionCornerRadius = 0;
         }
 
@@ -52,7 +56,7 @@ namespace PackageExplorer
             var viewModel = e.NewValue as FileEditorViewModel;
             if (viewModel != null && viewModel.FileInEdit != null)
             {
-                SyntaxDefinitions.SelectedItem = FileUtility.DeduceHighligtingDefinition(viewModel.FileInEdit.Path);
+                SyntaxDefinitions.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(viewModel.FileInEdit.Path);
                 Editor.Load(viewModel.FileInEdit.GetStream());
             }
         }
