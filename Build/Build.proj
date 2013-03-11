@@ -82,7 +82,7 @@
     <Target Name="Go" DependsOnTargets="CheckTools; BuildAndPublish; ReportFxCopResults; CreateDropDirectories; CopyOutputsToDropDirectories; AddVisualStyleManifestToDeployment; BuildPackages; BuildLocalExecutableZip">
     </Target>
 
-    <Target Name="CheckTools">
+    <Target Name="CheckTools" Condition="'$(TEAMCITY_VERSION)' == ''">
         <Error
             Condition="!Exists('$(ManifestToolPath)')"
             Text="Could not find the resource tool at $(ManifestToolPath). Cannot proceed." />
@@ -121,7 +121,7 @@
         <Copy SourceFiles="@(PublishedFiles)" DestinationFiles="@(PublishedFiles->'$(DeployDirectory)\%(RecursiveDir)%(FileName)%(Extension)')" />
     </Target>
 
-    <Target Name="AddVisualStyleManifestToDeployment">
+    <Target Name="AddVisualStyleManifestToDeployment" Condition="'$(TEAMCITY_VERSION)' == ''">
         <!-- Rename .deploy files dropping the extension. Required by mage.exe -->
         <CreateItem Include="$(DeployDirectory)\**\*.deploy">
             <Output TaskParameter="Include" ItemName="DeployedFiles" />
