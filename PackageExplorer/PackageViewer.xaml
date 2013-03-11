@@ -84,37 +84,37 @@
             </ContextMenu>
 
             <ContextMenu x:Key="FolderSharedContextMenu" Opened="PackageFolderContextMenu_Opened" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                <MenuItem Header="Add init.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="init.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}">
+                <self:GrayscaleMenuItem Header="Add init.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="init.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}">
                     <MenuItem.Icon>
-                        <Image Source="Images/script.png" />
+                        <self:GrayscaleImage Source="Images/script.png" />
                     </MenuItem.Icon>
-                </MenuItem>
+                </self:GrayscaleMenuItem>
 
-                <MenuItem Header="Add install.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="install.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}">
+                <self:GrayscaleMenuItem Header="Add install.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="install.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}">
                     <MenuItem.Icon>
-                        <Image Source="Images/script.png" />
+                        <self:GrayscaleImage Source="Images/script.png" />
                     </MenuItem.Icon>
-                </MenuItem>
+                </self:GrayscaleMenuItem>
 
-                <MenuItem Header="Add uninstall.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="uninstall.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}">
+                <self:GrayscaleMenuItem Header="Add uninstall.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="uninstall.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}">
                     <MenuItem.Icon>
-                        <Image Source="Images/script.png" />
+                        <self:GrayscaleImage Source="Images/script.png" />
                     </MenuItem.Icon>
-                </MenuItem>
+                </self:GrayscaleMenuItem>
                 
                 <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}" />
 
-                <MenuItem Header="Add .props file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".props" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}">
+                <self:GrayscaleMenuItem Header="Add .props file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".props" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}">
                     <MenuItem.Icon>
-                        <Image Source="Images/script.png" />
+                        <self:GrayscaleImage Source="Images/props.png" />
                     </MenuItem.Icon>
-                </MenuItem>
+                </self:GrayscaleMenuItem>
 
-                <MenuItem Header="Add .targets file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".targets" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}">
+                <self:GrayscaleMenuItem Header="Add .targets file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".targets" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}">
                     <MenuItem.Icon>
-                        <Image Source="Images/script.png" />
+                        <self:GrayscaleImage Source="Images/props.png" />
                     </MenuItem.Icon>
-                </MenuItem>
+                </self:GrayscaleMenuItem>
 
                 <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}" />
 
@@ -311,7 +311,7 @@
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILD">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Cog.png" />
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/build.png" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="SRC">
@@ -440,7 +440,7 @@
                         </self:GrayscaleMenuItem>
                         <self:GrayscaleMenuItem Header="Add _Build Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="build">
                             <self:GrayscaleMenuItem.Icon>
-                                <self:GrayscaleImage Source="Images/Tools.png" />
+                                <self:GrayscaleImage Source="Images/build.png" />
                             </self:GrayscaleMenuItem.Icon>
                         </self:GrayscaleMenuItem>
                         <self:GrayscaleMenuItem Header="Add _Src Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="src">

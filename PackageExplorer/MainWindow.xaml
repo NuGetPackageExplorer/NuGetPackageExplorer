@@ -188,7 +188,7 @@
                     </self:GrayscaleMenuItem>
                     <self:GrayscaleMenuItem Header="_Build Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="build">
                         <self:GrayscaleMenuItem.Icon>
-                            <self:GrayscaleImage Source="Images/Tools.png" />
+                            <self:GrayscaleImage Source="Images/build.png" />
                         </self:GrayscaleMenuItem.Icon>
                     </self:GrayscaleMenuItem>
                     <self:GrayscaleMenuItem Header="_Src Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="src">
