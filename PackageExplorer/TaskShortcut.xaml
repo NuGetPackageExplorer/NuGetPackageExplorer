@@ -22,7 +22,7 @@
 					</StackPanel>
 				</Button>
 
-				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Find">
+				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Print">
 					<StackPanel Orientation="Horizontal">
 						<Image Source="{StaticResource arrowImage}" />
 						<TextBlock Text="Open a package from online feed (Ctrl+G)" />

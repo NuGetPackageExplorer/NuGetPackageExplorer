@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Highlighting;
+using ICSharpCode.AvalonEdit.Search;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorer
@@ -10,6 +13,8 @@ namespace PackageExplorer
     /// </summary>
     public partial class ContentViewerPane : UserControl
     {
+        private CommandBinding _findCommand;
+
         public ContentViewerPane()
         {
             InitializeComponent();
@@ -24,6 +29,10 @@ namespace PackageExplorer
             contentBox.Options.EnableEmailHyperlinks = false;
             contentBox.Options.EnableHyperlinks = false;
             contentBox.TextArea.SelectionCornerRadius = 0;
+
+            var searchInput = new SearchInputHandler(contentBox.TextArea);
+            _findCommand = searchInput.CommandBindings.FirstOrDefault(binding => binding.Command == ApplicationCommands.Find);
+            contentBox.TextArea.DefaultInputHandler.NestedInputHandlers.Add(searchInput);
         }
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -38,6 +47,16 @@ namespace PackageExplorer
             else
             {
                 contentBox.Clear();
+            }
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            Window rootWindow = Window.GetWindow(this);
+            if (rootWindow != null && _findCommand != null)
+            {
+                // add the Find command to the window so that we can press Ctrl+F from anywhere to bring up the search box
+                rootWindow.CommandBindings.Add(_findCommand);
             }
         }
     }

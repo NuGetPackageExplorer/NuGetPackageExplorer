@@ -28,7 +28,7 @@
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="NewMenuItem_Click" CanExecute="CanExecuteNewCommand" />
         <CommandBinding Command="Open" Executed="OpenMenuItem_Click" CanExecute="CanExecuteNewCommand" />
-        <CommandBinding Command="Find" Executed="OpenFeedItem_Click" CanExecute="CanExecuteNewCommand" />
+        <CommandBinding Command="Print" Executed="OpenFeedItem_Click" CanExecute="CanExecuteNewCommand" />
         <CommandBinding Command="Close" Executed="CloseMenuItem_Click" CanExecute="CanExecuteCloseCommand" />
         <CommandBinding Command="GoToPage" Executed="OpenExternalLink" />
         <CommandBinding Command="Help" Executed="HelpCommandExecuted" />
@@ -36,11 +36,10 @@
 
     <Window.InputBindings>
         <KeyBinding Modifiers="Control" Key="K" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}" />
-        <KeyBinding Modifiers="Control" Key="G" Command="Find" />
+        <KeyBinding Modifiers="Control" Key="G" Command="Print" />
         <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="Save" />
         <KeyBinding Modifiers="Control" Key="P" Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Modifiers="Control" Key="Q" Command="{Binding ViewPackageAnalysisCommand, FallbackValue={StaticResource DisabledCommand}}" />
-        <KeyBinding Modifiers="Control" Key="F" Command="NotACommand" />
         <KeyBinding Key="Escape" Command="{Binding CancelEditCommand}" />
         <KeyBinding Key="F2" Command="{Binding RenameContentCommand}" />
         <KeyBinding Key="Delete" Command="{Binding DeleteContentCommand}" />
@@ -61,7 +60,7 @@
                         <Image Source="Images/openHS.png"></Image>
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
-                <MenuItem Header="Open from F_eed..." Command="Find" InputGestureText="Ctrl+G"></MenuItem>
+                <MenuItem Header="Open from F_eed..." Command="Print" InputGestureText="Ctrl+G"></MenuItem>
                 <Separator />
                 <MenuItem Command="Close" Header="_Close" />
                 <Separator />

@@ -33,7 +33,7 @@
 
             <DataTemplate DataType="{x:Type types:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
-                    <Hyperlink Command="Find" CommandParameter="{Binding Id, Mode=OneWay}">
+                    <Hyperlink Command="Print" CommandParameter="{Binding Id, Mode=OneWay}">
                         <Run Text="{Binding Mode=OneWay}"></Run>
                     </Hyperlink>
                 </TextBlock>

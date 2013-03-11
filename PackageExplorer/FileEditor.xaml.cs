@@ -34,8 +34,10 @@ namespace PackageExplorer
             Editor.Options.EnableHyperlinks = false;
             Editor.Options.ConvertTabsToSpaces = true;
 
-            Editor.TextArea.DefaultInputHandler.NestedInputHandlers.Add(new SearchInputHandler(Editor.TextArea));
             Editor.TextArea.SelectionCornerRadius = 0;
+
+            var searchInput = new SearchInputHandler(Editor.TextArea);
+            Editor.TextArea.DefaultInputHandler.NestedInputHandlers.Add(searchInput);
         }
 
         #region IFileEditorService Members
