@@ -285,6 +285,16 @@
                         <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
                         <Setter TargetName="ItemIcon" Property="Source" Value="Images/books.png" />
                     </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Extension, Converter={StaticResource upperCaseConverter}}" Value=".PROPS">
+                        <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/props.png" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Extension, Converter={StaticResource upperCaseConverter}}" Value=".TARGETS">
+                        <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/props.png" />
+                    </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
 

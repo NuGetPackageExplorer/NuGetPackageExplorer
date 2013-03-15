@@ -18,6 +18,7 @@ namespace PackageExplorerViewModel
         private string _name;
         private PackageFolder _parent;
         private string _path;
+        private string _extension;
 
         protected PackagePart(string name, PackageFolder parent, PackageViewModel viewModel)
         {
@@ -32,10 +33,9 @@ namespace PackageExplorerViewModel
             }
 
             _viewModel = viewModel;
-            _name = name;
-            // precalculate hash code to improve perf
-            _hashCode = _name.ToUpperInvariant().GetHashCode();
             _parent = parent;
+
+            OnNameChange(name);
             RecalculatePath();
         }
 
@@ -64,12 +64,32 @@ namespace PackageExplorerViewModel
             {
                 if (_name != value)
                 {
-                    // precalculate hash code to improve perf
-                    _hashCode = value == null ? 0 : value.ToUpperInvariant().GetHashCode();
-
-                    _name = value;
-                    OnPropertyChanged("Name");
+                    OnNameChange(value);
                     UpdatePath();
+                }
+            }
+        }
+
+        private void OnNameChange(string newName)
+        {
+            // precalculate hash code to improve perf
+            _hashCode = newName == null ? 0 : newName.ToUpperInvariant().GetHashCode();
+
+            _name = newName;
+            OnPropertyChanged("Name");
+
+            Extension = newName == null ? null : System.IO.Path.GetExtension(newName);
+        }
+
+        public string Extension
+        {
+            get { return _extension; }
+            set
+            {
+                if (_extension != value)
+                {
+                    _extension = value;
+                    OnPropertyChanged("Extension");
                 }
             }
         }
