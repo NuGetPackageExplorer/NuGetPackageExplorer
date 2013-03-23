@@ -1086,13 +1086,8 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            if (RootFolder.ContainsFolder(NuGet.Constants.ToolsDirectory))
-            {
-                var tools = (PackageFolder)RootFolder[NuGet.Constants.ToolsDirectory];
-                return !tools.ContainsFile(scriptName);
-            }
-
-            return false;
+            var selectedFolder = SelectedItem as PackageFolder;
+            return selectedFolder != null && !selectedFolder.ContainsFile(scriptName);
         }
 
         #endregion
@@ -1114,12 +1109,12 @@ namespace PackageExplorerViewModel
 
         private bool AddBuildFileCommandCanExecute(string extension)
         {
-            if (RootFolder.ContainsFolder(NuGet.Constants.BuildDirectory))
+            var selectedFolder = SelectedItem as PackageFolder;
+
+            if (selectedFolder != null)
             {
                 string fileName = PackageMetadata.Id + extension;
-
-                var tools = (PackageFolder)RootFolder[NuGet.Constants.BuildDirectory];
-                return !tools.ContainsFile(fileName);
+                return !selectedFolder.ContainsFile(fileName);
             }
 
             return false;
