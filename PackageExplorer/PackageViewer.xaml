@@ -104,19 +104,19 @@
                 
                 <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}" />
 
-                <self:GrayscaleMenuItem Header="Add .props file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".props" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}">
+                <self:GrayscaleMenuItem Header="Add .props file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".props" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build;build\\*}">
                     <MenuItem.Icon>
                         <self:GrayscaleImage Source="Images/props.png" />
                     </MenuItem.Icon>
                 </self:GrayscaleMenuItem>
 
-                <self:GrayscaleMenuItem Header="Add .targets file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".targets" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}">
+                <self:GrayscaleMenuItem Header="Add .targets file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".targets" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build;build\\*}">
                     <MenuItem.Icon>
                         <self:GrayscaleImage Source="Images/props.png" />
                     </MenuItem.Icon>
                 </self:GrayscaleMenuItem>
 
-                <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build}" />
+                <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build;build\\*}" />
 
                 <MenuItem Header="Add _New File..." Command="{Binding AddNewFileCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Add Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding}" />
