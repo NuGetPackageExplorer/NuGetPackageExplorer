@@ -384,7 +384,7 @@ namespace PackageExplorer
                 item.SetBinding(VisibilityProperty, visibilityBinding);
 
                 string[] values = pair.Value;
-                if (values.Length > 0)
+                if (values.Length > 2)
                 {
                     for (int i = 0; i < values.Length; i += 2)
                     {
@@ -396,6 +396,11 @@ namespace PackageExplorer
                         childItem.SetBinding(MenuItem.CommandProperty, commandBinding);
                         item.Items.Add(childItem);
                     }
+                }
+                else if (values.Length == 2)
+                {
+                    item.SetBinding(MenuItem.CommandProperty, commandBinding);
+                    item.CommandParameter = values[1];
                 }
                 else
                 {
