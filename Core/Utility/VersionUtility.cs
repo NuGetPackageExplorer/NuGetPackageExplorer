@@ -40,6 +40,7 @@ namespace NuGet
                 { "WindowsPhone", "WindowsPhone" },
                 { "Windows", "Windows" },
                 { "win", "Windows" },
+                { "native", "native" }
             };
 
         private static readonly Dictionary<string, string> _knownProfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)

@@ -27,6 +27,10 @@ namespace PackageExplorer
                     new string[0]
                 },
                 {
+                    "Native",
+                    new [] { "(no version)", "native" }
+                },
+                {
                     "Windows Phone", 
                     new[] {"v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71", "v8.0", "wp8"}
                 },
