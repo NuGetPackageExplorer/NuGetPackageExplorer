@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.Versioning;
 using NuGet;
 
-namespace PackageExplorer
+namespace PackageExplorerViewModel
 {
     public class EditablePackageDependencySet : INotifyPropertyChanged
     {

@@ -140,7 +140,7 @@ namespace PackageExplorer
 
         private void ClearDependencyTextBox()
         {
-            _newPackageDependency = new EditablePackageDependency();
+            _newPackageDependency = new EditablePackageDependency(() => ActivePackageDependencySet);
             NewDependencyId.DataContext = NewDependencyVersion.DataContext = _newPackageDependency;
         }
     }

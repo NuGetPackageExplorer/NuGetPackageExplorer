@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.ComponentModel;
+using System.Diagnostics;
 using NuGet;
 
 namespace PackageExplorerViewModel
@@ -8,15 +10,12 @@ namespace PackageExplorerViewModel
     {
         private string _id;
         private IVersionSpec _versionSpec;
+        private Func<EditablePackageDependencySet> _getActiveDependencySet;
 
-        public EditablePackageDependency()
+        public EditablePackageDependency(Func<EditablePackageDependencySet> getActiveDependencySet)
         {
-        }
-
-        public EditablePackageDependency(string id, IVersionSpec versionSpec)
-        {
-            Id = id;
-            VersionSpec = versionSpec;
+            Debug.Assert(getActiveDependencySet != null);
+            _getActiveDependencySet = getActiveDependencySet;
         }
 
         public string Id
@@ -85,6 +84,15 @@ namespace PackageExplorerViewModel
                 if (!PackageIdValidator.IsValidPackageId(Id))
                 {
                     return "'" + Id + "' is an invalid package id.";
+                }
+
+                EditablePackageDependencySet activeDependencySet = _getActiveDependencySet();
+                if (activeDependencySet != null)
+                {
+                    if (activeDependencySet.Dependencies.Any(p => p.Id.Equals(Id, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        return "This id already exists in the same dependency group.";
+                    }
                 }
             }
 

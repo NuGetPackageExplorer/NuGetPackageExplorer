@@ -55,6 +55,7 @@
     <Compile Include="Commands\DisabledCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="EditablePackageDependencySet.cs" />
     <Compile Include="EmptyPackage.cs" />
     <Compile Include="FileEditorViewModel.cs" />
     <Compile Include="PackageChooser\QueryContextBase.cs" />

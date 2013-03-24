@@ -139,7 +139,6 @@
     <Compile Include="Converters\NormalizeTextConverter.cs" />
     <Compile Include="Converters\StringShorternerConverter.cs" />
     <Compile Include="Converters\TargetFrameworkConverter.cs" />
-    <Compile Include="EditablePackageDependencySet.cs" />
     <Compile Include="PackageDependencyEditor.xaml.cs">
       <DependentUpon>PackageDependencyEditor.xaml</DependentUpon>
     </Compile>
