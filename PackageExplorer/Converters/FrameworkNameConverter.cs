@@ -10,7 +10,7 @@ namespace PackageExplorer
 {
     public class FrameworkNameConverter : IValueConverter
     {
-        private static string[] WellknownPackageFolders = new string[] { "content", "lib", "tools" };
+        private static string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build" };
 
         #region IValueConverter Members
 
@@ -30,7 +30,8 @@ namespace PackageExplorer
                 }
                 catch (ArgumentException)
                 {
-                    if (parts[0].Equals("lib", StringComparison.OrdinalIgnoreCase))
+                    if (parts[0].Equals("lib", StringComparison.OrdinalIgnoreCase) ||
+                        parts[0].Equals("build", StringComparison.OrdinalIgnoreCase))
                     {
                         return " (Invalid framework)";
                     }
