@@ -493,41 +493,31 @@ namespace PackageExplorerViewModel
                             }
                         }
 
-                        // When in Show All Versions mode, we can't sort by Last Updated or PackageSize. 
+                        // When in Show All Versions mode, we can't sort by PackageSize. 
                         Debug.Assert(SortColumn != "PackageSize" || ShowLatestVersion);
 
                         switch (SortColumn)
                         {
                             case "Id":
                                 query = SortDirection == ListSortDirection.Descending
-                                            ? query.OrderByDescending(p => p.Id).ThenByDescending(p => p.LastUpdated)
-                                            : query.OrderBy(p => p.Id).ThenByDescending(p => p.LastUpdated);
+                                            ? query.OrderByDescending(p => p.Id)
+                                            : query.OrderBy(p => p.Id);
                                 break;
 
                             case "VersionDownloadCount":
                                 query = SortDirection == ListSortDirection.Descending
-                                            ? query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id).
-                                                  ThenByDescending(p => p.LastUpdated)
-                                            : query.OrderBy(p => p.DownloadCount).ThenBy(p => p.Id).ThenByDescending(
-                                                p => p.LastUpdated);
+                                            ? query.OrderByDescending(p => p.DownloadCount)
+                                            : query.OrderBy(p => p.DownloadCount);
                                 break;
 
                             case "PackageSize":
                                 query = SortDirection == ListSortDirection.Descending
-                                            ? query.OrderByDescending(p => p.PackageSize).ThenBy(p => p.Id).
-                                                  ThenByDescending(p => p.LastUpdated)
-                                            : query.OrderBy(p => p.PackageSize).ThenBy(p => p.Id).ThenByDescending(
-                                                p => p.LastUpdated);
-                                break;
-
-                            case "LastUpdated":
-                                query = SortDirection == ListSortDirection.Descending
-                                            ? query.OrderByDescending(p => p.LastUpdated).ThenBy(p => p.Id)
-                                            : query.OrderBy(p => p.LastUpdated).ThenBy(p => p.Id);
+                                            ? query.OrderByDescending(p => p.PackageSize)
+                                            : query.OrderBy(p => p.PackageSize);
                                 break;
 
                             default:
-                                query = query.OrderByDescending(p => p.DownloadCount).ThenBy(p => p.Id);
+                                query = query.OrderByDescending(p => p.DownloadCount);
                                 break;
                         }
 
