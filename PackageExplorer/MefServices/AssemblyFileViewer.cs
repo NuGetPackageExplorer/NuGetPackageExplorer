@@ -1,5 +1,9 @@
-﻿using System.IO;
-using System.Reflection;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using CodeExecutor;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorer
@@ -17,18 +21,53 @@ namespace PackageExplorer
                 stream.CopyTo(fileStream);
             }
 
-            AssemblyName assemblyName = AssemblyName.GetAssemblyName(tempFile);
-            string fullName = assemblyName.FullName;
-
             try
             {
-                File.Delete(tempFile);
-            }
-            catch
-            {
-            }
+                IDictionary<string, string> assemblyData = RemoteCodeExecutor.GetAssemblyMetadata(tempFile);
 
-            return fullName;
+                var grid = new Grid();
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+
+                foreach (var data in assemblyData)
+                {
+                    var label = new TextBlock 
+                    { 
+                        Text = data.Key + ':', 
+                        FontWeight = FontWeights.SemiBold,
+                        Margin = new Thickness(3,3,10,0)
+                    };
+                    Grid.SetRow(label, grid.RowDefinitions.Count);
+                    Grid.SetColumn(label, 0);
+
+                    var value = new TextBlock 
+                    { 
+                        Text = data.Value,
+                        Margin = new Thickness(0, 3, 3, 0)
+                    };
+                    Grid.SetRow(value, grid.RowDefinitions.Count);
+                    Grid.SetColumn(value, 1);
+
+                    grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+                    grid.Children.Add(label);
+                    grid.Children.Add(value);
+                }
+
+                return grid;
+            }
+            finally
+            {
+                if (File.Exists(tempFile))
+                {
+                    try
+                    {
+                        File.Delete(tempFile);
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
         }
 
         #endregion

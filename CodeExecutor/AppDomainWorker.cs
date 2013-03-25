@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace CodeExecutor
@@ -33,6 +34,45 @@ namespace CodeExecutor
             }
 
             return null;
+        }
+
+        public Dictionary<string, string> GetAssemblyMetadata(string assemblyPath)
+        {
+            var data = new Dictionary<string, string>();
+
+            var assembly = Assembly.LoadFrom(assemblyPath);
+            if (assembly != null)
+            {
+                data.Add("Full Name", assembly.FullName);
+
+                foreach (var attribute in assembly.GetCustomAttributesData())
+                {
+                    if (attribute.ConstructorArguments.Count != 1 ||
+                        attribute.ConstructorArguments[0].ArgumentType != typeof(string))
+                    {
+                        continue;
+                    }
+
+                    string typeName = attribute.Constructor.DeclaringType.Name;
+                    if (typeName == "InternalsVisibleToAttribute")
+                    {
+                        continue;
+                    }
+
+                    string key = typeName.EndsWith("Attribute", StringComparison.OrdinalIgnoreCase)
+                        ? typeName.Substring(0, typeName.Length - 9)
+                        : typeName;
+                         
+                    string value = attribute.ConstructorArguments[0].Value.ToString();
+
+                    if (!String.IsNullOrEmpty(value))
+                    {
+                        data[key] = value;
+                    }
+                }                
+            }
+
+            return data;
         }
     }
 }

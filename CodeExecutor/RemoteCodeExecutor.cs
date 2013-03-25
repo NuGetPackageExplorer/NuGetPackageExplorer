@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace CodeExecutor
@@ -23,6 +24,18 @@ namespace CodeExecutor
 
                 return result ?? true;
             }
+        }
+
+        public static Dictionary<string, string> GetAssemblyMetadata(string assemblyPath)
+        {
+            if (!File.Exists(assemblyPath))
+            {
+                return null;
+            }
+
+            Dictionary<string, string> result = null;
+            ExecuteRemotely(worker => result = worker.GetAssemblyMetadata(assemblyPath));
+            return result;
         }
 
         private static void ExecuteRemotely(Action<AppDomainWorker> workerAction)
