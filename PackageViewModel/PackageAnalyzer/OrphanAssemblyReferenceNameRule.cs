@@ -15,14 +15,14 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            if (package.References.Any())
+            if (package.PackageAssemblyReferences.Any())
             {
                 IEnumerable<string> allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
                 var libFilesSet = new HashSet<string>(allLibFiles, StringComparer.OrdinalIgnoreCase);
 
-                return from reference in package.References
-                       where !libFilesSet.Contains(reference.File)
-                       select CreateIssue(reference.File);
+                return from reference in package.PackageAssemblyReferences.SelectMany(set => set.References)
+                       where !libFilesSet.Contains(reference)
+                       select CreateIssue(reference);
             }
             return new PackageIssue[0];
         }

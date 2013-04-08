@@ -18,7 +18,19 @@
         </xs:sequence>
         <xs:attribute name="targetFramework" type="xs:string" use="optional" />
     </xs:complexType>
-    
+
+    <xs:complexType name="reference">
+        <xs:attribute name="file" type="xs:string" use="required" />
+    </xs:complexType>
+
+    <xs:complexType name="referenceGroup">
+        <xs:sequence>
+            <xs:element name="reference" minOccurs="1" maxOccurs="unbounded" type="reference">
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="targetFramework" type="xs:string" use="optional" />
+    </xs:complexType>
+
     <xs:element name="package">
         <xs:complexType>
             <xs:sequence>
@@ -65,11 +77,10 @@
                             <xs:element name="references" maxOccurs="1" minOccurs="0">
                                 <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="reference" minOccurs="0" maxOccurs="unbounded">
-                                            <xs:complexType>
-                                                <xs:attribute name="file" type="xs:string" use="required" />
-                                            </xs:complexType>
-                                        </xs:element>
+                                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                                            <xs:element name="reference" type="reference" />
+                                            <xs:element name="group" type="referenceGroup" />
+                                        </xs:choice>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>

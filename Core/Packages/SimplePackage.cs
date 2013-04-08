@@ -34,7 +34,7 @@ namespace NuGet
             Tags = packageBuilder.Tags;
             FrameworkAssemblies = new SafeEnumerable<FrameworkAssemblyReference>(packageBuilder.FrameworkAssemblies);
             DependencySets = new SafeEnumerable<PackageDependencySet>(packageBuilder.DependencySets);
-            References = new SafeEnumerable<AssemblyReference>(packageBuilder.References);
+            PackageAssemblyReferences = new SafeEnumerable<PackageReferenceSet>(packageBuilder.PackageAssemblyReferences);
             Copyright = packageBuilder.Copyright;
             _packageBuilder = packageBuilder;
         }
@@ -98,7 +98,7 @@ namespace NuGet
 
         public IEnumerable<PackageDependencySet> DependencySets { get; private set; }
 
-        public IEnumerable<AssemblyReference> References { get; private set; }
+        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences { get; private set; }
 
         public Uri ReportAbuseUrl
         {

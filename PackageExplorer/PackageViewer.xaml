@@ -78,9 +78,6 @@
                         <self:GrayscaleImage Source="Images/Delete.png" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
-
-                <Separator />
-                <MenuItem Header="Add to Filtered Assembly References" Command="{Binding AddAsAssemblyReferenceCommand}" CommandParameter="{Binding}" />
             </ContextMenu>
 
             <ContextMenu x:Key="FolderSharedContextMenu" Opened="PackageFolderContextMenu_Opened" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
@@ -254,7 +251,8 @@
                         <!-- Package Assembly References -->
                         <TextBlock Visibility="{Binding Items.Count, ElementName=PackageAssemblyReferences, Converter={StaticResource countConverter}}" Text="Filtered Assembly References:" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                        <ItemsControl x:Name="PackageAssemblyReferences" Margin="25,5,0,0" ItemsSource="{Binding PackageAssemblyReferences}" ItemTemplate="{StaticResource AssemblyReferenceItemTemplate}"></ItemsControl>
+                        <ItemsControl x:Name="PackageAssemblyReferences" Margin="25,5,0,0" ItemsSource="{Binding PackageAssemblyReferences}" ItemTemplate="{StaticResource AssemblyReferenceItemTemplate}">
+                        </ItemsControl>
                     </StackPanel>
                 </ScrollViewer>
             </DataTemplate>

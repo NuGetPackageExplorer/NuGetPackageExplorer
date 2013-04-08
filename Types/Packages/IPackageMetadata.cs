@@ -21,11 +21,16 @@ namespace NuGet
         string Language { get; }
         string Tags { get; }
         IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; }
+
         /// <summary>
         /// Specifies sets other packages that the package depends on.
         /// </summary>
         IEnumerable<PackageDependencySet> DependencySets { get; }
-        IEnumerable<AssemblyReference> References { get; }
+
+        /// <summary>
+        /// Returns sets of References specified in the manifest.
+        /// </summary>
+        IEnumerable<PackageReferenceSet> PackageAssemblyReferences { get; }
 
         Version MinClientVersion { get; }
     }

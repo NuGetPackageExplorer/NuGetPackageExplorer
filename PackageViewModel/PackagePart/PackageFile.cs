@@ -89,11 +89,6 @@ namespace PackageExplorerViewModel
             get { return PackageViewModel.OpenWithContentFileCommand; }
         }
 
-        public ICommand AddAsAssemblyReferenceCommand
-        {
-            get { return PackageViewModel.AddAsAssemblyReferenceCommand; }
-        }
-
         public ICommand EditCommand
         {
             get { return PackageViewModel.EditFileCommand; }

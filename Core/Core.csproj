@@ -65,6 +65,7 @@
     <Compile Include="Authoring\ManifestFrameworkAssembly.cs" />
     <Compile Include="Authoring\ManifestReader.cs" />
     <Compile Include="Authoring\ManifestReference.cs" />
+    <Compile Include="Authoring\ManifestReferenceSet.cs" />
     <Compile Include="Authoring\ManifestSchemaUtility.cs" />
     <Compile Include="Authoring\ManifestVersionAttribute.cs" />
     <Compile Include="Authoring\ManifestVersionUtility.cs" />

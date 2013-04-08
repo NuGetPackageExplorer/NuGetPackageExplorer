@@ -40,7 +40,7 @@ namespace NuGet
             Files = new Collection<IPackageFile>();
             DependencySets = new Collection<PackageDependencySet>();
             FrameworkReferences = new Collection<FrameworkAssemblyReference>();
-            PackageAssemblyReferences = new Collection<AssemblyReference>();
+            PackageAssemblyReferences = new Collection<PackageReferenceSet>();
             Authors = new HashSet<string>();
             Owners = new HashSet<string>();
             Tags = new HashSet<string>();
@@ -51,7 +51,7 @@ namespace NuGet
         public ISet<string> Owners { get; private set; }
         public ISet<string> Tags { get; private set; }
 
-        public Collection<AssemblyReference> PackageAssemblyReferences { get; private set; }
+        public Collection<PackageReferenceSet> PackageAssemblyReferences { get; private set; }
 
         public Collection<FrameworkAssemblyReference> FrameworkReferences { get; private set; }
 
@@ -114,7 +114,7 @@ namespace NuGet
             get { return String.Join(" ", Tags); }
         }
 
-        IEnumerable<AssemblyReference> IPackageMetadata.References
+        IEnumerable<PackageReferenceSet> IPackageMetadata.PackageAssemblyReferences
         {
             get { return PackageAssemblyReferences; }
         }
@@ -214,25 +214,20 @@ namespace NuGet
             }
         }
 
-        internal static void ValidateReferenceAssemblies(IEnumerable<IPackageFile> files,
-                                                         IEnumerable<AssemblyReference> packageAssemblyReferences)
+        internal static void ValidateReferenceAssemblies(IEnumerable<IPackageFile> files, IEnumerable<PackageReferenceSet> packageAssemblyReferences)
         {
             var libFiles = new HashSet<string>(from file in files
-                                               where
-                                                   !String.IsNullOrEmpty(file.Path) &&
-                                                   file.Path.StartsWith("lib\\", StringComparison.OrdinalIgnoreCase)
+                                               where !String.IsNullOrEmpty(file.Path) && file.Path.StartsWith("lib", StringComparison.OrdinalIgnoreCase)
                                                select Path.GetFileName(file.Path), StringComparer.OrdinalIgnoreCase);
 
-            foreach (AssemblyReference reference in packageAssemblyReferences)
+            foreach (var reference in packageAssemblyReferences.SelectMany(p => p.References))
             {
-                if (!libFiles.Contains(reference.File) && !libFiles.Contains(reference + ".dll") &&
-                    !libFiles.Contains(reference + ".exe"))
+                if (!libFiles.Contains(reference) &&
+                    !libFiles.Contains(reference + ".dll") &&
+                    !libFiles.Contains(reference + ".exe") &&
+                    !libFiles.Contains(reference + ".winmd"))
                 {
-                    throw new InvalidDataException(
-                        String.Format(
-                            CultureInfo.CurrentCulture,
-                            NuGetResources.Manifest_InvalidReference,
-                            reference.File));
+                    throw new InvalidDataException(String.Format(CultureInfo.CurrentCulture, NuGetResources.Manifest_InvalidReference, reference));
                 }
             }
         }
@@ -277,9 +272,9 @@ namespace NuGet
 
             DependencySets.AddRange(metadata.DependencySets);
             FrameworkReferences.AddRange(metadata.FrameworkAssemblies);
-            if (metadata.References != null)
+            if (metadata.PackageAssemblyReferences != null)
             {
-                PackageAssemblyReferences.AddRange(metadata.References.Select(r => new AssemblyReference(r.File)));
+                PackageAssemblyReferences.AddRange(metadata.PackageAssemblyReferences);
             }
 
             // If there's no base path then ignore the files node
@@ -313,11 +308,11 @@ namespace NuGet
             using (Stream stream = packagePart.GetStream())
             {
                 Manifest manifest = Manifest.Create(this);
-                if (PackageAssemblyReferences.Any())
-                {
-                    manifest.Metadata.References = new List<ManifestReference>(
-                        PackageAssemblyReferences.Select(reference => new ManifestReference {File = reference.File}));
-                }
+                //if (PackageAssemblyReferences.Any())
+                //{
+                //    manifest.Metadata.References = new List<ManifestReference>(
+                //        PackageAssemblyReferences.Select(reference => new ManifestReference {File = reference.File}));
+                //}
                 manifest.Save(stream, minimumManifestVersion);
             }
         }

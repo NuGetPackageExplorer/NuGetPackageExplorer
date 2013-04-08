@@ -53,7 +53,7 @@
             </Grid>
         </DataTemplate>
 
-        <DataTemplate x:Key="FilteredAssemblyReferencesTemplate">
+        <!--<DataTemplate x:Key="FilteredAssemblyReferencesTemplate">
             <DockPanel Margin="0,4,0,0">
                 <Button DockPanel.Dock="Right" Click="RemoveFilteredAssemblyReferenceClicked" ToolTip="Remove this assembly name">
                     <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
@@ -61,7 +61,7 @@
 
                 <TextBlock Text="{Binding Mode=OneWay}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" />
             </DockPanel>
-        </DataTemplate>
+        </DataTemplate>-->
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Validation.ErrorTemplate="{x:Null}">
@@ -178,12 +178,9 @@
             <!-- Tags -->
             <Label Grid.Row="15" Grid.Column="0" Target="TagsBox" Style="{StaticResource LabelStyle}" Content="Ta_gs" />
             <TextBox Grid.Row="15" Grid.Column="1" x:Name="TagsBox" Text="{Binding PackageMetadata.Tags}" />
-
-            <!-- Dependencies -->
-            <Button HorizontalAlignment="Center" Grid.Row="16" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,0" Content="Edit dependencies" Click="EditDependenciesButtonClicked" />
             
             <!-- Framework assemblies -->
-            <Border Grid.Row="17" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
+            <Border Grid.Row="16" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
                 <Grid Margin="3,4,3,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -223,32 +220,13 @@
             </Border>
 
             <!-- Header text for Framework assemblies -->
-            <TextBlock Text="Framework assemblies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="17" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+            <TextBlock Text="Framework assemblies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="16" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+
+            <!-- Dependencies -->
+            <Button HorizontalAlignment="Center" Grid.Row="17" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,0" Content="Edit dependencies" Click="EditDependenciesButtonClicked" />
 
             <!-- Filtered assembly references -->
-            <Border Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
-                <Grid Margin="3,4,3,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <ItemsControl x:Name="AssemblyReferencesList" Grid.ColumnSpan="2" ItemTemplate="{StaticResource FilteredAssemblyReferencesTemplate}"></ItemsControl>
-
-                    <TextBox x:Name="NewReferenceFileName" Margin="2" Grid.Column="0" Grid.Row="1" />
-
-                    <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="1" Grid.Row="1" IsEnabled="{Binding Text, ElementName=NewReferenceFileName, Converter={StaticResource nullToBoolConverter}}" ToolTipService.ToolTip="Add new filtered assembly reference" Click="AddReferenceFileNameClicked">
-                        <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
-                    </self:GrayscaleButton>
-                </Grid>
-            </Border>
-
-            <!-- Header text for Filtered assembly references -->
-            <TextBlock Text="Filtered assembly references" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+            <Button HorizontalAlignment="Center" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,0" Content="Edit assembly references" Click="EditReferencesButtonClicked" />
         </Grid>
     </ScrollViewer>
 </UserControl>

@@ -109,6 +109,14 @@ namespace NuGet
             }
         }
 
+        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
+        {
+            get
+            {
+                return CorePackage == null ? Enumerable.Empty<PackageReferenceSet>() : CorePackage.PackageAssemblyReferences;
+            }
+        }
+
         IEnumerable<string> IPackageMetadata.Authors
         {
             get { return CorePackage == null ? Enumerable.Empty<string>() : CorePackage.Authors; }
@@ -130,11 +138,6 @@ namespace NuGet
         {
             get;
             set;
-        }
-
-        public IEnumerable<AssemblyReference> References
-        {
-            get { return CorePackage == null ? Enumerable.Empty<AssemblyReference>() : CorePackage.References; }
         }
 
         public IEnumerable<IPackageAssemblyReference> AssemblyReferences

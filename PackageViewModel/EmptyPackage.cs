@@ -125,9 +125,9 @@ namespace PackageExplorerViewModel
             get { return Enumerable.Empty<FrameworkAssemblyReference>(); }
         }
 
-        public IEnumerable<AssemblyReference> References
+        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
         {
-            get { return Enumerable.Empty<AssemblyReference>(); }
+            get { return Enumerable.Empty<PackageReferenceSet>(); }
         }
 
         public bool IsAbsoluteLatestVersion

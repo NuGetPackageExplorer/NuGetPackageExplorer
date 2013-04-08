@@ -51,7 +51,6 @@
     <Compile Include="PackageExtensions.cs" />
     <Compile Include="PackageIssue.cs" />
     <Compile Include="PackageIssueLevel.cs" />
-    <Compile Include="Packages\AssemblyReference.cs" />
     <Compile Include="Packages\FrameworkAssemblyReference.cs" />
     <Compile Include="Packages\IFrameworkTargetable.cs" />
     <Compile Include="Packages\IPackage.cs" />
@@ -66,6 +65,7 @@
     <Compile Include="Packages\IVersionSpec.cs" />
     <Compile Include="Packages\PackageDependency.cs" />
     <Compile Include="Packages\PackageDependencySet.cs" />
+    <Compile Include="Packages\PackageReferenceSet.cs" />
     <Compile Include="Packages\SemanticVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

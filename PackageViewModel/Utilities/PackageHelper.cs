@@ -73,7 +73,7 @@ namespace PackageExplorerViewModel
             builder.Tags.AddRange(ParseTags(source.Tags));
             builder.DependencySets.AddRange(source.DependencySets);
             builder.FrameworkReferences.AddRange(source.FrameworkAssemblies);
-            builder.PackageAssemblyReferences.AddRange(source.References);
+            builder.PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
             builder.MinClientVersion = source.MinClientVersion;
         }
 

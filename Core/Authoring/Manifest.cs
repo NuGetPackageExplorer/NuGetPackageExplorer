@@ -173,7 +173,7 @@ namespace NuGet
                                       Language = metadata.Language.SafeTrim(),
                                       DependencySets = CreateDependencySet(metadata),
                                       FrameworkAssemblies = CreateFrameworkAssemblies(metadata),
-                                      References = CreateReferences(metadata),
+                                      ReferenceSets = CreateReferenceSets(metadata),
                                       MinClientVersionString = metadata.MinClientVersion.ToStringSafe()
                                   }
                    };
@@ -227,15 +227,32 @@ namespace NuGet
                                  }).ToList();
         }
 
-        private static List<ManifestReference> CreateReferences(IPackageMetadata metadata)
+        private static List<ManifestReferenceSet> CreateReferenceSets(IPackageMetadata metadata)
         {
-            if (metadata.References == null || !metadata.References.Any())
+            IPackageBuilder packageBuilder = metadata as IPackageBuilder;
+
+            if (packageBuilder == null || !packageBuilder.PackageAssemblyReferences.Any())
             {
                 return null;
             }
-            return (from reference in metadata.References
-                    where reference != null && reference.File != null
-                    select new ManifestReference { File = reference.File.Trim() }).ToList();
+
+            return (from referenceSet in packageBuilder.PackageAssemblyReferences
+                    select new ManifestReferenceSet
+                    {
+                        TargetFramework = referenceSet.TargetFramework != null ? VersionUtility.GetFrameworkString(referenceSet.TargetFramework) : null,
+                        References = CreateReferences(referenceSet)
+                    }).ToList();
+        }
+
+        private static List<ManifestReference> CreateReferences(PackageReferenceSet referenceSet)
+        {
+            if (referenceSet.References == null)
+            {
+                return new List<ManifestReference>();
+            }
+
+            return (from reference in referenceSet.References
+                    select new ManifestReference { File = reference.SafeTrim() }).ToList();
         }
 
         private static string GetCommaSeparatedString(IEnumerable<string> values)
@@ -327,7 +344,7 @@ namespace NuGet
             {
                 TryValidate(manifest.Metadata.DependencySets.SelectMany(d => d.Dependencies), results);
             }
-            TryValidate(manifest.Metadata.References, results);
+            TryValidate(manifest.Metadata.ReferenceSets, results);
 
             if (results.Any())
             {

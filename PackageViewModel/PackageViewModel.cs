@@ -28,7 +28,6 @@ namespace PackageExplorerViewModel
         private readonly ISettingsManager _settingsManager;
         private readonly IUIServices _uiServices;
 
-        private ICommand _addAsAssemblyReferenceCommand;
         private ICommand _addContentFileCommand;
         private ICommand _addContentFolderCommand;
         private ICommand _addNewFileCommand;
@@ -854,58 +853,6 @@ namespace PackageExplorerViewModel
             }
 
             return parameter == "Hide" || !IsInEditMetadataMode;
-        }
-
-        #endregion
-
-        #region AddAsAssemblyReferenceCommand
-
-        public ICommand AddAsAssemblyReferenceCommand
-        {
-            get
-            {
-                if (_addAsAssemblyReferenceCommand == null)
-                {
-                    _addAsAssemblyReferenceCommand = new RelayCommand<PackageFile>(AddAsAssemblyReferenceExecute,
-                                                                                   CanAddAsAssemblyReference);
-                }
-                return _addAsAssemblyReferenceCommand;
-            }
-        }
-
-        private bool CanAddAsAssemblyReference(PackageFile file)
-        {
-            if (file == null)
-            {
-                return false;
-            }
-
-            if (IsInEditFileMode)
-            {
-                return false;
-            }
-
-            return FileHelper.IsAssembly(file.Name) &&
-                   (IsInEditMetadataMode || !PackageMetadata.ContainsAssemblyReference(file.Name));
-        }
-
-        private void AddAsAssemblyReferenceExecute(PackageFile file)
-        {
-            if (file == null)
-            {
-                return;
-            }
-
-            if (IsInEditMetadataMode)
-            {
-                _editorService.AddAssemblyReference(file.Name);
-            }
-            else
-            {
-                PackageMetadata.AddAssemblyReference(file.Name);
-                // mark the document as dirty
-                NotifyChanges();
-            }
         }
 
         #endregion

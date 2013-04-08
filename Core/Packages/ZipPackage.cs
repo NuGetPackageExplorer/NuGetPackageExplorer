@@ -143,12 +143,16 @@ namespace NuGet
             get { return null; }
         }
 
-        public IEnumerable<AssemblyReference> References { get; set; }
-
         public IEnumerable<PackageDependencySet> DependencySets
         {
             get;
             set;
+        }
+
+        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
+        {
+            get;
+            private set;
         }
 
         public IEnumerable<IPackageAssemblyReference> AssemblyReferences
@@ -230,7 +234,7 @@ namespace NuGet
                     Tags = metadata.Tags;
                     DependencySets = metadata.DependencySets;
                     FrameworkAssemblies = metadata.FrameworkAssemblies;
-                    References = metadata.References;
+                    PackageAssemblyReferences = metadata.PackageAssemblyReferences;
                     Published = File.GetLastWriteTimeUtc(_filePath);
                     MinClientVersion = metadata.MinClientVersion;
 

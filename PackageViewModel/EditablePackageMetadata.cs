@@ -26,6 +26,7 @@ namespace PackageExplorerViewModel
         private string _title;
         private SemanticVersion _version;
         private ICollection<PackageDependencySet> _dependencySets;
+        private ICollection<PackageReferenceSet> _packageAssemblyReferences;
         private Version _minClientVersion;
 
         public EditablePackageMetadata()
@@ -71,7 +72,22 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public ObservableCollection<AssemblyReference> PackageAssemblyReferences { get; private set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public ICollection<PackageReferenceSet> PackageAssemblyReferences 
+        {
+            get
+            {
+                return _packageAssemblyReferences;
+            }
+            set
+            {
+                if (_packageAssemblyReferences != value)
+                {
+                    _packageAssemblyReferences = value;
+                    RaisePropertyChange("PackageAssemblyReferences");
+                }
+            }
+        }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public ICollection<PackageDependencySet> DependencySets 
@@ -350,7 +366,7 @@ namespace PackageExplorerViewModel
             get { return FrameworkAssemblies; }
         }
 
-        IEnumerable<AssemblyReference> IPackageMetadata.References
+        IEnumerable<PackageReferenceSet> IPackageMetadata.PackageAssemblyReferences
         {
             get { return PackageAssemblyReferences; }
         }
@@ -376,12 +392,12 @@ namespace PackageExplorerViewModel
             Tags = source.Tags;
             DependencySets = new ObservableCollection<PackageDependencySet>(source.DependencySets);
             FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkAssemblies);
-            PackageAssemblyReferences = new ObservableCollection<AssemblyReference>();
-            MinClientVersion = source.MinClientVersion;
-            if (source.References != null)
+            PackageAssemblyReferences = new ObservableCollection<PackageReferenceSet>();
+            if (source.PackageAssemblyReferences != null)
             {
-                PackageAssemblyReferences.AddRange(source.References);
+                PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
             }
+            MinClientVersion = source.MinClientVersion;
         }
 
         private static Uri FixIconUrl(Uri uri)
@@ -447,16 +463,6 @@ namespace PackageExplorerViewModel
             {
                 _propertyErrors[property] = error;
             }
-        }
-
-        public bool ContainsAssemblyReference(string name)
-        {
-            return PackageAssemblyReferences.Any(f => f.File.Equals(name, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public void AddAssemblyReference(string name)
-        {
-            PackageAssemblyReferences.Add(new AssemblyReference(name));
         }
 
         public void ResetErrors()

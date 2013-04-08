@@ -5,6 +5,5 @@
         void BeginEdit();
         void CancelEdit();
         bool CommitEdit();
-        void AddAssemblyReference(string name);
     }
 }
