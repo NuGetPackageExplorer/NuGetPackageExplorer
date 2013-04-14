@@ -51,8 +51,8 @@
 
     <PropertyGroup>
         <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-        <DeploymentUrl Condition="'$(DeploymentUrl)' == ''">http://nuget.codeplex.com/releases/clickonce/</DeploymentUrl>
-        <NpeDeploymentUrl>http://npe.codeplex.com/releases/clickonce/</NpeDeploymentUrl>
+        <DeploymentUrl Condition="'$(DeploymentUrl)' == ''">https://nuget.codeplex.com/releases/clickonce/</DeploymentUrl>
+        <NpeDeploymentUrl>https://npe.codeplex.com/releases/clickonce/</NpeDeploymentUrl>
         <ApplicationName>NuGetPackageExplorer</ApplicationName>
         <PackageExplorerRoot>$(MSBuildProjectDirectory)\..</PackageExplorerRoot>
         <ManifestFilePath>$(MSBuildProjectDirectory)\VisualStyleManifest.xml</ManifestFilePath>
