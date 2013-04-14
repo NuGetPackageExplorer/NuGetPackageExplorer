@@ -1,21 +1,20 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Deployment.Application;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Windows;
+using CodeExecutor;
 using NuGet;
+using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
-using CodeExecutor;
-using NuGetPackageExplorer.Types;
-using System.Diagnostics;
 
 namespace PackageExplorer
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         private CompositionContainer _container;
@@ -72,6 +71,23 @@ namespace PackageExplorer
                     string file = activationData[0];
                     LoadFile(window, file);
                     return;
+                }
+            }
+
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                string queryString = ApplicationDeployment.CurrentDeployment.ActivationUri.Query;
+                var arguments = HttpUtility.ParseQueryString(queryString);
+
+                string downloadUrl = arguments["url"];
+                if (!String.IsNullOrEmpty(downloadUrl))
+                {
+                    string id = arguments["id"];
+                    string versionString = arguments["version"];
+                    SemanticVersion version = null;
+                    SemanticVersion.TryParse(versionString, out version);
+
+                    window.DownloadAndOpenDataServicePackage(downloadUrl, id, version);
                 }
             }
         }

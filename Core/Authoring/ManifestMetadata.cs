@@ -12,7 +12,7 @@ using NuGet.Resources;
 namespace NuGet
 {
     [XmlType("metadata")]
-    public class ManifestMetadata : IPackageMetadata, IValidatableObject
+    public sealed class ManifestMetadata : IPackageMetadata, IValidatableObject
     {
         private string _owners;
         private string _minClientVersionString;

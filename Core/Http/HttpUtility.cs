@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Specialized;
 using System.Globalization;
 using System.Net;
 
@@ -40,6 +41,23 @@ namespace NuGet
             {
                 httpRequest.Headers[HttpRequestHeader.UserAgent] = userAgent;
             }
+        }
+
+        public static NameValueCollection ParseQueryString(string query)
+        {
+            var result = new NameValueCollection();
+            if (!String.IsNullOrEmpty(query))
+            {
+                string[] parts = query.Split('&', '=');
+                for (int i = 0; i < parts.Length; i += 2)
+                {
+                    string name = parts[i];
+                    string value = (i + 1 < parts.Length) ? parts[i + 1] : null;
+                    result[name] = value;
+                }
+            }
+
+            return result;
         }
     }
 }
