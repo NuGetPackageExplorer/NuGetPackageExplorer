@@ -61,6 +61,27 @@ namespace PackageExplorer
                 }
             }
 
+            // activation via ClickOnce url
+            if (ApplicationDeployment.IsNetworkDeployed)
+            {
+                string queryString = ApplicationDeployment.CurrentDeployment.ActivationUri.Query;
+                var arguments = HttpUtility.ParseQueryString(queryString);
+
+                string downloadUrl = arguments["url"];
+                Uri uri;
+
+                if (!String.IsNullOrEmpty(downloadUrl) && Uri.TryCreate(downloadUrl, UriKind.Absolute, out uri))
+                {
+                    string id = arguments["id"];
+                    string versionString = arguments["version"];
+                    SemanticVersion version = null;
+                    SemanticVersion.TryParse(versionString, out version);
+
+                    window.DownloadAndOpenDataServicePackage(downloadUrl, id, version);
+                    return;
+                }
+            }
+
             if (AppDomain.CurrentDomain.SetupInformation != null &&
                 AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
             {
@@ -71,23 +92,6 @@ namespace PackageExplorer
                     string file = activationData[0];
                     LoadFile(window, file);
                     return;
-                }
-            }
-
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                string queryString = ApplicationDeployment.CurrentDeployment.ActivationUri.Query;
-                var arguments = HttpUtility.ParseQueryString(queryString);
-
-                string downloadUrl = arguments["url"];
-                if (!String.IsNullOrEmpty(downloadUrl))
-                {
-                    string id = arguments["id"];
-                    string versionString = arguments["version"];
-                    SemanticVersion version = null;
-                    SemanticVersion.TryParse(versionString, out version);
-
-                    window.DownloadAndOpenDataServicePackage(downloadUrl, id, version);
                 }
             }
         }

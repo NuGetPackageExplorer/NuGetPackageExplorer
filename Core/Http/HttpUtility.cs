@@ -48,6 +48,11 @@ namespace NuGet
             var result = new NameValueCollection();
             if (!String.IsNullOrEmpty(query))
             {
+                if (query.StartsWith("?", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Substring(1);
+                }
+
                 string[] parts = query.Split('&', '=');
                 for (int i = 0; i < parts.Length; i += 2)
                 {
