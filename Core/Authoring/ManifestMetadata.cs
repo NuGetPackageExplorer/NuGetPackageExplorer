@@ -162,7 +162,7 @@ namespace NuGet
         {
             get
             {
-                if (ReferenceSets == null)
+                if (ReferenceSets == null || ReferenceSets.Count == 0)
                 {
                     return null;
                 }

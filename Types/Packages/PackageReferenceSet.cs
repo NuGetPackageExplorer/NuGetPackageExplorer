@@ -22,21 +22,6 @@ namespace NuGet
             _references = new ReadOnlyCollection<string>(references.ToList());
         }
 
-        //public PackageReferenceSet(ManifestReferenceSet manifestReferenceSet)
-        //{
-        //    if (manifestReferenceSet == null) 
-        //    {
-        //        throw new ArgumentNullException("manifestReferenceSet");
-        //    }
-
-        //    if (!String.IsNullOrEmpty(manifestReferenceSet.TargetFramework))
-        //    {
-        //        _targetFramework = VersionUtility.ParseFrameworkName(manifestReferenceSet.TargetFramework);
-        //    }
-
-        //    _references = new ReadOnlyHashSet<string>(manifestReferenceSet.References.Select(r => r.File), StringComparer.OrdinalIgnoreCase);
-        //}
-
         public ICollection<string> References
         {
             get

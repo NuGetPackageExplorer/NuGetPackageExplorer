@@ -229,14 +229,7 @@ namespace NuGet
 
         private static List<ManifestReferenceSet> CreateReferenceSets(IPackageMetadata metadata)
         {
-            IPackageBuilder packageBuilder = metadata as IPackageBuilder;
-
-            if (packageBuilder == null || !packageBuilder.PackageAssemblyReferences.Any())
-            {
-                return null;
-            }
-
-            return (from referenceSet in packageBuilder.PackageAssemblyReferences
+            return (from referenceSet in metadata.PackageAssemblyReferences
                     select new ManifestReferenceSet
                     {
                         TargetFramework = referenceSet.TargetFramework != null ? VersionUtility.GetFrameworkString(referenceSet.TargetFramework) : null,

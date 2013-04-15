@@ -30,6 +30,7 @@
             <self:NormalizeTextConverter x:Key="NormalizeTextConverter" />
             <self:BooleanToStringConverter x:Key="BooleanConverter" />
             <self:DependencySetConverter x:Key="DependencySetConverter" />
+            <self:ReferenceSetConverter x:Key="ReferenceSetConverter" />
 
             <DataTemplate DataType="{x:Type types:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
@@ -60,6 +61,27 @@
                         Style="{StaticResource NoDependencyTextBoxStyle}" 
                         Text="{x:Static resources:Resources.Dialog_NoDependencyLabel}">
                     </TextBlock>
+                </Grid>
+            </DataTemplate>
+
+            <DataTemplate x:Key="PackageReferenceItemTemplate">
+                <TextBlock Text="{Binding Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type types:PackageReferenceSet}">
+                <Grid Margin="0,0,0,8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static resources:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <ItemsControl
+                        x:Name="referencesList"
+                        Grid.Row="1"
+                        Margin="20,0,0,0"
+                        ItemsSource="{Binding References}"
+                        ItemTemplate="{StaticResource PackageReferenceItemTemplate}" />
                 </Grid>
             </DataTemplate>
 
@@ -132,10 +154,6 @@
 
             <DataTemplate x:Key="SimpleTextItemTemplate">
                 <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding}" />
-            </DataTemplate>
-
-            <DataTemplate x:Key="AssemblyReferenceItemTemplate">
-                <TextBlock Text="{Binding File, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
             </DataTemplate>
 
             <!-- data template for the package details pane -->
@@ -251,7 +269,7 @@
                         <!-- Package Assembly References -->
                         <TextBlock Visibility="{Binding Items.Count, ElementName=PackageAssemblyReferences, Converter={StaticResource countConverter}}" Text="Filtered Assembly References:" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                        <ItemsControl x:Name="PackageAssemblyReferences" Margin="25,5,0,0" ItemsSource="{Binding PackageAssemblyReferences}" ItemTemplate="{StaticResource AssemblyReferenceItemTemplate}">
+                        <ItemsControl x:Name="PackageAssemblyReferences" Margin="25,5,0,0" ItemsSource="{Binding PackageAssemblyReferences, Converter={StaticResource ReferenceSetConverter}}">
                         </ItemsControl>
                     </StackPanel>
                 </ScrollViewer>
