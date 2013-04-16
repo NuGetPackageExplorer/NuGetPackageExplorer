@@ -105,10 +105,10 @@ namespace PackageExplorer
             set { Settings.Default.ShowLatestVersionOfPackage = value; }
         }
 
-        public bool ShowUnlistedPackages
+        public bool ShowPrereleasePackages
         {
-            get { return Settings.Default.ShowUnlistedPackages; }
-            set { Settings.Default.ShowUnlistedPackages = value; }
+            get { return Settings.Default.ShowPrereleasePackages; }
+            set { Settings.Default.ShowPrereleasePackages = value; }
         }
 
         public bool PublishAsUnlisted

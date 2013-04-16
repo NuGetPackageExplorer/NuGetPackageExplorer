@@ -38,7 +38,7 @@ namespace PackageExplorerViewModel
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
             bool showLatestVersion,
-            bool showUnlistedPackages,
+            bool showPrereleasePackages,
             string fixedPackageSource)
         {
             if (packageSourceManager == null)
@@ -47,7 +47,7 @@ namespace PackageExplorerViewModel
             }
 
             _showLatestVersion = showLatestVersion;
-            _showPrereleasePackages = showUnlistedPackages;
+            _showPrereleasePackages = showPrereleasePackages;
             _fixedPackageSource = fixedPackageSource;
             Packages = new ObservableCollection<PackageInfo>();
             SortCommand = new RelayCommand<string>(Sort, CanSort);

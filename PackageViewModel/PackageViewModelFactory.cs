@@ -72,7 +72,7 @@ namespace PackageExplorerViewModel
             var model = new PackageChooserViewModel(
                 new MruPackageSourceManager(new PackageSourceSettings(SettingsManager)),
                 SettingsManager.ShowLatestVersionOfPackage,
-                SettingsManager.ShowUnlistedPackages,
+                SettingsManager.ShowPrereleasePackages,
                 fixedPackageSource);
             model.PropertyChanged += OnPackageChooserViewModelPropertyChanged;
             return model;
@@ -93,9 +93,9 @@ namespace PackageExplorerViewModel
             {
                 SettingsManager.ShowLatestVersionOfPackage = model.ShowLatestVersion;
             }
-            else if (e.PropertyName == "ShowUnlistedPackages")
+            else if (e.PropertyName == "ShowPrereleasePackages")
             {
-                SettingsManager.ShowUnlistedPackages = model.ShowPrereleasePackages;
+                SettingsManager.ShowPrereleasePackages = model.ShowPrereleasePackages;
             }
         }
     }
