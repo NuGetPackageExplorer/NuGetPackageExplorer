@@ -100,6 +100,14 @@ namespace NuGet
 
         public IEnumerable<PackageReferenceSet> PackageAssemblyReferences { get; private set; }
 
+        public bool IsPrerelease
+        {
+            get
+            {
+                return !String.IsNullOrEmpty(Version.SpecialVersion);
+            }
+        }
+
         public Uri ReportAbuseUrl
         {
             get { return null; }

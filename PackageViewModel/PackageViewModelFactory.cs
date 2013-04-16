@@ -95,7 +95,7 @@ namespace PackageExplorerViewModel
             }
             else if (e.PropertyName == "ShowUnlistedPackages")
             {
-                SettingsManager.ShowUnlistedPackages = model.ShowUnlistedPackages;
+                SettingsManager.ShowUnlistedPackages = model.ShowPrereleasePackages;
             }
         }
     }

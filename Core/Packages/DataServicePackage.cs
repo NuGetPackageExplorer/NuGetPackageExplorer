@@ -25,6 +25,7 @@ namespace NuGet
         public long PackageSize { get; set; }
         public string PackageHash { get; set; }
         public DateTimeOffset? Published { get; set; }
+        public bool IsPrerelease { get; set; }
 
         public IPackage CorePackage { get; set; }
 

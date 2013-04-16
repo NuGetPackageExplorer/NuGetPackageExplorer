@@ -29,7 +29,7 @@ namespace PackageExplorerViewModel
         private IPackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
         private bool _showLatestVersion;
-        private bool _showUnlistedPackages;
+        private bool _showPrereleasePackages;
         private string _sortColumn;
         private ListSortDirection _sortDirection;
         private string _statusContent;
@@ -47,7 +47,7 @@ namespace PackageExplorerViewModel
             }
 
             _showLatestVersion = showLatestVersion;
-            _showUnlistedPackages = showUnlistedPackages;
+            _showPrereleasePackages = showUnlistedPackages;
             _fixedPackageSource = fixedPackageSource;
             Packages = new ObservableCollection<PackageInfo>();
             SortCommand = new RelayCommand<string>(Sort, CanSort);
@@ -138,17 +138,17 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public bool ShowUnlistedPackages
+        public bool ShowPrereleasePackages
         {
-            get { return _showUnlistedPackages; }
+            get { return _showPrereleasePackages; }
             set
             {
-                if (_showUnlistedPackages != value)
+                if (_showPrereleasePackages != value)
                 {
-                    _showUnlistedPackages = value;
-                    OnPropertyChanged("ShowUnlistedPackages");
+                    _showPrereleasePackages = value;
+                    OnPropertyChanged("ShowPrereleasePackages");
 
-                    OnShowUnlistedPackagesChange();
+                    OnShowPrereleasePackagesChange();
                 }
             }
         }
@@ -295,7 +295,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private void OnShowUnlistedPackagesChange()
+        private void OnShowPrereleasePackagesChange()
         {
             Sort(SortColumn, SortDirection);
         }
@@ -523,19 +523,18 @@ namespace PackageExplorerViewModel
 
                         if (ShowLatestVersion)
                         {
-                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: true);
+                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: true, showPrerelease: ShowPrereleasePackages);
                             _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(packageInfos, ShowLatestVersionPageSize);
                         }
                         else
                         {
                             /* show all versions */
-                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: false);
+                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: false, showPrerelease: ShowPrereleasePackages);
                             
                             _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
                                 packageInfos,
                                 ShowAllVersionsPageSize,
                                 PageBuffer,
-                                ShowUnlistedPackages,
                                 PackageInfoEqualityComparer.Instance,
                                 (a, b) => b.SemanticVersion.CompareTo(a.SemanticVersion));
                         }
@@ -551,19 +550,30 @@ namespace PackageExplorerViewModel
         private static IQueryable<PackageInfo> GetPackageInfos(
             IQueryable<IPackage> query,
             IPackageRepository repository,
-            bool getLatestVersions)
+            bool getLatestVersions,
+            bool showPrerelease)
         {
             if (repository is DataServicePackageRepository)
             {
                 if (getLatestVersions)
                 {
-                    if (repository.SupportsPrereleasePackages)
+                    if (repository.SupportsPrereleasePackages && showPrerelease)
                     {
                         query = query.Where(p => p.IsAbsoluteLatestVersion);
                     }
                     else
                     {
                         query = query.Where(p => p.IsLatestVersion);
+                    }
+                }
+                else
+                {
+                    if (repository.SupportsPrereleasePackages) 
+                    {
+                        if (!showPrerelease)
+                        {
+                            query = query.Where(p => !p.IsPrerelease);
+                        }
                     }
                 }
 
@@ -598,7 +608,7 @@ namespace PackageExplorerViewModel
                                                         PackageHash = p.PackageHash,
                                                         PackageSize = p.PackageSize,
                                                         DownloadUrl = new Uri(p.Source),
-                                                        Published = p.Published
+                                                        Published = p.Published,
                                                     });
             }
         }

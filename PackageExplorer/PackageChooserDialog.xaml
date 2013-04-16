@@ -250,7 +250,7 @@
         <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowLatestVersion}" HorizontalAlignment="Left" Content="Only _show latest version of each package Id." Checked="OnShowLatestVersionValueChanged" Unchecked="OnShowLatestVersionValueChanged" />
 
         <!-- Checkbox: Show unlisted version of each Id  -->
-        <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="5" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowUnlistedPackages}" Visibility="{Binding ShowAllVersions, Mode=OneWay, Converter={StaticResource boolToVis}, ConverterParameter='hidden'}" HorizontalAlignment="Left" Content="Show unlisted packages." />
+        <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="5" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowPrereleasePackages}" HorizontalAlignment="Left" Content="Show pre-release packages." />
 
         <!-- Background color for the footer -->
         <Border Grid.Row="6" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>

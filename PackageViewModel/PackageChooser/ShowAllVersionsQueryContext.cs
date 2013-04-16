@@ -16,13 +16,11 @@ namespace PackageExplorerViewModel
         private readonly Stack<int> _skipHistory = new Stack<int>();
         private int _nextSkip;
         private int _skip;
-        private bool _showUnlistedPackages;
 
         public ShowAllVersionsQueryContext(
             IQueryable<T> source, 
             int pageSize, 
             int bufferSize, 
-            bool showUnlistedPackages, 
             IEqualityComparer<T> equalityComparer,
             Comparison<T> comparer)
             : base(source)
@@ -31,7 +29,6 @@ namespace PackageExplorerViewModel
             _equalityComparer = equalityComparer;
             _comparer = comparer;
             _pageSize = pageSize;
-            _showUnlistedPackages = showUnlistedPackages;
         }
 
         private int PageIndex
@@ -88,12 +85,9 @@ namespace PackageExplorerViewModel
 
                     if (firstItem || _equalityComparer.Equals(buffer[head], lastItem))
                     {
-                        if (_showUnlistedPackages || !buffer[head].IsUnlisted)
-                        {
-                            groupItems.Add(buffer[head]);
-                            lastItem = buffer[head];                            
-                            firstItem = false;
-                        }
+                        groupItems.Add(buffer[head]);
+                        lastItem = buffer[head];                            
+                        firstItem = false;
 
                         head++;
                         _nextSkip++;

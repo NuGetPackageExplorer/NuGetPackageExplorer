@@ -143,6 +143,14 @@ namespace NuGet
             get { return null; }
         }
 
+        public bool IsPrerelease
+        {
+            get
+            {
+                return !String.IsNullOrEmpty(Version.SpecialVersion);
+            }
+        }
+
         public IEnumerable<PackageDependencySet> DependencySets
         {
             get;

@@ -140,6 +140,11 @@ namespace PackageExplorerViewModel
             get { return false; }
         }
 
+        public bool IsPrerelease
+        {
+            get { return false; }
+        }
+
         public DateTimeOffset LastUpdated
         {
             get { return DateTimeOffset.MinValue; }

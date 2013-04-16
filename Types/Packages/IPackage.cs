@@ -11,6 +11,8 @@ namespace NuGet
 
         bool IsLatestVersion { get; }
 
+        bool IsPrerelease { get; }
+
         DateTimeOffset LastUpdated { get; }
 
         long PackageSize { get; }
