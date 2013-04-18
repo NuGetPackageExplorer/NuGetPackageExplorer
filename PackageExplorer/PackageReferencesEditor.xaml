@@ -1,0 +1,120 @@
+﻿<self:StandardDialog x:Class="PackageExplorer.PackagReferencesEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:PackageExplorer" 
+        xmlns:settings="clr-namespace:PackageExplorer.Properties"
+        xmlns:types="clr-namespace:NuGet;assembly=NuGetPackageExplorer.Types"                      
+        Title="Package References Editor" 
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}, Mode=OneWay}" 
+        MinHeight="300" 
+        MinWidth="450"
+        Height="400"
+        Width="600">
+
+    <self:StandardDialog.Resources>
+        <self:VersionSpecConverter x:Key="VersionSpecConverter" />
+        <self:TargetFrameworkConverter x:Key="TargetFrameworkConverter" />
+
+        <Style x:Key="ImageStyle" TargetType="{x:Type Image}">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Stretch" Value="Uniform" />
+        </Style>
+
+        <DataTemplate DataType="{x:Type types:PackageDependencySet}" x:Key="PackageDependencySetTemplate">
+            <TextBlock Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, TargetNullValue='[no target framework]'}" />
+        </DataTemplate>
+    </self:StandardDialog.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Groups label -->
+        <Label Content="_Groups" Target="DependencyGroupList" FontWeight="SemiBold" />
+
+        <!-- buttons to add/remove group -->
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+            <Button ToolTip="Add a new group" Click="OnAddGroupClicked" Margin="0,0,4,0">
+                <Image Source="Images/Add.png" />
+            </Button>
+
+            <self:GrayscaleButton ToolTip="Delete the selected group" Click="OnRemoveGroupClicked" IsEnabled="{Binding SelectedItem, ElementName=DependencyGroupList, Converter={StaticResource nullToBoolConverter}}">
+                <self:GrayscaleImage Source="Images/delete.png" />
+            </self:GrayscaleButton>
+        </StackPanel>
+
+        <!-- Dependency group listbox -->
+        <ListBox x:Name="DependencyGroupList" Margin="0,0,0,10" Grid.Row="1" BorderThickness="1" ItemsSource="{Binding}" ItemTemplate="{StaticResource PackageDependencySetTemplate}">
+        </ListBox>
+
+        <!-- Group details label -->
+        <Label Content="Group _details" FontWeight="SemiBold" Grid.Column="1" HorizontalAlignment="Center">
+        </Label>
+
+        <!-- group details -->
+        <Grid Margin="6,0,3,10" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding SelectedItem, ElementName=DependencyGroupList, Converter={StaticResource nullToBoolConverter}}" DataContext="{Binding SelectedItem, ElementName=DependencyGroupList}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <Grid.BindingGroup>
+                <BindingGroup x:Name="NewPackageDependencyGroup" Name="NewPackageDependency" NotifyOnValidationError="True" />
+            </Grid.BindingGroup>
+            
+            <Validation.ErrorTemplate>
+                <ControlTemplate></ControlTemplate>
+            </Validation.ErrorTemplate>
+
+            <!-- target framework textbox -->
+            <DockPanel Grid.ColumnSpan="2" LastChildFill="True">
+                <Label DockPanel.Dock="Left" Content="_Target framework" Target="TargetFrameworkBox" />
+                <TextBox x:Name="TargetFrameworkBox" Text="{Binding TargetFramework, BindingGroupName={x:Null}, Converter={StaticResource TargetFrameworkConverter}, UpdateSourceTrigger=LostFocus}" />
+            </DockPanel>
+
+            <ListBox 
+                x:Name="DependencyList" 
+                ItemsSource="{Binding Dependencies, BindingGroupName={x:Null}}" 
+                SelectionMode="Single"
+                Margin="0,4"
+                Grid.Row="1" 
+                Grid.ColumnSpan="2">                   
+            </ListBox>
+
+            <TextBox x:Name="NewDependencyId" Text="{Binding Id, ValidatesOnDataErrors=True}" Margin="2" Grid.Column="0" Grid.Row="2" />
+
+            <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new reference" Click="AddDependencyButtonClicked">
+                <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
+                <self:GrayscaleButton.IsEnabled>
+                    <Binding Path="Text" ElementName="NewDependencyId" Converter="{StaticResource nullToBoolConverter}" Mode="OneWay" />
+                </self:GrayscaleButton.IsEnabled>
+            </self:GrayscaleButton>
+        </Grid>
+
+        <!-- Background color for the footer -->
+        <Border Grid.Row="3" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
+
+        <!-- OK and Cancel buttons -->
+        <UniformGrid HorizontalAlignment="Right" Grid.Row="3" Grid.ColumnSpan="2" Rows="1" Columns="2">
+            <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,0" />
+            <Button Content="Cancel" Command="{Binding CancelCommand, Mode=OneWay}" Click="CancelButton_Click" Margin="5,10,5,0" Padding="15,0" />
+        </UniformGrid>
+    </Grid>
+</self:StandardDialog>

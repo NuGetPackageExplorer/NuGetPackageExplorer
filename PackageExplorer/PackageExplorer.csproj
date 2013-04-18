@@ -140,6 +140,9 @@
     <Compile Include="Converters\NormalizeTextConverter.cs" />
     <Compile Include="Converters\StringShorternerConverter.cs" />
     <Compile Include="Converters\TargetFrameworkConverter.cs" />
+    <Compile Include="PackageReferencesEditor.xaml.cs">
+      <DependentUpon>PackageReferencesEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PackageDependencyEditor.xaml.cs">
       <DependentUpon>PackageDependencyEditor.xaml</DependentUpon>
     </Compile>
@@ -234,6 +237,10 @@
     <Page Include="ContentViewerPane.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageReferencesEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="FileEditor.xaml">
       <SubType>Designer</SubType>
