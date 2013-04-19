@@ -12,15 +12,13 @@ using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
-    /// <summary>
-    /// Interaction logic for PackageMetadataEditor.xaml
-    /// </summary>
+
     public partial class PackageMetadataEditor : UserControl, IPackageEditorService
     {
-        //private ObservableCollection<string> _filteredAssemblyReferences;
         private ObservableCollection<FrameworkAssemblyReference> _frameworkAssemblies;
         private EditableFrameworkAssemblyReference _newFrameworkAssembly;
         private ICollection<PackageDependencySet> _dependencySets;
+        private ICollection<PackageReferenceSet> _referenceSets;
 
         public PackageMetadataEditor()
         {
@@ -46,14 +44,10 @@ namespace PackageExplorer
             var viewModel = (PackageViewModel) DataContext;
 
             _dependencySets = viewModel.PackageMetadata.DependencySets;
+            _referenceSets = viewModel.PackageMetadata.PackageAssemblyReferences;
 
-            _frameworkAssemblies =
-                new ObservableCollection<FrameworkAssemblyReference>(viewModel.PackageMetadata.FrameworkAssemblies);
+            _frameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(viewModel.PackageMetadata.FrameworkAssemblies);
             FrameworkAssembliesList.ItemsSource = _frameworkAssemblies;
-
-            //_filteredAssemblyReferences =
-            //    new ObservableCollection<string>(viewModel.PackageMetadata.PackageAssemblyReferences);
-            //AssemblyReferencesList.ItemsSource = _filteredAssemblyReferences;
         }
 
         private void ClearFrameworkAssemblyTextBox()
@@ -124,15 +118,6 @@ namespace PackageExplorer
             return true;
         }
 
-        //private void AddReferenceFileNameClicked(object sender, RoutedEventArgs e)
-        //{
-        //    string file = NewReferenceFileName.Text.Trim();
-        //    _filteredAssemblyReferences.Add(file);
-
-        //    // after reference name is added, clear the textbox
-        //    ClearFilteredAssemblyReferenceTextBox();
-        //}
-
         private void EditDependenciesButtonClicked(object sender, RoutedEventArgs e)
         {
             var viewModel = (PackageViewModel)DataContext;
@@ -151,7 +136,18 @@ namespace PackageExplorer
 
         private void EditReferencesButtonClicked(object sender, RoutedEventArgs e)
         {
+            var viewModel = (PackageViewModel)DataContext;
 
+            var editor = new PackageReferencesEditor(_referenceSets)
+            {
+                Owner = Window.GetWindow(this),
+                PackageChooser = PackageChooser
+            };
+            var result = editor.ShowDialog();
+            if (result == true)
+            {
+                _referenceSets = editor.GetEditedReferencesSets();
+            }
         }
 
         #region IPackageEditorService
@@ -179,9 +175,8 @@ namespace PackageExplorer
             {
                 var viewModel = (PackageViewModel) DataContext;
                 viewModel.PackageMetadata.DependencySets = _dependencySets;
+                viewModel.PackageMetadata.PackageAssemblyReferences = _referenceSets;
                 _frameworkAssemblies.CopyTo(viewModel.PackageMetadata.FrameworkAssemblies);
-                //_filteredAssemblyReferences.Distinct().Select(s => new AssemblyReference(s)).CopyTo(
-                //    viewModel.PackageMetadata.PackageAssemblyReferences);
             }
 
             return valid;

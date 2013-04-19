@@ -10,56 +10,50 @@ using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
-    /// <summary>
-    /// Interaction logic for PackageDependencyEditor.xaml
-    /// </summary>
-    public partial class PackagReferencesEditor : StandardDialog
+    public partial class PackageReferencesEditor : StandardDialog
     {
-        private ObservableCollection<EditablePackageDependencySet> _dependencySets = new ObservableCollection<EditablePackageDependencySet>();
+        private ObservableCollection<EditablePackageReferenceSet> _referenceSets = new ObservableCollection<EditablePackageReferenceSet>();
 
-        private EditablePackageDependency _newPackageDependency;
-
-        public PackagReferencesEditor()
+        public PackageReferencesEditor()
         {
             InitializeComponent();
 
-            DependencyGroupList.DataContext = _dependencySets;
+            ReferenceGroupList.DataContext = _referenceSets;
             ClearDependencyTextBox();
         }
 
-        public PackagReferencesEditor(IEnumerable<PackageDependencySet> existingDependencySets)
+        public PackageReferencesEditor(IEnumerable<PackageReferenceSet> existingReferenceSets)
             : this()
         {
-            _dependencySets.AddRange(existingDependencySets.Select(ds => new EditablePackageDependencySet(ds)));
+            _referenceSets.AddRange(existingReferenceSets.Select(rs => new EditablePackageReferenceSet(rs)));
 
-            if (_dependencySets.Count > 0)
+            if (_referenceSets.Count > 0)
             {
-                DependencyGroupList.SelectedIndex = 0;
+                ReferenceGroupList.SelectedIndex = 0;
             }
         }
 
         public IPackageChooser PackageChooser { get; set; }
 
-        public ICollection<PackageDependencySet> GetEditedDependencySets()
+        public ICollection<PackageReferenceSet> GetEditedReferencesSets()
         {
-            return _dependencySets.Select(set => set.AsReadOnly()).ToArray();
+            return _referenceSets.Select(set => set.AsReadOnly()).ToArray();
         }
 
-        private EditablePackageDependencySet ActivePackageDependencySet
+        private EditablePackageReferenceSet ActivePackageReferenceSet
         {
             get
             {
-                return (EditablePackageDependencySet)DependencyGroupList.SelectedItem;
+                return (EditablePackageReferenceSet)ReferenceGroupList.SelectedItem;
             }
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            bool canClose = String.IsNullOrEmpty(NewDependencyId.Text) || AddNewDependency();
-            if (canClose)
-            {
-                DialogResult = true;
-            }
+            // before closing, try adding any pending reference
+            AddNewReference();
+
+            DialogResult = true;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -67,80 +61,63 @@ namespace PackageExplorer
             DialogResult = false;
         }
 
-        private void RemoveDependencyButtonClicked(object sender, RoutedEventArgs e)
+        private void DeleteReferenceButtonClicked(object sender, RoutedEventArgs e)
         {
             var hyperlink = (Hyperlink)sender;
-            var selectedPackageDependency = (PackageDependency)hyperlink.DataContext;
-            if (selectedPackageDependency != null)
+            var reference = (string)hyperlink.DataContext;
+            if (reference != null)
             {
-                ActivePackageDependencySet.Dependencies.Remove(selectedPackageDependency);
-            }
-        }
-
-        private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
-        {
-            PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
-            if (selectedPackage != null)
-            {
-                _newPackageDependency.Id = selectedPackage.Id;
-                _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version);
+                ActivePackageReferenceSet.References.Remove(reference);
             }
         }
 
         private void OnAddGroupClicked(object sender, RoutedEventArgs e)
         {
-            _dependencySets.Add(new EditablePackageDependencySet());
+            _referenceSets.Add(new EditablePackageReferenceSet());
 
-            if (DependencyGroupList.SelectedIndex == -1)
+            if (ReferenceGroupList.SelectedIndex == -1)
             {
-                DependencyGroupList.SelectedIndex = _dependencySets.Count - 1;
+                ReferenceGroupList.SelectedIndex = _referenceSets.Count - 1;
             }
         }
 
         private void OnRemoveGroupClicked(object sender, RoutedEventArgs e)
         {
             // remember the currently selected index;
-            int selectedIndex = DependencyGroupList.SelectedIndex;
+            int selectedIndex = ReferenceGroupList.SelectedIndex;
 
-            _dependencySets.Remove((EditablePackageDependencySet)DependencyGroupList.SelectedItem);
+            _referenceSets.Remove((EditablePackageReferenceSet)ReferenceGroupList.SelectedItem);
 
-            if (_dependencySets.Count > 0)
+            if (_referenceSets.Count > 0)
             {
                 // after removal, restore the previously selected index
-                selectedIndex = Math.Min(selectedIndex, _dependencySets.Count - 1);
-                DependencyGroupList.SelectedIndex = selectedIndex;
+                selectedIndex = Math.Min(selectedIndex, _referenceSets.Count - 1);
+                ReferenceGroupList.SelectedIndex = selectedIndex;
             }
         }
 
-        private void AddDependencyButtonClicked(object sender, RoutedEventArgs e)
+        private void AddReferenceButtonClicked(object sender, RoutedEventArgs e)
         {
-            AddNewDependency();
+            AddNewReference();
         }
 
-        private bool AddNewDependency()
+        private void AddNewReference()
         {
-            if (String.IsNullOrEmpty(NewDependencyId.Text))
+            string newReference = NewReferenceFile.Text.Trim();
+            if (String.IsNullOrEmpty(newReference))
             {
-                return true;
+                return;
             }
 
-            if (!NewPackageDependencyGroup.UpdateSources())
-            {
-                return false;
-            }
+            ActivePackageReferenceSet.References.Add(newReference);
 
-            ActivePackageDependencySet.Dependencies.Add(_newPackageDependency.AsReadOnly());
-
-            // after dependency is added, clear the textbox
+            // after reference is added, clear the textbox
             ClearDependencyTextBox();
-
-            return true;
         }
 
         private void ClearDependencyTextBox()
         {
-            _newPackageDependency = new EditablePackageDependency(() => ActivePackageDependencySet);
-            NewDependencyId.DataContext = _newPackageDependency;
+            NewReferenceFile.Text = String.Empty;
         }
     }
 }

@@ -11,6 +11,7 @@ namespace NuGet
         public const int DefaultVersion = 1;
         public const int SemverVersion = 3;
         public const int TargetFrameworkSupportVersion = 4;
+        public const int TargetFrameworkSupportForReferencesVersion = 5;
 
         private static readonly Type[] _xmlAttributes = new[]
                                                         {
@@ -26,6 +27,15 @@ namespace NuGet
 
         private static int GetVersionFromMetadata(ManifestMetadata metadata)
         {
+            // Important: check for version 5 before version 4
+            bool referencesHasTargetFramework =
+              metadata.ReferenceSets != null &&
+              metadata.ReferenceSets.Any(r => r.TargetFramework != null);
+            if (referencesHasTargetFramework)
+            {
+                return TargetFrameworkSupportForReferencesVersion;
+            }
+
             bool dependencyHasTargetFramework =
                 metadata.DependencySets != null &&
                 metadata.DependencySets.Any(d => d.TargetFramework != null);
