@@ -87,7 +87,7 @@
             <!-- target framework textbox -->
             <DockPanel Grid.ColumnSpan="2" LastChildFill="True">
                 <Label DockPanel.Dock="Left" Content="_Target framework" Target="TargetFrameworkBox" />
-                <TextBox x:Name="TargetFrameworkBox" Text="{Binding TargetFramework, BindingGroupName={x:Null}, Converter={StaticResource TargetFrameworkConverter}, UpdateSourceTrigger=LostFocus}" />
+                <TextBox x:Name="TargetFrameworkBox" Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, UpdateSourceTrigger=LostFocus}" />
             </DockPanel>
 
             <ListView 

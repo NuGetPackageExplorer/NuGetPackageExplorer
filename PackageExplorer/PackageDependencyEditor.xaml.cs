@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Documents;
 using NuGet;
 using NuGetPackageExplorer.Types;
@@ -55,6 +56,11 @@ namespace PackageExplorer
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
+            if (Validation.GetHasError(TargetFrameworkBox))
+            {
+                return;
+            }
+
             bool canClose = String.IsNullOrEmpty(NewDependencyId.Text) || AddNewDependency();
             if (canClose)
             {
