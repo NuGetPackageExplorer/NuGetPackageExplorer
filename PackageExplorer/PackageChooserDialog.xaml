@@ -85,7 +85,7 @@
 
             <TextBlock Margin="0,0,7,0" VerticalAlignment="Center">
                 <TextBlock.Text>
-                    <MultiBinding Mode="OneWay" StringFormat="{}{0} to {1} of {2}">
+                    <MultiBinding Mode="OneWay" StringFormat="{}{0:N0} to {1:N0} of {2:N0}">
                         <Binding Path="BeginPackage" />
                         <Binding Path="EndPackage" />
                         <Binding Path="TotalPackageCount" />
