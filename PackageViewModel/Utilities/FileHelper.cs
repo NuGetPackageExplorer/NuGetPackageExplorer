@@ -11,12 +11,11 @@ namespace PackageExplorerViewModel
     {
         private static readonly string[] _executableScriptsExtensions = new[]
                                                                         {
-                                                                            ".BAS", ".BAT", ".CHM", ".COM", ".EXE"
-                                                                            , ".HTA", ".INF", ".JS", ".LNK",
-                                                                            ".MSI",
-                                                                            ".OCX", ".PPT", ".REG", ".SCT", ".SHS"
-                                                                            , ".SYS", ".URL", ".VB", ".VBS",
-                                                                            ".WSH", ".WSF"
+                                                                            ".BAS", ".BAT", ".CHM", ".COM", ".EXE",
+                                                                            ".HTA", ".INF", ".JS", ".LNK", ".MSI",
+                                                                            ".OCX", ".PPT", ".REG", ".SCT", ".SHS",
+                                                                            ".SYS", ".URL", ".VB", ".VBS", ".WSH", 
+                                                                            ".WSF"
                                                                         };
 
         private static readonly string[] BinaryFileExtensions = new[]

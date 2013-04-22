@@ -37,6 +37,13 @@ namespace PackageExplorer
 
         public static IHighlightingDefinition GuessHighligtingDefinition(string name)
         {
+            if (name.EndsWith(".min.js", StringComparison.OrdinalIgnoreCase) ||
+                name.EndsWith(".min.css", StringComparison.OrdinalIgnoreCase))
+            {
+                // don't try to highlight mini-fied JS and CSS file
+                return TextHighlightingDefinition.Instance;
+            }
+
             string extension = Path.GetExtension(name).ToUpperInvariant();
 
             // if the extension is .pp or .transform, it is NuGet transform files.
