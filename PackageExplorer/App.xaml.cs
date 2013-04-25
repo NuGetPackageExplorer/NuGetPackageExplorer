@@ -62,7 +62,9 @@ namespace PackageExplorer
             }
 
             // activation via ClickOnce url
-            if (ApplicationDeployment.IsNetworkDeployed)
+            if (ApplicationDeployment.IsNetworkDeployed &&
+                ApplicationDeployment.CurrentDeployment != null &&
+                ApplicationDeployment.CurrentDeployment.ActivationUri != null)
             {
                 string queryString = ApplicationDeployment.CurrentDeployment.ActivationUri.Query;
                 var arguments = HttpUtility.ParseQueryString(queryString);
