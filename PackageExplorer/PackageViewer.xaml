@@ -103,6 +103,7 @@
             </ContextMenu>
 
             <ContextMenu x:Key="FolderSharedContextMenu" Opened="PackageFolderContextMenu_Opened" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+
                 <self:GrayscaleMenuItem Header="Add init.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="init.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}">
                     <MenuItem.Icon>
                         <self:GrayscaleImage Source="Images/script.png" />

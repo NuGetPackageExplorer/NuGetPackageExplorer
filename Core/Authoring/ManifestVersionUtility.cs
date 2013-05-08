@@ -10,8 +10,9 @@ namespace NuGet
     {
         public const int DefaultVersion = 1;
         public const int SemverVersion = 3;
-        public const int TargetFrameworkSupportVersion = 4;
+        public const int TargetFrameworkSupportForDependencyContentsAndToolsVersion = 4;
         public const int TargetFrameworkSupportForReferencesVersion = 5;
+        public const int XdtTransformationVersion = 6;
 
         private static readonly Type[] _xmlAttributes = new[]
                                                         {
@@ -41,7 +42,7 @@ namespace NuGet
                 metadata.DependencySets.Any(d => d.TargetFramework != null);
             if (dependencyHasTargetFramework)
             {
-                return TargetFrameworkSupportVersion;
+                return TargetFrameworkSupportForDependencyContentsAndToolsVersion;
             }
 
             SemanticVersion semanticVersion;

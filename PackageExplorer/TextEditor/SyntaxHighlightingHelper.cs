@@ -29,7 +29,7 @@ namespace PackageExplorer
 
                         var xmlHighlighter = HighlightingManager.Instance.GetDefinitionByExtension(".xml");
                         HighlightingManager.Instance.RegisterHighlighting(
-                            "Xml", new[] { ".nuspec", ".props", ".targets" }, xmlHighlighter);
+                            "Xml", new[] { ".nuspec", ".props", ".targets", ".xdt" }, xmlHighlighter);
                     }
                 }
             }

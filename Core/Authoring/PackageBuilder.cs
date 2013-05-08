@@ -151,10 +151,7 @@ namespace NuGet
             using (Package package = Package.Open(stream, FileMode.Create))
             {
                 // Validate and write the manifest
-                WriteManifest(package,
-                    requiresV4TargetFrameworkSchema ?
-                        ManifestVersionUtility.TargetFrameworkSupportVersion :
-                        ManifestVersionUtility.DefaultVersion);
+                WriteManifest(package, DetermineMinimumSchemaVersion(Files));
 
                 // Write the files to the package
                 WriteFiles(package);
@@ -169,6 +166,32 @@ namespace NuGet
                 package.PackageProperties.Title = Title;
                 package.PackageProperties.Subject = "NuGet Package Explorer";
             }
+        }
+
+        private static int DetermineMinimumSchemaVersion(Collection<IPackageFile> Files)
+        {
+            if (HasXdtTransformFile(Files))
+            {
+                // version 5
+                return ManifestVersionUtility.XdtTransformationVersion;
+            }
+
+            if (RequiresV4TargetFrameworkSchema(Files))
+            {
+                // version 4
+                return ManifestVersionUtility.TargetFrameworkSupportForDependencyContentsAndToolsVersion;
+            }
+
+            return ManifestVersionUtility.DefaultVersion;
+        }
+
+        private static bool HasXdtTransformFile(ICollection<IPackageFile> contentFiles)
+        {
+            return contentFiles.Any(file =>
+                file.Path != null &&
+                file.Path.StartsWith(Constants.ContentDirectory + Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase) &&
+                (file.Path.EndsWith(".install.xdt", StringComparison.OrdinalIgnoreCase) ||
+                 file.Path.EndsWith(".uninstall.xdt", StringComparison.OrdinalIgnoreCase)));
         }
 
         private static bool RequiresV4TargetFrameworkSchema(ICollection<IPackageFile> files)
