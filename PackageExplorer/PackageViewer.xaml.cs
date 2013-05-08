@@ -65,7 +65,7 @@ namespace PackageExplorer
         private double _analysisPaneWidth = 250; // default width for package analysis pane
         private TreeViewItem _dragItem;
         private System.Windows.Point _dragPoint;
-        private bool _isDragging;
+        private bool _isDragging, _isPressing;
 
         public PackageViewer(IUIServices messageBoxServices, IPackageChooser packageChooser)
         {
@@ -237,12 +237,13 @@ namespace PackageExplorer
                 }
                 else
                 {
-                    var file = data.GetData(PackageFileDataFormat, false) as PackageFile;
-                    // make sure we don't drag a file into the same folder
-                    if (file != null &&
-                        !folder.Contains(file) &&
-                        !folder.ContainsFile(file.Name) &&
-                        !folder.ContainsFolder(file.Name))
+                    var packagePart = data.GetData(PackageFileDataFormat, false) as PackagePart;
+                    // make sure we don't drag a file or folder into the same parent
+                    if (packagePart != null &&
+                        !folder.Contains(packagePart) &&
+                        !folder.ContainsFile(packagePart.Name) &&
+                        !folder.ContainsFolder(packagePart.Name) &&
+                        !folder.IsDescendantOf(packagePart))
                     {
                         effects = DragDropEffects.Move;
                     }
@@ -277,11 +278,25 @@ namespace PackageExplorer
             }
             else if (data.GetDataPresent(PackageFileDataFormat))
             {
-                var file = data.GetData(PackageFileDataFormat) as PackageFile;
-                if (file != null)
+                var packagePart = data.GetData(PackageFileDataFormat) as PackagePart;
+                if (packagePart != null)
                 {
                     folder = folder ?? RootFolder;
-                    folder.AddFile(file);
+
+                    var file = packagePart as PackageFile;
+                    if (file != null)
+                    {
+                        folder.AddFile(file);
+                    }
+                    else
+                    {
+                        var childFolder = packagePart as PackageFolder;
+                        if (childFolder != null && !folder.IsDescendantOf(childFolder))
+                        {
+                            folder.AddFolder(childFolder);
+                        }
+                    }
+
                     e.Handled = true;
                 }
             }
@@ -297,20 +312,20 @@ namespace PackageExplorer
             var item = sender as TreeViewItem;
             if (item != null)
             {
-                // only allow dragging file
-                var file = item.DataContext as PackageFile;
-                if (file != null)
+                // allow dragging file and folder
+                var packagePart = item.DataContext as PackagePart;
+                if (packagePart != null)
                 {
                     _dragItem = item;
                     _dragPoint = e.GetPosition(item);
-                    _isDragging = true;
+                    _isPressing = true;
                 }
             }
         }
 
         private void PackagesTreeViewItem_PreviewMouseMove(object sender, MouseEventArgs e)
         {
-            if (!_isDragging)
+            if (_isDragging || !_isPressing)
             {
                 return;
             }
@@ -323,10 +338,13 @@ namespace PackageExplorer
                     Math.Abs(newPoint.Y - _dragPoint.Y) >= SystemParameters.MinimumVerticalDragDistance)
                 {
                     // initiate a dragging
-                    var file = item.DataContext as PackageFile;
-                    if (file != null)
+                    var packagePart = item.DataContext as PackagePart;
+                    if (packagePart != null)
                     {
-                        var data = new DataObject(PackageFileDataFormat, file);
+                        _isPressing = false;
+                        _isDragging = true;
+
+                        var data = new DataObject(PackageFileDataFormat, packagePart);
                         DragDrop.DoDragDrop(item, data, DragDropEffects.Move);
                         ResetDraggingState();
                     }
@@ -336,6 +354,7 @@ namespace PackageExplorer
 
         private void PackagesTreeViewItem_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
+            _isPressing = false;
             if (_isDragging)
             {
                 ResetDraggingState();
@@ -344,6 +363,7 @@ namespace PackageExplorer
 
         private void ResetDraggingState()
         {
+            _isPressing = false;
             _isDragging = false;
             _dragItem = null;
         }

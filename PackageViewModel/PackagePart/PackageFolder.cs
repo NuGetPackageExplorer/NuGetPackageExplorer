@@ -214,12 +214,41 @@ namespace PackageExplorerViewModel
                     MessageLevel.Error);
                 return null;
             }
+
             var newFolder = new PackageFolder(folderName, this);
-            Children.Add(newFolder);
-            newFolder.IsSelected = true;
+            AddFolderCore(newFolder);
+            return newFolder;
+        }
+
+        public void AddFolder(PackageFolder childFolder)
+        {
+            if (!AddContentFolderCanExecute(childFolder.Name))
+            {
+                PackageViewModel.UIServices.Show(
+                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, childFolder.Name),
+                    MessageLevel.Error);
+                return;
+            }
+
+            if (this.IsDescendantOf(childFolder))
+            {
+                return;
+            }
+
+            if (childFolder.Parent != null)
+            {
+                childFolder.Parent.Detach(childFolder);
+            }
+
+            AddFolderCore(childFolder);
+        }
+
+        private void AddFolderCore(PackageFolder childFolder)
+        {
+            Attach(childFolder);
+            childFolder.IsSelected = true;
             IsExpanded = true;
             PackageViewModel.NotifyChanges();
-            return newFolder;
         }
 
         public PackageFile AddFile(string filePath, bool isTempFile)
