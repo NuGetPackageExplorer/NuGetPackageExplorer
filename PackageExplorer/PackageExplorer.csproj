@@ -28,7 +28,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://nuget.codeplex.com/releases/clickonce/</InstallUrl>
+    <InstallUrl>https://nuget.codeplex.com/releases/clickonce/</InstallUrl>
     <SupportUrl>http://npe.codeplex.com</SupportUrl>
     <ErrorReportUrl>http://npe.codeplex.com/WorkItem/Create%3fProjectName=npe</ErrorReportUrl>
     <ProductName>NuGet Package Explorer</ProductName>
@@ -37,8 +37,8 @@
     <WebPage>index.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <TrustUrlParameters>true</TrustUrlParameters>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.5.0.0</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>3.5.0.1</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>

@@ -45,31 +45,38 @@ namespace CodeExecutor
             {
                 data.Add("Full Name", assembly.FullName);
 
-                foreach (var attribute in assembly.GetCustomAttributesData())
+                try
                 {
-                    if (attribute.ConstructorArguments.Count != 1 ||
-                        attribute.ConstructorArguments[0].ArgumentType != typeof(string))
+                    foreach (var attribute in assembly.GetCustomAttributesData())
                     {
-                        continue;
-                    }
+                        if (attribute.ConstructorArguments.Count != 1 ||
+                            attribute.ConstructorArguments[0].ArgumentType != typeof(string))
+                        {
+                            continue;
+                        }
 
-                    string typeName = attribute.Constructor.DeclaringType.Name;
-                    if (typeName == "InternalsVisibleToAttribute")
-                    {
-                        continue;
-                    }
+                        string typeName = attribute.Constructor.DeclaringType.Name;
+                        if (typeName == "InternalsVisibleToAttribute")
+                        {
+                            continue;
+                        }
 
-                    string key = typeName.EndsWith("Attribute", StringComparison.OrdinalIgnoreCase)
-                        ? typeName.Substring(0, typeName.Length - 9)
-                        : typeName;
-                         
-                    string value = attribute.ConstructorArguments[0].Value.ToString();
+                        string key = typeName.EndsWith("Attribute", StringComparison.OrdinalIgnoreCase)
+                            ? typeName.Substring(0, typeName.Length - 9)
+                            : typeName;
 
-                    if (!String.IsNullOrEmpty(value))
-                    {
-                        data[key] = value;
+                        string value = attribute.ConstructorArguments[0].Value.ToString();
+
+                        if (!String.IsNullOrEmpty(value))
+                        {
+                            data[key] = value;
+                        }
                     }
-                }                
+                }
+                catch (Exception)
+                {
+                    // if an exception occurs when loading custom attributes, just ignore
+                }
             }
 
             return data;
