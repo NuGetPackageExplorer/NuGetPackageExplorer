@@ -11,6 +11,7 @@ namespace PackageExplorer
     {
         private static bool _hasRegistered;
         private static readonly object _lock = new object();
+        private static string[] _nugetExtensions = new[] { ".nuspec", ".props", ".targets", ".xdt" };
 
         public static void RegisterHightingExtensions()
         {
@@ -26,10 +27,6 @@ namespace PackageExplorer
                             "Plain Text",
                             new[] { ".txt" },
                             TextHighlightingDefinition.Instance);
-
-                        var xmlHighlighter = HighlightingManager.Instance.GetDefinitionByExtension(".xml");
-                        HighlightingManager.Instance.RegisterHighlighting(
-                            "Xml", new[] { ".nuspec", ".props", ".targets", ".xdt" }, xmlHighlighter);
                     }
                 }
             }
@@ -45,11 +42,16 @@ namespace PackageExplorer
             }
 
             string extension = Path.GetExtension(name).ToUpperInvariant();
-
-            // if the extension is .pp or .transform, it is NuGet transform files.
-            // in which case, we strip out this extension and examine the real extension instead
-            if (extension == ".PP" || extension == ".TRANSFORM")
+            if (_nugetExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
             {
+                // treat these extension as xml
+                extension = ".XML";
+            }
+            else if (extension == ".PP" || extension == ".TRANSFORM")
+            {
+                // if the extension is .pp or .transform, it is NuGet transform files.
+                // in which case, we strip out this extension and examine the real extension instead
+
                 name = Path.GetFileNameWithoutExtension(name);
                 extension = Path.GetExtension(name).ToUpperInvariant();
             }
