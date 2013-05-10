@@ -304,8 +304,7 @@ namespace PackageExplorerViewModel
             return newFile;
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters")]
-        public void AddFile(PackageFile file)
+        public void AddFile(PackageFile file, bool makeCopy = false)
         {
             if (file == null)
             {
@@ -317,14 +316,30 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            // detach from current parent
-            if (file.Parent != null)
+            PackagePart newFile;
+
+            if (makeCopy)
             {
-                file.Parent.Detach(file);
+                var fileCopyPath = FileHelper.CreateTempFile(file.Name, file.GetStream());
+
+                string newTargetPath = this.Path + "\\" + file.Name;
+                var physicalFile = new PhysicalPackageFile(isTempFile: true, originalPath: fileCopyPath, targetPath: newTargetPath);
+
+                newFile = new PackageFile(physicalFile, file.Name, this);
+            }
+            else
+            {
+                // detach from current parent
+                if (file.Parent != null)
+                {
+                    file.Parent.Detach(file);
+                }
+
+                newFile = file;
             }
 
-            Attach(file);
-            file.IsSelected = true;
+            Attach(newFile);
+            newFile.IsSelected = true;
             IsExpanded = true;
             PackageViewModel.NotifyChanges();
         }

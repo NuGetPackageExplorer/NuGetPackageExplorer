@@ -134,6 +134,21 @@ namespace PackageExplorerViewModel
             return filePath;
         }
 
+        public static string CreateTempFile(string fileName, Stream content)
+        {
+            if (String.IsNullOrEmpty(fileName))
+            {
+                throw new ArgumentException("Argument is null or empty", "fileName");
+            }
+
+            string filePath = Path.Combine(GetTempFilePath(), fileName);
+            using (Stream targetStream = File.Create(filePath))
+            {
+                content.CopyTo(targetStream);
+            }
+            return filePath;
+        }
+
         public static bool IsAssembly(string path)
         {
             return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||

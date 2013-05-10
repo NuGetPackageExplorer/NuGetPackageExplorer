@@ -245,7 +245,9 @@ namespace PackageExplorer
                         !folder.ContainsFolder(packagePart.Name) &&
                         !folder.IsDescendantOf(packagePart))
                     {
-                        effects = DragDropEffects.Move;
+                        // we only allow copying file for now
+                        bool copying = (packagePart is PackageFile) && (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
+                        effects = copying ? DragDropEffects.Copy : DragDropEffects.Move;
                     }
                 }
             }
@@ -286,7 +288,8 @@ namespace PackageExplorer
                     var file = packagePart as PackageFile;
                     if (file != null)
                     {
-                        folder.AddFile(file);
+                        bool copying = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
+                        folder.AddFile(file, copying);
                     }
                     else
                     {
@@ -345,7 +348,7 @@ namespace PackageExplorer
                         _isDragging = true;
 
                         var data = new DataObject(PackageFileDataFormat, packagePart);
-                        DragDrop.DoDragDrop(item, data, DragDropEffects.Move);
+                        DragDrop.DoDragDrop(item, data, DragDropEffects.Copy | DragDropEffects.Move);
                         ResetDraggingState();
                     }
                 }
