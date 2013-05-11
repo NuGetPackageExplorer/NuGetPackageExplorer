@@ -320,7 +320,11 @@ namespace PackageExplorerViewModel
 
             if (makeCopy)
             {
-                var fileCopyPath = FileHelper.CreateTempFile(file.Name, file.GetStream());
+                string fileCopyPath;
+                using (Stream originalFileStream = file.GetStream())
+                {
+                    fileCopyPath = FileHelper.CreateTempFile(file.Name, originalFileStream);
+                }
 
                 string newTargetPath = this.Path + "\\" + file.Name;
                 var physicalFile = new PhysicalPackageFile(isTempFile: true, originalPath: fileCopyPath, targetPath: newTargetPath);
