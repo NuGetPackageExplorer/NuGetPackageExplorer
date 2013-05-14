@@ -14,7 +14,6 @@ namespace NuGet
     [XmlType("metadata")]
     public sealed class ManifestMetadata : IPackageMetadata, IValidatableObject
     {
-        private string _owners;
         private string _minClientVersionString;
 
         [XmlAttribute("minClientVersion")]
@@ -49,22 +48,21 @@ namespace NuGet
         [XmlElement("title")]
         public string Title { get; set; }
 
+        public bool ShouldSerializeTitle()
+        {
+            return !String.IsNullOrEmpty(Title);
+        }
+
         [Required(ErrorMessageResourceType = typeof(NuGetResources), ErrorMessageResourceName = "Manifest_RequiredMetadataMissing")]
         [XmlElement("authors")]
         public string Authors { get; set; }
 
         [XmlElement("owners")]
-        public string Owners
+        public string Owners { get; set; }
+
+        public bool ShouldSerializeOwners()
         {
-            get
-            {
-                // Fallback to authors
-                return _owners ?? Authors;
-            }
-            set
-            {
-                _owners = value;
-            }
+            return !String.IsNullOrEmpty(Owners);
         }
 
         [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings", Justification = "Xml deserialziation can't handle uris")]
