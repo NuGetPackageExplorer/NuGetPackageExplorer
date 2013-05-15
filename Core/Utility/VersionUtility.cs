@@ -40,6 +40,9 @@ namespace NuGet
                 { "WindowsPhone", "WindowsPhone" },
                 { "Windows", "Windows" },
                 { "win", "Windows" },
+                { "MonoAndroid", "MonoAndroid" },
+                { "MonoTouch", "MonoTouch" },
+                { "MonoMac", "MonoMac" },
                 { "native", "native" }
             };
 
