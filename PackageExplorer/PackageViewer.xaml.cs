@@ -43,7 +43,7 @@ namespace PackageExplorer
                 },
                 {
                     "Windows Store",
-                    new[] { "(no version)", "netcore", "Windows 8", "netcore45" }
+                    new[] { "(no version)", "netcore", "Windows 8", "netcore45", "Windows 8.1", "netcore451" }
                 },
                 {
                     ".NET Client profile",
@@ -57,7 +57,7 @@ namespace PackageExplorer
                     new[]
                     {
                         "(no version)", "net", "v1.0", "net10", "v1.1", "net11", "v2.0",
-                        "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40", "v4.5", "net45"
+                        "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40", "v4.5", "net45", "v4.5.1", "net451"
                     }
                 }
             };
