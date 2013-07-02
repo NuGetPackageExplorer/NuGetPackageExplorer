@@ -24,7 +24,8 @@ namespace NuGet
 
         internal static Uri CreatePartUri(string path)
         {
-            return PackUriHelper.CreatePartUri(new Uri(Uri.EscapeDataString(path), UriKind.Relative));
+            var uri = new Uri(path, UriKind.Relative);
+            return PackUriHelper.CreatePartUri(uri);
         }
 
         internal static Uri GetRootUri(Uri uri)
