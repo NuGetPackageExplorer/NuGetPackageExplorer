@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Globalization;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using Microsoft.Win32;
 using NuGetPackageExplorer.Types;
@@ -14,11 +13,6 @@ namespace PackageExplorer
     {
         [Import]
         public Lazy<MainWindow> Window { get; set; }
-
-        private static bool OSSupportsTaskDialogs
-        {
-            get { return NativeMethods.IsWindowsVistaOrLater; }
-        }
 
         #region IUIServices Members
 
@@ -109,63 +103,17 @@ namespace PackageExplorer
 
         public bool Confirm(string title, string message, bool isWarning)
         {
-            if (OSSupportsTaskDialogs)
-            {
-                return ConfirmUsingTaskDialog(message, title, isWarning);
-            }
-            else
-            {
-                MessageBoxResult result = MessageBox.Show(
-                    Window.Value,
-                    message,
-                    Resources.Resources.Dialog_Title,
-                    MessageBoxButton.YesNo,
-                    isWarning ? MessageBoxImage.Warning : MessageBoxImage.Question);
-                return result == MessageBoxResult.Yes;
-            }
+            return ConfirmUsingTaskDialog(message, title, isWarning);
         }
 
         public bool? ConfirmWithCancel(string title, string message)
         {
-            if (OSSupportsTaskDialogs)
-            {
-                return ConfirmWithCancelUsingTaskDialog(message, title);
-            }
-            else
-            {
-                MessageBoxResult result = MessageBox.Show(
-                    Window.Value,
-                    message,
-                    Resources.Resources.Dialog_Title,
-                    MessageBoxButton.YesNoCancel,
-                    MessageBoxImage.Question);
-                if (result == MessageBoxResult.Cancel)
-                {
-                    return null;
-                }
-                else
-                {
-                    return result == MessageBoxResult.Yes;
-                }
-            }
+            return ConfirmWithCancelUsingTaskDialog(message, title);
         }
 
         public bool ConfirmCloseEditor(string title, string message)
         {
-            if (OSSupportsTaskDialogs)
-            {
-                return ConfirmCloseEditorUsingTaskDialog(title, message);
-            }
-            else
-            {
-                var result = MessageBox.Show(
-                    message,
-                    Resources.Resources.Dialog_Title,
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Error);
-
-                return result == MessageBoxResult.Yes;
-            }
+            return ConfirmCloseEditorUsingTaskDialog(title, message);
         }
 
         public void Show(string message, MessageLevel messageLevel)
@@ -289,15 +237,7 @@ namespace PackageExplorer
                 fileName,
                 targetFolder);
 
-            if (OSSupportsTaskDialogs)
-            {
-                return ConfirmMoveFileUsingTaskDialog(fileName, targetFolder, numberOfItemsLeft, mainInstruction);
-            }
-            else
-            {
-                bool? answer = ConfirmWithCancel(Resources.Resources.Dialog_Title, mainInstruction);
-                return Tuple.Create(answer, false);
-            }
+            return ConfirmMoveFileUsingTaskDialog(fileName, targetFolder, numberOfItemsLeft, mainInstruction);
         }
 
         public bool? AskToInstallNpeOnWindows8()
@@ -347,7 +287,6 @@ namespace PackageExplorer
 
         #endregion
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private bool ConfirmUsingTaskDialog(string message, string title, bool isWarning)
         {
             using (var dialog = new TaskDialog())
@@ -374,7 +313,6 @@ namespace PackageExplorer
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private bool? ConfirmWithCancelUsingTaskDialog(string message, string title)
         {
             using (var dialog = new TaskDialog())
@@ -409,7 +347,6 @@ namespace PackageExplorer
             }
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private Tuple<bool?, bool> ConfirmMoveFileUsingTaskDialog(string fileName, string targetFolder,
                                                                   int numberOfItemsLeft, string mainInstruction)
         {
@@ -471,7 +408,6 @@ namespace PackageExplorer
             return Tuple.Create(movingFile, remember);
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining)]
         private bool ConfirmCloseEditorUsingTaskDialog(string title, string message)
         {
             using (var dialog = new TaskDialog())

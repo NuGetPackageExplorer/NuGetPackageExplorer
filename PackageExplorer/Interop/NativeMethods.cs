@@ -9,15 +9,6 @@ namespace PackageExplorer
         public const int SW_SHOWMINIMIZED = 2;
         public const uint WM_SETICON = 0x0080;
 
-        public static bool IsWindowsVistaOrLater
-        {
-            get
-            {
-                return Environment.OSVersion.Platform == PlatformID.Win32NT &&
-                       Environment.OSVersion.Version >= new Version(6, 0, 6000);
-            }
-        }
-
         public static bool IsWindows8OrLater
         {
             get
