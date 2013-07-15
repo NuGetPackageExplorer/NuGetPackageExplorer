@@ -3,6 +3,8 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using NuGet;
 using NuGetPackageExplorer.Types;
@@ -212,7 +214,7 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-        public void PushPackage()
+        public async Task PushPackage()
         {
             ShowProgress = true;
             Status = (PublishAsUnlisted == true) ? "Publishing and unlisting package..." : "Publishing package...";
@@ -222,35 +224,59 @@ namespace PackageExplorerViewModel
             // here we reuse the stream multiple times, so make sure to rewind it to beginning every time.
             _packageStream.Value.Seek(0, SeekOrigin.Begin);
 
-            TaskScheduler uiTaskSchedulker = TaskScheduler.FromCurrentSynchronizationContext();
+            try
+            {
+                await GalleryServer.PushPackage(
+                    PublishKey,
+                    _packageStream.Value,
+                    _package,
+                    PublishAsUnlisted ?? false,
+                    null,
+                    CancellationToken.None);
 
-            Task.Factory.StartNew(
-                    () => GalleryServer.PushPackage(PublishKey, _packageStream.Value, _package, PublishAsUnlisted ?? false, this))
-                .ContinueWith(task =>
-                              {
-                                  if (task.IsFaulted)
-                                  {
-                                      var webException = task.Exception.GetBaseException() as WebException;
-                                      if (webException != null && webException.Status == WebExceptionStatus.Timeout)
-                                      {
-                                          OnError(task.Exception);
-                                      }
-                                  }
+                OnCompleted();
+            }
+            //catch (HttpRequestException requestException)
+            //{
+            //}
+            catch (Exception exception)
+            {
+                OnError(exception);
+            }
+            finally
+            {
+                // add the publish url to the list
+                _mruSourceManager.NotifyPackageSourceAdded(PublishUrl);
 
-                                  // add the publish url to the list
-                                  _mruSourceManager.NotifyPackageSourceAdded(PublishUrl);
+                // this is to make sure the combo box doesn't goes blank after publishing
+                try
+                {
+                    _suppressReadingApiKey = true;
+                    SelectedPublishItem = PublishUrl;
+                }
+                finally
+                {
+                    _suppressReadingApiKey = false;
+                }
+            }
 
-                                  // this is to make sure the combo box doesn't goes blank after publishing
-                                  try
-                                  {
-                                      _suppressReadingApiKey = true;
-                                      SelectedPublishItem = PublishUrl;
-                                  }
-                                  finally
-                                  {
-                                      _suppressReadingApiKey = false;
-                                  }
-                              }, uiTaskSchedulker);
+            //TaskScheduler uiTaskSchedulker = TaskScheduler.FromCurrentSynchronizationContext();
+
+            //Task.Factory.StartNew(
+            //        () => GalleryServer.PushPackage(PublishKey, _packageStream.Value, _package, PublishAsUnlisted ?? false, this))
+            //    .ContinueWith(task =>
+            //                  {
+            //                      if (task.IsFaulted)
+            //                      {
+            //                          var webException = task.Exception.GetBaseException() as WebException;
+            //                          if (webException != null && webException.Status == WebExceptionStatus.Timeout)
+            //                          {
+            //                              OnError(task.Exception);
+            //                          }
+            //                      }
+
+                                  
+            //                  }, uiTaskSchedulker);
         }
 
         public void Dispose()

@@ -85,8 +85,8 @@ namespace PackageExplorerViewModel
             return builder.Build();
         }
 
-        public static IEnumerable<PackageIssue> Validate(this IPackage package, IEnumerable<IPackageRule> rules,
-                                                         string packageSource)
+        public static IEnumerable<PackageIssue> Validate
+            (this IPackage package, IEnumerable<IPackageRule> rules, string packageSource)
         {
             foreach (IPackageRule rule in rules)
             {
