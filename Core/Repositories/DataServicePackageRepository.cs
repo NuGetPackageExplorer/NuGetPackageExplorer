@@ -1,34 +1,22 @@
 using System;
-using System.Collections.Generic;
 using System.Data.Services.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net;
 
 namespace NuGet
 {
     public class DataServicePackageRepository : IPackageRepository, IPackageSearchable
     {
         private readonly DataServiceContext _context;
-        private readonly IHttpClient _httpClient;
         private DataServiceQuery<DataServicePackage> _query;
-        private readonly Lazy<DataServiceMetadata> _dataServiceMetadata;
 
-        public DataServicePackageRepository(IHttpClient httpClient)
+        public DataServicePackageRepository(Uri uri)
         {
-            if (httpClient == null)
-            {
-                throw new ArgumentNullException("httpClient");
-            }
-            _httpClient = httpClient;
-            _httpClient.AcceptCompression = true;
-
-            _context = new DataServiceContext(httpClient.Uri);
+            _context = new DataServiceContext(uri);
             _context.SendingRequest += OnSendingRequest;
             _context.IgnoreMissingProperties = true;
-            _dataServiceMetadata = new Lazy<DataServiceMetadata>(() => _context.GetDataServiceMetadata());
         }
-
-        #region IPackageRepository Members
 
         public string Source
         {
@@ -40,38 +28,14 @@ namespace NuGet
             return GetPackages();
         }
 
-        public bool SupportsPrereleasePackages
-        {
-            get
-            {
-                return _dataServiceMetadata.Value != null && 
-                       _dataServiceMetadata.Value.SupportedProperties.Contains("IsAbsoluteLatestVersion");
-            }
-        }
-
-        public bool SupportsSearch
-        {
-            get
-            {
-                return _dataServiceMetadata.Value != null &&
-                       _dataServiceMetadata.Value.SupportedMethodNames.Contains("Search", StringComparer.OrdinalIgnoreCase);
-            }
-        }
-
-        public bool SupportsSearchById
-        {
-            get
-            {
-                return _dataServiceMetadata.Value != null &&
-                       _dataServiceMetadata.Value.SupportedMethodNames.Contains("FindPackagesById", StringComparer.OrdinalIgnoreCase);
-            }
-        }
-
-        #endregion
-
         private void OnSendingRequest(object sender, SendingRequestEventArgs e)
         {
-            _httpClient.InitializeRequest(e.Request);
+            var httpRequest = e.Request as HttpWebRequest;
+            if (httpRequest != null)
+            {
+                httpRequest.UserAgent = HttpUtility.CreateUserAgentString("NuGet Package Explorer");
+                httpRequest.AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+            }
         }
 
         public Uri GetReadStreamUri(object entity)
@@ -99,27 +63,17 @@ namespace NuGet
                     return new IPackage[0].AsQueryable();
                 }
 
-                if (SupportsSearchById)
-                {
-                    return _context.CreateQuery<DataServicePackage>("FindPackagesById")
-                                   .AddQueryOption("id", "'" + id + "'")
-                                   .IncludeTotalCount();
-                }
-
-                return GetPackages().FindPackagesById(id);
+                return _context.CreateQuery<DataServicePackage>("FindPackagesById")
+                                .AddQueryOption("id", "'" + id + "'")
+                                .IncludeTotalCount();
             }
             else
             {
-                if (SupportsSearch)
-                {
-                    return _context.CreateQuery<DataServicePackage>("Search")
-                                   .AddQueryOption("searchTerm", "'" + searchTerm + "'")
-                                   .AddQueryOption("targetFramework", "")
-                                   .AddQueryOption("includePrerelease", "true")
-                                   .IncludeTotalCount();
-                }
-
-                return GetPackages().Find(searchTerm.Split(' '));
+                return _context.CreateQuery<DataServicePackage>("Search")
+                                .AddQueryOption("searchTerm", "'" + searchTerm + "'")
+                                .AddQueryOption("targetFramework", "")
+                                .AddQueryOption("includePrerelease", "true")
+                                .IncludeTotalCount();
             }
         }
     }

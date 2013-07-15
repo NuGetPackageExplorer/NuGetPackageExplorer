@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -54,7 +53,7 @@ namespace PackageExplorerViewModel
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
             ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
             NavigationCommand = new RelayCommand<string>(NavigationCommandExecute, NavigationCommandCanExecute);
-            LoadedCommand = new RelayCommand(() => Sort("VersionDownloadCount", ListSortDirection.Descending));
+            LoadedCommand = new RelayCommand(async () => await Sort("VersionDownloadCount", ListSortDirection.Descending));
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
             _packageSourceManager = packageSourceManager;
@@ -283,37 +282,29 @@ namespace PackageExplorerViewModel
 
         public event EventHandler LoadPackagesCompleted = delegate { };
 
-        private void OnShowLatestVersionChanged()
+        private async void OnShowLatestVersionChanged()
         {
             if ((SortColumn == "LastUpdated" || SortColumn == "PackageSize") && !ShowLatestVersion)
             {
-                Sort("Id", ListSortDirection.Ascending);
+                await Sort("Id", ListSortDirection.Ascending);
             }
             else
             {
-                Sort(SortColumn, SortDirection);
+                await Sort(SortColumn, SortDirection);
             }
         }
 
-        private void OnShowPrereleasePackagesChange()
+        private async void OnShowPrereleasePackagesChange()
         {
-            Sort(SortColumn, SortDirection);
+            await Sort(SortColumn, SortDirection);
         }
 
-        /// <summary>
-        /// This method needs run on background thread so as not to block UI thread
-        /// </summary>
-        /// <returns></returns>
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private IPackageRepository GetPackageRepository(object state)
+        private IPackageRepository GetPackageRepository()
         {
             if (_packageRepository == null)
             {
                 _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
             }
-
-            var token = (CancellationToken)state;
-            token.ThrowIfCancellationRequested();
 
             return _packageRepository;
         }
@@ -323,19 +314,9 @@ namespace PackageExplorerViewModel
             _packageRepository = null;
         }
 
-        internal void LoadPage(CancellationToken token)
+        internal async Task LoadPage(CancellationToken token)
         {
             Debug.Assert(_currentQuery != null);
-
-            TaskScheduler uiScheduler;
-            try
-            {
-                uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            }
-            catch (InvalidOperationException)
-            {
-                uiScheduler = TaskScheduler.Current;
-            }
 
             IsEditable = false;
             ShowMessage(Resources.LoadingMessage, false);
@@ -349,54 +330,50 @@ namespace PackageExplorerViewModel
 
             CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
 
-            // IMPORTANT: Call StartNew() with TaskScheduler.Default here to make sure 
-            // QueryPackages() is scheduled on background thread. This is because this method
-            // can be called from UI TaskScheduler from the LoadPackages() method
-            Task.Factory.StartNew<IList<PackageInfo>>(
-                QueryPackages, token, token, TaskCreationOptions.None, TaskScheduler.Default)
-                .ContinueWith(
-                    task =>
-                    {
-                        Exception exception = task.Exception;
-                        if (usedTokenSource != CurrentCancellationTokenSource)
-                        {
-                            // this mean this request has already been canceled. No need to process this request anymore.
-                            return;
-                        }
+            try
+            {
+                IList<PackageInfo> packageInfos = await QueryPackages(token);
 
-                        if (task.IsFaulted)
-                        {
-                            ShowMessage(exception.GetBaseException().Message, true);
-                            ClearPackages(isErrorCase: true);
-                        }
-                        else if (task.IsCanceled)
-                        {
-                            ClearMessage();
-                            UpdatePageNumber(_currentQuery.TotalItemCount, _currentQuery.BeginPackage,
-                                             _currentQuery.EndPackage);
-                        }
-                        else
-                        {
-                            ClearMessage();
-                            ShowPackages(task.Result, _currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
-                        }
+                if (usedTokenSource != CurrentCancellationTokenSource)
+                {
+                    // this mean this request has already been canceled. No need to process this request anymore.
+                    return;
+                }
 
-                        RestoreUI();
-                    },
-                    uiScheduler);
+                ClearMessage();
+                ShowPackages(packageInfos, _currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
+            }
+            catch (OperationCanceledException)
+            {
+                if (usedTokenSource != CurrentCancellationTokenSource)
+                {
+                    // this mean this request has already been canceled. No need to process this request anymore.
+                    return;
+                }
+
+                ClearMessage();
+                UpdatePageNumber(_currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
+            }
+            catch (Exception exception)
+            {
+                if (usedTokenSource != CurrentCancellationTokenSource)
+                {
+                    // this mean this request has already been canceled. No need to process this request anymore.
+                    return;
+                }
+
+                ShowMessage(exception.GetBaseException().Message, true);
+                ClearPackages(isErrorCase: true);
+            }
+
+            RestoreUI();
         }
 
-        private IList<PackageInfo> QueryPackages(object state)
+        private async Task<IList<PackageInfo>> QueryPackages(CancellationToken token)
         {
-            var token = (CancellationToken)state;
+            IList<PackageInfo> result = await _currentQuery.GetItemsForCurrentPage(token);
 
-            IList<PackageInfo> result = _currentQuery.GetItemsForCurrentPage().ToList();
-
-            token.ThrowIfCancellationRequested();
-
-            IPackageRepository repository = GetPackageRepository(token);
-
-            token.ThrowIfCancellationRequested();
+            IPackageRepository repository = GetPackageRepository();
 
             // this is the only way we can the download uri for each data service package
             var dataServiceRepository = repository as DataServicePackageRepository;
@@ -413,7 +390,7 @@ namespace PackageExplorerViewModel
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private void LoadPackages()
+        private Task LoadPackages()
         {
             IsEditable = false;
             ShowMessage(Resources.ConnectingMessage, false);
@@ -424,127 +401,90 @@ namespace PackageExplorerViewModel
             CurrentCancellationTokenSource = new CancellationTokenSource();
             CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
 
-            Task.Factory.StartNew<IPackageRepository>(
-                GetPackageRepository,
-                CurrentCancellationTokenSource.Token,
-                CurrentCancellationTokenSource.Token
-                ).ContinueWith(
-                    task =>
+            IPackageRepository repository = GetPackageRepository();
+
+            IQueryable<IPackage> query = null;
+
+            // special case for searching
+            if (!String.IsNullOrEmpty(_currentSearch))
+            {
+                var searchableRepository = repository as IPackageSearchable;
+                if (searchableRepository != null)
+                {
+                    query = searchableRepository.Search(_currentSearch);
+                }
+            }
+
+            if (query == null)
+            {
+                try
+                {
+                    query = repository.GetPackages();
+                }
+                catch (Exception error)
+                {
+                    // only show error if user hasn't canceled this request
+                    if (usedTokenSource == CurrentCancellationTokenSource)
                     {
-                        Exception exception = task.Exception;
-                        if (usedTokenSource != CurrentCancellationTokenSource)
-                        {
-                            // this mean this request has already been canceled. No need to process this request anymore.
-                            return;
-                        }
+                        ShowMessage(error.GetBaseException().Message, isError: true);
+                        RestoreUI();
+                    }
+                    return Task.FromResult(0);
+                }
 
-                        if (task.IsFaulted)
-                        {
-                            ShowMessage(exception.GetBaseException().Message, isError: true);
-                            RestoreUI();
-                            return;
-                        }
-                        else if (task.IsCanceled)
-                        {
-                            ClearMessage();
-                            RestoreUI();
-                            return;
-                        }
+                if (!String.IsNullOrEmpty(_currentSearch))
+                {
+                    query = query.Search(_currentSearch);
+                }
+            }
 
-                        IPackageRepository repository = task.Result;
-                        if (repository == null)
-                        {
-                            ClearMessage();
-                            RestoreUI();
-                            return;
-                        }
+            // When in Show All Versions mode, we can't sort by PackageSize. 
+            Debug.Assert(SortColumn != "PackageSize" || ShowLatestVersion);
 
-                        IQueryable<IPackage> query = null;
+            switch (SortColumn)
+            {
+                case "Id":
+                    query = SortDirection == ListSortDirection.Descending
+                                ? query.OrderByDescending(p => p.Id)
+                                : query.OrderBy(p => p.Id);
+                    break;
 
-                        if (!String.IsNullOrEmpty(_currentSearch))
-                        {
-                            var searchableRepository = repository as IPackageSearchable;
-                            if (searchableRepository != null)
-                            {
-                                query = searchableRepository.Search(_currentSearch);
-                            }
-                        }
+                case "VersionDownloadCount":
+                    query = SortDirection == ListSortDirection.Descending
+                                ? query.OrderByDescending(p => p.DownloadCount)
+                                : query.OrderBy(p => p.DownloadCount);
+                    break;
 
-                        if (query == null)
-                        {
-                            try
-                            {
-                                query = repository.GetPackages();
-                            }
-                            catch (Exception error)
-                            {
-                                // only show error if user hasn't canceled this request
-                                if (usedTokenSource == CurrentCancellationTokenSource)
-                                {
-                                    ShowMessage(error.GetBaseException().Message, isError: true);
-                                    RestoreUI();
-                                }
-                                return;
-                            }
+                case "PackageSize":
+                    query = SortDirection == ListSortDirection.Descending
+                                ? query.OrderByDescending(p => p.PackageSize)
+                                : query.OrderBy(p => p.PackageSize);
+                    break;
 
-                            if (!String.IsNullOrEmpty(_currentSearch))
-                            {
-                                query = query.Search(_currentSearch);
-                            }
-                        }
+                default:
+                    query = query.OrderByDescending(p => p.DownloadCount);
+                    break;
+            }
 
-                        // When in Show All Versions mode, we can't sort by PackageSize. 
-                        Debug.Assert(SortColumn != "PackageSize" || ShowLatestVersion);
-
-                        switch (SortColumn)
-                        {
-                            case "Id":
-                                query = SortDirection == ListSortDirection.Descending
-                                            ? query.OrderByDescending(p => p.Id)
-                                            : query.OrderBy(p => p.Id);
-                                break;
-
-                            case "VersionDownloadCount":
-                                query = SortDirection == ListSortDirection.Descending
-                                            ? query.OrderByDescending(p => p.DownloadCount)
-                                            : query.OrderBy(p => p.DownloadCount);
-                                break;
-
-                            case "PackageSize":
-                                query = SortDirection == ListSortDirection.Descending
-                                            ? query.OrderByDescending(p => p.PackageSize)
-                                            : query.OrderBy(p => p.PackageSize);
-                                break;
-
-                            default:
-                                query = query.OrderByDescending(p => p.DownloadCount);
-                                break;
-                        }
-
-                        if (ShowLatestVersion)
-                        {
-                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: true, showPrerelease: ShowPrereleasePackages);
-                            _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(packageInfos, ShowLatestVersionPageSize);
-                        }
-                        else
-                        {
-                            /* show all versions */
-                            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: false, showPrerelease: ShowPrereleasePackages);
+            if (ShowLatestVersion)
+            {
+                IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: true, showPrerelease: ShowPrereleasePackages);
+                _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(packageInfos, ShowLatestVersionPageSize);
+            }
+            else
+            {
+                /* show all versions */
+                IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: false, showPrerelease: ShowPrereleasePackages);
                             
-                            _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
-                                packageInfos,
-                                ShowAllVersionsPageSize,
-                                PageBuffer,
-                                PackageInfoEqualityComparer.Instance,
-                                (a, b) => b.SemanticVersion.CompareTo(a.SemanticVersion));
-                        }
+                _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
+                    packageInfos,
+                    ShowAllVersionsPageSize,
+                    PageBuffer,
+                    PackageInfoEqualityComparer.Instance,
+                    (a, b) => b.SemanticVersion.CompareTo(a.SemanticVersion));
+            }
 
-                        LoadPage(CurrentCancellationTokenSource.Token);
-                    },
-                    CurrentCancellationTokenSource.Token,
-                    TaskContinuationOptions.None,
-                    uiScheduler
-                );
+            return LoadPage(CurrentCancellationTokenSource.Token);
         }
 
         private static IQueryable<PackageInfo> GetPackageInfos(
@@ -557,7 +497,7 @@ namespace PackageExplorerViewModel
             {
                 if (getLatestVersions)
                 {
-                    if (repository.SupportsPrereleasePackages && showPrerelease)
+                    if (showPrerelease)
                     {
                         query = query.Where(p => p.IsAbsoluteLatestVersion);
                     }
@@ -568,12 +508,9 @@ namespace PackageExplorerViewModel
                 }
                 else
                 {
-                    if (repository.SupportsPrereleasePackages) 
+                    if (!showPrerelease)
                     {
-                        if (!showPrerelease)
-                        {
-                            query = query.Where(p => !p.IsPrerelease);
-                        }
+                        query = query.Where(p => !p.IsPrerelease);
                     }
                 }
 
@@ -613,14 +550,14 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private void Search(string searchTerm)
+        private async void Search(string searchTerm)
         {
             searchTerm = searchTerm ?? CurrentTypingSearch;
             searchTerm = searchTerm.Trim();
             if (_currentSearch != searchTerm)
             {
                 _currentSearch = searchTerm;
-                LoadPackages();
+                await LoadPackages();
                 CurrentTypingSearch = _currentSearch;
             }
         }
@@ -630,10 +567,10 @@ namespace PackageExplorerViewModel
             return IsEditable && !String.IsNullOrEmpty(searchTerm);
         }
 
-        private void ClearSearch()
+        private async void ClearSearch()
         {
             CurrentTypingSearch = _currentSearch = String.Empty;
-            LoadPackages();
+            await LoadPackages();
         }
 
         private bool CanClearSearch()
@@ -641,13 +578,14 @@ namespace PackageExplorerViewModel
             return IsEditable && !String.IsNullOrEmpty(_currentSearch);
         }
 
-        private void Sort(string column)
+        private async void Sort(string column)
         {
             if (column == "Version" || column == "Authors")
             {
                 return;
             }
-            Sort(column, null);
+
+            await Sort(column, null);
         }
 
         private bool CanSort(string column)
@@ -661,7 +599,7 @@ namespace PackageExplorerViewModel
             return TotalPackageCount > 0;
         }
 
-        private void Sort(string column, ListSortDirection? direction)
+        private Task Sort(string column, ListSortDirection? direction)
         {
             if (SortColumn == column)
             {
@@ -682,10 +620,10 @@ namespace PackageExplorerViewModel
                 SortDirection = direction ?? ListSortDirection.Ascending;
             }
 
-            LoadPackages();
+            return LoadPackages();
         }
 
-        private void ChangePackageSource(string source)
+        private async void ChangePackageSource(string source)
         {
             if (PackageSource != source)
             {
@@ -694,11 +632,11 @@ namespace PackageExplorerViewModel
                 PackageSource = source;
 
                 ResetPackageRepository();
-                LoadPackages();
+                await LoadPackages();
             }
             else
             {
-                LoadPackages();
+                await LoadPackages();
             }
         }
 
@@ -796,59 +734,65 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private void NavigationCommandExecute(string action)
+        private async void NavigationCommandExecute(string action)
         {
             switch (action)
             {
                 case "First":
-                    MoveFirst();
+                    await MoveFirst();
                     break;
 
                 case "Previous":
-                    MovePrevious();
+                    await MovePrevious();
                     break;
 
                 case "Next":
-                    MoveNext();
+                    await MoveNext();
                     break;
 
                 case "Last":
-                    MoveLast();
+                    await MoveLast();
                     break;
             }
         }
 
-        private void MoveLast()
+        private Task MoveLast()
         {
             bool canMoveLast = _currentQuery.MoveLast();
             if (canMoveLast)
             {
-                LoadPage(CancellationToken.None);
+                return LoadPage(CancellationToken.None);
             }
+
+            return Task.FromResult(0);
         }
 
-        private void MoveNext()
+        private Task MoveNext()
         {
             bool canMoveNext = _currentQuery.MoveNext();
             if (canMoveNext)
             {
-                LoadPage(CancellationToken.None);
+                return LoadPage(CancellationToken.None);
             }
+
+            return Task.FromResult(0);
         }
 
-        private void MovePrevious()
+        private Task MovePrevious()
         {
             bool canMovePrevious = _currentQuery.MovePrevious();
             if (canMovePrevious)
             {
-                LoadPage(CancellationToken.None);
+                return LoadPage(CancellationToken.None);
             }
+
+            return Task.FromResult(0);
         }
 
-        private void MoveFirst()
+        private Task MoveFirst()
         {
             _currentQuery.MoveFirst();
-            LoadPage(CancellationToken.None);
+            return LoadPage(CancellationToken.None);
         }
 
         private bool CanMoveLast()

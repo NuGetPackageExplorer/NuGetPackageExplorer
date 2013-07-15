@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.Services.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using NuGet;
 
 namespace PackageExplorerViewModel
@@ -48,10 +50,12 @@ namespace PackageExplorerViewModel
             get { return _nextSkip; }
         }
 
-        public IEnumerable<T> GetItemsForCurrentPage()
+        public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
         {
             T[] buffer = null;
             var groupItems = new List<T>();
+
+            var results = new List<T>();
 
             int skipCursor = _nextSkip = _skip;
             int head = 0;
@@ -67,11 +71,13 @@ namespace PackageExplorerViewModel
                     {
                         // read the next batch
                         var pagedQuery = Source.Skip(skipCursor).Take(_bufferSize);
-                        buffer = LoadData(pagedQuery).ToArray();
+                        buffer = (await LoadData(pagedQuery)).ToArray();
+                        token.ThrowIfCancellationRequested();
+
                         if (buffer.Length == 0)
                         {
                             // if no item returned, we have reached the end.
-                            yield break;
+                            return results;
                         }
 
                         for (int j = 0; j < buffer.Length; j++)
@@ -99,7 +105,7 @@ namespace PackageExplorerViewModel
                             groupItems.Sort(_comparer);
                             foreach (T item in groupItems)
                             {
-                                yield return item;
+                                results.Add(item);
                             }
                             groupItems.Clear();
                         }
@@ -109,15 +115,19 @@ namespace PackageExplorerViewModel
                 }
             }
 
+            token.ThrowIfCancellationRequested();
+
             if (groupItems.Count > 0)
             {
                 groupItems.Sort(_comparer);
                 foreach (T item in groupItems)
                 {
-                    yield return item;
+                    results.Add(item);
                 }
                 groupItems.Clear();
             }
+
+            return results;
         }
 
         public bool MoveFirst()

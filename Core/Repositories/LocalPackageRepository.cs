@@ -18,14 +18,6 @@ namespace NuGet
             _source = source;
         }
 
-        public bool SupportsPrereleasePackages
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         public string Source
         {
             get { return _source; }

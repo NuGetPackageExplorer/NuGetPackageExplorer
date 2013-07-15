@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Security;
+using System.Threading.Tasks;
 
 namespace NuGet
 {
@@ -27,16 +28,6 @@ namespace NuGet
             get { return _default; }
         }
 
-        #region IPackageRepository Members
-
-        public bool SupportsPrereleasePackages
-        {
-            get
-            {
-                return true;
-            }
-        }
-
         public string Source
         {
             get { return _cacheRoot; }
@@ -46,8 +37,6 @@ namespace NuGet
         {
             throw new NotSupportedException();
         }
-
-        #endregion
 
         public IPackage FindPackage(string packageId, SemanticVersion version)
         {

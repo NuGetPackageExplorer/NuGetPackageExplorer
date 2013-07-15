@@ -96,7 +96,6 @@
     <Compile Include="Http\NullCredentialProvider.cs" />
     <Compile Include="Http\ProgressEventArgs.cs" />
     <Compile Include="Http\ProxyCache.cs" />
-    <Compile Include="Http\RedirectedHttpClient.cs" />
     <Compile Include="Http\RequestHelper.cs" />
     <Compile Include="Http\STSAuthHelper.cs" />
     <Compile Include="NuGetConstants.cs" />
@@ -109,7 +108,6 @@
     <Compile Include="Packages\SimplePackage.cs" />
     <Compile Include="ProjectSystem\IFileSystem.cs" />
     <Compile Include="ProjectSystem\PhysicalFileSystem.cs" />
-    <Compile Include="Repositories\DataServiceMetadata.cs" />
     <Compile Include="Repositories\DataServicePackageRepository.cs" />
     <Compile Include="Repositories\IPackageRepository.cs" />
     <Compile Include="Repositories\IPackageSearchable.cs" />

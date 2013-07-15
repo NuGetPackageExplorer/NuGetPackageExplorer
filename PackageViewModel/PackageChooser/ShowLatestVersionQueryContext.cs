@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Data.Services.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using NuGet;
 
 namespace PackageExplorerViewModel
@@ -35,15 +37,21 @@ namespace PackageExplorerViewModel
             get { return Math.Min(TotalItemCount, (_pageIndex + 1) * _pageSize); }
         }
 
-        public IEnumerable<T> GetItemsForCurrentPage()
+        public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
         {
             var pagedQuery = Source.Skip(_pageIndex * _pageSize).Take(_pageSize);
-            var queryResponse = LoadData(pagedQuery);
+            T[] queryResponse = (await LoadData(pagedQuery)).ToArray();
+
+            token.ThrowIfCancellationRequested();
+
             foreach (var package in queryResponse)
             {
                 package.ShowAll = false;
-                yield return package;
             }
+
+            token.ThrowIfCancellationRequested();
+
+            return queryResponse;
         }
 
         public bool MoveFirst()
