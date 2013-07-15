@@ -2,7 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -13,6 +13,8 @@ using Constants = PackageExplorerViewModel.Constants;
 
 namespace PackageExplorer
 {
+    using HttpClient = System.Net.Http.HttpClient;
+
     [Export(typeof(IPackageDownloader))]
     internal class PackageDownloader : IPackageDownloader
     {
@@ -26,7 +28,7 @@ namespace PackageExplorer
 
         #region IPackageDownloader Members
 
-        public void Download(Uri downloadUri, string packageId, SemanticVersion packageVersion, Action<IPackage> callback)
+        public async Task<IPackage> Download(Uri downloadUri, string packageId, SemanticVersion packageVersion)
         {
             string progressDialogText = Resources.Resources.Dialog_DownloadingPackage;
             if (!string.IsNullOrEmpty(packageId))
@@ -67,54 +69,46 @@ namespace PackageExplorer
 
             // report progress must be done via UI thread
             Action<int, string> reportProgress =
-                (percent, description) => UIServices.BeginInvoke(() => _progressDialog.ReportProgress(percent, null, description));
+                (percent, description) => _progressDialog.ReportProgress(percent, null, description);
 
-            // download package on background thread
-            TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-            Task.Factory.StartNew(
-                () => DownloadData(downloadUri, reportProgress, cts.Token),
-                cts.Token
-                ).ContinueWith(
-                    task =>
-                    {
-                        timer.Stop();
+            try
+            {
+                IPackage package = await DownloadData(downloadUri, reportProgress, cts.Token);
+                return package;
+            }
+            catch (OperationCanceledException)
+            {
+                return null;
+            }
+            catch (Exception exception)
+            {
+                OnError(exception);
+                return null;
+            }
+            finally
+            {
+                timer.Stop();
 
-                        // close progress dialog when done
-                        _progressDialog.Close();
-                        _progressDialog = null;
-                        MainWindow.Value.Activate();
-
-                        if (task.Exception != null)
-                        {
-                            OnError(task.Exception);
-                        }
-                        else if (!task.IsCanceled)
-                        {
-                            IPackage package = task.Result;
-                            callback(package);
-                        }
-                    },
-                    uiScheduler
-                );
+                // close progress dialog when done
+                _progressDialog.Close();
+                _progressDialog = null;
+                MainWindow.Value.Activate();
+            }
         }
 
         #endregion
 
-        private IPackage DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken)
+        private async Task<IPackage> DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken)
         {
-            var httpClient = new HttpClient(url)
-                             {
-                                 UserAgent = HttpUtility.CreateUserAgentString(Constants.UserAgentClient),
-                                 AcceptCompression = false
-                             };
+            var httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(HttpUtility.CreateUserAgentString(Constants.UserAgentClient));
 
-            using (var response = (HttpWebResponse) httpClient.GetResponse())
+            using (HttpResponseMessage response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancelToken))
             {
-                cancelToken.ThrowIfCancellationRequested();
-                using (Stream requestStream = response.GetResponseStream())
+                using (Stream responseStream = await response.Content.ReadAsStreamAsync())
                 {
-                    const int chunkSize = 4*1024;
-                    var totalBytes = (int) response.ContentLength;
+                    const int chunkSize = 4 * 1024;
+                    var totalBytes = (int)(response.Content.Headers.ContentLength ?? 0);
                     var buffer = new byte[chunkSize];
                     int readSoFar = 0;
 
@@ -124,7 +118,7 @@ namespace PackageExplorer
                     {
                         while (readSoFar < totalBytes)
                         {
-                            int bytesRead = requestStream.Read(buffer, 0, Math.Min(chunkSize, totalBytes - readSoFar));
+                            int bytesRead = await responseStream.ReadAsync(buffer, 0, Math.Min(chunkSize, totalBytes - readSoFar), cancelToken);
                             readSoFar += bytesRead;
 
                             cancelToken.ThrowIfCancellationRequested();
@@ -151,14 +145,14 @@ namespace PackageExplorer
 
         private void OnProgress(int bytesReceived, int totalBytes, Action<int, string> reportProgress)
         {
-            int percentComplete = (bytesReceived*100)/totalBytes;
+            int percentComplete = (bytesReceived * 100) / totalBytes;
             string description = String.Format("Downloaded {0}KB of {1}KB...", ToKB(bytesReceived), ToKB(totalBytes));
             reportProgress(percentComplete, description);
         }
 
         private long ToKB(long totalBytes)
         {
-            return (totalBytes + 1023)/1024;
+            return (totalBytes + 1023) / 1024;
         }
     }
 }

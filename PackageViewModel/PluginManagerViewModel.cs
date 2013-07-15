@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 using NuGet;
 using NuGetPackageExplorer.Types;
 
@@ -87,7 +88,7 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-        private void AddCommandExecute(string parameter)
+        private async void AddCommandExecute(string parameter)
         {
             if (parameter == "Local")
             {
@@ -95,11 +96,11 @@ namespace PackageExplorerViewModel
             }
             else if (parameter == "Remote")
             {
-                AddFeedPlugin();
+                await AddFeedPlugin();
             }
         }
 
-        private void AddFeedPlugin()
+        private async Task AddFeedPlugin()
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
@@ -110,11 +111,15 @@ namespace PackageExplorerViewModel
             PackageInfo selectedPackageInfo = _packageChooser.SelectPluginPackage();
             if (selectedPackageInfo != null)
             {
-                _packageDownloader.Download(
+                IPackage package = await _packageDownloader.Download(
                     selectedPackageInfo.DownloadUrl,
                     selectedPackageInfo.Id,
-                    new SemanticVersion(selectedPackageInfo.Version),
-                    AddSelectedPluginPackage);
+                    new SemanticVersion(selectedPackageInfo.Version));
+
+                if (package != null)
+                {
+                    AddSelectedPluginPackage(package);
+                }
             }
         }
 

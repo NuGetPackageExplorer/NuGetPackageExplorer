@@ -2,10 +2,12 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,7 +20,6 @@ using PackageExplorerViewModel;
 using Constants = NuGet.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
-using System.Diagnostics;
 
 namespace PackageExplorer
 {
@@ -243,14 +244,14 @@ namespace PackageExplorer
             OpenPackageFromLocal();
         }
 
-        private void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e)
+        private async void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
             var parameter = (string) e.Parameter;
             if (!String.IsNullOrEmpty(parameter))
             {
                 parameter = "id:" + parameter;
             }
-            OpenPackageFromRepository(parameter);
+            await OpenPackageFromRepository(parameter);
         }
 
         private void OpenPackageFromLocal()
@@ -273,7 +274,7 @@ namespace PackageExplorer
             }
         }
 
-        private void OpenPackageFromRepository(string searchTerm)
+        private async Task OpenPackageFromRepository(string searchTerm)
         {
             bool canceled = AskToSaveCurrentFile();
             if (canceled)
@@ -313,11 +314,15 @@ namespace PackageExplorer
 
                 if (cachePackage == null || cachePackage.GetHash() != selectedPackageInfo.PackageHash)
                 {
-                    PackageDownloader.Download(
+                    IPackage downloadedPackage = await PackageDownloader.Download(
                         selectedPackageInfo.DownloadUrl,
                         selectedPackageInfo.Id,
-                        packageVersion,
-                        processPackageAction);
+                        packageVersion);
+
+                    if (downloadedPackage != null)
+                    {
+                        processPackageAction(downloadedPackage);
+                    }
                 }
                 else
                 {
@@ -473,12 +478,12 @@ namespace PackageExplorer
             }
         }
 
-        internal void DownloadAndOpenDataServicePackage(MruItem item)
+        internal Task DownloadAndOpenDataServicePackage(MruItem item)
         {
-            DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
+            return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
         }
 
-        internal void DownloadAndOpenDataServicePackage(string packageUrl, string id = null, SemanticVersion version = null)
+        internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string id = null, SemanticVersion version = null)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
@@ -491,12 +496,11 @@ namespace PackageExplorer
             Uri downloadUrl;
             if (Uri.TryCreate(packageUrl, UriKind.Absolute, out downloadUrl) && downloadUrl.IsRemoteUri())
             {
-                PackageDownloader.Download(
-                    downloadUrl,
-                    id,
-                    version,
-                    package => LoadPackage(package, packageUrl, PackageType.DataServicePackage)
-                    );
+                IPackage downloadedPackage = await PackageDownloader.Download(downloadUrl, id, version);
+                if (downloadedPackage != null)
+                {
+                    LoadPackage(downloadedPackage, packageUrl, PackageType.DataServicePackage);
+                }
             }
             else
             {

@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NuGet;
 
 namespace NuGetPackageExplorer.Types
 {
     public interface IPackageDownloader
     {
-        void Download(Uri downloadUri, string packageId, SemanticVersion packageVersion, Action<IPackage> callback);
+        Task<IPackage> Download(Uri downloadUri, string packageId, SemanticVersion packageVersion);
     }
 }

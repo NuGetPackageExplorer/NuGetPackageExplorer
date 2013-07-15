@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Deployment.Application;
@@ -40,7 +39,7 @@ namespace PackageExplorer
             }
         }
 
-        private void Application_Startup(object sender, StartupEventArgs e)
+        private async void Application_Startup(object sender, StartupEventArgs e)
         {
             MigrateSettings();
 
@@ -79,7 +78,7 @@ namespace PackageExplorer
                     SemanticVersion version = null;
                     SemanticVersion.TryParse(versionString, out version);
 
-                    window.DownloadAndOpenDataServicePackage(downloadUrl, id, version);
+                    await window.DownloadAndOpenDataServicePackage(downloadUrl, id, version);
                     return;
                 }
             }
