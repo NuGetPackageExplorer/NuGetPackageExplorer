@@ -47,14 +47,15 @@ namespace PackageExplorerViewModel
 
             var pushContent = new MultipartContent();
             pushContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            var fileContent = new StreamContent(packageStream);
+            var fileContent = new StreamContent(packageStream, 4 * 1024);
             pushContent.Add(fileContent);
 
             using (HttpResponseMessage response = await client.PutAsync(requestUri, pushContent, cancelToken))
             {
                 if (!response.IsSuccessStatusCode)
                 {
-                    throw new InvalidOperationException(response.ReasonPhrase);
+                    string errorMessage = "An error occurred while publishing package: " + response.ReasonPhrase;
+                    throw new InvalidOperationException(errorMessage);
                 }
             }
 
@@ -66,7 +67,8 @@ namespace PackageExplorerViewModel
                 {
                     if (!response.IsSuccessStatusCode)
                     {
-                        throw new InvalidOperationException(response.ReasonPhrase);
+                        string errorMessage = "An error occurred while publishing package: " + response.ReasonPhrase;
+                        throw new InvalidOperationException(errorMessage);
                     }
                 }
             }

@@ -15,7 +15,7 @@ namespace PackageExplorerViewModel
     {
         private readonly MruPackageSourceManager _mruSourceManager;
         private readonly IPackageMetadata _package;
-        private readonly Lazy<Stream> _packageStream;
+        private readonly Func<Stream> _packageStream;
         private readonly ISettingsManager _settingsManager;
         private bool _canPublish = true;
         private bool _hasError;
@@ -35,7 +35,7 @@ namespace PackageExplorerViewModel
             _mruSourceManager = mruSourceManager;
             _settingsManager = settingsManager;
             _package = viewModel.PackageMetadata;
-            _packageStream = new Lazy<Stream>(viewModel.GetCurrentPackageStream);
+            _packageStream = viewModel.GetCurrentPackageStream;
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
             PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
         }
@@ -221,14 +221,11 @@ namespace PackageExplorerViewModel
             HasError = false;
             CanPublish = false;
 
-            // here we reuse the stream multiple times, so make sure to rewind it to beginning every time.
-            _packageStream.Value.Seek(0, SeekOrigin.Begin);
-
             try
             {
                 await GalleryServer.PushPackage(
                     PublishKey,
-                    _packageStream.Value,
+                    _packageStream.Invoke(),
                     _package,
                     PublishAsUnlisted ?? false,
                     null,
@@ -236,9 +233,6 @@ namespace PackageExplorerViewModel
 
                 OnCompleted();
             }
-            //catch (HttpRequestException requestException)
-            //{
-            //}
             catch (Exception exception)
             {
                 OnError(exception);
