@@ -253,24 +253,6 @@ namespace PackageExplorerViewModel
                     _suppressReadingApiKey = false;
                 }
             }
-
-            //TaskScheduler uiTaskSchedulker = TaskScheduler.FromCurrentSynchronizationContext();
-
-            //Task.Factory.StartNew(
-            //        () => GalleryServer.PushPackage(PublishKey, _packageStream.Value, _package, PublishAsUnlisted ?? false, this))
-            //    .ContinueWith(task =>
-            //                  {
-            //                      if (task.IsFaulted)
-            //                      {
-            //                          var webException = task.Exception.GetBaseException() as WebException;
-            //                          if (webException != null && webException.Status == WebExceptionStatus.Timeout)
-            //                          {
-            //                              OnError(task.Exception);
-            //                          }
-            //                      }
-
-                                  
-            //                  }, uiTaskSchedulker);
         }
 
         public void Dispose()

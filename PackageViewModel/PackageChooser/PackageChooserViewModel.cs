@@ -396,8 +396,6 @@ namespace PackageExplorerViewModel
             ShowMessage(Resources.ConnectingMessage, false);
             ClearPackages(isErrorCase: true);
 
-            TaskScheduler uiScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-
             CurrentCancellationTokenSource = new CancellationTokenSource();
             CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
 
