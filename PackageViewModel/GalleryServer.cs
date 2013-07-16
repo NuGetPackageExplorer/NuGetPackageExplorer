@@ -35,8 +35,7 @@ namespace PackageExplorerViewModel
             string apiKey, 
             Stream packageStream, 
             IPackageMetadata package, 
-            bool pushAsUnlisted, 
-            Progress<int> progress,
+            bool pushAsUnlisted,
             CancellationToken cancelToken)
         {
             var client = new System.Net.Http.HttpClient();

@@ -228,7 +228,6 @@ namespace PackageExplorerViewModel
                     _packageStream.Invoke(),
                     _package,
                     PublishAsUnlisted ?? false,
-                    null,
                     CancellationToken.None);
 
                 OnCompleted();

@@ -146,8 +146,6 @@ namespace NuGet
             ValidateDependencySets(Version, DependencySets);
             ValidateReferenceAssemblies(Files, PackageAssemblyReferences);
 
-            bool requiresV4TargetFrameworkSchema = RequiresV4TargetFrameworkSchema(Files);
-
             using (Package package = Package.Open(stream, FileMode.Create))
             {
                 // Validate and write the manifest
