@@ -40,7 +40,20 @@ namespace CodeExecutor
         {
             var data = new Dictionary<string, string>();
 
-            var assembly = Assembly.LoadFrom(assemblyPath);
+            var assemblyName = AssemblyName.GetAssemblyName(assemblyPath);
+            if (assemblyName == null)
+            {
+                return data;
+            }
+
+            // For WinRT component, we can only read Full Name. 
+            if (assemblyName.ContentType == AssemblyContentType.WindowsRuntime)
+            {
+                data.Add("Full Name", assemblyName.FullName);
+                return data;
+            }
+
+            var assembly = Assembly.Load(assemblyName);
             if (assembly != null)
             {
                 data.Add("Full Name", assembly.FullName);
