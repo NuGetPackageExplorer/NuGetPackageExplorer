@@ -36,7 +36,7 @@ namespace PackageExplorerViewModel
         protected async Task<IEnumerable<T>> LoadData(IQueryable<T> query)
         {
             var dataServiceQuery = query as DataServiceQuery<T>;
-            if (!TotalItemCountReady && dataServiceQuery != null)
+            if (dataServiceQuery != null)
             {
                 var queryResponse = (QueryOperationResponse<T>)
                     await Task.Factory.FromAsync<IEnumerable<T>>(dataServiceQuery.BeginExecute(null, null), dataServiceQuery.EndExecute);
@@ -47,9 +47,12 @@ namespace PackageExplorerViewModel
                 }
                 catch (InvalidOperationException)
                 {
-                    // the server doesn't return $inlinecount value,
-                    // fall back to using $count query
-                    _totalItemCount = Source.Count();
+                    if (!TotalItemCountReady)
+                    {
+                        // the server doesn't return $inlinecount value,
+                        // fall back to using $count query
+                        _totalItemCount = Source.Count();
+                    }
                 }
 
                 return queryResponse;
