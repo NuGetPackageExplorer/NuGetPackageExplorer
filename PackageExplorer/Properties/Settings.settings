@@ -32,9 +32,6 @@
     <Setting Name="PackageChooserDialogHeight" Type="System.Double" Scope="User">
       <Value Profile="(Default)">450</Value>
     </Setting>
-    <Setting Name="ShowLatestVersionOfPackage" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="IsFirstTime" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>

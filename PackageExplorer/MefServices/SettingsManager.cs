@@ -99,12 +99,6 @@ namespace PackageExplorer
             settings.SetEncryptedValue(ApiKeysSectionName, source, apiKey);
         }
 
-        public bool ShowLatestVersionOfPackage
-        {
-            get { return Settings.Default.ShowLatestVersionOfPackage; }
-            set { Settings.Default.ShowLatestVersionOfPackage = value; }
-        }
-
         public bool ShowPrereleasePackages
         {
             get { return Settings.Default.ShowPrereleasePackages; }

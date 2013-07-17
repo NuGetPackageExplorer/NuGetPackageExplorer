@@ -27,12 +27,6 @@
 
         <self:PackageInfoDownloadCountConverter x:Key="DownloadCountConverter" />
         <self:FileSizeConverter x:Key="FileSizeConverter" />
-
-        <CollectionViewSource x:Key="PackageCollectionSource" Source="{Binding Packages}">
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="Id" StringComparison="OrdinalIgnoreCase" />
-            </CollectionViewSource.GroupDescriptions>
-        </CollectionViewSource>
     </Window.Resources>
 
     <Grid Margin="10">
@@ -41,7 +35,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -138,57 +131,7 @@
         </TextBlock>
 
         <!-- package list view -->
-        <ListView x:Name="PackageGrid" IsEnabled="{Binding IsEditable}" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,5" ItemsSource="{Binding Source={StaticResource PackageCollectionSource}}" SelectionMode="Single" IsTextSearchEnabled="False">
-            <ListView.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.ContainerStyle>
-                        <Style TargetType="{x:Type GroupItem}">
-                            <Setter Property="Margin" Value="0,0,0,5" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type GroupItem}">
-                                        <Expander IsExpanded="false" BorderBrush="#FFA4B97F" BorderThickness="0,0,0,1">
-                                            <Expander.Header>
-                                                <Grid x:Name="PackageItemHeader" TextElement.Foreground="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}">
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="{Binding View.Columns[0].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}, Converter={StaticResource SubtracterConverter}, ConverterParameter=22}" />
-                                                        <ColumnDefinition Width="{Binding View.Columns[1].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
-                                                        <ColumnDefinition Width="{Binding View.Columns[2].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
-                                                        <ColumnDefinition Width="{Binding View.Columns[3].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
-                                                        <ColumnDefinition Width="{Binding View.Columns[4].ActualWidth, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}" />
-                                                    </Grid.ColumnDefinitions>
-
-                                                    <!-- Id column -->
-                                                    <TextBlock Grid.Column="0" Margin="0,0,3,0" HorizontalAlignment="Left" Text="{Binding Name, Mode=OneTime}" />
-
-                                                    <!-- Version column -->
-                                                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding ItemCount, Mode=OneTime, StringFormat=({0})}" />
-
-                                                    <!-- Authors column -->
-                                                    <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="5,0,4,0" TextTrimming="CharacterEllipsis" ToolTip="{Binding Items[0].Authors, Mode=OneTime}" Text="{Binding Items[0].Authors, Mode=OneTime}" />
-
-                                                    <!-- Downloads column -->
-                                                    <TextBlock Grid.Column="3" HorizontalAlignment="Center" Text="{Binding Items, Converter={StaticResource DownloadCountConverter}, Mode=OneTime, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" />
-                                                </Grid>
-                                            </Expander.Header>
-                                            <Expander.Content>
-                                                <ItemsPresenter />
-                                            </Expander.Content>
-                                        </Expander>
-
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="PackageItemHeader" Property="TextElement.Foreground" Value="{DynamicResource ResourceKey={x:Static SystemColors.GrayTextBrushKey}}" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </GroupStyle.ContainerStyle>
-                </GroupStyle>
-            </ListView.GroupStyle>
-
+        <ListView x:Name="PackageGrid" IsEnabled="{Binding IsEditable}" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,5" ItemsSource="{Binding Packages}" SelectionMode="Single" IsTextSearchEnabled="False">
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -246,26 +189,23 @@
             </ListView.View>
         </ListView>
 
-        <!-- Checkbox: Show latest version of each Id -->
-        <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowLatestVersion}" HorizontalAlignment="Left" Content="Only _show latest version of each package Id." Checked="OnShowLatestVersionValueChanged" Unchecked="OnShowLatestVersionValueChanged" />
-
         <!-- Checkbox: Show unlisted version of each Id  -->
-        <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="5" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowPrereleasePackages}" HorizontalAlignment="Left" Content="Show pre-release packages." />
+        <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowPrereleasePackages}" HorizontalAlignment="Left" Content="Show pre-release packages." />
 
         <!-- Background color for the footer -->
-        <Border Grid.Row="6" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
+        <Border Grid.Row="5" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
 
         <!-- Status message, e.g. Loadding, Connecting etc.-->
         <TextBlock 
             Text="{Binding StatusContent, Mode=OneWay}" 
-            Grid.Row="6" 
+            Grid.Row="5" 
             VerticalAlignment="Center" 
             TextTrimming="WordEllipsis"
             Visibility="{Binding HasError, Mode=OneWay, Converter={StaticResource invertedBoolToVis}}">
         </TextBlock>
 
         <!-- OK and Cancel buttons -->
-        <UniformGrid HorizontalAlignment="Right" Grid.Row="6" Grid.Column="1" Rows="1" Columns="3">
+        <UniformGrid HorizontalAlignment="Right" Grid.Row="5" Grid.Column="1" Rows="1" Columns="3">
             <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,0">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource andConverter}">

@@ -13,7 +13,6 @@ namespace PackageExplorerViewModel
 {
     public sealed class PackageChooserViewModel : ViewModelBase, IDisposable
     {
-        private const int ShowAllVersionsPageSize = 7;
         private const int ShowLatestVersionPageSize = 15;
         private const int PageBuffer = 30;
         private readonly string _fixedPackageSource;
@@ -27,7 +26,6 @@ namespace PackageExplorerViewModel
         private bool _isEditable = true;
         private IPackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
-        private bool _showLatestVersion;
         private bool _showPrereleasePackages;
         private string _sortColumn;
         private ListSortDirection _sortDirection;
@@ -36,7 +34,6 @@ namespace PackageExplorerViewModel
 
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
-            bool showLatestVersion,
             bool showPrereleasePackages,
             string fixedPackageSource)
         {
@@ -45,7 +42,6 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException("packageSourceManager");
             }
 
-            _showLatestVersion = showLatestVersion;
             _showPrereleasePackages = showPrereleasePackages;
             _fixedPackageSource = fixedPackageSource;
             Packages = new ObservableCollection<PackageInfo>();
@@ -110,30 +106,6 @@ namespace PackageExplorerViewModel
                     OnPropertyChanged("IsEditable");
                     NavigationCommand.RaiseCanExecuteChanged();
                 }
-            }
-        }
-
-        public bool ShowLatestVersion
-        {
-            get { return _showLatestVersion; }
-            set
-            {
-                if (_showLatestVersion != value)
-                {
-                    _showLatestVersion = value;
-                    OnPropertyChanged("ShowLatestVersion");
-                    OnPropertyChanged("ShowAllVersions");
-
-                    OnShowLatestVersionChanged();
-                }
-            }
-        }
-
-        public bool ShowAllVersions
-        {
-            get
-            {
-                return !ShowLatestVersion;
             }
         }
 
@@ -282,18 +254,6 @@ namespace PackageExplorerViewModel
 
         public event EventHandler LoadPackagesCompleted = delegate { };
 
-        private async void OnShowLatestVersionChanged()
-        {
-            if ((SortColumn == "LastUpdated" || SortColumn == "PackageSize") && !ShowLatestVersion)
-            {
-                await Sort("Id", ListSortDirection.Ascending);
-            }
-            else
-            {
-                await Sort(SortColumn, SortDirection);
-            }
-        }
-
         private async void OnShowPrereleasePackagesChange()
         {
             await Sort(SortColumn, SortDirection);
@@ -436,9 +396,6 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            // When in Show All Versions mode, we can't sort by PackageSize. 
-            Debug.Assert(SortColumn != "PackageSize" || ShowLatestVersion);
-
             switch (SortColumn)
             {
                 case "Id":
@@ -464,52 +421,23 @@ namespace PackageExplorerViewModel
                     break;
             }
 
-            if (ShowLatestVersion)
-            {
-                IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: true, showPrerelease: ShowPrereleasePackages);
-                _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(packageInfos, ShowLatestVersionPageSize);
-            }
-            else
-            {
-                /* show all versions */
-                IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, getLatestVersions: false, showPrerelease: ShowPrereleasePackages);
-                            
-                _currentQuery = new ShowAllVersionsQueryContext<PackageInfo>(
-                    packageInfos,
-                    ShowAllVersionsPageSize,
-                    PageBuffer,
-                    PackageInfoEqualityComparer.Instance,
-                    (a, b) => b.SemanticVersion.CompareTo(a.SemanticVersion));
-            }
+            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, showPrerelease: ShowPrereleasePackages);
+            _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(packageInfos, ShowLatestVersionPageSize);
 
             return LoadPage(CurrentCancellationTokenSource.Token);
         }
 
-        private static IQueryable<PackageInfo> GetPackageInfos(
-            IQueryable<IPackage> query,
-            IPackageRepository repository,
-            bool getLatestVersions,
-            bool showPrerelease)
+        private static IQueryable<PackageInfo> GetPackageInfos(IQueryable<IPackage> query, IPackageRepository repository, bool showPrerelease)
         {
             if (repository is DataServicePackageRepository)
             {
-                if (getLatestVersions)
+                if (showPrerelease)
                 {
-                    if (showPrerelease)
-                    {
-                        query = query.Where(p => p.IsAbsoluteLatestVersion);
-                    }
-                    else
-                    {
-                        query = query.Where(p => p.IsLatestVersion);
-                    }
+                    query = query.Where(p => p.IsAbsoluteLatestVersion);
                 }
                 else
                 {
-                    if (!showPrerelease)
-                    {
-                        query = query.Where(p => !p.IsPrerelease);
-                    }
+                    query = query.Where(p => p.IsLatestVersion);
                 }
 
                 return query.Cast<DataServicePackage>().Select(p => new PackageInfo
@@ -526,12 +454,9 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                if (getLatestVersions)
-                {
-                    query = query.GroupBy(p => p.Id, StringComparer.OrdinalIgnoreCase)
-                                 .Select(g => g.OrderByDescending(p => p.Version)
-                                 .First());
-                }
+                query = query.GroupBy(p => p.Id, StringComparer.OrdinalIgnoreCase)
+                             .Select(g => g.OrderByDescending(p => p.Version)
+                             .First());
 
                 return query.Cast<ZipPackage>().Select(p => new PackageInfo
                                                     {
@@ -588,12 +513,6 @@ namespace PackageExplorerViewModel
 
         private bool CanSort(string column)
         {
-            if (column == "PackageSize" && !ShowLatestVersion)
-            {
-                // We can't sort by PackageSize in ShowAllVersions mode
-                return false;
-            }
-
             return TotalPackageCount > 0;
         }
 
@@ -795,7 +714,7 @@ namespace PackageExplorerViewModel
 
         private bool CanMoveLast()
         {
-            return EndPackage < TotalPackageCount && ShowLatestVersion;
+            return EndPackage < TotalPackageCount;
         }
 
         private bool CanMoveNext()

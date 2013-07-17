@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -19,7 +18,6 @@ namespace PackageExplorer
     public partial class PackageChooserDialog : StandardDialog
     {
         private readonly PackageChooserViewModel _viewModel;
-        private IDisposable _collectionDeferRefresh;
         private string _pendingSearch;
 
         public PackageChooserDialog(PackageChooserViewModel viewModel)
@@ -50,11 +48,6 @@ namespace PackageExplorer
 
         private void OnLoadPackagesCompleted(object sender, EventArgs e)
         {
-            if (_collectionDeferRefresh != null)
-            {
-                _collectionDeferRefresh.Dispose();
-            }
-
             // Ensure that the SearchBox is focused after the packages have loaded so that the user can search right
             // away if they need to. Currently the default search behavior is not working most likely do to the
             // controls being disabled when the packages are loading.
@@ -190,21 +183,6 @@ namespace PackageExplorer
                 settings.PackageChooserDialogHeight = e.NewSize.Height;
                 settings.PackageChooserDialogWidth = e.NewSize.Width;
             }
-        }
-
-        private void OnShowLatestVersionValueChanged(object sender, RoutedEventArgs e)
-        {
-            var cvs = (CollectionViewSource) Resources["PackageCollectionSource"];
-            _collectionDeferRefresh = cvs.DeferRefresh();
-
-            cvs.GroupDescriptions.Clear();
-            var box = (CheckBox) sender;
-            if (box.IsChecked != true)
-            {
-                cvs.GroupDescriptions.Add(new PropertyGroupDescription("Id"));
-            }
-
-            e.Handled = true;
         }
 
         private void StandardDialog_Closing(object sender, CancelEventArgs e)
