@@ -43,8 +43,6 @@ namespace PackageExplorer
         {
             MigrateSettings();
 
-            HttpClient.DefaultCredentialProvider = new WindowsCredentialProvider();
-
             var window = Container.GetExportedValue<MainWindow>();
             window.Show();
 

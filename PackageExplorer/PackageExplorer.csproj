@@ -195,7 +195,6 @@
     <Compile Include="MefServices\SettingsManager.cs" />
     <Compile Include="Interop\NativeMethods.cs" />
     <Compile Include="MefServices\UIServices.cs" />
-    <Compile Include="Utilities\WindowsCredentialProvider.cs" />
     <Compile Include="PackageAnalyzerPane.xaml.cs">
       <DependentUpon>PackageAnalyzerPane.xaml</DependentUpon>
     </Compile>

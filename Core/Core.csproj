@@ -78,26 +78,11 @@
     <Compile Include="Authoring\PhysicalPackageFile.cs" />
     <Compile Include="Configuration\ISettings.cs" />
     <Compile Include="Configuration\UserSettings.cs" />
-    <Compile Include="Extensions\CredentialProviderExtensions.cs" />
     <Compile Include="Extensions\FileSystemExtensions.cs" />
     <Compile Include="Extensions\PluginExtensions.cs" />
     <Compile Include="Extensions\SettingsExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
-    <Compile Include="Http\CredentialStore.cs" />
-    <Compile Include="Http\CredentialType.cs" />
-    <Compile Include="Http\HttpClient.cs" />
-    <Compile Include="Http\HttpUtility.cs" />
-    <Compile Include="Http\ICredentialCache.cs" />
-    <Compile Include="Http\ICredentialProvider.cs" />
-    <Compile Include="Http\IHttpClient.cs" />
-    <Compile Include="Http\IHttpClientEvents.cs" />
-    <Compile Include="Http\IHttpWebResponse.cs" />
-    <Compile Include="Http\IProxyCache.cs" />
-    <Compile Include="Http\NullCredentialProvider.cs" />
-    <Compile Include="Http\ProgressEventArgs.cs" />
-    <Compile Include="Http\ProxyCache.cs" />
-    <Compile Include="Http\RequestHelper.cs" />
-    <Compile Include="Http\STSAuthHelper.cs" />
+    <Compile Include="Utility\HttpUtility.cs" />
     <Compile Include="NuGetConstants.cs" />
     <Compile Include="Packages\Constants.cs" />
     <Compile Include="Packages\DataServicePackage.cs" />
@@ -128,7 +113,6 @@
     </Compile>
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\PackageExtensions.cs" />
-    <Compile Include="Utility\IProgressProvider.cs" />
     <Compile Include="Utility\MemoryCache.cs" />
     <Compile Include="Utility\MultipartWebRequest.cs" />
     <Compile Include="Utility\PackageIdValidator.cs" />
