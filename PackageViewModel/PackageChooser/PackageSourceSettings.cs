@@ -18,7 +18,7 @@ namespace PackageExplorerViewModel
             if (settingsManager.IsFirstTimeAfterUpdate)
             {
                 // migrate active package source
-                if (ActiveSource.Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
+                if (ActiveSource.Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
                 {
                     ActiveSource = NuGetConstants.DefaultFeedUrl;
                 }
@@ -36,7 +36,7 @@ namespace PackageExplorerViewModel
                 // migrate nuget v1 feed to v2 feed
                 for (int i = 0; i < sources.Count; i++)
                 {
-                    if (sources[i].Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
+                    if (sources[i].Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
                     {
                         sources[i] = NuGetConstants.DefaultFeedUrl;
                     }

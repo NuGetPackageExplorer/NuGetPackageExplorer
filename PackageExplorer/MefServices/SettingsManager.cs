@@ -20,7 +20,7 @@ namespace PackageExplorer
         {
             get
             {
-                return Settings.Default.IsFirstTime;
+                return Settings.Default.IsFirstTimeAfterMigrate;
             }
         }
 
@@ -84,7 +84,7 @@ namespace PackageExplorer
 
             if (String.IsNullOrEmpty(key))
             {
-                if (IsFirstTimeAfterUpdate && source.Equals(NuGetConstants.V1FeedUrl, StringComparison.OrdinalIgnoreCase))
+                if (IsFirstTimeAfterUpdate && source.Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
                 {
                     key = Settings.Default.PublishPrivateKey;
                 }
