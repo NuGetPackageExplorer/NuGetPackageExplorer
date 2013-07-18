@@ -92,22 +92,20 @@ namespace PackageExplorerViewModel
             {
                 if (rule != null)
                 {
-                    IEnumerable<PackageIssue> issues = null;
+                    PackageIssue[] issues = null;
                     try
                     {
-                        issues = rule.Validate(package, packageSource);
+                        issues = rule.Validate(package, packageSource).ToArray();
                     }
                     catch (Exception)
                     {
+                        issues = new PackageIssue[0];
                     }
 
                     // can't yield inside a try/catch block
-                    if (issues != null)
+                    foreach (PackageIssue issue in issues)
                     {
-                        foreach (PackageIssue issue in issues)
-                        {
-                            yield return issue;
-                        }
+                        yield return issue;
                     }
                 }
             }
