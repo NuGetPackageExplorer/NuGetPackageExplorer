@@ -52,7 +52,7 @@
         <!-- change package source elements -->
         <DockPanel Grid.ColumnSpan="3" Margin="0,0,0,15" LastChildFill="True">
             <Label DockPanel.Dock="Left" Content="_Package source:" Target="{Binding ElementName=PackageSourceBox}" VerticalAlignment="Center" />
-            <Button DockPanel.Dock="Right" Content="_Reload" HorizontalAlignment="Center" Padding="10,0" Command="{Binding ChangePackageSourceCommand}" CommandParameter="{Binding Text, ElementName=PackageSourceBox}">
+            <Button DockPanel.Dock="Right" Content="_Reload" HorizontalAlignment="Center" Padding="10,2" Command="{Binding ChangePackageSourceCommand}" CommandParameter="{Binding Text, ElementName=PackageSourceBox}">
                 <Button.IsEnabled>
                     <MultiBinding Converter="{StaticResource andConverter}">
                         <Binding Path="Text" ElementName="PackageSourceBox" Converter="{StaticResource nullToBoolConverter}" />
@@ -151,7 +151,13 @@
             RowDetailsVisibilityMode="VisibleWhenSelected"
             ItemsSource="{Binding Packages}"
             Sorting="PackageGrid_Sorting">
-            
+
+            <DataGrid.CellStyle>
+                <Style TargetType="DataGridCell">
+                    <Setter Property="BorderThickness" Value="0"/>
+                </Style>
+            </DataGrid.CellStyle>
+
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -172,16 +178,28 @@
             
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="0,10">
-                        <Button Content="_Open" Margin="5,0" Click="OkButton_Click" />
-                        <Button Content="_Show all versions" Margin="5,0" />
-                        <Button Content="_Download" Margin="5,0" />
+                    <StackPanel Orientation="Horizontal" Margin="10,5,0,5">
+                        <TextBlock Margin="5,0">
+                            <Hyperlink Click="OkButton_Click">
+                                <Run Text="open" />
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="5,0">
+                            <Hyperlink>
+                                <Run Text="show all versions" />
+                            </Hyperlink>
+                        </TextBlock>
+                        <TextBlock Margin="5,0">
+                            <Hyperlink>
+                                <Run Text="download" />
+                            </Hyperlink>
+                        </TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
             
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Id}" Width="200" CanUserReorder="False" SortMemberPath="Id">
+                <DataGridTextColumn Binding="{Binding Id}" Width="180" CanUserReorder="False" SortMemberPath="Id">
                     <DataGridTextColumn.Header>
                         <TextBlock Text="Id" />
                     </DataGridTextColumn.Header>
@@ -195,10 +213,10 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="Authors" Binding="{Binding Authors}" Width="180" CanUserSort="False" SortMemberPath="Authors">
+                <DataGridTextColumn Header="Authors" Binding="{Binding Authors}" Width="160" CanUserSort="False" SortMemberPath="Authors">
                 </DataGridTextColumn>
 
-                <DataGridTemplateColumn Width="120" SortMemberPath="VersionDownloadCount">
+                <DataGridTemplateColumn Width="110" SortMemberPath="VersionDownloadCount">
                     <DataGridTemplateColumn.Header>
                         <TextBlock Text="Downloads" />
                     </DataGridTemplateColumn.Header>
@@ -235,17 +253,9 @@
         </TextBlock>
 
         <!-- OK and Cancel buttons -->
-        <UniformGrid HorizontalAlignment="Right" Grid.Row="5" Grid.Column="1" Rows="1" Columns="3">
-            <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,0">
-                <Button.IsEnabled>
-                    <MultiBinding Converter="{StaticResource andConverter}">
-                        <Binding Path="SelectedItem" ElementName="PackageGrid" Converter="{StaticResource nullToBoolConverter}" />
-                        <Binding Path="IsEditable" />
-                    </MultiBinding>
-                </Button.IsEnabled>
-            </Button>
-            <Button Content="Cancel" Command="{Binding CancelCommand, Mode=OneWay}" Margin="5,10,5,0" Padding="15,0" />
-            <Button IsCancel="True" Content="Close" Margin="5,10,0,0" Padding="15,0" Click="CloseButton_Click" />
+        <UniformGrid HorizontalAlignment="Right" Grid.Row="5" Grid.Column="1" Rows="1" Columns="2">
+            <Button Content="Cancel" Command="{Binding CancelCommand, Mode=OneWay}" Margin="5,10,5,0" Padding="15,2" />
+            <Button IsCancel="True" Content="Close" Margin="5,10,0,0" Padding="15,2" Click="CloseButton_Click" />
         </UniformGrid>
     </Grid>
 </self:StandardDialog>

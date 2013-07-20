@@ -75,7 +75,7 @@
 
 		<Border DockPanel.Dock="Top" Margin="0,20,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
 			<UniformGrid Margin="10,5" HorizontalAlignment="Right" Rows="1" Columns="2">
-				<Button x:Name="PublishButton" IsDefault="True" Padding="15,0" Content="_Publish" Margin="5" Click="OnPublishButtonClick">
+				<Button x:Name="PublishButton" IsDefault="True" Padding="15,2" Content="_Publish" Margin="5" Click="OnPublishButtonClick">
 					<Button.IsEnabled>
 						<MultiBinding Converter="{StaticResource andConverter}">
 							<Binding Path="Text" ElementName="PublishUrl" Converter="{StaticResource nullToBoolConverter}" />
@@ -84,7 +84,7 @@
 						</MultiBinding>
 					</Button.IsEnabled>
 				</Button>
-				<Button IsCancel="True" Content="Close" Margin="5,5,0,5" Padding="15,0" Click="CloseButton_Click"></Button>
+				<Button IsCancel="True" Content="Close" Margin="5,5,0,5" Padding="15,2" Click="CloseButton_Click"></Button>
 			</UniformGrid>
 		</Border>
 	</DockPanel>

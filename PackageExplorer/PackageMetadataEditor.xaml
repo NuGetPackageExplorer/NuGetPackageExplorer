@@ -223,10 +223,10 @@
             <TextBlock Text="Framework assemblies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="16" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
             <!-- Dependencies -->
-            <Button HorizontalAlignment="Center" Grid.Row="17" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,0" Content="Edit dependencies" Click="EditDependenciesButtonClicked" />
+            <Button HorizontalAlignment="Center" Grid.Row="17" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,2" Content="Edit dependencies" Click="EditDependenciesButtonClicked" />
 
             <!-- Filtered assembly references -->
-            <Button HorizontalAlignment="Center" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,10" Padding="15,0" Content="Edit assembly references" Click="EditReferencesButtonClicked" />
+            <Button HorizontalAlignment="Center" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,10" Padding="15,2" Content="Edit assembly references" Click="EditReferencesButtonClicked" />
         </Grid>
     </ScrollViewer>
 </UserControl>

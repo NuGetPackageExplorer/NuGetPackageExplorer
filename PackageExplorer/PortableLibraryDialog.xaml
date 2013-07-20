@@ -29,7 +29,7 @@
         <Border DockPanel.Dock="Bottom" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
             <UniformGrid HorizontalAlignment="Right" Margin="10,5" Rows="1" Columns="2">
                 <Button x:Name="OKButton" IsDefault="True" Content="OK" Margin="5" IsEnabled="False" Click="OkButton_Click" />
-                <Button IsCancel="True" Content="Cancel" Margin="5,5,0,5" Padding="15,0" Click="CancelButton_Click" />
+                <Button IsCancel="True" Content="Cancel" Margin="5,5,0,5" Padding="15,2" Click="CancelButton_Click" />
             </UniformGrid>
         </Border>
 
