@@ -155,6 +155,7 @@
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
+                    <Setter Property="Padding" Value="0,2"/>
                 </Style>
             </DataGrid.CellStyle>
 
@@ -162,8 +163,9 @@
                 <Style TargetType="DataGridRow">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="Foreground" Value="DarkBlue" />
+                    <Setter Property="Padding" Value="0,4" />
                     <EventSetter Event="MouseDoubleClick" Handler="OkButton_Click" />
-                    
+
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsPrerelease, Mode=OneTime}" Value="true">
                             <Setter Property="Foreground" Value="Maroon" />
@@ -175,36 +177,51 @@
                     </Style.Triggers>
                 </Style>
             </DataGrid.ItemContainerStyle>
-            
+
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="10,5,0,5">
-                        <TextBlock Margin="5,0">
-                            <Hyperlink Click="OkButton_Click">
-                                <Run Text="open" />
-                            </Hyperlink>
-                        </TextBlock>
-                        <TextBlock Margin="5,0">
-                            <Hyperlink>
-                                <Run Text="show all versions" />
-                            </Hyperlink>
-                        </TextBlock>
-                        <TextBlock Margin="5,0">
-                            <Hyperlink>
-                                <Run Text="download" />
-                            </Hyperlink>
-                        </TextBlock>
-                    </StackPanel>
+                    <Grid Margin="10,3,0,10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Grid.Row="1">
+                            <TextBlock Margin="5,0">
+                                <Hyperlink Click="OkButton_Click">
+                                    <Run Text="open" />
+                                </Hyperlink>
+                            </TextBlock>
+                            <TextBlock Margin="5,0">
+                                <Hyperlink>
+                                    <Run Text="show all versions" />
+                                </Hyperlink>
+                            </TextBlock>
+                            <TextBlock x:Name="DownloadButton"  Margin="5,0" Visibility="{Binding DownloadUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                                <Hyperlink Click="OnDownloadButtonClick">
+                                    <Run Text="download"/>
+                                </Hyperlink>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding DownloadUrl.IsFile}" Value="True">
+                            <Setter TargetName="DownloadButton" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding DownloadUrl.IsUnc}" Value="True">
+                            <Setter TargetName="DownloadButton" Property="Visibility" Value="Collapsed" />
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
-            
+
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding Id}" Width="180" CanUserReorder="False" SortMemberPath="Id">
                     <DataGridTextColumn.Header>
                         <TextBlock Text="Id" />
                     </DataGridTextColumn.Header>
                 </DataGridTextColumn>
-                
+
                 <DataGridTemplateColumn Header="Version" Width="100" CanUserSort="False" SortMemberPath="Version">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>

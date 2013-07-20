@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NuGet;
@@ -17,7 +18,7 @@ namespace PackageExplorer
     public partial class PackageChooserDialog : StandardDialog
     {
         private readonly PackageChooserViewModel _viewModel;
-        private string _pendingSearch;
+        private string _pendingSearch;        
 
         public PackageChooserDialog(PackageChooserViewModel viewModel)
         {
@@ -31,6 +32,8 @@ namespace PackageExplorer
 
             DataContext = _viewModel;
         }
+
+        public event EventHandler PackageDownloadRequested = delegate { };
 
         public PackageInfo SelectedPackage
         {
@@ -242,6 +245,11 @@ namespace PackageExplorer
             }
 
             e.Handled = true;
+        }
+
+        private void OnDownloadButtonClick(object sender, RoutedEventArgs e)
+        {
+            PackageDownloadRequested(this, EventArgs.Empty);
         }
     }
 }

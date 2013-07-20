@@ -317,7 +317,7 @@ namespace PackageExplorer
                     IPackage downloadedPackage = await PackageDownloader.Download(
                         selectedPackageInfo.DownloadUrl,
                         selectedPackageInfo.Id,
-                        packageVersion);
+                        packageVersion.ToString());
 
                     if (downloadedPackage != null)
                     {
@@ -496,7 +496,7 @@ namespace PackageExplorer
             Uri downloadUrl;
             if (Uri.TryCreate(packageUrl, UriKind.Absolute, out downloadUrl) && downloadUrl.IsRemoteUri())
             {
-                IPackage downloadedPackage = await PackageDownloader.Download(downloadUrl, id, version);
+                IPackage downloadedPackage = await PackageDownloader.Download(downloadUrl, id, version.ToString());
                 if (downloadedPackage != null)
                 {
                     LoadPackage(downloadedPackage, packageUrl, PackageType.DataServicePackage);
@@ -519,8 +519,7 @@ namespace PackageExplorer
             var dialog = new PluginManagerDialog
                          {
                              Owner = this,
-                             DataContext =
-                                 PackageViewModelFactory.CreatePluginManagerViewModel()
+                             DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
                          };
             dialog.ShowDialog();
         }

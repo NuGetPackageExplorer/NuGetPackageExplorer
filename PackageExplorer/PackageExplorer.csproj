@@ -147,6 +147,7 @@
     <Compile Include="Converters\StringShorternerConverter.cs" />
     <Compile Include="Converters\TargetFrameworkConverter.cs" />
     <Compile Include="MefServices\RtfFileViewer.cs" />
+    <Compile Include="PackageDownloadRequestedEventArgs.cs" />
     <Compile Include="PackageReferencesEditor.xaml.cs">
       <DependentUpon>PackageReferencesEditor.xaml</DependentUpon>
     </Compile>
