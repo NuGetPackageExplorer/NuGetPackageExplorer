@@ -269,10 +269,7 @@
             Visibility="{Binding HasError, Mode=OneWay, Converter={StaticResource invertedBoolToVis}}">
         </TextBlock>
 
-        <!-- OK and Cancel buttons -->
-        <UniformGrid HorizontalAlignment="Right" Grid.Row="5" Grid.Column="1" Rows="1" Columns="2">
-            <Button Content="Cancel" Command="{Binding CancelCommand, Mode=OneWay}" Margin="5,10,5,0" Padding="15,2" />
-            <Button IsCancel="True" Content="Close" Margin="5,10,0,0" Padding="15,2" Click="CloseButton_Click" />
-        </UniformGrid>
+        <!-- Close button -->
+        <Button HorizontalAlignment="Right" Grid.Row="5" Grid.Column="1" IsCancel="True" Content="Close" Margin="5,10,0,0" Padding="15,2" Click="CloseButton_Click" />
     </Grid>
 </self:StandardDialog>
