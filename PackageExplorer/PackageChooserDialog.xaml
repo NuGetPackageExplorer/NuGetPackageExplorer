@@ -173,7 +173,7 @@
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="0,10">
-                        <Button Content="_Open" Margin="5,0" />
+                        <Button Content="_Open" Margin="5,0" Click="OkButton_Click" />
                         <Button Content="_Show all versions" Margin="5,0" />
                         <Button Content="_Download" Margin="5,0" />
                     </StackPanel>
