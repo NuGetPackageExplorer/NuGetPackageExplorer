@@ -38,17 +38,23 @@ namespace PackageExplorerViewModel
             bool pushAsUnlisted,
             CancellationToken cancelToken)
         {
-            var client = new System.Net.Http.HttpClient();
+            var handler = new HttpClientHandler();
+            if (handler.SupportsRedirectConfiguration)
+            {
+                handler.AllowAutoRedirect = true;
+            }
+
+            var client = new System.Net.Http.HttpClient(handler);
             client.DefaultRequestHeaders.Add(ApiKeyHeader, apiKey);
             client.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
 
-            string requestUri = EnsureTrailingSlash(_source) + ServiceEndpoint;
+            var pushContent = new MultipartFormDataContent();
 
-            var pushContent = new MultipartContent();
-            pushContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            var fileContent = new StreamContent(packageStream, 4 * 1024);
+            var fileContent = new StreamContent(packageStream);
+            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
             pushContent.Add(fileContent);
 
+            string requestUri = EnsureTrailingSlash(_source) + ServiceEndpoint;
             using (HttpResponseMessage response = await client.PutAsync(requestUri, pushContent, cancelToken))
             {
                 if (!response.IsSuccessStatusCode)

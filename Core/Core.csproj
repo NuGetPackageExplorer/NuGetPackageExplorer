@@ -130,7 +130,6 @@
     <Compile Include="Extensions\PackageExtensions.cs" />
     <Compile Include="Utility\IProgressProvider.cs" />
     <Compile Include="Utility\MemoryCache.cs" />
-    <Compile Include="Utility\MultipartWebRequest.cs" />
     <Compile Include="Utility\PackageIdValidator.cs" />
     <Compile Include="Utility\PackageUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
