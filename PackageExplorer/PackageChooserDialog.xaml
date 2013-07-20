@@ -25,6 +25,11 @@
             <Setter Property="Margin" Value="0,0,5,0" />
         </Style>
 
+        <Style TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0,3" />
+        </Style>
+
         <self:PackageInfoDownloadCountConverter x:Key="DownloadCountConverter" />
         <self:FileSizeConverter x:Key="FileSizeConverter" />
     </Window.Resources>
@@ -131,11 +136,28 @@
         </TextBlock>
 
         <!-- package list view -->
-        <ListView x:Name="PackageGrid" IsEnabled="{Binding IsEditable}" Grid.Row="3" Grid.ColumnSpan="2" Margin="0,5" ItemsSource="{Binding Packages}" SelectionMode="Single" IsTextSearchEnabled="False">
-            <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
+        <DataGrid 
+            x:Name="PackageGrid" 
+            IsReadOnly="True" 
+            RowHeaderWidth="0" 
+            SelectionMode="Single" 
+            SelectionUnit="FullRow" 
+            GridLinesVisibility="None" 
+            AutoGenerateColumns="False" 
+            IsEnabled="{Binding IsEditable}" 
+            Grid.Row="3" 
+            Grid.ColumnSpan="2" 
+            Margin="0,5" 
+            RowDetailsVisibilityMode="VisibleWhenSelected"
+            ItemsSource="{Binding Packages}"
+            Sorting="PackageGrid_Sorting">
+            
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="DataGridRow">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="Foreground" Value="DarkBlue" />
                     <EventSetter Event="MouseDoubleClick" Handler="OkButton_Click" />
+                    
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsPrerelease, Mode=OneTime}" Value="true">
                             <Setter Property="Foreground" Value="Maroon" />
@@ -146,48 +168,56 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </ListView.ItemContainerStyle>
+            </DataGrid.ItemContainerStyle>
+            
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Margin="0,10">
+                        <Button Content="_Open" Margin="5,0" />
+                        <Button Content="_Show all versions" Margin="5,0" />
+                        <Button Content="_Download" Margin="5,0" />
+                    </StackPanel>
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+            
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Id}" Width="200" CanUserReorder="False" SortMemberPath="Id">
+                    <DataGridTextColumn.Header>
+                        <TextBlock Text="Id" />
+                    </DataGridTextColumn.Header>
+                </DataGridTextColumn>
+                
+                <DataGridTemplateColumn Header="Version" Width="100" CanUserSort="False" SortMemberPath="Version">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Version}" TextAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-            <ListView.View>
-                <GridView AllowsColumnReorder="False" x:Name="PackageGridView">
-                    <GridViewColumn Width="150" DisplayMemberBinding="{Binding Id}">
-                        <GridViewColumnHeader Content="Id" Command="{Binding SortCommand}" CommandParameter="Id" Padding="0,3"></GridViewColumnHeader>
-                    </GridViewColumn>
-                    <GridViewColumn Width="80">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Version}" TextAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                        <GridViewColumnHeader Content="Version" Command="{Binding SortCommand}" CommandParameter="Version" Padding="0,3"></GridViewColumnHeader>
-                    </GridViewColumn>
-                    <GridViewColumn Width="145">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Authors}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Authors}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                        <GridViewColumnHeader Content="Authors" Command="{Binding SortCommand}" CommandParameter="Authors" Padding="0,3"></GridViewColumnHeader>
-                    </GridViewColumn>
-                    <GridViewColumn Width="90">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding EffectiveDownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                        <GridViewColumnHeader Content="Downloads" Command="{Binding SortCommand}" CommandParameter="VersionDownloadCount" Padding="0,3"></GridViewColumnHeader>
-                    </GridViewColumn>
-                    <GridViewColumn Width="90">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding PackageSize, Converter={StaticResource FileSizeConverter}}" TextAlignment="Center" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                        <GridViewColumnHeader Content="Size" Command="{Binding SortCommand}" CommandParameter="PackageSize" Padding="0,3"></GridViewColumnHeader>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
+                <DataGridTextColumn Header="Authors" Binding="{Binding Authors}" Width="180" CanUserSort="False" SortMemberPath="Authors">
+                </DataGridTextColumn>
+
+                <DataGridTemplateColumn Width="120" SortMemberPath="VersionDownloadCount">
+                    <DataGridTemplateColumn.Header>
+                        <TextBlock Text="Downloads" />
+                    </DataGridTemplateColumn.Header>
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding EffectiveDownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Size" Width="100" SortMemberPath="PackageSize">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding PackageSize, Converter={StaticResource FileSizeConverter}}" TextAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
 
         <!-- Checkbox: Show unlisted version of each Id  -->
         <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowPrereleasePackages}" HorizontalAlignment="Left" Content="Show pre-release packages." />

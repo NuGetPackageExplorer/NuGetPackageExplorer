@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NuGet;
@@ -56,28 +55,12 @@ namespace PackageExplorer
 
         private void RedrawSortGlyph(string sortColumn, ListSortDirection sortDirection)
         {
-            foreach (GridViewColumn column in PackageGridView.Columns)
+            foreach (DataGridColumn column in PackageGrid.Columns)
             {
-                var header = (GridViewColumnHeader) column.Header;
-                if (header.Tag != null)
+                if (column.SortMemberPath.Equals(sortColumn, StringComparison.OrdinalIgnoreCase))
                 {
-                    AdornerLayer layer = AdornerLayer.GetAdornerLayer(header);
-                    if (layer != null)
-                    {
-                        layer.Remove((Adorner) header.Tag);
-                    }
-                }
-
-                if ((string) header.CommandParameter == sortColumn)
-                {
-                    var newAdorner = new SortAdorner(header, sortDirection);
-                    header.Tag = newAdorner;
-
-                    AdornerLayer layer = AdornerLayer.GetAdornerLayer(header);
-                    if (layer != null)
-                    {
-                        layer.Add(newAdorner);
-                    }
+                    column.SortDirection = _viewModel.SortDirection;
+                    break;
                 }
             }
         }
@@ -249,6 +232,16 @@ namespace PackageExplorer
                     InvokeSearch(_pendingSearch);
                 }
             }
+        }
+
+        private void PackageGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            if (_viewModel.SortCommand.CanExecute(e.Column.SortMemberPath))
+            {
+                _viewModel.SortCommand.Execute(e.Column.SortMemberPath);
+            }
+
+            e.Handled = true;
         }
     }
 }

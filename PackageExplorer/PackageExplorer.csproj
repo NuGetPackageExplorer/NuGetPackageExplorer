@@ -229,7 +229,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Controls\SortAdorner.cs" />
     <Compile Include="TaskShortcut.xaml.cs">
       <DependentUpon>TaskShortcut.xaml</DependentUpon>
     </Compile>
