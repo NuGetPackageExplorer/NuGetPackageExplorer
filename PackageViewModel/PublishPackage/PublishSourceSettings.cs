@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using NuGet;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {
     internal class PublishSourceSettings : ISourceSettings
     {
-        private const string V1NuGetPublishFeed = "http://go.microsoft.com/fwlink/?LinkID=207106";
-        private const string NuGetPublishFeed = "https://nuget.org";
-
         private readonly ISettingsManager _settingsManager;
 
         public PublishSourceSettings(ISettingsManager settingsManager)
@@ -38,7 +36,7 @@ namespace PackageExplorerViewModel
 
         public string DefaultSource
         {
-            get { return NuGetPublishFeed; }
+            get { return NuGetConstants.NuGetPublishFeed; }
         }
 
         public string ActiveSource
@@ -54,9 +52,9 @@ namespace PackageExplorerViewModel
 
         private static string MigrateOfficialNuGetSource(string source)
         {
-            if (V1NuGetPublishFeed.Equals(source, StringComparison.OrdinalIgnoreCase))
+            if (NuGetConstants.V2LegacyNuGetPublishFeed.Equals(source, StringComparison.OrdinalIgnoreCase))
             {
-                return NuGetPublishFeed;
+                return NuGetConstants.NuGetPublishFeed;
             }
 
             return source;

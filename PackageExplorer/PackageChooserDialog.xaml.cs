@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -34,6 +35,7 @@ namespace PackageExplorer
         }
 
         public event EventHandler PackageDownloadRequested = delegate { };
+        //public event EventHandler ShowAllVersionsRequested = delegate { };
 
         public PackageInfo SelectedPackage
         {
@@ -250,6 +252,24 @@ namespace PackageExplorer
         private void OnDownloadButtonClick(object sender, RoutedEventArgs e)
         {
             PackageDownloadRequested(this, EventArgs.Empty);
+        }
+
+        private async void OnShowAllVersionsButtonClick(object sender, RoutedEventArgs e)
+        {
+            var packageInfo = (PackageInfo)PackageGrid.SelectedItem;
+            if (packageInfo == null)
+            {
+                return;
+            }
+
+            var hyperlink = (Hyperlink)sender;
+            var packageRowDetails = (FrameworkElement)hyperlink.Tag;
+            packageRowDetails.Visibility = Visibility.Visible;
+
+            var versionViewModel = new PackageVersionsViewModel(packageInfo.Id, _viewModel.ShowPrereleasePackages, _viewModel.ActiveRepository);
+            packageRowDetails.DataContext = versionViewModel;
+
+            await versionViewModel.LoadPackages(CancellationToken.None);
         }
     }
 }

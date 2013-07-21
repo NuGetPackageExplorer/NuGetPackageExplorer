@@ -154,6 +154,9 @@
     <Compile Include="PackageDependencyEditor.xaml.cs">
       <DependentUpon>PackageDependencyEditor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PackageRowDetails.xaml.cs">
+      <DependentUpon>PackageRowDetails.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PortableLibraryDialog.xaml.cs">
       <DependentUpon>PortableLibraryDialog.xaml</DependentUpon>
     </Compile>
@@ -196,7 +199,6 @@
     <Compile Include="MefServices\SettingsManager.cs" />
     <Compile Include="Interop\NativeMethods.cs" />
     <Compile Include="MefServices\UIServices.cs" />
-    <Compile Include="Utilities\WindowsCredentialProvider.cs" />
     <Compile Include="PackageAnalyzerPane.xaml.cs">
       <DependentUpon>PackageAnalyzerPane.xaml</DependentUpon>
     </Compile>
@@ -288,6 +290,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PackageMetadataEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PackageRowDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

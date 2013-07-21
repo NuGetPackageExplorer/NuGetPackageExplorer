@@ -155,7 +155,6 @@
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
                     <Setter Property="BorderThickness" Value="0"/>
-                    <Setter Property="Padding" Value="0,2"/>
                 </Style>
             </DataGrid.CellStyle>
 
@@ -186,6 +185,11 @@
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
+                        <self:PackageRowDetails 
+                            x:Name="PackageVersionsList"
+                            Visibility="Collapsed"
+                            MaxHeight="150" />
+
                         <StackPanel Orientation="Horizontal" Grid.Row="1">
                             <TextBlock Margin="5,0">
                                 <Hyperlink Click="OkButton_Click">
@@ -193,7 +197,7 @@
                                 </Hyperlink>
                             </TextBlock>
                             <TextBlock Margin="5,0">
-                                <Hyperlink>
+                                <Hyperlink Click="OnShowAllVersionsButtonClick" Tag="{Binding ElementName=PackageVersionsList, Mode=OneWay}">
                                     <Run Text="show all versions" />
                                 </Hyperlink>
                             </TextBlock>
@@ -204,6 +208,7 @@
                             </TextBlock>
                         </StackPanel>
                     </Grid>
+                    
                     <DataTemplate.Triggers>
                         <DataTrigger Binding="{Binding DownloadUrl.IsFile}" Value="True">
                             <Setter TargetName="DownloadButton" Property="Visibility" Value="Collapsed" />
@@ -216,10 +221,7 @@
             </DataGrid.RowDetailsTemplate>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Id}" Width="180" CanUserReorder="False" SortMemberPath="Id">
-                    <DataGridTextColumn.Header>
-                        <TextBlock Text="Id" />
-                    </DataGridTextColumn.Header>
+                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="180" CanUserReorder="False" SortMemberPath="Id">
                 </DataGridTextColumn>
 
                 <DataGridTemplateColumn Header="Version" Width="100" CanUserSort="False" SortMemberPath="Version">
@@ -230,13 +232,15 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Header="Authors" Binding="{Binding Authors}" Width="160" CanUserSort="False" SortMemberPath="Authors">
-                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Authors" Width="160" CanUserSort="False" SortMemberPath="Authors">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Authors}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Authors}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Width="110" SortMemberPath="VersionDownloadCount">
-                    <DataGridTemplateColumn.Header>
-                        <TextBlock Text="Downloads" />
-                    </DataGridTemplateColumn.Header>
+                <DataGridTemplateColumn Header="Downloads" Width="110" SortMemberPath="VersionDownloadCount">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding EffectiveDownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />

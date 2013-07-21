@@ -1,0 +1,76 @@
+﻿<UserControl x:Class="PackageExplorer.PackageRowDetails"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:self="clr-namespace:PackageExplorer" 
+             xmlns:settings="clr-namespace:PackageExplorer.Properties" 
+             xmlns:g="clr-namespace:System.Globalization;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    
+    <UserControl.Resources>
+        <Style x:Key="PackageVersionsHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Visibility" Value="Collapsed" />
+        </Style>
+        <self:FileSizeConverter x:Key="FileSizeConverter" />
+    </UserControl.Resources>
+
+    <ListView x:Name="PackageGrid" ItemsSource="{Binding Packages}" SelectionMode="Single" IsTextSearchEnabled="False">
+        <ListView.ItemContainerStyle>
+            <Style TargetType="ListViewItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <!--<EventSetter Event="MouseDoubleClick" Handler="" />-->
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsPrerelease, Mode=OneTime}" Value="true">
+                        <Setter Property="Foreground" Value="Maroon" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding IsUnlisted, Mode=OneTime}" Value="true">
+                        <Setter Property="FontStyle" Value="Italic" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ListView.ItemContainerStyle>
+
+        <ListView.View>
+            <GridView AllowsColumnReorder="False" x:Name="PackageGridView" ColumnHeaderContainerStyle="{StaticResource PackageVersionsHeaderStyle}">
+                <GridViewColumn Width="150">
+                    <!--<GridViewColumnHeader Content="Id" Padding="0,3"></GridViewColumnHeader>-->
+                </GridViewColumn>
+                <GridViewColumn Width="80">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Version}" TextAlignment="Center" />
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                    <!--<GridViewColumnHeader Content="Version" Command="{Binding SortCommand}" CommandParameter="Version" Padding="0,3"></GridViewColumnHeader>-->
+                </GridViewColumn>
+                <GridViewColumn Width="145">
+                    <!--<GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Authors}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Authors}" />
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>-->
+                    <!--<GridViewColumnHeader Content="Authors" Command="{Binding SortCommand}" CommandParameter="Authors" Padding="0,3"></GridViewColumnHeader>-->
+                </GridViewColumn>
+                <GridViewColumn Width="90">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding EffectiveDownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                    <!--<GridViewColumnHeader Content="Downloads" Command="{Binding SortCommand}" CommandParameter="VersionDownloadCount" Padding="0,3"></GridViewColumnHeader>-->
+                </GridViewColumn>
+                <GridViewColumn Width="90">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding PackageSize, Converter={StaticResource FileSizeConverter}}" TextAlignment="Center" />
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
+                    <!--<GridViewColumnHeader Content="Size" Command="{Binding SortCommand}" CommandParameter="PackageSize" Padding="0,3"></GridViewColumnHeader>-->
+                </GridViewColumn>
+            </GridView>
+        </ListView.View>
+    </ListView>
+</UserControl>

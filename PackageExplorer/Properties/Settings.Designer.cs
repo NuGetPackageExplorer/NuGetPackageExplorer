@@ -247,5 +247,17 @@ namespace PackageExplorer.Properties {
                 this["SolicitInstallNpeForWin8"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool IsFirstTimeAfterMigrate {
+            get {
+                return ((bool)(this["IsFirstTimeAfterMigrate"]));
+            }
+            set {
+                this["IsFirstTimeAfterMigrate"] = value;
+            }
+        }
     }
 }

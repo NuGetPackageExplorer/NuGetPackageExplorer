@@ -33,5 +33,25 @@ namespace NuGet
             return (from file in Directory.EnumerateFiles(Source, "*" + Constants.PackageExtension, SearchOption.TopDirectoryOnly)
                     select new ZipPackage(file)).AsQueryable();
         }
+
+
+        public IQueryable<IPackage> GetPackagesById(string id, bool includePrerelease)
+        {
+            if (!Directory.Exists(Source))
+            {
+                throw new InvalidOperationException("The source directory at '" + Source + "' does not exist.");
+            }
+
+            var query = (from file in Directory.EnumerateFiles(Source, "*" + Constants.PackageExtension, SearchOption.TopDirectoryOnly)
+                         let p = new ZipPackage(file)
+                         where p.Id == id
+                         select p);
+            if (!includePrerelease)
+            {
+                query = query.Where(p => !p.IsPrerelease);
+            }
+
+            return query.AsQueryable();
+        }
     }
 }
