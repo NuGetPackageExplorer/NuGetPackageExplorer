@@ -186,6 +186,8 @@
                         </Grid.RowDefinitions>
                         
                         <self:PackageRowDetails 
+                            x:Name="PackageVersionsList"
+                            Visibility="Collapsed"
                             MaxHeight="150" />
 
                         <StackPanel Orientation="Horizontal" Grid.Row="1">
@@ -195,7 +197,7 @@
                                 </Hyperlink>
                             </TextBlock>
                             <TextBlock Margin="5,0">
-                                <Hyperlink>
+                                <Hyperlink Click="OnShowAllVersionsButtonClick" Tag="{Binding ElementName=PackageVersionsList, Mode=OneWay}">
                                     <Run Text="show all versions" />
                                 </Hyperlink>
                             </TextBlock>
@@ -238,7 +240,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Version" Width="110" SortMemberPath="VersionDownloadCount">
+                <DataGridTemplateColumn Header="Downloads" Width="110" SortMemberPath="VersionDownloadCount">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding EffectiveDownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />

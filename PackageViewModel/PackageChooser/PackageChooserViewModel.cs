@@ -55,6 +55,14 @@ namespace PackageExplorerViewModel
             _packageSourceManager = packageSourceManager;
         }
 
+        public IPackageRepository ActiveRepository
+        {
+            get
+            {
+                return _packageRepository;
+            }
+        }
+
         public string CurrentTypingSearch
         {
             get { return _currentTypingSearch; }

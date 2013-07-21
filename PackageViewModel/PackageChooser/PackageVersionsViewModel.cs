@@ -10,7 +10,7 @@ using NuGet;
 
 namespace PackageExplorerViewModel
 {
-    internal class PackageVersionsViewModel : ViewModelBase
+    public class PackageVersionsViewModel : ViewModelBase
     {
         private readonly IPackageRepository _repository;
         private bool _isLoading;
@@ -27,6 +27,7 @@ namespace PackageExplorerViewModel
             PackageId = packageId;
             ShowPrerelease = showPrereleasePackages;
             _repository = repository;
+            Packages = new ObservableCollection<PackageInfo>();
         }
 
         public ObservableCollection<PackageInfo> Packages { get; private set; }
@@ -80,7 +81,7 @@ namespace PackageExplorerViewModel
 
                 IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, _repository);
 
-                PackageInfo[] packageInfoList = await LoadData(packageInfos, token).ConfigureAwait(continueOnCapturedContext: false);
+                PackageInfo[] packageInfoList = await LoadData(packageInfos, token);
 
                 var dataServiceRepository = _repository as DataServicePackageRepository;
                 if (dataServiceRepository != null)
@@ -151,16 +152,14 @@ namespace PackageExplorerViewModel
             if (dataServiceQuery != null)
             {
                 IEnumerable<PackageInfo> queryResponse =
-                    await Task.Factory.FromAsync<IEnumerable<PackageInfo>>(dataServiceQuery.BeginExecute(null, null), dataServiceQuery.EndExecute)
-                          .ConfigureAwait(continueOnCapturedContext: false);
+                    await Task.Factory.FromAsync<IEnumerable<PackageInfo>>(dataServiceQuery.BeginExecute(null, null), dataServiceQuery.EndExecute);
 
                 token.ThrowIfCancellationRequested();
                 return queryResponse.ToArray();
             }
             else
             {
-                return await Task.Run((Func<PackageInfo[]>)query.ToArray, token)
-                             .ConfigureAwait(continueOnCapturedContext: false);
+                return await Task.Run((Func<PackageInfo[]>)query.ToArray, token);
             }
         }
     }

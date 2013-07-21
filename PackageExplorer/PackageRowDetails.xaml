@@ -13,6 +13,7 @@
         <Style x:Key="PackageVersionsHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Visibility" Value="Collapsed" />
         </Style>
+        <self:FileSizeConverter x:Key="FileSizeConverter" />
     </UserControl.Resources>
 
     <ListView x:Name="PackageGrid" ItemsSource="{Binding Packages}" SelectionMode="Single" IsTextSearchEnabled="False">
@@ -34,7 +35,7 @@
 
         <ListView.View>
             <GridView AllowsColumnReorder="False" x:Name="PackageGridView" ColumnHeaderContainerStyle="{StaticResource PackageVersionsHeaderStyle}">
-                <GridViewColumn Width="150" DisplayMemberBinding="{Binding Id}">
+                <GridViewColumn Width="150">
                     <!--<GridViewColumnHeader Content="Id" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="80">
@@ -46,11 +47,11 @@
                     <!--<GridViewColumnHeader Content="Version" Command="{Binding SortCommand}" CommandParameter="Version" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="145">
-                    <GridViewColumn.CellTemplate>
+                    <!--<GridViewColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Authors}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Authors}" />
                         </DataTemplate>
-                    </GridViewColumn.CellTemplate>
+                    </GridViewColumn.CellTemplate>-->
                     <!--<GridViewColumnHeader Content="Authors" Command="{Binding SortCommand}" CommandParameter="Authors" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="90">
