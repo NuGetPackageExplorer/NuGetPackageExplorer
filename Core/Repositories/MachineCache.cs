@@ -38,6 +38,11 @@ namespace NuGet
             throw new NotSupportedException();
         }
 
+        public IQueryable<IPackage> GetPackagesById(string id, bool includePrerelease)
+        {
+            throw new NotSupportedException();
+        }
+
         public IPackage FindPackage(string packageId, SemanticVersion version)
         {
             string path = GetPackageFilePath(packageId, version);

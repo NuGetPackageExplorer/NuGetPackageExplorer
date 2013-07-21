@@ -1,21 +1,15 @@
 ﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace PackageExplorerViewModel
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        #region INotifyPropertyChanged Members
+        public event PropertyChangedEventHandler PropertyChanged = delegate { };
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
-
-        protected void OnPropertyChanged(string propertyName)
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

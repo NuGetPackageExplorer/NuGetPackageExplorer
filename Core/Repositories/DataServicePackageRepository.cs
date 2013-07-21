@@ -28,6 +28,11 @@ namespace NuGet
             return GetPackages();
         }
 
+        IQueryable<IPackage> IPackageRepository.GetPackagesById(string id, bool includePrerelease)
+        {
+            return GetPackagesById(id, includePrerelease);
+        }
+
         private void OnSendingRequest(object sender, SendingRequestEventArgs e)
         {
             var httpRequest = e.Request as HttpWebRequest;
@@ -51,6 +56,20 @@ namespace NuGet
                 _query = _context.CreateQuery<DataServicePackage>(Constants.PackageServiceEntitySetName).IncludeTotalCount();
             }
             return _query;
+        }
+
+        public IQueryable<DataServicePackage> GetPackagesById(string id, bool includePrerelease)
+        {
+            IQueryable<DataServicePackage> query = 
+                _context.CreateQuery<DataServicePackage>("FindPackagesById")
+                        .AddQueryOption("id", "'" + id + "'");
+            
+            if (!includePrerelease)
+            {
+                query = query.Where(p => !p.IsPrerelease);
+            }
+
+            return query;
         }
 
         public IQueryable<IPackage> Search(string searchTerm)
