@@ -197,7 +197,7 @@
                                     <Run Text="show all versions" />
                                 </Hyperlink>
                             </TextBlock>
-                            <TextBlock x:Name="DownloadButton"  Margin="5,0" Visibility="{Binding DownloadUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock x:Name="DownloadButton" Margin="5,0">
                                 <Hyperlink Click="OnDownloadButtonClick">
                                     <Run Text="download"/>
                                 </Hyperlink>
