@@ -114,7 +114,6 @@
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\PackageExtensions.cs" />
     <Compile Include="Utility\MemoryCache.cs" />
-    <Compile Include="Utility\MultipartWebRequest.cs" />
     <Compile Include="Utility\PackageIdValidator.cs" />
     <Compile Include="Utility\PackageUtility.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

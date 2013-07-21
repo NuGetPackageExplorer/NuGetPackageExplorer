@@ -28,18 +28,31 @@ namespace PackageExplorer
 
         #region IPackageDownloader Members
 
-        public async Task<IPackage> Download(Uri downloadUri, string packageId, SemanticVersion packageVersion)
+        public async Task Download(string targetFilePath, Uri downloadUri, string packageId, string packageVersion)
+        {
+            string sourceFilePath = await DownloadWithProgress(downloadUri, packageId, packageVersion);
+            if (!String.IsNullOrEmpty(sourceFilePath))
+            {
+                File.Copy(sourceFilePath, targetFilePath, overwrite: true);
+            }
+        }
+
+        public async Task<IPackage> Download(Uri downloadUri, string packageId, string packageVersion)
+        {
+            string tempFilePath = await DownloadWithProgress(downloadUri, packageId, packageVersion);
+            return (tempFilePath == null) ? null : new ZipPackage(tempFilePath);
+        }
+
+        private async Task<string> DownloadWithProgress(Uri downloadUri, string packageId, string packageVersion)
         {
             string progressDialogText = Resources.Resources.Dialog_DownloadingPackage;
-            if (!string.IsNullOrEmpty(packageId))
+            if (!String.IsNullOrEmpty(packageId))
             {
-                progressDialogText = String.Format(CultureInfo.CurrentCulture, progressDialogText, packageId,
-                                                   packageVersion);
+                progressDialogText = String.Format(CultureInfo.CurrentCulture, progressDialogText, packageId, packageVersion);
             }
             else
             {
-                progressDialogText = String.Format(CultureInfo.CurrentCulture, progressDialogText, downloadUri,
-                                                   String.Empty);
+                progressDialogText = String.Format(CultureInfo.CurrentCulture, progressDialogText, downloadUri, String.Empty);
             }
 
             _progressDialog = new ProgressDialog
@@ -73,8 +86,8 @@ namespace PackageExplorer
 
             try
             {
-                IPackage package = await DownloadData(downloadUri, reportProgress, cts.Token);
-                return package;
+                string tempFilePath = await DownloadData(downloadUri, reportProgress, cts.Token);
+                return tempFilePath;
             }
             catch (OperationCanceledException)
             {
@@ -98,7 +111,7 @@ namespace PackageExplorer
 
         #endregion
 
-        private async Task<IPackage> DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken)
+        private async Task<string> DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken)
         {
             var httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(HttpUtility.CreateUserAgentString(Constants.UserAgentClient));
@@ -131,7 +144,7 @@ namespace PackageExplorer
                     // read all bytes successfully
                     if (readSoFar >= totalBytes)
                     {
-                        return new ZipPackage(tempFilePath);
+                        return tempFilePath;
                     }
                 }
             }

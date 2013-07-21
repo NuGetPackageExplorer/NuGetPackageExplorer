@@ -138,8 +138,8 @@
 
         <!-- OK and Cancel buttons -->
         <UniformGrid HorizontalAlignment="Right" Grid.Row="3" Grid.ColumnSpan="2" Rows="1" Columns="2">
-            <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,0" />
-            <Button Content="Cancel" Command="{Binding CancelCommand, Mode=OneWay}" Click="CancelButton_Click" Margin="5,10,5,0" Padding="15,0" />
+            <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,2" />
+            <Button Content="Cancel" Command="{Binding CancelCommand, Mode=OneWay}" Click="CancelButton_Click" Margin="5,10,5,0" Padding="15,2" />
         </UniformGrid>
     </Grid>
 </self:StandardDialog>

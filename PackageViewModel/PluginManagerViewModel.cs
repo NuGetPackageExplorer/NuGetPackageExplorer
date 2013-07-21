@@ -114,7 +114,7 @@ namespace PackageExplorerViewModel
                 IPackage package = await _packageDownloader.Download(
                     selectedPackageInfo.DownloadUrl,
                     selectedPackageInfo.Id,
-                    new SemanticVersion(selectedPackageInfo.Version));
+                    selectedPackageInfo.Version);
 
                 if (package != null)
                 {

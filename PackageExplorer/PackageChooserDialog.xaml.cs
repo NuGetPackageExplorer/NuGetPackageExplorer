@@ -18,7 +18,7 @@ namespace PackageExplorer
     public partial class PackageChooserDialog : StandardDialog
     {
         private readonly PackageChooserViewModel _viewModel;
-        private string _pendingSearch;
+        private string _pendingSearch;        
 
         public PackageChooserDialog(PackageChooserViewModel viewModel)
         {
@@ -32,6 +32,8 @@ namespace PackageExplorer
 
             DataContext = _viewModel;
         }
+
+        public event EventHandler PackageDownloadRequested = delegate { };
 
         public PackageInfo SelectedPackage
         {
@@ -56,28 +58,12 @@ namespace PackageExplorer
 
         private void RedrawSortGlyph(string sortColumn, ListSortDirection sortDirection)
         {
-            foreach (GridViewColumn column in PackageGridView.Columns)
+            foreach (DataGridColumn column in PackageGrid.Columns)
             {
-                var header = (GridViewColumnHeader) column.Header;
-                if (header.Tag != null)
+                if (column.SortMemberPath.Equals(sortColumn, StringComparison.OrdinalIgnoreCase))
                 {
-                    AdornerLayer layer = AdornerLayer.GetAdornerLayer(header);
-                    if (layer != null)
-                    {
-                        layer.Remove((Adorner) header.Tag);
-                    }
-                }
-
-                if ((string) header.CommandParameter == sortColumn)
-                {
-                    var newAdorner = new SortAdorner(header, sortDirection);
-                    header.Tag = newAdorner;
-
-                    AdornerLayer layer = AdornerLayer.GetAdornerLayer(header);
-                    if (layer != null)
-                    {
-                        layer.Add(newAdorner);
-                    }
+                    column.SortDirection = _viewModel.SortDirection;
+                    break;
                 }
             }
         }
@@ -249,6 +235,21 @@ namespace PackageExplorer
                     InvokeSearch(_pendingSearch);
                 }
             }
+        }
+
+        private void PackageGrid_Sorting(object sender, DataGridSortingEventArgs e)
+        {
+            if (_viewModel.SortCommand.CanExecute(e.Column.SortMemberPath))
+            {
+                _viewModel.SortCommand.Execute(e.Column.SortMemberPath);
+            }
+
+            e.Handled = true;
+        }
+
+        private void OnDownloadButtonClick(object sender, RoutedEventArgs e)
+        {
+            PackageDownloadRequested(this, EventArgs.Empty);
         }
     }
 }
