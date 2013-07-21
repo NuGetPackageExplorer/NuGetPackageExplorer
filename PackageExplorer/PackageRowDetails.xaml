@@ -36,6 +36,10 @@
         <ListView.View>
             <GridView AllowsColumnReorder="False" x:Name="PackageGridView" ColumnHeaderContainerStyle="{StaticResource PackageVersionsHeaderStyle}">
                 <GridViewColumn Width="150">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
                     <!--<GridViewColumnHeader Content="Id" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="80">
@@ -47,6 +51,10 @@
                     <!--<GridViewColumnHeader Content="Version" Command="{Binding SortCommand}" CommandParameter="Version" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="145">
+                    <GridViewColumn.CellTemplate>
+                        <DataTemplate>
+                        </DataTemplate>
+                    </GridViewColumn.CellTemplate>
                     <!--<GridViewColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Authors}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Authors}" />

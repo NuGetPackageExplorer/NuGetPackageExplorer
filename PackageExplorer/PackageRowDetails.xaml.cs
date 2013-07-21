@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PackageExplorer
 {
@@ -27,12 +16,32 @@ namespace PackageExplorer
 
         public void ApplyBindings(DataGrid parent)
         {
+            var gridView = (GridView)PackageGrid.View;
+            Debug.Assert(parent.Columns.Count == gridView.Columns.Count);
+            for (int i = 0; i < gridView.Columns.Count; i++)
+            {
+                var binding = new Binding("ActualWidth")
+                {
+                    Source = parent.Columns[i]
+                };
 
+                BindingOperations.SetBinding(
+                    gridView.Columns[i],
+                    GridViewColumn.WidthProperty,
+                    binding);
+            }
         }
 
         public void RemoveBindings(DataGrid parent)
         {
-
+            var gridView = (GridView)PackageGrid.View;
+            Debug.Assert(parent.Columns.Count == gridView.Columns.Count);
+            for (int i = 0; i < gridView.Columns.Count; i++)
+            {
+                BindingOperations.ClearBinding(
+                    gridView.Columns[i],
+                    GridViewColumn.WidthProperty);
+            }
         }
     }
 }

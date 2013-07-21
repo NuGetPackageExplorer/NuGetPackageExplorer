@@ -263,8 +263,9 @@ namespace PackageExplorer
             }
 
             var hyperlink = (Hyperlink)sender;
-            var packageRowDetails = (FrameworkElement)hyperlink.Tag;
+            var packageRowDetails = (PackageRowDetails)hyperlink.Tag;
             packageRowDetails.Visibility = Visibility.Visible;
+            packageRowDetails.ApplyBindings(PackageGrid);
 
             var versionViewModel = new PackageVersionsViewModel(packageInfo.Id, _viewModel.ShowPrereleasePackages, _viewModel.ActiveRepository);
             packageRowDetails.DataContext = versionViewModel;
