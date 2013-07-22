@@ -178,7 +178,7 @@
 
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <Grid Margin="10,3,3,10">
+                    <Grid Margin="0,0,5,10">
                         <Grid.RowDefinitions>
                             <RowDefinition />
                             <RowDefinition Height="Auto" />
@@ -186,23 +186,26 @@
 
                         <self:PackageRowDetails 
                             x:Name="PackageVersionsList"
+                            HorizontalAlignment="Left"
                             Visibility="Collapsed"
                             MaxHeight="150" />
 
-                        <StackPanel Orientation="Horizontal" Grid.Row="1">
+                        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5,0,0,0">
                             <TextBlock Margin="5,0">
                                 <Hyperlink Click="OkButton_Click">
                                     <Run Text="open" />
                                 </Hyperlink>
                             </TextBlock>
-                            <TextBlock Margin="5,0">
-                                <Hyperlink Click="OnShowAllVersionsButtonClick" Tag="{Binding ElementName=PackageVersionsList, Mode=OneWay}">
-                                    <Run Text="show all versions" />
-                                </Hyperlink>
-                            </TextBlock>
+                            
                             <TextBlock x:Name="DownloadButton" Margin="5,0">
                                 <Hyperlink Click="OnDownloadButtonClick">
                                     <Run Text="download"/>
+                                </Hyperlink>
+                            </TextBlock>
+                            
+                            <TextBlock Margin="5,0">
+                                <Hyperlink Click="OnShowAllVersionsButtonClick" Tag="{Binding ElementName=PackageVersionsList, Mode=OneWay}">
+                                    <Run x:Name="showAllVersionsLabel" Text="show all versions" />
                                 </Hyperlink>
                             </TextBlock>
                         </StackPanel>
@@ -215,6 +218,9 @@
                         <DataTrigger Binding="{Binding DownloadUrl.IsUnc}" Value="True">
                             <Setter TargetName="DownloadButton" Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
+                        <Trigger Property="Visibility" Value="Visible" SourceName="PackageVersionsList">
+                            <Setter TargetName="showAllVersionsLabel" Property="Text" Value="hide all versions" />
+                        </Trigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>

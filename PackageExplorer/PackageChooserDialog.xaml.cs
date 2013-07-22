@@ -35,11 +35,13 @@ namespace PackageExplorer
         }
 
         public event EventHandler PackageDownloadRequested = delegate { };
-        //public event EventHandler ShowAllVersionsRequested = delegate { };
 
         public PackageInfo SelectedPackage
         {
-            get { return PackageGrid.SelectedItem as PackageInfo; }
+            get 
+            { 
+                return PackageGrid.SelectedItem as PackageInfo; 
+            }
         }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -256,21 +258,31 @@ namespace PackageExplorer
 
         private async void OnShowAllVersionsButtonClick(object sender, RoutedEventArgs e)
         {
-            var packageInfo = (PackageInfo)PackageGrid.SelectedItem;
-            if (packageInfo == null)
-            {
-                return;
-            }
-
             var hyperlink = (Hyperlink)sender;
             var packageRowDetails = (PackageRowDetails)hyperlink.Tag;
-            packageRowDetails.Visibility = Visibility.Visible;
-            packageRowDetails.ApplyBindings(PackageGrid);
 
-            var versionViewModel = new PackageVersionsViewModel(packageInfo.Id, _viewModel.ShowPrereleasePackages, _viewModel.ActiveRepository);
-            packageRowDetails.DataContext = versionViewModel;
+            if (packageRowDetails.Visibility == Visibility.Visible)
+            {
+                packageRowDetails.DataContext = null;
+                packageRowDetails.RemoveBindings();
+                packageRowDetails.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                var packageInfo = (PackageInfo)PackageGrid.SelectedItem;
+                if (packageInfo == null)
+                {
+                    return;
+                }
 
-            await versionViewModel.LoadPackages(CancellationToken.None);
+                packageRowDetails.ApplyBindings(PackageGrid);
+                packageRowDetails.Visibility = Visibility.Visible;
+
+                var versionViewModel = new PackageVersionsViewModel(packageInfo.Id, _viewModel.ShowPrereleasePackages, _viewModel.ActiveRepository);
+                packageRowDetails.DataContext = versionViewModel;
+
+                await versionViewModel.LoadPackages(CancellationToken.None);
+            }
         }
     }
 }

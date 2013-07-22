@@ -16,7 +16,7 @@
         <self:FileSizeConverter x:Key="FileSizeConverter" />
     </UserControl.Resources>
 
-    <ListView x:Name="PackageGrid" ItemsSource="{Binding Packages}" SelectionMode="Single" IsTextSearchEnabled="False">
+    <ListView x:Name="PackageGrid" BorderThickness="0,0,1,1" ItemsSource="{Binding Packages}" SelectionMode="Single" IsTextSearchEnabled="False">
         <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -53,13 +53,9 @@
                 <GridViewColumn Width="145">
                     <GridViewColumn.CellTemplate>
                         <DataTemplate>
-                        </DataTemplate>
-                    </GridViewColumn.CellTemplate>
-                    <!--<GridViewColumn.CellTemplate>
-                        <DataTemplate>
                             <TextBlock Text="{Binding Authors}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Authors}" />
                         </DataTemplate>
-                    </GridViewColumn.CellTemplate>-->
+                    </GridViewColumn.CellTemplate>
                     <!--<GridViewColumnHeader Content="Authors" Command="{Binding SortCommand}" CommandParameter="Authors" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="90">

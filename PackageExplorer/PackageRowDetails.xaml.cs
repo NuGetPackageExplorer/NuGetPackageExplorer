@@ -9,6 +9,8 @@ namespace PackageExplorer
     /// </summary>
     public partial class PackageRowDetails : UserControl
     {
+        private static readonly SubtracterConverter subtractConverter = new SubtracterConverter();
+
         public PackageRowDetails()
         {
             InitializeComponent();
@@ -25,6 +27,15 @@ namespace PackageExplorer
                     Source = parent.Columns[i]
                 };
 
+                if (i == 0)
+                {
+                    // for the Id column, which is the first column, 
+                    // it is slightly smaller than the parent column width
+                    // due to the left margin.
+                    binding.Converter = subtractConverter;
+                    binding.ConverterParameter = 3;
+                }
+
                 BindingOperations.SetBinding(
                     gridView.Columns[i],
                     GridViewColumn.WidthProperty,
@@ -32,10 +43,9 @@ namespace PackageExplorer
             }
         }
 
-        public void RemoveBindings(DataGrid parent)
+        public void RemoveBindings()
         {
             var gridView = (GridView)PackageGrid.View;
-            Debug.Assert(parent.Columns.Count == gridView.Columns.Count);
             for (int i = 0; i < gridView.Columns.Count; i++)
             {
                 BindingOperations.ClearBinding(
