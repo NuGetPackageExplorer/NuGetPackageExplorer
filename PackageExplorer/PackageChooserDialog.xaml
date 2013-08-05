@@ -31,7 +31,6 @@
         </Style>
 
         <self:PackageInfoDownloadCountConverter x:Key="DownloadCountConverter" />
-        <self:FileSizeConverter x:Key="FileSizeConverter" />
     </Window.Resources>
 
     <Grid Margin="10">
@@ -148,6 +147,7 @@
             Grid.Row="3" 
             Grid.ColumnSpan="2" 
             Margin="0,5" 
+            SelectedItem="{Binding SelectedPackage}"
             RowDetailsVisibilityMode="VisibleWhenSelected"
             ItemsSource="{Binding Packages}"
             Sorting="PackageGrid_Sorting">
@@ -165,11 +165,11 @@
                     <Setter Property="Padding" Value="0,4" />
                     <!--<EventSetter Event="MouseDoubleClick" Handler="OkButton_Click" />-->
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsPrerelease, Mode=OneTime}" Value="true">
+                        <DataTrigger Binding="{Binding LatestPackageInfo.IsPrerelease, Mode=OneTime}" Value="true">
                             <Setter Property="Foreground" Value="Maroon" />
                         </DataTrigger>
 
-                        <DataTrigger Binding="{Binding IsUnlisted, Mode=OneTime}" Value="true">
+                        <DataTrigger Binding="{Binding LatestPackageInfo.IsUnlisted, Mode=OneTime}" Value="true">
                             <Setter Property="FontStyle" Value="Italic" />
                         </DataTrigger>
                     </Style.Triggers>
@@ -187,12 +187,13 @@
                         <self:PackageRowDetails 
                             x:Name="PackageVersionsList"
                             HorizontalAlignment="Left"
-                            Visibility="Collapsed"
+                            Loaded="OnPackageRowDetailsLoaded"
+                            Visibility="{Binding ShowingAllVersions, Converter={StaticResource boolToVis}}"
                             MaxHeight="150" />
 
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5,0,0,0">
                             <TextBlock Margin="5,0">
-                                <Hyperlink Click="OkButton_Click">
+                                <Hyperlink>
                                     <Run Text="open" />
                                 </Hyperlink>
                             </TextBlock>
@@ -202,9 +203,9 @@
                                     <Run Text="download"/>
                                 </Hyperlink>
                             </TextBlock>
-                            
+
                             <TextBlock Margin="5,0">
-                                <Hyperlink Click="OnShowAllVersionsButtonClick" Tag="{Binding ElementName=PackageVersionsList, Mode=OneWay}">
+                                <Hyperlink Command="{Binding ToggleAllVersionsCommand}">
                                     <Run x:Name="showAllVersionsLabel" Text="show all versions" />
                                 </Hyperlink>
                             </TextBlock>
@@ -218,21 +219,24 @@
                         <DataTrigger Binding="{Binding DownloadUrl.IsUnc}" Value="True">
                             <Setter TargetName="DownloadButton" Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
-                        <Trigger Property="Visibility" Value="Visible" SourceName="PackageVersionsList">
+                        <DataTrigger Binding="{Binding ShowingAllVersions}"  Value="True">
                             <Setter TargetName="showAllVersionsLabel" Property="Text" Value="hide all versions" />
-                        </Trigger>
+                        </DataTrigger>
                     </DataTemplate.Triggers>
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="180" CanUserReorder="False" SortMemberPath="Id">
+                <DataGridTextColumn Header="Id" Binding="{Binding LatestPackageInfo.Id}" Width="180" CanUserReorder="False" SortMemberPath="Id">
                 </DataGridTextColumn>
 
                 <DataGridTemplateColumn Header="Version" Width="100" CanUserSort="False" SortMemberPath="Version">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Version}" TextAlignment="Center" />
+                            <TextBlock 
+                                Text="{Binding LatestPackageInfo.Version}" 
+                                TextAlignment="Center" 
+                                Visibility="{Binding ShowingAllVersions, Converter={StaticResource invertedBoolToVis}}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -240,7 +244,11 @@
                 <DataGridTemplateColumn Header="Authors" Width="160" CanUserSort="False" SortMemberPath="Authors">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding Authors}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Authors}" />
+                            <TextBlock 
+                                Text="{Binding LatestPackageInfo.Authors}" 
+                                TextTrimming="CharacterEllipsis" 
+                                Visibility="{Binding ShowingAllVersions, Converter={StaticResource invertedBoolToVis}}"
+                                ToolTip="{Binding LatestPackageInfo.Authors}" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -248,7 +256,7 @@
                 <DataGridTemplateColumn Header="Downloads" Width="110" SortMemberPath="VersionDownloadCount">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding EffectiveDownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />
+                            <TextBlock Text="{Binding LatestPackageInfo.EffectiveDownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -256,7 +264,10 @@
                 <DataGridTemplateColumn Header="Size" Width="100" SortMemberPath="PackageSize">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding PackageSize, Converter={StaticResource FileSizeConverter}}" TextAlignment="Center" />
+                            <TextBlock 
+                                Text="{Binding LatestPackageInfo.PackageSize, Converter={StaticResource FileSizeConverter}}" 
+                                Visibility="{Binding ShowingAllVersions, Converter={StaticResource invertedBoolToVis}}"
+                                TextAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -270,10 +281,10 @@
         <Border Grid.Row="5" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
 
         <!-- Status message, e.g. Loadding, Connecting etc.-->
-        <TextBlock 
-            Text="{Binding StatusContent, Mode=OneWay}" 
-            Grid.Row="5" 
-            VerticalAlignment="Center" 
+        <TextBlock
+            Text="{Binding StatusContent, Mode=OneWay}"
+            Grid.Row="5"
+            VerticalAlignment="Center"
             TextTrimming="WordEllipsis"
             Visibility="{Binding HasError, Mode=OneWay, Converter={StaticResource invertedBoolToVis}}">
         </TextBlock>

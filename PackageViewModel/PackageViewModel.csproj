@@ -67,7 +67,7 @@
     <Compile Include="PackageChooser\QueryContextBase.cs" />
     <Compile Include="PackagePart\IEditablePackageFile.cs" />
     <Compile Include="PackagePart\PackageMetadataFile.cs" />
-    <Compile Include="PackageChooser\PackageVersionsViewModel.cs" />
+    <Compile Include="PackageChooser\PackageInfoViewModel.cs" />
     <Compile Include="Utilities\FileHelper.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="PackageAnalyzer\MisplacedTransformFileRule.cs" />

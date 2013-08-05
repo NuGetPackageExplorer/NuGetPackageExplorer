@@ -13,10 +13,9 @@
         <Style x:Key="PackageVersionsHeaderStyle" TargetType="{x:Type GridViewColumnHeader}">
             <Setter Property="Visibility" Value="Collapsed" />
         </Style>
-        <self:FileSizeConverter x:Key="FileSizeConverter" />
     </UserControl.Resources>
 
-    <ListView x:Name="PackageGrid" BorderThickness="0,0,1,1" ItemsSource="{Binding Packages}" SelectionMode="Single" IsTextSearchEnabled="False">
+    <ListView x:Name="PackageGrid" BorderThickness="0,0,1,1" ItemsSource="{Binding AllPackages}" SelectedItem="{Binding SelectedPackage}" SelectionMode="Single" IsTextSearchEnabled="False">
         <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -40,7 +39,6 @@
                         <DataTemplate>
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
-                    <!--<GridViewColumnHeader Content="Id" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="80">
                     <GridViewColumn.CellTemplate>
@@ -48,7 +46,6 @@
                             <TextBlock Text="{Binding Version}" TextAlignment="Center" />
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
-                    <!--<GridViewColumnHeader Content="Version" Command="{Binding SortCommand}" CommandParameter="Version" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="145">
                     <GridViewColumn.CellTemplate>
@@ -56,7 +53,6 @@
                             <TextBlock Text="{Binding Authors}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Authors}" />
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
-                    <!--<GridViewColumnHeader Content="Authors" Command="{Binding SortCommand}" CommandParameter="Authors" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="90">
                     <GridViewColumn.CellTemplate>
@@ -64,7 +60,6 @@
                             <TextBlock Text="{Binding EffectiveDownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
-                    <!--<GridViewColumnHeader Content="Downloads" Command="{Binding SortCommand}" CommandParameter="VersionDownloadCount" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
                 <GridViewColumn Width="90">
                     <GridViewColumn.CellTemplate>
@@ -72,7 +67,6 @@
                             <TextBlock Text="{Binding PackageSize, Converter={StaticResource FileSizeConverter}}" TextAlignment="Center" />
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
-                    <!--<GridViewColumnHeader Content="Size" Command="{Binding SortCommand}" CommandParameter="PackageSize" Padding="0,3"></GridViewColumnHeader>-->
                 </GridViewColumn>
             </GridView>
         </ListView.View>

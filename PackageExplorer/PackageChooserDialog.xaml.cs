@@ -256,33 +256,11 @@ namespace PackageExplorer
             PackageDownloadRequested(this, EventArgs.Empty);
         }
 
-        private async void OnShowAllVersionsButtonClick(object sender, RoutedEventArgs e)
+        private void OnPackageRowDetailsLoaded(object sender, RoutedEventArgs e)
         {
-            var hyperlink = (Hyperlink)sender;
-            var packageRowDetails = (PackageRowDetails)hyperlink.Tag;
-
-            if (packageRowDetails.Visibility == Visibility.Visible)
-            {
-                packageRowDetails.DataContext = null;
-                packageRowDetails.RemoveBindings();
-                packageRowDetails.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                var packageInfo = (PackageInfo)PackageGrid.SelectedItem;
-                if (packageInfo == null)
-                {
-                    return;
-                }
-
-                packageRowDetails.ApplyBindings(PackageGrid);
-                packageRowDetails.Visibility = Visibility.Visible;
-
-                var versionViewModel = new PackageVersionsViewModel(packageInfo.Id, _viewModel.ShowPrereleasePackages, _viewModel.ActiveRepository);
-                packageRowDetails.DataContext = versionViewModel;
-
-                await versionViewModel.LoadPackages(CancellationToken.None);
-            }
+            // make the nested Listview's columns align with the parent DataGrid's columns
+            var packageRowDetails = (PackageRowDetails)sender;
+            packageRowDetails.ApplyBindings(PackageGrid);
         }
     }
 }

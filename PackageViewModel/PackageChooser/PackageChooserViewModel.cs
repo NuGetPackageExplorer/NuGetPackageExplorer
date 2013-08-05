@@ -31,6 +31,7 @@ namespace PackageExplorerViewModel
         private ListSortDirection _sortDirection;
         private string _statusContent;
         private int _totalPackageCount;
+        private PackageInfoViewModel _selectedPackage;
 
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
@@ -44,7 +45,7 @@ namespace PackageExplorerViewModel
 
             _showPrereleasePackages = showPrereleasePackages;
             _fixedPackageSource = fixedPackageSource;
-            Packages = new ObservableCollection<PackageInfo>();
+            Packages = new ObservableCollection<PackageInfoViewModel>();
             SortCommand = new RelayCommand<string>(Sort, CanSort);
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
             ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
@@ -72,6 +73,24 @@ namespace PackageExplorerViewModel
                 {
                     _currentTypingSearch = value;
                     OnPropertyChanged("CurrentTypingSearch");
+                }
+            }
+        }
+
+        public PackageInfoViewModel SelectedPackage
+        {
+            get { return _selectedPackage; }
+            set
+            {
+                if (_selectedPackage != value)
+                {
+                    if (_selectedPackage != null)
+                    {
+                        _selectedPackage.ShowingAllVersions = false;
+                    }
+
+                    _selectedPackage = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -232,7 +251,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public ObservableCollection<PackageInfo> Packages { get; private set; }
+        public ObservableCollection<PackageInfoViewModel> Packages { get; private set; }
 
         public RelayCommand<string> NavigationCommand { get; private set; }
         public ICommand SortCommand { get; private set; }
@@ -585,7 +604,7 @@ namespace PackageExplorerViewModel
             IEnumerable<PackageInfo> packages, int totalPackageCount, int beginPackage, int endPackage)
         {
             Packages.Clear();
-            Packages.AddRange(packages);
+            Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, _packageRepository, this)));
             UpdatePageNumber(totalPackageCount, beginPackage, endPackage);
         }
 

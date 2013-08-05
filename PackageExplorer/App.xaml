@@ -15,6 +15,7 @@
             <self:AndLogicConverter x:Key="andConverter" />
             <self:SubtracterConverter x:Key="SubtracterConverter" />
             <self:StringShorternerConverter x:Key="StringShorternerConverter" />
+            <self:FileSizeConverter x:Key="FileSizeConverter" />
 
             <ContextMenu x:Key="TextBoxContextMenu">
                 <self:GrayscaleMenuItem Command="Cut">
