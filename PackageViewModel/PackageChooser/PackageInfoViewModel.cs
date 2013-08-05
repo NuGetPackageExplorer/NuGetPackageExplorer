@@ -198,6 +198,8 @@ namespace PackageExplorerViewModel
 
         protected async Task<PackageInfo[]> LoadData(IQueryable<PackageInfo> query, CancellationToken token)
         {
+            PackageInfo[] results;
+
             var dataServiceQuery = query as DataServiceQuery<PackageInfo>;
             if (dataServiceQuery != null)
             {
@@ -205,12 +207,17 @@ namespace PackageExplorerViewModel
                     await Task.Factory.FromAsync<IEnumerable<PackageInfo>>(dataServiceQuery.BeginExecute(null, null), dataServiceQuery.EndExecute);
 
                 token.ThrowIfCancellationRequested();
-                return queryResponse.ToArray();
+                results = queryResponse.ToArray();
             }
             else
             {
-                return await Task.Run((Func<PackageInfo[]>)query.ToArray, token);
+                results = await Task.Run((Func<PackageInfo[]>)query.ToArray, token);
             }
+
+            // sort by Version descending
+            Array.Sort(results, (a, b) => b.Version.CompareTo(a.Version));
+
+            return results;
         }
 
         private async void OnToggleAllVersions()

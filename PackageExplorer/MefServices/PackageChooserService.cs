@@ -37,7 +37,6 @@ namespace PackageExplorer
                           {
                               Owner = Window.Value
                           };
-                _dialog.PackageDownloadRequested += OnPackageDownloadRequested;
             }
 
             _dialog.ShowDialog(searchTerm);

@@ -34,8 +34,6 @@ namespace PackageExplorer
             DataContext = _viewModel;
         }
 
-        public event EventHandler PackageDownloadRequested = delegate { };
-
         public PackageInfo SelectedPackage
         {
             get 
@@ -251,14 +249,9 @@ namespace PackageExplorer
             e.Handled = true;
         }
 
-        private void OnDownloadButtonClick(object sender, RoutedEventArgs e)
-        {
-            PackageDownloadRequested(this, EventArgs.Empty);
-        }
-
         private void OnPackageRowDetailsLoaded(object sender, RoutedEventArgs e)
         {
-            // make the nested Listview's columns align with the parent DataGrid's columns
+            // align the nested ListView's columns with the parent DataGrid's columns
             var packageRowDetails = (PackageRowDetails)sender;
             packageRowDetails.ApplyBindings(PackageGrid);
         }

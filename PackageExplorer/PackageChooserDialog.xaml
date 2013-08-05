@@ -193,13 +193,13 @@
 
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5,0,0,0">
                             <TextBlock Margin="5,0">
-                                <Hyperlink>
+                                <Hyperlink Command="{Binding OpenCommand}">
                                     <Run Text="open" />
                                 </Hyperlink>
                             </TextBlock>
                             
                             <TextBlock x:Name="DownloadButton" Margin="5,0">
-                                <Hyperlink Click="OnDownloadButtonClick">
+                                <Hyperlink Command="{Binding DownloadCommand}">
                                     <Run Text="download"/>
                                 </Hyperlink>
                             </TextBlock>
