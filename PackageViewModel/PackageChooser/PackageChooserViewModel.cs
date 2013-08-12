@@ -271,6 +271,7 @@ namespace PackageExplorerViewModel
 
         public event EventHandler LoadPackagesCompleted = delegate { };
         public event EventHandler OpenPackageRequested = delegate { };
+        public event EventHandler PackageDownloadRequested = delegate { };
 
         private async void OnShowPrereleasePackagesChange()
         {
@@ -625,6 +626,11 @@ namespace PackageExplorerViewModel
         internal void OnOpenPackage()
         {
             OpenPackageRequested(this, EventArgs.Empty);
+        }
+
+        internal void OneDownloadPackage()
+        {
+            PackageDownloadRequested(this, EventArgs.Empty);
         }
 
         #region CancelCommand

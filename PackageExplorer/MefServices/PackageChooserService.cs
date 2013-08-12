@@ -36,6 +36,7 @@ namespace PackageExplorer
             if (_dialog == null)
             {
                 _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
+                _viewModel.PackageDownloadRequested += OnPackageDownloadRequested;
                 _dialog = new PackageChooserDialog(_viewModel)
                           {
                               Owner = Window.Value

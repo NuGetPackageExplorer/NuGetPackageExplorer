@@ -163,7 +163,6 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="Foreground" Value="DarkBlue" />
                     <Setter Property="Padding" Value="0,4" />
-                    <EventSetter Event="MouseDoubleClick" Handler="OpenPackage_Click" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding LatestPackageInfo.IsPrerelease, Mode=OneTime}" Value="true">
                             <Setter Property="Foreground" Value="Maroon" />

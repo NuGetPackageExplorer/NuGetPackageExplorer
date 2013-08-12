@@ -1,7 +1,8 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Data;
+using NuGet;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
@@ -55,9 +56,13 @@ namespace PackageExplorer
             }
         }
 
-        private void OpenPackage_Click(object sender, EventArgs e)
+        private void PackageGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            // TODO
+            var viewModel = (PackageInfoViewModel)DataContext;
+            if (viewModel != null)
+            {
+                viewModel.SelectedPackage = (PackageInfo)PackageGrid.SelectedItem;
+            }
         }
     }
 }

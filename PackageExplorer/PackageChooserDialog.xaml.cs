@@ -1,13 +1,10 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NuGet;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 
@@ -30,7 +27,7 @@ namespace PackageExplorer
             _viewModel = viewModel;
             _viewModel.LoadPackagesCompleted += OnLoadPackagesCompleted;
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
-            _viewModel.OpenPackageRequested += OpenPackage_Click;
+            _viewModel.OpenPackageRequested += OnOpenPackageRequested;
 
             DataContext = _viewModel;
         }
@@ -63,7 +60,7 @@ namespace PackageExplorer
             }
         }
 
-        private void OpenPackage_Click(object sender, EventArgs e)
+        private void OnOpenPackageRequested(object sender, EventArgs e)
         {
             Hide();
         }
