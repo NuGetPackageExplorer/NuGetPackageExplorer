@@ -120,8 +120,6 @@ namespace PackageExplorer
 
         private void EditDependenciesButtonClicked(object sender, RoutedEventArgs e)
         {
-            var viewModel = (PackageViewModel)DataContext;
-
             var editor = new PackageDependencyEditor(_dependencySets)
             {
                 Owner = Window.GetWindow(this),
@@ -136,8 +134,6 @@ namespace PackageExplorer
 
         private void EditReferencesButtonClicked(object sender, RoutedEventArgs e)
         {
-            var viewModel = (PackageViewModel)DataContext;
-
             var editor = new PackageReferencesEditor(_referenceSets)
             {
                 Owner = Window.GetWindow(this),

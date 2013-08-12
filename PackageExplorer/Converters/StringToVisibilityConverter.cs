@@ -21,7 +21,7 @@ namespace PackageExplorer
             return contains ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        private bool Matching(string pattern, string value)
+        private static bool Matching(string pattern, string value)
         {
             if (pattern.IndexOf('*') > -1) 
             {

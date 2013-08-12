@@ -45,8 +45,7 @@ namespace PackageExplorer
             return matches.Cast<Match>().ToDictionary(
                 m => Uri.UnescapeDataString(m.Groups[2].Value),
                 m => Uri.UnescapeDataString(m.Groups[3].Value),
-                StringComparer.InvariantCultureIgnoreCase
-                );
+                StringComparer.OrdinalIgnoreCase);
         }
     }
 }

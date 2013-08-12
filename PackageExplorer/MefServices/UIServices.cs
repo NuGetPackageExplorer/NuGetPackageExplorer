@@ -287,7 +287,7 @@ namespace PackageExplorer
 
         #endregion
 
-        private bool ConfirmUsingTaskDialog(string message, string title, bool isWarning)
+        private static bool ConfirmUsingTaskDialog(string message, string title, bool isWarning)
         {
             using (var dialog = new TaskDialog())
             {
@@ -313,7 +313,7 @@ namespace PackageExplorer
             }
         }
 
-        private bool? ConfirmWithCancelUsingTaskDialog(string message, string title)
+        private static bool? ConfirmWithCancelUsingTaskDialog(string message, string title)
         {
             using (var dialog = new TaskDialog())
             {
@@ -408,7 +408,7 @@ namespace PackageExplorer
             return Tuple.Create(movingFile, remember);
         }
 
-        private bool ConfirmCloseEditorUsingTaskDialog(string title, string message)
+        private static bool ConfirmCloseEditorUsingTaskDialog(string title, string message)
         {
             using (var dialog = new TaskDialog())
             {

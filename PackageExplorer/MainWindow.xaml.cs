@@ -398,7 +398,7 @@ namespace PackageExplorer
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e)
         {
             var item = (MenuItem) sender;
-            int size = Convert.ToInt32(item.Tag);
+            int size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
             Settings.Default.FontSize = size;
         }
 

@@ -27,10 +27,5 @@ namespace NuGet
             var uri = new Uri(path, UriKind.Relative);
             return PackUriHelper.CreatePartUri(uri);
         }
-
-        internal static Uri GetRootUri(Uri uri)
-        {
-            return new Uri(uri.GetComponents(UriComponents.SchemeAndServer, UriFormat.SafeUnescaped));
-        }
     }
 }

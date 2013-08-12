@@ -54,7 +54,7 @@ namespace PackageExplorer
             {
                 if (column.SortMemberPath.Equals(sortColumn, StringComparison.OrdinalIgnoreCase))
                 {
-                    column.SortDirection = _viewModel.SortDirection;
+                    column.SortDirection = sortDirection;
                     break;
                 }
             }

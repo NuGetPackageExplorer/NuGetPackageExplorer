@@ -39,7 +39,7 @@ namespace PackageExplorer
 
         #endregion
 
-        private Visibility BoolToVisibility(bool b)
+        private static Visibility BoolToVisibility(bool b)
         {
             return b ? Visibility.Visible : Visibility.Collapsed;
         }

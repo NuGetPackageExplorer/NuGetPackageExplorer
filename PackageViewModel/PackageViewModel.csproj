@@ -89,7 +89,6 @@
     <Compile Include="PackageChooser\PackageRepositoryFactory.cs" />
     <Compile Include="PackageChooser\IQueryContext.cs" />
     <Compile Include="PackageChooser\ShowLatestVersionQueryContext.cs" />
-    <Compile Include="PackageChooser\ShowAllVersionsQueryContext.cs" />
     <Compile Include="Utilities\PackageHelper.cs" />
     <Compile Include="EditableFrameworkAssemblyReference.cs" />
     <Compile Include="EditablePackageDependency.cs" />

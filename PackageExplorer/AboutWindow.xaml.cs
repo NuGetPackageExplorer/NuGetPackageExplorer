@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Deployment.Application;
+using System.Globalization;
 using System.Windows;
 using System.Windows.Documents;
 using StringResources = PackageExplorer.Resources.Resources;
@@ -16,6 +17,7 @@ namespace PackageExplorer
             InitializeComponent();
 
             ProductTitle.Text = String.Format(
+                CultureInfo.CurrentCulture,
                 "{0} ({1})",
                 StringResources.Dialog_Title,
                 GetApplicationVersion());

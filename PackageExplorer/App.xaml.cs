@@ -116,7 +116,7 @@ namespace PackageExplorer
             }
         }
 
-        private void MigrateSettings()
+        private static void MigrateSettings()
         {
             Settings settings = Settings.Default;
             if (settings.IsFirstTime)

@@ -225,7 +225,7 @@ namespace PackageExplorer
             }
         }
 
-        private DirectoryInfo CreateChildDirectory(DirectoryInfo parentInfo, string path)
+        private static DirectoryInfo CreateChildDirectory(DirectoryInfo parentInfo, string path)
         {
             // if the child directory doesn't exist, create it
             DirectoryInfo child = parentInfo.EnumerateDirectories(path, SearchOption.TopDirectoryOnly).FirstOrDefault() ??
@@ -258,7 +258,7 @@ namespace PackageExplorer
             return Path.Combine(PluginsDirectory, pluginName);
         }
 
-        private void CreateDeleteMeFile(string targetPath)
+        private static void CreateDeleteMeFile(string targetPath)
         {
             if (targetPath.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
             {
@@ -271,7 +271,7 @@ namespace PackageExplorer
             File.WriteAllText(deleteMeFile, String.Empty);
         }
 
-        private void DeleteAllDeleteMeFiles()
+        private static void DeleteAllDeleteMeFiles()
         {
             try
             {
@@ -303,7 +303,7 @@ namespace PackageExplorer
             }
         }
 
-        private string BuildErrorMessage(ReflectionTypeLoadException exception)
+        private static string BuildErrorMessage(ReflectionTypeLoadException exception)
         {
             var builder = new StringBuilder("One or more errors occurred while loading the selected plugin:");
             builder.AppendLine();

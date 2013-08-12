@@ -379,7 +379,7 @@ namespace PackageExplorer
             menu.Opened -= PackageFolderContextMenu_Opened;
         }
 
-        private void AddFrameworkFoldersToContextMenu(ContextMenu menu)
+        private static void AddFrameworkFoldersToContextMenu(ContextMenu menu)
         {
             var visibilityBinding = new Binding("Path")
                                     {
