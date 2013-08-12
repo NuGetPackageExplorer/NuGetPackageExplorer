@@ -36,6 +36,7 @@ namespace PackageExplorerViewModel
             AllPackages = new ObservableCollection<PackageInfo>();
 
             ToggleAllVersionsCommand = new RelayCommand(OnToggleAllVersions);
+            OpenCommand = new RelayCommand(OnOpenPackage);
         }
 
         public ObservableCollection<PackageInfo> AllPackages { get; private set; }
@@ -69,6 +70,7 @@ namespace PackageExplorerViewModel
         public bool ShowPrerelease { get; private set; }
 
         public ICommand ToggleAllVersionsCommand { get; private set; }
+        public ICommand OpenCommand { get; private set; }
 
         public bool ShowingAllVersions
         {
@@ -236,12 +238,17 @@ namespace PackageExplorerViewModel
                     if (AllPackages.Count > 0)
                     {
                         // after loading, select the first package because it is usually the latest package
-                        SelectedPackage = AllPackages[0];
+                        //SelectedPackage = AllPackages[0];
                     }
                 }
 
                 ShowingAllVersions = true;
             }
+        }
+
+        private void OnOpenPackage()
+        {
+            _parentViewModel.OnOpenPackage();
         }
     }
 }

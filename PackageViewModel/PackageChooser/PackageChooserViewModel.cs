@@ -31,7 +31,7 @@ namespace PackageExplorerViewModel
         private ListSortDirection _sortDirection;
         private string _statusContent;
         private int _totalPackageCount;
-        private PackageInfoViewModel _selectedPackage;
+        private PackageInfoViewModel _selectedPackageViewModel;
 
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
@@ -77,21 +77,29 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public PackageInfoViewModel SelectedPackage
+        public PackageInfoViewModel SelectedPackageViewModel
         {
-            get { return _selectedPackage; }
+            get { return _selectedPackageViewModel; }
             set
             {
-                if (_selectedPackage != value)
+                if (_selectedPackageViewModel != value)
                 {
-                    if (_selectedPackage != null)
+                    if (_selectedPackageViewModel != null)
                     {
-                        _selectedPackage.ShowingAllVersions = false;
+                        _selectedPackageViewModel.ShowingAllVersions = false;
                     }
 
-                    _selectedPackage = value;
+                    _selectedPackageViewModel = value;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        public PackageInfo SelectedPackage
+        {
+            get
+            {
+                return _selectedPackageViewModel == null ? null : _selectedPackageViewModel.EffectiveSelectedPackage;
             }
         }
 
@@ -261,25 +269,8 @@ namespace PackageExplorerViewModel
         public ICommand ChangePackageSourceCommand { get; private set; }
         public RelayCommand CancelCommand { get; private set; }
 
-        #region IDisposable Members
-
-        public void Dispose()
-        {
-            if (_packageSourceManager != null)
-            {
-                _packageSourceManager.Dispose();
-                _packageSourceManager = null;
-            }
-
-            if (CurrentCancellationTokenSource != null)
-            {
-                CurrentCancellationTokenSource.Dispose();
-            }
-        }
-
-        #endregion
-
         public event EventHandler LoadPackagesCompleted = delegate { };
+        public event EventHandler OpenPackageRequested = delegate { };
 
         private async void OnShowPrereleasePackagesChange()
         {
@@ -631,6 +622,11 @@ namespace PackageExplorerViewModel
             LoadPackagesCompleted(this, EventArgs.Empty);
         }
 
+        internal void OnOpenPackage()
+        {
+            OpenPackageRequested(this, EventArgs.Empty);
+        }
+
         #region CancelCommand
 
         private void CancelCommandExecute()
@@ -760,5 +756,19 @@ namespace PackageExplorerViewModel
         }
 
         #endregion
+
+        public void Dispose()
+        {
+            if (_packageSourceManager != null)
+            {
+                _packageSourceManager.Dispose();
+                _packageSourceManager = null;
+            }
+
+            if (CurrentCancellationTokenSource != null)
+            {
+                CurrentCancellationTokenSource.Dispose();
+            }
+        }
     }
 }

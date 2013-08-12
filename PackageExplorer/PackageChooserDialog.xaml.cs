@@ -30,16 +30,9 @@ namespace PackageExplorer
             _viewModel = viewModel;
             _viewModel.LoadPackagesCompleted += OnLoadPackagesCompleted;
             _viewModel.PropertyChanged += OnViewModelPropertyChanged;
+            _viewModel.OpenPackageRequested += OpenPackage_Click;
 
             DataContext = _viewModel;
-        }
-
-        public PackageInfo SelectedPackage
-        {
-            get 
-            { 
-                return PackageGrid.SelectedItem as PackageInfo; 
-            }
         }
 
         private void OnViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -70,7 +63,7 @@ namespace PackageExplorer
             }
         }
 
-        private void OkButton_Click(object sender, RoutedEventArgs e)
+        private void OpenPackage_Click(object sender, EventArgs e)
         {
             Hide();
         }

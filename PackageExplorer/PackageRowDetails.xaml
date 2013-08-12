@@ -15,11 +15,19 @@
         </Style>
     </UserControl.Resources>
 
-    <ListView x:Name="PackageGrid" BorderThickness="0,0,1,1" ItemsSource="{Binding AllPackages}" SelectedItem="{Binding SelectedPackage}" SelectionMode="Single" IsTextSearchEnabled="False">
+    <ListView 
+        x:Name="PackageGrid" 
+        BorderThickness="0,0,1,1" 
+        ItemsSource="{Binding AllPackages, Mode=OneWay}" 
+        SelectedItem="{Binding SelectedPackage, Mode=TwoWay}" 
+        SelectionMode="Single"
+        SelectedIndex="{Binding Luan, Mode=TwoWay}"
+        IsTextSearchEnabled="False">
+        
         <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <!--<EventSetter Event="MouseDoubleClick" Handler="" />-->
+                <EventSetter Event="MouseDoubleClick" Handler="OpenPackage_Click" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding IsPrerelease, Mode=OneTime}" Value="true">
                         <Setter Property="Foreground" Value="Maroon" />

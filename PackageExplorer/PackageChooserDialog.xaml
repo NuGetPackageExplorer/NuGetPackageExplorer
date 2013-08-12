@@ -147,7 +147,7 @@
             Grid.Row="3" 
             Grid.ColumnSpan="2" 
             Margin="0,5" 
-            SelectedItem="{Binding SelectedPackage}"
+            SelectedItem="{Binding SelectedPackageViewModel}"
             RowDetailsVisibilityMode="VisibleWhenSelected"
             ItemsSource="{Binding Packages}"
             Sorting="PackageGrid_Sorting">
@@ -163,7 +163,7 @@
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     <Setter Property="Foreground" Value="DarkBlue" />
                     <Setter Property="Padding" Value="0,4" />
-                    <!--<EventSetter Event="MouseDoubleClick" Handler="OkButton_Click" />-->
+                    <EventSetter Event="MouseDoubleClick" Handler="OpenPackage_Click" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding LatestPackageInfo.IsPrerelease, Mode=OneTime}" Value="true">
                             <Setter Property="Foreground" Value="Maroon" />
@@ -213,10 +213,10 @@
                     </Grid>
                     
                     <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding DownloadUrl.IsFile}" Value="True">
+                        <DataTrigger Binding="{Binding SelectedPackage.DownloadUrl.IsFile}" Value="True">
                             <Setter TargetName="DownloadButton" Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding DownloadUrl.IsUnc}" Value="True">
+                        <DataTrigger Binding="{Binding SelectedPackage.DownloadUrl.IsUnc}" Value="True">
                             <Setter TargetName="DownloadButton" Property="Visibility" Value="Collapsed" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding ShowingAllVersions}"  Value="True">

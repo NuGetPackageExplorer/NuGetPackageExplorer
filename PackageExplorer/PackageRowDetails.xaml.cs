@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Data;
 
@@ -52,6 +53,11 @@ namespace PackageExplorer
                     gridView.Columns[i],
                     GridViewColumn.WidthProperty);
             }
+        }
+
+        private void OpenPackage_Click(object sender, EventArgs e)
+        {
+            // TODO
         }
     }
 }

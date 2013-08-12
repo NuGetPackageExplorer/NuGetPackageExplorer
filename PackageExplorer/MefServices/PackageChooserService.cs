@@ -9,10 +9,13 @@ namespace PackageExplorer
     [Export(typeof(IPackageChooser))]
     internal class PackageChooserService : IPackageChooser
     {
+        // for select package dialog
         private PackageChooserDialog _dialog;
+        private PackageChooserViewModel _viewModel;
+
+        // for select plugin dialog
         private PackageChooserDialog _pluginDialog;
         private PackageChooserViewModel _pluginViewModel;
-        private PackageChooserViewModel _viewModel;
 
         [Import]
         public IPackageViewModelFactory ViewModelFactory { get; set; }
@@ -40,13 +43,12 @@ namespace PackageExplorer
             }
 
             _dialog.ShowDialog(searchTerm);
-            return _dialog.SelectedPackage;
+            return _viewModel.SelectedPackage;
         }
 
         private async void OnPackageDownloadRequested(object sender, EventArgs e)
         {
-            var dialog = (PackageChooserDialog)sender;
-            PackageInfo packageInfo = dialog.SelectedPackage;
+            PackageInfo packageInfo = _viewModel.SelectedPackage;
             if (packageInfo != null)
             {
                 string selectedFilePath;
@@ -90,7 +92,7 @@ namespace PackageExplorer
             }
 
             _pluginDialog.ShowDialog();
-            return _pluginDialog.SelectedPackage;
+            return _pluginViewModel.SelectedPackage;
         }
 
         public void Dispose()
