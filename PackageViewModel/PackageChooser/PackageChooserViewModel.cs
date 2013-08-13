@@ -298,7 +298,7 @@ namespace PackageExplorerViewModel
             Debug.Assert(_currentQuery != null);
 
             IsEditable = false;
-            ShowMessage(Resources.LoadingMessage, false);
+            //ShowMessage(Resources.LoadingMessage, false);
             ClearPackages(isErrorCase: false);
 
             if (token == CancellationToken.None)
@@ -341,7 +341,7 @@ namespace PackageExplorerViewModel
                     return;
                 }
 
-                ShowMessage(exception.GetBaseException().Message, true);
+                ShowMessage(exception.Message, true);
                 ClearPackages(isErrorCase: true);
             }
 
@@ -372,7 +372,6 @@ namespace PackageExplorerViewModel
         private Task LoadPackages()
         {
             IsEditable = false;
-            ShowMessage(Resources.ConnectingMessage, false);
             ClearPackages(isErrorCase: true);
 
             CurrentCancellationTokenSource = new CancellationTokenSource();
@@ -403,7 +402,7 @@ namespace PackageExplorerViewModel
                     // only show error if user hasn't canceled this request
                     if (usedTokenSource == CurrentCancellationTokenSource)
                     {
-                        ShowMessage(error.GetBaseException().Message, isError: true);
+                        ShowMessage(error.Message, isError: true);
                         RestoreUI();
                     }
                     return Task.FromResult(0);

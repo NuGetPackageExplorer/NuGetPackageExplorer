@@ -130,8 +130,13 @@
             Grid.ColumnSpan="2" 
             Margin="0,6,0,0"
             Background="Beige"
+            MaxHeight="40"
             Visibility="{Binding HasError, Mode=OneWay, Converter={StaticResource boolToVis}}"
-            Text="{Binding StatusContent}" Foreground="Red" VerticalAlignment="Center" TextWrapping="Wrap">
+            Text="{Binding StatusContent}" 
+            Foreground="Red" 
+            VerticalAlignment="Center" 
+            TextWrapping="Wrap"
+            TextTrimming="CharacterEllipsis">
         </TextBlock>
 
         <!-- package list view -->
@@ -226,8 +231,13 @@
             </DataGrid.RowDetailsTemplate>
 
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Id" Binding="{Binding LatestPackageInfo.Id}" Width="180" CanUserReorder="False" SortMemberPath="Id">
-                </DataGridTextColumn>
+                <DataGridTemplateColumn Header="Id" Width="180" CanUserReorder="False" SortMemberPath="Id">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding LatestPackageInfo.Id}" Margin="4,0,0,0" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
 
                 <DataGridTemplateColumn Header="Version" Width="100" CanUserSort="False" SortMemberPath="Version">
                     <DataGridTemplateColumn.CellTemplate>
@@ -243,7 +253,8 @@
                 <DataGridTemplateColumn Header="Authors" Width="160" CanUserSort="False" SortMemberPath="Authors">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock 
+                            <TextBlock
+                                Margin="4,0,0,0"
                                 Text="{Binding LatestPackageInfo.Authors}" 
                                 TextTrimming="CharacterEllipsis" 
                                 Visibility="{Binding ShowingAllVersions, Converter={StaticResource invertedBoolToVis}}"
@@ -272,21 +283,24 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+        
+        <!-- progress panel -->
+        <StackPanel
+            Grid.Row="3"
+            Grid.ColumnSpan="2"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Vertical"
+            Visibility="{Binding IsEditable, Converter={StaticResource invertedBoolToVis}}">
+            <ProgressBar Width="140" Height="24" IsIndeterminate="True" />
+            <Button Content="_Cancel" Margin="10" Padding="15, 2" HorizontalAlignment="Center" Command="{Binding CancelCommand}" />
+        </StackPanel>
 
         <!-- Checkbox: Show unlisted version of each Id  -->
         <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowPrereleasePackages}" HorizontalAlignment="Left" Content="Show pre-release packages." />
 
         <!-- Background color for the footer -->
         <Border Grid.Row="5" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
-
-        <!-- Status message, e.g. Loadding, Connecting etc.-->
-        <TextBlock
-            Text="{Binding StatusContent, Mode=OneWay}"
-            Grid.Row="5"
-            VerticalAlignment="Center"
-            TextTrimming="WordEllipsis"
-            Visibility="{Binding HasError, Mode=OneWay, Converter={StaticResource invertedBoolToVis}}">
-        </TextBlock>
 
         <!-- Close button -->
         <Button HorizontalAlignment="Right" Grid.Row="5" Grid.Column="1" IsCancel="True" Content="Close" Margin="5,10,0,0" Padding="15,2" Click="CloseButton_Click" />
