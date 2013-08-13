@@ -19,6 +19,7 @@ namespace PackageExplorerViewModel
         private bool _showingAllVersions;
         private PackageInfo _selectedPackage;
         private readonly PackageChooserViewModel _parentViewModel;
+        private CancellationTokenSource _downloadCancelSource;
 
         public PackageInfoViewModel(
             PackageInfo info, 
@@ -38,6 +39,7 @@ namespace PackageExplorerViewModel
             ToggleAllVersionsCommand = new RelayCommand(OnToggleAllVersions);
             OpenCommand = new RelayCommand(OnOpenPackage);
             DownloadCommand = new RelayCommand(OnDownloadPackage);
+            CancelCommand = new RelayCommand(OnCancelDownload, CanCancelDownload);
         }
 
         public ObservableCollection<PackageInfo> AllPackages { get; private set; }
@@ -73,6 +75,7 @@ namespace PackageExplorerViewModel
         public ICommand ToggleAllVersionsCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand DownloadCommand { get; private set; }
+        public RelayCommand CancelCommand { get; private set; }
 
         public bool ShowingAllVersions
         {
@@ -90,6 +93,8 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public bool HasFinishedLoading { get; private set; }
+
         public bool IsLoading
         {
             get
@@ -102,6 +107,7 @@ namespace PackageExplorerViewModel
                 {
                     _isLoading = value;
                     OnPropertyChanged();
+                    CancelCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -122,11 +128,18 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public async Task LoadPackages(CancellationToken token)
+        public async Task LoadPackages()
         {
+            if (IsLoading)
+            {
+                // prevent concurrent loading
+                return;
+            }
+
             IsLoading = true;
             ErrorMessage = null;
             AllPackages.Clear();
+            _downloadCancelSource = new CancellationTokenSource();
 
             try
             {
@@ -135,7 +148,7 @@ namespace PackageExplorerViewModel
 
                 IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, _repository);
 
-                PackageInfo[] packageInfoList = await LoadData(packageInfos, token);
+                PackageInfo[] packageInfoList = await LoadData(packageInfos, _downloadCancelSource.Token);
 
                 var dataServiceRepository = _repository as DataServicePackageRepository;
                 if (dataServiceRepository != null)
@@ -153,6 +166,8 @@ namespace PackageExplorerViewModel
 
                 // now show packages
                 AllPackages.AddRange(packageInfoList);
+
+                HasFinishedLoading = true;
             }
             catch (OperationCanceledException)
             {
@@ -163,6 +178,7 @@ namespace PackageExplorerViewModel
             }
             finally
             {
+                _downloadCancelSource = null;
                 IsLoading = false;
             }
         }
@@ -232,10 +248,10 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                if (AllPackages.Count == 0)
+                if (AllPackages.Count == 0 && !HasFinishedLoading)
                 {
                     // only load packages the first time
-                    await LoadPackages(CancellationToken.None);
+                    await LoadPackages();
 
                     if (AllPackages.Count > 0)
                     {
@@ -256,6 +272,19 @@ namespace PackageExplorerViewModel
         private void OnDownloadPackage()
         {
             _parentViewModel.OneDownloadPackage();
+        }
+
+        private bool CanCancelDownload()
+        {
+            return IsLoading && _downloadCancelSource != null;
+        }
+
+        private void OnCancelDownload()
+        {
+            if (_downloadCancelSource != null)
+            {
+                _downloadCancelSource.Cancel();
+            }
         }
     }
 }
