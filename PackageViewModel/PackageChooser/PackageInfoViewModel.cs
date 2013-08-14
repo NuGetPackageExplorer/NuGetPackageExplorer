@@ -20,6 +20,7 @@ namespace PackageExplorerViewModel
         private PackageInfo _selectedPackage;
         private readonly PackageChooserViewModel _parentViewModel;
         private CancellationTokenSource _downloadCancelSource;
+        private bool _hasFinishedLoading;
 
         public PackageInfoViewModel(
             PackageInfo info, 
@@ -93,7 +94,21 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public bool HasFinishedLoading { get; private set; }
+        public bool HasFinishedLoading 
+        {
+            get
+            {
+                return _hasFinishedLoading;
+            }
+            private set
+            {
+                if (_hasFinishedLoading != value)
+                {
+                    _hasFinishedLoading = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public bool IsLoading
         {
@@ -107,7 +122,11 @@ namespace PackageExplorerViewModel
                 {
                     _isLoading = value;
                     OnPropertyChanged();
-                    CancelCommand.RaiseCanExecuteChanged();
+                    
+                    // we don't need to raise this event because the Cancel button
+                    // is only visible when IsLoading = true anyway.
+
+                    //CancelCommand.RaiseCanExecuteChanged();
                 }
             }
         }

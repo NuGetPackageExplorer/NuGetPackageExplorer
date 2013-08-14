@@ -193,7 +193,14 @@
                             HorizontalAlignment="Left"
                             Loaded="OnPackageRowDetailsLoaded"
                             Visibility="{Binding ShowingAllVersions, Converter={StaticResource boolToVis}}"
-                            MaxHeight="150" />
+                            MaxHeight="150">
+                            
+                        </self:PackageRowDetails>
+                        
+                        <StackPanel Margin="0,5,0,5" Visibility="{Binding IsLoading, Converter={StaticResource boolToVis}}" Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="Loading..." />
+                            <Button Content="Cancel" Margin="5,0,0,0" Padding="5,0,5,0" Command="{Binding CancelCommand}" />
+                        </StackPanel>
 
                         <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5,0,0,0">
                             <TextBlock Margin="5,0">
