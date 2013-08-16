@@ -86,7 +86,7 @@ namespace PackageExplorerViewModel
                 {
                     if (_selectedPackageViewModel != null)
                     {
-                        _selectedPackageViewModel.ShowingAllVersions = false;
+                        _selectedPackageViewModel.OnDeselected();
                     }
 
                     _selectedPackageViewModel = value;
@@ -493,7 +493,7 @@ namespace PackageExplorerViewModel
 
         private async void Search(string searchTerm)
         {
-            searchTerm = searchTerm ?? CurrentTypingSearch;
+            searchTerm = searchTerm ?? CurrentTypingSearch ?? String.Empty;
             searchTerm = searchTerm.Trim();
             if (_currentSearch != searchTerm)
             {

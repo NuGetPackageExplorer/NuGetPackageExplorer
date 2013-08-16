@@ -37,7 +37,7 @@ namespace PackageExplorerViewModel
             _parentViewModel = parentViewModel;
             AllPackages = new ObservableCollection<PackageInfo>();
 
-            ToggleAllVersionsCommand = new RelayCommand(OnToggleAllVersions);
+            ToggleAllVersionsCommand = new RelayCommand(OnToggleAllVersions, CanToggleAllVersions);
             OpenCommand = new RelayCommand(OnOpenPackage);
             DownloadCommand = new RelayCommand(OnDownloadPackage);
             CancelCommand = new RelayCommand(OnCancelDownload, CanCancelDownload);
@@ -73,10 +73,18 @@ namespace PackageExplorerViewModel
 
         public bool ShowPrerelease { get; private set; }
 
-        public ICommand ToggleAllVersionsCommand { get; private set; }
+        public RelayCommand ToggleAllVersionsCommand { get; private set; }
         public ICommand OpenCommand { get; private set; }
         public ICommand DownloadCommand { get; private set; }
-        public RelayCommand CancelCommand { get; private set; }
+        public ICommand CancelCommand { get; private set; }
+
+        public bool ShowingAllVersionsList
+        {
+            get
+            {
+                return ShowingAllVersions && HasFinishedLoading;
+            }
+        }
 
         public bool ShowingAllVersions
         {
@@ -90,6 +98,8 @@ namespace PackageExplorerViewModel
                 {
                     _showingAllVersions = value;
                     OnPropertyChanged();
+                    OnPropertyChanged("ShowingAllVersionsList");
+                    ToggleAllVersionsCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -106,6 +116,7 @@ namespace PackageExplorerViewModel
                 {
                     _hasFinishedLoading = value;
                     OnPropertyChanged();
+                    OnPropertyChanged("ShowingAllVersionsList");
                 }
             }
         }
@@ -125,8 +136,9 @@ namespace PackageExplorerViewModel
                     
                     // we don't need to raise this event because the Cancel button
                     // is only visible when IsLoading = true anyway.
-
                     //CancelCommand.RaiseCanExecuteChanged();
+
+                    ToggleAllVersionsCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -147,7 +159,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public async Task LoadPackages()
+        private async Task LoadPackages()
         {
             if (IsLoading)
             {
@@ -259,6 +271,11 @@ namespace PackageExplorerViewModel
             return results;
         }
 
+        private bool CanToggleAllVersions()
+        {
+            return !IsLoading || ShowingAllVersions;
+        }
+
         private async void OnToggleAllVersions()
         {
             if (ShowingAllVersions)
@@ -279,7 +296,10 @@ namespace PackageExplorerViewModel
                     }
                 }
 
-                ShowingAllVersions = true;
+                if (HasFinishedLoading)
+                {
+                    ShowingAllVersions = true;
+                }
             }
         }
 
@@ -295,7 +315,9 @@ namespace PackageExplorerViewModel
 
         private bool CanCancelDownload()
         {
-            return IsLoading && _downloadCancelSource != null;
+            return IsLoading && 
+                   _downloadCancelSource != null && 
+                   !_downloadCancelSource.IsCancellationRequested;
         }
 
         private void OnCancelDownload()
@@ -303,6 +325,20 @@ namespace PackageExplorerViewModel
             if (_downloadCancelSource != null)
             {
                 _downloadCancelSource.Cancel();
+                IsLoading = false;
+            }
+        }
+
+        internal void OnDeselected()
+        {
+            if (IsLoading)
+            {
+                OnCancelDownload();
+            }
+            
+            if (ShowingAllVersions) 
+            {
+                ShowingAllVersions = false;
             }
         }
     }
