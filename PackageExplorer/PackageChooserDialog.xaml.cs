@@ -245,5 +245,15 @@ namespace PackageExplorer
             var packageRowDetails = (PackageRowDetails)sender;
             packageRowDetails.ApplyBindings(PackageGrid);
         }
+
+        private void OnPackageDoubleClick(object sender, RoutedEventArgs e)
+        {
+            var gridRow = (DataGridRow)sender;
+            var viewModel = (PackageInfoViewModel)gridRow.DataContext;
+            if (!viewModel.ShowingAllVersions)
+            {
+                viewModel.OpenCommand.Execute(null);
+            }
+        }
     }
 }

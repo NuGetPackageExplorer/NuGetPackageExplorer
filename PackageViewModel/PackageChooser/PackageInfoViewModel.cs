@@ -310,7 +310,7 @@ namespace PackageExplorerViewModel
 
         private void OnDownloadPackage()
         {
-            _parentViewModel.OneDownloadPackage();
+            _parentViewModel.OnDownloadPackage();
         }
 
         private bool CanCancelDownload()

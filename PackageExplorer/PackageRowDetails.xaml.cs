@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using NuGet;
@@ -63,6 +64,12 @@ namespace PackageExplorer
             {
                 viewModel.SelectedPackage = (PackageInfo)PackageGrid.SelectedItem;
             }
+        }
+
+        private void OnPackageDoubleClick(object sender, RoutedEventArgs e)
+        {
+            var viewModel = (PackageInfoViewModel)DataContext;
+            viewModel.OpenCommand.Execute(null);
         }
     }
 }

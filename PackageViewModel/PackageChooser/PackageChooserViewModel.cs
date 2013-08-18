@@ -627,7 +627,7 @@ namespace PackageExplorerViewModel
             OpenPackageRequested(this, EventArgs.Empty);
         }
 
-        internal void OneDownloadPackage()
+        internal void OnDownloadPackage()
         {
             PackageDownloadRequested(this, EventArgs.Empty);
         }
