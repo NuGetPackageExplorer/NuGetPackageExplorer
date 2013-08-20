@@ -107,17 +107,17 @@ namespace PackageExplorer
             SearchButton.Command.Execute(searchTerm);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             AdjustSearchBox();
 
             if (String.IsNullOrEmpty(_pendingSearch))
             {
-                Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
+                await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
             }
             else
             {
-                Dispatcher.BeginInvoke(
+                await Dispatcher.BeginInvoke(
                     new Action<string>(InvokeSearch),
                     DispatcherPriority.Background,
                     _pendingSearch);
@@ -211,7 +211,7 @@ namespace PackageExplorer
             _pendingSearch = null;
         }
 
-        private void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private async void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // The first time this event handler is invoked, IsLoaded = false
             // We only do work from the second time.
@@ -220,7 +220,7 @@ namespace PackageExplorer
                 if (String.IsNullOrEmpty(_pendingSearch))
                 {
                     // there is no pending search operation, just set focus on the search box
-                    Dispatcher.BeginInvoke(new Action(OnAfterShow), DispatcherPriority.Background);
+                    await Dispatcher.InvokeAsync(new Action(OnAfterShow), DispatcherPriority.Background);
                 }
                 else
                 {
