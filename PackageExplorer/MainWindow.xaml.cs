@@ -296,7 +296,7 @@ namespace PackageExplorer
                 var packageVersion = new SemanticVersion(selectedPackageInfo.Version);
                 IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
 
-                Action<IPackage> processPackageAction = (package) =>
+                Action<IPackage> processPackageAction = async (package) =>
                                                         {
                                                             DataServicePackage servicePackage = selectedPackageInfo.AsDataServicePackage();
                                                             servicePackage.CorePackage = package;
@@ -305,7 +305,7 @@ namespace PackageExplorer
                                                                         PackageType.DataServicePackage);
 
                                                             // adding package to the cache, but with low priority
-                                                            Dispatcher.BeginInvoke(
+                                                            await Dispatcher.BeginInvoke(
                                                                 (Action<IPackage>) MachineCache.Default.AddPackage,
                                                                 DispatcherPriority.ApplicationIdle,
                                                                 package);

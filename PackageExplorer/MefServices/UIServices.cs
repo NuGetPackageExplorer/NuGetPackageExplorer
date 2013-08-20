@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Globalization;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using Microsoft.Win32;
 using NuGetPackageExplorer.Types;
 using Ookii.Dialogs.Wpf;
@@ -219,9 +221,9 @@ namespace PackageExplorer
             }
         }
 
-        public void BeginInvoke(Action action)
+        public DispatcherOperation BeginInvoke(Action action)
         {
-            Window.Value.Dispatcher.BeginInvoke(action);
+            return Window.Value.Dispatcher.BeginInvoke(action);
         }
 
         public Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft)

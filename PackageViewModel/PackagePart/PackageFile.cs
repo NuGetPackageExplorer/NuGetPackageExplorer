@@ -116,17 +116,17 @@ namespace PackageExplorerViewModel
             _watcher.Renamed += OnFileDeleted;
         }
 
-        private void OnFileChanged(object sender, FileSystemEventArgs e)
+        private async void OnFileChanged(object sender, FileSystemEventArgs e)
         {
-            PackageViewModel.UIServices.BeginInvoke(PackageViewModel.NotifyChanges);
+            await PackageViewModel.UIServices.BeginInvoke(PackageViewModel.NotifyChanges);
         }
 
         /// <summary>
         /// this is invoked on a background thread.
         /// </summary>
-        private void OnFileDeleted(object sender, FileSystemEventArgs e)
+        private async void OnFileDeleted(object sender, FileSystemEventArgs e)
         {
-            PackageViewModel.UIServices.BeginInvoke(ShowMessageAndDeleteFile);
+            await PackageViewModel.UIServices.BeginInvoke(ShowMessageAndDeleteFile);
         }
 
         private void ShowMessageAndDeleteFile()
