@@ -158,7 +158,7 @@ namespace PackageExplorer
 
         private void OnProgress(int bytesReceived, int totalBytes, Action<int, string> reportProgress)
         {
-            int percentComplete = (bytesReceived * 100) / totalBytes;
+            int percentComplete = (int)((bytesReceived * 100L) / totalBytes);
             string description = String.Format(
                 CultureInfo.CurrentCulture,
                 "Downloaded {0}KB of {1}KB...", 
