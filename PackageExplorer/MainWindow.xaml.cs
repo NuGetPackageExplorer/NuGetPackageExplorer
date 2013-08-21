@@ -148,17 +148,17 @@ namespace PackageExplorer
                     var builder = new PackageBuilder(packagePath);
                     package = builder.Build();
                 }
+
+                if (package != null)
+                {
+                    LoadPackage(package, packagePath, PackageType.LocalPackage);
+                    return true;
+                }
             }
             catch (Exception ex)
             {
                 UIServices.Show(ex.Message, MessageLevel.Error);
                 return false;
-            }
-
-            if (package != null)
-            {
-                LoadPackage(package, packagePath, PackageType.LocalPackage);
-                return true;
             }
 
             return false;
