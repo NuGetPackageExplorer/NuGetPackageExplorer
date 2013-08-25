@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using ICSharpCode.AvalonEdit.Highlighting;
 using NuGet;
 
 namespace PackageExplorer

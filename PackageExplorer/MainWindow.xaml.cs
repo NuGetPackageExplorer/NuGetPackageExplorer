@@ -123,6 +123,7 @@ namespace PackageExplorer
 
             bool succeeded = await Dispatcher.InvokeAsync(
                 () => OpenLocalPackageCore(packagePath), DispatcherPriority.Loaded);
+
             if (!succeeded)
             {
                 // restore old content
@@ -221,6 +222,7 @@ namespace PackageExplorer
             var currentViewModel = DataContext as PackageViewModel;
             if (currentViewModel != null)
             {
+                currentViewModel.PropertyChanged -= OnPackageViewModelPropertyChanged;
                 currentViewModel.Dispose();
             }
         }
