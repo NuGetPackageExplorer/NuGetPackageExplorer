@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Services.Client;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -357,7 +358,15 @@ namespace PackageExplorerViewModel
                     return;
                 }
 
-                ShowMessage(exception.Message, true);
+                string errorMessage = exception.Message;
+
+                var queryException = exception as DataServiceQueryException;
+                if (queryException != null && queryException.Response != null)
+                {
+                    errorMessage = errorMessage + ". The remote server returned status code: " + queryException.Response.StatusCode + ".";
+                }
+                
+                ShowMessage(errorMessage, true);
                 ClearPackages(isErrorCase: true);
             }
 
