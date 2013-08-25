@@ -101,6 +101,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -366,11 +367,14 @@
 
         <!-- Checkbox: Show unlisted version of each Id  -->
         <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="4" Grid.ColumnSpan="2" IsEnabled="{Binding IsEditable}" IsChecked="{Binding ShowPrereleasePackages}" HorizontalAlignment="Left" Content="Show pre-release packages." />
+        
+        <!-- Checkbox: auto load package on first load -->
+        <CheckBox Margin="0,0,0,8" VerticalContentAlignment="Center" Grid.Row="5" Grid.ColumnSpan="2" IsChecked="{Binding AutoLoadPackages}" HorizontalAlignment="Left" Content="Auto-load packages when this dialog first opens." />
 
         <!-- Background color for the footer -->
-        <Border Grid.Row="5" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
+        <Border Grid.Row="6" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
 
         <!-- Close button -->
-        <Button HorizontalAlignment="Right" Grid.Row="5" Grid.Column="1" IsCancel="True" Content="Close" Margin="5,10,0,0" Padding="15,2" Click="CloseButton_Click" />
+        <Button HorizontalAlignment="Right" Grid.Row="6" Grid.Column="1" IsCancel="True" Content="Close" Margin="5,10,0,0" Padding="15,2" Click="CloseButton_Click" />
     </Grid>
 </self:StandardDialog>

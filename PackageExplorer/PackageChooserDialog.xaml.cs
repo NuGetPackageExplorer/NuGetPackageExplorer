@@ -111,16 +111,19 @@ namespace PackageExplorer
         {
             AdjustSearchBox();
 
-            if (String.IsNullOrEmpty(_pendingSearch))
+            if (_viewModel.AutoLoadPackages)
             {
-                await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
-            }
-            else
-            {
-                await Dispatcher.BeginInvoke(
-                    new Action<string>(InvokeSearch),
-                    DispatcherPriority.Background,
-                    _pendingSearch);
+                if (String.IsNullOrEmpty(_pendingSearch))
+                {
+                    await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
+                }
+                else
+                {
+                    await Dispatcher.BeginInvoke(
+                        new Action<string>(InvokeSearch),
+                        DispatcherPriority.Background,
+                        _pendingSearch);
+                }
             }
         }
 
@@ -140,7 +143,7 @@ namespace PackageExplorer
 
         private void LoadPackages()
         {
-            var loadedCommand = (ICommand) Tag;
+            var loadedCommand = (ICommand)Tag;
             loadedCommand.Execute(null);
         }
 

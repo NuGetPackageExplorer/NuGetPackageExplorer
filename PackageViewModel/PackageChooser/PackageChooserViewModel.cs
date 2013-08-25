@@ -27,6 +27,7 @@ namespace PackageExplorerViewModel
         private IPackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
         private bool _showPrereleasePackages;
+        private bool _autoLoadPackages;
         private string _sortColumn;
         private ListSortDirection _sortDirection;
         private string _statusContent;
@@ -36,6 +37,7 @@ namespace PackageExplorerViewModel
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
             bool showPrereleasePackages,
+            bool autoLoadPackages,
             string fixedPackageSource)
         {
             if (packageSourceManager == null)
@@ -45,6 +47,7 @@ namespace PackageExplorerViewModel
 
             _showPrereleasePackages = showPrereleasePackages;
             _fixedPackageSource = fixedPackageSource;
+            _autoLoadPackages = autoLoadPackages;
             Packages = new ObservableCollection<PackageInfoViewModel>();
             SortCommand = new RelayCommand<string>(Sort, CanSort);
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
@@ -155,6 +158,19 @@ namespace PackageExplorerViewModel
                     OnPropertyChanged("ShowPrereleasePackages");
 
                     OnShowPrereleasePackagesChange();
+                }
+            }
+        }
+
+        public bool AutoLoadPackages
+        {
+            get { return _autoLoadPackages; }
+            set
+            {
+                if (_autoLoadPackages != value)
+                {
+                    _autoLoadPackages = value;
+                    OnPropertyChanged();
                 }
             }
         }

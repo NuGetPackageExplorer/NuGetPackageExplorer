@@ -105,6 +105,12 @@ namespace PackageExplorer
             set { Settings.Default.ShowPrereleasePackages = value; }
         }
 
+        public bool AutoLoadPackages
+        {
+            get { return Settings.Default.AutoLoadPackages; }
+            set { Settings.Default.AutoLoadPackages = value; }
+        }
+
         public bool PublishAsUnlisted
         {
             get
