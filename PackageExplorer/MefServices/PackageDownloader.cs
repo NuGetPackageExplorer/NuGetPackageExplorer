@@ -19,6 +19,7 @@ namespace PackageExplorer
     internal class PackageDownloader : IPackageDownloader
     {
         private ProgressDialog _progressDialog;
+        private readonly object _progressDialogLock = new object();
 
         [Import]
         public Lazy<MainWindow> MainWindow { get; set; }
@@ -102,11 +103,35 @@ namespace PackageExplorer
             {
                 timer.Stop();
 
-                // close progress dialog when done
-                _progressDialog.Close();
-                _progressDialog = null;
-                MainWindow.Value.Activate();
+                        // close progress dialog when done
+                        lock (_progressDialogLock)
+                        {
+                            _progressDialog.Close();
+                            _progressDialog = null;
+                        }
+
+                        MainWindow.Value.Activate();
+
+    
             }
+        }
+
+        private void OnReportProgress(int percent, string description)
+        {
+            // report progress must be done via UI thread
+            UIServices.BeginInvoke(() =>
+                {
+                    if (_progressDialog != null)
+                    {
+                        lock (_progressDialogLock)
+                        {
+                            if (_progressDialog != null)
+                            {
+                                _progressDialog.ReportProgress(percent, null, description);
+                            }
+                        }
+                    }
+                });
         }
 
         #endregion
