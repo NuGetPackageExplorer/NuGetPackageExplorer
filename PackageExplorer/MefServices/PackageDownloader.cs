@@ -71,6 +71,7 @@ namespace PackageExplorer
                         {
                             Interval = TimeSpan.FromMilliseconds(200)
                         };
+
             timer.Tick += (o, e) =>
                           {
                               if (_progressDialog.CancellationPending)
@@ -81,13 +82,9 @@ namespace PackageExplorer
                           };
             timer.Start();
 
-            // report progress must be done via UI thread
-            Action<int, string> reportProgress =
-                (percent, description) => _progressDialog.ReportProgress(percent, null, description);
-
             try
             {
-                string tempFilePath = await DownloadData(downloadUri, reportProgress, cts.Token);
+                string tempFilePath = await DownloadData(downloadUri, OnReportProgress, cts.Token);
                 return tempFilePath;
             }
             catch (OperationCanceledException)
@@ -103,25 +100,23 @@ namespace PackageExplorer
             {
                 timer.Stop();
 
-                        // close progress dialog when done
-                        lock (_progressDialogLock)
-                        {
-                            _progressDialog.Close();
-                            _progressDialog = null;
-                        }
+                // close progress dialog when done
+                lock (_progressDialogLock)
+                {
+                    _progressDialog.Close();
+                    _progressDialog = null;
+                }
 
-                        MainWindow.Value.Activate();
-
-    
+                MainWindow.Value.Activate();
             }
         }
 
         private void OnReportProgress(int percent, string description)
         {
-            // report progress must be done via UI thread
-            UIServices.BeginInvoke(() =>
-                {
-                    if (_progressDialog != null)
+            if (_progressDialog != null)
+            {
+                // report progress must be done via UI thread
+                UIServices.BeginInvoke(() =>
                     {
                         lock (_progressDialogLock)
                         {
@@ -130,8 +125,8 @@ namespace PackageExplorer
                                 _progressDialog.ReportProgress(percent, null, description);
                             }
                         }
-                    }
-                });
+                    });
+            }
         }
 
         #endregion
@@ -186,8 +181,8 @@ namespace PackageExplorer
             int percentComplete = (bytesReceived * 100) / totalBytes;
             string description = String.Format(
                 CultureInfo.CurrentCulture,
-                "Downloaded {0}KB of {1}KB...", 
-                ToKB(bytesReceived), 
+                "Downloaded {0}KB of {1}KB...",
+                ToKB(bytesReceived),
                 ToKB(totalBytes));
             reportProgress(percentComplete, description);
         }
