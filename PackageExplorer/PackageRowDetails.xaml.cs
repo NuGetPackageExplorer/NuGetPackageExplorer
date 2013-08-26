@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using NuGet;
@@ -63,6 +64,14 @@ namespace PackageExplorer
             {
                 viewModel.SelectedPackage = (PackageInfo)PackageGrid.SelectedItem;
             }
+        }
+
+        private void OnPackageRowDetailsLoaded(object sender, RoutedEventArgs e)
+        {
+            var ownerGrid = (DataGrid)Tag;
+
+            // align the nested ListView's columns with the parent DataGrid's columns
+            ApplyBindings(ownerGrid);
         }
     }
 }

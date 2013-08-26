@@ -21,66 +21,6 @@
     SizeChanged="OnWindowSizeChanged">
 
     <Window.Resources>
-        <ControlTemplate x:Key="loadingAnimation">
-            <ControlTemplate.Triggers>
-                <Trigger Property="Visibility" Value="Visible">
-                    <Trigger.EnterActions>
-                        <BeginStoryboard Name="animation">
-                            <Storyboard>
-                                <DoubleAnimation From="0" To="359" Duration="0:0:2" RepeatBehavior="Forever"
-                                                 Storyboard.TargetName="angle" Storyboard.TargetProperty="Angle"/>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </Trigger.EnterActions>
-                    <Trigger.ExitActions>
-                        <StopStoryboard BeginStoryboardName="animation"/>
-                    </Trigger.ExitActions>
-                </Trigger>
-            </ControlTemplate.Triggers>
-            <Image Name="content" Opacity="1">
-                <Image.Source>
-                    <DrawingImage>
-                        <DrawingImage.Drawing>
-                            <DrawingGroup>
-                                <GeometryDrawing Brush="Transparent">
-                                    <GeometryDrawing.Geometry>
-                                        <RectangleGeometry Rect="0,0,1,1"/>
-                                    </GeometryDrawing.Geometry>
-                                </GeometryDrawing>
-                                <DrawingGroup>
-                                    <DrawingGroup.Transform>
-                                        <RotateTransform x:Name="angle" Angle="0" CenterX="0.5" CenterY="0.5"/>
-                                    </DrawingGroup.Transform>
-                                    <GeometryDrawing>
-                                        <GeometryDrawing.Pen>
-                                            <Pen Brush="Green" Thickness="0.1"/>
-                                        </GeometryDrawing.Pen>
-                                        <GeometryDrawing.Geometry>
-                                            <PathGeometry>
-                                                <PathFigure StartPoint="0.9,0.5">
-                                                    <ArcSegment Point="0.5,0.1" RotationAngle="90" SweepDirection="Clockwise" IsLargeArc="True" Size="0.4,0.4"/>
-                                                </PathFigure>
-                                            </PathGeometry>
-                                        </GeometryDrawing.Geometry>
-                                    </GeometryDrawing>
-                                    <GeometryDrawing Brush="Green">
-                                        <GeometryDrawing.Geometry>
-                                            <PathGeometry>
-                                                <PathFigure StartPoint="0.5,0">
-                                                    <LineSegment Point="0.7,0.1" />
-                                                    <LineSegment Point="0.5,0.2" />
-                                                </PathFigure>
-                                            </PathGeometry>
-                                        </GeometryDrawing.Geometry>
-                                    </GeometryDrawing>
-                                </DrawingGroup>
-                            </DrawingGroup>
-                        </DrawingImage.Drawing>
-                    </DrawingImage>
-                </Image.Source>
-            </Image>
-        </ControlTemplate>
-        
         <Style TargetType="{x:Type Button}" x:Key="NavigationButtonStyle">
             <Setter Property="Margin" Value="0,0,5,0" />
         </Style>
@@ -201,7 +141,7 @@
 
         <!-- package list view -->
         <DataGrid 
-            x:Name="PackageGrid" 
+            x:Name="ParentPackageGrid" 
             IsReadOnly="True" 
             RowHeaderWidth="0" 
             SelectionMode="Single" 
@@ -242,58 +182,7 @@
 
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>
-                    <Grid Margin="0,0,5,10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <self:PackageRowDetails 
-                            x:Name="PackageVersionsList"
-                            HorizontalAlignment="Left"
-                            Loaded="OnPackageRowDetailsLoaded"
-                            Visibility="{Binding ShowingAllVersionsList, Converter={StaticResource boolToVis}}"
-                            MaxHeight="150">
-                        </self:PackageRowDetails>
-                        
-                        <StackPanel Margin="0,5,0,5" Visibility="{Binding IsLoading, Converter={StaticResource boolToVis}}" Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="Loading..." />
-                            <Control Margin="7,0,7,0" Template="{StaticResource loadingAnimation}" />
-                            <Button Content="Cancel" Padding="5,0,5,0" Command="{Binding CancelCommand}" />
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="5,0,0,0">
-                            <TextBlock Margin="5,0">
-                                <Hyperlink Command="{Binding OpenCommand}">
-                                    <Run Text="open" />
-                                </Hyperlink>
-                            </TextBlock>
-                            
-                            <TextBlock x:Name="DownloadButton" Margin="5,0">
-                                <Hyperlink Command="{Binding DownloadCommand}">
-                                    <Run Text="download"/>
-                                </Hyperlink>
-                            </TextBlock>
-
-                            <TextBlock Margin="5,0">
-                                <Hyperlink Command="{Binding ToggleAllVersionsCommand}">
-                                    <Run x:Name="showAllVersionsLabel" Text="show all versions" />
-                                </Hyperlink>
-                            </TextBlock>
-                        </StackPanel>
-                    </Grid>
-                    
-                    <DataTemplate.Triggers>
-                        <DataTrigger Binding="{Binding SelectedPackage.DownloadUrl.IsFile}" Value="True">
-                            <Setter TargetName="DownloadButton" Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding SelectedPackage.DownloadUrl.IsUnc}" Value="True">
-                            <Setter TargetName="DownloadButton" Property="Visibility" Value="Collapsed" />
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding ShowingAllVersions}"  Value="True">
-                            <Setter TargetName="showAllVersionsLabel" Property="Text" Value="hide all versions" />
-                        </DataTrigger>
-                    </DataTemplate.Triggers>
+                    <self:PackageRowDetails Tag="{Binding ElementName=ParentPackageGrid}" />
                 </DataTemplate>
             </DataGrid.RowDetailsTemplate>
 
@@ -350,7 +239,7 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
-        
+
         <!-- progress panel -->
         <StackPanel
             Grid.Row="3"

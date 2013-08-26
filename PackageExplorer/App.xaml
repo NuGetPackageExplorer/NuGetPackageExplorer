@@ -93,6 +93,89 @@
                     </Setter.Value>
                 </Setter>
             </Style>
+
+            <!-- used on the package chooser dialog -->
+            <Style x:Key="DownloadButtonStyle" TargetType="{x:Type TextBlock}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding LatestPackageInfo.DownloadUrl.IsFile}" Value="True">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding LatestPackageInfo.DownloadUrl.IsUnc}" Value="True">
+                        <Setter Property="Visibility" Value="Collapsed" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- used on the package chooser dialog -->
+            <Style x:Key="ShowAllVersionsRunStyle" TargetType="{x:Type Run}">
+                <Setter Property="Text" Value="show all versions" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding ShowingAllVersions}" Value="True">
+                        <Setter Property="Text" Value="hide all versions" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- used on the package chooser dialog -->
+            <ControlTemplate x:Key="loadingAnimation">
+                <ControlTemplate.Triggers>
+                    <Trigger Property="Visibility" Value="Visible">
+                        <Trigger.EnterActions>
+                            <BeginStoryboard Name="animation">
+                                <Storyboard>
+                                    <DoubleAnimation From="0" To="359" Duration="0:0:2" RepeatBehavior="Forever"
+                                                 Storyboard.TargetName="angle" Storyboard.TargetProperty="Angle"/>
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </Trigger.EnterActions>
+                        <Trigger.ExitActions>
+                            <StopStoryboard BeginStoryboardName="animation"/>
+                        </Trigger.ExitActions>
+                    </Trigger>
+                </ControlTemplate.Triggers>
+                <Image Name="content" Opacity="1">
+                    <Image.Source>
+                        <DrawingImage>
+                            <DrawingImage.Drawing>
+                                <DrawingGroup>
+                                    <GeometryDrawing Brush="Transparent">
+                                        <GeometryDrawing.Geometry>
+                                            <RectangleGeometry Rect="0,0,1,1"/>
+                                        </GeometryDrawing.Geometry>
+                                    </GeometryDrawing>
+                                    <DrawingGroup>
+                                        <DrawingGroup.Transform>
+                                            <RotateTransform x:Name="angle" Angle="0" CenterX="0.5" CenterY="0.5"/>
+                                        </DrawingGroup.Transform>
+                                        <GeometryDrawing>
+                                            <GeometryDrawing.Pen>
+                                                <Pen Brush="Green" Thickness="0.1"/>
+                                            </GeometryDrawing.Pen>
+                                            <GeometryDrawing.Geometry>
+                                                <PathGeometry>
+                                                    <PathFigure StartPoint="0.9,0.5">
+                                                        <ArcSegment Point="0.5,0.1" RotationAngle="90" SweepDirection="Clockwise" IsLargeArc="True" Size="0.4,0.4"/>
+                                                    </PathFigure>
+                                                </PathGeometry>
+                                            </GeometryDrawing.Geometry>
+                                        </GeometryDrawing>
+                                        <GeometryDrawing Brush="Green">
+                                            <GeometryDrawing.Geometry>
+                                                <PathGeometry>
+                                                    <PathFigure StartPoint="0.5,0">
+                                                        <LineSegment Point="0.7,0.1" />
+                                                        <LineSegment Point="0.5,0.2" />
+                                                    </PathFigure>
+                                                </PathGeometry>
+                                            </GeometryDrawing.Geometry>
+                                        </GeometryDrawing>
+                                    </DrawingGroup>
+                                </DrawingGroup>
+                            </DrawingImage.Drawing>
+                        </DrawingImage>
+                    </Image.Source>
+                </Image>
+            </ControlTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

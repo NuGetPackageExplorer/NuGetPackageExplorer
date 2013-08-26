@@ -50,7 +50,7 @@ namespace PackageExplorer
 
         private void RedrawSortGlyph(string sortColumn, ListSortDirection sortDirection)
         {
-            foreach (DataGridColumn column in PackageGrid.Columns)
+            foreach (DataGridColumn column in ParentPackageGrid.Columns)
             {
                 if (column.SortMemberPath.Equals(sortColumn, StringComparison.OrdinalIgnoreCase))
                 {
@@ -73,7 +73,7 @@ namespace PackageExplorer
         private void CancelPendingRequestAndCloseDialog()
         {
             CancelPendingRequest();
-            PackageGrid.SelectedItem = null;
+            ParentPackageGrid.SelectedItem = null;
             Hide();
         }
 
@@ -237,13 +237,6 @@ namespace PackageExplorer
             }
 
             e.Handled = true;
-        }
-
-        private void OnPackageRowDetailsLoaded(object sender, RoutedEventArgs e)
-        {
-            // align the nested ListView's columns with the parent DataGrid's columns
-            var packageRowDetails = (PackageRowDetails)sender;
-            packageRowDetails.ApplyBindings(PackageGrid);
         }
     }
 }
