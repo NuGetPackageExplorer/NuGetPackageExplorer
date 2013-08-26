@@ -5,6 +5,7 @@ using System.Deployment.Application;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using CodeExecutor;
 using NuGet;
@@ -51,7 +52,7 @@ namespace PackageExplorer
             if (e.Args.Length > 0)
             {
                 string file = e.Args[0];
-                bool successful = LoadFile(window, file);
+                bool successful = await LoadFile(window, file);
                 if (successful)
                 {
                     return;
@@ -89,7 +90,7 @@ namespace PackageExplorer
                 if (activationData != null && activationData.Length > 0)
                 {
                     string file = activationData[0];
-                    LoadFile(window, file);
+                    await LoadFile(window, file);
                     return;
                 }
             }
@@ -126,11 +127,11 @@ namespace PackageExplorer
             }
         }
 
-        private static bool LoadFile(MainWindow window, string file)
+        private static async Task<bool> LoadFile(MainWindow window, string file)
         {
             if (FileUtility.IsSupportedFile(file) && File.Exists(file))
             {
-                window.OpenLocalPackage(file);
+                await window.OpenLocalPackage(file);
                 return true;
             }
             else

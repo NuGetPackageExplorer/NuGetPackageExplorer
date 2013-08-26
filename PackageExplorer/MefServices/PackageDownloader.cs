@@ -19,6 +19,7 @@ namespace PackageExplorer
     internal class PackageDownloader : IPackageDownloader
     {
         private ProgressDialog _progressDialog;
+        private readonly object _progressDialogLock = new object();
 
         [Import]
         public Lazy<MainWindow> MainWindow { get; set; }
@@ -70,6 +71,7 @@ namespace PackageExplorer
                         {
                             Interval = TimeSpan.FromMilliseconds(200)
                         };
+
             timer.Tick += (o, e) =>
                           {
                               if (_progressDialog.CancellationPending)
@@ -80,13 +82,9 @@ namespace PackageExplorer
                           };
             timer.Start();
 
-            // report progress must be done via UI thread
-            Action<int, string> reportProgress =
-                (percent, description) => _progressDialog.ReportProgress(percent, null, description);
-
             try
             {
-                string tempFilePath = await DownloadData(downloadUri, reportProgress, cts.Token);
+                string tempFilePath = await DownloadData(downloadUri, OnReportProgress, cts.Token);
                 return tempFilePath;
             }
             catch (OperationCanceledException)
@@ -103,9 +101,31 @@ namespace PackageExplorer
                 timer.Stop();
 
                 // close progress dialog when done
-                _progressDialog.Close();
-                _progressDialog = null;
+                lock (_progressDialogLock)
+                {
+                    _progressDialog.Close();
+                    _progressDialog = null;
+                }
+
                 MainWindow.Value.Activate();
+            }
+        }
+
+        private void OnReportProgress(int percent, string description)
+        {
+            if (_progressDialog != null)
+            {
+                // report progress must be done via UI thread
+                UIServices.BeginInvoke(() =>
+                    {
+                        lock (_progressDialogLock)
+                        {
+                            if (_progressDialog != null)
+                            {
+                                _progressDialog.ReportProgress(percent, null, description);
+                            }
+                        }
+                    });
             }
         }
 
@@ -158,11 +178,11 @@ namespace PackageExplorer
 
         private void OnProgress(int bytesReceived, int totalBytes, Action<int, string> reportProgress)
         {
-            int percentComplete = (bytesReceived * 100) / totalBytes;
+            int percentComplete = (int)((bytesReceived * 100L) / totalBytes);
             string description = String.Format(
                 CultureInfo.CurrentCulture,
-                "Downloaded {0}KB of {1}KB...", 
-                ToKB(bytesReceived), 
+                "Downloaded {0}KB of {1}KB...",
+                ToKB(bytesReceived),
                 ToKB(totalBytes));
             reportProgress(percentComplete, description);
         }

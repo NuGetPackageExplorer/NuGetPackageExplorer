@@ -72,6 +72,7 @@ namespace PackageExplorerViewModel
             var model = new PackageChooserViewModel(
                 new MruPackageSourceManager(new PackageSourceSettings(SettingsManager)),
                 SettingsManager.ShowPrereleasePackages,
+                SettingsManager.AutoLoadPackages,
                 fixedPackageSource);
             model.PropertyChanged += OnPackageChooserViewModelPropertyChanged;
             return model;
@@ -91,6 +92,10 @@ namespace PackageExplorerViewModel
             if (e.PropertyName == "ShowPrereleasePackages")
             {
                 SettingsManager.ShowPrereleasePackages = model.ShowPrereleasePackages;
+            }
+            else if (e.PropertyName == "AutoLoadPackages")
+            {
+                SettingsManager.AutoLoadPackages = model.AutoLoadPackages;
             }
         }
     }

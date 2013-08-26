@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.Services.Client;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -27,6 +28,7 @@ namespace PackageExplorerViewModel
         private IPackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
         private bool _showPrereleasePackages;
+        private bool _autoLoadPackages;
         private string _sortColumn;
         private ListSortDirection _sortDirection;
         private string _statusContent;
@@ -36,6 +38,7 @@ namespace PackageExplorerViewModel
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
             bool showPrereleasePackages,
+            bool autoLoadPackages,
             string fixedPackageSource)
         {
             if (packageSourceManager == null)
@@ -45,6 +48,7 @@ namespace PackageExplorerViewModel
 
             _showPrereleasePackages = showPrereleasePackages;
             _fixedPackageSource = fixedPackageSource;
+            _autoLoadPackages = autoLoadPackages;
             Packages = new ObservableCollection<PackageInfoViewModel>();
             SortCommand = new RelayCommand<string>(Sort, CanSort);
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
@@ -155,6 +159,19 @@ namespace PackageExplorerViewModel
                     OnPropertyChanged("ShowPrereleasePackages");
 
                     OnShowPrereleasePackagesChange();
+                }
+            }
+        }
+
+        public bool AutoLoadPackages
+        {
+            get { return _autoLoadPackages; }
+            set
+            {
+                if (_autoLoadPackages != value)
+                {
+                    _autoLoadPackages = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -341,7 +358,15 @@ namespace PackageExplorerViewModel
                     return;
                 }
 
-                ShowMessage(exception.Message, true);
+                string errorMessage = exception.Message;
+
+                var queryException = exception as DataServiceQueryException;
+                if (queryException != null && queryException.Response != null)
+                {
+                    errorMessage = errorMessage + ". The remote server returned status code: " + queryException.Response.StatusCode + ".";
+                }
+                
+                ShowMessage(errorMessage, true);
                 ClearPackages(isErrorCase: true);
             }
 
@@ -627,7 +652,7 @@ namespace PackageExplorerViewModel
             OpenPackageRequested(this, EventArgs.Empty);
         }
 
-        internal void OneDownloadPackage()
+        internal void OnDownloadPackage()
         {
             PackageDownloadRequested(this, EventArgs.Empty);
         }

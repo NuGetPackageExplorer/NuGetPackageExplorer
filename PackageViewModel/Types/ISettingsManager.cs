@@ -10,6 +10,7 @@ namespace NuGetPackageExplorer.Types
         string ActivePackageSource { get; set; }
         string ActivePublishSource { get; set; }
         bool ShowPrereleasePackages { get; set; }
+        bool AutoLoadPackages { get; set; }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         IList<string> GetMruFiles();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Windows.Threading;
 
 namespace NuGetPackageExplorer.Types
 {
@@ -37,6 +38,6 @@ namespace NuGetPackageExplorer.Types
 
         bool? AskToInstallNpeOnWindows8();
 
-        void BeginInvoke(Action action);
+        DispatcherOperation BeginInvoke(Action action);
     }
 }

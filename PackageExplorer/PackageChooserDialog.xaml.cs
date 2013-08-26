@@ -107,20 +107,23 @@ namespace PackageExplorer
             SearchButton.Command.Execute(searchTerm);
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             AdjustSearchBox();
 
-            if (String.IsNullOrEmpty(_pendingSearch))
+            if (_viewModel.AutoLoadPackages)
             {
-                Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
-            }
-            else
-            {
-                Dispatcher.BeginInvoke(
-                    new Action<string>(InvokeSearch),
-                    DispatcherPriority.Background,
-                    _pendingSearch);
+                if (String.IsNullOrEmpty(_pendingSearch))
+                {
+                    await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
+                }
+                else
+                {
+                    await Dispatcher.BeginInvoke(
+                        new Action<string>(InvokeSearch),
+                        DispatcherPriority.Background,
+                        _pendingSearch);
+                }
             }
         }
 
@@ -140,7 +143,7 @@ namespace PackageExplorer
 
         private void LoadPackages()
         {
-            var loadedCommand = (ICommand) Tag;
+            var loadedCommand = (ICommand)Tag;
             loadedCommand.Execute(null);
         }
 
@@ -211,7 +214,7 @@ namespace PackageExplorer
             _pendingSearch = null;
         }
 
-        private void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private async void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             // The first time this event handler is invoked, IsLoaded = false
             // We only do work from the second time.
@@ -220,7 +223,7 @@ namespace PackageExplorer
                 if (String.IsNullOrEmpty(_pendingSearch))
                 {
                     // there is no pending search operation, just set focus on the search box
-                    Dispatcher.BeginInvoke(new Action(OnAfterShow), DispatcherPriority.Background);
+                    await Dispatcher.InvokeAsync(new Action(OnAfterShow), DispatcherPriority.Background);
                 }
                 else
                 {
@@ -237,6 +240,16 @@ namespace PackageExplorer
             }
 
             e.Handled = true;
+        }
+
+        private void OnPackageDoubleClick(object sender, RoutedEventArgs e)
+        {
+            var gridRow = (DataGridRow)sender;
+            var viewModel = (PackageInfoViewModel)gridRow.DataContext;
+            if (!viewModel.ShowingAllVersions)
+            {
+                viewModel.OpenCommand.Execute(null);
+            }
         }
     }
 }

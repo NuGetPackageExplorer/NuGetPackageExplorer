@@ -110,7 +110,7 @@ namespace PackageExplorer
             }
         }
 
-        internal void OpenLocalPackage(string packagePath)
+        internal async Task OpenLocalPackage(string packagePath)
         {
             if (!File.Exists(packagePath))
             {
@@ -121,16 +121,14 @@ namespace PackageExplorer
             object oldContent = PackageSourceItem.Content;
             PackageSourceItem.SetCurrentValue(ContentProperty, "Loading " + packagePath + "...");
 
-            DispatcherOperation operation = Dispatcher.BeginInvoke(new Func<string, bool>(OpenLocalPackageCore), DispatcherPriority.Loaded, packagePath);
-            operation.Completed += (o, e) =>
+            bool succeeded = await Dispatcher.InvokeAsync(
+                () => OpenLocalPackageCore(packagePath), DispatcherPriority.Loaded);
+
+            if (!succeeded)
             {
-                bool succeeded = (bool)operation.Result;
-                if (!succeeded)
-                {
-                    // restore old content
-                    PackageSourceItem.SetCurrentValue(ContentProperty, oldContent);
-                }
-            };
+                // restore old content
+                PackageSourceItem.SetCurrentValue(ContentProperty, oldContent);
+            }
         }
 
         private bool OpenLocalPackageCore(string packagePath)
@@ -149,17 +147,17 @@ namespace PackageExplorer
                     var builder = new PackageBuilder(packagePath);
                     package = builder.Build();
                 }
+
+                if (package != null)
+                {
+                    LoadPackage(package, packagePath, PackageType.LocalPackage);
+                    return true;
+                }
             }
             catch (Exception ex)
             {
                 UIServices.Show(ex.Message, MessageLevel.Error);
                 return false;
-            }
-
-            if (package != null)
-            {
-                LoadPackage(package, packagePath, PackageType.LocalPackage);
-                return true;
             }
 
             return false;
@@ -224,6 +222,7 @@ namespace PackageExplorer
             var currentViewModel = DataContext as PackageViewModel;
             if (currentViewModel != null)
             {
+                currentViewModel.PropertyChanged -= OnPackageViewModelPropertyChanged;
                 currentViewModel.Dispose();
             }
         }
@@ -254,12 +253,12 @@ namespace PackageExplorer
             await OpenPackageFromRepository(parameter);
         }
 
-        private void OpenPackageFromLocal()
+        private Task OpenPackageFromLocal()
         {
             bool canceled = AskToSaveCurrentFile();
             if (canceled)
             {
-                return;
+                return Task.FromResult(0);
             }
 
             string selectedFile;
@@ -270,8 +269,10 @@ namespace PackageExplorer
 
             if (result)
             {
-                OpenLocalPackage(selectedFile);
+                return OpenLocalPackage(selectedFile);
             }
+
+            return Task.FromResult(0);
         }
 
         private async Task OpenPackageFromRepository(string searchTerm)
@@ -290,14 +291,14 @@ namespace PackageExplorer
 
             if (selectedPackageInfo.IsLocalPackage)
             {
-                OpenLocalPackage(selectedPackageInfo.DownloadUrl.LocalPath);
+                await OpenLocalPackage(selectedPackageInfo.DownloadUrl.LocalPath);
             }
             else 
             {
                 var packageVersion = new SemanticVersion(selectedPackageInfo.Version);
                 IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
 
-                Action<IPackage> processPackageAction = (package) =>
+                Func<IPackage, DispatcherOperation> processPackageAction = (package) =>
                                                         {
                                                             DataServicePackage servicePackage = selectedPackageInfo.AsDataServicePackage();
                                                             servicePackage.CorePackage = package;
@@ -306,7 +307,7 @@ namespace PackageExplorer
                                                                         PackageType.DataServicePackage);
 
                                                             // adding package to the cache, but with low priority
-                                                            Dispatcher.BeginInvoke(
+                                                            return Dispatcher.BeginInvoke(
                                                                 (Action<IPackage>) MachineCache.Default.AddPackage,
                                                                 DispatcherPriority.ApplicationIdle,
                                                                 package);
@@ -321,12 +322,12 @@ namespace PackageExplorer
 
                     if (downloadedPackage != null)
                     {
-                        processPackageAction(downloadedPackage);
+                        await processPackageAction(downloadedPackage);
                     }
                 }
                 else
                 {
-                    processPackageAction(cachePackage);
+                    await processPackageAction(cachePackage);
                 }
             }
         }
@@ -451,7 +452,7 @@ namespace PackageExplorer
             e.Handled = true;
         }
 
-        private void RecentFileMenuItem_Click(object sender, RoutedEventArgs e)
+        private async void RecentFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
             bool canceled = AskToSaveCurrentFile();
             if (canceled)
@@ -469,11 +470,11 @@ namespace PackageExplorer
             {
                 if (mruItem.PackageType == PackageType.LocalPackage)
                 {
-                    OpenLocalPackage(mruItem.Path);
+                    await OpenLocalPackage(mruItem.Path);
                 }
                 else
                 {
-                    DownloadAndOpenDataServicePackage(mruItem);
+                    await DownloadAndOpenDataServicePackage(mruItem);
                 }
             }
         }
@@ -601,7 +602,7 @@ namespace PackageExplorer
             e.Handled = true;
         }
 
-        private void Window_Drop(object sender, DragEventArgs e)
+        private async void Window_Drop(object sender, DragEventArgs e)
         {
             IDataObject data = e.Data;
             if (data.GetDataPresent(DataFormats.FileDrop))
@@ -618,7 +619,7 @@ namespace PackageExplorer
                         bool canceled = AskToSaveCurrentFile();
                         if (!canceled)
                         {
-                            OpenLocalPackage(firstFile);
+                            await OpenLocalPackage(firstFile);
                         }
                     }
                 }

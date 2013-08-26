@@ -73,5 +73,11 @@ namespace PackageExplorer
             // align the nested ListView's columns with the parent DataGrid's columns
             ApplyBindings(ownerGrid);
         }
+
+        private void OnPackageDoubleClick(object sender, RoutedEventArgs e)
+        {
+            var viewModel = (PackageInfoViewModel)DataContext;
+            viewModel.OpenCommand.Execute(null);
+        }
     }
 }
