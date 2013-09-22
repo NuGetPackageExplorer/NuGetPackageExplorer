@@ -1105,13 +1105,13 @@ namespace PackageExplorerViewModel
         }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public Stream GetCurrentPackageStream()
+        public string GetCurrentPackageTempFile()
         {
             string tempFile = Path.GetTempFileName();
             PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, useTempFile: false);
             if (File.Exists(tempFile))
             {
-                return File.OpenRead(tempFile);
+                return tempFile;
             }
 
             return null;

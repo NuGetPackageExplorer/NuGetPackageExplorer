@@ -15,7 +15,7 @@ namespace PackageExplorerViewModel
     {
         private readonly MruPackageSourceManager _mruSourceManager;
         private readonly IPackageMetadata _package;
-        private readonly Func<Stream> _packageStream;
+        private readonly string _packageFilePath;
         private readonly ISettingsManager _settingsManager;
         private bool _canPublish = true;
         private bool _hasError;
@@ -35,7 +35,7 @@ namespace PackageExplorerViewModel
             _mruSourceManager = mruSourceManager;
             _settingsManager = settingsManager;
             _package = viewModel.PackageMetadata;
-            _packageStream = viewModel.GetCurrentPackageStream;
+            _packageFilePath = viewModel.GetCurrentPackageTempFile();
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
             PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
         }
@@ -223,12 +223,7 @@ namespace PackageExplorerViewModel
 
             try
             {
-                await GalleryServer.PushPackage(
-                    PublishKey,
-                    _packageStream.Invoke(),
-                    _package,
-                    PublishAsUnlisted ?? false,
-                    CancellationToken.None);
+                await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false);
 
                 OnCompleted();
             }

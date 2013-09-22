@@ -1,8 +1,7 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading;
+using System.Net;
 using System.Threading.Tasks;
 using NuGet;
 
@@ -31,50 +30,83 @@ namespace PackageExplorerViewModel
             get { return _source; }
         }
 
-        public async Task PushPackage(
-            string apiKey, 
-            Stream packageStream, 
-            IPackageMetadata package, 
-            bool pushAsUnlisted,
-            CancellationToken cancelToken)
+        public async Task PushPackage(string apiKey, string filePath, IPackageMetadata package, bool pushAsUnlisted)
         {
-            var handler = new HttpClientHandler();
-            if (handler.SupportsRedirectConfiguration)
-            {
-                handler.AllowAutoRedirect = true;
-            }
-
-            var client = new System.Net.Http.HttpClient(handler);
-            client.DefaultRequestHeaders.Add(ApiKeyHeader, apiKey);
-            client.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
-
-            var pushContent = new MultipartFormDataContent();
-
-            var fileContent = new StreamContent(packageStream);
-            fileContent.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            pushContent.Add(fileContent);
-
             string requestUri = EnsureTrailingSlash(_source) + ServiceEndpoint;
-            using (HttpResponseMessage response = await client.PutAsync(requestUri, pushContent, cancelToken))
+            
+            HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
+            httpRequest.Method = "PUT";
+            httpRequest.AllowAutoRedirect = true;
+            httpRequest.AllowWriteStreamBuffering = false;
+            httpRequest.KeepAlive = false;
+            httpRequest.Headers.Add(ApiKeyHeader, apiKey);
+            httpRequest.UserAgent = _userAgent;
+
+            var multipartRequest = new MultipartWebRequest();
+            multipartRequest.AddFile(new FileInfo(filePath), package.ToString());
+
+            // sending package data asynchronously
+            await multipartRequest.CreateMultipartRequest(httpRequest);
+            
+            // waiting for response asynchronously
+            await EnsureSuccessfulResponse(httpRequest, HttpStatusCode.Created);
+
+            if (pushAsUnlisted)
             {
-                if (!response.IsSuccessStatusCode)
+                await DeletePackageFromServer(apiKey, package.Id, package.Version.ToString());
+            }
+        }
+
+        private Task DeletePackageFromServer(string apiKey, string packageId, string packageVersion)
+        {
+            string requestUri = EnsureTrailingSlash(_source) + ServiceEndpoint + "/" + packageId + "/" + packageVersion;
+
+            HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
+            httpRequest.Method = "DELETE";
+            httpRequest.Headers.Add(ApiKeyHeader, apiKey);
+            httpRequest.UserAgent = _userAgent;
+
+            return EnsureSuccessfulResponse(httpRequest);
+        }
+
+        private static async Task EnsureSuccessfulResponse(HttpWebRequest httpRequest, HttpStatusCode? expectedStatusCode = null)
+        {
+            HttpWebResponse response = null;
+            try
+            {
+                response = (HttpWebResponse)await Task.Factory.FromAsync<WebResponse>(
+                     httpRequest.BeginGetResponse, httpRequest.EndGetResponse, state: null);
+
+                if (response != null &&
+                    ((expectedStatusCode.HasValue && expectedStatusCode.Value != response.StatusCode) ||
+
+                    // If expected status code isn't provided, just look for anything 400 (Client Errors) or higher (incl. 500-series, Server Errors)
+                    // 100-series is protocol changes, 200-series is success, 300-series is redirect.
+                    (!expectedStatusCode.HasValue && (int)response.StatusCode >= 400)))
                 {
-                    string errorMessage = "An error occurred while publishing package: " + response.ReasonPhrase;
-                    throw new InvalidOperationException(errorMessage);
+                    throw new InvalidOperationException(
+                        String.Format(CultureInfo.CurrentCulture, "Failed to process request: '{0}'.", response.StatusDescription));
                 }
             }
-
-            if (pushAsUnlisted && !cancelToken.IsCancellationRequested)
+            catch (WebException e)
             {
-                string deleteRequestUri = requestUri + "/" + package.Id + "/" + package.Version;
-
-                using (HttpResponseMessage response = await client.DeleteAsync(deleteRequestUri, cancelToken))
+                if (e.Response == null)
                 {
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        string errorMessage = "An error occurred while publishing package: " + response.ReasonPhrase;
-                        throw new InvalidOperationException(errorMessage);
-                    }
+                    throw;
+                }
+                response = (HttpWebResponse)e.Response;
+                if (expectedStatusCode != response.StatusCode)
+                {
+                    throw new InvalidOperationException(
+                        String.Format(CultureInfo.CurrentCulture, "Failed to process request: '{0}'.", response.StatusDescription));
+                }
+            }
+            finally
+            {
+                if (response != null)
+                {
+                    response.Close();
+                    response = null;
                 }
             }
         }

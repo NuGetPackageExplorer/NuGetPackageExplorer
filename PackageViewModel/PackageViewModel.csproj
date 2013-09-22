@@ -64,6 +64,7 @@
     <Compile Include="EmptyPackage.cs" />
     <Compile Include="FileEditorViewModel.cs" />
     <Compile Include="GalleryServer.cs" />
+    <Compile Include="MultipartWebRequest.cs" />
     <Compile Include="PackageChooser\QueryContextBase.cs" />
     <Compile Include="PackagePart\IEditablePackageFile.cs" />
     <Compile Include="PackagePart\PackageMetadataFile.cs" />
