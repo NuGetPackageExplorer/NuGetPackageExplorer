@@ -165,12 +165,6 @@
                             <Image Source="{Binding IconUrl, TargetNullValue={x:Null}}" Width="32" Height="32" Stretch="Fill" StretchDirection="DownOnly" />
                         </Border>
 
-                        <!-- Min client version -->
-                        <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding MinClientVersion, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_MinVersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                            <TextBlock Text="{Binding MinClientVersion}" Style="{StaticResource DetailMetadataValueStyle}" />
-                        </StackPanel>
-
                         <!-- Id -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_IdLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
@@ -201,6 +195,12 @@
                             <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_OwnersLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Owners, Converter={StaticResource authorNamesConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
                         </DockPanel>
+
+                        <!-- Min client version -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding MinClientVersion, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_MinVersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding MinClientVersion}" Style="{StaticResource DetailMetadataValueStyle}" />
+                        </StackPanel>
 
                         <!-- Tags -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Tags, Converter={StaticResource NullToVisibilityConverter}}">

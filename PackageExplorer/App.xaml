@@ -50,6 +50,7 @@
             <Style TargetType="{x:Type TextBox}">
                 <Setter Property="Margin" Value="0, 4, 3, 0" />
                 <Setter Property="ContextMenu" Value="{StaticResource TextBoxContextMenu}" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
                 <Style.Triggers>
                     <Trigger Property="Validation.HasError" Value="True">
                         <Setter Property="ToolTip">

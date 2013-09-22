@@ -52,16 +52,6 @@
                 </Button>
             </Grid>
         </DataTemplate>
-
-        <!--<DataTemplate x:Key="FilteredAssemblyReferencesTemplate">
-            <DockPanel Margin="0,4,0,0">
-                <Button DockPanel.Dock="Right" Click="RemoveFilteredAssemblyReferenceClicked" ToolTip="Remove this assembly name">
-                    <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
-                </Button>
-
-                <TextBlock Text="{Binding Mode=OneWay}" HorizontalAlignment="Left" TextTrimming="CharacterEllipsis" />
-            </DockPanel>
-        </DataTemplate>-->
     </UserControl.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid Validation.ErrorTemplate="{x:Null}">
@@ -100,25 +90,13 @@
                 </BindingGroup>
             </Grid.BindingGroup>
 
-            <!-- Min client Version -->
-            <Label Grid.Row="0" Grid.Column="0" Target="MinVersionBox" Style="{StaticResource LabelStyle}" Content="_Min version" />
-            <TextBox Grid.Row="0" Grid.Column="1" x:Name="MinVersionBox" MaxLength="100">
-                <TextBox.Text>
-                    <Binding Path="PackageMetadata.MinClientVersion" Converter="{StaticResource NetVersionConverter}" ValidatesOnDataErrors="True">
-                        <Binding.ValidationRules>
-                            <self:NetSemanticVersionValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
-
             <!-- Id -->
-            <Label Grid.Row="1" Grid.Column="0" Target="IdBox" Style="{StaticResource RequiredLabelStyle}" Content="_Id" />
-            <TextBox Grid.Row="1" Grid.Column="1" x:Name="IdBox" MaxLength="100" Text="{Binding PackageMetadata.Id, ValidatesOnDataErrors=True}" />
+            <Label Grid.Row="0" Grid.Column="0" Target="IdBox" Style="{StaticResource RequiredLabelStyle}" Content="_Id" />
+            <TextBox Grid.Row="0" Grid.Column="1" x:Name="IdBox" MaxLength="100" Text="{Binding PackageMetadata.Id, ValidatesOnDataErrors=True}" />
 
             <!-- Version -->
-            <Label Grid.Row="2" Grid.Column="0" Target="VersionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Version" />
-            <TextBox Grid.Row="2" Grid.Column="1" x:Name="VersionBox">
+            <Label Grid.Row="1" Grid.Column="0" Target="VersionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Version" />
+            <TextBox Grid.Row="1" Grid.Column="1" x:Name="VersionBox">
                 <TextBox.Text>
                     <Binding Path="PackageMetadata.Version" Converter="{StaticResource VersionConverter}" ValidatesOnDataErrors="True">
                         <Binding.ValidationRules>
@@ -129,16 +107,28 @@
             </TextBox>
 
             <!-- Title -->
-            <Label Grid.Row="3" Grid.Column="0" Target="TitleBox" Style="{StaticResource LabelStyle}" Content="_Title" />
-            <TextBox Grid.Row="3" Grid.Column="1" x:Name="TitleBox" Text="{Binding PackageMetadata.Title}" />
+            <Label Grid.Row="2" Grid.Column="0" Target="TitleBox" Style="{StaticResource LabelStyle}" Content="_Title" />
+            <TextBox Grid.Row="2" Grid.Column="1" x:Name="TitleBox" Text="{Binding PackageMetadata.Title}" />
 
             <!-- Authors -->
-            <Label Grid.Row="4" Grid.Column="0" Target="AuthorsBox" Style="{StaticResource RequiredLabelStyle}" Content="_Authors" />
-            <TextBox Grid.Row="4" Grid.Column="1" x:Name="AuthorsBox" Text="{Binding PackageMetadata.Authors, ValidatesOnDataErrors=True}" />
+            <Label Grid.Row="3" Grid.Column="0" Target="AuthorsBox" Style="{StaticResource RequiredLabelStyle}" Content="_Authors" />
+            <TextBox Grid.Row="3" Grid.Column="1" x:Name="AuthorsBox" Text="{Binding PackageMetadata.Authors, ValidatesOnDataErrors=True}" />
 
             <!-- Owners -->
-            <Label Grid.Row="5" Grid.Column="0" Target="OwnersBox" Style="{StaticResource LabelStyle}" Content="_Owners" />
-            <TextBox Grid.Row="5" Grid.Column="1" x:Name="OwnersBox" Text="{Binding PackageMetadata.Owners}" />
+            <Label Grid.Row="4" Grid.Column="0" Target="OwnersBox" Style="{StaticResource LabelStyle}" Content="_Owners" />
+            <TextBox Grid.Row="4" Grid.Column="1" x:Name="OwnersBox" Text="{Binding PackageMetadata.Owners}" />
+
+            <!-- Min client Version -->
+            <Label Grid.Row="5" Grid.Column="0" Target="MinVersionBox" Style="{StaticResource LabelStyle}" Content="_Min client version" />
+            <TextBox Grid.Row="5" Grid.Column="1" x:Name="MinVersionBox" MaxLength="100">
+                <TextBox.Text>
+                    <Binding Path="PackageMetadata.MinClientVersion" Converter="{StaticResource NetVersionConverter}" ValidatesOnDataErrors="True">
+                        <Binding.ValidationRules>
+                            <self:NetSemanticVersionValidationRule />
+                        </Binding.ValidationRules>
+                    </Binding>
+                </TextBox.Text>
+            </TextBox>
 
             <!-- IconUrl -->
             <Label Grid.Row="6" Grid.Column="0" Target="IconUrlBox" Style="{StaticResource LabelStyle}" Content="Icon _Url" />
@@ -157,15 +147,15 @@
 
             <!-- Summary -->
             <Label Grid.Row="10" Grid.Column="0" Target="SummaryBox" Style="{StaticResource LabelStyle}" Content="_Summary" />
-            <TextBox Grid.Row="10" Grid.Column="1" Height="80" MaxLength="200" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="SummaryBox" Text="{Binding PackageMetadata.Summary}" AcceptsReturn="True" />
+            <TextBox Grid.Row="10" Grid.Column="1" Height="80" MaxLength="200" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="SummaryBox" Text="{Binding PackageMetadata.Summary}" AcceptsReturn="True" />
 
             <!-- Description -->
             <Label Grid.Row="11" Grid.Column="0" Target="DescriptionBox" Style="{StaticResource RequiredLabelStyle}" Content="_Description" />
-            <TextBox Grid.Row="11" Grid.Column="1" Height="80" MaxLength="2000" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="DescriptionBox" Text="{Binding PackageMetadata.Description, ValidatesOnDataErrors=True}" AcceptsReturn="True" />
+            <TextBox Grid.Row="11" Grid.Column="1" Height="80" MaxLength="2000" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="DescriptionBox" Text="{Binding PackageMetadata.Description, ValidatesOnDataErrors=True}" AcceptsReturn="True" />
 
             <!-- Release Notes -->
             <Label Grid.Row="12" Grid.Column="0" Target="ReleaseNotesBox" Style="{StaticResource LabelStyle}" Content="_Release Notes" />
-            <TextBox Grid.Row="12" Grid.Column="1" Height="80" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="ReleaseNotesBox" Text="{Binding PackageMetadata.ReleaseNotes}" AcceptsReturn="True" />
+            <TextBox Grid.Row="12" Grid.Column="1" Height="80" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto" TextWrapping="Wrap" x:Name="ReleaseNotesBox" Text="{Binding PackageMetadata.ReleaseNotes}" AcceptsReturn="True" />
 
             <!-- Copyright -->
             <Label Grid.Row="13" Grid.Column="0" Target="CopyrightBox" Style="{StaticResource LabelStyle}" Content="Cop_yright" />
