@@ -31,6 +31,13 @@ namespace PackageExplorer
                     new [] { "(no version)", "native" }
                 },
                 {
+                    "Mono",
+                    new[]
+                    {
+                        "Android", "MonoAndroid", "iOS", "MonoTouch", "OSX", "MonoMac"
+                    }
+                },
+                {
                     "Windows Phone", 
                     new[] {"v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71", "v8.0", "wp8"}
                 },
@@ -58,13 +65,6 @@ namespace PackageExplorer
                     {
                         "(no version)", "net", "v1.0", "net10", "v1.1", "net11", "v2.0",
                         "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40", "v4.5", "net45", "v4.5.1", "net451"
-                    }
-                },
-                                {
-                    "Mono",
-                    new[]
-                    {
-                        "Android", "MonoAndroid", "iOS", "MonoTouch", "OSX", "MonoMac"
                     }
                 }
             };
