@@ -123,6 +123,7 @@ namespace PackageExplorer
             if (settings.IsFirstTime)
             {
                 settings.Upgrade();
+                settings.IsFirstTime = false;
                 settings.Save();
             }
         }
