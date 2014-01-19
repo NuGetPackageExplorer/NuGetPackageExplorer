@@ -42,7 +42,7 @@ namespace PackageExplorer
                     new[] {"v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71", "v8.0", "wp8"}
                 },
                 {
-                    "Siverlight",
+                    "Silverlight",
                     new[]
                     {
                         "(no version)", "sl", "v2.0", "sl2", "v3.0", "sl30", "v4.0", "sl40", "v5.0", "sl50"
