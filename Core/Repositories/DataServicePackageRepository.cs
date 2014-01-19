@@ -36,6 +36,9 @@ namespace NuGet
         private void OnSendingRequest(object sender, SendingRequestEventArgs e)
         {
             var httpRequest = e.Request as HttpWebRequest;
+            httpRequest.Proxy = HttpWebRequest.DefaultWebProxy;
+            httpRequest.Proxy.Credentials = CredentialCache.DefaultNetworkCredentials;
+
             if (httpRequest != null)
             {
                 httpRequest.UserAgent = HttpUtility.CreateUserAgentString("NuGet Package Explorer");
@@ -60,10 +63,10 @@ namespace NuGet
 
         public IQueryable<DataServicePackage> GetPackagesById(string id, bool includePrerelease)
         {
-            IQueryable<DataServicePackage> query = 
+            IQueryable<DataServicePackage> query =
                 _context.CreateQuery<DataServicePackage>("FindPackagesById")
                         .AddQueryOption("id", "'" + id + "'");
-            
+
             if (!includePrerelease)
             {
                 query = query.Where(p => !p.IsPrerelease);
