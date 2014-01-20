@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Xml.Linq;
 
@@ -16,7 +17,7 @@ namespace NuGet
                         return XDocument.Load(configSream);
                     }
                 }
-                catch (FileNotFoundException)
+                catch (Exception)
                 {
                     return CreateDocument(rootName, fileSystem, path);
                 }
