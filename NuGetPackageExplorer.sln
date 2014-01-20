@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageExplorer", "PackageExplorer\PackageExplorer.csproj", "{3B56B367-7763-4F70-9933-2B8B23718A0D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{53973396-F433-4D77-BB00-A2B0EAB83625} = {53973396-F433-4D77-BB00-A2B0EAB83625}
