@@ -19,7 +19,7 @@ namespace PackageExplorer
         private const string NuGetDirectoryName = "NuGet";
         private const string PluginsDirectoryName = "PackageExplorerPlugins";
         private const string DeleteMeExtension = ".deleteme";
-        private const string FrameworkFolderForAssemblies = "lib\\net40";
+        private static string[] FrameworkFolderForAssemblies = new string[] { "lib\\net40", "lib\\net45", "lib\\net451" };
 
         // %localappdata%/NuGet/PackageExplorerPlugins
         private static readonly string PluginsDirectory = Path.Combine(
@@ -82,7 +82,9 @@ namespace PackageExplorer
                         File.Delete(deleteMePath);
 
                         // copy assemblies
-                        int numberOfFilesCopied = plugin.UnpackPackage(FrameworkFolderForAssemblies, targetPath);
+                        int numberOfFilesCopied = 
+                            FrameworkFolderForAssemblies.Sum(folder => plugin.UnpackPackage(folder, targetPath));
+
                         if (numberOfFilesCopied == 0)
                         {
                             Directory.Delete(targetPath);
