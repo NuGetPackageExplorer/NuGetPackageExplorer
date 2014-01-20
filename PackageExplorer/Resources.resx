@@ -123,6 +123,9 @@
   <data name="Dialog_DependenciesLabel" xml:space="preserve">
     <value>Dependencies:</value>
   </data>
+  <data name="Dialog_DevelopmentDependencyLabel" xml:space="preserve">
+    <value>Development Dependency:</value>
+  </data>
   <data name="Dialog_DownloadingPackage" xml:space="preserve">
     <value>Downloading package {0} {1}</value>
   </data>

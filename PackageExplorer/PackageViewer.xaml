@@ -202,6 +202,12 @@
                             <TextBlock Text="{Binding MinClientVersion}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>
 
+                        <!-- Development Dependency -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding DevelopmentDependency, Converter={StaticResource boolToVis}}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_DevelopmentDependencyLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding DevelopmentDependency, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
+                        </StackPanel>
+
                         <!-- Tags -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Tags, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_TagLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
@@ -215,7 +221,7 @@
                         </StackPanel>
 
                         <!-- Require License Acceptance -->
-                        <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding RequireLicenseAcceptance, Converter={StaticResource boolToVis}}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_RequireLicenseLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding RequireLicenseAcceptance, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>

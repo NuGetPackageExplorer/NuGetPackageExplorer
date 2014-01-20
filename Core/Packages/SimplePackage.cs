@@ -27,6 +27,7 @@ namespace NuGet
             LicenseUrl = packageBuilder.LicenseUrl;
             ProjectUrl = packageBuilder.ProjectUrl;
             RequireLicenseAcceptance = packageBuilder.RequireLicenseAcceptance;
+            DevelopmentDependency = packageBuilder.DevelopmentDependency;
             Description = packageBuilder.Description;
             Summary = packageBuilder.Summary;
             ReleaseNotes = packageBuilder.ReleaseNotes;
@@ -81,6 +82,8 @@ namespace NuGet
         public Uri ProjectUrl { get; private set; }
 
         public bool RequireLicenseAcceptance { get; private set; }
+
+        public bool DevelopmentDependency { get; private set; }
 
         public string Description { get; private set; }
 

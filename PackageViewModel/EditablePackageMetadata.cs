@@ -125,6 +125,7 @@ namespace PackageExplorerViewModel
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;
+        private bool _developmentDependency;
 
         #endregion
 
@@ -242,6 +243,19 @@ namespace PackageExplorerViewModel
                     _requireLicenseAcceptance = value;
                     RaisePropertyChange("RequireLicenseAcceptance");
                     RaisePropertyChange("LicenseUrl");
+                }
+            }
+        }
+
+        public bool DevelopmentDependency
+        {
+            get { return _developmentDependency; }
+            set
+            {
+                if (value != _developmentDependency)
+                {
+                    _developmentDependency = value;
+                    RaisePropertyChange("DevelopmentDependency");
                 }
             }
         }
@@ -384,6 +398,7 @@ namespace PackageExplorerViewModel
             LicenseUrl = source.LicenseUrl;
             ProjectUrl = source.ProjectUrl;
             RequireLicenseAcceptance = source.RequireLicenseAcceptance;
+            DevelopmentDependency = source.DevelopmentDependency;
             Description = source.Description;
             Summary = source.Summary;
             ReleaseNotes = source.ReleaseNotes;

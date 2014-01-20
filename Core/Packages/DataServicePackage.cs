@@ -72,6 +72,11 @@ namespace NuGet
             get { return CorePackage != null && CorePackage.RequireLicenseAcceptance; }
         }
 
+        public bool DevelopmentDependency
+        {
+            get { return CorePackage != null && CorePackage.DevelopmentDependency; }
+        }
+
         public string Description
         {
             get { return CorePackage == null ? null : CorePackage.Description; }

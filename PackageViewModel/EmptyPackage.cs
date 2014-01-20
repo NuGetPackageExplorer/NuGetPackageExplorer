@@ -70,6 +70,11 @@ namespace PackageExplorerViewModel
             get { return false; }
         }
 
+        public bool DevelopmentDependency
+        {
+            get { return false; }
+        }
+
         public string Description
         {
             get { return "My package description."; }

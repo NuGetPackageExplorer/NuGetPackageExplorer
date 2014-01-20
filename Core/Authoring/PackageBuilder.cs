@@ -71,6 +71,8 @@ namespace NuGet
 
         public bool RequireLicenseAcceptance { get; set; }
 
+        public bool DevelopmentDependency { get; set; }
+
         public string Description { get; set; }
 
         public string Summary { get; set; }
@@ -285,6 +287,7 @@ namespace NuGet
             Language = metadata.Language;
             Copyright = metadata.Copyright;
             MinClientVersion = metadata.MinClientVersion;
+            DevelopmentDependency = metadata.DevelopmentDependency;
 
             if (metadata.Tags != null)
             {

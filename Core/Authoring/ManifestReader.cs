@@ -73,6 +73,9 @@ namespace NuGet
                 case "requireLicenseAcceptance":
                     manifestMetadata.RequireLicenseAcceptance = XmlConvert.ToBoolean(value);
                     break;
+                case "developmentDependency":
+                    manifestMetadata.DevelopmentDependency = XmlConvert.ToBoolean(value);
+                    break;
                 case "description":
                     manifestMetadata.Description = value;
                     break;

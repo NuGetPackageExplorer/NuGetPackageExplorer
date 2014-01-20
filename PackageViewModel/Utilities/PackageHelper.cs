@@ -65,6 +65,7 @@ namespace PackageExplorerViewModel
             builder.LicenseUrl = source.LicenseUrl;
             builder.ProjectUrl = source.ProjectUrl;
             builder.RequireLicenseAcceptance = source.RequireLicenseAcceptance;
+            builder.DevelopmentDependency = source.DevelopmentDependency;
             builder.Description = source.Description;
             builder.Summary = source.Summary;
             builder.ReleaseNotes = source.ReleaseNotes;

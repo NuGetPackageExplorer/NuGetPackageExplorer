@@ -84,6 +84,8 @@ namespace NuGet
 
         public bool RequireLicenseAcceptance { get; set; }
 
+        public bool DevelopmentDependency { get; set; }
+
         public string Description { get; set; }
 
         public string Summary { get; set; }
@@ -245,6 +247,7 @@ namespace NuGet
                     PackageAssemblyReferences = metadata.PackageAssemblyReferences;
                     Published = File.GetLastWriteTimeUtc(_filePath);
                     MinClientVersion = metadata.MinClientVersion;
+                    DevelopmentDependency = metadata.DevelopmentDependency;
 
                     // Ensure tags start and end with an empty " " so we can do contains filtering reliably
                     if (!String.IsNullOrEmpty(Tags))

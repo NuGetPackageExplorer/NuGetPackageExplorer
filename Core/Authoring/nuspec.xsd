@@ -42,6 +42,7 @@
                             <xs:element name="title" maxOccurs="1" minOccurs="0" type="xs:string" />
                             <xs:element name="authors" maxOccurs="1" minOccurs="1" type="xs:string" />
                             <xs:element name="owners" maxOccurs="1" minOccurs="0" type="xs:string" />
+                            <xs:element name="developmentDependency" maxOccurs="1" minOccurs="0" type="xs:boolean" />
                             <xs:element name="licenseUrl" maxOccurs="1" minOccurs="0" type="xs:anyURI" />
                             <xs:element name="projectUrl" maxOccurs="1" minOccurs="0" type="xs:anyURI" />
                             <xs:element name="iconUrl" maxOccurs="1" minOccurs="0" type="xs:anyURI" />
