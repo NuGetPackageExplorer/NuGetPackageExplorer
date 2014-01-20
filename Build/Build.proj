@@ -51,8 +51,7 @@
 
     <PropertyGroup>
         <Configuration Condition="'$(Configuration)' == ''">Debug</Configuration>
-        <DeploymentUrl Condition="'$(DeploymentUrl)' == ''">https://nuget.codeplex.com/releases/clickonce/</DeploymentUrl>
-        <NpeDeploymentUrl>https://npe.codeplex.com/releases/clickonce/</NpeDeploymentUrl>
+        <DeploymentUrl>https://npe.codeplex.com/releases/clickonce/</DeploymentUrl>
         <ApplicationName>NuGetPackageExplorer</ApplicationName>
         <PackageExplorerRoot>$(MSBuildProjectDirectory)\..</PackageExplorerRoot>
         <ManifestFilePath>$(MSBuildProjectDirectory)\VisualStyleManifest.xml</ManifestFilePath>
@@ -68,7 +67,6 @@
         <ExeFileName>$(ApplicationName).exe</ExeFileName>
         <AppManifestFileName>$(ExeFileName).manifest</AppManifestFileName>
         <ZipExe>$(PackageExplorerRoot)\Tools\7za920\7za.exe</ZipExe>
-        <DeployNpeZipFileName>Npe$(ApplicationName).zip</DeployNpeZipFileName>
         <DeployZipFileName>$(ApplicationName).zip</DeployZipFileName>
         <LocalExecutableZipFileName>NpeLocalExecutable.zip</LocalExecutableZipFileName>
         <PackagesFolder>$(PackageExplorerRoot)\Packages</PackagesFolder>
@@ -154,24 +152,14 @@
         <Copy SourceFiles="@(DeployFilesWithoutDeployExtension)" DestinationFiles="@(DeployFilesWithoutDeployExtension->'%(FullPath).deploy')" />
         <Delete Files="@(DeployFilesWithoutDeployExtension)" />
 
-        <!-- sign deployment manifest with mage.exe for nuget site -->
+        <!-- sign deployment manifest with mage.exe  -->
         <Exec
             Command="&quot;$(MageToolPath)&quot; -u &quot;$(DeploymentManifestFileName)&quot; -appc &quot;$(ManifestCodeBase)\$(AppManifestFileName)&quot; -appm &quot;$(AppManifestDirectory)\$(AppManifestFileName)&quot; -cf &quot;$(CertificateFilePath)&quot; -pub &quot;$(PublisherName)&quot; -pu &quot;$(DeploymentUrl)$(DeploymentManifestFileName)&quot; -password &quot;$(CertificatePassword)&quot;"
             WorkingDirectory="$(DeployDirectory)" />
 
-        <!-- zip the whole thing for nuget site -->
+        <!-- zip the whole thing -->
         <Exec
             Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(DeployZipFileName)&quot;"
-            WorkingDirectory="$(DeployDirectory)" />
-
-        <!-- sign deployment manifest with mage.exe for nuget package explorer site -->
-        <Exec
-            Command="&quot;$(MageToolPath)&quot; -u &quot;$(DeploymentManifestFileName)&quot; -appc &quot;$(ManifestCodeBase)\$(AppManifestFileName)&quot; -appm &quot;$(AppManifestDirectory)\$(AppManifestFileName)&quot; -cf &quot;$(CertificateFilePath)&quot; -pub &quot;$(PublisherName)&quot; -pu &quot;$(NpeDeploymentUrl)$(DeploymentManifestFileName)&quot; -password &quot;$(CertificatePassword)&quot;"
-            WorkingDirectory="$(DeployDirectory)" />
-
-        <!-- zip the whole thing for nuget package explorer site -->
-        <Exec
-            Command="&quot;$(ZipExe)&quot; a &quot;$(DropDirectory)\$(DeployNpeZipFileName)&quot;"
             WorkingDirectory="$(DeployDirectory)" />
 
     </Target>
