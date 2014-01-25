@@ -220,7 +220,7 @@
             <Button HorizontalAlignment="Center" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,2" Content="Edit dependencies" Click="EditDependenciesButtonClicked" />
 
             <!-- Filtered assembly references -->
-            <Button HorizontalAlignment="Center" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,10" Padding="15,2" Content="Edit assembly references" Click="EditReferencesButtonClicked" />
+            <Button HorizontalAlignment="Center" Grid.Row="19" Grid.ColumnSpan="2" Margin="1,18,2,10" Padding="15,2" Content="Edit assembly references" Click="EditReferencesButtonClicked" />
         </Grid>
     </ScrollViewer>
 </UserControl>
