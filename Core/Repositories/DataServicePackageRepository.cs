@@ -75,7 +75,7 @@ namespace NuGet
             return query;
         }
 
-        public IQueryable<IPackage> Search(string searchTerm)
+        public IQueryable<IPackage> Search(string searchTerm, bool includePrerelease)
         {
             if (searchTerm.StartsWith("id:", StringComparison.OrdinalIgnoreCase))
             {
@@ -94,7 +94,7 @@ namespace NuGet
                 return _context.CreateQuery<DataServicePackage>("Search")
                                 .AddQueryOption("searchTerm", "'" + searchTerm + "'")
                                 .AddQueryOption("targetFramework", "")
-                                .AddQueryOption("includePrerelease", "true")
+                                .AddQueryOption("includePrerelease", includePrerelease ? "true" : "false")
                                 .IncludeTotalCount();
             }
         }

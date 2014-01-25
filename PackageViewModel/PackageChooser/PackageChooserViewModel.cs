@@ -412,7 +412,7 @@ namespace PackageExplorerViewModel
                 var searchableRepository = repository as IPackageSearchable;
                 if (searchableRepository != null)
                 {
-                    query = searchableRepository.Search(_currentSearch);
+                    query = searchableRepository.Search(_currentSearch, ShowPrereleasePackages);
                 }
             }
 

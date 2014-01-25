@@ -4,6 +4,6 @@ namespace NuGet
 {
     public interface IPackageSearchable
     {
-        IQueryable<IPackage> Search(string searchTerm);
+        IQueryable<IPackage> Search(string searchTerm, bool includePrerelease);
     }
 }
