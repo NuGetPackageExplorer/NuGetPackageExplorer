@@ -38,6 +38,8 @@ namespace NuGet
                 { "portable", PortableFrameworkIdentifier },
                 { "wp", "WindowsPhone" },
                 { "WindowsPhone", "WindowsPhone" },
+                { "WindowsPhoneAppx", "WindowsPhoneAppx"},
+                { "wpa", "WindowsPhoneAppx"},
                 { "Windows", "Windows" },
                 { "win", "Windows" },
                 { "MonoAndroid", "MonoAndroid" },
@@ -62,7 +64,8 @@ namespace NuGet
             { ".NETCore", "win"},
             { "Windows", "win"},
             { ".NETPortable", "portable" },
-            { "WindowsPhone", "wp"}
+            { "WindowsPhone", "wp"},
+            { "WindowsPhoneAppx", "wpa" }
         };
 
         private static readonly Dictionary<string, string> _identifierToProfileFolder = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase) {

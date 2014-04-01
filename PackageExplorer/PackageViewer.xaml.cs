@@ -38,8 +38,12 @@ namespace PackageExplorer
                     }
                 },
                 {
-                    "Windows Phone", 
-                    new[] {"v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71", "v8.0", "wp8"}
+                    "Windows Phone Immersive",
+                    new [] { "(no version)", "wpa", "v8.1", "wpa81"}
+                },
+                {
+                    "Windows Phone Silverlight", 
+                    new[] {"v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71", "v8.0", "wp8", "v8.1", "wp81"}
                 },
                 {
                     "Silverlight",
