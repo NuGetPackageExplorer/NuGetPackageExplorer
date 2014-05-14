@@ -77,6 +77,14 @@ namespace NuGet
             return query;
         }
 
+        public IQueryable<DataServicePackage> LegacyGetPackagesById(string id)
+        {
+            IQueryable<DataServicePackage> query = _context.CreateQuery<DataServicePackage>(Constants.PackageServiceEntitySetName)
+                                                           .Where(p => p.Id.ToLower() == id.ToLower());
+
+            return query;
+        }
+
         public IQueryable<IPackage> Search(string searchTerm, bool includePrerelease)
         {
             if (searchTerm.StartsWith("id:", StringComparison.OrdinalIgnoreCase))
