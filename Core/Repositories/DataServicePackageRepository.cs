@@ -14,6 +14,7 @@ namespace NuGet
         public DataServicePackageRepository(Uri uri)
         {
             _context = new DataServiceContext(uri);
+            _context.Credentials = CredentialCache.DefaultCredentials;
             _context.SendingRequest += OnSendingRequest;
             _context.IgnoreMissingProperties = true;
             _context.Credentials = CredentialCache.DefaultCredentials;
