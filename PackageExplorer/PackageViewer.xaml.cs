@@ -81,14 +81,7 @@ namespace PackageExplorer
                         "v8.0", "wp8", 
                         "v8.1", "wp81"}
                 },
-                {
-                    "Windows Store", 
-                    new[] {
-                        "Windows 8", "netcore45", 
-                        "Windows 8.1", "netcore451", 
-                        "Windows 10", "uap10.0", 
-                    }
-                },
+
                 {
                     "Silverlight",
                     new[]
@@ -101,11 +94,13 @@ namespace PackageExplorer
                     }
                 },
                 {
-                    "Windows Store",
-                    new[] { 
+                    "Windows Store", 
+                    new[] {
                         "(no version)", "netcore", 
                         "Windows 8", "netcore45", 
-                        "Windows 8.1", "netcore451" }
+                        "Windows 8.1", "netcore451", 
+                        "Windows 10", "uap10.0", 
+                    }
                 },
                 {
                     ".NET Client profile",
