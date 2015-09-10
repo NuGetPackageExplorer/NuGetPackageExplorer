@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using NuGet.Resources;
+using NuGet.Utility;
 
 namespace NuGet
 {
@@ -16,7 +17,7 @@ namespace NuGet
             {
                 throw new ArgumentNullException("packageId");
             }
-            return (packageId.Length <= MaxPackageIdLength) && _idRegex.IsMatch(packageId);
+            return (packageId.Length <= MaxPackageIdLength) && _idRegex.IsMatch(packageId) || ReplacementTokens.AllReplacementTokens.Contains(packageId);
         }
 
         public static void ValidatePackageId(string packageId)
