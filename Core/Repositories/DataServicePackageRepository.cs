@@ -16,6 +16,7 @@ namespace NuGet
             _context = new DataServiceContext(uri);
             _context.SendingRequest += OnSendingRequest;
             _context.IgnoreMissingProperties = true;
+            _context.Credentials = CredentialCache.DefaultCredentials;
         }
 
         public string Source
