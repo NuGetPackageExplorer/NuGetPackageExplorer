@@ -28,47 +28,103 @@ namespace PackageExplorer
                 },
                 {
                     "Native",
-                    new [] { "(no version)", "native" }
+                    new []
+                    {
+                        "(no version)", "native"
+                    }
+                },   
+                {
+                    "ASP.NET 5",
+                    new []
+                    {
+                        "dnxcore", "dnxcore50"
+                    }
                 },
+
                 {
                     "Mono",
                     new[]
                     {
-                        "Android", "MonoAndroid", "iOS", "MonoTouch", "OSX", "MonoMac"
+                        "Android", "MonoAndroid", 
+                        "Mono", "Mono", 
+                        "iOS", "MonoTouch", 
+                        "OSX", "MonoMac"
+                    }
+                },
+                {
+                    "Xamarin",
+                    new[]
+                    {
+                        "Mac", "Xamarin.Mac", 
+                        "iOS", "Xamarin.iOS10", 
                     }
                 },
                 {
                     "Windows Phone (Windows Runtime)",
-                    new [] { "(no version)", "wpa", "v8.1", "wpa81"}
+                    new []
+                    {
+                        "(no version)", "wpa", 
+                        "v8.1", "wpa81"
+                    }
+                },
+                  {
+                    "Windows Phone (appx)", 
+                    new[] {
+                        "v8.1", "wpa81", 
+                    }
                 },
                 {
                     "Windows Phone (Silverlight)", 
-                    new[] {"v7.0", "sl3-wp", "v7.1 (Mango)", "sl4-wp71", "v8.0", "wp8", "v8.1", "wp81"}
+                    new[] {
+                        "v7.0", "sl3-wp", 
+                        "v7.1 (Mango)", "sl4-wp71", 
+                        "v8.0", "wp8", 
+                        "v8.1", "wp81"}
                 },
+
                 {
                     "Silverlight",
                     new[]
                     {
-                        "(no version)", "sl", "v2.0", "sl2", "v3.0", "sl30", "v4.0", "sl40", "v5.0", "sl50"
+                        "(no version)", "sl", 
+                        "v2.0", "sl2", 
+                        "v3.0", "sl30", 
+                        "v4.0", "sl40", 
+                        "v5.0", "sl50"
                     }
                 },
                 {
-                    "Windows Store",
-                    new[] { "(no version)", "netcore", "Windows 8", "netcore45", "Windows 8.1", "netcore451" }
+                    "Windows Store", 
+                    new[] {
+                        "(no version)", "netcore", 
+                        "Windows 8", "netcore45", 
+                        "Windows 8.1", "netcore451", 
+                        "Windows 10", "uap10.0", 
+                    }
                 },
                 {
                     ".NET Client profile",
                     new []
                     {
-                        "v3.5 client", "net35-client", "v4.0 client", "net40-client"
+                        "v3.5 client", "net35-client", 
+                        "v4.0 client", "net40-client"
                     }
                 },
                 {
                     ".NET",
                     new[]
                     {
-                        "(no version)", "net", "v1.0", "net10", "v1.1", "net11", "v2.0",
-                        "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40", "v4.5", "net45", "v4.5.1", "net451"
+                        "(no version)", "net", 
+                        "v1.0", "net10", 
+                        "v1.1", "net11",
+                        "v2.0", "net20", 
+                        "v3.0", "net30", 
+                        "v3.5", "net35", 
+                        "v4.0", "net40", 
+                        "v4.5", "net45", 
+                        "v4.5.1", "net451",
+                        "v4.5.2", "net452",
+                        "v4.6", "net46"
                     }
                 }
             };

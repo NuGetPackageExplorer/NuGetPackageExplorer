@@ -45,7 +45,12 @@ namespace NuGet
                 { "MonoAndroid", "MonoAndroid" },
                 { "MonoTouch", "MonoTouch" },
                 { "MonoMac", "MonoMac" },
-                { "native", "native" }
+                { "Mono", "Mono" },
+                { "native", "native" },
+                { "dnxcore", "DNXCore" },
+                { "Xamarin.ios", "Xamarin iOS" },
+                { "Xamarin.mac", "Xamarin Mac" },
+                { "uap", "Windows 10 Universal App Platform" },
             };
 
         private static readonly Dictionary<string, string> _knownProfiles = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
