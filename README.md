@@ -1,4 +1,5 @@
-# NuGetPackageExplorer
+# NuGet Package Explorer
+
 
 This is a fork of https://npe.codeplex.com/ including fixes. 
 
