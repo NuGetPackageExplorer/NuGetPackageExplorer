@@ -68,7 +68,7 @@ namespace PackageExplorer
                     new[]
                     {
                         "(no version)", "net", "v1.0", "net10", "v1.1", "net11", "v2.0",
-                        "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40", "v4.5", "net45", "v4.5.1", "net451"
+                        "net20", "v3.0", "net30", "v3.5", "net35", "v4.0", "net40", "v4.5", "net45", "v4.5.1", "net451","v4.5.2", "net452","v4.6.0", "net46"
                     }
                 }
             };
