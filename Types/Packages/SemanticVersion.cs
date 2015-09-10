@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using NuGetPackageExplorer.Types;
 
 namespace NuGet
 {
@@ -16,8 +17,19 @@ namespace NuGet
         private readonly string _originalString;
 
         public SemanticVersion(string version)
-            : this(Parse(version))
+            : this(version, true)
         {
+
+        }
+
+
+        private SemanticVersion(string version, bool parseVersion)
+        {
+            if (parseVersion)
+            {
+                Version = Parse(version).Version;
+            }
+
             // The constructor normalizes the version string so that it we do not need to normalize it every time we need to operate on it. 
             // The original string represents the original form in which the version is represented to be used when printing.
             _originalString = version;
@@ -56,8 +68,8 @@ namespace NuGet
 
             Version = NormalizeVersionValue(version);
             SpecialVersion = specialVersion ?? String.Empty;
-            _originalString = String.IsNullOrEmpty(originalString) 
-                ? version.ToString() + (!String.IsNullOrEmpty(specialVersion) ? '-' + specialVersion : null) 
+            _originalString = String.IsNullOrEmpty(originalString)
+                ? version.ToString() + (!String.IsNullOrEmpty(specialVersion) ? '-' + specialVersion : null)
                 : originalString;
         }
 
@@ -67,6 +79,9 @@ namespace NuGet
             Version = semVer.Version;
             SpecialVersion = semVer.SpecialVersion;
         }
+
+
+        public static SemanticVersion VersionReplacementToken = new SemanticVersion(ReplacementTokens.Version, false);
 
         /// <summary>
         /// Gets the normalized version portion.
@@ -149,6 +164,13 @@ namespace NuGet
             if (String.IsNullOrEmpty(version))
             {
                 throw new ArgumentException("Cannot be null or empty.", "version");
+            }
+
+            version = version.Trim();
+
+            if (ReplacementTokens.Version.Equals(version))
+            {
+                return SemanticVersion.VersionReplacementToken;
             }
 
             SemanticVersion semVer;
@@ -272,7 +294,7 @@ namespace NuGet
 
         public override int GetHashCode()
         {
-            return Version.GetHashCode()*3137 +
+            return Version == null ? 0 : (Version.GetHashCode() * 3137) +
                    (SpecialVersion == null ? 0 : SpecialVersion.GetHashCode());
         }
     }
