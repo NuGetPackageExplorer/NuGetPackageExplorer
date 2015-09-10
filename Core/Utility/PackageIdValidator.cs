@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text.RegularExpressions;
 using NuGet.Resources;
-using NuGet.Utility;
+using NuGetPackageExplorer.Types;
 
 namespace NuGet
 {
