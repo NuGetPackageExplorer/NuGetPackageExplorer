@@ -71,6 +71,7 @@
     <Compile Include="Packages\PackageReferenceSet.cs" />
     <Compile Include="Packages\SemanticVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReplacementTokens.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="NuGetPackageExplorer.snk" />
