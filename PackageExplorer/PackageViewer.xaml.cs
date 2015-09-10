@@ -32,14 +32,31 @@ namespace PackageExplorer
                     {
                         "(no version)", "native"
                     }
+                },   
+                {
+                    "ASP.NET 5",
+                    new []
+                    {
+                        "dnxcore", "dnxcore50"
+                    }
                 },
+
                 {
                     "Mono",
                     new[]
                     {
                         "Android", "MonoAndroid", 
+                        "Mono", "Mono", 
                         "iOS", "MonoTouch", 
                         "OSX", "MonoMac"
+                    }
+                },
+                {
+                    "Xamarin",
+                    new[]
+                    {
+                        "Mac", "Xamarin.Mac", 
+                        "iOS", "Xamarin.iOS10", 
                     }
                 },
                 {
@@ -50,6 +67,12 @@ namespace PackageExplorer
                         "v8.1", "wpa81"
                     }
                 },
+                  {
+                    "Windows Phone (appx)", 
+                    new[] {
+                        "v8.1", "wpa81", 
+                    }
+                },
                 {
                     "Windows Phone (Silverlight)", 
                     new[] {
@@ -57,6 +80,14 @@ namespace PackageExplorer
                         "v7.1 (Mango)", "sl4-wp71", 
                         "v8.0", "wp8", 
                         "v8.1", "wp81"}
+                },
+                {
+                    "Windows Store", 
+                    new[] {
+                        "Windows 8", "netcore45", 
+                        "Windows 8.1", "netcore451", 
+                        "Windows 10", "uap10.0", 
+                    }
                 },
                 {
                     "Silverlight",
