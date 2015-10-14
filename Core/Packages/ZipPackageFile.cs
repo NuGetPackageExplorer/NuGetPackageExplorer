@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.Packaging;
 using System.Runtime.Versioning;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal class ZipPackageFile : PackageFileBase
     {

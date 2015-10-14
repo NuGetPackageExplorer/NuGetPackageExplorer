@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO.Packaging;
 using System.Text;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal class ZipPackageAssemblyReference : ZipPackageFile, IPackageAssemblyReference
     {

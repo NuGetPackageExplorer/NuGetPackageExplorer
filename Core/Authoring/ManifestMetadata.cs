@@ -7,9 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Xml.Serialization;
-using NuGet.Resources;
+using NuGet;
+using NuGetPe.Resources;
 
-namespace NuGet
+namespace NuGetPe
 {
     [XmlType("metadata")]
     public sealed class ManifestMetadata : IPackageMetadata, IValidatableObject
@@ -342,11 +343,7 @@ namespace NuGet
         {
             if (!String.IsNullOrEmpty(Id))
             {
-                if (Id.Length > PackageIdValidator.MaxPackageIdLength)
-                {
-                    yield return new ValidationResult(String.Format(CultureInfo.CurrentCulture, NuGetResources.Manifest_IdMaxLengthExceeded));
-                }
-                else if (!PackageIdValidator.IsValidPackageId(Id))
+                if (!NuGet.PackageIdValidator.IsValidPackageId(Id))
                 {
                     yield return new ValidationResult(String.Format(CultureInfo.CurrentCulture, NuGetResources.InvalidPackageId, Id));
                 }

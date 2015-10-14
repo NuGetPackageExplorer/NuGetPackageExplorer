@@ -2,9 +2,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Versioning;
 
-namespace NuGet
+namespace NuGetPe
 {
-    public interface IPackageFile : IFrameworkTargetable
+    public interface IPackageFile : NuGet.IFrameworkTargetable
     {
         string Path { get; }
 

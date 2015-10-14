@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
-using NuGet.Resources;
+using NuGetPe.Resources;
 
-namespace NuGet
+namespace NuGetPe
 {
     public class ZipPackage : IPackage
     {
@@ -47,7 +47,7 @@ namespace NuGet
 
         public string Id { get; set; }
 
-        public SemanticVersion Version { get; set; }
+        public NuGet.SemanticVersion Version { get; set; }
 
         public string Title { get; set; }
 

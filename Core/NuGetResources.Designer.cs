@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace NuGet.Resources {
+namespace NuGetPe.Resources {
     using System;
     
     

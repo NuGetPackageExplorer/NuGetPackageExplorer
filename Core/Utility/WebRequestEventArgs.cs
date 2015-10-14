@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace NuGet
+namespace NuGetPe
 {
     public class WebRequestEventArgs : EventArgs
     {

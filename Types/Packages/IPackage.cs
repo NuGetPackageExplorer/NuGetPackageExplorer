@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 
-namespace NuGet
+namespace NuGetPe
 {
     public interface IPackage : IPackageMetadata, IServerPackageMetadata
     {

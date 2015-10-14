@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NuGet
+namespace NuGetPe
 {
     public interface IServerPackageMetadata
     {

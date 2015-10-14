@@ -1,6 +1,6 @@
 using System.IO;
 
-namespace NuGet
+namespace NuGetPe
 {
     public sealed class PhysicalPackageFile : PackageFileBase
     {

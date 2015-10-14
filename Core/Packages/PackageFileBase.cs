@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Versioning;
+using NuGet;
 
-namespace NuGet
+namespace NuGetPe
 {
     public abstract class PackageFileBase : IPackageFile
     {

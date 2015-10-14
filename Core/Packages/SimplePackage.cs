@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal class SimplePackage : IPackage
     {
@@ -62,7 +62,7 @@ namespace NuGet
 
         public string Id { get; private set; }
 
-        public SemanticVersion Version { get; private set; }
+        public NuGet.SemanticVersion Version { get; private set; }
 
         public string Title { get; private set; }
 

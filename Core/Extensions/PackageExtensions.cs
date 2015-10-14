@@ -7,7 +7,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class PackageExtensions
     {
@@ -21,16 +21,13 @@ namespace NuGet
 
         public static string GetHash(this IPackage package)
         {
-            return GetHash(package, new CryptoHashProvider());
+            return GetHash(package, new NuGet.CryptoHashProvider());
         }
 
-        public static string GetHash(this IPackage package, IHashProvider hashProvider)
+        public static string GetHash(this IPackage package, NuGet.IHashProvider hashProvider)
         {
             using (Stream stream = package.GetStream())
-            {
-                byte[] packageBytes = stream.ReadAllBytes();
-                return Convert.ToBase64String(hashProvider.CalculateHash(packageBytes));
-            }
+                return Convert.ToBase64String(hashProvider.CalculateHash(stream));
         }
 
         public static string GetFullName(this IPackageMetadata package)

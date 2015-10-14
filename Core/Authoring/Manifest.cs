@@ -12,9 +12,10 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using NuGet.Resources;
+using NuGet;
+using NuGetPe.Resources;
 
-namespace NuGet
+namespace NuGetPe
 {
     [XmlType("package")]
     public class Manifest

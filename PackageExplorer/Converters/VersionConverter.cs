@@ -2,18 +2,18 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorer
 {
-    [ValueConversion(typeof(SemanticVersion), typeof(string))]
+    [ValueConversion(typeof(NuGet.SemanticVersion), typeof(string))]
     public class VersionConverter : IValueConverter
     {
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var version = (SemanticVersion) value;
+            var version = (NuGet.SemanticVersion) value;
             return version.ToString();
         }
 
@@ -26,8 +26,8 @@ namespace PackageExplorer
             }
             else
             {
-                SemanticVersion version;
-                if (SemanticVersion.TryParse(stringValue, out version))
+                NuGet.SemanticVersion version;
+                if (NuGet.SemanticVersion.TryParse(stringValue, out version))
                 {
                     return version;
                 }

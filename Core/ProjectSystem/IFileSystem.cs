@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace NuGet
+namespace NuGetPe
 {
     public interface IFileSystem
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
 
@@ -89,7 +89,7 @@ namespace PackageExplorer
             if (selectedPackage != null)
             {
                 _newPackageDependency.Id = selectedPackage.Id;
-                _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version);
+                _newPackageDependency.VersionSpec = NuGet.VersionUtility.ParseVersionSpec(selectedPackage.Version);
             }
         }
 

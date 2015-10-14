@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal static class FileSystemExtensions
     {
