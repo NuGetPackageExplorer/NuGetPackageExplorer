@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using NuGet;
+using NuGetPe;
 
 namespace NuGetPackageExplorer.Types
 {

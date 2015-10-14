@@ -5,9 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
-using NuGet.Resources;
+using NuGetPe.Resources;
 
-namespace NuGet
+namespace NuGetPe
 {
     [XmlType("file")]
     public class ManifestFile : IValidatableObject

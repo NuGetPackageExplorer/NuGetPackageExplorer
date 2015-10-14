@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
-using NuGet.Resources;
+using NuGetPe.Resources;
 
 //using Microsoft.Internal.Web.Utils;
 
-namespace NuGet
+namespace NuGetPe
 {
     public class UserSettings : ISettings
     {

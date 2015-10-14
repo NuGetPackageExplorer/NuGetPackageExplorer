@@ -1,4 +1,4 @@
-﻿namespace NuGet
+﻿namespace NuGetPe
 {
     internal static class ObjectExtensions
     {

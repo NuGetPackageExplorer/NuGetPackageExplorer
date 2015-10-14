@@ -1,6 +1,6 @@
 using System.Runtime.Versioning;
 
-namespace NuGet
+namespace NuGetPe
 {
     public interface IPackageAssemblyReference : IPackageFile
     {

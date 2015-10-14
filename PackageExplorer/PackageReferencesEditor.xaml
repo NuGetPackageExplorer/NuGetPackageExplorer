@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:PackageExplorer" 
         xmlns:settings="clr-namespace:PackageExplorer.Properties"
-        xmlns:types="clr-namespace:NuGet;assembly=NuGetPackageExplorer.Types"                      
+        xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types"                      
         Title="Package References Editor" 
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"

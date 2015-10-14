@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
-using NuGet.Resources;
+using NuGetPe.Resources;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal static class ManifestSchemaUtility
     {

@@ -88,14 +88,14 @@ namespace PackageExplorerViewModel
         {
             return !String.IsNullOrEmpty(packageSource) &&
                    Path.IsPathRooted(packageSource) &&
-                   Path.GetExtension(packageSource).Equals(NuGet.Constants.PackageExtension,
+                   Path.GetExtension(packageSource).Equals(NuGetPe.Constants.PackageExtension,
                                                            StringComparison.OrdinalIgnoreCase);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.Confirm(System.String,System.String,System.Boolean)")]
         private void Save()
         {
-            string expectedPackageName = ViewModel.PackageMetadata + NuGet.Constants.PackageExtension;
+            string expectedPackageName = ViewModel.PackageMetadata + NuGetPe.Constants.PackageExtension;
             string packageName = Path.GetFileName(ViewModel.PackageSource);
             if (!expectedPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase))
             {
@@ -119,7 +119,7 @@ namespace PackageExplorerViewModel
 
         private void SaveAs()
         {
-            string packageName = ViewModel.PackageMetadata + NuGet.Constants.PackageExtension;
+            string packageName = ViewModel.PackageMetadata + NuGetPe.Constants.PackageExtension;
             string title = "Save " + packageName;
             const string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
             string selectedPackagePath;
@@ -129,9 +129,9 @@ namespace PackageExplorerViewModel
                                                         out selectedPackagePath, out filterIndex))
             {
                 if (filterIndex == 1 &&
-                    !selectedPackagePath.EndsWith(NuGet.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
+                    !selectedPackagePath.EndsWith(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                 {
-                    selectedPackagePath += NuGet.Constants.PackageExtension;
+                    selectedPackagePath += NuGetPe.Constants.PackageExtension;
                 }
 
                 // prompt if the file already exists on disk
@@ -158,7 +158,7 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void SaveMetadataAs()
         {
-            string packageName = ViewModel.PackageMetadata + NuGet.Constants.ManifestExtension;
+            string packageName = ViewModel.PackageMetadata + NuGetPe.Constants.ManifestExtension;
             string title = "Save " + packageName;
             const string filter = "NuGet manifest file (*.nuspec)|*.nuspec|All files (*.*)|*.*";
             string selectedPath;
@@ -170,9 +170,9 @@ namespace PackageExplorerViewModel
                 try
                 {
                     if (filterIndex == 1 &&
-                        !selectedPath.EndsWith(NuGet.Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase))
+                        !selectedPath.EndsWith(NuGetPe.Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase))
                     {
-                        selectedPath += NuGet.Constants.ManifestExtension;
+                        selectedPath += NuGetPe.Constants.ManifestExtension;
                     }
 
                     ViewModel.ExportManifest(selectedPath);

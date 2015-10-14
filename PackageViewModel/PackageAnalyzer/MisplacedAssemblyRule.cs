@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel.Rules

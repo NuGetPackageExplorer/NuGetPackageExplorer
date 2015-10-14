@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class SettingsExtensions
     {

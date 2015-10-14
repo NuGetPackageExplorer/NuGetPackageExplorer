@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -38,7 +38,7 @@ namespace PackageExplorerViewModel
                     // it's a file
                     // Starting from nuget 2.0, they use a dummy file with the name "_._" to represent
                     // an empty folder. Therefore, we just ignore it. 
-                    if (!s.Equals(NuGet.Constants.PackageEmptyFileName, StringComparison.OrdinalIgnoreCase))
+                    if (!s.Equals(NuGetPe.Constants.PackageEmptyFileName, StringComparison.OrdinalIgnoreCase))
                     {
                         root.Children.Add(new PackageFile(parsedPaths[i].Item1, s, root));
                     }

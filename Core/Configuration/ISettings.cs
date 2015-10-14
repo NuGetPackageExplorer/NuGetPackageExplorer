@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace NuGet
+namespace NuGetPe
 {
     public interface ISettings
     {

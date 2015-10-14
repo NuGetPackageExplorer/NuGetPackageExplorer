@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
 using System.Windows.Input;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel

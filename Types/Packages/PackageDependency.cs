@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace NuGet
+namespace NuGetPe
 {
     public class PackageDependency
     {
@@ -14,7 +14,7 @@ namespace NuGet
         {
         }
 
-        public PackageDependency(string id, IVersionSpec versionSpec)
+        public PackageDependency(string id, NuGet.IVersionSpec versionSpec)
         {
             if (String.IsNullOrEmpty(id))
             {
@@ -26,7 +26,7 @@ namespace NuGet
 
         public string Id { get; private set; }
 
-        public IVersionSpec VersionSpec { get; private set; }
+        public NuGet.IVersionSpec VersionSpec { get; private set; }
 
         public override string ToString()
         {

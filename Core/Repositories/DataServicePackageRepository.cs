@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net;
 
-namespace NuGet
+namespace NuGetPe
 {
     public class DataServicePackageRepository : IPackageRepository, IPackageSearchable
     {

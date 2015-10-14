@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Data.Services.Common;
 
-namespace NuGet
+namespace NuGetPe
 {
     public interface IPackageInfoType
     {
@@ -13,7 +13,7 @@ namespace NuGet
     public class PackageInfo : IPackageInfoType
     {
         private string _version;
-        private SemanticVersion _semanticVersion;
+        private NuGet.SemanticVersion _semanticVersion;
 
         public string Id { get; set; }
         public string Version
@@ -28,11 +28,11 @@ namespace NuGet
 
                 if (String.IsNullOrEmpty(_version))
                 {
-                    _semanticVersion = new SemanticVersion(0, 0, 0, 0);
+                    _semanticVersion = new NuGet.SemanticVersion(0, 0, 0, 0);
                 }
                 else
                 {
-                    SemanticVersion.TryParse(_version, out _semanticVersion);
+                    NuGet.SemanticVersion.TryParse(_version, out _semanticVersion);
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace NuGet
             }
         }
 
-        public SemanticVersion SemanticVersion
+        public NuGet.SemanticVersion SemanticVersion
         {
             get
             {

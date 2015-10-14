@@ -2,14 +2,14 @@
 using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
     public class EditablePackageDependency : INotifyPropertyChanged, IDataErrorInfo
     {
         private string _id;
-        private IVersionSpec _versionSpec;
+        private NuGet.IVersionSpec _versionSpec;
         private Func<EditablePackageDependencySet> _getActiveDependencySet;
 
         public EditablePackageDependency(Func<EditablePackageDependencySet> getActiveDependencySet)
@@ -31,7 +31,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public IVersionSpec VersionSpec
+        public NuGet.IVersionSpec VersionSpec
         {
             get { return _versionSpec; }
             set
@@ -81,7 +81,7 @@ namespace PackageExplorerViewModel
                     return VersionSpec != null ? "Package id must not be empty." : (string)null;
                 }
 
-                if (!PackageIdValidator.IsValidPackageId(Id))
+                if (!NuGet.PackageIdValidator.IsValidPackageId(Id))
                 {
                     return "'" + Id + "' is an invalid package id.";
                 }

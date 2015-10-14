@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 using Ookii.Dialogs.Wpf;
 using Constants = PackageExplorerViewModel.Constants;
