@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageExplorer", "PackageExplorer\PackageExplorer.csproj", "{3B56B367-7763-4F70-9933-2B8B23718A0D}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -23,6 +23,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Windows8Shim", "Windows8Shim\Windows8Shim.csproj", "{53973396-F433-4D77-BB00-A2B0EAB83625}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeExecutor", "CodeExecutor\CodeExecutor.csproj", "{0DE0AF9F-4D53-4900-8D15-F02C3542584F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9BCEC868-73D3-4393-8099-D4DF2DC6DB74}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE. = LICENSE.
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
