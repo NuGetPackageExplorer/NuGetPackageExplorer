@@ -8,7 +8,7 @@
     <ProjectGuid>{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NuGet</RootNamespace>
+    <RootNamespace>NuGetPe</RootNamespace>
     <AssemblyName>Core</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
