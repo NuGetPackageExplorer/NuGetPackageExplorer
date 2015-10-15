@@ -68,7 +68,7 @@ namespace NuGetPe
         {
             return _manifestSchemaSetCache.GetOrAdd(schemaNamespace, schema =>
             {
-                const string schemaResourceName = "NuGet.Authoring.nuspec.xsd";
+                const string schemaResourceName = "NuGetPe.Authoring.nuspec.xsd";
 
                 string formattedContent;
 
