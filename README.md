@@ -8,5 +8,5 @@ NuGet Package Explorer is a ClickOnce application which allows creating and expl
 
 This is not an official product from Microsoft.
 
-![image](https://cloud.githubusercontent.com/assets/5808377/11324250/9e9c79b0-912c-11e5-8b1e-345b38131053.png)
+![image](https://cloud.githubusercontent.com/assets/5808377/11441139/59644e28-9509-11e5-9ec7-a17dd4fe6266.png)
 
