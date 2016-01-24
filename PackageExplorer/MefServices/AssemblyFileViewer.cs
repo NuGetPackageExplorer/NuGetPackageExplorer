@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,7 +30,7 @@ namespace PackageExplorer
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
-                foreach (var data in assemblyData)
+                foreach (var data in assemblyData.OrderBy(d => d.Key))
                 {
                     var label = new TextBlock 
                     { 
