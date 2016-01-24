@@ -21,6 +21,7 @@ namespace PackageExplorerViewModel
         private bool _hasError;
         private string _publishKey;
         private bool? _publishAsUnlisted = true;
+        private bool? _appendV2ApiToUrl = true;
         private string _selectedPublishItem;
         private bool _showProgress;
         private string _status;
@@ -114,6 +115,19 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public bool? AppendV2ApiToUrl
+        {
+            get { return _appendV2ApiToUrl; }
+            set
+            {
+                if (_appendV2ApiToUrl != value)
+                {
+                    _appendV2ApiToUrl = value;
+                    OnPropertyChanged("AppendV2ApiToUrl");
+                }
+            }
+        }
+        
         public string Id
         {
             get { return _package.Id; }
@@ -223,7 +237,7 @@ namespace PackageExplorerViewModel
 
             try
             {
-                await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false);
+                await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false);
 
                 OnCompleted();
             }
