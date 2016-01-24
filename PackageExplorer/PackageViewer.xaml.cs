@@ -37,7 +37,7 @@ namespace PackageExplorer
                     "ASP.NET 5",
                     new []
                     {
-                        "dnxcore", "dnxcore50"
+                        "dnxcore", "dnxcore50", "dotnet5.4"
                     }
                 },
 
@@ -124,7 +124,8 @@ namespace PackageExplorer
                         "v4.5", "net45", 
                         "v4.5.1", "net451",
                         "v4.5.2", "net452",
-                        "v4.6", "net46"
+                        "v4.6", "net46",
+                        "v4.6.1", "net461",
                     }
                 }
             };

@@ -22,12 +22,15 @@ namespace NuGet
 
         private static readonly Dictionary<string, string> _knownIdentifiers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
+                { "DNX", "DNX" },
                 { "NET", NetFrameworkIdentifier },
                 { ".NET", NetFrameworkIdentifier },
                 { "NETFramework", NetFrameworkIdentifier },
                 { ".NETFramework", NetFrameworkIdentifier },
                 { "NETCore", NetCoreFrameworkIdentifier},
                 { ".NETCore", NetCoreFrameworkIdentifier},
+                { "NETPlatform", "NETPlatform"},
+                { ".NETPlatform", "NETPlatform"},
                 { "WinRT", NetCoreFrameworkIdentifier},     // 'WinRT' is now deprecated. Use 'Windows' or 'win' instead.
                 { ".NETMicroFramework", ".NETMicroFramework" },
                 { "netmf", ".NETMicroFramework" },
@@ -38,6 +41,7 @@ namespace NuGet
                 { "portable", PortableFrameworkIdentifier },
                 { "wp", "WindowsPhone" },
                 { "WindowsPhone", "WindowsPhone" },
+                { "WindowsPhoneApp", "WindowsPhoneApp"},
                 { "WindowsPhoneAppx", "WindowsPhoneAppx"},
                 { "wpa", "WindowsPhoneAppx"},
                 { "Windows", "Windows" },
