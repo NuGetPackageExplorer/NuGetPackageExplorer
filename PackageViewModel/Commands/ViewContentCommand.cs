@@ -95,10 +95,10 @@ namespace PackageExplorerViewModel
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     // don't let plugin crash the app
-                    content = Resources.PluginFailToReadContent;
+                    content = Resources.PluginFailToReadContent + Environment.NewLine + ex.ToString();
                 }
 
                 if (content is string)
