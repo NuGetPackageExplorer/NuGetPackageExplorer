@@ -30,8 +30,8 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://npe.codeplex.com/releases/clickonce/</InstallUrl>
-    <SupportUrl>http://npe.codeplex.com</SupportUrl>
-    <ErrorReportUrl>http://npe.codeplex.com/WorkItem/Create%3fProjectName=npe</ErrorReportUrl>
+    <SupportUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer</SupportUrl>
+    <ErrorReportUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/issues/new</ErrorReportUrl>
     <ProductName>NuGet Package Explorer</ProductName>
     <PublisherName>NuGet Package Explorer</PublisherName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
