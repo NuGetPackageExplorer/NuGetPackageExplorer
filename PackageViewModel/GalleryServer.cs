@@ -30,10 +30,10 @@ namespace PackageExplorerViewModel
             get { return _source; }
         }
 
-        public async Task PushPackage(string apiKey, string filePath, IPackageMetadata package, bool pushAsUnlisted)
+        public async Task PushPackage(string apiKey, string filePath, IPackageMetadata package, bool pushAsUnlisted, bool appendV2ApiToUrl)
         {
-            string requestUri = EnsureTrailingSlash(_source) + ServiceEndpoint;
-            
+            string requestUri = CreateRequestUri(appendV2ApiToUrl);
+
             HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
             httpRequest.Method = "PUT";
             httpRequest.AllowAutoRedirect = true;
@@ -47,19 +47,26 @@ namespace PackageExplorerViewModel
 
             // sending package data asynchronously
             await multipartRequest.CreateMultipartRequest(httpRequest);
-            
+
             // waiting for response asynchronously
             await EnsureSuccessfulResponse(httpRequest, HttpStatusCode.Created);
 
             if (pushAsUnlisted)
             {
-                await DeletePackageFromServer(apiKey, package.Id, package.Version.ToString());
+                await DeletePackageFromServer(apiKey, package.Id, package.Version.ToString(), appendV2ApiToUrl);
             }
         }
 
-        private Task DeletePackageFromServer(string apiKey, string packageId, string packageVersion)
+        private string CreateRequestUri(bool appendV2ApiToUrl)
         {
-            string requestUri = EnsureTrailingSlash(_source) + ServiceEndpoint + "/" + packageId + "/" + packageVersion;
+            var source = EnsureTrailingSlash(_source);
+
+            return appendV2ApiToUrl ? source + ServiceEndpoint : source;
+        }
+
+        private Task DeletePackageFromServer(string apiKey, string packageId, string packageVersion, bool appendV2ApiToUrl)
+        {
+            string requestUri = CreateRequestUri(appendV2ApiToUrl) + "/" + packageId + "/" + packageVersion;
 
             HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
             httpRequest.Method = "DELETE";
