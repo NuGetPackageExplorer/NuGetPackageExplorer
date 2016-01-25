@@ -23,6 +23,7 @@ namespace NuGet
         private static readonly Dictionary<string, string> _knownIdentifiers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             {
                 { "DNX", "DNX" },
+                { "dotnet", "dotnet" },
                 { "NET", NetFrameworkIdentifier },
                 { ".NET", NetFrameworkIdentifier },
                 { "NETFramework", NetFrameworkIdentifier },

@@ -37,7 +37,8 @@ namespace PackageExplorer
                     "ASP.NET 5",
                     new []
                     {
-                        "dnxcore", "dnxcore50", "dotnet5.4"
+                        "dnxcore", "dnxcore50", 
+                        "dotnet5.4","dotnet5.4"
                     }
                 },
 
@@ -115,6 +116,7 @@ namespace PackageExplorer
                     new[]
                     {
                         "(no version)", "net", 
+                        "dotnet", "dotnet", 
                         "v1.0", "net10", 
                         "v1.1", "net11",
                         "v2.0", "net20", 
