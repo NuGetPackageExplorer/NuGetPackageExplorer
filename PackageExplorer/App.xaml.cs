@@ -47,7 +47,8 @@ namespace PackageExplorer
             var window = Container.GetExportedValue<MainWindow>();
             window.Show();
 
-            CheckWindows8AndDisplayUpsellDialog();
+            //Disable this sellup as it doesn't work well with Windows 10 and the Windows Store application is not maintained.
+            //CheckWindows8AndDisplayUpsellDialog();
 
             if (e.Args.Length > 0)
             {
