@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -19,7 +19,7 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <CodeAnalysisRuleSet>..\NuGetPackageExplorer.ruleset</CodeAnalysisRuleSet>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
-    <PublishUrl>..\publish\</PublishUrl>
+    <PublishUrl>C:\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>true</UpdateEnabled>
@@ -77,7 +77,7 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>DF7E71F700D97ABF6044E4E154F0768C5011ABC1</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>3EDD98B07471EFE87B7C059E08498A018F10530D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
   </PropertyGroup>
@@ -99,6 +99,9 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>bin\Release\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>PackageExplorer_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GrayscaleEffect, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f238d79773caa06, processorArchitecture=MSIL">
@@ -355,7 +358,6 @@
     <Resource Include="Images\build.png" />
     <Resource Include="Images\props.png" />
     <Resource Include="Images\FindHS.png" />
-    <Content Include="Windows8Shim.dll" />
     <Content Include="Resources\fxAssemblies.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -393,6 +395,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="PackageExplorer_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
     </None>
