@@ -40,6 +40,8 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -73,6 +75,10 @@
                 <!-- .NET for Windows Store apps -->
                 <CheckBox x:Name="WindowsCheckBox" Grid.Row="3" Grid.ColumnSpan="2"  VerticalAlignment="Center" Content=".NET for Windows Store apps" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState">
                 </CheckBox>
+
+                <!-- Xamarin -->
+                <CheckBox x:Name="XamariniOS" Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Center" Content="Xamarin iOS" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState"></CheckBox>
+                <CheckBox x:Name="XamarinAndroid" Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Center" Content="Xamarin Android" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState"></CheckBox>
             </Grid>
         </Border>
     </DockPanel>

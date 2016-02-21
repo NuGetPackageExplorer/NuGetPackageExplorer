@@ -37,6 +37,16 @@ namespace PackageExplorer
                 builder.Append("+win8");
             }
 
+            if (XamariniOS.IsChecked ?? false)
+            {
+                builder.Append("+xamarinios");
+            }
+
+            if (XamarinAndroid.IsChecked ?? false)
+            {
+                builder.Append("+monoandroid");
+            }
+
             builder.Insert(0, "portable-");
             return builder.ToString();
         }
@@ -53,7 +63,7 @@ namespace PackageExplorer
 
         private void EvaluateButtonEnabledState(object sender, RoutedEventArgs e)
         {
-            var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPCheckBox };
+            var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPCheckBox, XamarinAndroid, XamariniOS };
             var count = _allCheckBoxes.Count(p => p.IsChecked == true);
             OKButton.IsEnabled = count >= 2;
         }
