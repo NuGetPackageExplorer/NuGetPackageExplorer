@@ -12,28 +12,29 @@ namespace NuGet
     [Serializable]
     public sealed class SemanticVersion : IComparable, IComparable<SemanticVersion>, IEquatable<SemanticVersion>
     {
+
+
+
+
+
         private const string SemanticVersionRegex = @"^(?<Version>\d+(\s*\.\s*\d+){0,3})(?<Release>-[a-z][0-9a-z-]*)?$";
         private const string StrictSemanticVersionRegex = @"^(?<Version>\d+(\.\d+){2})(?<Release>-[a-z][0-9a-z-]*)?$";
-        private readonly string _originalString;
+        private string _originalString;
+
+
+        private SemanticVersion()
+        {
+
+        }
 
         public SemanticVersion(string version)
-            : this(version, true)
+            : this(Parse(version))
         {
 
         }
 
 
-        private SemanticVersion(string version, bool parseVersion)
-        {
-            if (parseVersion)
-            {
-                Version = Parse(version).Version;
-            }
 
-            // The constructor normalizes the version string so that it we do not need to normalize it every time we need to operate on it. 
-            // The original string represents the original form in which the version is represented to be used when printing.
-            _originalString = version;
-        }
 
         public SemanticVersion(int major, int minor, int build, int revision)
             : this(new Version(major, minor, build, revision))
@@ -81,7 +82,16 @@ namespace NuGet
         }
 
 
-        public static SemanticVersion VersionReplacementToken = new SemanticVersion(ReplacementTokens.Version, false);
+        private static SemanticVersion CreateWithoutParse(string originalString)
+        {
+            return new SemanticVersion
+            {
+                _originalString = originalString
+            };
+
+        }
+
+        public static SemanticVersion VersionReplacementToken = CreateWithoutParse(ReplacementTokens.Version);
 
         /// <summary>
         /// Gets the normalized version portion.
