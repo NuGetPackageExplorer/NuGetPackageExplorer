@@ -35,12 +35,14 @@ namespace PackageExplorerViewModel
             string requestUri = CreateRequestUri(appendV2ApiToUrl);
 
             HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
+
             httpRequest.Method = "PUT";
             httpRequest.AllowAutoRedirect = true;
-            httpRequest.AllowWriteStreamBuffering = false;
             httpRequest.KeepAlive = false;
             httpRequest.Headers.Add(ApiKeyHeader, apiKey);
             httpRequest.UserAgent = _userAgent;
+            httpRequest.UseDefaultCredentials = true;
+            httpRequest.PreAuthenticate = true;
 
             var multipartRequest = new MultipartWebRequest();
             multipartRequest.AddFile(new FileInfo(filePath), package.ToString());
@@ -69,6 +71,7 @@ namespace PackageExplorerViewModel
             string requestUri = CreateRequestUri(appendV2ApiToUrl) + "/" + packageId + "/" + packageVersion;
 
             HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
+            httpRequest.UseDefaultCredentials = true;
             httpRequest.Method = "DELETE";
             httpRequest.Headers.Add(ApiKeyHeader, apiKey);
             httpRequest.UserAgent = _userAgent;
