@@ -14,6 +14,7 @@ namespace NuGet
         public DataServicePackageRepository(Uri uri)
         {
             _context = new DataServiceContext(uri);
+            _context.Credentials = CredentialCache.DefaultCredentials;
             _context.SendingRequest += OnSendingRequest;
             _context.IgnoreMissingProperties = true;
             _context.Credentials = CredentialCache.DefaultCredentials;
@@ -72,6 +73,14 @@ namespace NuGet
             {
                 query = query.Where(p => !p.IsPrerelease);
             }
+
+            return query;
+        }
+
+        public IQueryable<DataServicePackage> LegacyGetPackagesById(string id)
+        {
+            IQueryable<DataServicePackage> query = _context.CreateQuery<DataServicePackage>(Constants.PackageServiceEntitySetName)
+                                                           .Where(p => p.Id.ToLower() == id.ToLower());
 
             return query;
         }
