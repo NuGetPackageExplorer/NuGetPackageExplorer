@@ -133,7 +133,8 @@ namespace PackageExplorer
 
         private async Task<string> DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken)
         {
-            var httpClient = new HttpClient();
+            var handler = new HttpClientHandler { Credentials = System.Net.CredentialCache.DefaultCredentials };
+            var httpClient = new HttpClient(handler);
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(HttpUtility.CreateUserAgentString(Constants.UserAgentClient));
 
             using (HttpResponseMessage response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancelToken))
