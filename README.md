@@ -1,6 +1,6 @@
 ![Logo](https://cloud.githubusercontent.com/assets/5808377/11324261/06c2ccd8-912d-11e5-87e4-9898b2217baa.png)
 
-[Latest clickonce release 3.10 (feb 2016)](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (uninstall previous version first)
+[Latest clickonce release 3.11 (feb 2016)](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (uninstall previous version first)
 
 
 [![Build status](https://ci.appveyor.com/api/projects/status/nhowjp0e1w0225v7/branch/master?svg=true)](https://ci.appveyor.com/project/NuGetPackageExplorer/nugetpackageexplorer/branch/master)
