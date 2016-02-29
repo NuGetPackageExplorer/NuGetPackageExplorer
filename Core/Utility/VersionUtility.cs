@@ -200,11 +200,14 @@ namespace NuGet
 
             if (!String.IsNullOrEmpty(identifierPart))
             {
+                string parsedIdentifierPart;
                 // Try to nomalize the identifier to a known identifier
-                if (!_knownIdentifiers.TryGetValue(identifierPart, out identifierPart))
+                if (_knownIdentifiers.TryGetValue(identifierPart, out parsedIdentifierPart))
                 {
-                    return UnsupportedFrameworkName;
+                    identifierPart = parsedIdentifierPart;
                 }
+                //if not supported, just continue. Otherwise, 2 different platforms which lead to unsupported could lead to a crash (reference already exists). 
+                //Also letting NPE crashing because of missing platforms isn't needed.
             }
 
             if (!String.IsNullOrEmpty(profilePart))
