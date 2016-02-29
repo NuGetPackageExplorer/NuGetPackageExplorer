@@ -5,14 +5,15 @@
         xmlns:self="clr-namespace:PackageExplorer" 
         xmlns:settings="clr-namespace:PackageExplorer.Properties"
         xmlns:resources="clr-namespace:PackageExplorer.Resources"
-        FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" 
+        xmlns:wpf="clr-namespace:PackageExplorer.Wpf"
+        FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" 		
         Title="Pick Target Frameworks"
         WindowStartupLocation="CenterOwner" 
         SizeToContent="WidthAndHeight" 
         ShowInTaskbar="False"
         MinWidth="300"
         MinHeight="320">
-    
+
     <self:StandardDialog.Resources>
         <Style TargetType="{x:Type ComboBox}">
             <Setter Property="Grid.Column" Value="1" />
@@ -21,8 +22,37 @@
             <Setter Property="Margin" Value="3,2,0,2" />
             <Setter Property="SelectedIndex" Value="0" />
         </Style>
+
+        <DataTemplate x:Key="PortableClassDataTemplate">
+            <ListBoxItem>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected,Mode=TwoWay}" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Name}"/>
+                </Grid>
+            </ListBoxItem>
+        </DataTemplate>
+        <DataTemplate x:Key="PortableClassSelectionDataTemplate">
+            <ListBoxItem>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <CheckBox Grid.Column="0" x:Name="CheckBox" IsChecked="{Binding IsSelected,Mode=TwoWay}" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState"/>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" HorizontalAlignment="Stretch" SelectionChanged="EvaluateButtonEnabledState" />
+                </Grid>
+            </ListBoxItem>
+        </DataTemplate>
+
+        <wpf:PortableClassDataTemplateSelector x:Key="PortableClassDataTemplateSelector" PlatformDataTemplate="{StaticResource PortableClassDataTemplate}" PlatformSelectionDataTemplate="{StaticResource PortableClassSelectionDataTemplate}" />
     </self:StandardDialog.Resources>
-    
+
     <DockPanel LastChildFill="True">
         <Label DockPanel.Dock="Top" Content="_Target frameworks:" />
 
@@ -34,52 +64,7 @@
         </Border>
 
         <Border BorderThickness="1" BorderBrush="DarkGray" Padding="4,4,4,30" Margin="4,0,4,4">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <!-- .NET Framework -->
-                <CheckBox x:Name="NetCheckBox" Grid.Row="0" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
-                <ComboBox x:Name="NetFx" Grid.Row="0" IsEnabled="{Binding IsChecked, ElementName=NetCheckBox, Mode=OneWay}">
-                    <ComboBoxItem Tag="net4">.NET Framework 4 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="net403">.NET Framework 4.0.3 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="net45">.NET Framework 4.5 and higher</ComboBoxItem>
-                </ComboBox>
-
-                <!-- Silverlight -->
-                <CheckBox x:Name="SilverlightCheckBox" Grid.Row="1" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
-                <ComboBox x:Name="SilverlightFx" Grid.Row="1" IsEnabled="{Binding IsChecked, ElementName=SilverlightCheckBox, Mode=OneWay}">
-                    <ComboBoxItem Tag="sl4">Silverlight 4 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="sl5">Silverlight 5</ComboBoxItem>
-                </ComboBox>
-
-                <!-- Windows Phone -->
-                <CheckBox x:Name="WPCheckBox" Grid.Row="2" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
-                <ComboBox x:Name="WPFx" Grid.Row="2" IsEnabled="{Binding IsChecked, ElementName=WPCheckBox, Mode=OneWay}">
-                    <ComboBoxItem Tag="wp7">Windows Phone 7 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="wp71">Windows Phone 7.5 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="wp8">Windows Phone 8</ComboBoxItem>
-                </ComboBox>
-
-                <!-- .NET for Windows Store apps -->
-                <CheckBox x:Name="WindowsCheckBox" Grid.Row="3" Grid.ColumnSpan="2"  VerticalAlignment="Center" Content=".NET for Windows Store apps" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState">
-                </CheckBox>
-
-                <!-- Xamarin -->
-                <CheckBox x:Name="XamariniOS" Grid.Row="4" Grid.ColumnSpan="2" VerticalAlignment="Center" Content="Xamarin iOS" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState"></CheckBox>
-                <CheckBox x:Name="XamarinAndroid" Grid.Row="5" Grid.ColumnSpan="2" VerticalAlignment="Center" Content="Xamarin Android" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState"></CheckBox>
-            </Grid>
+            <ListBox ItemsSource="{Binding PortableFrameworks}" ItemTemplateSelector="{StaticResource PortableClassDataTemplateSelector}" HorizontalContentAlignment="Stretch" />
         </Border>
     </DockPanel>
 </self:StandardDialog>
