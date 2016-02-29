@@ -32,6 +32,10 @@ namespace NuGet
                 { ".NETCore", NetCoreFrameworkIdentifier},
                 { "NETPlatform", "NETPlatform"},
                 { ".NETPlatform", "NETPlatform"},
+                { ".NETStandard", ".NETStandard" },
+                { "NETStandard", ".NETStandard" },
+                { "NETStandardApp", ".NETStandard App" },
+                { ".NETStandardApp", ".NETStandard App" },
                 { "WinRT", NetCoreFrameworkIdentifier},     // 'WinRT' is now deprecated. Use 'Windows' or 'win' instead.
                 { ".NETMicroFramework", ".NETMicroFramework" },
                 { "netmf", ".NETMicroFramework" },
