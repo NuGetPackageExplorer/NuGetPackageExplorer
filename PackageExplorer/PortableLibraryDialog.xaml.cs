@@ -1,44 +1,30 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using NuGet.Frameworks;
+using PackageExplorer.ViewModels;
+using PropertyChanged;
 
 namespace PackageExplorer
 {
+    [ImplementPropertyChanged]
     public partial class PortableLibraryDialog : StandardDialog
     {
+        public PortableLibraryViewModel ViewModel { get; } = new PortableLibraryViewModel();
+
         public PortableLibraryDialog()
         {
             InitializeComponent();
+
+            DataContext = ViewModel.Model;
         }
 
         public string GetSelectedFrameworkName()
         {
-            var comboBoxes = new ComboBox[] { NetFx, SilverlightFx, WPFx };
-
-            var builder = new StringBuilder();
-            for (int i = 0; i < comboBoxes.Length; i++)
-            {
-                if (!comboBoxes[i].IsEnabled)
-                {
-                    continue;
-                }
-
-                if (builder.Length > 0)
-                {
-                    builder.Append('+');
-                }
-
-                builder.Append(((ComboBoxItem)comboBoxes[i].SelectedItem).Tag);
-            }
-
-            if (WindowsCheckBox.IsChecked ?? false)
-            {
-                builder.Append("+win8");
-            }
-
-            builder.Insert(0, "portable-");
-            return builder.ToString();
+            return ViewModel.Model.PortableFrameworks.AsTargetedPlatform();
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
@@ -53,9 +39,9 @@ namespace PackageExplorer
 
         private void EvaluateButtonEnabledState(object sender, RoutedEventArgs e)
         {
-            var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPCheckBox };
-            var count = _allCheckBoxes.Count(p => p.IsChecked == true);
-            OKButton.IsEnabled = count >= 2;
+            //var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPCheckBox, XamarinAndroid, XamariniOS };
+            //var count = _allCheckBoxes.Count(p => p.IsChecked == true);
+            OKButton.IsEnabled = ViewModel.Model.PortableFrameworks.AsTargetedPlatform().Length > 2; // count >= 2;
         }
     }
 }
