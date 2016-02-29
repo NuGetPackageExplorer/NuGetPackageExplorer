@@ -111,6 +111,23 @@ namespace PackageExplorer
                         "v4.0 client", "net40-client"
                     }
                 },
+
+                {
+                    
+                    ".NET Platform Standard",
+                    new []
+                    {
+                        ".NET Platform Standard 1.0","netstandard1.0",
+                        ".NET Platform Standard 1.1","netstandard1.1",
+                        ".NET Platform Standard 1.2","netstandard1.2",
+                        ".NET Platform Standard 1.3","netstandard1.3",
+                        ".NET Platform Standard 1.4","netstandard1.4",
+                    }
+
+                }
+                ,
+
+
                 {
                     ".NET",
                     new[]
