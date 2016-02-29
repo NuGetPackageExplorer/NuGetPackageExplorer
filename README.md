@@ -9,7 +9,4 @@
 
 NuGet Package Explorer is a ClickOnce application which allows creating and exploring NuGet packages easily. After installing it, you can double click on a .nupkg file to view the package content. You can also load packages directly from the official NuGet feed.
 
-![image](https://cloud.githubusercontent.com/assets/5808377/13203097/3cf05a2c-d8af-11e5-9c4a-02d3a6d44c57.png)
-
-
-
+![image](https://cloud.githubusercontent.com/assets/5808377/13399065/aec1a28e-df01-11e5-9381-c465e5f69488.png)
