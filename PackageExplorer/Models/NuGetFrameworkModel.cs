@@ -84,6 +84,9 @@ namespace NuGet.Frameworks
 		/// <summary>
 		/// Initializes the PCL model.
 		/// </summary>
+		/// <remarks>
+		/// Note: For now this is a hardcoded list.  Ideally this can be dynamically build from the NuGet libraries in the near future
+		/// </remarks>
 		private void InitializePCLModel()
 		{
 			var frameWork = new NuGetTargetFrameworkItem { Name = ".NET Framework" };

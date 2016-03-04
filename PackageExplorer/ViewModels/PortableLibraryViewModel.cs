@@ -30,7 +30,7 @@ namespace PackageExplorer.ViewModels
 		/// <summary>
 		/// Gets the targeted framework string.
 		/// </summary>
-		/// <returns>System.String.</returns>
+		/// <returns>A fully formated targeted platform path based currently selected items.</returns>
 		public string GetTargetedFrameworkString()
 		{
 			var result = Model.SelectedFrameworks.AsTargetedPlatformPath();

@@ -12,8 +12,8 @@ namespace NuGet.Frameworks
 		/// <summary>
 		/// Ases the targeted platform.
 		/// </summary>
-		/// <param name="items">The items.</param>
-		/// <returns>System.String.</returns>
+		/// <param name="items">A collection of NuGetTargetFrameworkItems</param>
+		/// <returns>A fully formated targeted platform path based on the collection.</returns>
 		public static string AsTargetedPlatformPath(this ObservableCollection<NuGetTargetFrameworkItem> items)
 		{
 			var selectedPlatforms = (items.Where(platform => platform.IsSelected)

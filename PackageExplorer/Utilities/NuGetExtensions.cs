@@ -16,7 +16,7 @@ namespace NuGet.Frameworks
 		/// <param name="frameworkMapping">The framework mapping.</param>
 		/// <param name="frameworkIdentifier">The framework identifier.</param>
 		/// <param name="includeEquivalentFrameworks">if set to <c>true</c> [include equivalent frameworks].</param>
-		/// <returns>IEnumerable&lt;NuGetFramework&gt;.</returns>
+		/// <returns>A collection of NuGetFramework items that match the framework specified.</returns>
 		public static IEnumerable<NuGetFramework> FindByIdentifierShortName(this IPortableFrameworkMappings frameworkMapping,
 			string frameworkIdentifier, bool includeEquivalentFrameworks = false)
 		{
@@ -48,7 +48,7 @@ namespace NuGet.Frameworks
 		/// </summary>
 		/// <param name="frameworkMapping">The framework mapping.</param>
 		/// <param name="frameworkName">Name of the framework.</param>
-		/// <returns>NuGetFramework.</returns>
+		/// <returns>A NuGetFramework that matches the framework name or null</returns>
 		public static NuGetFramework FindByFrameworkName(this IPortableFrameworkMappings frameworkMapping, string frameworkName)
 		{
 			var result = frameworkMapping.ProfileFrameworks.SelectMany(x => x.Value).FirstOrDefault(x =>
@@ -63,8 +63,8 @@ namespace NuGet.Frameworks
 		/// Finds the name of the by dot net framework.
 		/// </summary>
 		/// <param name="frameworkMapping">The framework mapping.</param>
-		/// <param name="dotNetframeworkName">Name of the dot netframework.</param>
-		/// <returns>NuGetFramework.</returns>
+		/// <param name="dotNetframeworkName">Name of the dot netframework (ex: "WindowsPhone, Version=8.1").</param>
+		/// <returns>A NuGetFramework that matches the full .NET framework name or null</returns>
 		public static NuGetFramework FindByDotNetFrameworkName(this IPortableFrameworkMappings frameworkMapping, string dotNetframeworkName)
 		{
 			var result = frameworkMapping.ProfileFrameworks.SelectMany(x => x.Value).FirstOrDefault(x =>
@@ -83,7 +83,7 @@ namespace NuGet.Frameworks
 		/// <param name="frameworkMapping">The framework mapping.</param>
 		/// <param name="frameworkIdentifier">The framework identifier.</param>
 		/// <param name="includeEquivalentFrameworks">if set to <c>true</c> [include equivalent frameworks].</param>
-		/// <returns>IEnumerable&lt;NuGetFramework&gt;.</returns>
+		/// <returns>A collection of NuGetFramework items that match the framework specified.</returns>
 		public static IEnumerable<NuGetFramework> FindByIdentifierShortName(this IFrameworkMappings frameworkMapping, string frameworkIdentifier, bool includeEquivalentFrameworks = false)
 		{
 			var framework =
@@ -120,7 +120,7 @@ namespace NuGet.Frameworks
 		/// </summary>
 		/// <param name="frameworkMapping">The framework mapping.</param>
 		/// <param name="frameworkName">Name of the framework.</param>
-		/// <returns>NuGetFramework.</returns>
+		/// <returns>The NuGetFramework found (if any)</returns>
 		public static NuGetFramework FindByFrameworkName(this IFrameworkMappings frameworkMapping, string frameworkName)
 		{
 			var result = frameworkMapping.EquivalentFrameworks.FirstOrDefault(x =>
@@ -135,7 +135,7 @@ namespace NuGet.Frameworks
 		/// </summary>
 		/// <param name="frameworkMapping">The framework mapping.</param>
 		/// <param name="dotNetframeworkName">Name of the dot netframework.</param>
-		/// <returns>NuGetFramework.</returns>
+		/// <returns>The NuGetFramework found (if any)</returns>
 		public static NuGetFramework FindByDotNetFrameworkName(this IFrameworkMappings frameworkMapping, string dotNetframeworkName)
 		{
 			var result = frameworkMapping.EquivalentFrameworks.FirstOrDefault(x =>
@@ -150,7 +150,7 @@ namespace NuGet.Frameworks
 		/// </summary>
 		/// <param name="frameworkMapping">The framework mapping.</param>
 		/// <param name="framework">The framework.</param>
-		/// <returns>System.String.</returns>
+		/// <returns>The shortname for the framework</returns>
 		public static string FindShortNameByFramework(this IFrameworkMappings frameworkMapping,
 			NuGetFramework framework)
 		{
@@ -184,7 +184,7 @@ namespace NuGet.Frameworks
 		/// Ases the targeted platform path.
 		/// </summary>
 		/// <param name="items">The items.</param>
-		/// <returns>System.String.</returns>
+		/// <returns>A valud target platform path based on the NuGetFramwork items</returns>
 		public static string AsTargetedPlatformPath(this IEnumerable<NuGetFramework> items)
 		{
 			if (!items.Any()) return string.Empty;
@@ -245,7 +245,7 @@ namespace NuGet.Frameworks
 		/// </summary>
 		/// <param name="framework">The framework.</param>
 		/// <param name="includeVersionInfo">if set to <c>true</c> [include version information].</param>
-		/// <returns>System.String.</returns>
+		/// <returns>The shortname for the framework including version information if requested</returns>
 		public static string ToShortName(this NuGetFramework framework, bool includeVersionInfo)
 		{
 			if (framework == null) return null;
