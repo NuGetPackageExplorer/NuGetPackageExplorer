@@ -1,11 +1,6 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using NuGet.Frameworks;
+﻿using NuGet.Frameworks;
 using PackageExplorer.ViewModels;
+using PackageExplorerViewModel;
 using PropertyChanged;
 
 namespace PackageExplorer
@@ -19,29 +14,18 @@ namespace PackageExplorer
         {
             InitializeComponent();
 
-            DataContext = ViewModel.Model;
+            DataContext = ViewModel;
+
+            ViewModel.SaveCommand = new RelayCommand(
+                () => { DialogResult = true; },
+                () => { return ViewModel.IsValidTargetedFrameworkPath(); });
+
+            ViewModel.CancelCommand = new RelayCommand(() => { DialogResult = false; });
         }
 
         public string GetSelectedFrameworkName()
         {
-            return ViewModel.Model.PortableFrameworks.AsTargetedPlatform();
-        }
-
-        private void OkButton_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = true;
-        }
-
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
-        }
-
-        private void EvaluateButtonEnabledState(object sender, RoutedEventArgs e)
-        {
-            //var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPCheckBox, XamarinAndroid, XamariniOS };
-            //var count = _allCheckBoxes.Count(p => p.IsChecked == true);
-            OKButton.IsEnabled = ViewModel.Model.PortableFrameworks.AsTargetedPlatform().Length > 2; // count >= 2;
+            return ViewModel.Model.PortableFrameworks.AsTargetedPlatformPath();
         }
     }
 }

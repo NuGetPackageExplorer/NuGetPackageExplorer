@@ -31,7 +31,7 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected,Mode=TwoWay}" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState"/>
+                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected,Mode=TwoWay}" VerticalAlignment="Center" />
                     <TextBlock Grid.Column="1" Text="{Binding Name}"/>
                 </Grid>
             </ListBoxItem>
@@ -44,8 +44,8 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <CheckBox Grid.Column="0" x:Name="CheckBox" IsChecked="{Binding IsSelected,Mode=TwoWay}" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState"/>
-                    <ComboBox Grid.Column="1" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" HorizontalAlignment="Stretch" SelectionChanged="EvaluateButtonEnabledState" />
+                    <CheckBox Grid.Column="0" x:Name="CheckBox" IsChecked="{Binding IsSelected,Mode=TwoWay}" VerticalAlignment="Center" />
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem, Mode=TwoWay}" HorizontalAlignment="Stretch" />
                 </Grid>
             </ListBoxItem>
         </DataTemplate>
@@ -58,13 +58,13 @@
 
         <Border DockPanel.Dock="Bottom" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
             <UniformGrid HorizontalAlignment="Right" Margin="10,5" Rows="1" Columns="2">
-                <Button x:Name="OKButton" IsDefault="True" Content="OK" Margin="5" IsEnabled="False" Click="OkButton_Click" />
-                <Button IsCancel="True" Content="Cancel" Margin="5,5,0,5" Padding="15,2" Click="CancelButton_Click" />
+                <Button IsDefault="True" Content="OK" Margin="5" Command="{Binding SaveCommand}" />
+                <Button IsCancel="True" Content="Cancel" Margin="5,5,0,5" Padding="15,2" Command="{Binding CancelCommand}" />
             </UniformGrid>
         </Border>
 
         <Border BorderThickness="1" BorderBrush="DarkGray" Padding="4,4,4,30" Margin="4,0,4,4">
-            <ListBox ItemsSource="{Binding PortableFrameworks}" ItemTemplateSelector="{StaticResource NuGetTargetFrameworkItemDataTemplateSelector}" HorizontalContentAlignment="Stretch" />
+            <ListBox ItemsSource="{Binding Model.PortableFrameworks}" ItemTemplateSelector="{StaticResource NuGetTargetFrameworkItemDataTemplateSelector}" HorizontalContentAlignment="Stretch" />
         </Border>
     </DockPanel>
 </self:StandardDialog>

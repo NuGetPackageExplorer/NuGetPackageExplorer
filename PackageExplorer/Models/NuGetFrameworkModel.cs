@@ -1,21 +1,6 @@
-// ***********************************************************************
-// Assembly         : NuGetFrameworks
-// Author           : Shawn
-// Created          : 02-26-2016
-//
-// Last Modified By : Shawn
-// Last Modified On : 02-28-2016
-// ***********************************************************************
-// <copyright file="NuGetFrameworkModel.cs" company="">
-//     Copyright ©  2016
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using NuGet.Frameworks;
 
 namespace NuGet.Frameworks
 {
@@ -42,6 +27,31 @@ namespace NuGet.Frameworks
 		/// </summary>
 		/// <value>The portable frameworks.</value>
 		public ObservableCollection<NuGetTargetFrameworkItem> PortableFrameworks { get; private set; } = new ObservableCollection<NuGetTargetFrameworkItem>();
+
+		/// <summary>
+		/// Gets the selected frameworks.
+		/// </summary>
+		/// <value>The selected frameworks.</value>
+		public IEnumerable<NuGetFramework> SelectedFrameworks
+		{
+			get
+			{
+				var selectedPlatforms = (from platform in PortableFrameworks
+										 where platform.IsSelected
+										 select platform.SelectedItem?.Framework ?? platform?.Framework);
+
+				return selectedPlatforms;
+			}
+		}
+		/// <summary>
+		/// Gets a value indicating whether this instance is selection valid.
+		/// </summary>
+		/// <value><c>true</c> if this instance is selection valid; otherwise, <c>false</c>.</value>
+		public bool IsSelectionValid
+		{
+			get { return SelectedFrameworks.IsValidTargetPlatform(); }
+		}
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="NuGetFrameworkModel"/> class.
 		/// </summary>
@@ -55,10 +65,12 @@ namespace NuGet.Frameworks
 		/// </summary>
 		public void Initialize()
 		{
-			//var t1 = NuGet.Frameworks.DefaultCompatibilityProvider.Instance;
-			//var t2 = NuGet.Frameworks.DefaultFrameworkMappings.Instance;
-			//var t3 = NuGet.Frameworks.DefaultFrameworkNameProvider.Instance;
-			//var t4 = NuGet.Frameworks.DefaultPortableFrameworkMappings.Instance;
+			// There are 4 parimary static instances within the NuGet Framework that we can leverage
+			// These include the following
+			//	var t1 = NuGet.Frameworks.DefaultCompatibilityProvider.Instance;
+			//	var t2 = NuGet.Frameworks.DefaultFrameworkMappings.Instance;
+			//	var t3 = NuGet.Frameworks.DefaultFrameworkNameProvider.Instance;
+			//	var t4 = NuGet.Frameworks.DefaultPortableFrameworkMappings.Instance;
 
 			// Lets pull a flat and unique list of all platforms that NuGet works with
 			Frameworks =
@@ -95,13 +107,13 @@ namespace NuGet.Frameworks
 			frameWork.SelectedItem = frameWork.Items.FirstOrDefault(x => x.IsDefault);
 			PortableFrameworks.Add(frameWork);
 
-			frameWork = new NuGetTargetFrameworkItem { Name = ".NET for Windows Store apps", ShortName = "windows", Framework = Frameworks.FindByIdentifierShortName("windows").FirstOrDefault() };
+			frameWork = new NuGetTargetFrameworkItem { Name = ".NET for Windows Store apps", ShortName = "win8", Framework = Frameworks.FindByIdentifierShortName("win8").FirstOrDefault() };
 			PortableFrameworks.Add(frameWork);
 
 			frameWork = new NuGetTargetFrameworkItem { Name = "Xamarin For iOS", ShortName = "xamarinios", Framework = Frameworks.FindByIdentifierShortName("xamarinios").FirstOrDefault() };
 			PortableFrameworks.Add(frameWork);
 
-			frameWork = new NuGetTargetFrameworkItem { Name = "Xamarin For Android", ShortName = "monodroid", Framework = Frameworks.FindByIdentifierShortName("monodroid").FirstOrDefault() };
+			frameWork = new NuGetTargetFrameworkItem { Name = "Xamarin For Android", ShortName = "MonoAndroid", Framework = Frameworks.FindByIdentifierShortName("MonoAndroid").FirstOrDefault() };
 			PortableFrameworks.Add(frameWork);
 		}
 	}
@@ -174,20 +186,70 @@ namespace NuGet.Frameworks
 		/// </summary>
 		/// <param name="items">The items.</param>
 		/// <returns>System.String.</returns>
-		public static string AsTargetedPlatform(this ObservableCollection<NuGetTargetFrameworkItem> items)
+		public static string AsTargetedPlatformPath(this ObservableCollection<NuGetTargetFrameworkItem> items)
 		{
-			var result = from platform in items
+			var selectedPlatforms = (from platform in items
 				where platform.IsSelected
-				select platform.SelectedItem ?? platform;
+				select platform.SelectedItem?.Framework ?? platform?.Framework).ToList();
 
-			var str = result.Aggregate<NuGetTargetFrameworkItem, string>("", (a, b) => string.Format("{0}{1}{2}", a, a.Length > 0 ? "+" : "", b.ShortName));
+			return selectedPlatforms.AsTargetedPlatformPath();
+		}
 
-			if (str.Length > 0)
+		/// <summary>
+		/// Ases the targeted platform path.
+		/// </summary>
+		/// <param name="items">The items.</param>
+		/// <returns>System.String.</returns>
+		public static string AsTargetedPlatformPath(this IEnumerable<NuGetFramework> items)
+		{
+			if (!items.Any()) return string.Empty;
+
+			// Lets reduce the list of frameworks down to its base amount (remove all duplicate/equilivant frameworks)
+			var frameworkReducer = new FrameworkReducer();
+			var workingPlatforms = frameworkReducer.Reduce(items);
+			if (workingPlatforms == null || !workingPlatforms.Any()) workingPlatforms = items;
+
+			if (!workingPlatforms.Any())
+			{
+				return string.Empty;
+			}
+
+			var str = string.Join("+", workingPlatforms.Select(x => x.GetShortFolderName()));
+
+			if (!string.IsNullOrEmpty(str) && !str.Contains("portable-"))
 			{
 				str = "portable-" + str;
 			}
 
 			return str;
+		}
+
+		/// <summary>
+		/// Determines whether the list of NuGetFrameworks are valid or not.
+		/// </summary>
+		/// <param name="frameworks">The frameworks.</param>
+		/// <returns><c>true</c> if [is valid target platform] [the specified frameworks]; otherwise, <c>false</c>.</returns>
+		public static bool IsValidTargetPlatform(this IEnumerable<NuGetFramework> frameworks)
+		{
+			if (!frameworks.Any()) return false; // If we don't have any frameworks, its not valid
+			if (frameworks.Count() == 1) return true; // if we only have one framework, its always valid
+
+			// This is a work in progress to try to "validate" a target platform string before building it
+			var frameworkNameProvier = new FrameworkNameProvider(new[] {DefaultFrameworkMappings.Instance},
+				new[] {DefaultPortableFrameworkMappings.Instance});
+
+			int profileNumber;
+			if (!frameworkNameProvier.TryGetPortableProfile(frameworks, out profileNumber) && frameworks.Count() > 1)
+			{
+				return false; // not a valid combination
+			}
+
+			if (profileNumber != -1)
+			{
+				frameworkNameProvier.TryGetPortableFrameworks(profileNumber, out frameworks);
+			}
+
+			return frameworks.Any();
 		}
 	}
 }

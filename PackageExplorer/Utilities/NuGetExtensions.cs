@@ -1,16 +1,3 @@
-// ***********************************************************************
-// Assembly         : NuGetFrameworks
-// Author           : Shawn
-// Created          : 02-25-2016
-//
-// Last Modified By : Shawn
-// Last Modified On : 02-28-2016
-// ***********************************************************************
-// <copyright file="NuGetExtensions.cs" company="">
-//     Copyright ©  2016
-// </copyright>
-// <summary></summary>
-// ***********************************************************************
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,7 +5,7 @@ using System.Linq;
 namespace NuGet.Frameworks
 {
 	/// <summary>
-	/// Class Extensions.
+	/// Class for Extensions related to NuGetFramework objects.
 	/// </summary>
 	public static class NuGetFrameworkExtensions
 	{
@@ -206,16 +193,21 @@ namespace NuGet.Frameworks
 		{
 			if (framework == null) return null;
 
-			var shortName = DefaultFrameworkMappings.Instance.FindShortNameByFramework(framework);
+			if (includeVersionInfo)
+			{
+				return framework.GetShortFolderName();
+			}
 
-			string verString;
+			var frameworkNameProvider = new FrameworkNameProvider(new[] {DefaultFrameworkMappings.Instance},
+				new[] {DefaultPortableFrameworkMappings.Instance});
 
-			if (framework.Version.Build != 0) verString = framework.Version.ToString(3);
-			else if (framework.Version.Minor != 0) verString = framework.Version.ToString(2);
-			else if (framework.Version.Major != 0) verString = framework.Version.ToString(1);
-			else verString = framework.Version.ToString(0);
-
-			return string.Format("{0}{1}", shortName, includeVersionInfo ? verString.Replace(".", "") : "");
+			string shortName;
+			if (!frameworkNameProvider.TryGetShortIdentifier(framework.Framework, out shortName))
+			{
+				shortName = DefaultFrameworkMappings.Instance.FindShortNameByFramework(framework);
+			}
+			
+			return shortName;
 		}
 		#endregion Nuget Framework		
 	}
