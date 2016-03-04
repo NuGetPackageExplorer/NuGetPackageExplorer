@@ -167,6 +167,8 @@
     <Compile Include="Converters\TargetFrameworkConverter.cs" />
     <Compile Include="MefServices\RtfFileViewer.cs" />
     <Compile Include="Models\NuGetFrameworkModel.cs" />
+    <Compile Include="Models\NuGetTargetFrameworkItem.cs" />
+    <Compile Include="Utilities\NuGetTargetFrameworkItemExtensions.cs" />
     <Compile Include="PackageDownloadRequestedEventArgs.cs" />
     <Compile Include="PackageReferencesEditor.xaml.cs">
       <DependentUpon>PackageReferencesEditor.xaml</DependentUpon>

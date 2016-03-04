@@ -1,14 +1,4 @@
-﻿// ***********************************************************************
-// Assembly         : NuGetPackageExplorer
-// Author           : Shawn
-// Created          : 02-24-2016
-//
-// Last Modified By : Shawn
-// Last Modified On : 02-24-2016
-// ***********************************************************************
-// <summary></summary>
-// ***********************************************************************
-using System.Linq;
+﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using NuGet.Frameworks;

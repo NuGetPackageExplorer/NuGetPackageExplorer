@@ -94,7 +94,7 @@ namespace NuGet.Frameworks
 
 			if (framework.Key == null) return null;
 
-			var matchIncludeVersion = Char.IsDigit(frameworkIdentifier, frameworkIdentifier.Length - 1);
+			var matchIncludeVersion = char.IsDigit(frameworkIdentifier, frameworkIdentifier.Length - 1);
 
 			var result =
 				frameworkMapping.EquivalentFrameworks.Where(
@@ -131,7 +131,7 @@ namespace NuGet.Frameworks
 		}
 
 		/// <summary>
-		/// Finds the name of the by dot net framework.
+		/// Finds the name based on the full .NET framework name. For Example: WindowsPhone would return the first matching framework in the collection with that name
 		/// </summary>
 		/// <param name="frameworkMapping">The framework mapping.</param>
 		/// <param name="dotNetframeworkName">Name of the dot netframework.</param>
@@ -159,10 +159,8 @@ namespace NuGet.Frameworks
 			return result.Value;
 		}
 
-		#endregion Framework Mappings
-
 		/// <summary>
-		/// Finds the short name of the by identifier.
+		/// Finds the short name of the by short name identifier.  Example: Searching for sl4 would return the framework for SilverLight, Version=4.0
 		/// </summary>
 		/// <param name="frameworks">The frameworks.</param>
 		/// <param name="identifierShortName">Short name of the identifier.</param>
@@ -171,7 +169,7 @@ namespace NuGet.Frameworks
 		{
 			if (!frameworks.Any() || string.IsNullOrEmpty(identifierShortName)) return null;
 
-			var matchIncludeVersion = Char.IsDigit(identifierShortName, identifierShortName.Length - 1);
+			var matchIncludeVersion = char.IsDigit(identifierShortName, identifierShortName.Length - 1);
 
 			var result =
 				frameworks.Where(
@@ -182,9 +180,68 @@ namespace NuGet.Frameworks
 			return result;
 		}
 
+		/// <summary>
+		/// Ases the targeted platform path.
+		/// </summary>
+		/// <param name="items">The items.</param>
+		/// <returns>System.String.</returns>
+		public static string AsTargetedPlatformPath(this IEnumerable<NuGetFramework> items)
+		{
+			if (!items.Any()) return string.Empty;
+
+			// Lets reduce the list of frameworks down to its base amount (remove all duplicate/equilivant frameworks)
+			var frameworkReducer = new FrameworkReducer();
+			var workingPlatforms = frameworkReducer.Reduce(items);
+			if (workingPlatforms == null || !workingPlatforms.Any()) workingPlatforms = items;
+
+			if (!workingPlatforms.Any())
+			{
+				return string.Empty;
+			}
+
+			var str = string.Join("+", workingPlatforms.Select(x => x.GetShortFolderName()));
+
+			if (!string.IsNullOrEmpty(str) && !str.Contains("portable-"))
+			{
+				str = "portable-" + str;
+			}
+
+			return str;
+		}
+
+		/// <summary>
+		/// Determines whether the list of NuGetFrameworks are valid or not.
+		/// </summary>
+		/// <param name="frameworks">The frameworks.</param>
+		/// <returns><c>true</c> if [is valid target platform] [the specified frameworks]; otherwise, <c>false</c>.</returns>
+		public static bool IsValidTargetPlatform(this IEnumerable<NuGetFramework> frameworks)
+		{
+			if (!frameworks.Any()) return false; // If we don't have any frameworks, its not valid
+			if (frameworks.Count() == 1) return true; // if we only have one framework, its always valid
+
+			// This is a work in progress to try to "validate" a target platform string before building it
+			var frameworkNameProvier = new FrameworkNameProvider(new[] { DefaultFrameworkMappings.Instance },
+				new[] { DefaultPortableFrameworkMappings.Instance });
+
+			int profileNumber;
+			if (!frameworkNameProvier.TryGetPortableProfile(frameworks, out profileNumber) && frameworks.Count() > 1)
+			{
+				return false; // not a valid combination
+			}
+
+			if (profileNumber != -1)
+			{
+				frameworkNameProvier.TryGetPortableFrameworks(profileNumber, out frameworks);
+			}
+
+			return frameworks.Any();
+		}
+
+		#endregion Framework Mappings
+
 		#region Nuget Framework		
 		/// <summary>
-		/// To the short name.
+		/// Returns the short name of a framework.  For example: SilverLight, Version=4.0 -> sl40 or WindowsPhone, Version=8.1 -> wpa81
 		/// </summary>
 		/// <param name="framework">The framework.</param>
 		/// <param name="includeVersionInfo">if set to <c>true</c> [include version information].</param>
