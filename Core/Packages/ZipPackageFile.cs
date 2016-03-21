@@ -18,11 +18,7 @@ namespace NuGet
             byte[] buffer;
             using (Stream partStream = part.GetStream())
             {
-                using (var stream = new MemoryStream())
-                {
-                    partStream.CopyTo(stream);
-                    buffer = stream.ToArray();
-                }
+                buffer = partStream.ReadAllBytes();
             }
             _streamFactory = () => new MemoryStream(buffer);
         }
