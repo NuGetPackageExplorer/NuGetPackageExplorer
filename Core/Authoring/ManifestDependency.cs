@@ -14,5 +14,8 @@ namespace NuGet
 
         [XmlAttribute("version")]
         public string Version { get; set; }
+
+        [XmlAttribute("exclude")]
+        public string Exclude { get; set; }
     }
 }

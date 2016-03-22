@@ -125,6 +125,14 @@
                             </GridViewColumn.CellTemplate>
                         </GridViewColumn>
 
+                        <GridViewColumn Header="Exclude" Width="45">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Exclude, TargetNullValue='(not set)', Mode=OneWay}" TextAlignment="Center" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        
                         <GridViewColumn Width="80">
                             <GridViewColumn.CellTemplate>
                                 <DataTemplate>

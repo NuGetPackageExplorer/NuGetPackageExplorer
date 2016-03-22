@@ -9,6 +9,7 @@ namespace PackageExplorerViewModel
     public class EditablePackageDependency : INotifyPropertyChanged, IDataErrorInfo
     {
         private string _id;
+        private string _exclude;
         private IVersionSpec _versionSpec;
         private Func<EditablePackageDependencySet> _getActiveDependencySet;
 
@@ -40,6 +41,19 @@ namespace PackageExplorerViewModel
                 {
                     _versionSpec = value;
                     RaisePropertyChange("VersionSpec");
+                }
+            }
+        }
+
+        public string Exclude
+        {
+            get { return _exclude; }
+            set
+            {
+                if (_exclude != value)
+                {
+                    _exclude = value;
+                    RaisePropertyChange("Exclude");
                 }
             }
         }
@@ -101,7 +115,7 @@ namespace PackageExplorerViewModel
 
         public PackageDependency AsReadOnly()
         {
-            return new PackageDependency(Id, VersionSpec);
+            return new PackageDependency(Id, VersionSpec, Exclude);
         }
     }
 }

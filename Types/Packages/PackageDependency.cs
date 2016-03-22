@@ -10,11 +10,11 @@ namespace NuGet
         private const string GreaterThanOrEqualTo = "\u2265";
 
         public PackageDependency(string id)
-            : this(id, null)
+            : this(id, null, null)
         {
         }
 
-        public PackageDependency(string id, IVersionSpec versionSpec)
+        public PackageDependency(string id, IVersionSpec versionSpec, string exclude)
         {
             if (String.IsNullOrEmpty(id))
             {
@@ -22,31 +22,39 @@ namespace NuGet
             }
             Id = id;
             VersionSpec = versionSpec;
+            Exclude = exclude;
         }
 
         public string Id { get; private set; }
 
         public IVersionSpec VersionSpec { get; private set; }
+        public string Exclude { get; private set; }
 
         public override string ToString()
         {
+            string excludeStr = null;
+            if (!string.IsNullOrWhiteSpace(Exclude))
+            {
+                excludeStr = " exclude=" + Exclude;
+            }
+
             if (VersionSpec == null)
             {
-                return Id;
+                return Id + excludeStr;
             }
 
             if (VersionSpec.MinVersion != null && VersionSpec.IsMinInclusive && VersionSpec.MaxVersion == null &&
                 !VersionSpec.IsMaxInclusive)
             {
                 return String.Format(CultureInfo.InvariantCulture, "{0} ({1} {2})", Id, GreaterThanOrEqualTo,
-                                     VersionSpec.MinVersion);
+                                     VersionSpec.MinVersion) + excludeStr;
             }
 
             if (VersionSpec.MinVersion != null && VersionSpec.MaxVersion != null &&
                 VersionSpec.MinVersion == VersionSpec.MaxVersion && VersionSpec.IsMinInclusive &&
                 VersionSpec.IsMaxInclusive)
             {
-                return String.Format(CultureInfo.InvariantCulture, "{0} (= {1})", Id, VersionSpec.MinVersion);
+                return String.Format(CultureInfo.InvariantCulture, "{0} (= {1})", Id, VersionSpec.MinVersion) + excludeStr;
             }
 
             var versionBuilder = new StringBuilder();
@@ -90,7 +98,9 @@ namespace NuGet
                 versionBuilder.Append(")");
             }
 
-            return Id + " " + versionBuilder;
+           
+
+            return Id + " " + versionBuilder + excludeStr;
         }
     }
 }
