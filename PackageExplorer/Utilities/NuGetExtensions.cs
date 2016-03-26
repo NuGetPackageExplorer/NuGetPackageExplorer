@@ -5,7 +5,10 @@ using System.Linq;
 namespace NuGet.Frameworks
 {
 	/// <summary>
-	/// Class for Extensions related to NuGetFramework objects.
+	/// Class for Extensions related to NuGetFramework objects.  The purpose of these extension methods is to simplify
+	/// working with the NuGet library objects.  They are designed specifically for working with the nuspec files and as a result
+	/// the information that is most usefull is split across multiple collections with "loose" relationships.  The methods in the class help
+	/// pull all of the information together into a more developer friendly model
 	/// </summary>
 	public static class NuGetFrameworkExtensions
 	{
@@ -17,6 +20,7 @@ namespace NuGet.Frameworks
 		/// <param name="frameworkIdentifier">The framework identifier.</param>
 		/// <param name="includeEquivalentFrameworks">if set to <c>true</c> [include equivalent frameworks].</param>
 		/// <returns>A collection of NuGetFramework items that match the framework specified.</returns>
+		/// <example></example>
 		public static IEnumerable<NuGetFramework> FindByIdentifierShortName(this IPortableFrameworkMappings frameworkMapping,
 			string frameworkIdentifier, bool includeEquivalentFrameworks = false)
 		{
@@ -44,7 +48,7 @@ namespace NuGet.Frameworks
 		}
 
 		/// <summary>
-		/// Finds the name of the by framework.
+		/// Finds the Nuget Framework object based on the .NET target framework name (wpa81, wp8, etc).
 		/// </summary>
 		/// <param name="frameworkMapping">The framework mapping.</param>
 		/// <param name="frameworkName">Name of the framework.</param>
@@ -60,11 +64,12 @@ namespace NuGet.Frameworks
 		}
 
 		/// <summary>
-		/// Finds the name of the by dot net framework.
+		/// Finds the Nuget Framework object based on the .NET framework name (ex: .NETCore).
 		/// </summary>
 		/// <param name="frameworkMapping">The framework mapping.</param>
 		/// <param name="dotNetframeworkName">Name of the dot netframework (ex: "WindowsPhone, Version=8.1").</param>
 		/// <returns>A NuGetFramework that matches the full .NET framework name or null</returns>
+		/// <example></example>
 		public static NuGetFramework FindByDotNetFrameworkName(this IPortableFrameworkMappings frameworkMapping, string dotNetframeworkName)
 		{
 			var result = frameworkMapping.ProfileFrameworks.SelectMany(x => x.Value).FirstOrDefault(x =>

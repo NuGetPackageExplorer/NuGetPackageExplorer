@@ -3,6 +3,11 @@ using NuGet.Frameworks;
 
 namespace PackageExplorer.ViewModels
 {
+	/// <summary>
+	/// The class represents the View Model for the Portable Library Selection Dialog.  It provides access to the main
+	/// underlying data model (<seealso cref="NuGetFrameworkModel"/>) as well as the commands to handle canceling and saving 
+	/// the changges on the dialog
+	/// </summary>
 	public class PortableLibraryViewModel
 	{
 		public PortableLibraryViewModel()

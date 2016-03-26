@@ -6,7 +6,9 @@ using NuGet.Frameworks;
 namespace PackageExplorer.Wpf
 {
 	/// <summary>
-	/// Class PortableClassDataTemplateSelector.
+	/// This DataTemplateSelector allows for dynamically switching between templates in a databound control (like a ListView).  The main
+	/// use for this to switch between a single item checkbox and a dropdown list based on if there is 1 primary NuGetTargetFrame work or multiple
+	/// For an example of useage see <see cref="PortableLibraryDialog"/>
 	/// </summary>
 	public class NuGetTargetFrameworkItemDataTemplateSelector : DataTemplateSelector
 	{
