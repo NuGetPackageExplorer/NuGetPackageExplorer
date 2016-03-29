@@ -8,19 +8,13 @@ namespace NuGet
 {
     internal class ZipPackageFile : PackageFileBase
     {
-        private readonly Func<MemoryStream> _streamFactory;
+        private readonly Func<Stream> _streamFactory;
 
         public ZipPackageFile(PackagePart part) 
             : base(UriUtility.GetPath(part.Uri))
         {
             Debug.Assert(part != null, "part should not be null");
-
-            byte[] buffer;
-            using (Stream partStream = part.GetStream())
-            {
-                buffer = partStream.ReadAllBytes();
-            }
-            _streamFactory = () => new MemoryStream(buffer);
+            _streamFactory = () => part.GetStream();
         }
 
         public override Stream GetStream()
