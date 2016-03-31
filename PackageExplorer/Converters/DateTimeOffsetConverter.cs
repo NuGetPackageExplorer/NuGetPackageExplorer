@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NuGet;
+using System;
 using System.Globalization;
 using System.Windows.Data;
 
@@ -12,7 +13,12 @@ namespace PackageExplorer
         {
             if (value is DateTimeOffset)
             {
-                return ((DateTimeOffset)value).DateTime.ToLocalTime().ToString();
+                DateTimeOffset dateTimeOffset = (DateTimeOffset)value;
+
+                if (dateTimeOffset != Constants.Unpublished)
+                {
+                    return dateTimeOffset.LocalDateTime.ToShortDateString();
+                }
             }
             return null;
         }
