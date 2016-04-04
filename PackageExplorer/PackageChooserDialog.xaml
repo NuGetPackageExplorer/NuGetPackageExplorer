@@ -240,7 +240,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Published" Width="150" SortMemberPath="Published">
+                <DataGridTemplateColumn Header="Published" Width="200" SortMemberPath="Published">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock 

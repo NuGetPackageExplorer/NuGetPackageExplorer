@@ -17,7 +17,7 @@ namespace PackageExplorer
 
                 if (dateTimeOffset != Constants.Unpublished)
                 {
-                    return dateTimeOffset.LocalDateTime.ToShortDateString();
+                    return dateTimeOffset.LocalDateTime.ToLongDateString();
                 }
             }
             return null;
