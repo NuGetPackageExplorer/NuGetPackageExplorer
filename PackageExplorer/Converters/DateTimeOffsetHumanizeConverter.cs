@@ -2,10 +2,11 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using Humanizer;
 
 namespace PackageExplorer
 {
-    public class DateTimeOffsetConverter : IValueConverter
+    public class DateTimeOffsetHumanizeConverter : IValueConverter
     {
         #region IValueConverter Members
 
@@ -17,9 +18,9 @@ namespace PackageExplorer
 
                 if (dateTimeOffset != Constants.Unpublished)
                 {
-                    return dateTimeOffset.LocalDateTime.ToLongDateString();
+                    return dateTimeOffset.LocalDateTime.Humanize();
                 }
-            }
+            }   
             return null;
         }
 

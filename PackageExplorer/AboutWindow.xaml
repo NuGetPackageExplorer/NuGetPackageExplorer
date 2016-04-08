@@ -30,6 +30,9 @@
             <TextBlock Margin="0,5,0,0">
 				<Run Text="Some dialogs are provided by " /><Hyperlink NavigateUri="http://www.ookii.org/software/dialogs/" Click="Hyperlink_Click"><Run Text="Ookii.Dialogs" /></Hyperlink><Run Text="." />
             </TextBlock>
+            <TextBlock Margin="0,5,0,0">
+				<Run Text="Some dates are formatted by " /><Hyperlink NavigateUri="https://github.com/Humanizr/Humanizer" Click="Hyperlink_Click"><Run Text="Humanizer" /></Hyperlink><Run Text="." />
+            </TextBlock>
         </StackPanel>
     </DockPanel>
 </self:StandardDialog>
