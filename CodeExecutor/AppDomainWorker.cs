@@ -36,9 +36,9 @@ namespace CodeExecutor
             return null;
         }
 
-        public Dictionary<string, string> GetAssemblyMetadata(string assemblyPath)
+        public AssemblyMetaData GetAssemblyMetadata(string assemblyPath)
         {
-            var data = new Dictionary<string, string>();
+            var data = new AssemblyMetaData();
 
             var assemblyName = AssemblyName.GetAssemblyName(assemblyPath);
             if (assemblyName == null)
@@ -49,14 +49,15 @@ namespace CodeExecutor
             // For WinRT component, we can only read Full Name. 
             if (assemblyName.ContentType == AssemblyContentType.WindowsRuntime)
             {
-                data.Add("Full Name", assemblyName.FullName);
+                data.SetFullName(assemblyName.FullName);
                 return data;
             }
 
             var assembly = Assembly.Load(assemblyName);
             if (assembly != null)
             {
-                data.Add("Full Name", assembly.FullName);
+
+                data.SetFullName(assembly.FullName);
 
                 try
                 {

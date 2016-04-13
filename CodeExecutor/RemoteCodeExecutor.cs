@@ -26,14 +26,14 @@ namespace CodeExecutor
             }
         }
 
-        public static Dictionary<string, string> GetAssemblyMetadata(string assemblyPath)
+        public static AssemblyMetaData GetAssemblyMetadata(string assemblyPath)
         {
             if (!File.Exists(assemblyPath))
             {
                 return null;
             }
 
-            Dictionary<string, string> result = null;
+            AssemblyMetaData result = null;
             ExecuteRemotely(worker => result = worker.GetAssemblyMetadata(assemblyPath));
             return result;
         }
