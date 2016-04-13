@@ -40,7 +40,7 @@
     <TrustUrlParameters>true</TrustUrlParameters>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>3.14.0.0</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
+    <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -109,9 +109,6 @@
     </Reference>
     <Reference Include="Humanizer">
       <HintPath>..\lib\Humanizer.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\af\Humanizer.resources.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer.resources">
       <HintPath>..\lib\ar\Humanizer.resources.dll</HintPath>
