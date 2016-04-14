@@ -1,6 +1,10 @@
 ![Logo](https://cloud.githubusercontent.com/assets/5808377/11324261/06c2ccd8-912d-11e5-87e4-9898b2217baa.png)
 
-[Latest clickonce release 3.14 (april 2016)](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (if previous version 3.9 or lower, uninstall first)
+[![Twitter Follow](https://img.shields.io/twitter/follow/NuGetPE.svg?style=social?maxAge=2592000)](https://twitter.com/NuGetPE)
+
+[Latest clickonce release 3.14 (april 2016)](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (uninstall first if previous version is 3.9 or lower)
+
+[![Chocolatey](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg?maxAge=2592000)](https://chocolatey.org/packages/NugetPackageExplorer)
 
 [![Join the chat at https://gitter.im/NuGetPackageExplorer/NuGetPackageExplorer](https://badges.gitter.im/NuGetPackageExplorer/NuGetPackageExplorer.svg)](https://gitter.im/NuGetPackageExplorer/NuGetPackageExplorer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
