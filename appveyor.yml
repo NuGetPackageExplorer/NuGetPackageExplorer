@@ -1,4 +1,16 @@
-version: 1.0.{build}
+version: 3.14.0.{build}
+configuration: Release
+platform: Any CPU
+environment:
+  version: 3.14
 build:
   project: NuGetPackageExplorer.sln
   verbosity: minimal
+after_build:
+- ps: >-
+    choco pack PackageExplorer\NugetPackageExplorer.nuspec --version $env:version
+
+    Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
+artifacts:
+- path: '**\*.nupkg'
+deploy: off
