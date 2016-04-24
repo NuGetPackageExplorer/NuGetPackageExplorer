@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -535,7 +535,20 @@
   <ItemGroup>
     <None Include="nupack.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <FileAssociation Include=".nupkg">
+      <Visible>False</Visible>
+      <Description>NuGet package file</Description>
+      <Progid>NuGet.Package</Progid>
+      <DefaultIcon>nuspec.ico</DefaultIcon>
+    </FileAssociation>
+    <FileAssociation Include=".nuspec">
+      <Visible>False</Visible>
+      <Description>NuGet spec file</Description>
+      <Progid>NuGet.Spec</Progid>
+      <DefaultIcon>nuspec.ico</DefaultIcon>
+    </FileAssociation>
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CodeExecutor\CodeExecutor.csproj">
       <Project>{0de0af9f-4d53-4900-8d15-f02c3542584f}</Project>
