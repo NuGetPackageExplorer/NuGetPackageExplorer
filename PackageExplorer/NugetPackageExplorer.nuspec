@@ -21,6 +21,7 @@
     </metadata>
     <files>
         <file src="ChocolateyInstall.ps1"  />
+        <file src="NuGetPackageExplorer.exe.gui"  />
         <file src="bin\Release\*.dll"  />
         <file src="bin\Release\NuGetPackageExplorer.exe" target="NuGetPackageExplorer.exe" />
         <file src="bin\Release\NuGetPackageExplorer.exe.config" target="NuGetPackageExplorer.exe.config" />
