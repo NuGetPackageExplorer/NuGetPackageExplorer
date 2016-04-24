@@ -14,12 +14,13 @@
         After installing it, you can double click on a .nupkg file to view the package content. 
         You can also load packages directly from the official NuGet feed.</description>
         <summary>Makes creating and examining nuget packages very easy.</summary>
-        <tags>nuget chocolatey</tags>
+        <tags>nuget admin nupkg nuspec</tags>
         <dependencies>
             <dependency id="DotNet4.5" />
         </dependencies>
     </metadata>
     <files>
+        <file src="ChocolateyInstall.ps1"  />
         <file src="bin\Release\*.dll"  />
         <file src="bin\Release\NuGetPackageExplorer.exe" target="NuGetPackageExplorer.exe" />
         <file src="bin\Release\NuGetPackageExplorer.exe.config" target="NuGetPackageExplorer.exe.config" />
