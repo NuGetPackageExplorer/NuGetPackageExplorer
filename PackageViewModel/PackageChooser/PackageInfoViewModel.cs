@@ -294,9 +294,6 @@ namespace PackageExplorerViewModel
                 results = await Task.Run((Func<PackageInfo[]>)query.ToArray, token);
             }
 
-            // sort by Version descending
-            Array.Sort(results, (a, b) => b.Version.CompareTo(a.Version));
-
             return results;
         }
 
