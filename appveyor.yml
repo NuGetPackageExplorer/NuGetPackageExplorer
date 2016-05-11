@@ -1,4 +1,6 @@
 version: 1.0.{build}
-build:
+before_build:
+  - nuget restore
+ build:
   project: NuGetPackageExplorer.sln
   verbosity: minimal
