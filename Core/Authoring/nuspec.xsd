@@ -9,6 +9,7 @@
     <xs:complexType name="dependency">
         <xs:attribute name="id" type="xs:string" use="required" />
         <xs:attribute name="version" type="xs:string" use="optional" />
+        <xs:attribute name="exclude" type="xs:string" use="optional" />
     </xs:complexType>
 
     <xs:complexType name="dependencyGroup">

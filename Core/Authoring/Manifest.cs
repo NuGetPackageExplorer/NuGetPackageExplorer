@@ -207,7 +207,8 @@ namespace NuGetPe
                     select new ManifestDependency
                     {
                         Id = dependency.Id.SafeTrim(),
-                        Version = dependency.VersionSpec.ToStringSafe()
+                        Version = dependency.VersionSpec.ToStringSafe(),
+                        Exclude = dependency.Exclude.SafeTrim()
                     }).ToList();
         }
 

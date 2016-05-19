@@ -179,7 +179,30 @@ namespace PackageExplorerViewModel
 
                 IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, _repository);
 
-                PackageInfo[] packageInfoList = await LoadData(packageInfos, _downloadCancelSource.Token);
+                PackageInfo[] packageInfoList = null;
+                bool resourceNotFoundError = false;
+                try
+                {
+                    packageInfoList = await LoadData(packageInfos, _downloadCancelSource.Token);
+                }
+                catch (DataServiceQueryException ex)
+                {
+                    resourceNotFoundError = IsResourceNotFoundError(ex);
+                    if (!resourceNotFoundError) throw;
+                }
+
+                // for a 404 error, use the legacy way to find packages by id,
+                // which requires filtering pre-release packages after the fact
+                if (resourceNotFoundError)
+                {
+                    query = ((DataServicePackageRepository)_repository).LegacyGetPackagesById(LatestPackageInfo.Id);
+                    packageInfos = GetPackageInfos(query, _repository);
+                    packageInfoList = await LoadData(packageInfos, _downloadCancelSource.Token);
+                    if (!ShowPrerelease)
+                    {
+                        packageInfoList = Array.FindAll(packageInfoList, p => !p.IsPrerelease);
+                    }
+                }
 
                 var dataServiceRepository = _repository as DataServicePackageRepository;
                 if (dataServiceRepository != null)
@@ -212,6 +235,12 @@ namespace PackageExplorerViewModel
                 _downloadCancelSource = null;
                 IsLoading = false;
             }
+        }
+
+        private static bool IsResourceNotFoundError(DataServiceQueryException ex)
+        {
+            return ex.InnerException is DataServiceClientException &&
+                ((DataServiceClientException)ex.InnerException).StatusCode == 404;
         }
 
         private static IQueryable<PackageInfo> GetPackageInfos(IQueryable<IPackage> query, IPackageRepository repository)

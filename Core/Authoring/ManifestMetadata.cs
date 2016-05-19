@@ -393,7 +393,8 @@ namespace NuGetPe
             var dependencies = from d in manifestDependencySet.Dependencies
                                select new PackageDependency(
                                    d.Id,
-                                   String.IsNullOrEmpty(d.Version) ? null : VersionUtility.ParseVersionSpec(d.Version));
+                                   String.IsNullOrEmpty(d.Version) ? null : VersionUtility.ParseVersionSpec(d.Version),
+                                   d.Exclude);
 
             return new PackageDependencySet(targetFramework, dependencies);
         }

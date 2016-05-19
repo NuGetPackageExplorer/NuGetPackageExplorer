@@ -183,14 +183,11 @@ namespace NuGetPe
 
         public IEnumerable<IPackageFile> GetFiles()
         {
-            using (Stream stream = _streamFactory())
-            {
-                Package package = Package.Open(stream);
+            Package package = Package.Open(_streamFactory()); // should not close
 
-                return (from part in package.GetParts()
-                        where IsPackageFile(part)
-                        select new ZipPackageFile(part)).ToList();
-            }
+            return (from part in package.GetParts()
+                    where IsPackageFile(part)
+                    select new ZipPackageFile(part)).ToList();
         }
 
         public Stream GetStream()

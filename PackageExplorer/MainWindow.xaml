@@ -234,7 +234,7 @@
                 <MenuItem Header="_Nuspec Reference" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/nuspec-reference" />
                 <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/version-range-specification" />
                 <Separator />
-                <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="http://npe.codeplex.com/WorkItem/Create" />
+                <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/issues/new" />
                 <MenuItem Header="_About..." Command="Help" />
             </MenuItem>
         </Menu>

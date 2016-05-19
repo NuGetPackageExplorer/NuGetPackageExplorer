@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("NuGet Package Explorer")]
-[assembly: AssemblyCopyright("\x00a9 Luan Nguyen. All rights reserved.")]
+[assembly: AssemblyCopyright("NPE. All rights reserved.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

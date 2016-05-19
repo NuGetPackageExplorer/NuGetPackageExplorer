@@ -19,7 +19,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <CodeAnalysisRuleSet>..\NuGetPackageExplorer.ruleset</CodeAnalysisRuleSet>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
-    <PublishUrl>..\publish\</PublishUrl>
+    <PublishUrl>C:\publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -29,8 +29,9 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <SupportUrl>http://npe.codeplex.com</SupportUrl>
-    <ErrorReportUrl>http://npe.codeplex.com/WorkItem/Create%3fProjectName=npe</ErrorReportUrl>
+    <InstallUrl>https://npe.codeplex.com/releases/clickonce/</InstallUrl>
+    <SupportUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer</SupportUrl>
+    <ErrorReportUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/issues/new</ErrorReportUrl>
     <ProductName>NuGet Package Explorer</ProductName>
     <PublisherName>NuGet Package Explorer</PublisherName>
     <WebPage>index.htm</WebPage>
@@ -38,8 +39,8 @@
     <AutorunEnabled>true</AutorunEnabled>
     <TrustUrlParameters>true</TrustUrlParameters>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.12.0.0</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
+    <ApplicationVersion>3.15.0.0</ApplicationVersion>
+    <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -76,7 +77,7 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>DF7E71F700D97ABF6044E4E154F0768C5011ABC1</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>3EDD98B07471EFE87B7C059E08498A018F10530D</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
   </PropertyGroup>
@@ -99,9 +100,117 @@
     <OutputPath>bin\Release\</OutputPath>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>PackageExplorer_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="GrayscaleEffect, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f238d79773caa06, processorArchitecture=MSIL">
       <HintPath>..\lib\GrayscaleEffect.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer">
+      <HintPath>..\lib\Humanizer.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\ar\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\bg\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\bn-BD\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\cs\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\da\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\de\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\el\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\es\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\fa\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\fi-FI\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\fr\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\fr-BE\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\he\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\hr\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\hu\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\id\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\it\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\ja\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\nb\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\nb-NO\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\nl\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\pl\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\pt\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\ro\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\ru\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\sk\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\sl\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\sr\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\sr-Latn\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\sv\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\tr\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\uk\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\vi\Humanizer.resources.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer.resources">
+      <HintPath>..\lib\zh-CN\Humanizer.resources.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\lib\ICSharpCode.AvalonEdit.dll</HintPath>
@@ -145,6 +254,8 @@
       <DependentUpon>ContentViewerPane.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BooleanToStringConverter.cs" />
+    <Compile Include="Converters\DateTimeOffsetHumanizeConverter.cs" />
+    <Compile Include="Converters\DateTimeOffsetLongDateConverter.cs" />
     <Compile Include="Converters\ReferenceSetConverter.cs" />
     <Compile Include="Converters\DependencySetConverter.cs" />
     <Compile Include="Converters\IntegerToBooleanConverter.cs" />
@@ -362,7 +473,6 @@
     <Resource Include="Images\build.png" />
     <Resource Include="Images\props.png" />
     <Resource Include="Images\FindHS.png" />
-    <Content Include="Windows8Shim.dll" />
     <Content Include="Resources\fxAssemblies.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

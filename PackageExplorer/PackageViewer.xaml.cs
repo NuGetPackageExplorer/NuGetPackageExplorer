@@ -37,7 +37,8 @@ namespace PackageExplorer
                     "ASP.NET 5",
                     new []
                     {
-                        "dnxcore", "dnxcore50"
+                        "dnxcore", "dnxcore50", 
+                        "dotnet5.4","dotnet5.4"
                     }
                 },
 
@@ -110,11 +111,29 @@ namespace PackageExplorer
                         "v4.0 client", "net40-client"
                     }
                 },
+
+                {
+                    
+                    ".NET Platform Standard",
+                    new []
+                    {
+                        ".NET Platform Standard 1.0","netstandard1.0",
+                        ".NET Platform Standard 1.1","netstandard1.1",
+                        ".NET Platform Standard 1.2","netstandard1.2",
+                        ".NET Platform Standard 1.3","netstandard1.3",
+                        ".NET Platform Standard 1.4","netstandard1.4",
+                    }
+
+                }
+                ,
+
+
                 {
                     ".NET",
                     new[]
                     {
                         "(no version)", "net", 
+                        "dotnet", "dotnet", 
                         "v1.0", "net10", 
                         "v1.1", "net11",
                         "v2.0", "net20", 
@@ -124,7 +143,8 @@ namespace PackageExplorer
                         "v4.5", "net45", 
                         "v4.5.1", "net451",
                         "v4.5.2", "net452",
-                        "v4.6", "net46"
+                        "v4.6", "net46",
+                        "v4.6.1", "net461",
                     }
                 }
             };
