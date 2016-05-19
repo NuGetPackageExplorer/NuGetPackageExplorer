@@ -2,9 +2,8 @@ version: 3.15.0.{build}
 configuration: Release
 platform: Any CPU
 before_build:
-- ps: >- 
-    (New-Object Net.WebClient).DownloadFile('https://www.nuget.org/nuget.exe', 'C:\Tools\NuGet\NuGet.exe')
-    nuget restore
+    - ps: wget https://www.nuget.org/nuget.exe -OutFile .\NuGet.exe
+    - ps: .\NuGet.exe restore
 build:
   project: NuGetPackageExplorer.sln
   verbosity: minimal
