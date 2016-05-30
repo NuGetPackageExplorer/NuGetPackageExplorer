@@ -18,7 +18,7 @@ namespace PackageExplorer
 
                 if (dateTimeOffset != Constants.Unpublished)
                 {
-                    return dateTimeOffset.LocalDateTime.Humanize();
+                    return dateTimeOffset.LocalDateTime.Humanize(true, null, culture);
                 }
             }   
             return null;
