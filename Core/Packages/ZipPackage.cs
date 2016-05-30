@@ -34,7 +34,7 @@ namespace NuGet
             }
 
             _filePath = filePath;
-            _streamFactory = () => File.OpenRead(filePath);
+            _streamFactory = () => File.Open(filePath,FileMode.Open,FileAccess.ReadWrite,FileShare.ReadWrite);
             EnsureManifest();
         }
 
