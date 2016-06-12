@@ -107,6 +107,11 @@ namespace NuGet
             get { return CorePackage == null ? null : CorePackage.Tags; }
         }
 
+        public bool Serviceable
+        {
+            get { return CorePackage != null && CorePackage.Serviceable; }
+        }
+
         public IEnumerable<PackageDependencySet> DependencySets
         {
             get

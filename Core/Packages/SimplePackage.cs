@@ -33,6 +33,7 @@ namespace NuGet
             ReleaseNotes = packageBuilder.ReleaseNotes;
             Language = packageBuilder.Language;
             Tags = packageBuilder.Tags;
+            Serviceable = packageBuilder.Serviceable;
             FrameworkAssemblies = new SafeEnumerable<FrameworkAssemblyReference>(packageBuilder.FrameworkAssemblies);
             DependencySets = new SafeEnumerable<PackageDependencySet>(packageBuilder.DependencySets);
             PackageAssemblyReferences = new SafeEnumerable<PackageReferenceSet>(packageBuilder.PackageAssemblyReferences);
@@ -96,6 +97,8 @@ namespace NuGet
         public string Language { get; private set; }
 
         public string Tags { get; private set; }
+
+        public bool Serviceable { get; private set; }
 
         public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; private set; }
 

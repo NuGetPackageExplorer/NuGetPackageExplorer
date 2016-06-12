@@ -21,6 +21,7 @@ namespace NuGet
         string Copyright { get; }
         string Language { get; }
         string Tags { get; }
+        bool Serviceable { get; }
         IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; }
 
         /// <summary>

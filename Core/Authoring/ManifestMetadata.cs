@@ -109,6 +109,9 @@ namespace NuGet
         [XmlElement("tags")]
         public string Tags { get; set; }
 
+        [XmlElement("serviceable")]
+        public bool Serviceable { get; set; }
+
         /// <summary>
         /// This property should be used only by the XML serializer. Do not use it in code.
         /// </summary>

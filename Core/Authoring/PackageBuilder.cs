@@ -83,6 +83,8 @@ namespace NuGet
 
         public string Language { get; set; }
 
+        public bool Serviceable { get; set; }
+
         public Collection<PackageDependencySet> DependencySets
         {
             get;
@@ -286,6 +288,7 @@ namespace NuGet
             ReleaseNotes = metadata.ReleaseNotes;
             Language = metadata.Language;
             Copyright = metadata.Copyright;
+            Serviceable = metadata.Serviceable;
             MinClientVersion = metadata.MinClientVersion;
             DevelopmentDependency = metadata.DevelopmentDependency;
 

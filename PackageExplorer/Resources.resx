@@ -168,6 +168,9 @@
   <data name="Dialog_SaveQuestion" xml:space="preserve">
     <value>Do you want to save your changes?</value>
   </data>
+  <data name="Dialog_ServiceableLabel" xml:space="preserve">
+    <value>Serviceable:</value>
+  </data>
   <data name="Dialog_SetActivePackagePublishSource" xml:space="preserve">
     <value>The external url wants to add a publish source to NuGet Package Explorer.
 
