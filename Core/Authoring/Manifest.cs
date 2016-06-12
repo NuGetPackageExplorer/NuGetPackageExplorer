@@ -166,6 +166,7 @@ namespace NuGet
                                                     SafeTrim()
                                               : null,
                                       RequireLicenseAcceptance = metadata.RequireLicenseAcceptance,
+                                      Serviceable = metadata.Serviceable,
                                       DevelopmentDependency = metadata.DevelopmentDependency,
                                       Description = metadata.Description.SafeTrim(),
                                       Copyright = metadata.Copyright.SafeTrim(),

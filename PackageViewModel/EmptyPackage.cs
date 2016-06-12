@@ -105,6 +105,11 @@ namespace PackageExplorerViewModel
             get { return null; }
         }
 
+        public bool Serviceable
+        {
+            get { return false; }
+        }
+
         public IEnumerable<PackageDependencySet> DependencySets
         {
             get { return Enumerable.Empty<PackageDependencySet>(); }

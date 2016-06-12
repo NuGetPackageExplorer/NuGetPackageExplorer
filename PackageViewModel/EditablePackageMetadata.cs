@@ -23,6 +23,7 @@ namespace PackageExplorerViewModel
         private bool _requireLicenseAcceptance;
         private string _summary;
         private string _tags;
+        private bool _serviceable;
         private string _title;
         private SemanticVersion _version;
         private ICollection<PackageDependencySet> _dependencySets;
@@ -347,6 +348,19 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public bool Serviceable
+        {
+            get { return _serviceable; }
+            set
+            {
+                if (value != _serviceable)
+                {
+                    _serviceable = value;
+                    RaisePropertyChange("Serviceable");
+                }
+            }
+        }
+
         public Version MinClientVersion
         {
             get { return _minClientVersion; }
@@ -405,6 +419,7 @@ namespace PackageExplorerViewModel
             Copyright = source.Copyright;
             Language = source.Language;
             Tags = source.Tags;
+            Serviceable = source.Serviceable;
             DependencySets = new ObservableCollection<PackageDependencySet>(source.DependencySets);
             FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkAssemblies);
             PackageAssemblyReferences = new ObservableCollection<PackageReferenceSet>();

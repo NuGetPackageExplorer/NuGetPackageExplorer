@@ -96,6 +96,8 @@ namespace NuGet
 
         public string Tags { get; set; }
 
+        public bool Serviceable { get; set; }
+
         public string Copyright { get; set; }
 
         public Version MinClientVersion
@@ -239,6 +241,7 @@ namespace NuGet
                     Copyright = metadata.Copyright;
                     Language = metadata.Language;
                     Tags = metadata.Tags;
+                    Serviceable = metadata.Serviceable;
                     DependencySets = metadata.DependencySets;
                     FrameworkAssemblies = metadata.FrameworkAssemblies;
                     PackageAssemblyReferences = metadata.PackageAssemblyReferences;
