@@ -2,7 +2,7 @@
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/NuGetPE.svg?style=social?maxAge=2592000)](https://twitter.com/NuGetPE)
 
-[Latest clickonce release 3.15 (april 2016)](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (uninstall first if previous version is 3.9 or lower)
+[Latest clickonce release](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (uninstall first if previous version is 3.9 or lower)
 
 [![Chocolatey](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg?maxAge=259200)](https://chocolatey.org/packages/NugetPackageExplorer)
 
