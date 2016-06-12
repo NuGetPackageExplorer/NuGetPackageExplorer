@@ -54,6 +54,7 @@
                             <xs:element name="copyright" maxOccurs="1" minOccurs="0" type="xs:string" />
                             <xs:element name="language" maxOccurs="1" minOccurs="0" type="xs:string" default="en-US" />
                             <xs:element name="tags" maxOccurs="1" minOccurs="0" type="xs:string" />
+                            <xs:element name="serviceable" maxOccurs="1" minOccurs="0" type="xs:boolean" />
                             <xs:element name="dependencies" maxOccurs="1" minOccurs="0">
                                 <xs:complexType>
                                     <xs:sequence>
