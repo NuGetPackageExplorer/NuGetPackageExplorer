@@ -113,6 +113,16 @@ namespace NuGet
         public bool Serviceable { get; set; }
 
         /// <summary>
+        /// Serialize <see cref="Serviceable"/>?
+        /// Only if <see cref="Serviceable"/> is <c>true</c>, because older NuGet servers couldn't handle the serviceable attribute
+        /// </summary>
+        /// <returns></returns>
+        public bool ShouldSerializeServiceable()
+        {
+            return Serviceable;
+        }
+
+        /// <summary>
         /// This property should be used only by the XML serializer. Do not use it in code.
         /// </summary>
         [SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "value", Justification = "The propert setter is not supported.")]
