@@ -122,6 +122,8 @@ namespace PackageExplorer
                         ".NET Platform Standard 1.2","netstandard1.2",
                         ".NET Platform Standard 1.3","netstandard1.3",
                         ".NET Platform Standard 1.4","netstandard1.4",
+                        ".NET Platform Standard 1.5","netstandard1.5",
+                        ".NET Platform Standard 1.6","netstandard1.6",
                     }
 
                 }
@@ -145,6 +147,7 @@ namespace PackageExplorer
                         "v4.5.2", "net452",
                         "v4.6", "net46",
                         "v4.6.1", "net461",
+                        "v4.6.2", "net462",
                     }
                 }
             };
