@@ -166,6 +166,7 @@ namespace NuGet
                                                     SafeTrim()
                                               : null,
                                       RequireLicenseAcceptance = metadata.RequireLicenseAcceptance,
+                                      Serviceable = metadata.Serviceable,
                                       DevelopmentDependency = metadata.DevelopmentDependency,
                                       Description = metadata.Description.SafeTrim(),
                                       Copyright = metadata.Copyright.SafeTrim(),
@@ -206,7 +207,8 @@ namespace NuGet
                     select new ManifestDependency
                     {
                         Id = dependency.Id.SafeTrim(),
-                        Version = dependency.VersionSpec.ToStringSafe()
+                        Version = dependency.VersionSpec.ToStringSafe(),
+                        Exclude = dependency.Exclude.SafeTrim()
                     }).ToList();
         }
 

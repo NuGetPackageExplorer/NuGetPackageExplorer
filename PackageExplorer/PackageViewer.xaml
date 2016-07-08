@@ -245,6 +245,12 @@
 
                         <TextBlock Style="{StaticResource DetailDescriptionTextBoxStyle}" Text="{Binding Copyright, Converter={StaticResource NormalizeTextConverter}}" Visibility="{Binding Copyright, Converter={StaticResource NullToVisibilityConverter}}"></TextBlock>
 
+                        <!-- Serviceable -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Serviceable, Converter={StaticResource boolToVis}}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_ServiceableLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding Serviceable, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
+                        </StackPanel>
+
                         <!-- Summary -->
                         <TextBlock Text="Summary:" Margin="0,3,0,0" Style="{StaticResource DetailMetadataLabelStyle}" Visibility="{Binding Summary, Converter={StaticResource NullToVisibilityConverter}}"></TextBlock>
 

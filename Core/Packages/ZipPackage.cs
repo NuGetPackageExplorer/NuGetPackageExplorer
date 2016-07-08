@@ -34,7 +34,7 @@ namespace NuGet
             }
 
             _filePath = filePath;
-            _streamFactory = () => File.OpenRead(filePath);
+            _streamFactory = () => File.Open(filePath,FileMode.Open,FileAccess.ReadWrite,FileShare.ReadWrite);
             EnsureManifest();
         }
 
@@ -95,6 +95,8 @@ namespace NuGet
         public string Language { get; set; }
 
         public string Tags { get; set; }
+
+        public bool Serviceable { get; set; }
 
         public string Copyright { get; set; }
 
@@ -183,14 +185,11 @@ namespace NuGet
 
         public IEnumerable<IPackageFile> GetFiles()
         {
-            using (Stream stream = _streamFactory())
-            {
-                Package package = Package.Open(stream);
+            Package package = Package.Open(_streamFactory()); // should not close
 
-                return (from part in package.GetParts()
-                        where IsPackageFile(part)
-                        select new ZipPackageFile(part)).ToList();
-            }
+            return (from part in package.GetParts()
+                    where IsPackageFile(part)
+                    select new ZipPackageFile(part)).ToList();
         }
 
         public Stream GetStream()
@@ -242,6 +241,7 @@ namespace NuGet
                     Copyright = metadata.Copyright;
                     Language = metadata.Language;
                     Tags = metadata.Tags;
+                    Serviceable = metadata.Serviceable;
                     DependencySets = metadata.DependencySets;
                     FrameworkAssemblies = metadata.FrameworkAssemblies;
                     PackageAssemblyReferences = metadata.PackageAssemblyReferences;

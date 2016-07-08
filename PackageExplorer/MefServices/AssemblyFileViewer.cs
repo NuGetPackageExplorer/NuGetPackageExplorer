@@ -30,28 +30,31 @@ namespace PackageExplorer
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
-                foreach (var data in assemblyData.OrderBy(d => d.Key))
+                if (assemblyData != null)
                 {
-                    var label = new TextBlock 
-                    { 
-                        Text = data.Key + ':', 
-                        FontWeight = FontWeights.SemiBold,
-                        Margin = new Thickness(3,3,10,0)
-                    };
-                    Grid.SetRow(label, grid.RowDefinitions.Count);
-                    Grid.SetColumn(label, 0);
+                    foreach (var data in assemblyData.OrderBy(d => d.Key))
+                    {
+                        var label = new TextBlock
+                        {
+                            Text = data.Key + ':',
+                            FontWeight = FontWeights.SemiBold,
+                            Margin = new Thickness(3, 3, 10, 0)
+                        };
+                        Grid.SetRow(label, grid.RowDefinitions.Count);
+                        Grid.SetColumn(label, 0);
 
-                    var value = new TextBlock 
-                    { 
-                        Text = data.Value,
-                        Margin = new Thickness(0, 3, 3, 0)
-                    };
-                    Grid.SetRow(value, grid.RowDefinitions.Count);
-                    Grid.SetColumn(value, 1);
+                        var value = new TextBlock
+                        {
+                            Text = data.Value,
+                            Margin = new Thickness(0, 3, 3, 0)
+                        };
+                        Grid.SetRow(value, grid.RowDefinitions.Count);
+                        Grid.SetColumn(value, 1);
 
-                    grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-                    grid.Children.Add(label);
-                    grid.Children.Add(value);
+                        grid.RowDefinitions.Add(new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)});
+                        grid.Children.Add(label);
+                        grid.Children.Add(value);
+                    }
                 }
 
                 return grid;

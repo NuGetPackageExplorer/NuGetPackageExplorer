@@ -459,6 +459,12 @@ namespace PackageExplorerViewModel
                                 : query.OrderBy(p => p.PackageSize);
                     break;
 
+                case "Published":
+                    query = SortDirection == ListSortDirection.Descending
+                                ? query.OrderByDescending(p => p.Published)
+                                : query.OrderBy(p => p.Published);
+                    break;
+
                 default:
                     query = query.OrderByDescending(p => p.DownloadCount);
                     break;

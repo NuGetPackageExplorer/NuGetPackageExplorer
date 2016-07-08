@@ -109,6 +109,19 @@ namespace NuGet
         [XmlElement("tags")]
         public string Tags { get; set; }
 
+        [XmlElement("serviceable")]
+        public bool Serviceable { get; set; }
+
+        /// <summary>
+        /// Serialize <see cref="Serviceable"/>?
+        /// Only if <see cref="Serviceable"/> is <c>true</c>, because older NuGet servers couldn't handle the serviceable attribute
+        /// </summary>
+        /// <returns></returns>
+        public bool ShouldSerializeServiceable()
+        {
+            return Serviceable;
+        }
+
         /// <summary>
         /// This property should be used only by the XML serializer. Do not use it in code.
         /// </summary>
@@ -396,7 +409,8 @@ namespace NuGet
             var dependencies = from d in manifestDependencySet.Dependencies
                                select new PackageDependency(
                                    d.Id,
-                                   String.IsNullOrEmpty(d.Version) ? null : VersionUtility.ParseVersionSpec(d.Version));
+                                   String.IsNullOrEmpty(d.Version) ? null : VersionUtility.ParseVersionSpec(d.Version),
+                                   d.Exclude);
 
             return new PackageDependencySet(targetFramework, dependencies);
         }

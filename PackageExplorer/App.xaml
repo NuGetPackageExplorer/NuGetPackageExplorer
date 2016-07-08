@@ -16,7 +16,9 @@
             <self:SubtracterConverter x:Key="SubtracterConverter" />
             <self:StringShortenerConverter x:Key="StringShortenerConverter" />
             <self:FileSizeConverter x:Key="FileSizeConverter" />
-
+            <self:DateTimeOffsetHumanizeConverter x:Key="DateTimeOffsetHumanizeConverter" />
+            <self:DateTimeOffsetLongDateConverter x:Key="DateTimeOffsetLongDateConverter" />
+            
             <ContextMenu x:Key="TextBoxContextMenu">
                 <self:GrayscaleMenuItem Command="Cut">
                     <self:GrayscaleMenuItem.Icon>

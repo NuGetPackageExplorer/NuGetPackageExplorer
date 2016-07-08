@@ -239,6 +239,18 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+
+                <DataGridTemplateColumn Header="Published" Width="100" SortMemberPath="Published">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock 
+                                Text="{Binding LatestPackageInfo.Published, Converter={StaticResource DateTimeOffsetHumanizeConverter}}" 
+                                ToolTip="{Binding LatestPackageInfo.Published, Converter={StaticResource DateTimeOffsetLongDateConverter}}"
+                                Visibility="{Binding ShowingAllVersions, Converter={StaticResource invertedBoolToVis}}"
+                                TextAlignment="Center" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
 

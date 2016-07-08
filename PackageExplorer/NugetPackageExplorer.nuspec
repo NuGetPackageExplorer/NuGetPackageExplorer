@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>NugetPackageExplorer</id>
+        <version>$version$</version>
+        <title>Nuget Package Explorer</title>
+        <authors>Luan Nguyen</authors>
+        <owners>Matt Wrock,Julian Verdurmen</owners>
+        <licenseUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/blob/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/nuget.png</iconUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>NuGet Package Explorer is an application which allows creating and exploring NuGet packages easily. 
+        After installing it, you can double click on a .nupkg file to view the package content. 
+        You can also load packages directly from the official NuGet feed.</description>
+        <summary>Makes creating and examining nuget packages very easy.</summary>
+        <tags>nuget admin nupkg nuspec</tags>
+        <dependencies>
+            <dependency id="DotNet4.5" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="ChocolateyInstall.ps1"  />
+        <file src="NuGetPackageExplorer.exe.gui"  />
+        <file src="bin\Release\*.dll"  />
+        <file src="bin\Release\NuGetPackageExplorer.exe" target="NuGetPackageExplorer.exe" />
+        <file src="bin\Release\NuGetPackageExplorer.exe.config" target="NuGetPackageExplorer.exe.config" />
+    </files>
+</package>

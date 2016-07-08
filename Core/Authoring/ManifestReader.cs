@@ -73,6 +73,9 @@ namespace NuGet
                 case "requireLicenseAcceptance":
                     manifestMetadata.RequireLicenseAcceptance = XmlConvert.ToBoolean(value);
                     break;
+                case "serviceable":
+                    manifestMetadata.Serviceable = XmlConvert.ToBoolean(value);
+                    break;
                 case "developmentDependency":
                     manifestMetadata.DevelopmentDependency = XmlConvert.ToBoolean(value);
                     break;
@@ -218,7 +221,8 @@ namespace NuGet
                     select new ManifestDependency
                     {
                         Id = element.GetOptionalAttributeValue("id").SafeTrim(),
-                        Version = element.GetOptionalAttributeValue("version").SafeTrim()
+                        Version = element.GetOptionalAttributeValue("version").SafeTrim(),
+                        Exclude = element.GetOptionalAttributeValue("exclude").SafeTrim()
                     }).ToList();
         }
 

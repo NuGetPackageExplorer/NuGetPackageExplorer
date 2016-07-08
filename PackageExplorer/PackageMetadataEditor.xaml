@@ -81,6 +81,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <Grid.BindingGroup>
@@ -172,9 +173,12 @@
             <!-- Tags -->
             <Label Grid.Row="16" Grid.Column="0" Target="TagsBox" Style="{StaticResource LabelStyle}" Content="Ta_gs" />
             <TextBox Grid.Row="16" Grid.Column="1" x:Name="TagsBox" Text="{Binding PackageMetadata.Tags}" />
-            
+
+            <!-- Serviceable -->
+            <CheckBox Grid.Row="17" Grid.Column="0" Grid.ColumnSpan="2" VerticalContentAlignment="Center" IsChecked="{Binding PackageMetadata.Serviceable}" Content="_Serviceable" Style="{StaticResource CheckBoxStyle}" />
+
             <!-- Framework assemblies -->
-            <Border Grid.Row="17" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
+            <Border Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="2,6,2,2" CornerRadius="3" BorderThickness="1" BorderBrush="#D5DFE5">
                 <Grid Margin="3,4,3,0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -214,13 +218,13 @@
             </Border>
 
             <!-- Header text for Framework assemblies -->
-            <TextBlock Text="Framework assemblies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="17" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
+            <TextBlock Text="Framework assemblies" FontWeight="SemiBold" Foreground="Navy" Background="White" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,10,1,0" HorizontalAlignment="Center" VerticalAlignment="Top" />
 
             <!-- Dependencies -->
-            <Button HorizontalAlignment="Center" Grid.Row="18" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,2" Content="Edit dependencies" Click="EditDependenciesButtonClicked" />
+            <Button HorizontalAlignment="Center" Grid.Row="19" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,2" Content="Edit dependencies" Click="EditDependenciesButtonClicked" />
 
             <!-- Filtered assembly references -->
-            <Button HorizontalAlignment="Center" Grid.Row="19" Grid.ColumnSpan="2" Margin="1,18,2,10" Padding="15,2" Content="Edit assembly references" Click="EditReferencesButtonClicked" />
+            <Button HorizontalAlignment="Center" Grid.Row="20" Grid.ColumnSpan="2" Margin="1,18,2,10" Padding="15,2" Content="Edit assembly references" Click="EditReferencesButtonClicked" />
         </Grid>
     </ScrollViewer>
 </UserControl>

@@ -9,6 +9,7 @@
     <xs:complexType name="dependency">
         <xs:attribute name="id" type="xs:string" use="required" />
         <xs:attribute name="version" type="xs:string" use="optional" />
+        <xs:attribute name="exclude" type="xs:string" use="optional" />
     </xs:complexType>
 
     <xs:complexType name="dependencyGroup">
@@ -53,6 +54,7 @@
                             <xs:element name="copyright" maxOccurs="1" minOccurs="0" type="xs:string" />
                             <xs:element name="language" maxOccurs="1" minOccurs="0" type="xs:string" default="en-US" />
                             <xs:element name="tags" maxOccurs="1" minOccurs="0" type="xs:string" />
+                            <xs:element name="serviceable" maxOccurs="1" minOccurs="0" type="xs:boolean" />
                             <xs:element name="dependencies" maxOccurs="1" minOccurs="0">
                                 <xs:complexType>
                                     <xs:sequence>
