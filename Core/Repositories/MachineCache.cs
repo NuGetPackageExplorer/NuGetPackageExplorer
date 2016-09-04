@@ -104,7 +104,10 @@ namespace NuGet
                             packageFile.Delete();
                         }
                     }
-                    catch (FileNotFoundException)
+                    catch (IOException)
+                    {
+                    }
+                    catch (SecurityException)
                     {
                     }
                     catch (UnauthorizedAccessException)
