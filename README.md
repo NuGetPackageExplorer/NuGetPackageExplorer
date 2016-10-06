@@ -21,19 +21,19 @@ To build packages from the command line, use the NuGet command-line tools, which
 
 1. Launch Package Explorer and select **File > New** (Ctrl-N), or select **Create a new package** from the **Common tasks** dialog when Package Explorer starts:
 
-	![Package Explorer's common tasks dialog](https://docs.nuget.org/images/docs/PackageExplorerStart.png)
+	![Package Explorer's common tasks dialog](https://cloud.githubusercontent.com/assets/1339874/19167418/7bca3b18-8bc0-11e6-8ecf-de5b05ed8923.png)
 
 2. Select **Edit > Edit Package Metadata** (Ctrl-K) to open the editor for the underlying .nuspec file. Details for the metadata can be found in the [nuspec reference](https://docs.nuget.org/ndocs/schema/nuspec).
 
-	![Editing package metadata with the Package Explorer](https://docs.nuget.org/images/docs/PackageExplorerEditMetadata.png)
+	![Editing package metadata with the Package Explorer](https://cloud.githubusercontent.com/assets/1339874/19167426/8399b85a-8bc0-11e6-8516-6f0b53ddc595.png)
 
 3. Open the files you want to include in the package in Windows explorer, then drag them into the **Package contents** pane of Package Explorer. Package Explorer will attempt to infer where the content belongs and prompt you to place it in the correct directory within the package. (You can also explicitly add specific folders using the **Content** menu.)
 
 	For example, if you drag an assembly into the Package contents window, it will prompt you to place the assembly in the **lib** folder:
 
-	![Package Explorer infers content location and prompts for confirmations](https://docs.nuget.org/images/docs/PackageExplorerAddFiles.png)
+	![Package Explorer infers content location and prompts for confirmations](https://cloud.githubusercontent.com/assets/1339874/19167427/88c80fc0-8bc0-11e6-8d39-cc6e04024013.png)
 
-	![The package's lib folder with added content](https://docs.nuget.org/images/docs/PackageExplorerFileAdded.png)
+	![The package's lib folder with added content](https://cloud.githubusercontent.com/assets/1339874/19167432/8e675a3a-8bc0-11e6-9848-0dd8cf73b4f9.png)
 
 
 4. Save your package with **File > Save** (Ctrl-S).
@@ -46,11 +46,11 @@ To build packages from the command line, use the NuGet command-line tools, which
 
 3.Under **API Key**, click **copy to clipboard** to retrieve the access key you'll need in the next step:
 
-    ![Copying the API key from the nuget.org profile](https://docs.nuget.org/images/CreatePublishNugetSample/QS_Create-02-APIKey.png)
+    ![Copying the API key from the nuget.org profile](https://cloud.githubusercontent.com/assets/1339874/19167409/6fd8d238-8bc0-11e6-86b4-49af64483d78.png)
 
 4. Assuming your package is loaded in Package Explorer, select **File > Publish** (Ctrl+P) to bring up the **Publish Package** dialog:
 
-	![Publish Package Dialog](https://docs.nuget.org/images/docs/PackageExplorerPublish.png)
+	![Publish Package Dialog](https://cloud.githubusercontent.com/assets/1339874/19167436/90ebbbc0-8bc0-11e6-8cb1-68717ec811e7.png)
 
 5. Paste your API key intp **Publish key** and click **Publish** to push the package to nuget.org.
 
