@@ -46,7 +46,7 @@ namespace PackageExplorer
                     "Mono",
                     new[]
                     {
-                        "Android", "MonoAndroid", 
+                        "Android", "MonoAndroid10", 
                         "Mono", "Mono", 
                         "iOS", "MonoTouch", 
                         "OSX", "MonoMac"
