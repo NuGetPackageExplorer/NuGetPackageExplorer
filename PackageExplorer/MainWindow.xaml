@@ -38,6 +38,7 @@
         <KeyBinding Modifiers="Control" Key="K" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Modifiers="Control" Key="G" Command="Print" />
         <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="Save" />
+        <KeyBinding Modifiers="Control+Shift" Key="S" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveAs"/>
         <KeyBinding Modifiers="Control" Key="P" Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Modifiers="Control" Key="Q" Command="{Binding ViewPackageAnalysisCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Key="Escape" Command="{Binding CancelEditCommand}" />
@@ -69,7 +70,7 @@
                         <self:GrayscaleImage Source="Images/saveHS.png" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
-                <MenuItem Header="Save _As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveAs" />
+                <MenuItem Header="Save _As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveAs" InputGestureText="Ctrl+Shift+S"/>
                 <MenuItem Header="Save _Metadata As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveMetadataAs" />
                 <Separator />
                 <MenuItem Header="Expor_t..." Command="{Binding ExportCommand, FallbackValue={StaticResource DisabledCommand}}" />
