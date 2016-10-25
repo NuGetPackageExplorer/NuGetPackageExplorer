@@ -4,7 +4,7 @@ using System.Data.Services.Common;
 using System.IO;
 using System.Linq;
 
-namespace NuGet
+namespace NuGetPe
 {
     [DataServiceKey("Id", "Version")]
     [EntityPropertyMapping("LastUpdated", SyndicationItemProperty.Updated, SyndicationTextContentKind.Plaintext,
@@ -133,13 +133,13 @@ namespace NuGet
             get { return CorePackage == null ? Enumerable.Empty<string>() : CorePackage.Authors; }
         }
 
-        SemanticVersion IPackageMetadata.Version
+        NuGet.SemanticVersion IPackageMetadata.Version
         {
             get
             {
                 if (Version != null)
                 {
-                    return new SemanticVersion(Version);
+                    return new NuGet.SemanticVersion(Version);
                 }
                 return null;
             }

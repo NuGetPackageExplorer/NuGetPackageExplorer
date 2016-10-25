@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -25,7 +25,7 @@ namespace PackageExplorerViewModel
         private string _tags;
         private bool _serviceable;
         private string _title;
-        private SemanticVersion _version;
+        private NuGet.SemanticVersion _version;
         private ICollection<PackageDependencySet> _dependencySets;
         private ICollection<PackageReferenceSet> _packageAssemblyReferences;
         private Version _minClientVersion;
@@ -144,7 +144,7 @@ namespace PackageExplorerViewModel
                         throw new ArgumentException("Id is required.");
                     }
 
-                    PackageIdValidator.ValidatePackageId(value);
+                    NuGet.PackageIdValidator.ValidatePackageId(value);
                 }
                 catch (Exception ex)
                 {
@@ -161,7 +161,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public SemanticVersion Version
+        public NuGet.SemanticVersion Version
         {
             get { return _version; }
             set

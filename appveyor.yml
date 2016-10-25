@@ -1,6 +1,9 @@
 version: 3.18.0.{build}
 configuration: Release
 platform: Any CPU
+before_build:
+    - ps: wget https://www.nuget.org/nuget.exe -OutFile .\NuGet.exe
+    - ps: .\NuGet.exe restore
 build:
   project: NuGetPackageExplorer.sln
   verbosity: minimal

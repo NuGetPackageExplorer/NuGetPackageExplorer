@@ -5,9 +5,9 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
-using NuGet.Resources;
+using NuGetPe.Resources;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal static class ManifestSchemaUtility
     {
@@ -74,7 +74,7 @@ namespace NuGet
         {
             return _manifestSchemaSetCache.GetOrAdd(schemaNamespace, schema =>
             {
-                const string schemaResourceName = "NuGet.Authoring.nuspec.xsd";
+                const string schemaResourceName = "NuGetPe.Authoring.nuspec.xsd";
 
                 string formattedContent;
 

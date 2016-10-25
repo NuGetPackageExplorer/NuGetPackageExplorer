@@ -8,7 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using CodeExecutor;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
@@ -75,8 +75,8 @@ namespace PackageExplorer
                 {
                     string id = arguments["id"];
                     string versionString = arguments["version"];
-                    SemanticVersion version = null;
-                    SemanticVersion.TryParse(versionString, out version);
+                    NuGet.SemanticVersion version = null;
+                    NuGet.SemanticVersion.TryParse(versionString, out version);
 
                     await window.DownloadAndOpenDataServicePackage(downloadUrl, id, version);
                     return;

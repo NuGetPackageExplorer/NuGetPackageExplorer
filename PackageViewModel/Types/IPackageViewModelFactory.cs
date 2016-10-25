@@ -1,4 +1,4 @@
-﻿using NuGet;
+﻿using NuGetPe;
 using PackageExplorerViewModel;
 
 namespace NuGetPackageExplorer.Types

@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Windows.Input;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 
@@ -929,7 +929,7 @@ namespace PackageExplorerViewModel
 
         private IEditablePackageFile CreatePackageMetadataFile()
         {
-            string packageName = PackageMetadata + NuGet.Constants.ManifestExtension;
+            string packageName = PackageMetadata + NuGetPe.Constants.ManifestExtension;
             string filePath = Path.GetTempFileName();
             
             ExportManifest(filePath, askForConfirmation: false, includeFilesSection: false);

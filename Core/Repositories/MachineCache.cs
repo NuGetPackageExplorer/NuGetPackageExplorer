@@ -4,7 +4,7 @@ using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 
-namespace NuGet
+namespace NuGetPe
 {
     /// <summary>
     /// The machine cache represents a location on the machine where packages are cached. It is a specific implementation of a local repository and can be used as such.
@@ -43,7 +43,7 @@ namespace NuGet
             throw new NotSupportedException();
         }
 
-        public IPackage FindPackage(string packageId, SemanticVersion version)
+        public IPackage FindPackage(string packageId, NuGet.SemanticVersion version)
         {
             string path = GetPackageFilePath(packageId, version);
 
@@ -129,7 +129,7 @@ namespace NuGet
             return false;
         }
 
-        private string GetPackageFilePath(string id, SemanticVersion version)
+        private string GetPackageFilePath(string id, NuGet.SemanticVersion version)
         {
             return Path.Combine(Source, id + "." + version + Constants.PackageExtension);
         }

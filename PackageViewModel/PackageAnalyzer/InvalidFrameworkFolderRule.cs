@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel.Rules
@@ -33,7 +33,7 @@ namespace PackageExplorerViewModel.Rules
 
         private bool IsInvalidFrameworkName(string name)
         {
-            return VersionUtility.ParseFrameworkName(name) == VersionUtility.UnsupportedFrameworkName;
+            return NuGet.VersionUtility.ParseFrameworkName(name) == NuGet.VersionUtility.UnsupportedFrameworkName;
         }
 
         private static PackageIssue CreatePackageIssue(string target)

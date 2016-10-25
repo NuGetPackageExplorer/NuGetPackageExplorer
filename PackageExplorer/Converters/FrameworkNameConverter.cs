@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Windows.Data;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -26,7 +26,7 @@ namespace PackageExplorer
                 FrameworkName frameworkName;
                 try
                 {
-                    frameworkName = VersionUtility.ParseFrameworkName(name);
+                    frameworkName = NuGet.VersionUtility.ParseFrameworkName(name);
                 }
                 catch (ArgumentException)
                 {
@@ -41,7 +41,7 @@ namespace PackageExplorer
                     }
                 }
 
-                if (frameworkName != VersionUtility.UnsupportedFrameworkName)
+                if (frameworkName != NuGet.VersionUtility.UnsupportedFrameworkName)
                 {
                     return " (" + frameworkName + ")";
                 }

@@ -3,7 +3,7 @@ using System.Collections.Specialized;
 using System.Globalization;
 using System.Net;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class HttpUtility
     {
