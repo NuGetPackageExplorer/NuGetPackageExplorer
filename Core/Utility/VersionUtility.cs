@@ -59,6 +59,15 @@ namespace NuGet
                 { "dnxcore", "DNXCore" },
                 { "Xamarin.ios", "Xamarin iOS" },
                 { "Xamarin.mac", "Xamarin Mac" },
+                { "xamarinmac", "Xamarin Mac"},
+                { "xamarinios", "Xamarin iOs"},
+                { "xamarinpsthree", "Xamarin on Playstation 3"},
+                { "xamarinpsfour", "Xamarin on Playstation 4"},
+                { "xamarinpsvita", "Xamarin on PS Vita"},
+                { "xamarinwatchos", "Xamarin for Watch OS"},
+                { "xamarintvos", "Xamarin for TV OS"},
+                { "xamarinxboxthreesixty", "Xamarin for XBox 360"},
+                { "xamarinxboxone", "Xamarin for XBox One"},
                 { "uap", "Windows 10 Universal App Platform" },
             };
 
@@ -116,8 +125,8 @@ namespace NuGet
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1021:AvoidOutParameters", MessageId = "1#")]
         public static FrameworkName ParseFrameworkNameFromFilePath(string filePath, out string effectivePath)
         {
-            var knownFolders = new string[] 
-            { 
+            var knownFolders = new string[]
+            {
                 Constants.ContentDirectory,
                 Constants.LibDirectory,
                 Constants.ToolsDirectory
@@ -342,10 +351,10 @@ namespace NuGet
             {
                 // A plain version is treated as an inclusive minimum range
                 result = new VersionSpec
-                         {
-                             MinVersion = version,
-                             IsMinInclusive = true
-                         };
+                {
+                    MinVersion = version,
+                    IsMinInclusive = true
+                };
 
                 return true;
             }

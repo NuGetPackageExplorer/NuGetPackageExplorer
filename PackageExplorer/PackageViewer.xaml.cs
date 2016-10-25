@@ -53,11 +53,19 @@ namespace PackageExplorer
                     }
                 },
                 {
+                    //see https://docs.nuget.org/ndocs/schema/target-frameworks
                     "Xamarin",
                     new[]
                     {
-                        "Mac", "Xamarin.Mac", 
-                        "iOS", "Xamarin.iOS10", 
+                        "Mac", "xamarinmac", 
+                        "iOS", "xamarinios",
+                        "Playstation 3", "xamarinpsthree", 
+                        "Playstation 4", "xamarinpsfour", 
+                        "PS Vita", "xamarinpsvita",
+                        "Watch OS", "xamarinwatchos",
+                        "TV OS", "xamarintvos",
+                        "XBox 360", "xamarinxboxthreesixty",
+                        "XBox One", "xamarinxboxone", 
                     }
                 },
                 {
@@ -113,7 +121,8 @@ namespace PackageExplorer
                 },
 
                 {
-                    
+                    //see https://github.com/dotnet/corefx/blob/master/Documentation/architecture/net-platform-standard.md 
+                    //and https://docs.microsoft.com/en-us/dotnet/articles/standard/library
                     ".NET Platform Standard",
                     new []
                     {
@@ -124,6 +133,7 @@ namespace PackageExplorer
                         ".NET Platform Standard 1.4","netstandard1.4",
                         ".NET Platform Standard 1.5","netstandard1.5",
                         ".NET Platform Standard 1.6","netstandard1.6",
+                        ".NET Platform Standard 2.0","netstandard2.0",
                     }
 
                 }
