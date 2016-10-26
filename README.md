@@ -13,7 +13,7 @@
 
 NuGet Package Explorer is a ClickOnce application that makes it easy to create and explore NuGet packages. After installing it, you can double click on a .nupkg file to view the package content, or you can load packages directly from nuget.org.
 
-To build packages from the command line, use the NuGet command-line tools, which are documented on the [official NuGet site](https://docs.nuget.org/create-packages/creating-a-package).
+To build packages from the command line, use the NuGet command-line tools, which are documented on the [official NuGet site](https://docs.nuget.org/ndocs/create-packages/creating-a-package).
 
 ![image](https://cloud.githubusercontent.com/assets/5808377/13399085/cefc7a10-df01-11e5-88b9-423a90107dce.png)
 
