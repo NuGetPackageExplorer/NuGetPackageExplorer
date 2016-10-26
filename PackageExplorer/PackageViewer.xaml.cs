@@ -158,6 +158,7 @@ namespace PackageExplorer
                         "v4.6", "net46",
                         "v4.6.1", "net461",
                         "v4.6.2", "net462",
+                        "v4.6.3", "net463",
                     }
                 }
             };
