@@ -11,7 +11,7 @@
 
 [![Build status](https://ci.appveyor.com/api/projects/status/nhowjp0e1w0225v7/branch/master?svg=true)](https://ci.appveyor.com/project/NuGetPackageExplorer/nugetpackageexplorer/branch/master)
 
-NuGet Package Explorer is a ClickOnce application that makes it easy to create and explore NuGet packages. After installing it, you can double click on a .nupkg file to view the package content, or you can load packages directly from nuget.org.
+NuGet Package Explorer is a ClickOnce & Chocolatey application that makes it easy to create and explore NuGet packages. After installing it, you can double click on a .nupkg file to view the package content, or you can load packages directly from nuget feeds like nuget.org.
 
 To build packages from the command line, use the NuGet command-line tools, which are documented on the [official NuGet site](https://docs.nuget.org/ndocs/create-packages/creating-a-package).
 
