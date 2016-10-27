@@ -2,6 +2,8 @@
 
 [![Twitter Follow](https://img.shields.io/twitter/follow/NuGetPE.svg?style=social?maxAge=2592000)](https://twitter.com/NuGetPE)
 
+[![Rager Releases](http://rager.io/badge.svg?url=https%3A%2F%2Fgithub.com%2FNuGetPackageExplorer%2FNuGetPackageExplorer)](http://rager.io/projects/search?badge=1&query=https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)
+
 [Latest clickonce release](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (uninstall first if previous version is 3.9 or lower)
 
 [![Chocolatey](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg?maxAge=259200)](https://chocolatey.org/packages/NugetPackageExplorer)
