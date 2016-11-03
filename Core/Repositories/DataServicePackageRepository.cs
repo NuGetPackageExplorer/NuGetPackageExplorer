@@ -11,16 +11,16 @@ namespace NuGet
         private readonly DataServiceContext _context;
         private DataServiceQuery<DataServicePackage> _query;
 
-        public DataServicePackageRepository(Uri uri)
-        {
-            _context = new DataServiceContext(uri);
-            _context.Credentials = CredentialCache.DefaultCredentials;
-            _context.SendingRequest += OnSendingRequest;
-            _context.IgnoreMissingProperties = true;
-            _context.Credentials = CredentialCache.DefaultCredentials;
-        }
+	    public DataServicePackageRepository(Uri uri, ICredentials credentials)
+	    {
+		    _context = new DataServiceContext(uri);
+		    _context.Credentials = credentials;
+		    _context.SendingRequest += OnSendingRequest;
+		    _context.IgnoreMissingProperties = true;
+		    _context.Credentials = credentials;
+	    }
 
-        public string Source
+	    public string Source
         {
             get { return _context.BaseUri.OriginalString; }
         }
