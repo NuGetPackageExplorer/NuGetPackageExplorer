@@ -19,6 +19,12 @@ To build packages from the command line, use the NuGet command-line tools, which
 
 ![image](https://cloud.githubusercontent.com/assets/5808377/13399085/cefc7a10-df01-11e5-88b9-423a90107dce.png)
 
+# Current development state / looking for developers
+
+Currently NPE isn't activly developed, but we do accept (not to large) pull requests (PR).
+
+If you like to help, please check the Github issues. If you like to contribute more structurally, we would be happy to add you to our team! 
+
 # Creating a Package
 
 1. Launch Package Explorer and select **File > New** (Ctrl-N), or select **Create a new package** from the **Common tasks** dialog when Package Explorer starts:
