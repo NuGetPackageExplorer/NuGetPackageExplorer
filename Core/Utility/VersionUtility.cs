@@ -57,7 +57,7 @@ namespace NuGet
                 { "Mono", "Mono" },
                 { "native", "native" },
                 { "dnxcore", "DNXCore" },
-                { "Xamarin.ios", "Xamarin iOS" },
+                { "Xamarin.ios", "Xamarin.iOS" },
                 { "Xamarin.mac", "Xamarin Mac" },
                 { "xamarinmac", "Xamarin Mac"},
                 { "xamarinios", "Xamarin iOs"},
