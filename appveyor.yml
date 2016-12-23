@@ -1,6 +1,9 @@
 version: 3.19.0.{build}
 configuration: Release
 platform: Any CPU
+before_build:
+- nuget restore
+  
 build:
   project: NuGetPackageExplorer.sln
   verbosity: minimal
@@ -10,5 +13,5 @@ after_build:
 
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 artifacts:
-- path: '**\*.nupkg'
+- path: '**\NugetPackageExplorer.*.nupkg'
 deploy: off
