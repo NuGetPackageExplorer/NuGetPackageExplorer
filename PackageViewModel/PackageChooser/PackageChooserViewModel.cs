@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet;
+using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -27,7 +28,8 @@ namespace PackageExplorerViewModel
         private bool _isEditable = true;
         private IPackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
-        private bool _showPrereleasePackages;
+	    private readonly ICredentialManager _credentialManager;
+	    private bool _showPrereleasePackages;
         private bool _autoLoadPackages;
         private string _sortColumn;
         private ListSortDirection _sortDirection;
@@ -37,6 +39,7 @@ namespace PackageExplorerViewModel
 
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
+			ICredentialManager credentialManager,
             bool showPrereleasePackages,
             bool autoLoadPackages,
             string fixedPackageSource)
@@ -45,8 +48,12 @@ namespace PackageExplorerViewModel
             {
                 throw new ArgumentNullException("packageSourceManager");
             }
+	        if (credentialManager == null)
+	        {
+		        throw new ArgumentNullException("credentialManager");
+	        }
 
-            _showPrereleasePackages = showPrereleasePackages;
+	        _showPrereleasePackages = showPrereleasePackages;
             _fixedPackageSource = fixedPackageSource;
             _autoLoadPackages = autoLoadPackages;
             Packages = new ObservableCollection<PackageInfoViewModel>();
@@ -58,6 +65,7 @@ namespace PackageExplorerViewModel
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
             _packageSourceManager = packageSourceManager;
+	        _credentialManager = credentialManager;
         }
 
         public IPackageRepository ActiveRepository
@@ -299,7 +307,7 @@ namespace PackageExplorerViewModel
         {
             if (_packageRepository == null)
             {
-                _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+				_packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource, _credentialManager);
             }
 
             return _packageRepository;
