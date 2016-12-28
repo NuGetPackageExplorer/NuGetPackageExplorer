@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGetPe;
+using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -27,6 +28,7 @@ namespace PackageExplorerViewModel
         private bool _isEditable = true;
         private IPackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
+	    private readonly ICredentialManager _credentialManager;
         private bool _showPrereleasePackages;
         private bool _autoLoadPackages;
         private string _sortColumn;
@@ -37,6 +39,7 @@ namespace PackageExplorerViewModel
 
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
+			ICredentialManager credentialManager,
             bool showPrereleasePackages,
             bool autoLoadPackages,
             string fixedPackageSource)
@@ -45,6 +48,10 @@ namespace PackageExplorerViewModel
             {
                 throw new ArgumentNullException("packageSourceManager");
             }
+	        if (credentialManager == null)
+	        {
+		        throw new ArgumentNullException("credentialManager");
+	        }
 
             _showPrereleasePackages = showPrereleasePackages;
             _fixedPackageSource = fixedPackageSource;
@@ -58,6 +65,7 @@ namespace PackageExplorerViewModel
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
             _packageSourceManager = packageSourceManager;
+	        _credentialManager = credentialManager;
         }
 
         public IPackageRepository ActiveRepository
@@ -299,7 +307,7 @@ namespace PackageExplorerViewModel
         {
             if (_packageRepository == null)
             {
-                _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+				_packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource, _credentialManager);
             }
 
             return _packageRepository;
