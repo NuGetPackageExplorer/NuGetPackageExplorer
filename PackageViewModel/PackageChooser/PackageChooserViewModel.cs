@@ -28,7 +28,7 @@ namespace PackageExplorerViewModel
         private bool _isEditable = true;
         private IPackageRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
-	    private readonly ICredentialManager _credentialManager;
+        private readonly ICredentialManager _credentialManager;
         private bool _showPrereleasePackages;
         private bool _autoLoadPackages;
         private string _sortColumn;
@@ -39,7 +39,7 @@ namespace PackageExplorerViewModel
 
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
-			ICredentialManager credentialManager,
+            ICredentialManager credentialManager,
             bool showPrereleasePackages,
             bool autoLoadPackages,
             string fixedPackageSource)
@@ -48,10 +48,10 @@ namespace PackageExplorerViewModel
             {
                 throw new ArgumentNullException("packageSourceManager");
             }
-	        if (credentialManager == null)
-	        {
-		        throw new ArgumentNullException("credentialManager");
-	        }
+            if (credentialManager == null)
+            {
+                throw new ArgumentNullException("credentialManager");
+            }
 
             _showPrereleasePackages = showPrereleasePackages;
             _fixedPackageSource = fixedPackageSource;
@@ -65,7 +65,7 @@ namespace PackageExplorerViewModel
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
             _packageSourceManager = packageSourceManager;
-	        _credentialManager = credentialManager;
+            _credentialManager = credentialManager;
         }
 
         public IPackageRepository ActiveRepository
@@ -307,7 +307,7 @@ namespace PackageExplorerViewModel
         {
             if (_packageRepository == null)
             {
-				_packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource, _credentialManager);
+                _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource, _credentialManager);
             }
 
             return _packageRepository;
@@ -373,7 +373,7 @@ namespace PackageExplorerViewModel
                 {
                     errorMessage = errorMessage + ". The remote server returned status code: " + queryException.Response.StatusCode + ".";
                 }
-                
+
                 ShowMessage(errorMessage, true);
                 ClearPackages(isErrorCase: true);
             }
@@ -411,6 +411,11 @@ namespace PackageExplorerViewModel
             CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
 
             IPackageRepository repository = GetPackageRepository();
+
+            if (repository == null)
+            {
+                return LoadPage(CurrentCancellationTokenSource.Token);
+            }
 
             IQueryable<IPackage> query = null;
 
@@ -498,16 +503,16 @@ namespace PackageExplorerViewModel
                 }
 
                 return query.Cast<DataServicePackage>().Select(p => new PackageInfo
-                                                        {
-                                                            Id = p.Id,
-                                                            Version = p.Version,
-                                                            Authors = p.Authors,
-                                                            DownloadCount = p.DownloadCount,
-                                                            VersionDownloadCount = p.VersionDownloadCount,
-                                                            PackageHash = p.PackageHash,
-                                                            PackageSize = p.PackageSize,
-                                                            Published = p.Published
-                                                        });
+                {
+                    Id = p.Id,
+                    Version = p.Version,
+                    Authors = p.Authors,
+                    DownloadCount = p.DownloadCount,
+                    VersionDownloadCount = p.VersionDownloadCount,
+                    PackageHash = p.PackageHash,
+                    PackageSize = p.PackageSize,
+                    Published = p.Published
+                });
             }
             else
             {
@@ -516,17 +521,17 @@ namespace PackageExplorerViewModel
                              .First());
 
                 return query.Cast<ZipPackage>().Select(p => new PackageInfo
-                                                    {
-                                                        Id = p.Id,
-                                                        Version = p.Version.ToString(),
-                                                        Authors = String.Join(", ", p.Authors),
-                                                        DownloadCount = p.DownloadCount,
-                                                        VersionDownloadCount = p.VersionDownloadCount,
-                                                        PackageHash = p.PackageHash,
-                                                        PackageSize = p.PackageSize,
-                                                        DownloadUrl = new Uri(p.Source),
-                                                        Published = p.Published,
-                                                    });
+                {
+                    Id = p.Id,
+                    Version = p.Version.ToString(),
+                    Authors = String.Join(", ", p.Authors),
+                    DownloadCount = p.DownloadCount,
+                    VersionDownloadCount = p.VersionDownloadCount,
+                    PackageHash = p.PackageHash,
+                    PackageSize = p.PackageSize,
+                    DownloadUrl = new Uri(p.Source),
+                    Published = p.Published,
+                });
             }
         }
 
@@ -634,7 +639,10 @@ namespace PackageExplorerViewModel
             IEnumerable<PackageInfo> packages, int totalPackageCount, int beginPackage, int endPackage)
         {
             Packages.Clear();
-            Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, _packageRepository, this)));
+            if (_packageRepository != null)
+            {
+                Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, _packageRepository, this)));
+            }
             UpdatePageNumber(totalPackageCount, beginPackage, endPackage);
         }
 
