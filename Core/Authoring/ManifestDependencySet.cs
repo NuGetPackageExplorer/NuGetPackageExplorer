@@ -2,7 +2,7 @@
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace NuGet
+namespace NuGetPe
 {
     [XmlType("group")]
     public class ManifestDependencySet

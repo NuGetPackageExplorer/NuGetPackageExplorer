@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Xml.Linq;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal static class XmlUtility
     {

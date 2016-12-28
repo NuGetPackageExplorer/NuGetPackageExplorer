@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class AssemblyExtensions
     {

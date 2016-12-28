@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Xml.Serialization;
 
-namespace NuGet
+namespace NuGetPe
 {
     /// <summary>
     /// This class is used to work around the bug (or bad design, depending on how you look at it) in .NET XML 
