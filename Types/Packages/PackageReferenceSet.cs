@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Versioning;
 
-namespace NuGet
+namespace NuGetPe
 {
-    public class PackageReferenceSet : IFrameworkTargetable
+    public class PackageReferenceSet : NuGet.IFrameworkTargetable
     {
         private readonly FrameworkName _targetFramework;
         private readonly ICollection<string> _references;

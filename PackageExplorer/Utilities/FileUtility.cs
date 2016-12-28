@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorer
 {

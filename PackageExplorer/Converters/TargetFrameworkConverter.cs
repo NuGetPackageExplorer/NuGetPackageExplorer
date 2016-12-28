@@ -2,7 +2,7 @@
 using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Data;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -16,7 +16,7 @@ namespace PackageExplorer
                 return null;
             }
 
-            return VersionUtility.GetShortFrameworkName(framework);
+            return NuGet.VersionUtility.GetShortFrameworkName(framework);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -27,8 +27,8 @@ namespace PackageExplorer
                 return null;
             }
 
-            FrameworkName framework = VersionUtility.ParseFrameworkName(stringValue);
-            if (framework == VersionUtility.UnsupportedFrameworkName)
+            FrameworkName framework = NuGet.VersionUtility.ParseFrameworkName(stringValue);
+            if (framework == NuGet.VersionUtility.UnsupportedFrameworkName)
             {
                 return DependencyProperty.UnsetValue;
             }

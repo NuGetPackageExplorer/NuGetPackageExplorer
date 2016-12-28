@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
 
@@ -55,7 +55,7 @@ namespace PackageExplorer
                 string selectedFilePath;
                 int selectedIndex;
 
-                string packageName = packageInfo.Id + "." + packageInfo.Version.ToString() + NuGet.Constants.PackageExtension;
+                string packageName = packageInfo.Id + "." + packageInfo.Version.ToString() + NuGetPe.Constants.PackageExtension;
                 string title = "Save " + packageName;
                 const string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
 
@@ -71,9 +71,9 @@ namespace PackageExplorer
                 if (accepted)
                 {
                     if (selectedIndex == 1 &&
-                        !selectedFilePath.EndsWith(NuGet.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
+                        !selectedFilePath.EndsWith(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                     {
-                        selectedFilePath += NuGet.Constants.PackageExtension;
+                        selectedFilePath += NuGetPe.Constants.PackageExtension;
                     }
 
                     await PackageDownloader.Download(selectedFilePath, packageInfo.DownloadUrl, packageInfo.Id, packageInfo.Version);                    

@@ -1,11 +1,11 @@
 ﻿using System.IO;
 
-namespace NuGet
+namespace NuGetPe
 {
     public class EmptyFolderFile : PackageFileBase
     {
         public EmptyFolderFile(string folderPath)
-            : base(System.IO.Path.Combine(folderPath, NuGet.Constants.PackageEmptyFileName))
+            : base(System.IO.Path.Combine(folderPath, NuGetPe.Constants.PackageEmptyFileName))
         {
         }
 
