@@ -15,6 +15,11 @@ namespace PackageExplorer
                 return ValidationResult.ValidResult;
             }
 
+            if (stringValue.Contains("$"))
+            {
+                return ValidationResult.ValidResult;
+            }
+
             Version version;
             if (Version.TryParse(stringValue, out version))
             {

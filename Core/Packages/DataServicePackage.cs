@@ -133,13 +133,13 @@ namespace NuGetPe
             get { return CorePackage == null ? Enumerable.Empty<string>() : CorePackage.Authors; }
         }
 
-        NuGet.SemanticVersion IPackageMetadata.Version
+        TemplatebleSemanticVersion IPackageMetadata.Version
         {
             get
             {
                 if (Version != null)
                 {
-                    return new NuGet.SemanticVersion(Version);
+                    return new TemplatebleSemanticVersion(Version);
                 }
                 return null;
             }

@@ -156,8 +156,8 @@ namespace PackageExplorerViewModel
                 return null;
             }
 
-            NuGet.SemanticVersion version;
-            if (!NuGet.SemanticVersion.TryParse(parts[1], out version))
+            TemplatebleSemanticVersion version;
+            if (!TemplatebleSemanticVersion.TryParse(parts[1], out version))
             {
                 return null;
             }

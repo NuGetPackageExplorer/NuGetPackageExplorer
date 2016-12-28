@@ -208,7 +208,7 @@ namespace NuGetPe
         [XmlIgnore]
         public List<ManifestReferenceSet> ReferenceSets { get; set; }
 
-        SemanticVersion IPackageMetadata.Version
+        TemplatebleSemanticVersion IPackageMetadata.Version
         {
             get
             {
@@ -216,7 +216,7 @@ namespace NuGetPe
                 {
                     return null;
                 }
-                return new SemanticVersion(Version);
+                return new TemplatebleSemanticVersion(Version);
             }
         }
 

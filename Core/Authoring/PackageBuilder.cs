@@ -59,7 +59,7 @@ namespace NuGetPe
 
         public string Id { get; set; }
 
-        public NuGet.SemanticVersion Version { get; set; }
+        public TemplatebleSemanticVersion Version { get; set; }
 
         public string Title { get; set; }
 
@@ -218,7 +218,7 @@ namespace NuGetPe
 
         #endregion
 
-        internal static void ValidateDependencySets(NuGet.SemanticVersion version, IEnumerable<PackageDependencySet> dependencies)
+        internal static void ValidateDependencySets(TemplatebleSemanticVersion version, IEnumerable<PackageDependencySet> dependencies)
         {
             if (version == null)
             {

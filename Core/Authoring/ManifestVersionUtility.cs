@@ -45,8 +45,8 @@ namespace NuGetPe
                 return TargetFrameworkSupportForDependencyContentsAndToolsVersion;
             }
 
-            NuGet.SemanticVersion semanticVersion;
-            if (NuGet.SemanticVersion.TryParse(metadata.Version, out semanticVersion) && !String.IsNullOrEmpty(semanticVersion.SpecialVersion))
+            TemplatebleSemanticVersion semanticVersion;
+            if (TemplatebleSemanticVersion.TryParse(metadata.Version, out semanticVersion) && !String.IsNullOrEmpty(semanticVersion.SpecialVersion))
             {
                 return SemverVersion;
             }

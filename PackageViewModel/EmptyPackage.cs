@@ -30,9 +30,9 @@ namespace PackageExplorerViewModel
             get { return "MyPackage"; }
         }
 
-        public NuGet.SemanticVersion Version
+        public TemplatebleSemanticVersion Version
         {
-            get { return new NuGet.SemanticVersion("1.0.0"); }
+            get { return new TemplatebleSemanticVersion("1.0.0"); }
         }
 
         public string Title

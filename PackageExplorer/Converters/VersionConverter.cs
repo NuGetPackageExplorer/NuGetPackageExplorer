@@ -6,15 +6,15 @@ using NuGetPe;
 
 namespace PackageExplorer
 {
-    [ValueConversion(typeof(NuGet.SemanticVersion), typeof(string))]
+    [ValueConversion(typeof(TemplatebleSemanticVersion), typeof(string))]
     public class VersionConverter : IValueConverter
     {
         #region IValueConverter Members
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var version = (NuGet.SemanticVersion) value;
-            return version.ToString();
+            var version =  value as TemplatebleSemanticVersion;
+            return version?.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -26,8 +26,8 @@ namespace PackageExplorer
             }
             else
             {
-                NuGet.SemanticVersion version;
-                if (NuGet.SemanticVersion.TryParse(stringValue, out version))
+                TemplatebleSemanticVersion version;
+                if (TemplatebleSemanticVersion.TryParse(stringValue, out version))
                 {
                     return version;
                 }
