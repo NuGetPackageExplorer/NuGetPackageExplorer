@@ -29,7 +29,7 @@ namespace NuGetPe
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public TemplatebleSemanticVersion(string versionWithTokens)
+        private TemplatebleSemanticVersion(string versionWithTokens)
         {
             _versionWithTokens = versionWithTokens;
             _version = new SemanticVersion(0, 0, 0, 0);

@@ -32,7 +32,7 @@ namespace PackageExplorerViewModel
 
         public TemplatebleSemanticVersion Version
         {
-            get { return new TemplatebleSemanticVersion("1.0.0"); }
+            get { return TemplatebleSemanticVersion.Parse("1.0.0"); }
         }
 
         public string Title

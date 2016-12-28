@@ -216,7 +216,7 @@ namespace NuGetPe
                 {
                     return null;
                 }
-                return new TemplatebleSemanticVersion(Version);
+                return TemplatebleSemanticVersion.Parse(Version);
             }
         }
 
