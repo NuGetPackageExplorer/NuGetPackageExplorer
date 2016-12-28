@@ -34,7 +34,19 @@ namespace NuGetPe
             }
 
             _filePath = filePath;
-            _streamFactory = () => File.Open(filePath,FileMode.Open,FileAccess.ReadWrite,FileShare.ReadWrite);
+            _streamFactory = () =>
+            {
+                try
+                {
+                    return File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    //just try read
+                    return File.Open(filePath, FileMode.Open,FileAccess.Read);
+                }
+                
+            };
             EnsureManifest();
         }
 
