@@ -13,7 +13,7 @@ namespace NuGetPe
     public class PackageInfo : IPackageInfoType
     {
         private string _version;
-        private NuGet.SemanticVersion _semanticVersion;
+        private TemplatebleSemanticVersion _semanticVersion;
 
         public string Id { get; set; }
         public string Version
@@ -28,11 +28,11 @@ namespace NuGetPe
 
                 if (String.IsNullOrEmpty(_version))
                 {
-                    _semanticVersion = new NuGet.SemanticVersion(0, 0, 0, 0);
+                    _semanticVersion = new TemplatebleSemanticVersion(0, 0, 0, 0);
                 }
                 else
                 {
-                    NuGet.SemanticVersion.TryParse(_version, out _semanticVersion);
+                    TemplatebleSemanticVersion.TryParse(_version, out _semanticVersion);
                 }
             }
         }
@@ -78,7 +78,7 @@ namespace NuGetPe
             }
         }
 
-        public NuGet.SemanticVersion SemanticVersion
+        public TemplatebleSemanticVersion SemanticVersion
         {
             get
             {

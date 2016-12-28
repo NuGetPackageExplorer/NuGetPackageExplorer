@@ -481,7 +481,7 @@ namespace PackageExplorer
 
         internal Task DownloadAndOpenDataServicePackage(MruItem item)
         {
-            return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
+            return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version?.SemanticVersion);
         }
 
         internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string id = null, NuGet.SemanticVersion version = null)

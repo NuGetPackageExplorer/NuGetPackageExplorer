@@ -244,8 +244,8 @@ namespace PackageExplorer
             {
                 string id = match.Groups[1].Value;
                 string versionString = match.Groups[2].Value;
-                NuGet.SemanticVersion version;
-                if (NuGet.SemanticVersion.TryParse(versionString, out version))
+                TemplatebleSemanticVersion version;
+                if (TemplatebleSemanticVersion.TryParse(versionString, out version))
                 {
                     return new PluginInfo(id, version);
                 }

@@ -208,7 +208,7 @@ namespace NuGetPe
         [XmlIgnore]
         public List<ManifestReferenceSet> ReferenceSets { get; set; }
 
-        SemanticVersion IPackageMetadata.Version
+        TemplatebleSemanticVersion IPackageMetadata.Version
         {
             get
             {
@@ -216,7 +216,7 @@ namespace NuGetPe
                 {
                     return null;
                 }
-                return new SemanticVersion(Version);
+                return new TemplatebleSemanticVersion(Version);
             }
         }
 
@@ -354,13 +354,7 @@ namespace NuGetPe
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (!String.IsNullOrEmpty(Id))
-            {
-                if (!NuGet.PackageIdValidator.IsValidPackageId(Id))
-                {
-                    yield return new ValidationResult(String.Format(CultureInfo.CurrentCulture, NuGetResources.InvalidPackageId, Id));
-                }
-            }
+  
 
             if (LicenseUrl == String.Empty)
             {

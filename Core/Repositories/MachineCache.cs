@@ -60,7 +60,7 @@ namespace NuGetPe
         public void AddPackage(IPackage package)
         {
             // if the package is already present in the cache, no need to do anything
-            if (FindPackage(package.Id, package.Version) != null)
+            if (FindPackage(package.Id, package.Version?.SemanticVersion) != null)
             {
                 return;
             }
@@ -76,7 +76,7 @@ namespace NuGetPe
             ClearCache(cacheDirectory, MaxNumberOfPackages);
 
             // now copy the package to the cache
-            string filePath = GetPackageFilePath(package.Id, package.Version);
+            string filePath = GetPackageFilePath(package.Id, package.Version?.SemanticVersion);
             using (Stream stream = package.GetStream(),
                           fileStream = File.Create(filePath))
             {

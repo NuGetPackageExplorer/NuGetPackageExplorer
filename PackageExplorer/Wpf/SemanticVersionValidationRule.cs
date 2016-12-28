@@ -15,6 +15,11 @@ namespace PackageExplorer
                 return ValidationResult.ValidResult;
             }
 
+            if (stringValue.Contains("$"))
+            {
+                return ValidationResult.ValidResult;
+            }
+
             NuGet.SemanticVersion version;
             if (NuGet.SemanticVersion.TryParse(stringValue, out version))
             {

@@ -59,7 +59,7 @@ namespace NuGetPe
 
         public string Id { get; set; }
 
-        public NuGet.SemanticVersion Version { get; set; }
+        public TemplatebleSemanticVersion Version { get; set; }
 
         public string Title { get; set; }
 
@@ -138,9 +138,7 @@ namespace NuGetPe
 
         public void Save(Stream stream)
         {
-            // Make sure we're saving a valid package id
-            NuGet.PackageIdValidator.ValidatePackageId(Id);
-
+           
             // Throw if the package doesn't contain any dependencies nor content
             if (!Files.Any() && !DependencySets.Any() && !FrameworkReferences.Any())
             {
@@ -220,7 +218,7 @@ namespace NuGetPe
 
         #endregion
 
-        internal static void ValidateDependencySets(NuGet.SemanticVersion version, IEnumerable<PackageDependencySet> dependencies)
+        internal static void ValidateDependencySets(TemplatebleSemanticVersion version, IEnumerable<PackageDependencySet> dependencies)
         {
             if (version == null)
             {

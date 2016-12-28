@@ -63,7 +63,7 @@ namespace NuGetPe
 
         public string Id { get; private set; }
 
-        public NuGet.SemanticVersion Version { get; private set; }
+        public TemplatebleSemanticVersion Version { get; private set; }
 
         public string Title { get; private set; }
 

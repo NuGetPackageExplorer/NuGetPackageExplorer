@@ -75,6 +75,7 @@
     <Compile Include="Packages\PackageDependency.cs" />
     <Compile Include="Packages\PackageDependencySet.cs" />
     <Compile Include="Packages\PackageReferenceSet.cs" />
+    <Compile Include="Packages\TemplatebleSemanticVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReplacementTokens.cs" />
   </ItemGroup>

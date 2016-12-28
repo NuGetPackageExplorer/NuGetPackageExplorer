@@ -42,6 +42,12 @@ namespace PackageExplorerViewModel.Rules
             return version != null && !String.IsNullOrEmpty(version.SpecialVersion);
         }
 
+        private static bool IsPreReleasedVersion(TemplatebleSemanticVersion version)
+        {
+            return version != null && !String.IsNullOrEmpty(version.SpecialVersion);
+        }
+
+
         private static PackageIssue CreatePackageIssue(PackageDependency target)
         {
             return new PackageIssue(

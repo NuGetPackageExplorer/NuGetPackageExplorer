@@ -6,7 +6,7 @@ namespace NuGetPe
     public interface IPackageMetadata
     {
         string Id { get; }
-        NuGet.SemanticVersion Version { get; }
+        TemplatebleSemanticVersion Version { get; }
         string Title { get; }
         IEnumerable<string> Authors { get; }
         IEnumerable<string> Owners { get; }
