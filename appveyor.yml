@@ -1,4 +1,4 @@
-version: 3.20.0.{build}
+version: 3.21.0.{build}
 configuration: Release
 platform: Any CPU
 before_build:
@@ -9,7 +9,7 @@ build:
   verbosity: minimal
 after_build:
 - ps: >-
-    choco pack PackageExplorer\NugetPackageExplorer.nuspec --version 3.20
+    choco pack PackageExplorer\NugetPackageExplorer.nuspec --version 3.21
 
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 artifacts:
