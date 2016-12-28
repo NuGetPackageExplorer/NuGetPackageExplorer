@@ -139,7 +139,7 @@ namespace NuGetPe
             {
                 if (Version != null)
                 {
-                    return new TemplatebleSemanticVersion(Version);
+                    return TemplatebleSemanticVersion.Parse(Version);
                 }
                 return null;
             }
