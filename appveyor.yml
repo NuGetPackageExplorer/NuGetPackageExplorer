@@ -13,5 +13,5 @@ after_build:
 
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 artifacts:
-- path: '**\*.nupkg'
+- path: '**\NugetPackageExplorer*.nupkg'
 deploy: off
