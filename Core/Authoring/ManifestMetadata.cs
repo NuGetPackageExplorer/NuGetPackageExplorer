@@ -354,13 +354,7 @@ namespace NuGetPe
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (!String.IsNullOrEmpty(Id))
-            {
-                if (!NuGet.PackageIdValidator.IsValidPackageId(Id))
-                {
-                    yield return new ValidationResult(String.Format(CultureInfo.CurrentCulture, NuGetResources.InvalidPackageId, Id));
-                }
-            }
+  
 
             if (LicenseUrl == String.Empty)
             {

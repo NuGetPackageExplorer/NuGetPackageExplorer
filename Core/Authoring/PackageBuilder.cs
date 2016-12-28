@@ -138,9 +138,7 @@ namespace NuGetPe
 
         public void Save(Stream stream)
         {
-            // Make sure we're saving a valid package id
-            NuGet.PackageIdValidator.ValidatePackageId(Id);
-
+           
             // Throw if the package doesn't contain any dependencies nor content
             if (!Files.Any() && !DependencySets.Any() && !FrameworkReferences.Any())
             {

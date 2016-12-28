@@ -143,8 +143,6 @@ namespace PackageExplorerViewModel
                     {
                         throw new ArgumentException("Id is required.");
                     }
-
-                    NuGet.PackageIdValidator.ValidatePackageId(value);
                 }
                 catch (Exception ex)
                 {
