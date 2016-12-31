@@ -48,13 +48,13 @@ If you like to help, please check the Github issues. If you like to contribute m
 
 # Publishing a Package
 
-1.Create a free account on [nuget.org](http://nuget.org/), or log in if you already have one. When creating a new account, you'll receive a confirmation email. You must confirm the account before you can upload a package.
+1. Create a free account on [nuget.org](http://nuget.org/), or log in if you already have one. When creating a new account, you'll receive a confirmation email. You must confirm the account before you can upload a package.
 
-2.Once logged in, click your user name (on the upper right) to navigate to your account settings.
+2. Once logged in, click your user name (on the upper right) to navigate to your account settings.
 
-3.Under **API Key**, click **copy to clipboard** to retrieve the access key you'll need in the next step:
+3. Under **API Key**, click **copy to clipboard** to retrieve the access key you'll need in the next step:
 
-    ![Copying the API key from the nuget.org profile](https://cloud.githubusercontent.com/assets/1339874/19167409/6fd8d238-8bc0-11e6-86b4-49af64483d78.png)
+      ![Copying the API key from the nuget.org profile](https://cloud.githubusercontent.com/assets/1339874/19167409/6fd8d238-8bc0-11e6-86b4-49af64483d78.png)
 
 4. Assuming your package is loaded in Package Explorer, select **File > Publish** (Ctrl+P) to bring up the **Publish Package** dialog:
 
