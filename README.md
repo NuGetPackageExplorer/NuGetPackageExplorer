@@ -21,7 +21,7 @@ To build packages from the command line, use the NuGet command-line tools, which
 
 # Current development state / looking for developers
 
-Currently NPE isn't activly developed, but we do accept (not to large) pull requests (PR).
+Currently NPE isn't activly developed, but we do accept (not too large) pull requests (PR).
 
 If you like to help, please check the Github issues. If you like to contribute more structurally, we would be happy to add you to our team! 
 
