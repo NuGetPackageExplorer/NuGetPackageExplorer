@@ -139,6 +139,12 @@
       <Link>win32\Resources\fxAssemblies.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="images\Square150x150Logo.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="images\Square44x44Logo.scale-200.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="win32\Resources\" />
@@ -155,7 +161,7 @@
     <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
   </PropertyGroup>
   -->
-  <Target Name="AfterBuild">
+  <!--<Target Name="AfterBuild">
     <PropertyGroup>
       <TargetUWP>..\PackageExplorer.Package\win32\</TargetUWP>
     </PropertyGroup>
@@ -163,5 +169,5 @@
       <Win32Binaries Include="$(TargetDir)\*" />
     </ItemGroup>
     <Copy SourceFiles="@(Win32Binaries)" DestinationFolder="$(TargetUWP)" />
-  </Target>
+  </Target>-->
 </Project>

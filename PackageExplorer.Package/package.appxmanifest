@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" 
          xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" 
+         xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" 
-         IgnorableNamespaces="uap rescap">
+         IgnorableNamespaces="uap rescap mp">
 
+  <mp:PhoneIdentity PhoneProductId="95d42d13-b9a9-4fda-88a8-0cdc2ab9a9c1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Identity
     Name="508894a9-d8b9-4a24-90e9-4e25c801329b"
     Version="1.0.0.0"
@@ -34,10 +36,6 @@
         BackgroundColor="transparent"
         Square150x150Logo="images\Square150x150Logo.png"
         Square44x44Logo="images\Square44x44Logo.png">
-
-        <uap:DefaultTile Wide310x150Logo="images\Wide310x150Logo.png" />
-        <uap:SplashScreen Image="images\splashscreen.png" />
-
       </uap:VisualElements>
     </Application>
   </Applications>
