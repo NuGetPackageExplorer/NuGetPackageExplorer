@@ -16,6 +16,12 @@
   <Applications>
     <Application Id="NuGetPackageExplorer" Executable="win32\NuGetPackageExplorer.exe" EntryPoint="Windows.FullTrustApplication">
       <uap:VisualElements DisplayName="NuGet Package Explorer" Description="NuGet Package Explorer" BackgroundColor="transparent" Square150x150Logo="images\Square150x150Logo.png" Square44x44Logo="images\Square44x44Logo.png">
+        <uap:DefaultTile Square310x310Logo="images\Square310x310Logo.png" Wide310x150Logo="images\Wide310x150Logo.png" ShortName="NuGet Package Explorer">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.fileTypeAssociation">
