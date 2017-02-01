@@ -21,4 +21,4 @@ DebugConstants.cs
 *.log
 packages/*
 publish/
-bld/*
+/PackageExplorer.Package/bld/*
