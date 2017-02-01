@@ -111,9 +111,6 @@
       <HintPath>..\lib\Humanizer.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\ar\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
       <HintPath>..\lib\bg\Humanizer.resources.dll</HintPath>
     </Reference>
     <Reference Include="Humanizer.resources">
