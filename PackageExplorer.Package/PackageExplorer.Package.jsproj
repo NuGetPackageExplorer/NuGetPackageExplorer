@@ -52,15 +52,18 @@
     <TargetPlatformMinVersion>10.0.14393.0</TargetPlatformMinVersion>
     <MinimumVisualStudioVersion>$(VersionNumberMajor).$(VersionNumberMinor)</MinimumVisualStudioVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <PackageCertificateKeyFile>PackageExplorer.Package_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>PackageExplorer.Package_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxGeneratePrisForPortableLibrariesEnabled>false</AppxGeneratePrisForPortableLibrariesEnabled>
+    <PackageCertificateThumbprint>5FA376198F170FD651A63451A0098E524A29B9EF</PackageCertificateThumbprint>
+    <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
+    <AppxBundle>Always</AppxBundle>
+    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="package.appxmanifest">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </AppxManifest>
-    <None Include="PackageExplorer.Package_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\PackageExplorer\bin\$(Configuration)\CodeExecutor.dll">
@@ -147,6 +150,8 @@
     <Content Include="images\StoreLogo.scale-100.png" />
     <Content Include="images\StoreLogo.scale-200.png" />
     <Content Include="images\Wide310x150Logo.scale-200.png" />
+    <None Include="PackageExplorer.Package_StoreKey.pfx" />
+    <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="win32\Resources\" />
