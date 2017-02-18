@@ -64,3 +64,10 @@ If you like to help, please check the Github issues. If you like to contribute m
 
 6. In your profile on nuget.org, click **Manage my packages** to see the one that you just published; you'll also receive a confirmation email. Note that it might take a while for your package to be indexed and appear in search results, during which time you'll see a message that the package hasn't yet been indexed.
 
+
+# Build
+
+Requirments to build the project:
+
+- VS2015
+- [Windows 10 SDK](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk)
