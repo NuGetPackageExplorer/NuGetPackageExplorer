@@ -25,6 +25,18 @@ Currently NPE isn't activly developed, but we do accept (not too large) pull req
 
 If you like to help, please check the Github issues. If you like to contribute more structurally, we would be happy to add you to our team! 
 
+
+# How to install
+You could install with ClickOnce or Chocolatey. The latter is preferred as the Clickonce (well Codeplex) is unstable
+
+## Install on Chocolatey
+
+1. Run Powershell (as Admin)
+2. Install Chocolatey: `iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex`
+3. Install NPE: `choco install nugetpackageexplorer`
+
+
+
 # Creating a Package
 
 1. Launch Package Explorer and select **File > New** (Ctrl-N), or select **Create a new package** from the **Common tasks** dialog when Package Explorer starts:
