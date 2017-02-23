@@ -19,11 +19,6 @@ To build packages from the command line, use the NuGet command-line tools, which
 
 ![image](https://cloud.githubusercontent.com/assets/5808377/13399085/cefc7a10-df01-11e5-88b9-423a90107dce.png)
 
-# Current development state / looking for developers
-
-Currently NPE isn't activly developed, but we do accept (not too large) pull requests (PR).
-
-If you like to help, please check the Github issues. If you like to contribute more structurally, we would be happy to add you to our team! 
 
 
 # How to install
@@ -35,6 +30,11 @@ You could install with ClickOnce or Chocolatey. The latter is preferred as the C
 2. Install Chocolatey: `iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex`
 3. Install NPE: `choco install nugetpackageexplorer`
 
+# Current development state / looking for developers
+
+Currently NPE isn't activly developed, but we do accept (not too large) pull requests (PR).
+
+If you like to help, please check the Github issues. If you like to contribute more structurally, we would be happy to add you to our team! 
 
 
 # Creating a Package
