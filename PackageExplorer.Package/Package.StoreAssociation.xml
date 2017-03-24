@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <StoreAssociation xmlns="http://schemas.microsoft.com/appx/2010/storeassociation">
   <Publisher>CN=3466D5D7-00EE-41FA-A7A4-6F7CA3E1C7F8</Publisher>
-  <PublisherDisplayName>Oren Novotny</PublisherDisplayName>
+  <PublisherDisplayName>Oren Novotny, LLC</PublisherDisplayName>
   <GeneratePackageHash>http://www.w3.org/2001/04/xmlenc#sha256</GeneratePackageHash>
   <SupportedLocales>
     <Language Code="af" InMinimumRequirementSet="true" />
@@ -364,24 +364,10 @@
     </ReservedNames>
   </ProductReservedInfo>
   <AccountPackageIdentityNames>
-    <MainPackageIdentityName>62221OrenNovotny.1Across</MainPackageIdentityName>
-    <MainPackageIdentityName>62221OrenNovotny.BonjourBrowser</MainPackageIdentityName>
-    <MainPackageIdentityName>62221OrenNovotny.MishraReader</MainPackageIdentityName>
+    <MainPackageIdentityName>OrenNovotnyLLC.1Across</MainPackageIdentityName>
+    <MainPackageIdentityName>OrenNovotnyLLC.BonjourBrowser</MainPackageIdentityName>
     <MainPackageIdentityName>62221OrenNovotny.Novotny.org</MainPackageIdentityName>
-    <MainPackageIdentityName>62221OrenNovotny.RSSBandit</MainPackageIdentityName>
-    <MainPackageIdentityName>62221OrenNovotny.tdb</MainPackageIdentityName>
-    <MainPackageIdentityName>62221OrenNovotny.TDABeta</MainPackageIdentityName>
+    <MainPackageIdentityName>OrenNovotnyLLC.RSSBandit</MainPackageIdentityName>
   </AccountPackageIdentityNames>
-  <PackageInfoList LandingUrl="https://developer.microsoft.com/dashboard/Application?appId=9WZDNCRDMDM3">
-    <PackageInfo>
-      <OsMinVersion>6.2.1.0</OsMinVersion>
-      <PackageArchitecture>neutral</PackageArchitecture>
-      <PackageMaxArchitectureVersion>2.0.0.1</PackageMaxArchitectureVersion>
-    </PackageInfo>
-    <PackageInfo>
-      <OsMinVersion>6.3.0.0</OsMinVersion>
-      <PackageArchitecture>neutral</PackageArchitecture>
-      <PackageMaxArchitectureVersion>3.0.0.4</PackageMaxArchitectureVersion>
-    </PackageInfo>
-  </PackageInfoList>
+  <PackageInfoList LandingUrl="https://developer.microsoft.com/dashboard/Application?appId=9WZDNCRDMDM3" />
 </StoreAssociation>
