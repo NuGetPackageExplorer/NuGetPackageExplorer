@@ -1,6 +1,14 @@
 version: 3.21.0.{build}
 configuration: Release
 platform: Any CPU
+
+skip_commits:
+  files:
+    - '**/*.md'
+    - 'images/**/*.*'
+
+skip_branch_with_pr: true   
+
 before_build:
     - ps: wget https://www.nuget.org/nuget.exe -OutFile .\NuGet.exe
     - ps: .\NuGet.exe restore
