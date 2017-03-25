@@ -8,6 +8,10 @@
 [![Chocolatey](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg?maxAge=259200)](https://chocolatey.org/packages/NugetPackageExplorer)
 [![Rager Releases](http://rager.io/badge.svg?url=https%3A%2F%2Fgithub.com%2FNuGetPackageExplorer%2FNuGetPackageExplorer)](http://rager.io/projects/search?badge=1&query=https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)
 
+## Recommended release for Windows 10
+<a href="https://www.microsoft.com/store/apps/9wzdncrdmdm3?ocid=badge"><img height="104" width="288" src="https://assets.windowsphone.com/f2f77ec7-9ba9-4850-9ebe-77e366d08adc/English_Get_it_Win_10_InvariantCulture_Default.png" alt="Get it on Windows 10" /></a> (Anniversary Update and later)<br />
+
+## For Windows 8.x and lower
 [Latest clickonce release](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (uninstall first if previous version is 3.9 or lower)
 
 NuGet Package Explorer is a ClickOnce & Chocolatey application that makes it easy to create and explore NuGet packages. After installing it, you can double click on a .nupkg file to view the package content, or you can load packages directly from nuget feeds like nuget.org.
@@ -19,7 +23,11 @@ To build packages from the command line, use the NuGet command-line tools, which
 
 
 # How to install
-You could install with ClickOnce or Chocolatey. The latter is preferred as the Clickonce (well Codeplex) is unstable
+You could install with the Windows 10 Store, ClickOnce or Chocolatey. The Windows Store is the prefered version for Windows 10 Anniversary Update and later.
+
+## Install through Windows Store
+1. Click here: <br /><a href="https://www.microsoft.com/store/apps/9wzdncrdmdm3?ocid=badge"><img height="52" width="144" src="https://assets.windowsphone.com/f2f77ec7-9ba9-4850-9ebe-77e366d08adc/English_Get_it_Win_10_InvariantCulture_Default.png" alt="Get it on Windows 10" /></a>
+2. Install
 
 ## Install on Chocolatey
 
