@@ -10,7 +10,7 @@ Please keep / fill in the relevant info from this template so that we can help y
 
 **NPE version**: (e.g. 3.12) (see Help -> about)
 
-**Installed from**: ClickOnce / chocolatey.org / Zip on CodePlex 
+**Installed from**: ClickOnce / chocolatey.org / Zip on CodePlex / Windows Store
 
 In case of a BUG:
 
