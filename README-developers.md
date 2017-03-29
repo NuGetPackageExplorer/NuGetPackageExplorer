@@ -2,7 +2,8 @@ Change version number:
 ===
 
 1. Change version in properties of the PackageExplorer project:
-![image](https://cloud.githubusercontent.com/assets/5808377/13398046/e459d2a4-defc-11e5-837a-b67dbfbcd89e.png)
+
+<img src="https://cloud.githubusercontent.com/assets/5808377/13398046/e459d2a4-defc-11e5-837a-b67dbfbcd89e.png" width="20">
 
 2.  Change in "CommonAssemblyInfo.cs" <br>
 ![image](https://cloud.githubusercontent.com/assets/5808377/13398070/013b1df6-defd-11e5-9f7c-2135bd298453.png)
