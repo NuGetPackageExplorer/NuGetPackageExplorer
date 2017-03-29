@@ -8,27 +8,27 @@
 [![Chocolatey](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg?maxAge=259200)](https://chocolatey.org/packages/NugetPackageExplorer)
 [![Rager Releases](http://rager.io/badge.svg?url=https%3A%2F%2Fgithub.com%2FNuGetPackageExplorer%2FNuGetPackageExplorer)](http://rager.io/projects/search?badge=1&query=https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)
 
-# How to install
+## How to install
 You could install with the Windows 10 Store, ClickOnce or Chocolatey. The Windows Store is the prefered version for Windows 10 Anniversary Update and later.
 
-## Windows Store (recommend install, Windows 10 Anniversary Update needed)
+#### Windows Store (recommend install, Windows 10 Anniversary Update needed)
 Anniversary Update and later:
 
 <a href="https://www.microsoft.com/store/apps/9wzdncrdmdm3?ocid=badge"><img height="104" width="288" src="https://assets.windowsphone.com/f2f77ec7-9ba9-4850-9ebe-77e366d08adc/English_Get_it_Win_10_InvariantCulture_Default.png" alt="Get it on Windows 10" /></a> 
 
-## Chocolatey
+#### Chocolatey
 Chocolatey is another great way to install and update your application. 
 
 1. Run Powershell (as Admin)
 2. Install Chocolatey: `iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex`
 3. Install NPE: `choco install nugetpackageexplorer`
 
-## ClickOnce
+#### ClickOnce
 This is legacy. There a lot of install issues with ClickOnce. Also you get a smartscreen error. 
 
 [Latest clickonce release](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (uninstall first if previous version is 3.9 or lower)
 
-# What is NuGet Package Explorer?
+## What is NuGet Package Explorer?
 
 NuGet Package Explorer is aapplication that makes it easy to create and explore NuGet packages. After installing it, you can double click on a .nupkg file to view the package content, or you can load packages directly from nuget feeds like nuget.org.
 
@@ -36,17 +36,17 @@ To build packages from the command line, use the NuGet command-line tools, which
 
 ![image](https://cloud.githubusercontent.com/assets/5808377/13399085/cefc7a10-df01-11e5-88b9-423a90107dce.png)
 
-# Current development state / looking for developers
+## Current development state / looking for developers
 
 Currently NPE isn't activly developed, but we do accept (not too large) pull requests (PR).
 
 If you like to help, please check the Github issues. If you like to contribute more structurally, we would be happy to add you to our team! 
 
-# Issues
+## Issues
 
 Please check the [FAQ](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/wiki) first and search for duplicate issues before reporting them. 
 
-# Creating a Package
+## Creating a Package
 
 1. Launch Package Explorer and select **File > New** (Ctrl-N), or select **Create a new package** from the **Common tasks** dialog when Package Explorer starts:
 
@@ -67,7 +67,7 @@ Please check the [FAQ](https://github.com/NuGetPackageExplorer/NuGetPackageExplo
 
 4. Save your package with **File > Save** (Ctrl-S).
 
-# Publishing a Package
+## Publishing a Package
 
 1. Create a free account on [nuget.org](http://nuget.org/), or log in if you already have one. When creating a new account, you'll receive a confirmation email. You must confirm the account before you can upload a package.
 
@@ -86,7 +86,7 @@ Please check the [FAQ](https://github.com/NuGetPackageExplorer/NuGetPackageExplo
 6. In your profile on nuget.org, click **Manage my packages** to see the one that you just published; you'll also receive a confirmation email. Note that it might take a while for your package to be indexed and appear in search results, during which time you'll see a message that the package hasn't yet been indexed.
 
 
-# Build
+## Build
 
 Requirments to build the project:
 
