@@ -1,4 +1,4 @@
-Change version number:
+How to change version number:
 ===
 
 1. Change version in properties of the PackageExplorer project:
@@ -8,12 +8,8 @@ Change version number:
 <img src="https://cloud.githubusercontent.com/assets/5808377/13398070/013b1df6-defd-11e5-9f7c-2135bd298453.png" width="600">
 
 
-
-
-
-How to publish
+How to publish the ClickOnce (legacy)
 ====
-
 
 <img src="https://cloud.githubusercontent.com/assets/5808377/13203106/5f2f18a8-d8af-11e5-98fc-530b9f9d18c3.png" width="400">
 
@@ -23,9 +19,7 @@ How to publish
 
 <img src="https://cloud.githubusercontent.com/assets/5808377/13203110/70861066-d8af-11e5-8969-2341d2557481.png" width="400">
 
-
 Upload Zip on CodePlex. (Note a clickonce application cannot be released on GitHub)
-
 
 How to publish on Chocolatey
 ===
