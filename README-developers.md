@@ -30,6 +30,10 @@ Upload Zip on CodePlex. (Note a clickonce application cannot be released on GitH
 How to publish on Chocolatey
 ===
 
+Update: this could be done now from AppVeyor
+
+Old steps:
+
 1. Create a release build
 2. Create a zip of the following files: .exe, .dll's, the .config
 3. Upload zip to CodePlex to https://npe.codeplex.com/releases/view/68211
