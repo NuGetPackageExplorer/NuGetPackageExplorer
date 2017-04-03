@@ -177,5 +177,9 @@ namespace NuGetPe
         {
             return this.GetFullName();
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

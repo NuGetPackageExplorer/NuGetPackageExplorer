@@ -5,7 +5,7 @@ using System.IO;
 
 namespace NuGetPe
 {
-    public interface IPackage : IPackageMetadata, IServerPackageMetadata
+    public interface IPackage : IPackageMetadata, IServerPackageMetadata, IDisposable
     {
         bool IsAbsoluteLatestVersion { get; }
 

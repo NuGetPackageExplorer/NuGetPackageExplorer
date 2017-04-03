@@ -184,5 +184,9 @@ namespace PackageExplorerViewModel
         }
 
         #endregion
+
+        public void Dispose()
+        {
+        }
     }
 }
