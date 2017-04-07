@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap rescap mp">
   <mp:PhoneIdentity PhoneProductId="95d42d13-b9a9-4fda-88a8-0cdc2ab9a9c1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
-  <Identity Name="50582LuanNguyen.NuGetPackageExplorer" Version="3.21.6.0" Publisher="CN=3466D5D7-00EE-41FA-A7A4-6F7CA3E1C7F8" />
+  <Identity Name="50582LuanNguyen.NuGetPackageExplorer" Version="3.22.0.0" Publisher="CN=3466D5D7-00EE-41FA-A7A4-6F7CA3E1C7F8" />
   <Properties>
     <DisplayName>NuGet Package Explorer</DisplayName>
     <PublisherDisplayName>Oren Novotny, LLC</PublisherDisplayName>
