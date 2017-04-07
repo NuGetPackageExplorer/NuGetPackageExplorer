@@ -443,6 +443,7 @@ namespace PackageExplorer
                 return;
             }
 
+            (DataContext as PackageViewModel)?.Dispose();
             DataContext = null;
         }
 

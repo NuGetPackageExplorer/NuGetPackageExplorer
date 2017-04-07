@@ -188,5 +188,9 @@ namespace NuGetPe
         }
 
         #endregion
+
+        public void Dispose()
+        {
+        }
     }
 }

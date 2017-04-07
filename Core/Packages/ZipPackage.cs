@@ -7,7 +7,7 @@ using NuGetPe.Resources;
 
 namespace NuGetPe
 {
-    public class ZipPackage : IPackage
+    public class ZipPackage : IPackage, IDisposable
     {
         private const string AssemblyReferencesDir = "lib";
         private const string ResourceAssemblyExtension = ".resources.dll";
@@ -45,7 +45,7 @@ namespace NuGetPe
                     //just try read
                     return File.Open(filePath, FileMode.Open,FileAccess.Read);
                 }
-                
+
             };
             EnsureManifest();
         }
@@ -131,7 +131,7 @@ namespace NuGetPe
         private DateTimeOffset? _lastUpdated;
         public DateTimeOffset LastUpdated
         {
-            get 
+            get
             {
                 if (_lastUpdated == null)
                 {
@@ -144,7 +144,7 @@ namespace NuGetPe
         private long? _packageSize;
         public long PackageSize
         {
-            get 
+            get
             {
                 if (_packageSize == null)
                 {
@@ -195,9 +195,14 @@ namespace NuGetPe
 
         public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; set; }
 
+        // Keep a list of open stream here, and close on dispose.
+        private List<IDisposable> _danglingStreams = new List<IDisposable>();
+
         public IEnumerable<IPackageFile> GetFiles()
         {
-            Package package = Package.Open(_streamFactory()); // should not close
+            Stream stream = _streamFactory();
+            Package package = Package.Open(stream); // should not close
+            _danglingStreams.Add(stream);           // clean up on dispose
 
             return (from part in package.GetParts()
                     where IsPackageFile(part)
@@ -291,6 +296,11 @@ namespace NuGetPe
         public override string ToString()
         {
             return this.GetFullName();
+        }
+
+        public void Dispose()
+        {
+            _danglingStreams.ForEach(ds => ds.Dispose());
         }
     }
 }

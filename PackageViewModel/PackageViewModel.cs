@@ -266,6 +266,7 @@ namespace PackageExplorerViewModel
         public void Dispose()
         {
             RootFolder.Dispose();
+            _package.Dispose();
         }
 
         #endregion
