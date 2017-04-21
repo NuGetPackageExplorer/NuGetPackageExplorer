@@ -50,7 +50,7 @@
     <DockPanel x:Name="RootLayout" LastChildFill="True" Visibility="{Binding IsInEditFileMode, Mode=OneWay, FallbackValue=Visible, Converter={StaticResource invertedBoolToVis}}">
         <!-- Menu bar -->
         <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
-            <self:GrayscaleMenuItem Header="_FILE" Margin="3,0">
+            <self:GrayscaleMenuItem Header="_File" Margin="3,0">
                 <MenuItem Command="New" Header="_New">
                     <MenuItem.Icon>
                         <Image Source="Images/NewDocumentHS.png"></Image>
@@ -103,7 +103,7 @@
                 <MenuItem Header="E_xit" Click="ExitMenuItem_Click" />
             </self:GrayscaleMenuItem>
 
-            <self:GrayscaleMenuItem Header="_EDIT" Margin="3,0" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
+            <self:GrayscaleMenuItem Header="_Edit" Margin="3,0" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
                 <self:GrayscaleMenuItem Header="Edit _Metadata" InputGestureText="Ctrl+K" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}">
                     <self:GrayscaleMenuItem.Icon>
                         <self:GrayscaleImage Source="Images/EditHS.png" />
@@ -141,7 +141,7 @@
                 </self:GrayscaleMenuItem>
             </self:GrayscaleMenuItem>
 
-            <MenuItem Header="_VIEW" Margin="3,0">
+            <MenuItem Header="_View" Margin="3,0">
                 <MenuItem Header="Text _Size" x:Name="FontSizeMenuItem">
                     <MenuItem.Icon>
                         <Image Source="Images/FontDialogHS.png" />
@@ -155,7 +155,7 @@
                 <MenuItem Header="Show Status _Bar" x:Name="ShowStatusBarMenuItem" IsCheckable="True" IsChecked="True" />
             </MenuItem>
 
-            <MenuItem Header="_CONTENT" Margin="3,0" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
+            <MenuItem Header="_Content" Margin="3,0" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
                 <MenuItem Header="View File _Content" Command="{Binding ViewContentCommand}" InputGestureText="Enter" />
                 <MenuItem Header="Open File in Window_s shell..." Command="{Binding OpenContentFileCommand}" />
                 <Separator />
@@ -205,7 +205,7 @@
                 </self:GrayscaleMenuItem>
             </MenuItem>
 
-            <MenuItem Header="_TOOLS" Margin="3,0" DisplayMemberPath="Metadata.Text" ItemContainerStyleSelector="{StaticResource PackageCommandItemStyleSelector}">
+            <MenuItem Header="_Tools" Margin="3,0" DisplayMemberPath="Metadata.Text" ItemContainerStyleSelector="{StaticResource PackageCommandItemStyleSelector}">
                 <MenuItem.ItemsSource>
                     <CompositeCollection>
                         <CollectionContainer x:Name="PackageCommandsContainer"></CollectionContainer>
@@ -225,7 +225,7 @@
 
             </MenuItem>
 
-            <MenuItem Header="_HELP" Margin="3,0">
+            <MenuItem Header="_Help" Margin="3,0">
                 <MenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="http://docs.nuget.org/">
                     <MenuItem.Icon>
                         <self:GrayscaleImage Source="Images/Book_angleHS.png" />
