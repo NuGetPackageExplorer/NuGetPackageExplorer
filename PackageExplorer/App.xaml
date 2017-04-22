@@ -77,7 +77,6 @@
             </Style>
 
             <Style TargetType="{x:Type HeaderedContentControl}">
-                <Setter Property="Background" Value="White" />
                 <Setter Property="Padding" Value="4" />
                 <Setter Property="Template">
                     <Setter.Value>
