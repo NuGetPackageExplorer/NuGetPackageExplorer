@@ -49,7 +49,7 @@
 
     <DockPanel x:Name="RootLayout" LastChildFill="True" Visibility="{Binding IsInEditFileMode, Mode=OneWay, FallbackValue=Visible, Converter={StaticResource invertedBoolToVis}}">
         <!-- Menu bar -->
-        <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
+        <Menu DockPanel.Dock="Top">
             <self:GrayscaleMenuItem Header="_File" Margin="3,0">
                 <MenuItem Command="New" Header="_New">
                     <MenuItem.Icon>

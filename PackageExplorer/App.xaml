@@ -2,7 +2,6 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Xaml/MenuItems.xaml" />
                 <ResourceDictionary Source="Xaml/Toolbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
