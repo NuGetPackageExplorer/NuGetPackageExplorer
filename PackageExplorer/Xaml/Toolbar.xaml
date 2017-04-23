@@ -2,15 +2,9 @@
 
 	<SolidColorBrush x:Key="ToolBarSeparatorFill" Color="#FF8591A2" />
 	<SolidColorBrush x:Key="ToolBarMenuBorder" Color="#808080" />
-	<SolidColorBrush x:Key="ToolBarSubMenuBackground" Color="#FDFDFD" />
-	<LinearGradientBrush x:Key="ToolBarHorizontalBackground" StartPoint="0,0" EndPoint="0,1">
-		<LinearGradientBrush.GradientStops>
-			<GradientStop Color="#FFBCC7D8" Offset="0" />
-			<GradientStop Color="#FFBCC7D8" Offset="0.5" />
-			<GradientStop Color="#FFBCC7D8" Offset="1" />
-		</LinearGradientBrush.GradientStops>
-	</LinearGradientBrush>
-	<SolidColorBrush x:Key="ToolBarGripper" Color="#C6C3C6" />
+    <SolidColorBrush x:Key="ToolBarSubMenuBackground" Color="#FDFDFD" />
+
+    <SolidColorBrush x:Key="ToolBarGripper" Color="#C6C3C6" />
 	<LinearGradientBrush x:Key="ToolBarToggleButtonHorizontalBackground" StartPoint="0,0" EndPoint="0,1">
 		<LinearGradientBrush.GradientStops>
 			<GradientStop Color="#ECECEC" Offset="0" />
@@ -18,15 +12,11 @@
 			<GradientStop Color="#A0A0A0" Offset="1" />
 		</LinearGradientBrush.GradientStops>
 	</LinearGradientBrush>
-	<LinearGradientBrush x:Key="ToolBarTrayBackground" StartPoint="0,0" EndPoint="0,1">
-		<LinearGradientBrush.GradientStops>
-			<GradientStop Color="#FF9CAAC1" Offset="0" />
-			<GradientStop Color="#FF9CAAC1" Offset="0.9" />
-			<GradientStop Color="#FFA6B3CA" Offset="1" />
-		</LinearGradientBrush.GradientStops>
-	</LinearGradientBrush>
 
-	<Style x:Key="ToolBarMainPanelBorderStyle" TargetType="{x:Type Border}">
+    <SolidColorBrush x:Key="ToolBarTrayBackground" Color="{DynamicResource {x:Static SystemColors.MenuBarColor}}"/>
+    
+
+    <Style x:Key="ToolBarMainPanelBorderStyle" TargetType="{x:Type Border}">
 		<Style.Triggers>
 			<DataTrigger Binding="{Binding Source={x:Static SystemParameters.HighContrast}}" Value="true">
 				<Setter Property="CornerRadius" Value="0,0,0,0" />
@@ -108,7 +98,6 @@
 	</Style>
 
 	<Style TargetType="{x:Type ToolBar}">
-		<Setter Property="Background" Value="{StaticResource ToolBarHorizontalBackground}" />
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="BorderBrush" Value="#FFD5DCE8" />
 		<Setter Property="FontSize" Value="12" />
