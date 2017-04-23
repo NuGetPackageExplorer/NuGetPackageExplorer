@@ -82,8 +82,8 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
                             <DockPanel LastChildFill="True">
-                                <Border DockPanel.Dock="Top" Padding="4" Background="#465A7D" CornerRadius="3,3,0,0">
-                                    <ContentControl HorizontalAlignment="Center" Foreground="#CCFFFFFF" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                                <Border DockPanel.Dock="Top" Padding="4" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}" CornerRadius="3,3,0,0">
+                                    <ContentControl HorizontalAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
                                 </Border>
 
                                 <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="0,0,2,2">

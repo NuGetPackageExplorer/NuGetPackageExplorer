@@ -9,7 +9,7 @@
 	</UserControl.Resources>
 
 	<theme:SystemDropShadowChrome>
-		<HeaderedContentControl Padding="10" Foreground="#CCFFFFFF">
+		<HeaderedContentControl Padding="10">
 			<HeaderedContentControl.Header>
 				<TextBlock Text="Common tasks" FontSize="{Binding FontSize, Mode=OneWay, Source={x:Static settings:Settings.Default}, Converter={StaticResource SubtracterConverter}, ConverterParameter=-5}" />
 			</HeaderedContentControl.Header>
