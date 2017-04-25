@@ -1,11 +1,11 @@
 ﻿using System;
-using NuGet;
+using NuGetPe;
 
 namespace NuGetPackageExplorer.Types
 {
     public class PluginInfo : IEquatable<PluginInfo>
     {
-        public PluginInfo(string id, SemanticVersion version)
+        public PluginInfo(string id, TemplatebleSemanticVersion version)
         {
             if (String.IsNullOrEmpty(id))
             {
@@ -21,7 +21,7 @@ namespace NuGetPackageExplorer.Types
         }
 
         public string Id { get; private set; }
-        public SemanticVersion Version { get; private set; }
+        public TemplatebleSemanticVersion Version { get; private set; }
 
         #region IEquatable<PluginInfo> Members
 

@@ -6,16 +6,17 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 using Ookii.Dialogs.Wpf;
 using Constants = PackageExplorerViewModel.Constants;
+using PackageExplorerViewModel.Types;
 
 namespace PackageExplorer
 {
-    using HttpClient = System.Net.Http.HttpClient;
+	using HttpClient = System.Net.Http.HttpClient;
 
-    [Export(typeof(IPackageDownloader))]
+	[Export(typeof(IPackageDownloader))]
     internal class PackageDownloader : IPackageDownloader
     {
         private ProgressDialog _progressDialog;
@@ -27,9 +28,12 @@ namespace PackageExplorer
         [Import]
         public IUIServices UIServices { get; set; }
 
-        #region IPackageDownloader Members
+		[Import(typeof(ICredentialManager))]
+		public ICredentialManager CredentialManager { get; set; }
+		
+		#region IPackageDownloader Members
 
-        public async Task Download(string targetFilePath, Uri downloadUri, string packageId, string packageVersion)
+		public async Task Download(string targetFilePath, Uri downloadUri, string packageId, string packageVersion)
         {
             string sourceFilePath = await DownloadWithProgress(downloadUri, packageId, packageVersion);
             if (!String.IsNullOrEmpty(sourceFilePath))
@@ -133,7 +137,8 @@ namespace PackageExplorer
 
         private async Task<string> DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken)
         {
-            var handler = new HttpClientHandler { UseDefaultCredentials = true };
+	        var handler = new HttpClientHandler();
+	        handler.Credentials = CredentialManager.Get(url);
             var httpClient = new HttpClient(handler);
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(HttpUtility.CreateUserAgentString(Constants.UserAgentClient));
 

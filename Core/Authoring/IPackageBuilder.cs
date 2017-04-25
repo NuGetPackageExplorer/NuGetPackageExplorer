@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 
-namespace NuGet
+namespace NuGetPe
 {
     public interface IPackageBuilder : IPackageMetadata
     {

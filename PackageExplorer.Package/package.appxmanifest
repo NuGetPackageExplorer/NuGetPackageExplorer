@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap rescap mp">
+  <mp:PhoneIdentity PhoneProductId="95d42d13-b9a9-4fda-88a8-0cdc2ab9a9c1" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
+  <Identity Name="50582LuanNguyen.NuGetPackageExplorer" Version="3.22.0.0" Publisher="CN=3466D5D7-00EE-41FA-A7A4-6F7CA3E1C7F8" />
+  <Properties>
+    <DisplayName>NuGet Package Explorer</DisplayName>
+    <PublisherDisplayName>Oren Novotny, LLC</PublisherDisplayName>
+    <Logo>images\storelogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="en-US" />
+  </Resources>
+  <Applications>
+    <Application Id="NuGetPackageExplorer" Executable="win32\NuGetPackageExplorer.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="NuGet Package Explorer" Description="NuGet Package Explorer" BackgroundColor="transparent" Square150x150Logo="images\Square150x150Logo.png" Square44x44Logo="images\Square44x44Logo.png">
+        <uap:DefaultTile Square310x310Logo="images\Square310x310Logo.png" Wide310x150Logo="images\Wide310x150Logo.png" ShortName="NuGet Package Explorer">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+      </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="package">
+            <uap:DisplayName>NuGet package file</uap:DisplayName>
+            <uap:Logo>images\Square150x150Logo.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.nupkg</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="spec">
+            <uap:DisplayName>NuGet spec file</uap:DisplayName>
+            <uap:Logo>images\nuspec.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.nuspec</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -30,9 +30,9 @@ namespace PackageExplorerViewModel
             get { return "MyPackage"; }
         }
 
-        public SemanticVersion Version
+        public TemplatebleSemanticVersion Version
         {
-            get { return new SemanticVersion("1.0.0"); }
+            get { return TemplatebleSemanticVersion.Parse("1.0.0"); }
         }
 
         public string Title
@@ -184,5 +184,9 @@ namespace PackageExplorerViewModel
         }
 
         #endregion
+
+        public void Dispose()
+        {
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal class ManifestVersionUtility
     {
@@ -45,8 +45,8 @@ namespace NuGet
                 return TargetFrameworkSupportForDependencyContentsAndToolsVersion;
             }
 
-            SemanticVersion semanticVersion;
-            if (SemanticVersion.TryParse(metadata.Version, out semanticVersion) && !String.IsNullOrEmpty(semanticVersion.SpecialVersion))
+            TemplatebleSemanticVersion semanticVersion;
+            if (TemplatebleSemanticVersion.TryParse(metadata.Version, out semanticVersion) && !String.IsNullOrEmpty(semanticVersion.SpecialVersion))
             {
                 return SemverVersion;
             }

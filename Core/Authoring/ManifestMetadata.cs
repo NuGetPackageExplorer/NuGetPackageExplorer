@@ -7,9 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Xml.Serialization;
-using NuGet.Resources;
+using NuGet;
+using NuGetPe.Resources;
 
-namespace NuGet
+namespace NuGetPe
 {
     [XmlType("metadata")]
     public sealed class ManifestMetadata : IPackageMetadata, IValidatableObject
@@ -207,7 +208,7 @@ namespace NuGet
         [XmlIgnore]
         public List<ManifestReferenceSet> ReferenceSets { get; set; }
 
-        SemanticVersion IPackageMetadata.Version
+        TemplatebleSemanticVersion IPackageMetadata.Version
         {
             get
             {
@@ -215,7 +216,7 @@ namespace NuGet
                 {
                     return null;
                 }
-                return new SemanticVersion(Version);
+                return TemplatebleSemanticVersion.Parse(Version);
             }
         }
 
@@ -353,17 +354,7 @@ namespace NuGet
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            if (!String.IsNullOrEmpty(Id))
-            {
-                if (Id.Length > PackageIdValidator.MaxPackageIdLength)
-                {
-                    yield return new ValidationResult(String.Format(CultureInfo.CurrentCulture, NuGetResources.Manifest_IdMaxLengthExceeded));
-                }
-                else if (!PackageIdValidator.IsValidPackageId(Id))
-                {
-                    yield return new ValidationResult(String.Format(CultureInfo.CurrentCulture, NuGetResources.InvalidPackageId, Id));
-                }
-            }
+  
 
             if (LicenseUrl == String.Empty)
             {

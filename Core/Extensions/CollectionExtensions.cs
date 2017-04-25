@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class CollectionExtensions
     {

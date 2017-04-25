@@ -39,7 +39,7 @@
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
     <TrustUrlParameters>true</TrustUrlParameters>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>3.18.0.0</ApplicationVersion>
+    <ApplicationVersion>3.22.0.0</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -110,110 +110,16 @@
     <Reference Include="Humanizer">
       <HintPath>..\lib\Humanizer.dll</HintPath>
     </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\ar\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\bg\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\bn-BD\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\cs\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\da\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\de\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\el\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\es\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\fa\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\fi-FI\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\fr\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\fr-BE\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\he\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\hr\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\hu\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\id\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\it\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\ja\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\nb\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\nb-NO\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\nl\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\pl\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\pt\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\ro\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\ru\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\sk\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\sl\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\sr\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\sr-Latn\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\sv\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\tr\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\uk\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\vi\Humanizer.resources.dll</HintPath>
-    </Reference>
-    <Reference Include="Humanizer.resources">
-      <HintPath>..\lib\zh-CN\Humanizer.resources.dll</HintPath>
-    </Reference>
     <Reference Include="ICSharpCode.AvalonEdit">
       <HintPath>..\lib\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.XmlTransform, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Xdt.2.1.1\lib\net40\Microsoft.Web.XmlTransform.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="NuGet.Core, Version=2.14.0.832, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\NuGet.Core.2.14.0\lib\net40-Client\NuGet.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL">
       <HintPath>..\lib\Ookii.Dialogs.Wpf.dll</HintPath>
@@ -256,6 +162,7 @@
     <Compile Include="Converters\NormalizeTextConverter.cs" />
     <Compile Include="Converters\StringShortenerConverter.cs" />
     <Compile Include="Converters\TargetFrameworkConverter.cs" />
+    <Compile Include="MefServices\CredentialManager.cs" />
     <Compile Include="MefServices\RtfFileViewer.cs" />
     <Compile Include="PackageDownloadRequestedEventArgs.cs" />
     <Compile Include="PackageReferencesEditor.xaml.cs">
@@ -502,6 +409,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="packages.config" />
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
     </None>

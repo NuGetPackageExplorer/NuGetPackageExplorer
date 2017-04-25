@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace NuGet
+namespace NuGetPe
 {
     public interface IPackageMetadata
     {
         string Id { get; }
-        SemanticVersion Version { get; }
+        TemplatebleSemanticVersion Version { get; }
         string Title { get; }
         IEnumerable<string> Authors { get; }
         IEnumerable<string> Owners { get; }

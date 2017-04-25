@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
-using NuGet.Resources;
+using NuGetPe.Resources;
 
-namespace NuGet
+namespace NuGetPe
 {
-    public class ZipPackage : IPackage
+    public class ZipPackage : IPackage, IDisposable
     {
         private const string AssemblyReferencesDir = "lib";
         private const string ResourceAssemblyExtension = ".resources.dll";
@@ -34,7 +34,19 @@ namespace NuGet
             }
 
             _filePath = filePath;
-            _streamFactory = () => File.Open(filePath,FileMode.Open,FileAccess.ReadWrite,FileShare.ReadWrite);
+            _streamFactory = () =>
+            {
+                try
+                {
+                    return File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    //just try read
+                    return File.Open(filePath, FileMode.Open,FileAccess.Read);
+                }
+
+            };
             EnsureManifest();
         }
 
@@ -47,7 +59,7 @@ namespace NuGet
 
         public string Id { get; set; }
 
-        public SemanticVersion Version { get; set; }
+        public TemplatebleSemanticVersion Version { get; set; }
 
         public string Title { get; set; }
 
@@ -119,7 +131,7 @@ namespace NuGet
         private DateTimeOffset? _lastUpdated;
         public DateTimeOffset LastUpdated
         {
-            get 
+            get
             {
                 if (_lastUpdated == null)
                 {
@@ -132,7 +144,7 @@ namespace NuGet
         private long? _packageSize;
         public long PackageSize
         {
-            get 
+            get
             {
                 if (_packageSize == null)
                 {
@@ -183,9 +195,14 @@ namespace NuGet
 
         public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; set; }
 
+        // Keep a list of open stream here, and close on dispose.
+        private List<IDisposable> _danglingStreams = new List<IDisposable>();
+
         public IEnumerable<IPackageFile> GetFiles()
         {
-            Package package = Package.Open(_streamFactory()); // should not close
+            Stream stream = _streamFactory();
+            Package package = Package.Open(stream); // should not close
+            _danglingStreams.Add(stream);           // clean up on dispose
 
             return (from part in package.GetParts()
                     where IsPackageFile(part)
@@ -279,6 +296,11 @@ namespace NuGet
         public override string ToString()
         {
             return this.GetFullName();
+        }
+
+        public void Dispose()
+        {
+            _danglingStreams.ForEach(ds => ds.Dispose());
         }
     }
 }

@@ -11,8 +11,7 @@
         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="15,20,15,0">
             <TextBlock x:Name="ProductTitle" Text="NuGet Package Explorer" FontWeight="Bold" />
 
-            <TextBlock Text="Compatible with NuGet 2.8.1 and below." Margin="0,5,0,0" />
-
+        
             <TextBlock Margin="0,5,0,0">
 				<Hyperlink NavigateUri="https://github.com/NuGetPackageExplorer/NuGetPackageExplorer" Click="Hyperlink_Click">
 					<Run Text="https://github.com/NuGetPackageExplorer/NuGetPackageExplorer" />

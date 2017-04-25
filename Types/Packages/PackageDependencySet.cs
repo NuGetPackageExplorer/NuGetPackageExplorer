@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.Versioning;
 
-namespace NuGet
+namespace NuGetPe
 {
-    public class PackageDependencySet : IFrameworkTargetable
+    public class PackageDependencySet : NuGet.IFrameworkTargetable
     {
         private readonly FrameworkName _targetFramework;
         private readonly ReadOnlyCollection<PackageDependency> _dependencies;

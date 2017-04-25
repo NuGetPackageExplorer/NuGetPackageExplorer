@@ -1,5 +1,5 @@
 ﻿using System;
-using NuGet;
+using NuGetPe;
 
 namespace NuGetPackageExplorer.Types
 {
@@ -12,7 +12,7 @@ namespace NuGetPackageExplorer.Types
     public sealed class MruItem : IEquatable<MruItem>
     {
         public string Id { get; set; }
-        public SemanticVersion Version { get; set; }
+        public TemplatebleSemanticVersion Version { get; set; }
         public string Path { get; set; }
         public PackageType PackageType { get; set; }
 

@@ -13,11 +13,11 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
-using Constants = NuGet.Constants;
+using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
 
@@ -295,7 +295,7 @@ namespace PackageExplorer
             }
             else 
             {
-                var packageVersion = new SemanticVersion(selectedPackageInfo.Version);
+                var packageVersion = new NuGet.SemanticVersion(selectedPackageInfo.Version);
                 IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
 
                 Func<IPackage, DispatcherOperation> processPackageAction = (package) =>
@@ -443,6 +443,7 @@ namespace PackageExplorer
                 return;
             }
 
+            (DataContext as PackageViewModel)?.Dispose();
             DataContext = null;
         }
 
@@ -481,10 +482,10 @@ namespace PackageExplorer
 
         internal Task DownloadAndOpenDataServicePackage(MruItem item)
         {
-            return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
+            return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version?.SemanticVersion);
         }
 
-        internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string id = null, SemanticVersion version = null)
+        internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string id = null, NuGet.SemanticVersion version = null)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {

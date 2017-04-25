@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Net;
 using System.Threading.Tasks;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {

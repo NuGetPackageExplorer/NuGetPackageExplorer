@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.IO.Packaging;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal static class UriUtility
     {

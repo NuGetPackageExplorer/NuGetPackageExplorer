@@ -7,7 +7,7 @@
     xmlns:self="clr-namespace:PackageExplorer" 
     xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" 
     xmlns:resources="clr-namespace:PackageExplorer.Resources" 
-    xmlns:types="clr-namespace:NuGet;assembly=NuGetPackageExplorer.Types"
+    xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 

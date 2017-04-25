@@ -1,14 +1,25 @@
-version: 3.18.0.{build}
+version: 3.22.0.{build}
 configuration: Release
 platform: Any CPU
+
+skip_commits:
+  files:
+    - '**/*.md'
+    - 'images/**/*.*'
+
+skip_branch_with_pr: true   
+
+before_build:
+    - ps: wget https://www.nuget.org/nuget.exe -OutFile .\NuGet.exe
+    - ps: .\NuGet.exe restore
 build:
   project: NuGetPackageExplorer.sln
   verbosity: minimal
 after_build:
 - ps: >-
-    choco pack PackageExplorer\NugetPackageExplorer.nuspec --version 3.18
+    choco pack PackageExplorer\NugetPackageExplorer.nuspec --version 3.22
 
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 artifacts:
-- path: '**\*.nupkg'
+- path: '**\NugetPackageExplorer*.nupkg'
 deploy: off

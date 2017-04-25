@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Controls;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -15,8 +15,13 @@ namespace PackageExplorer
                 return ValidationResult.ValidResult;
             }
 
-            SemanticVersion version;
-            if (SemanticVersion.TryParse(stringValue, out version))
+            if (stringValue.Contains("$"))
+            {
+                return ValidationResult.ValidResult;
+            }
+
+            NuGet.SemanticVersion version;
+            if (NuGet.SemanticVersion.TryParse(stringValue, out version))
             {
                 return ValidationResult.ValidResult;
             }

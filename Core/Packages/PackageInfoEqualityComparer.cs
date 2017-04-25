@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace NuGet
+namespace NuGetPe
 {
     public sealed class PackageInfoEqualityComparer : IEqualityComparer<PackageInfo>
     {

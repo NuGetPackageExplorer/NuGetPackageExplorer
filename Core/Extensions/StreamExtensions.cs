@@ -1,7 +1,7 @@
 using System.IO;
 using System.Text;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class StreamExtensions
     {

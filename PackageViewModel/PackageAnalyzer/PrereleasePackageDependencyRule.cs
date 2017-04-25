@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Globalization;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel.Rules
@@ -37,10 +37,16 @@ namespace PackageExplorerViewModel.Rules
             return IsPreReleasedVersion(pd.VersionSpec.MinVersion) || IsPreReleasedVersion(pd.VersionSpec.MaxVersion);
         }
 
-        private static bool IsPreReleasedVersion(SemanticVersion version)
+        private static bool IsPreReleasedVersion(NuGet.SemanticVersion version)
         {
             return version != null && !String.IsNullOrEmpty(version.SpecialVersion);
         }
+
+        private static bool IsPreReleasedVersion(TemplatebleSemanticVersion version)
+        {
+            return version != null && !String.IsNullOrEmpty(version.SpecialVersion);
+        }
+
 
         private static PackageIssue CreatePackageIssue(PackageDependency target)
         {

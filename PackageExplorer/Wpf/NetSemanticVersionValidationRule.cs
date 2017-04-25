@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Controls;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -11,6 +11,11 @@ namespace PackageExplorer
         {
             string stringValue = (string)value;
             if (String.IsNullOrEmpty(stringValue))
+            {
+                return ValidationResult.ValidResult;
+            }
+
+            if (stringValue.Contains("$"))
             {
                 return ValidationResult.ValidResult;
             }

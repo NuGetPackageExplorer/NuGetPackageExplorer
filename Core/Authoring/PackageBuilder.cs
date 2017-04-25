@@ -6,9 +6,9 @@ using System.Globalization;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
-using NuGet.Resources;
+using NuGetPe.Resources;
 
-namespace NuGet
+namespace NuGetPe
 {
     public sealed class PackageBuilder : IPackageBuilder
     {
@@ -59,7 +59,7 @@ namespace NuGet
 
         public string Id { get; set; }
 
-        public SemanticVersion Version { get; set; }
+        public TemplatebleSemanticVersion Version { get; set; }
 
         public string Title { get; set; }
 
@@ -138,9 +138,7 @@ namespace NuGet
 
         public void Save(Stream stream)
         {
-            // Make sure we're saving a valid package id
-            PackageIdValidator.ValidatePackageId(Id);
-
+           
             // Throw if the package doesn't contain any dependencies nor content
             if (!Files.Any() && !DependencySets.Any() && !FrameworkReferences.Any())
             {
@@ -220,7 +218,7 @@ namespace NuGet
 
         #endregion
 
-        internal static void ValidateDependencySets(SemanticVersion version, IEnumerable<PackageDependencySet> dependencies)
+        internal static void ValidateDependencySets(TemplatebleSemanticVersion version, IEnumerable<PackageDependencySet> dependencies)
         {
             if (version == null)
             {
@@ -259,7 +257,7 @@ namespace NuGet
 
         private static bool IsPrereleaseDependency(PackageDependency dependency)
         {
-            IVersionSpec versionSpec = dependency.VersionSpec;
+            var versionSpec = dependency.VersionSpec;
             if (versionSpec != null)
             {
                 return (versionSpec.MinVersion != null && !String.IsNullOrEmpty(dependency.VersionSpec.MinVersion.SpecialVersion)) ||

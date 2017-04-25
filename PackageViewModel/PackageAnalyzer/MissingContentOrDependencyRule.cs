@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel.Rules

@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
@@ -156,8 +156,8 @@ namespace PackageExplorerViewModel
                 return null;
             }
 
-            SemanticVersion version;
-            if (!SemanticVersion.TryParse(parts[1], out version))
+            TemplatebleSemanticVersion version;
+            if (!TemplatebleSemanticVersion.TryParse(parts[1], out version))
             {
                 return null;
             }

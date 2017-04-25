@@ -21,3 +21,6 @@ DebugConstants.cs
 *.log
 packages/*
 publish/
+/PackageExplorer.Package/bld/*
+/PackageExplorer.Package/BundleArtifacts/*
+/PackageExplorer.Package/AppPackages/*

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics.CodeAnalysis;
-using NuGet;
+using NuGetPe;
 using NuGetPackageExplorer.Types;
+using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -40,7 +41,10 @@ namespace PackageExplorerViewModel
         [Import(typeof(IPackageDownloader))]
         public IPackageDownloader PackageDownloader { get; set; }
 
-        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"),
+		[Import(typeof(ICredentialManager))]
+		public ICredentialManager CredentialManager { get; set; }
+
+		[SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"),
          SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly"),
          SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         [ImportMany(AllowRecomposition = true)]
@@ -71,6 +75,7 @@ namespace PackageExplorerViewModel
         {
             var model = new PackageChooserViewModel(
                 new MruPackageSourceManager(new PackageSourceSettings(SettingsManager)),
+				CredentialManager,
                 SettingsManager.ShowPrereleasePackages,
                 SettingsManager.AutoLoadPackages,
                 fixedPackageSource);
