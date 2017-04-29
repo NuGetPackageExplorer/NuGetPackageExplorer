@@ -167,12 +167,11 @@
             <DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow">
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="Foreground" Value="DarkBlue" />
                     <EventSetter Event="MouseDoubleClick" Handler="OnPackageDoubleClick" />
                     <Setter Property="Padding" Value="0,4" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding LatestPackageInfo.IsPrerelease, Mode=OneTime}" Value="true">
-                            <Setter Property="Foreground" Value="Maroon" />
+                            <Setter Property="FontStyle" Value="Oblique"/>
                         </DataTrigger>
 
                         <DataTrigger Binding="{Binding LatestPackageInfo.IsUnlisted, Mode=OneTime}" Value="true">
