@@ -51,9 +51,6 @@ namespace CodeExecutor
 
                 workerAction(worker);
             }
-            catch (Exception)
-            {
-            }
             finally
             {
                 AppDomain.Unload(domain);
