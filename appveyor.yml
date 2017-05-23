@@ -19,6 +19,8 @@ after_build:
 - ps: >-
     choco pack PackageExplorer\NugetPackageExplorer.nuspec --version 3.22
 
+    nuget pack .\Packages\NuGetPackageExplorer.Types.nuspec
+
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 artifacts:
 - path: '**\NugetPackageExplorer*.nupkg'

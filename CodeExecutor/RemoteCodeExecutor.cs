@@ -47,12 +47,9 @@ namespace CodeExecutor
                 domain.Load(typeof(RemoteCodeExecutor).Assembly.GetName());
 
                 var worker = (AppDomainWorker)domain.CreateInstanceFromAndUnwrap(
-                    "CodeExecutor.dll", "CodeExecutor.AppDomainWorker");
+                    Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CodeExecutor.dll"), "CodeExecutor.AppDomainWorker");
 
                 workerAction(worker);
-            }
-            catch (Exception)
-            {
             }
             finally
             {

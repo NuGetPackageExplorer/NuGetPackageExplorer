@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Globalization;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -28,7 +29,7 @@ namespace PackageExplorer
                              Filter = filter,
                              FileName = defaultFileName,
                              ValidateNames = true,
-                             InitialDirectory = initialDirectory
+                             InitialDirectory = !string.IsNullOrEmpty(initialDirectory) ? Path.GetDirectoryName(initialDirectory) : initialDirectory
                          };
 
             bool? result = dialog.ShowDialog();
