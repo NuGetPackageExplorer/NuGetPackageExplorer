@@ -1,4 +1,4 @@
-version: 3.22.0.{build}
+version: 3.23.0.{build}
 configuration: Release
 platform: Any CPU
 
@@ -17,7 +17,7 @@ build:
   verbosity: minimal
 after_build:
 - ps: >-
-    choco pack PackageExplorer\NugetPackageExplorer.nuspec --version 3.22
+    choco pack PackageExplorer\NugetPackageExplorer.nuspec --version 3.23
 
     nuget pack .\Packages\NuGetPackageExplorer.Types.nuspec
 
