@@ -2,7 +2,6 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Xaml/MenuItems.xaml" />
                 <ResourceDictionary Source="Xaml/Toolbar.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -78,14 +77,13 @@
             </Style>
 
             <Style TargetType="{x:Type HeaderedContentControl}">
-                <Setter Property="Background" Value="White" />
                 <Setter Property="Padding" Value="4" />
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type HeaderedContentControl}">
                             <DockPanel LastChildFill="True">
-                                <Border DockPanel.Dock="Top" Padding="4" Background="#465A7D" CornerRadius="3,3,0,0">
-                                    <ContentControl HorizontalAlignment="Center" Foreground="#CCFFFFFF" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
+                                <Border DockPanel.Dock="Top" Padding="4" Background="{DynamicResource {x:Static SystemColors.MenuBarBrushKey}}" CornerRadius="3,3,0,0">
+                                    <ContentControl HorizontalAlignment="Center" Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" Content="{TemplateBinding Header}" ContentTemplate="{TemplateBinding HeaderTemplate}" />
                                 </Border>
 
                                 <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="0,0,2,2">

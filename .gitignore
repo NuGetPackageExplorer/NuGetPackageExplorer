@@ -24,3 +24,10 @@ publish/
 /PackageExplorer.Package/bld/*
 /PackageExplorer.Package/BundleArtifacts/*
 /PackageExplorer.Package/AppPackages/*
+/.vs/VSWorkspaceState.json
+/.vs/slnx.sqlite
+/.vs/ProjectSettings.json
+/.vs
+/.vs/ProjectSettings.json
+/.vs/slnx.sqlite
+/.vs

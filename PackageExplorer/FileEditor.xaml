@@ -6,7 +6,7 @@
     </UserControl.InputBindings>
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
+        <Menu DockPanel.Dock="Top">
             <MenuItem Header="_FILE" Margin="3,0">
                 <self:GrayscaleMenuItem Header="_Save" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
                     <self:GrayscaleMenuItem.Icon>

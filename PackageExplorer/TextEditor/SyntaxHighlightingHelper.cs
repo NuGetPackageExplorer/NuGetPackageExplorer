@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ICSharpCode.AvalonEdit.Highlighting;
+using System;
 using System.IO;
 using System.Linq;
-using System.Text;
-using ICSharpCode.AvalonEdit.Highlighting;
+using System.Windows;
 
 namespace PackageExplorer
 {
@@ -34,8 +33,14 @@ namespace PackageExplorer
 
         public static IHighlightingDefinition GuessHighligtingDefinition(string name)
         {
+            if (SystemParameters.HighContrast)
+            {
+                // use plain text in high contrast mode
+                return TextHighlightingDefinition.Instance;
+            }
+
             if (name.EndsWith(".min.js", StringComparison.OrdinalIgnoreCase) ||
-                name.EndsWith(".min.css", StringComparison.OrdinalIgnoreCase))
+            name.EndsWith(".min.css", StringComparison.OrdinalIgnoreCase))
             {
                 // don't try to highlight mini-fied JS and CSS file
                 return TextHighlightingDefinition.Instance;

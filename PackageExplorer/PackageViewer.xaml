@@ -161,7 +161,7 @@
             <DataTemplate x:Key="PackageDetailTemplate">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="8">
-                        <Border BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Background="White" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconUrl}" Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Border BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconUrl}" Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
                             <Image Source="{Binding IconUrl, TargetNullValue={x:Null}}" Width="32" Height="32" Stretch="Fill" StretchDirection="DownOnly" />
                         </Border>
 
@@ -386,7 +386,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Toolbar for package metadata pane --> 
-                <Border Grid.Row="0" Background="#BCC7D8" Padding="3" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
+                <Border Grid.Row="0" Padding="3" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
                     <StackPanel Orientation="Horizontal">
                         <Button 
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
