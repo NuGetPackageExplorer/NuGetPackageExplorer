@@ -57,11 +57,11 @@
                     <ComboBoxItem Tag="net451">.NET Framework 4.5.1 and higher</ComboBoxItem>
                 </ComboBox>
 
-                <!-- Silverlight -->
-                <CheckBox x:Name="SilverlightCheckBox" Grid.Row="1" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
-                <ComboBox x:Name="SilverlightFx" Grid.Row="1" IsEnabled="{Binding IsChecked, ElementName=SilverlightCheckBox, Mode=OneWay}">
-                    <ComboBoxItem Tag="sl4">Silverlight 4 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="sl5">Silverlight 5</ComboBoxItem>
+                <!-- Windows -->
+                <CheckBox x:Name="WindowsCheckBox" Grid.Row="1" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="WindowsFx" Grid.Row="1" IsEnabled="{Binding IsChecked, ElementName=WindowsCheckBox, Mode=OneWay}">
+                    <ComboBoxItem Tag="win8">Windows 8</ComboBoxItem>
+                    <ComboBoxItem Tag="win81">Windows 8.1</ComboBoxItem>
                 </ComboBox>
 
                 <!-- Windows Phone Silverlight -->
@@ -73,11 +73,11 @@
                     <ComboBoxItem Tag="wp81">Windows Phone Silverlight 8.1 and higher</ComboBoxItem>
                 </ComboBox>
 
-                <!-- Windows -->
-                <CheckBox x:Name="WindowsCheckBox" Grid.Row="3" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
-                <ComboBox x:Name="WindowsFx" Grid.Row="3" IsEnabled="{Binding IsChecked, ElementName=WindowsCheckBox, Mode=OneWay}">
-                    <ComboBoxItem Tag="win8">Windows 8</ComboBoxItem>
-                    <ComboBoxItem Tag="win81">Windows 8.1</ComboBoxItem>
+                <!-- Silverlight -->
+                <CheckBox x:Name="SilverlightCheckBox" Grid.Row="3" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="SilverlightFx" Grid.Row="3" IsEnabled="{Binding IsChecked, ElementName=SilverlightCheckBox, Mode=OneWay}">
+                    <ComboBoxItem Tag="sl4">Silverlight 4 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="sl5">Silverlight 5</ComboBoxItem>
                 </ComboBox>
 
                 <!-- Windows Phone  -->
