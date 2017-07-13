@@ -14,7 +14,7 @@ namespace PackageExplorer
 
         public string GetSelectedFrameworkName()
         {
-            var comboBoxes = new ComboBox[] { NetFx, SilverlightFx, WPFx };
+            var comboBoxes = new ComboBox[] { NetFx, SilverlightFx, WPSLFx };
 
             var builder = new StringBuilder();
             for (int i = 0; i < comboBoxes.Length; i++)
@@ -53,7 +53,7 @@ namespace PackageExplorer
 
         private void EvaluateButtonEnabledState(object sender, RoutedEventArgs e)
         {
-            var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPCheckBox };
+            var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPSLCheckBox };
             var count = _allCheckBoxes.Count(p => p.IsChecked == true);
             OKButton.IsEnabled = count >= 2;
         }

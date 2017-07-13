@@ -62,12 +62,13 @@
                     <ComboBoxItem Tag="sl5">Silverlight 5</ComboBoxItem>
                 </ComboBox>
 
-                <!-- Windows Phone -->
-                <CheckBox x:Name="WPCheckBox" Grid.Row="2" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
-                <ComboBox x:Name="WPFx" Grid.Row="2" IsEnabled="{Binding IsChecked, ElementName=WPCheckBox, Mode=OneWay}">
-                    <ComboBoxItem Tag="wp7">Windows Phone 7 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="wp71">Windows Phone 7.5 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="wp8">Windows Phone 8</ComboBoxItem>
+                <!-- Windows Phone Silverlight -->
+                <CheckBox x:Name="WPSLCheckBox" Grid.Row="2" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="WPSLFx" Grid.Row="2" IsEnabled="{Binding IsChecked, ElementName=WPSLCheckBox, Mode=OneWay}">
+                    <ComboBoxItem Tag="wp7">Windows Phone Silverlight 7 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="wp71">Windows Phone Silverlight 7.5 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="wp8">Windows Phone Silverlight 8 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="wp81">Windows Phone Silverlight 8.1 and higher</ComboBoxItem>
                 </ComboBox>
 
                 <!-- .NET for Windows Store apps -->
