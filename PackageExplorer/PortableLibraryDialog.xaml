@@ -53,6 +53,7 @@
                     <ComboBoxItem Tag="net4">.NET Framework 4 and higher</ComboBoxItem>
                     <ComboBoxItem Tag="net403">.NET Framework 4.0.3 and higher</ComboBoxItem>
                     <ComboBoxItem Tag="net45">.NET Framework 4.5 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="net451">.NET Framework 4.5.1 and higher</ComboBoxItem>
                 </ComboBox>
 
                 <!-- Silverlight -->
