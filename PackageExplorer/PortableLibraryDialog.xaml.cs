@@ -32,6 +32,11 @@ namespace PackageExplorer
                 builder.Append(((ComboBoxItem)comboBoxes[i].SelectedItem).Tag);
             }
 
+            if (WindowsPhoneCheckBox.IsChecked ?? false)
+            {
+                builder.Append("+wpa81");
+            }
+
             builder.Insert(0, "portable-");
             return builder.ToString();
         }
@@ -48,7 +53,7 @@ namespace PackageExplorer
 
         private void EvaluateButtonEnabledState(object sender, RoutedEventArgs e)
         {
-            var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPSLCheckBox };
+            var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPSLCheckBox, WindowsPhoneCheckBox };
             var count = _allCheckBoxes.Count(p => p.IsChecked == true);
             OKButton.IsEnabled = count >= 2;
         }

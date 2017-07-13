@@ -40,6 +40,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -78,6 +79,9 @@
                     <ComboBoxItem Tag="win8">Windows 8</ComboBoxItem>
                     <ComboBoxItem Tag="win81">Windows 8.1</ComboBoxItem>
                 </ComboBox>
+
+                <!-- Windows Phone  -->
+                <CheckBox x:Name="WindowsPhoneCheckBox" Grid.Row="4" Grid.ColumnSpan="2"  VerticalAlignment="Center" Content="Windows Phone 8.1" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
             </Grid>
         </Border>
     </DockPanel>
