@@ -72,9 +72,12 @@
                     <ComboBoxItem Tag="wp81">Windows Phone Silverlight 8.1 and higher</ComboBoxItem>
                 </ComboBox>
 
-                <!-- .NET for Windows Store apps -->
-                <CheckBox x:Name="WindowsCheckBox" Grid.Row="3" Grid.ColumnSpan="2"  VerticalAlignment="Center" Content=".NET for Windows Store apps" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState">
-                </CheckBox>
+                <!-- Windows -->
+                <CheckBox x:Name="WindowsCheckBox" Grid.Row="3" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="WindowsFx" Grid.Row="3" IsEnabled="{Binding IsChecked, ElementName=WindowsCheckBox, Mode=OneWay}">
+                    <ComboBoxItem Tag="win8">Windows 8</ComboBoxItem>
+                    <ComboBoxItem Tag="win81">Windows 8.1</ComboBoxItem>
+                </ComboBox>
             </Grid>
         </Border>
     </DockPanel>

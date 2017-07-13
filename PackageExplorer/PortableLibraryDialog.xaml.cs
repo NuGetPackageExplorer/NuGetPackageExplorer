@@ -14,7 +14,7 @@ namespace PackageExplorer
 
         public string GetSelectedFrameworkName()
         {
-            var comboBoxes = new ComboBox[] { NetFx, SilverlightFx, WPSLFx };
+            var comboBoxes = new ComboBox[] { NetFx, SilverlightFx, WPSLFx, WindowsFx };
 
             var builder = new StringBuilder();
             for (int i = 0; i < comboBoxes.Length; i++)
@@ -30,11 +30,6 @@ namespace PackageExplorer
                 }
 
                 builder.Append(((ComboBoxItem)comboBoxes[i].SelectedItem).Tag);
-            }
-
-            if (WindowsCheckBox.IsChecked ?? false)
-            {
-                builder.Append("+win8");
             }
 
             builder.Insert(0, "portable-");
