@@ -137,8 +137,8 @@ namespace PackageExplorerViewModel
 
         private void Attach(PackagePart child)
         {
-            Children.Add(child);
             child.Parent = this;
+            Children.Add(child);
         }
 
         /// <summary>
