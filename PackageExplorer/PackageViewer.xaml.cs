@@ -427,7 +427,7 @@ namespace PackageExplorer
             }
         }
 
-        private void PackagesTreeViewItem_PreviewMouseMove(object sender, MouseEventArgs e)
+        private void PackagesTreeViewItem_MouseMove(object sender, MouseEventArgs e)
         {
             if (_isDragging || !_isPressing)
             {
