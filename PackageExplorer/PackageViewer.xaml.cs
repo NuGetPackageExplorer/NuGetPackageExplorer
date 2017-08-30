@@ -58,8 +58,8 @@ namespace PackageExplorer
                     "Tizen",
                     new[]
                     {
-                        "v3"," 	tizen3",
-                        "v4"," 	tizen4",
+                        "v3","tizen3",
+                        "v4","tizen4",
                     }
                 }
                 ,
