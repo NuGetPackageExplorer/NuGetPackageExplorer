@@ -42,6 +42,28 @@ namespace PackageExplorer
                     }
                 },
 
+                //see https://docs.microsoft.com/en-us/nuget/schema/target-frameworks
+                {
+                    ".NET Core App",
+                    new[]
+                    {
+                        "v1.0","netcoreapp1.0",
+                        "v1.1","netcoreapp1.1",
+                        "v2.0","netcoreapp2.0",
+                    }
+                }
+                ,
+
+                {
+                    "Tizen",
+                    new[]
+                    {
+                        "v3"," 	tizen3",
+                        "v4"," 	tizen4",
+                    }
+                }
+                ,
+
                 {
                     "Mono",
                     new[]
