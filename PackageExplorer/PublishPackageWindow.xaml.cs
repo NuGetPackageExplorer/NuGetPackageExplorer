@@ -15,13 +15,13 @@ namespace PackageExplorer
             DialogResult = false;
         }
 
-        private void OnPublishButtonClick(object sender, RoutedEventArgs e)
+        private async void OnPublishButtonClick(object sender, RoutedEventArgs e)
         {
             bool isValid = DialogBindingGroup.UpdateSources();
             if (isValid)
             {
                 var viewModel = (PublishPackageViewModel) DataContext;
-                viewModel.PushPackage();
+                await viewModel.PushPackage();
             }
         }
     }
