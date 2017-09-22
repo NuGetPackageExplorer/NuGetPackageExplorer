@@ -107,7 +107,7 @@ namespace PackageExplorer
                 // close progress dialog when done
                 lock (_progressDialogLock)
                 {
-                    _progressDialog.Dispose();
+                    _progressDialog.Close();
                     _progressDialog = null;
                 }
 
