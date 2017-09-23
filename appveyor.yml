@@ -16,8 +16,8 @@ build:
   project: NuGetPackageExplorer.sln
   verbosity: minimal
 after_build:
-- ps: >-
-    $vers = & "$env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1"
+- ps: |
+    $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
     $nugetVer = $vers.NuGetPackageVersion
     choco pack PackageExplorer\NugetPackageExplorer.nuspec --version $nugetVer
 
@@ -26,5 +26,5 @@ after_build:
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 artifacts:
 - path: '**\NugetPackageExplorer*.nupkg'
-- path: '**\*.appxbundle'
+- path: '**\*.appxupload'
 deploy: off
