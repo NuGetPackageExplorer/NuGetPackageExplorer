@@ -196,7 +196,7 @@
                     </Validation.ErrorTemplate>
 
                     <Grid.BindingGroup>
-                        <BindingGroup x:Name="NewFrameworkAssembly" Name="NewFrameworkAssembly" NotifyOnValidationError="True" />
+                        <BindingGroup x:Name="NewFrameworkAssembly" NotifyOnValidationError="True" />
                     </Grid.BindingGroup>
 
                     <TextBlock Grid.Column="0" Text="Assembly name" FontWeight="SemiBold" HorizontalAlignment="Center" Margin="0,0,0,3" />

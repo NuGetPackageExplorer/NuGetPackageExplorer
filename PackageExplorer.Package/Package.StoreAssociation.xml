@@ -363,11 +363,5 @@
       <ReservedName>NuGet Package Explorer</ReservedName>
     </ReservedNames>
   </ProductReservedInfo>
-  <AccountPackageIdentityNames>
-    <MainPackageIdentityName>OrenNovotnyLLC.1Across</MainPackageIdentityName>
-    <MainPackageIdentityName>OrenNovotnyLLC.BonjourBrowser</MainPackageIdentityName>
-    <MainPackageIdentityName>62221OrenNovotny.Novotny.org</MainPackageIdentityName>
-    <MainPackageIdentityName>OrenNovotnyLLC.RSSBandit</MainPackageIdentityName>
-  </AccountPackageIdentityNames>
   <PackageInfoList LandingUrl="https://developer.microsoft.com/dashboard/Application?appId=9WZDNCRDMDM3" />
 </StoreAssociation>

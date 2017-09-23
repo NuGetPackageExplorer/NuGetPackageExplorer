@@ -85,5 +85,5 @@ Please check the [FAQ](https://github.com/NuGetPackageExplorer/NuGetPackageExplo
 
 Requirements to build the project:
 
-- VS2015
+- VS2017 15.4 or later
 - [Windows 10 SDK](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk)

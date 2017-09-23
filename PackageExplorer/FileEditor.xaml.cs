@@ -36,9 +36,8 @@ namespace PackageExplorer
             Editor.Options.ConvertTabsToSpaces = true;
 
             Editor.TextArea.SelectionCornerRadius = 0;
-
-            var searchInput = new SearchInputHandler(Editor.TextArea);
-            Editor.TextArea.DefaultInputHandler.NestedInputHandlers.Add(searchInput);
+            
+            var searchInput = SearchPanel.Install(Editor.TextArea);
         }
 
         #region IFileEditorService Members

@@ -30,7 +30,9 @@ namespace PackageExplorer
             contentBox.Options.EnableHyperlinks = false;
             contentBox.TextArea.SelectionCornerRadius = 0;
 
+#pragma warning disable CS0618 // Type or member is obsolete
             var searchInput = new SearchInputHandler(contentBox.TextArea);
+#pragma warning restore CS0618 // Type or member is obsolete
             _findCommand = searchInput.CommandBindings.FirstOrDefault(binding => binding.Command == ApplicationCommands.Find);
             contentBox.TextArea.DefaultInputHandler.NestedInputHandlers.Add(searchInput);
         }
