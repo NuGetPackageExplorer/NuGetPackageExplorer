@@ -1,0 +1,41 @@
+<Project>
+
+  <PropertyGroup>
+    <Authors>Luan Nguyen,Julian Verdurmen</Authors>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <NoPackageAnalysis>true</NoPackageAnalysis>
+    <PackageIconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/images/nuget.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer</PackageProjectUrl>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/LICENSE</PackageLicenseUrl>
+    <Copyright></Copyright>
+    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)NuGetPackageExplorer.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisDictionary>$(MSBuildThisFileDirectory)CodeAnalysisDictionary.xml</CodeAnalysisDictionary>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <DefaultLanguage>en-US</DefaultLanguage>
+
+    <IsTypesProject>$(MSBuildProjectName.Contains('Types'))</IsTypesProject>
+    <IsLegacyProject>$(MSBuildProjectName.Equals('PackageExplorer'))</IsLegacyProject>
+    <IsPackageProject>$(MSBuildProjectName.Contains('.Package'))</IsPackageProject>
+
+  </PropertyGroup>
+
+  
+  <PropertyGroup>
+    <NerdbankGitVersioningVersion>2.0.41</NerdbankGitVersioningVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.0.41" PrivateAssets="all" />
+    <Compile Include="$(MSBuildThisFileDirectory)Common\CommonAssemblyInfo.cs" LinkBase="Properties" />
+  </ItemGroup>
+
+  <!-- https://github.com/NuGet/Home/issues/4337 -->
+  <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' == 'true' ">
+    <Import Project="$(UserProfile)\.nuget\packages\nerdbank.gitversioning\$(NerdbankGitVersioningVersion)\buildCrossTargeting\Nerdbank.GitVersioning.targets"
+            Condition="Exists('$(UserProfile)\.nuget\packages\nerdbank.gitversioning\$(NerdbankGitVersioningVersion)\buildCrossTargeting\Nerdbank.GitVersioning.targets')" />
+  </ImportGroup>
+  <Target Name="FixUpVersion"
+          BeforeTargets="_GenerateRestoreProjectSpec"
+          DependsOnTargets="GetBuildVersion"
+          Condition=" '$(NerdbankGitVersioningTasksPath)' != '' " />
+</Project>

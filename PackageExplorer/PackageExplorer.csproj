@@ -18,7 +18,6 @@
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
     <IsWebBootstrapper>true</IsWebBootstrapper>
-    <CodeAnalysisRuleSet>..\NuGetPackageExplorer.ruleset</CodeAnalysisRuleSet>
     <TargetPlatformVersion>8.0</TargetPlatformVersion>
     <PublishUrl>C:\publish\</PublishUrl>
     <Install>true</Install>
@@ -127,9 +126,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="..\Common\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -382,9 +378,6 @@
     <Resource Include="Images\FontDialogHS.png" />
     <Resource Include="Images\Book_angleHS.png" />
     <Resource Include="Images\NewFolderHS.png" />
-    <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">
-      <Link>Properties\CodeAnalysisDictionary.xml</Link>
-    </CodeAnalysisDictionary>
     <Resource Include="Images\NoteHS.png" />
     <Resource Include="Images\EditHS.png" />
     <Resource Include="Images\folder.png" />
