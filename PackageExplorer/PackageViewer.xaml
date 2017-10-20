@@ -444,7 +444,7 @@
                         <EventSetter Event="DragOver" Handler="OnTreeViewItemDragOver" />
                         <EventSetter Event="Drop" Handler="OnTreeViewItemDrop" />
                         <EventSetter Event="PreviewMouseLeftButtonDown" Handler="PackagesTreeViewItem_PreviewMouseLeftButtonDown" />
-                        <EventSetter Event="PreviewMouseMove" Handler="PackagesTreeViewItem_PreviewMouseMove" />
+                        <EventSetter Event="MouseMove" Handler="PackagesTreeViewItem_MouseMove" />
                         <EventSetter Event="PreviewMouseLeftButtonUp" Handler="PackagesTreeViewItem_PreviewMouseLeftButtonUp" />
                         <Setter Property="IsExpanded" Value="{Binding IsExpanded, FallbackValue=False}" />
                         <Setter Property="IsSelected" Value="{Binding IsSelected}" />
