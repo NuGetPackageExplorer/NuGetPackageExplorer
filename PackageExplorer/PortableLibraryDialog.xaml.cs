@@ -14,7 +14,7 @@ namespace PackageExplorer
 
         public string GetSelectedFrameworkName()
         {
-            var comboBoxes = new ComboBox[] { NetFx, SilverlightFx, WPFx };
+            var comboBoxes = new ComboBox[] { NetFx, SilverlightFx, WPSLFx, WindowsFx };
 
             var builder = new StringBuilder();
             for (int i = 0; i < comboBoxes.Length; i++)
@@ -32,9 +32,9 @@ namespace PackageExplorer
                 builder.Append(((ComboBoxItem)comboBoxes[i].SelectedItem).Tag);
             }
 
-            if (WindowsCheckBox.IsChecked ?? false)
+            if (WindowsPhoneCheckBox.IsChecked ?? false)
             {
-                builder.Append("+win8");
+                builder.Append("+wpa81");
             }
 
             builder.Insert(0, "portable-");
@@ -53,7 +53,7 @@ namespace PackageExplorer
 
         private void EvaluateButtonEnabledState(object sender, RoutedEventArgs e)
         {
-            var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPCheckBox };
+            var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPSLCheckBox, WindowsPhoneCheckBox };
             var count = _allCheckBoxes.Count(p => p.IsChecked == true);
             OKButton.IsEnabled = count >= 2;
         }
