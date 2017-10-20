@@ -14,6 +14,8 @@ namespace CodeExecutor
     [Serializable]
     public class AssemblyMetaData : Dictionary<string, string>
     {
+        public const string ReferencedAssembliesKey = "Referenced assemblies";
+
         public AssemblyMetaData()
         {
         }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace CodeExecutor
@@ -90,6 +91,18 @@ namespace CodeExecutor
                 catch (Exception)
                 {
                     // if an exception occurs when loading custom attributes, just ignore
+                }
+
+                try
+                {
+                    data[AssemblyMetaData.ReferencedAssembliesKey] = string.Join(
+                        Environment.NewLine,
+                        assembly.GetReferencedAssemblies().OrderBy(assName => assName.Name)
+                    );
+                }
+                catch
+                {
+                    // Ignore if unable to obtain referenced assemblies
                 }
             }
 

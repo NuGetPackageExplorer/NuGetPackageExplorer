@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -32,7 +33,12 @@ namespace PackageExplorer
 
                 if (assemblyData != null)
                 {
-                    foreach (var data in assemblyData.OrderBy(d => d.Key))
+                    var orderedAssemblyDataEntries = assemblyData
+                        // Put information about referenced assemblies at the end.
+                        .OrderBy(d => d.Key.Equals(AssemblyMetaData.ReferencedAssembliesKey, StringComparison.Ordinal))
+                        .ThenBy(d => d.Key);
+
+                    foreach (var data in orderedAssemblyDataEntries)
                     {
                         var label = new TextBlock
                         {
