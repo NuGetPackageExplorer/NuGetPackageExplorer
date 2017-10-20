@@ -42,6 +42,11 @@
     <PackageCertificateThumbprint>741AE430B2E52F371749E72B44D8341F4BE5BB94</PackageCertificateThumbprint>
     <EntryPointProjectUniqueName>..\PackageExplorer\PackageExplorer.csproj</EntryPointProjectUniqueName>
   </PropertyGroup>
+  <PropertyGroup>
+    <ResolveNuGetPackages>false</ResolveNuGetPackages>
+    <SkipImportNuGetProps>true</SkipImportNuGetProps>
+    <SkipImportNuGetBuildTargets>true</SkipImportNuGetBuildTargets>
+  </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
