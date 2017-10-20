@@ -40,6 +40,7 @@ namespace PackageExplorerViewModel
             httpRequest.AllowAutoRedirect = true;
             httpRequest.KeepAlive = false;
             httpRequest.Headers.Add(ApiKeyHeader, apiKey);
+            httpRequest.Headers.Add("X-NuGet-Protocol-Version", "4.1.0");
             httpRequest.UserAgent = _userAgent;
             httpRequest.UseDefaultCredentials = true;
             httpRequest.PreAuthenticate = true;
