@@ -54,7 +54,7 @@ namespace CodeExecutor
                 return data;
             }
 
-            var assembly = Assembly.Load(assemblyName);
+            var assembly = Assembly.ReflectionOnlyLoadFrom(assemblyPath);
             if (assembly != null)
             {
 
