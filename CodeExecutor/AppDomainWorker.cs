@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Resources;
 
 namespace CodeExecutor
 {
@@ -107,6 +108,87 @@ namespace CodeExecutor
             }
 
             return data;
+        }
+
+        /// <summary>
+        ///  Setup a hook for robust lookup of the required dependencies.
+        /// </summary>
+        public void SetupAssemblyLoadHook(AssemblyName[] knownAssemblyNames)
+        {
+            if (knownAssemblyNames == null) throw new ArgumentNullException(nameof(knownAssemblyNames));
+
+            AppDomain.CurrentDomain.ReflectionOnlyAssemblyResolve += (sender, resolveArgs) =>
+            {
+                var assemblyName = new AssemblyName(resolveArgs.Name);
+
+                bool IsNameMatching(AssemblyName other) =>
+                    assemblyName.Name.Equals(other.Name, StringComparison.Ordinal);
+
+                Assembly result = null;
+
+                // Try load the assembly using the name without adjustments.
+                try
+                {
+                    result = Assembly.ReflectionOnlyLoad(assemblyName.FullName);
+                }
+                catch
+                {
+                    // Ignore if cannot load by direct reference.
+                }
+                if (result != null)
+                {
+                    return result;
+                }
+
+                // Find the already loaded assembly of a different version.
+                // It doesn't matter for us as we read attributes only.
+                result = AppDomain.CurrentDomain.ReflectionOnlyGetAssemblies()
+                    .FirstOrDefault(a => IsNameMatching(a.GetName()));
+                if (result != null)
+                {
+                    return result;
+                }
+
+                // Try to find this assembly in other known version. If found - try to load in that version.
+                try
+                {
+                    var knownAssemblyName = knownAssemblyNames.FirstOrDefault(IsNameMatching);
+                    if (knownAssemblyName != null)
+                    {
+                        result = Assembly.ReflectionOnlyLoad(knownAssemblyName.FullName);
+                    }
+                }
+                catch
+                {
+                    // Ignore if cannot load assembly.
+                }
+                if (result != null)
+                {
+                    return result;
+                }
+
+                // Usually we look for the system assemblies, however of different .NET Framework versions.
+                // Try to adjust the required version using the current mscorlib's assembly.
+                // In most cases that helps to find the matching assembly in current .NET Framework.
+                try
+                {
+                    var mscorlib = knownAssemblyNames.FirstOrDefault(x =>
+                        x.Name.Equals("mscorlib", StringComparison.OrdinalIgnoreCase));
+                    if (mscorlib != null)
+                    {
+                        var nameWithAdjustedVersion = (AssemblyName) assemblyName.Clone();
+                        nameWithAdjustedVersion.Version = mscorlib.Version;
+
+                        result = Assembly.ReflectionOnlyLoad(nameWithAdjustedVersion.FullName);
+                    }
+                }
+                catch
+                {
+                    // Ignore if cannot load adjusted version.
+                }
+
+                return result;
+            };
         }
     }
 }
