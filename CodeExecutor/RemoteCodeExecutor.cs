@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace CodeExecutor
 {
@@ -48,6 +49,11 @@ namespace CodeExecutor
 
                 var worker = (AppDomainWorker)domain.CreateInstanceFromAndUnwrap(
                     Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CodeExecutor.dll"), "CodeExecutor.AppDomainWorker");
+
+                var loadedAssemblyNames = AppDomain.CurrentDomain.GetAssemblies()
+                    .Select(x => x.GetName())
+                    .ToArray();
+                worker.SetupAssemblyLoadHook(loadedAssemblyNames);
 
                 workerAction(worker);
             }
