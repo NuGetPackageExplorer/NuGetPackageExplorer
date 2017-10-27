@@ -47,8 +47,6 @@ namespace NuGetPe.AssemblyMetadata
         {
             try
             {  
-                var attributesToAdd = new Dictionary<string, string>();
-
                 foreach (var attribute in parser.GetAssemblyAttributes())
                 {
                     var value = TryReadAttributeValue(attribute);
@@ -58,12 +56,8 @@ namespace NuGetPe.AssemblyMetadata
                     }
 
                     string displayName = ReadAttributeDisplayName(attribute);
-                    attributesToAdd[displayName] = value;
+                    result.AddMetadata(displayName, value);
                 }
-                
-                // Add all info or nothing if failed in the middle.
-                // That is to not confuse clients with partial output.
-                result.AddRange(attributesToAdd);
             }
             catch (Exception)
             {
@@ -111,12 +105,9 @@ namespace NuGetPe.AssemblyMetadata
         {
             try
             {
-                result[AssemblyMetaData.ReferencedAssembliesKey] = string.Join(
-                    Environment.NewLine,
-                    parser.GetReferencedAssemblyNames()
-                        .OrderBy(assName => assName.Name)
-                        .Select(assName => assName.FullName)
-                );
+                // ToArray is required, otherwise sequence might be enumerated when context is already closed.
+                var referencedAssemblyNames = parser.GetReferencedAssemblyNames().ToArray();
+                result.SetReferencedAssemblyNames(referencedAssemblyNames);
             }
             catch
             {
