@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using CodeExecutor;
 using NuGetPackageExplorer.Types;
+using NuGetPe.AssemblyMetadata;
 
 namespace PackageExplorer
 {
@@ -25,7 +26,7 @@ namespace PackageExplorer
 
             try
             {
-                IDictionary<string, string> assemblyData = RemoteCodeExecutor.GetAssemblyMetadata(tempFile);
+                IDictionary<string, string> assemblyData = AssemblyMetadataReader.ReadMetaData(tempFile);
 
                 var grid = new Grid();
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });

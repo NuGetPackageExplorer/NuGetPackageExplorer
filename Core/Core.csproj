@@ -23,4 +23,7 @@
     <ProjectReference Include="..\Types\Types.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Reflection.Metadata" Version="1.5.0" />
+  </ItemGroup>
 </Project>
