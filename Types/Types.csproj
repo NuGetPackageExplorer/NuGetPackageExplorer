@@ -15,6 +15,7 @@
     <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.1" />
     <PackageReference Include="NuGet.Core" Version="2.14.0" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Compile Include="Packages\*.cs" />
   </ItemGroup>
   
 </Project>
