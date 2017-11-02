@@ -41,11 +41,26 @@
     <PackageCertificateKeyFile>PackageExplorer.Package_StoreKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>741AE430B2E52F371749E72B44D8341F4BE5BB94</PackageCertificateThumbprint>
     <EntryPointProjectUniqueName>..\PackageExplorer\PackageExplorer.csproj</EntryPointProjectUniqueName>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundlePlatforms>neutral</AppxBundlePlatforms>
   </PropertyGroup>
-  <PropertyGroup>
-    <ResolveNuGetPackages>false</ResolveNuGetPackages>
-    <SkipImportNuGetProps>true</SkipImportNuGetProps>
-    <SkipImportNuGetBuildTargets>true</SkipImportNuGetBuildTargets>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <AppxBundle>Always</AppxBundle>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <AppxBundle>Always</AppxBundle>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AppxBundle>Always</AppxBundle>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+    <AppxBundle>Always</AppxBundle>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <AppxBundle>Always</AppxBundle>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x86'">
+    <AppxBundle>Always</AppxBundle>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
