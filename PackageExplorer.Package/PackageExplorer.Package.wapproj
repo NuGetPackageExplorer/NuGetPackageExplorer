@@ -69,6 +69,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\**\*.*" />
+    <Content Include="PackageExplorer\*.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="PackageExplorer.Package_StoreKey.pfx" />
     <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
@@ -76,4 +79,10 @@
     <ProjectReference Include="..\PackageExplorer\PackageExplorer.csproj" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
+  <Target Name="BeforeBuild">
+    <ItemGroup>
+      <NSFacadeAssemblies Include="$(MSBuildProgramFiles32)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.6.1\Facades\*.dll" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NSFacadeAssemblies)" DestinationFolder="PackageExplorer" />
+  </Target>
 </Project>
