@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using CodeExecutor;
 using NuGetPackageExplorer.Types;
+using NuGetPe.AssemblyMetadata;
 
 namespace PackageExplorer
 {
@@ -25,18 +26,15 @@ namespace PackageExplorer
 
             try
             {
-                IDictionary<string, string> assemblyData = RemoteCodeExecutor.GetAssemblyMetadata(tempFile);
+                var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile);
 
                 var grid = new Grid();
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
                 grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
-                if (assemblyData != null)
+                if (assemblyMetadata != null)
                 {
-                    var orderedAssemblyDataEntries = assemblyData
-                        // Put information about referenced assemblies at the end.
-                        .OrderBy(d => d.Key.Equals(AssemblyMetaData.ReferencedAssembliesKey, StringComparison.Ordinal))
-                        .ThenBy(d => d.Key);
+                    var orderedAssemblyDataEntries = assemblyMetadata.GetMetadataEntriesOrderedByImportance();
 
                     foreach (var data in orderedAssemblyDataEntries)
                     {
