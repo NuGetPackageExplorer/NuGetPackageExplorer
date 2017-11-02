@@ -26,18 +26,6 @@ namespace CodeExecutor
             }
         }
 
-        public static AssemblyMetaData GetAssemblyMetadata(string assemblyPath)
-        {
-            if (!File.Exists(assemblyPath))
-            {
-                return null;
-            }
-
-            AssemblyMetaData result = null;
-            ExecuteRemotely(worker => result = worker.GetAssemblyMetadata(assemblyPath));
-            return result;
-        }
-
         private static void ExecuteRemotely(Action<AppDomainWorker> workerAction)
         {
             AppDomain domain = AppDomain.CreateDomain("CodeInvoker");
