@@ -12,6 +12,7 @@
     <CodeAnalysisDictionary>$(MSBuildThisFileDirectory)CodeAnalysisDictionary.xml</CodeAnalysisDictionary>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DefaultLanguage>en-US</DefaultLanguage>
+    <NoWarn>1701;1702;1705;1591</NoWarn>
 
     <IsTypesProject>$(MSBuildProjectName.Contains('Types'))</IsTypesProject>
     <IsLegacyProject>$(MSBuildProjectName.Equals('PackageExplorer'))</IsLegacyProject>
