@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.1" />
-    <PackageReference Include="NuGet.Core" Version="2.14.0" />
+    <PackageReference Include="NuGet.Client" Version="4.2.0" />
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   

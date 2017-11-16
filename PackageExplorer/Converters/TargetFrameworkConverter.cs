@@ -16,7 +16,7 @@ namespace PackageExplorer
                 return null;
             }
 
-            return NuGet.VersionUtility.GetShortFrameworkName(framework);
+            return VersionUtility.GetShortFrameworkName(framework);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

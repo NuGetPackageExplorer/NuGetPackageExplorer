@@ -24,7 +24,7 @@ namespace NuGetPe
             return GetHash(package, new NuGet.CryptoHashProvider());
         }
 
-        public static string GetHash(this IPackage package, NuGet.IHashProvider hashProvider)
+        public static string GetHash(this IPackage package, IHashProvider hashProvider)
         {
             using (Stream stream = package.GetStream())
                 return Convert.ToBase64String(hashProvider.CalculateHash(stream));

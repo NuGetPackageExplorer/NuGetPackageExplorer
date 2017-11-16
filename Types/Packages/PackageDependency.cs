@@ -27,7 +27,7 @@ namespace NuGetPe
 
         public string Id { get; private set; }
 
-        public NuGet.IVersionSpec VersionSpec { get; private set; }
+        public IVersionSpec VersionSpec { get; private set; }
         public string Exclude { get; private set; }
 
         public override string ToString()
