@@ -7,7 +7,7 @@
 [![Rager Releases](http://rager.io/badge.svg?url=https%3A%2F%2Fgithub.com%2FNuGetPackageExplorer%2FNuGetPackageExplorer)](http://rager.io/projects/search?badge=1&query=https://github.com/NuGetPackageExplorer/NuGetPackageExplorer)
 
 ## How to install
-You could install with the Windows 10 Store, ClickOnce or Chocolatey. The Windows Store is the preferred version for Windows 10 Anniversary Update and later.
+You could install with the Windows 10 Store or Chocolatey. The Windows Store is the preferred version for Windows 10 Anniversary Update and later.
 
 ### Windows Store (recommended, Windows 10 Anniversary Update needed)
 <a href="https://www.microsoft.com/store/apps/9wzdncrdmdm3?ocid=badge"><img height="104" width="288" src="https://assets.windowsphone.com/f2f77ec7-9ba9-4850-9ebe-77e366d08adc/English_Get_it_Win_10_InvariantCulture_Default.png" alt="Get it on Windows 10"></a>
@@ -19,10 +19,6 @@ Chocolatey is another great way to install and update your application.
 2. Install Chocolatey: `iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex`
 3. Install NuGet Package Explorer: `choco install nugetpackageexplorer`
 
-### ClickOnce
-There are a lot of installing issues with ClickOnce, including a SmartScreen-related error.
-
-[Latest ClickOnce release](https://npe.codeplex.com/downloads/get/clickOnce/NuGetPackageExplorer.application) (uninstall first if previous version is 3.9 or lower).
 
 ## What is NuGet Package Explorer?
 
