@@ -17,6 +17,7 @@
     <EmbeddedResource Include="Authoring\nuspec.xsd" />
     <EmbeddedResource Update="NuGetResources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="NuGetResources.Designer.cs" CustomToolNamespace="NuGetPe.Resources" />
     <Compile Update="NuGetResources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="NuGetResources.resx" />
+    <Compile Include="Packages\*.cs" />
   </ItemGroup>
 
   <ItemGroup>

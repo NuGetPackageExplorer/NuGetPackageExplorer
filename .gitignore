@@ -24,4 +24,5 @@ publish/
 /PackageExplorer.Package/bld/*
 /PackageExplorer.Package/BundleArtifacts/*
 /PackageExplorer.Package/AppPackages/*
+/PackageExplorer.Package/_pkginfo.txt
 /.vs
