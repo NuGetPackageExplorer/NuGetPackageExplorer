@@ -9,10 +9,10 @@ namespace NuGetPe
 {
     public class PackageReferenceSet : IFrameworkTargetable
     {
-        private readonly FrameworkName _targetFramework;
+        private readonly NuGetFramework _targetFramework;
         private readonly ICollection<string> _references;
 
-        public PackageReferenceSet(FrameworkName targetFramework, IEnumerable<string> references)
+        public PackageReferenceSet(NuGetFramework targetFramework, IEnumerable<string> references)
         {
             if (references == null)
             {
@@ -31,12 +31,12 @@ namespace NuGetPe
             }
         }
 
-        public FrameworkName TargetFramework
+        public NuGetFramework TargetFramework
         {
             get { return _targetFramework; }
         }
 
-        public IEnumerable<FrameworkName> SupportedFrameworks
+        public IEnumerable<NuGetFramework> SupportedFrameworks
         {
             get
             {

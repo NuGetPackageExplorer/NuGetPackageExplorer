@@ -5,9 +5,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Xml.Serialization;
-using NuGet;
+using NuGet.Frameworks;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuGetPe.Resources;
 
 namespace NuGetPe
@@ -319,7 +320,7 @@ namespace NuGetPe
 
                 var referenceSets = ReferenceSets.Select(
                     r => new PackageReferenceSet(
-                        String.IsNullOrEmpty(r.TargetFramework) ? null : VersionUtility.ParseFrameworkName(r.TargetFramework), 
+                        String.IsNullOrEmpty(r.TargetFramework) ? null : NuGetFramework.Parse(r.TargetFramework), 
                         r.References.Select(a => a.File)));
 
                 var referenceSetGroups = referenceSets.GroupBy(set => set.TargetFramework);
@@ -380,28 +381,29 @@ namespace NuGetPe
             }
         }
 
-        private static IEnumerable<FrameworkName> ParseFrameworkNames(string frameworkNames)
+        private static IEnumerable<NuGetFramework> ParseFrameworkNames(string frameworkNames)
         {
             if (String.IsNullOrEmpty(frameworkNames))
             {
-                return Enumerable.Empty<FrameworkName>();
+                return Enumerable.Empty<NuGetFramework>();
             }
 
             return frameworkNames.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-                                 .Select(VersionUtility.ParseFrameworkName);
+                                 .Select(NuGetFramework.Parse);
         }
 
         private static PackageDependencySet CreatePackageDependencySet(ManifestDependencySet manifestDependencySet)
         {
-            FrameworkName targetFramework = manifestDependencySet.TargetFramework == null
+            NuGetFramework targetFramework = manifestDependencySet.TargetFramework == null
                                             ? null
-                                            : VersionUtility.ParseFrameworkName(manifestDependencySet.TargetFramework);
-
+                                            : NuGetFramework.Parse(manifestDependencySet.TargetFramework);
+            
             var dependencies = from d in manifestDependencySet.Dependencies
                                select new PackageDependency(
                                    d.Id,
-                                   String.IsNullOrEmpty(d.Version) ? null : VersionUtility.ParseVersionSpec(d.Version),
-                                   d.Exclude);
+                                   String.IsNullOrEmpty(d.Version) ? null : VersionRange.Parse(d.Version),
+                                   d.Include?.Split(','),
+                                   d.Exclude?.Split(','));
 
             return new PackageDependencySet(targetFramework, dependencies);
         }

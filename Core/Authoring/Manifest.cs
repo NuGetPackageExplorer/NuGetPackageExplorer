@@ -13,6 +13,8 @@ using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using NuGet;
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
 using NuGetPe.Resources;
 
 namespace NuGetPe
@@ -192,7 +194,7 @@ namespace NuGetPe
             return (from dependencySet in metadata.DependencySets
                     select new ManifestDependencySet
                     {
-                        TargetFramework = dependencySet.TargetFramework != null ? VersionUtility.GetFrameworkString(dependencySet.TargetFramework) : null,
+                        TargetFramework = dependencySet.TargetFramework != null ? dependencySet.TargetFramework.GetFrameworkString() : null,
                         Dependencies = CreateDependencies(dependencySet.Dependencies)
                     }).ToList();
         }
@@ -207,9 +209,9 @@ namespace NuGetPe
             return (from dependency in dependencies
                     select new ManifestDependency
                     {
-                        Id = dependency.Id.SafeTrim(),
-                        Version = dependency.VersionSpec.ToStringSafe(),
-                        Exclude = dependency.Exclude.SafeTrim()
+                        Id = dependency.Id?.Trim(),
+                        Version = dependency.VersionRange?.ToString(),
+                        Exclude = string.Join(",", dependency.Exclude)
                     }).ToList();
         }
 
@@ -220,14 +222,12 @@ namespace NuGetPe
                        ? null
                        : (from reference in metadata.FrameworkAssemblies
                           select new ManifestFrameworkAssembly
-                                 {
-                                     AssemblyName = reference.AssemblyName,
-                                     TargetFramework =
+                          {
+                              AssemblyName = reference.AssemblyName,
+                              TargetFramework =
                                          String.Join(", ",
                                                      reference.SupportedFrameworks.
-                                                         Select(
-                                                             VersionUtility.
-                                                                 GetFrameworkString))
+                                                         Select(f => f.GetFrameworkString()))
                                  }).ToList();
         }
 
@@ -236,7 +236,7 @@ namespace NuGetPe
             return (from referenceSet in metadata.PackageAssemblyReferences
                     select new ManifestReferenceSet
                     {
-                        TargetFramework = referenceSet.TargetFramework != null ? VersionUtility.GetFrameworkString(referenceSet.TargetFramework) : null,
+                        TargetFramework = referenceSet.TargetFramework != null ? referenceSet.TargetFramework.GetFrameworkString() : null,
                         References = CreateReferences(referenceSet)
                     }).ToList();
         }
@@ -374,20 +374,20 @@ namespace NuGetPe
 
         private static void ValidateDependencyVersion(PackageDependency dependency)
         {
-            if (dependency.VersionSpec != null)
+            if (dependency.VersionRange != null)
             {
-                if (dependency.VersionSpec.MinVersion != null &&
-                    dependency.VersionSpec.MaxVersion != null)
+                if (dependency.VersionRange.MinVersion != null &&
+                    dependency.VersionRange.MaxVersion != null)
                 {
 
-                    if ((!dependency.VersionSpec.IsMaxInclusive ||
-                         !dependency.VersionSpec.IsMinInclusive) &&
-                        dependency.VersionSpec.MaxVersion == dependency.VersionSpec.MinVersion)
+                    if ((!dependency.VersionRange.IsMaxInclusive ||
+                         !dependency.VersionRange.IsMinInclusive) &&
+                        dependency.VersionRange.MaxVersion == dependency.VersionRange.MinVersion)
                     {
                         throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, NuGetResources.DependencyHasInvalidVersion, dependency.Id));
                     }
 
-                    if (dependency.VersionSpec.MaxVersion < dependency.VersionSpec.MinVersion)
+                    if (dependency.VersionRange.MaxVersion < dependency.VersionRange.MinVersion)
                     {
                         throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture, NuGetResources.DependencyHasInvalidVersion, dependency.Id));
                     }

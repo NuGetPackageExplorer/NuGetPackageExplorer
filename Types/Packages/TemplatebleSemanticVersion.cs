@@ -20,10 +20,10 @@ namespace NuGetPe
         /// <summary>
         /// If filled, then valid version without tokens
         /// </summary>
-        private SemanticVersion _version;
+        private NuGetVersion _version;
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
-        public TemplatebleSemanticVersion(SemanticVersion version)
+        public TemplatebleSemanticVersion(NuGetVersion version)
         {
             _version = version;
         }
@@ -32,13 +32,13 @@ namespace NuGetPe
         private TemplatebleSemanticVersion(string versionWithTokens)
         {
             _versionWithTokens = versionWithTokens;
-            _version = new SemanticVersion(0, 0, 0, 0);
+            _version = new NuGetVersion(0, 0, 0, 0);
         }
 
         /// <summary>Initializes a new instance of the <see cref="T:System.Object" /> class.</summary>
         public TemplatebleSemanticVersion(int major, int minor, int build, int revision)
         {
-            _version = new SemanticVersion(major, minor, build, revision);
+            _version = new NuGetVersion(major, minor, build, revision);
         }
 
         public static bool TryParse(string version, out TemplatebleSemanticVersion templatebleSemanticVersion)
@@ -51,8 +51,7 @@ namespace NuGetPe
 
         public static TemplatebleSemanticVersion Parse(string version)
         {
-            SemanticVersion semanticVersion;
-            if (SemanticVersion.TryParse(version, out semanticVersion))
+            if (NuGetVersion.TryParse(version, out NuGetVersion semanticVersion))
             {
                 return new TemplatebleSemanticVersion(semanticVersion);
             }
@@ -105,7 +104,7 @@ namespace NuGetPe
 
         #endregion
 
-        public SemanticVersion SemanticVersion
+        public NuGetVersion SemanticVersion
         {
             get { return _version; }
         }
@@ -118,7 +117,7 @@ namespace NuGetPe
                 {
                     return _versionWithTokens;
                 }
-                return _version?.SpecialVersion;
+                return _version?.Release;
             }
         }
 

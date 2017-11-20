@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Data;
+using NuGet.Frameworks;
 using NuGetPe;
 
 namespace PackageExplorer
@@ -31,8 +32,8 @@ namespace PackageExplorer
                     {
                         try
                         {
-                            names[i] = NuGet.VersionUtility.ParseFrameworkName(parts[i]);
-                            if (names[i] == NuGet.VersionUtility.UnsupportedFrameworkName)
+                            names[i] = new FrameworkName(NuGetFramework.Parse(parts[i]).DotNetFrameworkName);
+                            if (names[i] == new FrameworkName(NuGetFramework.UnsupportedFramework.DotNetFrameworkName))
                             {
                                 return DependencyProperty.UnsetValue;
                             }

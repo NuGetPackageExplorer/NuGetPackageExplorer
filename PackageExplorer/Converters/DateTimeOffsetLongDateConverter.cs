@@ -1,4 +1,5 @@
 ﻿using NuGet;
+using NuGet.ProjectManagement;
 using System;
 using System.Globalization;
 using System.Windows.Data;

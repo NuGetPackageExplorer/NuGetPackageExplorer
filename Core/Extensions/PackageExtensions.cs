@@ -1,3 +1,4 @@
+using NuGet.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -21,10 +22,10 @@ namespace NuGetPe
 
         public static string GetHash(this IPackage package)
         {
-            return GetHash(package, new NuGet.CryptoHashProvider());
+            return GetHash(package, new CryptoHashProvider());
         }
 
-        public static string GetHash(this IPackage package, IHashProvider hashProvider)
+        public static string GetHash(this IPackage package, CryptoHashProvider hashProvider)
         {
             using (Stream stream = package.GetStream())
                 return Convert.ToBase64String(hashProvider.CalculateHash(stream));

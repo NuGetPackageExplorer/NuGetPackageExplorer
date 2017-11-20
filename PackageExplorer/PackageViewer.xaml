@@ -8,6 +8,7 @@
     xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" 
     xmlns:resources="clr-namespace:PackageExplorer.Resources" 
     xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types"
+    xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core.Types"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
@@ -32,7 +33,7 @@
             <self:DependencySetConverter x:Key="DependencySetConverter" />
             <self:ReferenceSetConverter x:Key="ReferenceSetConverter" />
 
-            <DataTemplate DataType="{x:Type types:PackageDependency}">
+            <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
                     <Hyperlink Command="Print" CommandParameter="{Binding Id, Mode=OneWay}">
                         <Run Text="{Binding Mode=OneWay}"></Run>

@@ -13,6 +13,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using NuGet.Versioning;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
@@ -295,7 +296,7 @@ namespace PackageExplorer
             }
             else 
             {
-                var packageVersion = new NuGet.SemanticVersion(selectedPackageInfo.Version);
+                var packageVersion = new NuGetVersion(selectedPackageInfo.Version);
                 IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
 
                 Func<IPackage, DispatcherOperation> processPackageAction = (package) =>
@@ -485,7 +486,7 @@ namespace PackageExplorer
             return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version?.SemanticVersion);
         }
 
-        internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string id = null, NuGet.SemanticVersion version = null)
+        internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string id = null, NuGetVersion version = null)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {

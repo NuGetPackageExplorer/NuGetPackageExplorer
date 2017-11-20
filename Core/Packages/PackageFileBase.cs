@@ -2,19 +2,22 @@
 using System.IO;
 using System.Runtime.Versioning;
 using NuGet;
+using NuGet.Frameworks;
+using NuGet.Packaging;
 
 namespace NuGetPe
 {
     public abstract class PackageFileBase : IPackageFile
     {
-        private readonly FrameworkName _targetFramework;
+        private readonly NuGetFramework _targetFramework;
 
         protected PackageFileBase(string path)
         {
             Path = path;
-
+            
             string effectivePath;
-            _targetFramework = VersionUtility.ParseFrameworkNameFromFilePath(path, out effectivePath);
+            
+            _targetFramework = NuGetFramework.Parse(FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out effectivePath).ToString());
             EffectivePath = effectivePath;
         }
 
@@ -40,7 +43,7 @@ namespace NuGetPe
             private set;
         }
 
-        public FrameworkName TargetFramework
+        public NuGetFramework TargetFramework
         {
             get
             {
@@ -48,7 +51,7 @@ namespace NuGetPe
             }
         }
 
-        public IEnumerable<FrameworkName> SupportedFrameworks
+        public IEnumerable<NuGetFramework> SupportedFrameworks
         {
             get
             {

@@ -28,7 +28,7 @@ namespace NuGetPe
             get;
         }
 
-        FrameworkName TargetFramework
+        NuGetFramework TargetFramework
         {
             get;
         }

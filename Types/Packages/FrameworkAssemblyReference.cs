@@ -2,18 +2,19 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Versioning;
+using NuGet.Frameworks;
+using Packaging = NuGet.Packaging;
 
 namespace NuGetPe
 {
-    public class FrameworkAssemblyReference : NuGet.FrameworkAssemblyReference
+    public class FrameworkAssemblyReference : Packaging.FrameworkAssemblyReference
     {
         public FrameworkAssemblyReference(string assemblyName)
-            : base(assemblyName, Enumerable.Empty<FrameworkName>())
+            : base(assemblyName, Enumerable.Empty<NuGetFramework>())
         {
         }
 
-        public FrameworkAssemblyReference(string assemblyName, IEnumerable<FrameworkName> supportedFrameworks,
+        public FrameworkAssemblyReference(string assemblyName, IEnumerable<NuGetFramework> supportedFrameworks,
                                           string displayValue = null) : base(assemblyName, supportedFrameworks)
         {
 

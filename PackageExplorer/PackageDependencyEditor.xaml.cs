@@ -8,6 +8,8 @@ using System.Windows.Documents;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 
 namespace PackageExplorer
 {
@@ -89,7 +91,7 @@ namespace PackageExplorer
             if (selectedPackage != null)
             {
                 _newPackageDependency.Id = selectedPackage.Id;
-                _newPackageDependency.VersionSpec = NuGet.VersionUtility.ParseVersionSpec(selectedPackage.Version);
+                _newPackageDependency.VersionSpec = VersionRange.Parse(selectedPackage.Version);
             }
         }
 

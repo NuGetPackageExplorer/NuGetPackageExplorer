@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
+using NuGet.Packaging.Core;
 using NuGetPe.Resources;
 
 namespace NuGetPe
@@ -257,11 +258,11 @@ namespace NuGetPe
 
         private static bool IsPrereleaseDependency(PackageDependency dependency)
         {
-            var versionSpec = dependency.VersionSpec;
+            var versionSpec = dependency.VersionRange;
             if (versionSpec != null)
             {
-                return (versionSpec.MinVersion != null && !String.IsNullOrEmpty(dependency.VersionSpec.MinVersion.SpecialVersion)) ||
-                       (versionSpec.MaxVersion != null && !String.IsNullOrEmpty(dependency.VersionSpec.MaxVersion.SpecialVersion));
+                return (versionSpec.MinVersion != null && dependency.VersionRange.MinVersion.IsPrerelease) ||
+                       (versionSpec.MaxVersion != null && !dependency.VersionRange.MaxVersion.IsPrerelease);
             }
             return false;
         }

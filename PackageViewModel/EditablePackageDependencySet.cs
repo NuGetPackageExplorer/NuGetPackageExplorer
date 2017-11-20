@@ -1,13 +1,15 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.Versioning;
+using NuGet.Frameworks;
+using NuGet.Packaging.Core;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
     public class EditablePackageDependencySet : INotifyPropertyChanged
     {
-        private FrameworkName _targetFramework;
+        private NuGetFramework _targetFramework;
         private ObservableCollection<PackageDependency> _dependencies;
 
         public EditablePackageDependencySet()
@@ -21,7 +23,7 @@ namespace PackageExplorerViewModel
             _dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Dependencies);
         }
 
-        public FrameworkName TargetFramework
+        public NuGetFramework TargetFramework
         {
             get
             {

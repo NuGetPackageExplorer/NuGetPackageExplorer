@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Versioning;
+using NuGet.Frameworks;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
@@ -11,7 +12,7 @@ namespace PackageExplorerViewModel
     {
         private string _assemblyName;
 
-        private IEnumerable<FrameworkName> _supportedFrameworks;
+        private IEnumerable<NuGetFramework> _supportedFrameworks;
 
         public string AssemblyName
         {
@@ -26,9 +27,9 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public IEnumerable<FrameworkName> SupportedFrameworks
+        public IEnumerable<NuGetFramework> SupportedFrameworks
         {
-            get { return _supportedFrameworks ?? Enumerable.Empty<FrameworkName>(); }
+            get { return _supportedFrameworks ?? Enumerable.Empty<NuGetFramework>(); }
             set
             {
                 if (_supportedFrameworks != value)
