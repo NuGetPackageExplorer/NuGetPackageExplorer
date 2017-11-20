@@ -26,3 +26,4 @@ publish/
 /PackageExplorer.Package/AppPackages/*
 /.vs
 /PackageExplorer.Package/PackageExplorer
+/PackageExplorer.Package/_pkginfo.txt
