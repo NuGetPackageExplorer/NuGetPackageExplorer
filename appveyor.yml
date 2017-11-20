@@ -13,11 +13,11 @@ before_build:
     - ps: msbuild /t:restore PackageExplorer\PackageExplorer.csproj
     - ps: |
         $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
-        $nugetVer = $vers.NuGetPackageVersion
+        $nugetVer = $vers.Version
         
         # Update appxmanifest
         $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"
-        $doc | % { $_.Replace("3.25.0", "$nugetVer") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
+        $doc | % { $_.Replace("3.25.0.0", "$nugetVer") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
     
 build:
   project: NuGetPackageExplorer.sln
