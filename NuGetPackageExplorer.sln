@@ -26,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		LICENSE = LICENSE
 		README-developers.md = README-developers.md
 		README.md = README.md
+		version.json = version.json
 	EndProjectSection
 EndProject
 Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "PackageExplorer.Package", "PackageExplorer.Package\PackageExplorer.Package.jsproj", "{508894A9-D8B9-4A24-90E9-4E25C801329B}"
