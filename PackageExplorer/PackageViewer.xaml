@@ -8,7 +8,7 @@
     xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" 
     xmlns:resources="clr-namespace:PackageExplorer.Resources" 
     xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types"
-    xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core.Types"
+    xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
