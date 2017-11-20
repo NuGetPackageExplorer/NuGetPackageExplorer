@@ -27,7 +27,7 @@ namespace PackageExplorer
                 NuGetFramework frameworkName;
                 try
                 {
-                    frameworkName = NuGetFramework.ParseFrameworkName(name, DefaultFrameworkNameProvider.Instance);
+                    frameworkName = NuGetFramework.Parse(name);
                 }
                 catch (ArgumentException)
                 {
@@ -44,7 +44,7 @@ namespace PackageExplorer
 
                 if (!frameworkName.IsUnsupported)
                 {
-                    return " (" + frameworkName + ")";
+                    return $" ({frameworkName.DotNetFrameworkName})";
                 }
                 else if (!parts[0].Equals("content", StringComparison.OrdinalIgnoreCase))
                 {
