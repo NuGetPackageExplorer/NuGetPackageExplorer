@@ -16,8 +16,8 @@ namespace NuGetPe
             Path = path;
             
             string effectivePath;
-            
-            _targetFramework = NuGetFramework.Parse(FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out effectivePath).ToString());
+            FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out effectivePath);
+            _targetFramework = NuGetFramework.Parse(effectivePath);
             EffectivePath = effectivePath;
         }
 
