@@ -32,11 +32,12 @@
             <self:BooleanToStringConverter x:Key="BooleanConverter" />
             <self:DependencySetConverter x:Key="DependencySetConverter" />
             <self:ReferenceSetConverter x:Key="ReferenceSetConverter" />
+            <self:PackageDependencyConverter x:Key="PackageDependencyConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
                     <Hyperlink Command="Print" CommandParameter="{Binding Id, Mode=OneWay}">
-                        <Run Text="{Binding Mode=OneWay}"></Run>
+                        <Run Text="{Binding Mode=OneWay, Converter={StaticResource PackageDependencyConverter}}"></Run>
                     </Hyperlink>
                 </TextBlock>
             </DataTemplate>

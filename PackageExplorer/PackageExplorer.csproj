@@ -136,6 +136,7 @@
     <Compile Include="Converters\BooleanToStringConverter.cs" />
     <Compile Include="Converters\DateTimeOffsetHumanizeConverter.cs" />
     <Compile Include="Converters\DateTimeOffsetLongDateConverter.cs" />
+    <Compile Include="Converters\PackageDependencyConverter.cs" />
     <Compile Include="Converters\ReferenceSetConverter.cs" />
     <Compile Include="Converters\DependencySetConverter.cs" />
     <Compile Include="Converters\IntegerToBooleanConverter.cs" />
