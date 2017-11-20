@@ -25,3 +25,4 @@ publish/
 /PackageExplorer.Package/BundleArtifacts/*
 /PackageExplorer.Package/AppPackages/*
 /.vs
+/PackageExplorer.Package/PackageExplorer
