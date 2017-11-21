@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Versioning;
-using NuGet;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 

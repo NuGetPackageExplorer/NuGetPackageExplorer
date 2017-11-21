@@ -12,7 +12,6 @@ using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using NuGet;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGetPe.Resources;
