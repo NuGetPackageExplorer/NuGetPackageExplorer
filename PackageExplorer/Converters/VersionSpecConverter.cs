@@ -13,7 +13,7 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var versionSpec = (VersionRange) value;
-            return versionSpec == null ? null : versionSpec.ToString();
+            return versionSpec == null ? null : versionSpec.ToShortString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
