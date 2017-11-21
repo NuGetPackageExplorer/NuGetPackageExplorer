@@ -25,6 +25,9 @@ namespace PackageExplorer
             InitializeComponent();
             PopulateLanguagesForLanguageBox();
             PopulateFrameworkAssemblyNames();
+
+            // Explicitly set the data context for these since they don't flow
+            NewAssemblyName.DataContext = NewSupportedFramework.DataContext = null;
         }
 
         public IUIServices UIServices { get; set; }

@@ -222,7 +222,8 @@ namespace NuGetPe
                     {
                         Id = element.GetOptionalAttributeValue("id").SafeTrim(),
                         Version = element.GetOptionalAttributeValue("version").SafeTrim(),
-                        Exclude = element.GetOptionalAttributeValue("exclude").SafeTrim()
+                        Exclude = element.GetOptionalAttributeValue("exclude").SafeTrim(),
+                        Include = element.GetOptionalAttributeValue("include").SafeTrim()
                     }).ToList();
         }
 

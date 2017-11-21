@@ -10,17 +10,16 @@ namespace PackageExplorerViewModel
     public class EditablePackageDependencySet : INotifyPropertyChanged
     {
         private NuGetFramework _targetFramework;
-        private ObservableCollection<PackageDependency> _dependencies;
 
         public EditablePackageDependencySet()
         {
-            _dependencies = new ObservableCollection<PackageDependency>();
+            Dependencies = new ObservableCollection<PackageDependency>();
         }
 
         public EditablePackageDependencySet(PackageDependencySet packageDependencySet)
         {
             _targetFramework = packageDependencySet.TargetFramework;
-            _dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Dependencies);
+            Dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Dependencies);
         }
 
         public NuGetFramework TargetFramework
@@ -41,11 +40,7 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<PackageDependency> Dependencies
         {
-            get
-            {
-                return _dependencies;
-            }
-        }
+            get; }
 
         public PackageDependencySet AsReadOnly()
         {

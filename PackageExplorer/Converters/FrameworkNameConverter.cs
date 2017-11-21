@@ -11,7 +11,7 @@ namespace PackageExplorer
 {
     public class FrameworkNameConverter : IValueConverter
     {
-        private static string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build" };
+        private static string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build", "ref" };
 
         #region IValueConverter Members
 

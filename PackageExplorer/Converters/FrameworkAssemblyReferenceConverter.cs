@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Data;
@@ -16,7 +17,7 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var frameworkNames = (IEnumerable<NuGetFramework>) value;
-            return frameworkNames == null ? String.Empty : String.Join("; ", frameworkNames);
+            return frameworkNames == null ? String.Empty : String.Join("; ", frameworkNames.Select(fn => fn.DotNetFrameworkName));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

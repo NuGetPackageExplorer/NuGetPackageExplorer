@@ -207,11 +207,14 @@ namespace NuGetPe
             }
 
             return (from dependency in dependencies
+                    let include = string.Join(",", dependency.Include)
+                    let exclude = string.Join(",", dependency.Exclude)
                     select new ManifestDependency
                     {
                         Id = dependency.Id?.Trim(),
-                        Version = dependency.VersionRange?.ToString(),
-                        Exclude = string.Join(",", dependency.Exclude)
+                        Version = dependency.VersionRange?.ToShortString(),
+                        Include = string.IsNullOrWhiteSpace(include) ? null : include,
+                        Exclude = string.IsNullOrWhiteSpace(exclude) ? null : exclude
                     }).ToList();
         }
 
