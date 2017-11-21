@@ -10,14 +10,13 @@ namespace PackageExplorer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            FrameworkName framework = (FrameworkName)value;
+            NuGetFramework framework = (NuGetFramework)value;
             if (framework == null) 
             {
                 return null;
             }
-
-            var f = NuGetFramework.ParseFrameworkName(framework.ToString(), DefaultFrameworkNameProvider.Instance);
-            return f.GetShortFolderName();
+            
+            return framework.GetShortFolderName();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -34,7 +33,7 @@ namespace PackageExplorer
                 return DependencyProperty.UnsetValue;
             }
 
-            return new FrameworkName(framework.DotNetFrameworkName);
+            return framework;
         }
     }
 }
