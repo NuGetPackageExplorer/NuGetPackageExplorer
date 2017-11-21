@@ -17,7 +17,7 @@
     <IsTypesProject>$(MSBuildProjectName.Contains('Types'))</IsTypesProject>
     <IsLegacyProject>$(MSBuildProjectName.Equals('PackageExplorer'))</IsLegacyProject>
     <IsPackageProject>$(MSBuildProjectName.Contains('.Package'))</IsPackageProject>
-
+    <DebugType>Full</DebugType>
   </PropertyGroup>
 
   
