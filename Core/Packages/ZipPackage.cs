@@ -255,7 +255,8 @@ namespace NuGetPe
                                   .ToList();
                 FrameworkAssemblies = (from g in nuspec.GetFrameworkReferenceGroups()
                                       from item in g.Items
-                                      select new FrameworkAssemblyReference(item, g.TargetFramework.IsAny ? Enumerable.Empty<NuGetFramework>() : new[] { g.TargetFramework}))
+                                      group g.TargetFramework by item into grp
+                                      select new FrameworkAssemblyReference(grp.Key, grp))
                                       .ToList();
                 PackageAssemblyReferences = (from g in nuspec.GetReferenceGroups()
                                              select new PackageReferenceSet(g.TargetFramework.IsAny ? null : g.TargetFramework, g.Items))
