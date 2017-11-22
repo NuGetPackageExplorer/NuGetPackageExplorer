@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Versioning;
+using NuGet.Frameworks;
 
 namespace PackageExplorerViewModel
 {
@@ -52,14 +53,14 @@ namespace PackageExplorerViewModel
             get { return _name; }
         }
 
-        public FrameworkName TargetFramework
+        public NuGetFramework TargetFramework
         {
             get { return null; }
         }
 
-        public IEnumerable<FrameworkName> SupportedFrameworks
+        public IEnumerable<NuGetFramework> SupportedFrameworks
         {
-            get { return new FrameworkName[0]; }
+            get { return new NuGetFramework[0]; }
         }
     }
 }

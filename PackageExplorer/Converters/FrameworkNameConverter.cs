@@ -4,13 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Windows.Data;
+using NuGet.Frameworks;
 using NuGetPe;
 
 namespace PackageExplorer
 {
     public class FrameworkNameConverter : IValueConverter
     {
-        private static string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build" };
+        private static string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build", "ref" };
 
         #region IValueConverter Members
 
@@ -23,10 +24,10 @@ namespace PackageExplorer
             if (parts.Length == 2 && 
                 WellknownPackageFolders.Any(s => s.Equals(parts[0], StringComparison.OrdinalIgnoreCase)))
             {
-                FrameworkName frameworkName;
+                NuGetFramework frameworkName;
                 try
                 {
-                    frameworkName = NuGet.VersionUtility.ParseFrameworkName(name);
+                    frameworkName = NuGetFramework.Parse(name);
                 }
                 catch (ArgumentException)
                 {
@@ -41,9 +42,9 @@ namespace PackageExplorer
                     }
                 }
 
-                if (frameworkName != NuGet.VersionUtility.UnsupportedFrameworkName)
+                if (!frameworkName.IsUnsupported)
                 {
-                    return " (" + frameworkName + ")";
+                    return $" ({frameworkName.DotNetFrameworkName})";
                 }
                 else if (!parts[0].Equals("content", StringComparison.OrdinalIgnoreCase))
                 {

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Data;
+using NuGet.Frameworks;
 using NuGetPe;
 
 namespace PackageExplorer
@@ -14,8 +16,8 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var frameworkNames = (IEnumerable<FrameworkName>) value;
-            return frameworkNames == null ? String.Empty : String.Join("; ", frameworkNames);
+            var frameworkNames = (IEnumerable<NuGetFramework>) value;
+            return frameworkNames == null ? String.Empty : String.Join("; ", frameworkNames.Select(fn => fn.DotNetFrameworkName));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -26,13 +28,13 @@ namespace PackageExplorer
                 string[] parts = stringValue.Split(new[] {';', ','}, StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length > 0)
                 {
-                    var names = new FrameworkName[parts.Length];
+                    var names = new NuGetFramework[parts.Length];
                     for (int i = 0; i < parts.Length; i++)
                     {
                         try
                         {
-                            names[i] = NuGet.VersionUtility.ParseFrameworkName(parts[i]);
-                            if (names[i] == NuGet.VersionUtility.UnsupportedFrameworkName)
+                            names[i] = NuGetFramework.Parse(parts[i]);
+                            if (names[i] == NuGetFramework.UnsupportedFramework)
                             {
                                 return DependencyProperty.UnsetValue;
                             }
@@ -45,7 +47,7 @@ namespace PackageExplorer
                     return names;
                 }
             }
-            return new FrameworkName[0];
+            return new NuGetFramework[0];
         }
 
         #endregion

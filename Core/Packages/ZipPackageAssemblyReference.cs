@@ -2,13 +2,14 @@ using System;
 using System.Diagnostics;
 using System.IO.Packaging;
 using System.Text;
+using NuGet.Packaging;
 
 namespace NuGetPe
 {
     internal class ZipPackageAssemblyReference : ZipPackageFile, IPackageAssemblyReference
     {
-        public ZipPackageAssemblyReference(PackagePart part)
-            : base(part)
+        public ZipPackageAssemblyReference(PackageArchiveReader reader, string path)
+            : base(reader, path)
         {
             Debug.Assert(Path.StartsWith("lib", StringComparison.OrdinalIgnoreCase), "path doesn't start with lib");
         }

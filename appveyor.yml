@@ -11,6 +11,13 @@ skip_branch_with_pr: true
 
 before_build:
     - ps: msbuild /t:restore PackageExplorer\PackageExplorer.csproj
+    - ps: |
+        $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
+        $nugetVer = $vers.Version
+        
+        # Update appxmanifest
+        $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"
+        $doc | % { $_.Replace("3.25.0.0", "$nugetVer") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
     
 build:
   project: NuGetPackageExplorer.sln
@@ -23,8 +30,6 @@ after_build:
 
     msbuild /t:pack .\Types\Types.csproj /p:Configuration=Release /p:PackageOutputPath=$Env:APPVEYOR_BUILD_FOLDER
 
-    # Run this again so the version number in the build shows up based on the root
-    $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 artifacts:
 - path: '**\NugetPackageExplorer*.nupkg'

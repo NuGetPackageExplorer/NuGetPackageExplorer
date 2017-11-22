@@ -1,27 +1,28 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.Versioning;
+using NuGet.Frameworks;
+using NuGet.Packaging.Core;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
     public class EditablePackageDependencySet : INotifyPropertyChanged
     {
-        private FrameworkName _targetFramework;
-        private ObservableCollection<PackageDependency> _dependencies;
+        private NuGetFramework _targetFramework;
 
         public EditablePackageDependencySet()
         {
-            _dependencies = new ObservableCollection<PackageDependency>();
+            Dependencies = new ObservableCollection<PackageDependency>();
         }
 
         public EditablePackageDependencySet(PackageDependencySet packageDependencySet)
         {
             _targetFramework = packageDependencySet.TargetFramework;
-            _dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Dependencies);
+            Dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Dependencies);
         }
 
-        public FrameworkName TargetFramework
+        public NuGetFramework TargetFramework
         {
             get
             {
@@ -39,11 +40,7 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<PackageDependency> Dependencies
         {
-            get
-            {
-                return _dependencies;
-            }
-        }
+            get; }
 
         public PackageDependencySet AsReadOnly()
         {

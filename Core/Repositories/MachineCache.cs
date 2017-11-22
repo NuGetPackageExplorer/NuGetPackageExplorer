@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NuGet.Versioning;
+using System;
 using System.IO;
 using System.Linq;
 using System.Security;
-using System.Threading.Tasks;
 
 namespace NuGetPe
 {
@@ -43,7 +43,7 @@ namespace NuGetPe
             throw new NotSupportedException();
         }
 
-        public IPackage FindPackage(string packageId, NuGet.SemanticVersion version)
+        public IPackage FindPackage(string packageId, SemanticVersion version)
         {
             string path = GetPackageFilePath(packageId, version);
 
@@ -129,7 +129,7 @@ namespace NuGetPe
             return false;
         }
 
-        private string GetPackageFilePath(string id, NuGet.SemanticVersion version)
+        private string GetPackageFilePath(string id, SemanticVersion version)
         {
             return Path.Combine(Source, id + "." + version + Constants.PackageExtension);
         }

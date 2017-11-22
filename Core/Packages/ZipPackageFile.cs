@@ -2,7 +2,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Packaging;
-using System.Runtime.Versioning;
+using NuGet.Packaging;
 
 namespace NuGetPe
 {
@@ -10,11 +10,11 @@ namespace NuGetPe
     {
         private readonly Func<Stream> _streamFactory;
 
-        public ZipPackageFile(PackagePart part) 
-            : base(UriUtility.GetPath(part.Uri))
+        public ZipPackageFile(PackageArchiveReader reader, string path) 
+            : base(path.Replace('/', '\\'))
         {
-            Debug.Assert(part != null, "part should not be null");
-            _streamFactory = () => part.GetStream();
+            Debug.Assert(reader != null, "reader should not be null");
+            _streamFactory = () => reader.GetStream(path);
         }
 
         public override Stream GetStream()

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Controls;
-using NuGetPe;
+using NuGet.Versioning;
 
 namespace PackageExplorer
 {
@@ -20,8 +20,8 @@ namespace PackageExplorer
                 return ValidationResult.ValidResult;
             }
 
-            NuGet.SemanticVersion version;
-            if (NuGet.SemanticVersion.TryParse(stringValue, out version))
+            SemanticVersion version;
+            if (SemanticVersion.TryParse(stringValue, out version))
             {
                 return ValidationResult.ValidResult;
             }

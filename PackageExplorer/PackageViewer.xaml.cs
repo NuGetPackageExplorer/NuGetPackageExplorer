@@ -508,7 +508,7 @@ namespace PackageExplorer
             var visibilityBinding = new Binding("Path")
                                     {
                                         Converter = new StringToVisibilityConverter(),
-                                        ConverterParameter = "lib;content;tools;build"
+                                        ConverterParameter = "lib;content;tools;build;ref;contentFiles"
                                     };
 
             var commandBinding = new Binding("AddContentFolderCommand");

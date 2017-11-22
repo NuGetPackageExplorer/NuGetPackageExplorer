@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NuGet.Frameworks;
+using NuGet.Packaging.Core;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -6,12 +8,12 @@ using System.Runtime.Versioning;
 
 namespace NuGetPe
 {
-    public class PackageDependencySet : NuGet.IFrameworkTargetable
+    public class PackageDependencySet : IFrameworkTargetable
     {
-        private readonly FrameworkName _targetFramework;
+        private readonly NuGetFramework _targetFramework;
         private readonly ReadOnlyCollection<PackageDependency> _dependencies;
 
-        public PackageDependencySet(FrameworkName targetFramework, IEnumerable<PackageDependency> dependencies)
+        public PackageDependencySet(NuGetFramework targetFramework, IEnumerable<PackageDependency> dependencies)
         {
             if (dependencies == null)
             {
@@ -22,7 +24,7 @@ namespace NuGetPe
             _dependencies = new ReadOnlyCollection<PackageDependency>(dependencies.ToArray());
         }
 
-        public FrameworkName TargetFramework
+        public NuGetFramework TargetFramework
         {
             get
             {
@@ -38,7 +40,7 @@ namespace NuGetPe
             }
         }
 
-        public IEnumerable<FrameworkName> SupportedFrameworks
+        public IEnumerable<NuGetFramework> SupportedFrameworks
         {
             get
             {

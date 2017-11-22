@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
 
@@ -66,7 +65,6 @@ namespace PackageExplorerViewModel
             Justification = "We don't want plugin to crash the app.")]
         private void ShowFile(PackageFile file)
         {
-            long size = -1;
             object content = null;
             bool isBinary = false;
 
@@ -82,10 +80,6 @@ namespace PackageExplorerViewModel
                     {
                         using (Stream stream = file.GetStream())
                         {
-                            if (size == -1)
-                            {
-                                size = stream.Length;
-                            }
                             content = viewer.GetView(Path.GetExtension(file.Name), stream);
                             if (content != null)
                             {
@@ -108,24 +102,28 @@ namespace PackageExplorerViewModel
             }
 
             // if plugins fail to read this file, fall back to the default viewer
+            long size = -1;
             if (content == null)
             {
                 isBinary = FileHelper.IsBinaryFile(file.Name);
                 if (isBinary)
                 {
-                    // don't calculate the size again if we already have it
-                    if (size == -1)
-                    {
-                        using (Stream stream = file.GetStream())
-                        {
-                            size = stream.Length;
-                        }
-                    }
-                    content = Resources.UnsupportedFormatMessage;
+                   content = Resources.UnsupportedFormatMessage;
                 }
                 else
                 {
                     content = ReadFileContent(file, out size);
+                }
+            }
+
+            if (size == -1)
+            { 
+                // This is inefficient but cn be cleaned up later
+                using (var str = file.GetStream())
+                using (var ms = new MemoryStream())
+                {
+                    str.CopyTo(ms);
+                    size = ms.Length;
                 }
             }
 
@@ -150,42 +148,16 @@ namespace PackageExplorerViewModel
 
         private static string ReadFileContent(PackageFile file, out long size)
         {
-            const int MaxLengthToOpen = 10*1024; // limit to 10K 
-            const int BufferSize = 2*1024;
-            var buffer = new char[BufferSize]; // read 2K at a time
-
-            var sb = new StringBuilder();
-            Stream stream = file.GetStream();
-            size = stream.Length;
-            using (var reader = new StreamReader(stream))
+            using (Stream stream = file.GetStream())
+            using(var ms = new MemoryStream())
+            using (var reader = new StreamReader(ms))
             {
-                while (sb.Length < MaxLengthToOpen)
-                {
-                    int bytesRead = reader.Read(buffer, 0, BufferSize);
-                    if (bytesRead == 0)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        sb.Append(new string(buffer, 0, bytesRead));
-                    }
-                }
+                stream.CopyTo(ms);
+                size = ms.Length;
+                ms.Position = 0;
 
-                // if not reaching the end of the stream yet, append the text "Truncating..."
-                if (reader.Peek() > -1)
-                {
-                    // continue reading the rest of the current line to avoid dangling line
-                    sb.AppendLine(reader.ReadLine());
-
-                    if (reader.Peek() > -1)
-                    {
-                        sb.AppendLine().AppendLine("*** The rest of the content is truncated. ***");
-                    }
-                }
+                return reader.ReadToEnd();
             }
-
-            return sb.ToString();
         }
     }
 }

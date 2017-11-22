@@ -3,6 +3,9 @@ using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
 using NuGetPe;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
+using NuGet.Packaging;
 
 namespace PackageExplorerViewModel
 {
@@ -10,7 +13,7 @@ namespace PackageExplorerViewModel
     {
         private string _id;
         private string _exclude;
-        private NuGet.IVersionSpec _versionSpec;
+        private VersionRange _versionSpec;
         private Func<EditablePackageDependencySet> _getActiveDependencySet;
 
         public EditablePackageDependency(Func<EditablePackageDependencySet> getActiveDependencySet)
@@ -32,7 +35,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public NuGet.IVersionSpec VersionSpec
+        public VersionRange VersionSpec
         {
             get { return _versionSpec; }
             set
@@ -95,7 +98,7 @@ namespace PackageExplorerViewModel
                     return VersionSpec != null ? "Package id must not be empty." : (string)null;
                 }
 
-                if (!NuGet.PackageIdValidator.IsValidPackageId(Id))
+                if (!PackageIdValidator.IsValidPackageId(Id))
                 {
                     return "'" + Id + "' is an invalid package id.";
                 }
@@ -115,7 +118,7 @@ namespace PackageExplorerViewModel
 
         public PackageDependency AsReadOnly()
         {
-            return new PackageDependency(Id, VersionSpec, Exclude);
+            return new PackageDependency(Id, VersionSpec, null, Exclude?.Split(',').Select(s => s.Trim()).ToList());
         }
     }
 }

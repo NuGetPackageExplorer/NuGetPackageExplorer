@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
+using NuGet.Versioning;
 
 namespace PackageExplorer
 {
@@ -11,8 +12,8 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var versionSpec = (NuGet.IVersionSpec) value;
-            return versionSpec == null ? null : versionSpec.ToString();
+            var versionSpec = (VersionRange) value;
+            return versionSpec == null ? null : versionSpec.ToShortString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -24,8 +25,7 @@ namespace PackageExplorer
             }
             else
             {
-                NuGet.IVersionSpec versionSpec;
-                if (NuGet.VersionUtility.TryParseVersionSpec(stringValue, out versionSpec))
+                if (VersionRange.TryParse(stringValue, out VersionRange versionSpec))
                 {
                     return versionSpec;
                 }

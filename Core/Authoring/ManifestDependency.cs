@@ -17,5 +17,8 @@ namespace NuGetPe
 
         [XmlAttribute("exclude")]
         public string Exclude { get; set; }
+
+        [XmlAttribute("include")]
+        public string Include { get; set; }
     }
 }

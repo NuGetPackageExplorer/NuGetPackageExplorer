@@ -1,10 +1,11 @@
+using NuGet.Frameworks;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.Versioning;
 
 namespace NuGetPe
 {
-    public interface IPackageFile : NuGet.IFrameworkTargetable
+    public interface IPackageFile : IFrameworkTargetable
     {
         string Path { get; }
 
@@ -27,7 +28,7 @@ namespace NuGetPe
             get;
         }
 
-        FrameworkName TargetFramework
+        NuGetFramework TargetFramework
         {
             get;
         }

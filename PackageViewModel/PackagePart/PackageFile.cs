@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
 using System.Windows.Input;
+using NuGet.Frameworks;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 
@@ -52,12 +53,12 @@ namespace PackageExplorerViewModel
             get { return _file.EffectivePath; }
         }
 
-        public FrameworkName TargetFramework
+        public NuGetFramework TargetFramework
         {
             get { return _file.TargetFramework; }
         }
 
-        public IEnumerable<FrameworkName> SupportedFrameworks
+        public IEnumerable<NuGetFramework> SupportedFrameworks
         {
             get { return _file.SupportedFrameworks; }
         }
