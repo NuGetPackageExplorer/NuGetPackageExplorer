@@ -13,7 +13,7 @@ namespace NuGetPe
         public ZipPackageFile(PackageArchiveReader reader, string path) 
             : base(path.Replace('/', '\\'))
         {
-            Debug.Assert(reader != null, "part should not be null");
+            Debug.Assert(reader != null, "reader should not be null");
             _streamFactory = () => reader.GetStream(path);
         }
 
