@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
+using NuGet.Frameworks;
+using NuGet.Packaging;
 using NuGetPe.Resources;
 
 namespace NuGetPe
@@ -14,7 +16,7 @@ namespace NuGetPe
         private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe", ".winmd"};
 
         // paths to exclude
-        private static readonly string[] ExcludePaths = new[] {"_rels", "package"};
+        private static readonly string[] ExcludePaths = new[] {"_rels", "package","[Content_Types]"};
 
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
@@ -184,11 +186,11 @@ namespace NuGetPe
             get
             {
                 using (Stream stream = _streamFactory())
+                using(var reader = new PackageArchiveReader(stream))
                 {
-                    Package package = Package.Open(stream);
-                    return (from part in package.GetParts()
-                            where IsAssemblyReference(part)
-                            select new ZipPackageAssemblyReference(part)).ToList();
+                    return (from file in reader.GetFiles()
+                            where IsAssemblyReference(file)
+                            select new ZipPackageAssemblyReference(reader, file)).ToList();
                 }
             }
         }
@@ -201,12 +203,14 @@ namespace NuGetPe
         public IEnumerable<IPackageFile> GetFiles()
         {
             Stream stream = _streamFactory();
-            Package package = Package.Open(stream); // should not close
-            _danglingStreams.Add(stream);           // clean up on dispose
+            var reader = new PackageArchiveReader(stream, false); // should not close
+           
+            _danglingStreams.Add(reader);           // clean up on dispose
 
-            return (from part in package.GetParts()
-                    where IsPackageFile(part)
-                    select new ZipPackageFile(part)).ToList();
+            
+            return (from file in reader.GetFiles()
+                    where IsPackageFile(file)
+                    select new ZipPackageFile(reader, file)).ToList();
         }
 
         public Stream GetStream()
@@ -219,75 +223,68 @@ namespace NuGetPe
         private void EnsureManifest()
         {
             using (Stream stream = _streamFactory())
+            using (var reader = new PackageArchiveReader(stream))
             {
-                Package package = Package.Open(stream);
+                var nuspec = reader.NuspecReader;
+                
+                Id = nuspec.GetId();
+                Version = new TemplatebleSemanticVersion(nuspec.GetVersion());
+                Title = nuspec.GetTitle();
+                Authors = nuspec.GetAuthors().Split(',');
+                Owners = nuspec.GetOwners().Split(',');
 
-                PackageRelationship relationshipType =
-                    package.GetRelationshipsByType(Constants.PackageRelationshipNamespace +
-                                                   PackageBuilder.ManifestRelationType).SingleOrDefault();
+                var iconUrl = nuspec.GetIconUrl();
+                IconUrl = string.IsNullOrWhiteSpace(iconUrl) ? null : new Uri(iconUrl);
 
-                if (relationshipType == null)
+                var licenseUrl = nuspec.GetLicenseUrl();
+                LicenseUrl = string.IsNullOrWhiteSpace(licenseUrl) ? null : new Uri(licenseUrl);
+
+                var projectUrl = nuspec.GetProjectUrl();
+                ProjectUrl = string.IsNullOrWhiteSpace(projectUrl) ? null : new Uri(projectUrl);
+
+                RequireLicenseAcceptance = nuspec.GetRequireLicenseAcceptance();
+                Description = nuspec.GetDescription();
+                Summary = nuspec.GetSummary();
+                ReleaseNotes = nuspec.GetReleaseNotes();
+                Copyright = nuspec.GetCopyright();
+                Language = nuspec.GetLanguage();
+                Tags = nuspec.GetTags();
+                Serviceable = reader.IsServiceable();
+                DependencySets = (from g in nuspec.GetDependencyGroups()
+                                  select new PackageDependencySet(g.TargetFramework.IsAny ? null : g.TargetFramework, g.Packages))
+                                  .ToList();
+                FrameworkAssemblies = (from g in nuspec.GetFrameworkReferenceGroups()
+                                      from item in g.Items
+                                      select new FrameworkAssemblyReference(item, g.TargetFramework.IsAny ? Enumerable.Empty<NuGetFramework>() : new[] { g.TargetFramework}))
+                                      .ToList();
+                PackageAssemblyReferences = (from g in nuspec.GetReferenceGroups()
+                                             select new PackageReferenceSet(g.TargetFramework.IsAny ? null : g.TargetFramework, g.Items))
+                                             .ToList();
+                Published = File.GetLastWriteTimeUtc(_filePath);
+                var nv = nuspec.GetMinClientVersion();
+                MinClientVersion = nv != null ? new Version(nv.Major, nv.Minor) : null; 
+                DevelopmentDependency = nuspec.GetDevelopmentDependency();
+
+                // Ensure tags start and end with an empty " " so we can do contains filtering reliably
+                if (!String.IsNullOrEmpty(Tags))
                 {
-                    throw new InvalidOperationException(NuGetResources.PackageDoesNotContainManifest);
+                    Tags = " " + Tags + " ";
                 }
 
-                PackagePart manifestPart = package.GetPart(relationshipType.TargetUri);
-
-                if (manifestPart == null)
-                {
-                    throw new InvalidOperationException(NuGetResources.PackageDoesNotContainManifest);
-                }
-
-                using (Stream manifestStream = manifestPart.GetStream())
-                {
-                    Manifest manifest = Manifest.ReadFrom(manifestStream);
-                    IPackageMetadata metadata = manifest.Metadata;
-
-                    Id = metadata.Id;
-                    Version = metadata.Version;
-                    Title = metadata.Title;
-                    Authors = metadata.Authors;
-                    Owners = metadata.Owners;
-                    IconUrl = metadata.IconUrl;
-                    LicenseUrl = metadata.LicenseUrl;
-                    ProjectUrl = metadata.ProjectUrl;
-                    RequireLicenseAcceptance = metadata.RequireLicenseAcceptance;
-                    Description = metadata.Description;
-                    Summary = metadata.Summary;
-                    ReleaseNotes = metadata.ReleaseNotes;
-                    Copyright = metadata.Copyright;
-                    Language = metadata.Language;
-                    Tags = metadata.Tags;
-                    Serviceable = metadata.Serviceable;
-                    DependencySets = metadata.DependencySets;
-                    FrameworkAssemblies = metadata.FrameworkAssemblies;
-                    PackageAssemblyReferences = metadata.PackageAssemblyReferences;
-                    Published = File.GetLastWriteTimeUtc(_filePath);
-                    MinClientVersion = metadata.MinClientVersion;
-                    DevelopmentDependency = metadata.DevelopmentDependency;
-
-                    // Ensure tags start and end with an empty " " so we can do contains filtering reliably
-                    if (!String.IsNullOrEmpty(Tags))
-                    {
-                        Tags = " " + Tags + " ";
-                    }
-                }
             }
         }
 
-        private static bool IsAssemblyReference(PackagePart part)
+        private static bool IsAssemblyReference(string path)
         {
             // Assembly references are in lib/ and have a .dll/.exe extension
-            string path = UriUtility.GetPath(part.Uri);
             return path.StartsWith(AssemblyReferencesDir, StringComparison.OrdinalIgnoreCase) &&
                    // Exclude resource assemblies
                    !path.EndsWith(ResourceAssemblyExtension, StringComparison.OrdinalIgnoreCase) &&
                    AssemblyReferencesExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
         }
 
-        private static bool IsPackageFile(PackagePart part)
+        private static bool IsPackageFile(string path)
         {
-            string path = UriUtility.GetPath(part.Uri);
             // We exclude any opc files and the manifest file (.nuspec)
             return !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
