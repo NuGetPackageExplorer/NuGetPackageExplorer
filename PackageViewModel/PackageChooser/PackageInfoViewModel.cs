@@ -251,7 +251,7 @@ namespace PackageExplorerViewModel
                 return query.Cast<DataServicePackage>().Select(p => new PackageInfo
                     {
                         Id = p.Id,
-                        Version = p.Version.ToNormalizedString(),
+                        Version = p.Version,
                         Authors = p.Authors,
                         DownloadCount = p.DownloadCount,
                         VersionDownloadCount = p.VersionDownloadCount,

@@ -20,7 +20,7 @@ namespace NuGetPe
         keepInContent: false)]
     public class DataServicePackage : IPackage
     {
-        public NuGetVersion Version { get; set; }
+        public string Version { get; set; }
         public string Authors { get; set; }
         public bool IsLatestVersion { get; set; }
         public bool IsAbsoluteLatestVersion { get; set; }
@@ -152,6 +152,8 @@ namespace NuGetPe
         public IEnumerable<PackageType> PackageTypes => CorePackage?.PackageTypes ?? Enumerable.Empty<PackageType>();
 
         public RepositoryMetadata Repository => CorePackage?.Repository;
+
+        NuGetVersion IPackageMetadata.Version => NuGetVersion.Parse(Version);
 
         public IEnumerable<IPackageFile> GetFiles()
         {

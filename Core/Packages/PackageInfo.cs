@@ -92,7 +92,7 @@ namespace NuGetPe
             return new DataServicePackage
                    {
                        Id = Id,
-                       Version = _semanticVersion,
+                       Version = _semanticVersion.ToNormalizedString(),
                        Authors = Authors,
                        VersionDownloadCount = VersionDownloadCount,
                        DownloadCount = DownloadCount,
