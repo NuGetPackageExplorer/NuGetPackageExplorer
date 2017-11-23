@@ -1,3 +1,4 @@
+using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -18,9 +19,7 @@ namespace NuGetPe
         long PackageSize { get; }
 
         DateTimeOffset? Published { get; }
-
-        IEnumerable<IPackageAssemblyReference> AssemblyReferences { get; }
-
+        
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This might be expensive")]
         IEnumerable<IPackageFile> GetFiles();

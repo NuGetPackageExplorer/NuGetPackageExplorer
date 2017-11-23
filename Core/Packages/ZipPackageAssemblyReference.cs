@@ -6,7 +6,7 @@ using NuGet.Packaging;
 
 namespace NuGetPe
 {
-    internal class ZipPackageAssemblyReference : ZipPackageFile, IPackageAssemblyReference
+    internal class ZipPackageAssemblyReference : ZipPackageFile
     {
         public ZipPackageAssemblyReference(PackageArchiveReader reader, string path)
             : base(reader, path)

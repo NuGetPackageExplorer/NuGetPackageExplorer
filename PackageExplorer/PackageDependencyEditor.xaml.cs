@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using NuGet.Packaging;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
@@ -30,7 +31,7 @@ namespace PackageExplorer
             ClearDependencyTextBox();
         }
 
-        public PackageDependencyEditor(IEnumerable<PackageDependencySet> existingDependencySets)
+        public PackageDependencyEditor(IEnumerable<PackageDependencyGroup> existingDependencySets)
             : this()
         {
             _dependencySets.AddRange(existingDependencySets.Select(ds => new EditablePackageDependencySet(ds)));
@@ -43,7 +44,7 @@ namespace PackageExplorer
 
         public IPackageChooser PackageChooser { get; set; }
 
-        public ICollection<PackageDependencySet> GetEditedDependencySets()
+        public ICollection<PackageDependencyGroup> GetEditedDependencySets()
         {
             return _dependencySets.Select(set => set.AsReadOnly()).ToArray();
         }

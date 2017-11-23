@@ -2,8 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:PackageExplorer" 
-        xmlns:settings="clr-namespace:PackageExplorer.Properties"
-        xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types"                      
+        xmlns:settings="clr-namespace:PackageExplorer.Properties" 
+         xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core"            
         Title="Package References Editor" 
         ShowInTaskbar="False"
         WindowStartupLocation="CenterOwner"
@@ -22,7 +22,7 @@
             <Setter Property="Stretch" Value="Uniform" />
         </Style>
 
-        <DataTemplate DataType="{x:Type types:PackageReferenceSet}" x:Key="PackageReferenceSetTemplate">
+        <DataTemplate DataType="{x:Type pack:PackageDependencyGroup  }" x:Key="PackageReferenceSetTemplate">
             <TextBlock Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, TargetNullValue='[no target framework]'}" />
         </DataTemplate>
 

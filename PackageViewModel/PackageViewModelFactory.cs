@@ -38,8 +38,8 @@ namespace PackageExplorerViewModel
         [Import(typeof(IPackageChooser))]
         public IPackageChooser PackageChooser { get; set; }
 
-        [Import(typeof(IPackageDownloader))]
-        public IPackageDownloader PackageDownloader { get; set; }
+        [Import(typeof(INuGetPackageDownloader))]
+        public INuGetPackageDownloader PackageDownloader { get; set; }
 
 		[Import(typeof(ICredentialManager))]
 		public ICredentialManager CredentialManager { get; set; }

@@ -6,6 +6,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGet.Packaging;
+using NuGet.Versioning;
 
 namespace PackageExplorerViewModel
 {
@@ -156,8 +158,8 @@ namespace PackageExplorerViewModel
                 return null;
             }
 
-            TemplatebleSemanticVersion version;
-            if (!TemplatebleSemanticVersion.TryParse(parts[1], out version))
+            NuGetVersion version;
+            if (!NuGetVersion.TryParse(parts[1], out version))
             {
                 return null;
             }

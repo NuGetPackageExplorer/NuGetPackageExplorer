@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.Versioning;
 using NuGet.Frameworks;
+using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGetPe;
 
@@ -16,10 +17,10 @@ namespace PackageExplorerViewModel
             Dependencies = new ObservableCollection<PackageDependency>();
         }
 
-        public EditablePackageDependencySet(PackageDependencySet packageDependencySet)
+        public EditablePackageDependencySet(PackageDependencyGroup packageDependencySet)
         {
             _targetFramework = packageDependencySet.TargetFramework;
-            Dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Dependencies);
+            Dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Packages);
         }
 
         public NuGetFramework TargetFramework
@@ -42,9 +43,9 @@ namespace PackageExplorerViewModel
         {
             get; }
 
-        public PackageDependencySet AsReadOnly()
+        public PackageDependencyGroup AsReadOnly()
         {
-            return new PackageDependencySet(TargetFramework, Dependencies);
+            return new PackageDependencyGroup(TargetFramework, Dependencies);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

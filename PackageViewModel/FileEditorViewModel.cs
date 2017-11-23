@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Input;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGet.Packaging;
 
 namespace PackageExplorerViewModel
 {

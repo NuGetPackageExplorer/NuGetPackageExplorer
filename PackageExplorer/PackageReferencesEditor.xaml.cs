@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
+using NuGet.Packaging;
 
 namespace PackageExplorer
 {

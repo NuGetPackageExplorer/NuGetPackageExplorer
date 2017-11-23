@@ -22,7 +22,7 @@ namespace PackageExplorerViewModel.Rules
                 return new PackageIssue[0];
             }
 
-            return package.DependencySets.SelectMany(p => p.Dependencies)
+            return package.DependencyGroups.SelectMany(p => p.Packages)
                                          .Where(IsPrereleaseDependency)
                                          .Select(CreatePackageIssue);
         }

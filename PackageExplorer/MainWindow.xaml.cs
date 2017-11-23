@@ -21,6 +21,7 @@ using PackageExplorerViewModel;
 using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
+using NuGet.Packaging;
 
 namespace PackageExplorer
 {
@@ -48,7 +49,7 @@ namespace PackageExplorer
         public IUIServices UIServices { get; set; }
 
         [Import]
-        public IPackageDownloader PackageDownloader { get; set; }
+        public INuGetPackageDownloader PackageDownloader { get; set; }
 
         [Import]
         public IPluginManager PluginManager { get; set; }
@@ -145,7 +146,7 @@ namespace PackageExplorer
                 }
                 else if (extension.Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase))
                 {
-                    var builder = new PackageBuilder(packagePath);
+                    var builder = new PackageBuilder(packagePath, null, false);
                     package = builder.Build();
                 }
 
@@ -483,7 +484,7 @@ namespace PackageExplorer
 
         internal Task DownloadAndOpenDataServicePackage(MruItem item)
         {
-            return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version?.SemanticVersion);
+            return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
         }
 
         internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string id = null, NuGetVersion version = null)

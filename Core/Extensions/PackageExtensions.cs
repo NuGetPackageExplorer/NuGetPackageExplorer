@@ -1,4 +1,5 @@
 using NuGet.Common;
+using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,7 +18,7 @@ namespace NuGetPe
 
         public static bool IsReleaseVersion(this IPackageMetadata packageMetadata)
         {
-            return String.IsNullOrEmpty(packageMetadata.Version.SpecialVersion);
+            return packageMetadata.Version.IsPrerelease;
         }
 
         public static string GetHash(this IPackage package)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Versioning;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 
@@ -7,7 +8,7 @@ namespace NuGetPe
 {
     public abstract class PackageFileBase : IPackageFile
     {
-        private readonly NuGetFramework _targetFramework;
+        private readonly FrameworkName _targetFramework;
 
         protected PackageFileBase(string path)
         {
@@ -15,7 +16,7 @@ namespace NuGetPe
             
             string effectivePath;
             FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out effectivePath);
-            _targetFramework = NuGetFramework.Parse(effectivePath);
+            _targetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
             EffectivePath = effectivePath;
         }
 
@@ -41,7 +42,7 @@ namespace NuGetPe
             private set;
         }
 
-        public NuGetFramework TargetFramework
+        public FrameworkName TargetFramework
         {
             get
             {
@@ -49,7 +50,7 @@ namespace NuGetPe
             }
         }
 
-        public IEnumerable<NuGetFramework> SupportedFrameworks
+        public IEnumerable<FrameworkName> SupportedFrameworks
         {
             get
             {

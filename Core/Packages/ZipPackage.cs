@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
 using NuGet.Frameworks;
 using NuGet.Packaging;
-using NuGetPe.Resources;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 
 namespace NuGetPe
 {
@@ -21,7 +21,7 @@ namespace NuGetPe
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
         private readonly Func<Stream> _streamFactory;
-        private readonly string _filePath;
+        private ManifestMetadata metadata;
 
         public ZipPackage(string filePath)
         {
@@ -35,7 +35,7 @@ namespace NuGetPe
                 throw new ArgumentException("File doesn't exist at '" + filePath + "'.", "filePath");
             }
 
-            _filePath = filePath;
+            Source = filePath;
             _streamFactory = () =>
             {
                 try
@@ -52,28 +52,154 @@ namespace NuGetPe
             EnsureManifest();
         }
 
-        public string Source
-        {
-            get { return _filePath; }
-        }
+        public string Source { get; }
 
         #region IPackage Members
 
-        public string Id { get; set; }
+        public string Id
+        {
+            get { return metadata.Id; }
+            set { metadata.Id = value; }
+        }
 
-        public TemplatebleSemanticVersion Version { get; set; }
+        public NuGetVersion Version
+        {
+            get { return metadata.Version; }
+            set { metadata.Version = value; }
+        }
 
-        public string Title { get; set; }
+        public string Title
+        {
+            get { return metadata.Title; }
+            set { metadata.Title = value; }
+        }
 
-        public IEnumerable<string> Authors { get; set; }
+        public IEnumerable<string> Authors
+        {
+            get { return metadata.Authors; }
+            set { metadata.Authors = value; }
+        }
 
-        public IEnumerable<string> Owners { get; set; }
+        public IEnumerable<string> Owners
+        {
+            get { return metadata.Owners; }
+            set { metadata.Owners = value; }
+        }
 
-        public Uri IconUrl { get; set; }
+        public Uri IconUrl
+        {
+            get { return metadata.IconUrl; }
+            set { metadata.SetIconUrl(value?.ToString()); }
+        }
 
-        public Uri LicenseUrl { get; set; }
+        public Uri LicenseUrl
+        {
+            get { return metadata.LicenseUrl; }
+            set { metadata.SetLicenseUrl(value?.ToString()); }
+        }
 
-        public Uri ProjectUrl { get; set; }
+        public Uri ProjectUrl
+        {
+            get { return metadata.ProjectUrl; }
+            set { metadata.SetProjectUrl(value?.ToString()); }
+        }
+
+        public bool RequireLicenseAcceptance
+        {
+            get { return metadata.RequireLicenseAcceptance; }
+            set { metadata.RequireLicenseAcceptance = value; }
+        }
+
+        public bool DevelopmentDependency
+        {
+            get { return metadata.DevelopmentDependency; }
+            set { metadata.DevelopmentDependency = value; }
+        }
+
+        public string Description
+        {
+            get { return metadata.Description; }
+            set { metadata.Description = value; }
+        }
+
+        public string Summary
+        {
+            get { return metadata.Summary; }
+            set { metadata.Summary = value; }
+        }
+
+        public string ReleaseNotes
+        {
+            get { return metadata.ReleaseNotes; }
+            set { metadata.ReleaseNotes = value; }
+        }
+
+        public string Language
+        {
+            get { return metadata.Language; }
+            set { metadata.Language = value; }
+        }
+
+        public string Tags
+        {
+            // Ensure tags start and end with an empty " " so we can do contains filtering reliably
+            get { return !string.IsNullOrWhiteSpace(metadata.Tags) ? $" {metadata.Tags} " : metadata.Tags; }
+            set { metadata.Tags = value?.Trim(); }
+        }
+
+        public bool Serviceable
+        {
+            get { return metadata.Serviceable; }
+            set { metadata.Serviceable = value; }
+        }
+
+        public string Copyright
+        {
+            get { return metadata.Copyright; }
+            set { metadata.Copyright = value; }
+        }
+
+        public Version MinClientVersion
+        {
+            get { return metadata.MinClientVersion; }
+            set { metadata.MinClientVersionString = value?.ToString(); }
+        }
+
+        public IEnumerable<PackageDependencyGroup> DependencyGroups
+        {
+            get { return metadata.DependencyGroups; }
+            set { metadata.DependencyGroups = value; }
+        }
+
+        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
+        {
+            get { return metadata.PackageAssemblyReferences; }
+            set { metadata.PackageAssemblyReferences = value; }
+        }
+
+        public IEnumerable<FrameworkAssemblyReference> FrameworkReferences
+        {
+            get { return metadata.FrameworkReferences; }
+            set { metadata.FrameworkReferences = value; }
+        }
+
+        public IEnumerable<ManifestContentFiles> ContentFiles
+        {
+            get { return metadata.ContentFiles; }
+            set { metadata.ContentFiles = value; }
+        }
+
+        public IEnumerable<PackageType> PackageTypes
+        {
+            get { return metadata.PackageTypes; }
+            set { metadata.PackageTypes = value; }
+        }
+
+        public RepositoryMetadata Repository
+        {
+            get { return metadata.Repository; }
+            set { metadata.Repository = value; }
+        }
 
         public DateTimeOffset? Published
         {
@@ -96,30 +222,6 @@ namespace NuGetPe
             get { return 0; }
         }
 
-        public bool RequireLicenseAcceptance { get; set; }
-
-        public bool DevelopmentDependency { get; set; }
-
-        public string Description { get; set; }
-
-        public string Summary { get; set; }
-
-        public string ReleaseNotes { get; set; }
-
-        public string Language { get; set; }
-
-        public string Tags { get; set; }
-
-        public bool Serviceable { get; set; }
-
-        public string Copyright { get; set; }
-
-        public Version MinClientVersion
-        {
-            get;
-            private set;
-        }
-
         public bool IsAbsoluteLatestVersion
         {
             get { return true; }
@@ -137,7 +239,7 @@ namespace NuGetPe
             {
                 if (_lastUpdated == null)
                 {
-                    _lastUpdated = File.GetLastWriteTimeUtc(_filePath);
+                    _lastUpdated = File.GetLastWriteTimeUtc(Source);
                 }
                 return _lastUpdated.Value;
             }
@@ -150,7 +252,7 @@ namespace NuGetPe
             {
                 if (_packageSize == null)
                 {
-                    _packageSize = new FileInfo(_filePath).Length;
+                    _packageSize = new FileInfo(Source).Length;
                 }
                 return _packageSize.Value;
             }
@@ -165,38 +267,11 @@ namespace NuGetPe
         {
             get
             {
-                return !String.IsNullOrEmpty(Version.SpecialVersion);
+                return Version.IsPrerelease;
             }
         }
 
-        public IEnumerable<PackageDependencySet> DependencySets
-        {
-            get;
-            set;
-        }
-
-        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
-        {
-            get;
-            private set;
-        }
-
-        public IEnumerable<IPackageAssemblyReference> AssemblyReferences
-        {
-            get
-            {
-                using (Stream stream = _streamFactory())
-                using(var reader = new PackageArchiveReader(stream))
-                {
-                    return (from file in reader.GetFiles()
-                            where IsAssemblyReference(file)
-                            select new ZipPackageAssemblyReference(reader, file)).ToList();
-                }
-            }
-        }
-
-        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; set; }
-
+    
         // Keep a list of open stream here, and close on dispose.
         private List<IDisposable> _danglingStreams = new List<IDisposable>();
 
@@ -225,63 +300,9 @@ namespace NuGetPe
             using (Stream stream = _streamFactory())
             using (var reader = new PackageArchiveReader(stream))
             {
-                var nuspec = reader.NuspecReader;
-                
-                Id = nuspec.GetId();
-                Version = new TemplatebleSemanticVersion(nuspec.GetVersion());
-                Title = nuspec.GetTitle();
-                Authors = nuspec.GetAuthors().Split(',');
-                Owners = nuspec.GetOwners().Split(',');
-
-                var iconUrl = nuspec.GetIconUrl();
-                IconUrl = string.IsNullOrWhiteSpace(iconUrl) ? null : new Uri(iconUrl);
-
-                var licenseUrl = nuspec.GetLicenseUrl();
-                LicenseUrl = string.IsNullOrWhiteSpace(licenseUrl) ? null : new Uri(licenseUrl);
-
-                var projectUrl = nuspec.GetProjectUrl();
-                ProjectUrl = string.IsNullOrWhiteSpace(projectUrl) ? null : new Uri(projectUrl);
-
-                RequireLicenseAcceptance = nuspec.GetRequireLicenseAcceptance();
-                Description = nuspec.GetDescription();
-                Summary = nuspec.GetSummary();
-                ReleaseNotes = nuspec.GetReleaseNotes();
-                Copyright = nuspec.GetCopyright();
-                Language = nuspec.GetLanguage();
-                Tags = nuspec.GetTags();
-                Serviceable = reader.IsServiceable();
-                DependencySets = (from g in nuspec.GetDependencyGroups()
-                                  select new PackageDependencySet(g.TargetFramework.IsAny ? null : g.TargetFramework, g.Packages))
-                                  .ToList();
-                FrameworkAssemblies = (from g in nuspec.GetFrameworkReferenceGroups()
-                                      from item in g.Items
-                                      group g.TargetFramework by item into grp
-                                      select new FrameworkAssemblyReference(grp.Key, grp))
-                                      .ToList();
-                PackageAssemblyReferences = (from g in nuspec.GetReferenceGroups()
-                                             select new PackageReferenceSet(g.TargetFramework.IsAny ? null : g.TargetFramework, g.Items))
-                                             .ToList();
-                Published = File.GetLastWriteTimeUtc(_filePath);
-                var nv = nuspec.GetMinClientVersion();
-                MinClientVersion = nv != null ? new Version(nv.Major, nv.Minor) : null; 
-                DevelopmentDependency = nuspec.GetDevelopmentDependency();
-
-                // Ensure tags start and end with an empty " " so we can do contains filtering reliably
-                if (!String.IsNullOrEmpty(Tags))
-                {
-                    Tags = " " + Tags + " ";
-                }
-
+                var manifest = Manifest.ReadFrom(reader.GetNuspec(), false);
+                metadata = manifest.Metadata;
             }
-        }
-
-        private static bool IsAssemblyReference(string path)
-        {
-            // Assembly references are in lib/ and have a .dll/.exe extension
-            return path.StartsWith(AssemblyReferencesDir, StringComparison.OrdinalIgnoreCase) &&
-                   // Exclude resource assemblies
-                   !path.EndsWith(ResourceAssemblyExtension, StringComparison.OrdinalIgnoreCase) &&
-                   AssemblyReferencesExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
         }
 
         private static bool IsPackageFile(string path)

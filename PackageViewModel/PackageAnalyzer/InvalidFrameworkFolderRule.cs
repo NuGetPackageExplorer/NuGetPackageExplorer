@@ -6,6 +6,7 @@ using System.Linq;
 using NuGet.Frameworks;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGet.Packaging;
 
 namespace PackageExplorerViewModel.Rules
 {

@@ -11,7 +11,7 @@ namespace PackageExplorerViewModel
     public class PluginManagerViewModel : INotifyPropertyChanged, IComparer<PluginInfo>
     {
         private readonly IPackageChooser _packageChooser;
-        private readonly IPackageDownloader _packageDownloader;
+        private readonly INuGetPackageDownloader _packageDownloader;
         private readonly IPluginManager _pluginManager;
         private readonly IUIServices _uiServices;
         private SortedCollection<PluginInfo> _plugins;
@@ -20,7 +20,7 @@ namespace PackageExplorerViewModel
             IPluginManager pluginManager,
             IUIServices uiServices,
             IPackageChooser packageChooser,
-            IPackageDownloader packageDownloader)
+            INuGetPackageDownloader packageDownloader)
         {
             if (pluginManager == null)
             {

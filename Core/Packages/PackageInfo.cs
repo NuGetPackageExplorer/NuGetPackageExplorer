@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.Services.Common;
+using NuGet.Versioning;
 
 namespace NuGetPe
 {
@@ -13,7 +14,7 @@ namespace NuGetPe
     public class PackageInfo : IPackageInfoType
     {
         private string _version;
-        private TemplatebleSemanticVersion _semanticVersion;
+        private NuGetVersion _semanticVersion;
 
         public string Id { get; set; }
         public string Version
@@ -28,11 +29,11 @@ namespace NuGetPe
 
                 if (String.IsNullOrEmpty(_version))
                 {
-                    _semanticVersion = new TemplatebleSemanticVersion(0, 0, 0, 0);
+                    _semanticVersion = new NuGetVersion(0, 0, 0, 0);
                 }
                 else
                 {
-                    TemplatebleSemanticVersion.TryParse(_version, out _semanticVersion);
+                    NuGetVersion.TryParse(_version, out _semanticVersion);
                 }
             }
         }
@@ -58,7 +59,7 @@ namespace NuGetPe
         {
             get
             {
-                return SemanticVersion != null && !String.IsNullOrEmpty(SemanticVersion.SpecialVersion);
+                return SemanticVersion != null && SemanticVersion.IsPrerelease;
             }
         }
 
@@ -78,7 +79,7 @@ namespace NuGetPe
             }
         }
 
-        public TemplatebleSemanticVersion SemanticVersion
+        public NuGetVersion SemanticVersion
         {
             get
             {
@@ -91,7 +92,7 @@ namespace NuGetPe
             return new DataServicePackage
                    {
                        Id = Id,
-                       Version = Version,
+                       Version = _semanticVersion,
                        Authors = Authors,
                        VersionDownloadCount = VersionDownloadCount,
                        DownloadCount = DownloadCount,

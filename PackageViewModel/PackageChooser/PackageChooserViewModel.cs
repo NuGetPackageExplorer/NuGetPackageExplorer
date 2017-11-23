@@ -8,6 +8,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NuGet.Packaging;
 using NuGetPe;
 using PackageExplorerViewModel.Types;
 
@@ -505,7 +506,7 @@ namespace PackageExplorerViewModel
                 return query.Cast<DataServicePackage>().Select(p => new PackageInfo
                 {
                     Id = p.Id,
-                    Version = p.Version,
+                    Version = p.Version.ToFullString(),
                     Authors = p.Authors,
                     DownloadCount = p.DownloadCount,
                     VersionDownloadCount = p.VersionDownloadCount,

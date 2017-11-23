@@ -16,8 +16,8 @@ namespace PackageExplorer
 {
 	using HttpClient = System.Net.Http.HttpClient;
 
-	[Export(typeof(IPackageDownloader))]
-    internal class PackageDownloader : IPackageDownloader
+	[Export(typeof(INuGetPackageDownloader))]
+    internal class PackageDownloader : INuGetPackageDownloader
     {
         private ProgressDialog _progressDialog;
         private readonly object _progressDialogLock = new object();

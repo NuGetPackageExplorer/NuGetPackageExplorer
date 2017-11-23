@@ -9,6 +9,8 @@
     xmlns:resources="clr-namespace:PackageExplorer.Resources" 
     xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types"
     xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core"
+    xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core" 
+    xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
@@ -30,6 +32,7 @@
             <self:FrameworkNameConverter x:Key="frameworkConverter" />
             <self:NormalizeTextConverter x:Key="NormalizeTextConverter" />
             <self:BooleanToStringConverter x:Key="BooleanConverter" />
+            <self:BooleanToVisibilityConverter x:Key="BooleanToVisConverter" />
             <self:DependencySetConverter x:Key="DependencySetConverter" />
             <self:ReferenceSetConverter x:Key="ReferenceSetConverter" />
             <self:PackageDependencyConverter x:Key="PackageDependencyConverter" />
@@ -42,7 +45,7 @@
                 </TextBlock>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type types:PackageDependencySet}">
+            <DataTemplate DataType="{x:Type pack:PackageDependencyGroup}">
                 <Grid Margin="0,0,0,8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -54,7 +57,7 @@
                         x:Name="dependenciesList"
                         Grid.Row="1"
                         Margin="20,0,0,0"
-                        ItemsSource="{Binding Dependencies}" />
+                        ItemsSource="{Binding Packages}" />
 
                     <TextBlock
                         Grid.Row="1"
@@ -70,7 +73,7 @@
                 <TextBlock Text="{Binding Mode=OneWay}" TextTrimming="CharacterEllipsis" />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type types:PackageReferenceSet}">
+            <DataTemplate DataType="{x:Type packaging:PackageReferenceSet}">
                 <Grid Margin="0,0,0,8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -177,7 +180,7 @@
                         <StackPanel Style="{StaticResource DetailMetadataStyle}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_VersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Version}" Style="{StaticResource DetailMetadataValueStyle}" />
-                            <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version.SpecialVersion, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
+                            <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version.IsPrerelease, Mode=OneWay, Converter={StaticResource BooleanToVisConverter}}" />
                         </StackPanel>
 
                         <!-- Title -->

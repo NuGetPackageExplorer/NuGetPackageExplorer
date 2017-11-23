@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.Versioning;
 using NuGet.Frameworks;
+using NuGet.Packaging;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
