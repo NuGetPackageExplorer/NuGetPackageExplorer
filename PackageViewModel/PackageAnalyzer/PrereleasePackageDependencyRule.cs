@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Globalization;
-using NuGet.Versioning;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using NuGet.Packaging.Core;
@@ -17,7 +16,7 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            if (IsPreReleasedVersion(package.Version))
+            if (package.Version.IsPrerelease)
             {
                 return new PackageIssue[0];
             }
@@ -36,20 +35,9 @@ namespace PackageExplorerViewModel.Rules
                 return false;
             }
 
-            return IsPreReleasedVersion(pd.VersionRange.MinVersion) || IsPreReleasedVersion(pd.VersionRange.MaxVersion);
+            return pd.VersionRange.MinVersion.IsPrerelease || pd.VersionRange.MaxVersion.IsPrerelease;
         }
-
-        private static bool IsPreReleasedVersion(NuGetVersion version)
-        {
-            return version != null && !version.IsPrerelease;
-        }
-
-        private static bool IsPreReleasedVersion(TemplatebleSemanticVersion version)
-        {
-            return version != null && !String.IsNullOrEmpty(version.SpecialVersion);
-        }
-
-
+        
         private static PackageIssue CreatePackageIssue(PackageDependency target)
         {
             return new PackageIssue(

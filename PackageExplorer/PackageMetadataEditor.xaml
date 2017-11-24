@@ -10,7 +10,7 @@
     IsVisibleChanged="PackageMetadataEditor_IsVisibleChanged" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <self:VersionConverter x:Key="VersionConverter" />
+        <self:NuGetVersionConverter x:Key="VersionConverter" />
         <self:NetVersionConverter x:Key="NetVersionConverter" />
         <self:VersionSpecConverter x:Key="VersionSpecConverter" />
         <self:UriConverter x:Key="UriConverter" />
