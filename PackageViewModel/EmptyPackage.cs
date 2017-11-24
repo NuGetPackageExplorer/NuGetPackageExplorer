@@ -187,7 +187,7 @@ namespace PackageExplorerViewModel
 
         public IEnumerable<ManifestContentFiles> ContentFiles => Enumerable.Empty<ManifestContentFiles>();
 
-        public IEnumerable<PackageType> PackageTypes => throw new NotImplementedException();
+        public IEnumerable<PackageType> PackageTypes => Enumerable.Empty<PackageType>();
 
         public RepositoryMetadata Repository => null; 
 
