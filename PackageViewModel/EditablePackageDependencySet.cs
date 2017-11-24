@@ -45,7 +45,7 @@ namespace PackageExplorerViewModel
 
         public PackageDependencyGroup AsReadOnly()
         {
-            return new PackageDependencyGroup(TargetFramework, Dependencies);
+            return new PackageDependencyGroup(TargetFramework ?? NuGetFramework.AnyFramework, Dependencies);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
