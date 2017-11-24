@@ -138,8 +138,7 @@ namespace NuGetPe
 
         public Version MinClientVersion
         {
-            get;
-            set;
+            get { return CorePackage?.MinClientVersion; }
         }
 
         public IEnumerable<FrameworkAssemblyReference> FrameworkReferences
