@@ -183,7 +183,6 @@
     <Compile Include="Converters\TruncateFilePathConverter.cs" />
     <Compile Include="Converters\UpperCaseConverter.cs" />
     <Compile Include="Converters\UriConverter.cs" />
-    <Compile Include="Converters\VersionConverter.cs" />
     <Compile Include="Converters\VersionSpecConverter.cs" />
     <Compile Include="Converters\PackagePartToVisibilityConverter.cs" />
     <Compile Include="Controls\StandardDialog.cs" />
