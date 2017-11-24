@@ -296,7 +296,7 @@ namespace PackageExplorerViewModel
             }
 
             // sort by Version descending
-            Array.Sort(results, (a, b) => b.Version.CompareTo(a.Version));
+            Array.Sort(results, (a, b) => b.SemanticVersion.CompareTo(a.SemanticVersion));
 
             return results;
         }
