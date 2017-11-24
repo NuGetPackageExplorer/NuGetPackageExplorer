@@ -16,8 +16,10 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var far = (FrameworkAssemblyReference) value;
+            if (far == null)
+                return null;
 
-            var fxs = far == null ? String.Empty : String.Join("; ", far.SupportedFrameworks.Select(fn => fn.DotNetFrameworkName));
+            var fxs = String.Join("; ", far.SupportedFrameworks.Select(fn => fn.DotNetFrameworkName));
 
             if (parameter as string == "includeAssembly")
                 return $"{far.AssemblyName} ({fxs})";

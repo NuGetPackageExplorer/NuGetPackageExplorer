@@ -146,6 +146,7 @@
     <Compile Include="Converters\NormalizeTextConverter.cs" />
     <Compile Include="Converters\StringShortenerConverter.cs" />
     <Compile Include="Converters\TargetFrameworkConverter.cs" />
+    <Compile Include="Converters\NuGetVersionConverter.cs" />
     <Compile Include="MefServices\CredentialManager.cs" />
     <Compile Include="MefServices\RtfFileViewer.cs" />
     <Compile Include="PackageDownloadRequestedEventArgs.cs" />
