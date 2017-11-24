@@ -20,8 +20,8 @@ namespace PackageExplorer
                 return ValidationResult.ValidResult;
             }
 
-            SemanticVersion version;
-            if (SemanticVersion.TryParse(stringValue, out version))
+            NuGetVersion version;
+            if (NuGetVersion.TryParse(stringValue, out version))
             {
                 return ValidationResult.ValidResult;
             }
