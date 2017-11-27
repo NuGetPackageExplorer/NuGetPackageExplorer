@@ -5,6 +5,7 @@ using System.Linq;
 using System.Globalization;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGet.Packaging.Core;
 
 namespace PackageExplorerViewModel.Rules
 {
@@ -15,12 +16,12 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            if (IsPreReleasedVersion(package.Version))
+            if (package.Version.IsPrerelease)
             {
                 return new PackageIssue[0];
             }
 
-            return package.DependencySets.SelectMany(p => p.Dependencies)
+            return package.DependencyGroups.SelectMany(p => p.Packages)
                                          .Where(IsPrereleaseDependency)
                                          .Select(CreatePackageIssue);
         }
@@ -29,25 +30,14 @@ namespace PackageExplorerViewModel.Rules
 
         private static bool IsPrereleaseDependency(PackageDependency pd)
         {
-            if (pd.VersionSpec == null)
+            if (pd.VersionRange == null)
             {
                 return false;
             }
 
-            return IsPreReleasedVersion(pd.VersionSpec.MinVersion) || IsPreReleasedVersion(pd.VersionSpec.MaxVersion);
+            return pd.VersionRange.MinVersion.IsPrerelease || pd.VersionRange.MaxVersion.IsPrerelease;
         }
-
-        private static bool IsPreReleasedVersion(NuGet.SemanticVersion version)
-        {
-            return version != null && !String.IsNullOrEmpty(version.SpecialVersion);
-        }
-
-        private static bool IsPreReleasedVersion(TemplatebleSemanticVersion version)
-        {
-            return version != null && !String.IsNullOrEmpty(version.SpecialVersion);
-        }
-
-
+        
         private static PackageIssue CreatePackageIssue(PackageDependency target)
         {
             return new PackageIssue(

@@ -6,14 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:self="clr-namespace:PackageExplorer" 
     xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types" 
+    xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
     IsVisibleChanged="PackageMetadataEditor_IsVisibleChanged" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <self:VersionConverter x:Key="VersionConverter" />
+        <self:NuGetVersionConverter x:Key="VersionConverter" />
         <self:NetVersionConverter x:Key="NetVersionConverter" />
         <self:VersionSpecConverter x:Key="VersionSpecConverter" />
         <self:UriConverter x:Key="UriConverter" />
         <self:FrameworkAssemblyReferenceConverter x:Key="FrameworkNameConverter" />
+        <self:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
 
         <Style x:Key="ImageStyle" TargetType="{x:Type Image}">
             <Setter Property="Width" Value="16" />
@@ -37,7 +39,7 @@
             <Setter Property="Margin" Value="0, 4, 3, 0" />
         </Style>
 
-        <DataTemplate DataType="{x:Type types:FrameworkAssemblyReference}" x:Key="FrameworkAssemblyTemplate">
+        <DataTemplate DataType="{x:Type packaging:FrameworkAssemblyReference}" x:Key="FrameworkAssemblyTemplate">
             <Grid Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -46,7 +48,7 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="{Binding AssemblyName, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
-                <TextBlock Grid.Column="1" Margin="4,0,4,0" Text="{Binding DisplayString}" TextTrimming="CharacterEllipsis" />
+                <TextBlock Grid.Column="1" Margin="4,0,4,0" Text="{Binding Converter={StaticResource FrameworkAssemblyReferenceDisplayConverter}}" TextTrimming="CharacterEllipsis" />
                 <Button Grid.Column="2" ToolTipService.ToolTip="Remove this framework assembly" Click="RemoveFrameworkAssemblyButtonClicked">
                     <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
                 </Button>
@@ -204,9 +206,9 @@
 
                     <ItemsControl x:Name="FrameworkAssembliesList" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="3" ItemTemplate="{StaticResource FrameworkAssemblyTemplate}"></ItemsControl>
 
-                    <ComboBox x:Name="NewAssemblyName" Text="{Binding AssemblyName, UpdateSourceTrigger=Explicit, BindingGroupName=NewFrameworkAssembly, NotifyOnValidationError=True, ValidatesOnDataErrors=True}" Margin="2" IsEditable="true" IsReadOnly="False" Grid.Column="0" Grid.Row="2" />
+                    <ComboBox x:Name="NewAssemblyName" Text="{Binding AssemblyName, UpdateSourceTrigger=Default, BindingGroupName=NewFrameworkAssembly, NotifyOnValidationError=True, ValidatesOnDataErrors=True}" Margin="2" IsEditable="true" IsReadOnly="False" Grid.Column="0" Grid.Row="2" />
 
-                    <TextBox x:Name="NewSupportedFramework" Text="{Binding SupportedFrameworks, UpdateSourceTrigger=Explicit, BindingGroupName=NewFrameworkAssembly, Converter={StaticResource FrameworkNameConverter}, NotifyOnValidationError=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
+                    <TextBox x:Name="NewSupportedFramework" Text="{Binding SupportedFrameworks, UpdateSourceTrigger=Default, BindingGroupName=NewFrameworkAssembly, Converter={StaticResource FrameworkNameConverter}, NotifyOnValidationError=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
 
                     <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="2" Grid.Row="2" ToolTipService.ToolTip="Add new framework assembly" Click="AddFrameworkAssemblyButtonClicked">
                         <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />

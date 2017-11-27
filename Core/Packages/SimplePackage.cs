@@ -1,17 +1,20 @@
-﻿using System;
+﻿using NuGet.Packaging;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using NuGet.Versioning;
+using NuGet.Packaging.Core;
 
 namespace NuGetPe
 {
     internal class SimplePackage : IPackage
     {
-        private readonly IPackageBuilder _packageBuilder;
+        private readonly PackageBuilder _packageBuilder;
 
-        public SimplePackage(IPackageBuilder packageBuilder)
+        public SimplePackage(PackageBuilder packageBuilder)
         {
             if (packageBuilder == null)
             {
@@ -21,8 +24,8 @@ namespace NuGetPe
             Id = packageBuilder.Id;
             Version = packageBuilder.Version;
             Title = packageBuilder.Title;
-            Authors = new SafeEnumerable<string>(packageBuilder.Authors);
-            Owners = new SafeEnumerable<string>(packageBuilder.Owners);
+            Authors = packageBuilder.Authors;
+            Owners = packageBuilder.Owners;
             IconUrl = packageBuilder.IconUrl;
             LicenseUrl = packageBuilder.LicenseUrl;
             ProjectUrl = packageBuilder.ProjectUrl;
@@ -32,21 +35,22 @@ namespace NuGetPe
             Summary = packageBuilder.Summary;
             ReleaseNotes = packageBuilder.ReleaseNotes;
             Language = packageBuilder.Language;
-            Tags = packageBuilder.Tags;
+            Tags = string.Join(" ", packageBuilder.Tags);
             Serviceable = packageBuilder.Serviceable;
-            FrameworkAssemblies = new SafeEnumerable<FrameworkAssemblyReference>(packageBuilder.FrameworkAssemblies);
-            DependencySets = new SafeEnumerable<PackageDependencySet>(packageBuilder.DependencySets);
-            PackageAssemblyReferences = new SafeEnumerable<PackageReferenceSet>(packageBuilder.PackageAssemblyReferences);
+            FrameworkReferences = packageBuilder.FrameworkReferences;
+            DependencyGroups = packageBuilder.DependencyGroups;
+            PackageAssemblyReferences = packageBuilder.PackageAssemblyReferences;
             Copyright = packageBuilder.Copyright;
+            Repository = packageBuilder.Repository;
+            ContentFiles = packageBuilder.ContentFiles;
+            PackageTypes = packageBuilder.PackageTypes;
+            MinClientVersion = packageBuilder.MinClientVersion;
+            
             _packageBuilder = packageBuilder;
         }
 
         #region IPackage Members
 
-        public IEnumerable<IPackageAssemblyReference> AssemblyReferences
-        {
-            get { return Enumerable.Empty<IPackageAssemblyReference>(); }
-        }
 
         public IEnumerable<IPackageFile> GetFiles()
         {
@@ -63,7 +67,7 @@ namespace NuGetPe
 
         public string Id { get; private set; }
 
-        public TemplatebleSemanticVersion Version { get; private set; }
+        public NuGetVersion Version { get; private set; }
 
         public string Title { get; private set; }
 
@@ -100,9 +104,9 @@ namespace NuGetPe
 
         public bool Serviceable { get; private set; }
 
-        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; private set; }
+        public IEnumerable<FrameworkAssemblyReference> FrameworkReferences { get; private set; }
 
-        public IEnumerable<PackageDependencySet> DependencySets { get; private set; }
+        public IEnumerable<PackageDependencyGroup> DependencyGroups { get; private set; }
 
         public IEnumerable<PackageReferenceSet> PackageAssemblyReferences { get; private set; }
 
@@ -110,7 +114,7 @@ namespace NuGetPe
         {
             get
             {
-                return !String.IsNullOrEmpty(Version.SpecialVersion);
+                return Version.IsPrerelease;
             }
         }
 
@@ -156,39 +160,17 @@ namespace NuGetPe
 
         public Version MinClientVersion
         {
-            get { return null; }
+            get; private set;
         }
 
-        #endregion
+        public IEnumerable<ManifestContentFiles> ContentFiles { get; private set; }
 
-        #region Nested type: SafeEnumerable
+        public IEnumerable<PackageType> PackageTypes { get; private set; }
 
-        private class SafeEnumerable<T> : IEnumerable<T>
-        {
-            private readonly IEnumerable<T> _source;
-
-            public SafeEnumerable(IEnumerable<T> source)
-            {
-                _source = source;
-            }
-
-            #region IEnumerable<T> Members
-
-            public IEnumerator<T> GetEnumerator()
-            {
-                return _source.GetEnumerator();
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-            #endregion
-        }
+        public RepositoryMetadata Repository { get; private set; }
 
         #endregion
-
+        
         public void Dispose()
         {
         }

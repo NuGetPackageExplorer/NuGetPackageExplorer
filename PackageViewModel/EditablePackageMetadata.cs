@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
@@ -25,8 +28,8 @@ namespace PackageExplorerViewModel
         private string _tags;
         private bool _serviceable;
         private string _title;
-        private TemplatebleSemanticVersion _version;
-        private ICollection<PackageDependencySet> _dependencySets;
+        private NuGetVersion _version;
+        private ICollection<PackageDependencyGroup> _dependencySets;
         private ICollection<PackageReferenceSet> _packageAssemblyReferences;
         private Version _minClientVersion;
 
@@ -91,7 +94,7 @@ namespace PackageExplorerViewModel
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<PackageDependencySet> DependencySets 
+        public ICollection<PackageDependencyGroup> DependencySets 
         {
             get
             {
@@ -127,6 +130,7 @@ namespace PackageExplorerViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
         private bool _developmentDependency;
+        RepositoryMetadata repository;
 
         #endregion
 
@@ -159,7 +163,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public TemplatebleSemanticVersion Version
+        public NuGetVersion Version
         {
             get { return _version; }
             set
@@ -382,12 +386,12 @@ namespace PackageExplorerViewModel
             get { return SplitString(Owners); }
         }
 
-        IEnumerable<PackageDependencySet> IPackageMetadata.DependencySets
+        IEnumerable<PackageDependencyGroup> IPackageMetadata.DependencyGroups
         {
             get { return DependencySets; }
         }
 
-        IEnumerable<FrameworkAssemblyReference> IPackageMetadata.FrameworkAssemblies
+        IEnumerable<FrameworkAssemblyReference> IPackageMetadata.FrameworkReferences
         {
             get { return FrameworkAssemblies; }
         }
@@ -395,6 +399,23 @@ namespace PackageExplorerViewModel
         IEnumerable<PackageReferenceSet> IPackageMetadata.PackageAssemblyReferences
         {
             get { return PackageAssemblyReferences; }
+        }
+
+        IEnumerable<ManifestContentFiles> IPackageMetadata.ContentFiles => ContentFiles;
+        public ICollection<ManifestContentFiles> ContentFiles { get; set; }
+
+
+        IEnumerable<PackageType> IPackageMetadata.PackageTypes => PackageTypes;
+        public ICollection<PackageType> PackageTypes { get; set; }
+
+        public RepositoryMetadata Repository
+        {
+            get { return repository; }
+            set
+            {
+                repository = value;
+                RaisePropertyChange(nameof(Repository));
+            }
         }
 
         #endregion
@@ -418,9 +439,13 @@ namespace PackageExplorerViewModel
             Language = source.Language;
             Tags = source.Tags;
             Serviceable = source.Serviceable;
-            DependencySets = new ObservableCollection<PackageDependencySet>(source.DependencySets);
-            FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkAssemblies);
+            DependencySets = new ObservableCollection<PackageDependencyGroup>(source.DependencyGroups);
+            FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkReferences);
             PackageAssemblyReferences = new ObservableCollection<PackageReferenceSet>();
+            ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
+            PackageTypes = new ObservableCollection<PackageType>(source.PackageTypes);
+            Repository = source.Repository;
+            
             if (source.PackageAssemblyReferences != null)
             {
                 PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
@@ -500,10 +525,7 @@ namespace PackageExplorerViewModel
 
         private void RaisePropertyChange(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

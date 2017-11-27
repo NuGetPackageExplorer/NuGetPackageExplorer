@@ -1,8 +1,11 @@
+using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Data.Services.Common;
 using System.IO;
 using System.Linq;
+using NuGet.Versioning;
+using NuGet.Packaging.Core;
 
 namespace NuGetPe
 {
@@ -112,11 +115,11 @@ namespace NuGetPe
             get { return CorePackage != null && CorePackage.Serviceable; }
         }
 
-        public IEnumerable<PackageDependencySet> DependencySets
+        public IEnumerable<PackageDependencyGroup> DependencyGroups
         {
             get
             {
-                return CorePackage == null ? Enumerable.Empty<PackageDependencySet>() : CorePackage.DependencySets;
+                return CorePackage == null ? Enumerable.Empty<PackageDependencyGroup>() : CorePackage.DependencyGroups;
             }
         }
 
@@ -133,33 +136,23 @@ namespace NuGetPe
             get { return CorePackage == null ? Enumerable.Empty<string>() : CorePackage.Authors; }
         }
 
-        TemplatebleSemanticVersion IPackageMetadata.Version
-        {
-            get
-            {
-                if (Version != null)
-                {
-                    return TemplatebleSemanticVersion.Parse(Version);
-                }
-                return null;
-            }
-        }
-
         public Version MinClientVersion
         {
-            get;
-            set;
+            get { return CorePackage?.MinClientVersion; }
         }
 
-        public IEnumerable<IPackageAssemblyReference> AssemblyReferences
+        public IEnumerable<FrameworkAssemblyReference> FrameworkReferences
         {
-            get { return CorePackage.AssemblyReferences; }
+            get { return CorePackage?.FrameworkReferences ?? Enumerable.Empty<FrameworkAssemblyReference>(); }
         }
 
-        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies
-        {
-            get { return CorePackage.FrameworkAssemblies; }
-        }
+        public IEnumerable<ManifestContentFiles> ContentFiles => CorePackage?.ContentFiles ?? Enumerable.Empty<ManifestContentFiles>();
+
+        public IEnumerable<PackageType> PackageTypes => CorePackage?.PackageTypes ?? Enumerable.Empty<PackageType>();
+
+        public RepositoryMetadata Repository => CorePackage?.Repository;
+
+        NuGetVersion IPackageMetadata.Version => NuGetVersion.Parse(Version);
 
         public IEnumerable<IPackageFile> GetFiles()
         {

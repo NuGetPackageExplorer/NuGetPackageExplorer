@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
@@ -9,11 +12,6 @@ namespace PackageExplorerViewModel
     public class EmptyPackage : IPackage
     {
         #region IPackage Members
-
-        public IEnumerable<IPackageAssemblyReference> AssemblyReferences
-        {
-            get { return Enumerable.Empty<IPackageAssemblyReference>(); }
-        }
 
         public IEnumerable<IPackageFile> GetFiles()
         {
@@ -30,9 +28,9 @@ namespace PackageExplorerViewModel
             get { return "MyPackage"; }
         }
 
-        public TemplatebleSemanticVersion Version
+        public NuGetVersion Version
         {
-            get { return TemplatebleSemanticVersion.Parse("1.0.0"); }
+            get { return NuGetVersion.Parse("1.0.0"); }
         }
 
         public string Title
@@ -110,9 +108,9 @@ namespace PackageExplorerViewModel
             get { return false; }
         }
 
-        public IEnumerable<PackageDependencySet> DependencySets
+        public IEnumerable<PackageDependencyGroup> DependencySets
         {
-            get { return Enumerable.Empty<PackageDependencySet>(); }
+            get { return Enumerable.Empty<PackageDependencyGroup>(); }
         }
 
         public Uri ReportAbuseUrl
@@ -182,6 +180,16 @@ namespace PackageExplorerViewModel
                 return null;
             }
         }
+
+        public IEnumerable<FrameworkAssemblyReference> FrameworkReferences => Enumerable.Empty<FrameworkAssemblyReference>();
+
+        public IEnumerable<PackageDependencyGroup> DependencyGroups => Enumerable.Empty<PackageDependencyGroup>();
+
+        public IEnumerable<ManifestContentFiles> ContentFiles => Enumerable.Empty<ManifestContentFiles>();
+
+        public IEnumerable<PackageType> PackageTypes => Enumerable.Empty<PackageType>();
+
+        public RepositoryMetadata Repository => null; 
 
         #endregion
 

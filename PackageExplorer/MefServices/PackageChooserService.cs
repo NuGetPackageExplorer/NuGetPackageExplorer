@@ -24,7 +24,7 @@ namespace PackageExplorer
         public IUIServices UIServices { get; set; }
 
         [Import]
-        public IPackageDownloader PackageDownloader { get; set; }
+        public INuGetPackageDownloader PackageDownloader { get; set; }
 
         [Import]
         public Lazy<MainWindow> Window { get; set; }

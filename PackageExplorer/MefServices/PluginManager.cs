@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using NuGet.Versioning;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 
@@ -244,8 +245,8 @@ namespace PackageExplorer
             {
                 string id = match.Groups[1].Value;
                 string versionString = match.Groups[2].Value;
-                TemplatebleSemanticVersion version;
-                if (TemplatebleSemanticVersion.TryParse(versionString, out version))
+                NuGetVersion version;
+                if (NuGetVersion.TryParse(versionString, out version))
                 {
                     return new PluginInfo(id, version);
                 }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGet.Packaging;
 
 namespace PackageExplorerViewModel
 {
@@ -56,27 +57,7 @@ namespace PackageExplorerViewModel
 
         private static void CopyMetadata(IPackageMetadata source, PackageBuilder builder)
         {
-            builder.Id = source.Id;
-            builder.Version = source.Version;
-            builder.Title = source.Title;
-            builder.Authors.AddRange(source.Authors);
-            builder.Owners.AddRange(source.Owners);
-            builder.IconUrl = source.IconUrl;
-            builder.LicenseUrl = source.LicenseUrl;
-            builder.ProjectUrl = source.ProjectUrl;
-            builder.RequireLicenseAcceptance = source.RequireLicenseAcceptance;
-            builder.Serviceable = source.Serviceable;
-            builder.DevelopmentDependency = source.DevelopmentDependency;
-            builder.Description = source.Description;
-            builder.Summary = source.Summary;
-            builder.ReleaseNotes = source.ReleaseNotes;
-            builder.Copyright = source.Copyright;
-            builder.Language = source.Language;
-            builder.Tags.AddRange(ParseTags(source.Tags));
-            builder.DependencySets.AddRange(source.DependencySets);
-            builder.FrameworkReferences.AddRange(source.FrameworkAssemblies);
-            builder.PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
-            builder.MinClientVersion = source.MinClientVersion;
+            builder.Populate(new ManifestMetadata(source));
         }
 
         public static IPackage BuildPackage(IPackageMetadata metadata, IEnumerable<IPackageFile> files)

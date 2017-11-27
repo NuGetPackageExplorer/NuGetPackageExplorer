@@ -1,8 +1,8 @@
-﻿using System;
+﻿using NuGet.Versioning;
+using System;
 using System.IO;
 using System.Linq;
 using System.Security;
-using System.Threading.Tasks;
 
 namespace NuGetPe
 {
@@ -43,7 +43,7 @@ namespace NuGetPe
             throw new NotSupportedException();
         }
 
-        public IPackage FindPackage(string packageId, NuGet.SemanticVersion version)
+        public IPackage FindPackage(string packageId, NuGetVersion version)
         {
             string path = GetPackageFilePath(packageId, version);
 
@@ -60,7 +60,7 @@ namespace NuGetPe
         public void AddPackage(IPackage package)
         {
             // if the package is already present in the cache, no need to do anything
-            if (FindPackage(package.Id, package.Version?.SemanticVersion) != null)
+            if (FindPackage(package.Id, package.Version) != null)
             {
                 return;
             }
@@ -76,7 +76,7 @@ namespace NuGetPe
             ClearCache(cacheDirectory, MaxNumberOfPackages);
 
             // now copy the package to the cache
-            string filePath = GetPackageFilePath(package.Id, package.Version?.SemanticVersion);
+            string filePath = GetPackageFilePath(package.Id, package.Version);
             using (Stream stream = package.GetStream(),
                           fileStream = File.Create(filePath))
             {
@@ -129,9 +129,9 @@ namespace NuGetPe
             return false;
         }
 
-        private string GetPackageFilePath(string id, NuGet.SemanticVersion version)
+        private string GetPackageFilePath(string id, NuGetVersion version)
         {
-            return Path.Combine(Source, id + "." + version + Constants.PackageExtension);
+            return Path.Combine(Source, id + "." + version.ToNormalizedString() + Constants.PackageExtension);
         }
 
         /// <summary>

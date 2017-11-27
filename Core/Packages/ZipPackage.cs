@@ -1,9 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Packaging;
 using System.Linq;
-using NuGetPe.Resources;
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 
 namespace NuGetPe
 {
@@ -14,12 +15,12 @@ namespace NuGetPe
         private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe", ".winmd"};
 
         // paths to exclude
-        private static readonly string[] ExcludePaths = new[] {"_rels", "package"};
+        private static readonly string[] ExcludePaths = new[] {"_rels", "package","[Content_Types]"};
 
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
         private readonly Func<Stream> _streamFactory;
-        private readonly string _filePath;
+        private ManifestMetadata metadata;
 
         public ZipPackage(string filePath)
         {
@@ -33,7 +34,7 @@ namespace NuGetPe
                 throw new ArgumentException("File doesn't exist at '" + filePath + "'.", "filePath");
             }
 
-            _filePath = filePath;
+            Source = filePath;
             _streamFactory = () =>
             {
                 try
@@ -50,28 +51,154 @@ namespace NuGetPe
             EnsureManifest();
         }
 
-        public string Source
-        {
-            get { return _filePath; }
-        }
+        public string Source { get; }
 
         #region IPackage Members
 
-        public string Id { get; set; }
+        public string Id
+        {
+            get { return metadata.Id; }
+            set { metadata.Id = value; }
+        }
 
-        public TemplatebleSemanticVersion Version { get; set; }
+        public NuGetVersion Version
+        {
+            get { return metadata.Version; }
+            set { metadata.Version = value; }
+        }
 
-        public string Title { get; set; }
+        public string Title
+        {
+            get { return metadata.Title; }
+            set { metadata.Title = value; }
+        }
 
-        public IEnumerable<string> Authors { get; set; }
+        public IEnumerable<string> Authors
+        {
+            get { return metadata.Authors; }
+            set { metadata.Authors = value; }
+        }
 
-        public IEnumerable<string> Owners { get; set; }
+        public IEnumerable<string> Owners
+        {
+            get { return metadata.Owners; }
+            set { metadata.Owners = value; }
+        }
 
-        public Uri IconUrl { get; set; }
+        public Uri IconUrl
+        {
+            get { return metadata.IconUrl; }
+            set { metadata.SetIconUrl(value?.ToString()); }
+        }
 
-        public Uri LicenseUrl { get; set; }
+        public Uri LicenseUrl
+        {
+            get { return metadata.LicenseUrl; }
+            set { metadata.SetLicenseUrl(value?.ToString()); }
+        }
 
-        public Uri ProjectUrl { get; set; }
+        public Uri ProjectUrl
+        {
+            get { return metadata.ProjectUrl; }
+            set { metadata.SetProjectUrl(value?.ToString()); }
+        }
+
+        public bool RequireLicenseAcceptance
+        {
+            get { return metadata.RequireLicenseAcceptance; }
+            set { metadata.RequireLicenseAcceptance = value; }
+        }
+
+        public bool DevelopmentDependency
+        {
+            get { return metadata.DevelopmentDependency; }
+            set { metadata.DevelopmentDependency = value; }
+        }
+
+        public string Description
+        {
+            get { return metadata.Description; }
+            set { metadata.Description = value; }
+        }
+
+        public string Summary
+        {
+            get { return metadata.Summary; }
+            set { metadata.Summary = value; }
+        }
+
+        public string ReleaseNotes
+        {
+            get { return metadata.ReleaseNotes; }
+            set { metadata.ReleaseNotes = value; }
+        }
+
+        public string Language
+        {
+            get { return metadata.Language; }
+            set { metadata.Language = value; }
+        }
+
+        public string Tags
+        {
+            // Ensure tags start and end with an empty " " so we can do contains filtering reliably
+            get { return !string.IsNullOrWhiteSpace(metadata.Tags) ? $" {metadata.Tags} " : metadata.Tags; }
+            set { metadata.Tags = value?.Trim(); }
+        }
+
+        public bool Serviceable
+        {
+            get { return metadata.Serviceable; }
+            set { metadata.Serviceable = value; }
+        }
+
+        public string Copyright
+        {
+            get { return metadata.Copyright; }
+            set { metadata.Copyright = value; }
+        }
+
+        public Version MinClientVersion
+        {
+            get { return metadata.MinClientVersion; }
+            set { metadata.MinClientVersionString = value?.ToString(); }
+        }
+
+        public IEnumerable<PackageDependencyGroup> DependencyGroups
+        {
+            get { return metadata.DependencyGroups; }
+            set { metadata.DependencyGroups = value; }
+        }
+
+        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
+        {
+            get { return metadata.PackageAssemblyReferences; }
+            set { metadata.PackageAssemblyReferences = value; }
+        }
+
+        public IEnumerable<FrameworkAssemblyReference> FrameworkReferences
+        {
+            get { return metadata.FrameworkReferences; }
+            set { metadata.FrameworkReferences = value; }
+        }
+
+        public IEnumerable<ManifestContentFiles> ContentFiles
+        {
+            get { return metadata.ContentFiles; }
+            set { metadata.ContentFiles = value; }
+        }
+
+        public IEnumerable<PackageType> PackageTypes
+        {
+            get { return metadata.PackageTypes; }
+            set { metadata.PackageTypes = value; }
+        }
+
+        public RepositoryMetadata Repository
+        {
+            get { return metadata.Repository; }
+            set { metadata.Repository = value; }
+        }
 
         public DateTimeOffset? Published
         {
@@ -94,30 +221,6 @@ namespace NuGetPe
             get { return 0; }
         }
 
-        public bool RequireLicenseAcceptance { get; set; }
-
-        public bool DevelopmentDependency { get; set; }
-
-        public string Description { get; set; }
-
-        public string Summary { get; set; }
-
-        public string ReleaseNotes { get; set; }
-
-        public string Language { get; set; }
-
-        public string Tags { get; set; }
-
-        public bool Serviceable { get; set; }
-
-        public string Copyright { get; set; }
-
-        public Version MinClientVersion
-        {
-            get;
-            private set;
-        }
-
         public bool IsAbsoluteLatestVersion
         {
             get { return true; }
@@ -135,7 +238,7 @@ namespace NuGetPe
             {
                 if (_lastUpdated == null)
                 {
-                    _lastUpdated = File.GetLastWriteTimeUtc(_filePath);
+                    _lastUpdated = File.GetLastWriteTimeUtc(Source);
                 }
                 return _lastUpdated.Value;
             }
@@ -148,7 +251,7 @@ namespace NuGetPe
             {
                 if (_packageSize == null)
                 {
-                    _packageSize = new FileInfo(_filePath).Length;
+                    _packageSize = new FileInfo(Source).Length;
                 }
                 return _packageSize.Value;
             }
@@ -163,50 +266,25 @@ namespace NuGetPe
         {
             get
             {
-                return !String.IsNullOrEmpty(Version.SpecialVersion);
+                return Version.IsPrerelease;
             }
         }
 
-        public IEnumerable<PackageDependencySet> DependencySets
-        {
-            get;
-            set;
-        }
-
-        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
-        {
-            get;
-            private set;
-        }
-
-        public IEnumerable<IPackageAssemblyReference> AssemblyReferences
-        {
-            get
-            {
-                using (Stream stream = _streamFactory())
-                {
-                    Package package = Package.Open(stream);
-                    return (from part in package.GetParts()
-                            where IsAssemblyReference(part)
-                            select new ZipPackageAssemblyReference(part)).ToList();
-                }
-            }
-        }
-
-        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; set; }
-
+    
         // Keep a list of open stream here, and close on dispose.
         private List<IDisposable> _danglingStreams = new List<IDisposable>();
 
         public IEnumerable<IPackageFile> GetFiles()
         {
             Stream stream = _streamFactory();
-            Package package = Package.Open(stream); // should not close
-            _danglingStreams.Add(stream);           // clean up on dispose
+            var reader = new PackageArchiveReader(stream, false); // should not close
+           
+            _danglingStreams.Add(reader);           // clean up on dispose
 
-            return (from part in package.GetParts()
-                    where IsPackageFile(part)
-                    select new ZipPackageFile(part)).ToList();
+            
+            return (from file in reader.GetFiles()
+                    where IsPackageFile(file)
+                    select new ZipPackageFile(reader, file)).ToList();
         }
 
         public Stream GetStream()
@@ -219,75 +297,15 @@ namespace NuGetPe
         private void EnsureManifest()
         {
             using (Stream stream = _streamFactory())
+            using (var reader = new PackageArchiveReader(stream))
             {
-                Package package = Package.Open(stream);
-
-                PackageRelationship relationshipType =
-                    package.GetRelationshipsByType(Constants.PackageRelationshipNamespace +
-                                                   PackageBuilder.ManifestRelationType).SingleOrDefault();
-
-                if (relationshipType == null)
-                {
-                    throw new InvalidOperationException(NuGetResources.PackageDoesNotContainManifest);
-                }
-
-                PackagePart manifestPart = package.GetPart(relationshipType.TargetUri);
-
-                if (manifestPart == null)
-                {
-                    throw new InvalidOperationException(NuGetResources.PackageDoesNotContainManifest);
-                }
-
-                using (Stream manifestStream = manifestPart.GetStream())
-                {
-                    Manifest manifest = Manifest.ReadFrom(manifestStream);
-                    IPackageMetadata metadata = manifest.Metadata;
-
-                    Id = metadata.Id;
-                    Version = metadata.Version;
-                    Title = metadata.Title;
-                    Authors = metadata.Authors;
-                    Owners = metadata.Owners;
-                    IconUrl = metadata.IconUrl;
-                    LicenseUrl = metadata.LicenseUrl;
-                    ProjectUrl = metadata.ProjectUrl;
-                    RequireLicenseAcceptance = metadata.RequireLicenseAcceptance;
-                    Description = metadata.Description;
-                    Summary = metadata.Summary;
-                    ReleaseNotes = metadata.ReleaseNotes;
-                    Copyright = metadata.Copyright;
-                    Language = metadata.Language;
-                    Tags = metadata.Tags;
-                    Serviceable = metadata.Serviceable;
-                    DependencySets = metadata.DependencySets;
-                    FrameworkAssemblies = metadata.FrameworkAssemblies;
-                    PackageAssemblyReferences = metadata.PackageAssemblyReferences;
-                    Published = File.GetLastWriteTimeUtc(_filePath);
-                    MinClientVersion = metadata.MinClientVersion;
-                    DevelopmentDependency = metadata.DevelopmentDependency;
-
-                    // Ensure tags start and end with an empty " " so we can do contains filtering reliably
-                    if (!String.IsNullOrEmpty(Tags))
-                    {
-                        Tags = " " + Tags + " ";
-                    }
-                }
+                var manifest = Manifest.ReadFrom(reader.GetNuspec(), false);
+                metadata = manifest.Metadata;
             }
         }
 
-        private static bool IsAssemblyReference(PackagePart part)
+        private static bool IsPackageFile(string path)
         {
-            // Assembly references are in lib/ and have a .dll/.exe extension
-            string path = UriUtility.GetPath(part.Uri);
-            return path.StartsWith(AssemblyReferencesDir, StringComparison.OrdinalIgnoreCase) &&
-                   // Exclude resource assemblies
-                   !path.EndsWith(ResourceAssemblyExtension, StringComparison.OrdinalIgnoreCase) &&
-                   AssemblyReferencesExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
-        }
-
-        private static bool IsPackageFile(PackagePart part)
-        {
-            string path = UriUtility.GetPath(part.Uri);
             // We exclude any opc files and the manifest file (.nuspec)
             return !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);

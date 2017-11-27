@@ -4,8 +4,10 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
 using System.Windows.Input;
+using NuGet.Frameworks;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGet.Packaging;
 
 namespace PackageExplorerViewModel
 {
@@ -44,7 +46,7 @@ namespace PackageExplorerViewModel
         /// </summary>
         public string OriginalPath
         {
-            get { return _file.OriginalPath; }
+            get { return (_file as PhysicalPackageFile)?.SourcePath; }
         }
 
         public string EffectivePath
@@ -57,12 +59,7 @@ namespace PackageExplorerViewModel
             get { return _file.TargetFramework; }
         }
 
-        public IEnumerable<FrameworkName> SupportedFrameworks
-        {
-            get { return _file.SupportedFrameworks; }
-        }
-
-        public Stream GetStream()
+ public Stream GetStream()
         {
             return _file.GetStream();
         }
@@ -102,8 +99,8 @@ namespace PackageExplorerViewModel
 
         private void WatchPhysicalFile(PhysicalPackageFile physicalFile)
         {
-            string folderPath = System.IO.Path.GetDirectoryName(physicalFile.OriginalPath);
-            string fileName = System.IO.Path.GetFileName(physicalFile.OriginalPath);
+            string folderPath = System.IO.Path.GetDirectoryName(physicalFile.SourcePath);
+            string fileName = System.IO.Path.GetFileName(physicalFile.SourcePath);
 
             _watcher = new FileSystemWatcher(folderPath, fileName)
                        {

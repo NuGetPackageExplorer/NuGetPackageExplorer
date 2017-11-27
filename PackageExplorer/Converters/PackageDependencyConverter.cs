@@ -1,0 +1,26 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Data;
+using NuGet.Packaging.Core;
+
+namespace PackageExplorer
+{
+    public class PackageDependencyConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null)
+                return string.Empty;
+
+            var dependency = (PackageDependency)value;
+            
+            return $"{dependency.Id} {dependency.VersionRange.PrettyPrint()}";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

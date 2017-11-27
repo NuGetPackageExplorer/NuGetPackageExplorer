@@ -29,8 +29,8 @@ namespace PackageExplorerViewModel.Rules
         private static bool HasContentOrDependency(IPackage package)
         {
             return package.GetFiles().Any() || 
-                   package.DependencySets.SelectMany(p => p.Dependencies).Any() || 
-                   package.FrameworkAssemblies.Any();
+                   package.DependencyGroups.SelectMany(p => p.Packages).Any() || 
+                   package.FrameworkReferences.Any();
         }
     }
 }

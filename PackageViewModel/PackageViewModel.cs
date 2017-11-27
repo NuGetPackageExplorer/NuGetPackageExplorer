@@ -10,6 +10,7 @@ using System.Windows.Input;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
+using NuGet.Packaging;
 
 namespace PackageExplorerViewModel
 {
@@ -1198,12 +1199,11 @@ namespace PackageExplorerViewModel
                 if (includeFilesSection)
                 {
                     string tempPath = Path.GetTempPath();
-
-                    manifest.Files = new List<ManifestFile>();
+                    
                     manifest.Files.AddRange(RootFolder.GetFiles().Select(
                         f => new ManifestFile
                         {
-                            Source = String.IsNullOrEmpty(f.OriginalPath) || f.OriginalPath.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath),
+                            Source = String.IsNullOrEmpty(f.OriginalPath()) || f.OriginalPath().StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()),
                             Target = f.Path
                         })
                     );
@@ -1341,7 +1341,7 @@ namespace PackageExplorerViewModel
             {
                 try
                 {
-                    Manifest manifest = Manifest.ReadFrom(metadataFileStream);
+                    Manifest manifest = Manifest.ReadFrom(metadataFileStream, true);
                     var newMetadata = new EditablePackageMetadata(manifest.Metadata);
                     PackageMetadata = newMetadata;
 

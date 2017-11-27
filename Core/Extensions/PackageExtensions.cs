@@ -1,3 +1,5 @@
+using NuGet.Common;
+using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,15 +18,15 @@ namespace NuGetPe
 
         public static bool IsReleaseVersion(this IPackageMetadata packageMetadata)
         {
-            return String.IsNullOrEmpty(packageMetadata.Version.SpecialVersion);
+            return packageMetadata.Version.IsPrerelease;
         }
 
         public static string GetHash(this IPackage package)
         {
-            return GetHash(package, new NuGet.CryptoHashProvider());
+            return GetHash(package, new CryptoHashProvider());
         }
 
-        public static string GetHash(this IPackage package, NuGet.IHashProvider hashProvider)
+        public static string GetHash(this IPackage package, CryptoHashProvider hashProvider)
         {
             using (Stream stream = package.GetStream())
                 return Convert.ToBase64String(hashProvider.CalculateHash(stream));

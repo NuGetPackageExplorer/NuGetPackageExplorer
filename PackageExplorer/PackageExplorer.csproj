@@ -14,6 +14,7 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -135,6 +136,8 @@
     <Compile Include="Converters\BooleanToStringConverter.cs" />
     <Compile Include="Converters\DateTimeOffsetHumanizeConverter.cs" />
     <Compile Include="Converters\DateTimeOffsetLongDateConverter.cs" />
+    <Compile Include="Converters\FrameworkAssemblyReferenceDisplayConverter.cs" />
+    <Compile Include="Converters\PackageDependencyConverter.cs" />
     <Compile Include="Converters\ReferenceSetConverter.cs" />
     <Compile Include="Converters\DependencySetConverter.cs" />
     <Compile Include="Converters\IntegerToBooleanConverter.cs" />
@@ -143,6 +146,7 @@
     <Compile Include="Converters\NormalizeTextConverter.cs" />
     <Compile Include="Converters\StringShortenerConverter.cs" />
     <Compile Include="Converters\TargetFrameworkConverter.cs" />
+    <Compile Include="Converters\NuGetVersionConverter.cs" />
     <Compile Include="MefServices\CredentialManager.cs" />
     <Compile Include="MefServices\RtfFileViewer.cs" />
     <Compile Include="PackageDownloadRequestedEventArgs.cs" />
@@ -179,7 +183,6 @@
     <Compile Include="Converters\TruncateFilePathConverter.cs" />
     <Compile Include="Converters\UpperCaseConverter.cs" />
     <Compile Include="Converters\UriConverter.cs" />
-    <Compile Include="Converters\VersionConverter.cs" />
     <Compile Include="Converters\VersionSpecConverter.cs" />
     <Compile Include="Converters\PackagePartToVisibilityConverter.cs" />
     <Compile Include="Controls\StandardDialog.cs" />
@@ -432,13 +435,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AvalonEdit">
-      <Version>5.0.3</Version>
+      <Version>5.0.4</Version>
     </PackageReference>
     <PackageReference Include="GrayscaleEffect">
       <Version>1.0.1</Version>
     </PackageReference>
     <PackageReference Include="Humanizer">
       <Version>2.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="NuGet.PackageManagement">
+      <Version>4.4.0</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

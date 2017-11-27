@@ -4,6 +4,7 @@ using System.ComponentModel.Composition;
 using System.IO;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGet.Packaging;
 
 namespace PackageExplorerViewModel.Rules
 {

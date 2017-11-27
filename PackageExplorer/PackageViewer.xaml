@@ -8,6 +8,9 @@
     xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" 
     xmlns:resources="clr-namespace:PackageExplorer.Resources" 
     xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types"
+    xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core"
+    xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core" 
+    xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
@@ -29,18 +32,22 @@
             <self:FrameworkNameConverter x:Key="frameworkConverter" />
             <self:NormalizeTextConverter x:Key="NormalizeTextConverter" />
             <self:BooleanToStringConverter x:Key="BooleanConverter" />
+            <self:BooleanToVisibilityConverter x:Key="BooleanToVisConverter" />
             <self:DependencySetConverter x:Key="DependencySetConverter" />
             <self:ReferenceSetConverter x:Key="ReferenceSetConverter" />
+            <self:PackageDependencyConverter x:Key="PackageDependencyConverter" />
+            <self:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
+            <self:NuGetVersionConverter x:Key="NuGetVersionConverter" />
 
-            <DataTemplate DataType="{x:Type types:PackageDependency}">
+            <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
                     <Hyperlink Command="Print" CommandParameter="{Binding Id, Mode=OneWay}">
-                        <Run Text="{Binding Mode=OneWay}"></Run>
+                        <Run Text="{Binding Mode=OneWay, Converter={StaticResource PackageDependencyConverter}}"></Run>
                     </Hyperlink>
                 </TextBlock>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type types:PackageDependencySet}">
+            <DataTemplate DataType="{x:Type pack:PackageDependencyGroup}">
                 <Grid Margin="0,0,0,8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -52,7 +59,7 @@
                         x:Name="dependenciesList"
                         Grid.Row="1"
                         Margin="20,0,0,0"
-                        ItemsSource="{Binding Dependencies}" />
+                        ItemsSource="{Binding Packages}" />
 
                     <TextBlock
                         Grid.Row="1"
@@ -68,7 +75,7 @@
                 <TextBlock Text="{Binding Mode=OneWay}" TextTrimming="CharacterEllipsis" />
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type types:PackageReferenceSet}">
+            <DataTemplate DataType="{x:Type packaging:PackageReferenceSet}">
                 <Grid Margin="0,0,0,8">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -174,8 +181,8 @@
                         <!-- Version -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_VersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                            <TextBlock Text="{Binding Version}" Style="{StaticResource DetailMetadataValueStyle}" />
-                            <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version.SpecialVersion, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
+                            <TextBlock Text="{Binding Version, Converter={StaticResource NuGetVersionConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
+                            <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version.IsPrerelease, Mode=OneWay, Converter={StaticResource BooleanToVisConverter}}" />
                         </StackPanel>
 
                         <!-- Title -->
@@ -277,7 +284,19 @@
                         <!-- Framework assembly references -->
                         <TextBlock Visibility="{Binding Items.Count, ElementName=FrameworkAssemblyItems, Converter={StaticResource countConverter}}" Text="{x:Static resources:Resources.Dialog_FrameworkAssembliesLabel}" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                        <ItemsControl x:Name="FrameworkAssemblyItems" Margin="25,5,0,0" ItemsSource="{Binding FrameworkAssemblies}" ItemTemplate="{StaticResource SimpleTextItemTemplate}"></ItemsControl>
+                        <ItemsControl x:Name="FrameworkAssemblyItems" Margin="25,5,0,0" ItemsSource="{Binding FrameworkAssemblies}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate DataType="{x:Type packaging:FrameworkAssemblyReference}">
+                                    <Grid Margin="0,4,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <TextBlock Grid.Column="0" Margin="4,0,4,0" Text="{Binding Converter={StaticResource FrameworkAssemblyReferenceDisplayConverter}, ConverterParameter=includeAssembly}" TextTrimming="CharacterEllipsis" />
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                         
                         <!-- Package Assembly References -->
                         <TextBlock Visibility="{Binding Items.Count, ElementName=PackageAssemblyReferences, Converter={StaticResource countConverter}}" Text="Filtered Assembly References:" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />

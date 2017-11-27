@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using NuGet.Packaging;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
@@ -17,7 +18,7 @@ namespace PackageExplorer
     {
         private ObservableCollection<FrameworkAssemblyReference> _frameworkAssemblies;
         private EditableFrameworkAssemblyReference _newFrameworkAssembly;
-        private ICollection<PackageDependencySet> _dependencySets;
+        private ICollection<PackageDependencyGroup> _dependencySets;
         private ICollection<PackageReferenceSet> _referenceSets;
 
         public PackageMetadataEditor()
@@ -25,6 +26,9 @@ namespace PackageExplorer
             InitializeComponent();
             PopulateLanguagesForLanguageBox();
             PopulateFrameworkAssemblyNames();
+
+            // Explicitly set the data context for these since they don't flow
+            NewAssemblyName.DataContext = NewSupportedFramework.DataContext = null;
         }
 
         public IUIServices UIServices { get; set; }
@@ -103,14 +107,12 @@ namespace PackageExplorer
             {
                 return null;
             }
-
-            string displayString = NewSupportedFramework.Text.Trim();
-
+            
             if (!NewFrameworkAssembly.UpdateSources())
             {
                 return false;
             }
-            _frameworkAssemblies.Add(_newFrameworkAssembly.AsReadOnly(displayString));
+            _frameworkAssemblies.Add(_newFrameworkAssembly.AsReadOnly());
 
             // after framework assembly is added, clear the textbox
             ClearFrameworkAssemblyTextBox();

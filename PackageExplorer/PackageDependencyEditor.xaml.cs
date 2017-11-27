@@ -5,9 +5,12 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
+using NuGet.Packaging;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 
 namespace PackageExplorer
 {
@@ -28,7 +31,7 @@ namespace PackageExplorer
             ClearDependencyTextBox();
         }
 
-        public PackageDependencyEditor(IEnumerable<PackageDependencySet> existingDependencySets)
+        public PackageDependencyEditor(IEnumerable<PackageDependencyGroup> existingDependencySets)
             : this()
         {
             _dependencySets.AddRange(existingDependencySets.Select(ds => new EditablePackageDependencySet(ds)));
@@ -41,7 +44,7 @@ namespace PackageExplorer
 
         public IPackageChooser PackageChooser { get; set; }
 
-        public ICollection<PackageDependencySet> GetEditedDependencySets()
+        public ICollection<PackageDependencyGroup> GetEditedDependencySets()
         {
             return _dependencySets.Select(set => set.AsReadOnly()).ToArray();
         }
@@ -89,7 +92,7 @@ namespace PackageExplorer
             if (selectedPackage != null)
             {
                 _newPackageDependency.Id = selectedPackage.Id;
-                _newPackageDependency.VersionSpec = NuGet.VersionUtility.ParseVersionSpec(selectedPackage.Version);
+                _newPackageDependency.VersionSpec = VersionRange.Parse(selectedPackage.Version);
             }
         }
 

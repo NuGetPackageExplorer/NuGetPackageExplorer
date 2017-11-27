@@ -3,6 +3,7 @@ using System;
 using System.Globalization;
 using System.Windows.Data;
 using Humanizer;
+using NuGet.ProjectManagement;
 
 namespace PackageExplorer
 {

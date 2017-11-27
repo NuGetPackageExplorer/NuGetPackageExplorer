@@ -8,6 +8,7 @@ using System.Linq;
 using System.Windows.Input;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGet.Packaging;
 
 namespace PackageExplorerViewModel
 {
@@ -288,7 +289,11 @@ namespace PackageExplorerViewModel
             }
 
             string newTargetPath = this.Path + "\\" + newFileName;
-            var physicalFile = new PhysicalPackageFile(isTempFile, filePath, newTargetPath);
+            var physicalFile = new PhysicalPackageFile
+            {
+                SourcePath = filePath,
+                TargetPath = newTargetPath
+            };
             var newFile = new PackageFile(physicalFile, newFileName, this);
 
             Children.Add(newFile);
@@ -327,7 +332,11 @@ namespace PackageExplorerViewModel
                 }
 
                 string newTargetPath = this.Path + "\\" + file.Name;
-                var physicalFile = new PhysicalPackageFile(isTempFile: true, originalPath: fileCopyPath, targetPath: newTargetPath);
+                var physicalFile = new PhysicalPackageFile
+                {
+                    SourcePath = fileCopyPath,
+                    TargetPath = newTargetPath
+                };
 
                 newFile = new PackageFile(physicalFile, file.Name, this);
             }

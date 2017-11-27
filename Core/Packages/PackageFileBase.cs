@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Versioning;
-using NuGet;
+using NuGet.Frameworks;
+using NuGet.Packaging;
 
 namespace NuGetPe
 {
@@ -12,9 +13,10 @@ namespace NuGetPe
         protected PackageFileBase(string path)
         {
             Path = path;
-
+            
             string effectivePath;
-            _targetFramework = VersionUtility.ParseFrameworkNameFromFilePath(path, out effectivePath);
+            FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out effectivePath);
+            _targetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
             EffectivePath = effectivePath;
         }
 
