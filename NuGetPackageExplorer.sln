@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2009
+VisualStudioVersion = 15.0.27110.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageExplorer", "PackageExplorer\PackageExplorer.csproj", "{3B56B367-7763-4F70-9933-2B8B23718A0D}"
 EndProject
@@ -30,6 +30,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	EndProjectSection
 EndProject
 Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "PackageExplorer.Package", "PackageExplorer.Package\PackageExplorer.Package.jsproj", "{508894A9-D8B9-4A24-90E9-4E25C801329B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3B56B367-7763-4F70-9933-2B8B23718A0D} = {3B56B367-7763-4F70-9933-2B8B23718A0D}
+	EndProjectSection
+EndProject
+Project("{262852C6-CD72-467D-83FE-5EEB1973A190}") = "PackageExplorer.Package.Nightly", "PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.jsproj", "{508894A9-D8B9-4A24-90E9-4E25C801329C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{3B56B367-7763-4F70-9933-2B8B23718A0D} = {3B56B367-7763-4F70-9933-2B8B23718A0D}
 	EndProjectSection
@@ -150,6 +155,30 @@ Global
 		{508894A9-D8B9-4A24-90E9-4E25C801329B}.Release|x86.ActiveCfg = Release|x86
 		{508894A9-D8B9-4A24-90E9-4E25C801329B}.Release|x86.Build.0 = Release|x86
 		{508894A9-D8B9-4A24-90E9-4E25C801329B}.Release|x86.Deploy.0 = Release|x86
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|ARM.ActiveCfg = Debug|ARM
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|ARM.Build.0 = Debug|ARM
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|ARM.Deploy.0 = Debug|ARM
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|x64.ActiveCfg = Debug|x64
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|x64.Build.0 = Debug|x64
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|x64.Deploy.0 = Debug|x64
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|x86.ActiveCfg = Debug|x86
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|x86.Build.0 = Debug|x86
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Debug|x86.Deploy.0 = Debug|x86
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|ARM.ActiveCfg = Release|ARM
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|ARM.Build.0 = Release|ARM
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|ARM.Deploy.0 = Release|ARM
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|x64.ActiveCfg = Release|x64
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|x64.Build.0 = Release|x64
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|x64.Deploy.0 = Release|x64
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|x86.ActiveCfg = Release|x86
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|x86.Build.0 = Release|x86
+		{508894A9-D8B9-4A24-90E9-4E25C801329C}.Release|x86.Deploy.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

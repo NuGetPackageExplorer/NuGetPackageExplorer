@@ -27,3 +27,8 @@ publish/
 /.vs
 /PackageExplorer.Package/PackageExplorer
 /PackageExplorer.Package/_pkginfo.txt
+/PackageExplorer.Package.Nightly/bld/*
+/PackageExplorer.Package.Nightly/BundleArtifacts/*
+/PackageExplorer.Package.Nightly/AppPackages/*
+/PackageExplorer.Package.Nightly/PackageExplorer
+/PackageExplorer.Package.Nightly/_pkginfo.txt

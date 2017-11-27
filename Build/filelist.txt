@@ -1,0 +1,5 @@
+**/NuGetPackageExplorer.*
+**/CodeExecutor.*
+**/PackageViewModel.*
+**/Core.*
+**/ChocolateyInstall.ps1
