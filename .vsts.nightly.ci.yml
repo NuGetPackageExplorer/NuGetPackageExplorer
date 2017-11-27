@@ -1,0 +1,97 @@
+queue: "Hosted VS2017"
+variables: 
+  BuildConfiguration: Release
+steps:
+- task: BatchScript@1
+  inputs:
+    filename: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\Tools\\VsDevCmd.bat"
+    arguments: -no_logo
+    modifyEnvironment: true
+  displayName: Setup Environment Variables
+
+- task: NuGetToolInstaller@0
+  displayName: Use NuGet 4.4
+  inputs:
+    versionSpec: 4.4.1
+
+- powershell: |
+    # restore 
+    msbuild /t:restore PackageExplorer\PackageExplorer.csproj
+    
+    # version
+    $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
+    $ver = $vers.SimpleVersion
+        
+    # Update appxmanifests. These must be done before build.
+    $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"    
+    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
+    
+    $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
+    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+    
+    # Build PackageExplorer
+    msbuild .\PackageExplorer\PackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) 
+    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /p:AppxBundle=Always
+    msbuild .\PackageExplorer.Package\PackageExplorer.Package.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload 
+    
+    # Update versions
+    $doc = Get-Content ".\Build\ci_badge.svg"    
+    $doc | % { $_.Replace("ver_number", "$ver.0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\version_badge.svg"
+    
+    $doc = Get-Content ".\Build\store_badge.svg"    
+    $doc | % { $_.Replace("ver_number", "$ver.0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
+    
+    # Choco uses MajorMinorVersion
+    $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
+    $ver = $vers.MajorMinorVersion
+    
+    nuget pack .\PackageExplorer\NuGetPackageExplorer.nuspec -version $ver -OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly  
+        
+  displayName: Build Nightly
+  
+- task: ArchiveFiles@1
+  displayName: Zip PackageExplorer files
+  inputs:
+    archiveType: zip
+    rootFolder: PackageExplorer/bin/$(BuildConfiguration)
+    archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.zip
+    includeRootFolder: false
+    
+- task: PowerShell@2
+  displayName: Authenticode Sign Nightly artifacts
+  inputs:
+    filePath: Build/Sign-Package.ps1
+  env:
+    SignClientUser: $(SignClientUser)
+    SignClientSecret: $(SignClientSecret)
+    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Nightly
+
+- task: PowerShell@2
+  displayName: Authenticode Sign Zip artifacts
+  inputs:
+    filePath: Build/Sign-Zip.ps1
+  env:
+    SignClientUser: $(SignClientUser)
+    SignClientSecret: $(SignClientSecret)
+    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Zip   
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Nightly Artifact
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)\Nightly
+    artifactType: container
+    artifactName: Nightly
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Zip Artifact
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
+    artifactType: container
+    artifactName: Zip
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Store Artifacts
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)\Store
+    artifactType: container
+    artifactName: Store    
