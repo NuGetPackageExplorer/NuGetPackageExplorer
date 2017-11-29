@@ -24,10 +24,5 @@ namespace PackageExplorer
                 await viewModel.PushPackage();
             }
         }
-
-        private void UsePAT_ToolTipOpening(object sender, System.Windows.Controls.ToolTipEventArgs e)
-        {
-
-        }
     }
 }
