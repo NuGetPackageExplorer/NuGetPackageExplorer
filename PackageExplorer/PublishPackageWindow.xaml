@@ -63,6 +63,26 @@
             <TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0" Text="{Binding PublishKey}">
             </TextBox>
         </DockPanel>
+        <!-- Publish Key type-->
+        <DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
+            <Label DockPanel.Dock="Left" Content="Key type:" Width="75" />
+            <RadioButton x:Name="UseApiKey" 
+                         GroupName="KeyType" 
+                         IsEnabled="{Binding CanPublish}" 
+                         VerticalAlignment="Center" 
+                         IsChecked="{Binding UseApiKey}" 
+                         Content="API Key" 
+                         ToolTip="Use this when only an API Key is required"
+                         />
+            <RadioButton x:Name="UsePAT" 
+                         GroupName="KeyType" 
+                         IsEnabled="{Binding CanPublish}" 
+                         IsChecked="{Binding UseAccessToken}" 
+                         VerticalAlignment="Center" 
+                         Content="Personal Access Token" 
+                         ToolTip="Use this when a PAT is used for credentials" Margin="10,0,0,0"
+                         />
+        </DockPanel>
         <CheckBox Margin="10,5,0,5" VerticalContentAlignment="Center" IsChecked="{Binding AppendV2ApiToUrl, BindingGroupName=Nothing, Mode=TwoWay}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="Append 'api/v2/package' to publish url" ToolTip="Check this for publishing to NuGet.org."/>
 
         <!-- Publish as unlisted flag -->

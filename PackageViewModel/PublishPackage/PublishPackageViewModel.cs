@@ -23,6 +23,8 @@ namespace PackageExplorerViewModel
         private string _publishKey;
         private bool? _publishAsUnlisted = true;
         private bool? _appendV2ApiToUrl = true;
+        private bool? _useApiKey = true;
+        private bool? _unlistPreviousVersions = false;
         private string _selectedPublishItem;
         private bool _showProgress;
         private string _status;
@@ -40,6 +42,8 @@ namespace PackageExplorerViewModel
             _packageFilePath = viewModel.GetCurrentPackageTempFile();
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
             PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
+            UseApiKey = _settingsManager.UseApiKey;
+            UnlistPreviousVersions = false;
         }
 
         public string PublishKey
@@ -115,6 +119,27 @@ namespace PackageExplorerViewModel
                 }
             }
         }
+        public bool? UseApiKey
+        {
+            get { return _useApiKey; }
+            set
+            {
+                if (_useApiKey != value)
+                {
+                    _useApiKey = value;
+                    OnPropertyChanged("UseApiKey");
+                }
+            }
+        }
+        public bool? UseAccessToken
+
+        {
+            get { return !UseApiKey; }
+            set
+            {
+                UseApiKey = !value;
+            }
+        }
 
         public bool? AppendV2ApiToUrl
         {
@@ -128,7 +153,19 @@ namespace PackageExplorerViewModel
                 }
             }
         }
-        
+        public bool? UnlistPreviousVersions
+        {
+            get { return _unlistPreviousVersions; }
+            set
+            {
+                if (_unlistPreviousVersions != value)
+                {
+                    _unlistPreviousVersions = value;
+                    OnPropertyChanged("UnlistPreviousVersions");
+                }
+            }
+        }
+
         public string Id
         {
             get { return _package.Id; }
@@ -238,8 +275,8 @@ namespace PackageExplorerViewModel
 
             try
             {
-                await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false);
-
+                await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false, UseApiKey ?? true);
+                
                 OnCompleted();
             }
             catch (Exception exception)
@@ -267,6 +304,7 @@ namespace PackageExplorerViewModel
         public void Dispose()
         {
             _settingsManager.PublishAsUnlisted = (bool)PublishAsUnlisted;
+            _settingsManager.UseApiKey = UseApiKey ?? true;
         }
     }
 }
