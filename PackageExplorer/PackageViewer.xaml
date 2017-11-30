@@ -38,6 +38,7 @@
             <self:PackageDependencyConverter x:Key="PackageDependencyConverter" />
             <self:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
             <self:NuGetVersionConverter x:Key="NuGetVersionConverter" />
+            <self:CertificateToSubjectConverter x:Key="CertificateToSubjectConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
@@ -183,6 +184,18 @@
                             <TextBlock Text="{x:Static resources:Resources.Dialog_VersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Version, Converter={StaticResource NuGetVersionConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
                             <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version.IsPrerelease, Mode=OneWay, Converter={StaticResource BooleanToVisConverter}}" />
+                        </StackPanel>
+
+                        <!-- Publisher -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" 
+                                    Visibility="{Binding PublisherCertificate, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_PublisherLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Style="{StaticResource DetailMetadataValueStyle}" >
+                                <Hyperlink Command="GoToPage" CommandParameter="{Binding PublisherCertificate}">
+                                    <Run Text="{Binding PublisherCertificate, Converter={StaticResource CertificateToSubjectConverter}}" />
+                                </Hyperlink>
+                            </TextBlock>
+                            
                         </StackPanel>
 
                         <!-- Title -->

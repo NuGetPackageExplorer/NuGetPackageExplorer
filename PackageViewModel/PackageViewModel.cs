@@ -102,9 +102,13 @@ namespace PackageExplorerViewModel
             _packageRules = packageRules;
 
             _packageMetadata = new EditablePackageMetadata(_package);
+
             PackageSource = source;
 
             _packageRoot = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
+
+            // HACK: this is after the package.GetFiles() since that reads the signature
+            _packageMetadata.PublisherCertificate = _package.PublisherCertificate;
         }
 
         internal IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata

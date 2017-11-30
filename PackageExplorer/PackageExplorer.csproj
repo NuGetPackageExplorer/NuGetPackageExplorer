@@ -115,6 +115,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Deployment" />
     <Reference Include="System.Net.Http" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
@@ -147,6 +148,7 @@
     <Compile Include="Converters\StringShortenerConverter.cs" />
     <Compile Include="Converters\TargetFrameworkConverter.cs" />
     <Compile Include="Converters\NuGetVersionConverter.cs" />
+    <Compile Include="Converters\CertificateToSubjectConverter.cs" />
     <Compile Include="MefServices\CredentialManager.cs" />
     <Compile Include="MefServices\RtfFileViewer.cs" />
     <Compile Include="PackageDownloadRequestedEventArgs.cs" />
