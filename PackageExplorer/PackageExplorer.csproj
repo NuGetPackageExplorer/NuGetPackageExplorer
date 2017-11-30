@@ -168,6 +168,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="TextEditor\TextHighlightingDefinition.cs" />
+    <Compile Include="Utilities\DistinguishedNameParser.cs" />
     <Compile Include="Utilities\StreamUtility.cs" />
     <Compile Include="TextEditor\SyntaxHighlightingHelper.cs" />
     <Compile Include="Wpf\NetSemanticVersionValidationRule.cs" />
