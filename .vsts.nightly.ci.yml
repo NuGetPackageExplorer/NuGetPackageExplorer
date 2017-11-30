@@ -81,6 +81,7 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Nightly
     artifactType: container
     artifactName: Nightly
+  condition: always()
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Zip Artifact
@@ -88,10 +89,12 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
     artifactType: container
     artifactName: Zip
+  condition: always()
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Store Artifacts
   inputs:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Store
     artifactType: container
-    artifactName: Store    
+    artifactName: Store
+  condition: always()
