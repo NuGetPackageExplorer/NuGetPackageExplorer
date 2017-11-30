@@ -74,7 +74,7 @@
                          Content="API Key" 
                          ToolTip="Use this when only an API Key is required"
                          />
-            <RadioButton x:Name="UsePAT" 
+            <RadioButton x:Name="UseAccessToken" 
                          GroupName="KeyType" 
                          IsEnabled="{Binding CanPublish}" 
                          IsChecked="{Binding UseAccessToken}" 
