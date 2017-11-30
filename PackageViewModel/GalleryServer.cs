@@ -31,30 +31,14 @@ namespace PackageExplorerViewModel
             get { return _source; }
         }
 
-        public async Task PushPackage(string apiKey, string filePath, IPackageMetadata package, bool pushAsUnlisted, bool appendV2ApiToUrl, bool useApiKey)
+        public async Task PushPackage(string apiKey, string filePath, IPackageMetadata package, bool pushAsUnlisted, bool appendV2ApiToUrl)
         {
             string requestUri = CreateRequestUri(appendV2ApiToUrl);
 
-            HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
-
-            HttpStatusCode expectedStatus = HttpStatusCode.Created;
-            httpRequest.Method = "PUT";
-            httpRequest.AllowAutoRedirect = true;
-            httpRequest.KeepAlive = false;
-            httpRequest.UserAgent = _userAgent;
-            httpRequest.Headers.Add("X-NuGet-Protocol-Version", "4.1.0");
-            httpRequest.PreAuthenticate = true;
-            httpRequest.Headers.Add(ApiKeyHeader, apiKey);
-            if (useApiKey)
-            {
-                httpRequest.UseDefaultCredentials = true;
-            }
-            else
-            {
-                httpRequest.UseDefaultCredentials = false;
-                httpRequest.Credentials = new NetworkCredential("PAT", apiKey);
-                expectedStatus = HttpStatusCode.Accepted;
-            }
+            // Nuget Server returns Created. VSTS Returns Accepted 
+            HttpStatusCode expectedStatus = HttpStatusCode.Created | HttpStatusCode.Accepted;
+            HttpWebRequest httpRequest = CreatePushRequest(requestUri);
+            ConfigureRequestAuthApi(httpRequest, apiKey);
 
             var multipartRequest = new MultipartWebRequest();
             multipartRequest.AddFile(new FileInfo(filePath), package.ToString());
@@ -67,8 +51,50 @@ namespace PackageExplorerViewModel
 
             if (pushAsUnlisted)
             {
-                await DeletePackageFromServer(apiKey, package.Id, package.Version.ToString(), appendV2ApiToUrl, useApiKey);
+                await DeletePackageFromServer(apiKey, package.Id, package.Version.ToString(), appendV2ApiToUrl);
             }
+        }
+        public async Task PushPackageWithCredentials(string filePath, IPackageMetadata package, bool pushAsUnlisted, bool appendV2ApiToUrl, string username, string password)
+        {
+            string requestUri = CreateRequestUri(appendV2ApiToUrl);
+
+            // Nuget Server returns Created. VSTS Returns Accepted 
+            HttpStatusCode expectedStatus = HttpStatusCode.Created | HttpStatusCode.Accepted;
+            HttpWebRequest httpRequest = CreatePushRequest(requestUri);
+            ConfigureRequestAuthCredentials(httpRequest, username, password);
+
+            var multipartRequest = new MultipartWebRequest();
+            multipartRequest.AddFile(new FileInfo(filePath), package.ToString());
+
+            // sending package data asynchronously
+            await multipartRequest.CreateMultipartRequest(httpRequest);
+
+            // waiting for response asynchronously
+            await EnsureSuccessfulResponse(httpRequest, expectedStatus);
+
+            if (pushAsUnlisted)
+            {
+                await DeletePackageFromServerWithCredentials(package.Id, package.Version.ToString(), appendV2ApiToUrl, username, password);
+            }
+        }
+
+        private Task DeletePackageFromServer(string apiKey, string packageId, string packageVersion, bool appendV2ApiToUrl)
+        {
+            string requestUri = CreateRequestUri(appendV2ApiToUrl) + "/" + packageId + "/" + packageVersion;
+            HttpWebRequest httpRequest = CreateDeleteRequest(requestUri);
+
+            ConfigureRequestAuthApi(httpRequest, apiKey);
+
+            return EnsureSuccessfulResponse(httpRequest);
+        }
+        private Task DeletePackageFromServerWithCredentials(string packageId, string packageVersion, bool appendV2ApiToUrl, string username, string password)
+        {
+            string requestUri = CreateRequestUri(appendV2ApiToUrl) + "/" + packageId + "/" + packageVersion;
+            HttpWebRequest httpRequest = CreateDeleteRequest(requestUri);
+
+            ConfigureRequestAuthCredentials(httpRequest, username, password);
+
+            return EnsureSuccessfulResponse(httpRequest);
         }
 
         private string CreateRequestUri(bool appendV2ApiToUrl)
@@ -77,27 +103,36 @@ namespace PackageExplorerViewModel
 
             return appendV2ApiToUrl ? source + ServiceEndpoint : source;
         }
-
-        private Task DeletePackageFromServer(string apiKey, string packageId, string packageVersion, bool appendV2ApiToUrl, bool useApiKey)
+        private HttpWebRequest CreatePushRequest(string requestUri)
         {
-            string requestUri = CreateRequestUri(appendV2ApiToUrl) + "/" + packageId + "/" + packageVersion;
+            HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
 
+            httpRequest.Method = "PUT";
+            httpRequest.AllowAutoRedirect = true;
+            httpRequest.KeepAlive = false;
+            httpRequest.UserAgent = _userAgent;
+            httpRequest.Headers.Add("X-NuGet-Protocol-Version", "4.1.0");
+            httpRequest.PreAuthenticate = true;
+            return httpRequest;
+        }
+        private HttpWebRequest CreateDeleteRequest(string requestUri)
+        {
             HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
             httpRequest.UseDefaultCredentials = true;
             httpRequest.Method = "DELETE";
             httpRequest.UserAgent = _userAgent;
+            return httpRequest;
+        }
+        private static void ConfigureRequestAuthCredentials(HttpWebRequest httpRequest, string username, string password)
+        {
+            httpRequest.Headers.Add(ApiKeyHeader, password);
+            httpRequest.UseDefaultCredentials = false;
+            httpRequest.Credentials = new NetworkCredential(username, password);
+        }
+        private static void ConfigureRequestAuthApi(HttpWebRequest httpRequest, string apiKey)
+        {
             httpRequest.Headers.Add(ApiKeyHeader, apiKey);
-            if (useApiKey)
-            {
-                httpRequest.UseDefaultCredentials = true;
-            }
-            else
-            {
-                httpRequest.UseDefaultCredentials = false;
-                httpRequest.Credentials = new NetworkCredential("PAT", apiKey);
-            }
-
-            return EnsureSuccessfulResponse(httpRequest);
+            httpRequest.UseDefaultCredentials = true;
         }
 
         private static async Task EnsureSuccessfulResponse(HttpWebRequest httpRequest, HttpStatusCode? expectedStatusCode = null)
@@ -109,7 +144,7 @@ namespace PackageExplorerViewModel
                      httpRequest.BeginGetResponse, httpRequest.EndGetResponse, state: null);
 
                 if (response != null &&
-                    ((expectedStatusCode.HasValue && expectedStatusCode.Value != response.StatusCode) ||
+                    ((expectedStatusCode.HasValue && !expectedStatusCode.Value.HasFlag(response.StatusCode)) ||
 
                     // If expected status code isn't provided, just look for anything 400 (Client Errors) or higher (incl. 500-series, Server Errors)
                     // 100-series is protocol changes, 200-series is success, 300-series is redirect.

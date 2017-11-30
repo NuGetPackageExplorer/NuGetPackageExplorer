@@ -21,6 +21,9 @@ namespace PackageExplorerViewModel
         private bool _canPublish = true;
         private bool _hasError;
         private string _publishKey;
+        private string _publishCredentialUsername;
+        private string _publishCredentialPassword;
+        private bool _isAuthSet;
         private bool? _publishAsUnlisted = true;
         private bool? _appendV2ApiToUrl = true;
         private bool? _useApiKey = true;
@@ -53,6 +56,33 @@ namespace PackageExplorerViewModel
                 {
                     _publishKey = value;
                     OnPropertyChanged(nameof(PublishKey));
+                    CheckIfAuthIsSet();
+                }
+            }
+        }
+        public string PublishCredentialUsername
+        {
+            get { return _publishCredentialUsername; }
+            set
+            {
+                if (_publishCredentialUsername != value)
+                {
+                    _publishCredentialUsername = value;
+                    OnPropertyChanged("PublishCredentialUsername");
+                    CheckIfAuthIsSet();
+                }
+            }
+        }
+        public string PublishCredentialPassword
+        {
+            get { return _publishCredentialPassword; }
+            set
+            {
+                if (_publishCredentialPassword != value)
+                {
+                    _publishCredentialPassword = value;
+                    OnPropertyChanged("PublishCredentialPassword");
+                    CheckIfAuthIsSet();
                 }
             }
         }
@@ -126,10 +156,11 @@ namespace PackageExplorerViewModel
                 {
                     _useApiKey = value;
                     OnPropertyChanged(nameof(UseApiKey));
+                    CheckIfAuthIsSet();
                 }
             }
         }
-        public bool? UseAccessToken
+        public bool? UseCredentials
 
         {
             get { return !UseApiKey; }
@@ -200,6 +231,23 @@ namespace PackageExplorerViewModel
                 }
             }
         }
+        public bool IsAuthSet
+        {
+            get { return _isAuthSet; }
+            set
+            {
+                if (_isAuthSet != value)
+                {
+                    _isAuthSet = value;
+                    OnPropertyChanged(nameof(IsAuthSet));
+                }
+            }
+        }
+
+        private void CheckIfAuthIsSet()
+        {
+            IsAuthSet = (UseApiKey.HasValue && UseApiKey.Value && !string.IsNullOrWhiteSpace(PublishKey)) || (UseCredentials.HasValue && UseCredentials.Value && !string.IsNullOrWhiteSpace(PublishCredentialPassword)); ;
+        }
 
         public GalleryServer GalleryServer
         {
@@ -234,7 +282,10 @@ namespace PackageExplorerViewModel
             ShowProgress = false;
             HasError = false;
             Status = (PublishAsUnlisted == true) ? "Package published and unlisted successfully." : "Package published successfully.";
-            _settingsManager.WriteApiKey(PublishUrl, PublishKey);
+            if (UseApiKey.HasValue && UseApiKey.Value)
+            {
+                _settingsManager.WriteApiKey(PublishUrl, PublishKey);
+            }
             CanPublish = true;
         }
 
@@ -261,7 +312,14 @@ namespace PackageExplorerViewModel
 
             try
             {
-                await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false, UseApiKey ?? true);
+                if (UseCredentials.HasValue && UseCredentials.Value)
+                {
+                    await GalleryServer.PushPackageWithCredentials(_packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false, PublishCredentialUsername, PublishCredentialPassword);
+                }
+                else
+                {
+                    await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false);
+                }
                 
                 OnCompleted();
             }
