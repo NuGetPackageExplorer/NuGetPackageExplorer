@@ -307,7 +307,7 @@ namespace NuGetPe
         private static bool IsPackageFile(string path)
         {
             // We exclude any opc files and the manifest file (.nuspec)
-            return !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
+            return !path.EndsWith("/") && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
         }
 
