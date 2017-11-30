@@ -24,7 +24,17 @@ namespace PackageExplorerViewModel
 
         public bool CanExecute(object parameter)
         {
-            return !ViewModel.IsInEditFileMode;
+            var readOnly = ViewModel.IsReadOnly;
+
+            var action = parameter as string;
+            if (action == SaveAsAction || action == SaveMetadataAction)
+            {
+                // These actions are allowed since it doesn't modify the file itself
+                readOnly = false;    
+            }
+
+
+            return !readOnly && !ViewModel.IsInEditFileMode;
         }
 
         public event EventHandler CanExecuteChanged;

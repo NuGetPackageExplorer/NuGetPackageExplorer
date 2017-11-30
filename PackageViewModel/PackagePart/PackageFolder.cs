@@ -159,7 +159,7 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            if (PackageViewModel.IsInEditFileMode)
+            if (PackageViewModel.IsReadOnly || PackageViewModel.IsInEditFileMode)
             {
                 return false;
             }
