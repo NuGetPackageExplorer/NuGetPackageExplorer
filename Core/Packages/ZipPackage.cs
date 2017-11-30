@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.Pkcs;
+using System.Security.Cryptography.X509Certificates;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -15,7 +17,7 @@ namespace NuGetPe
         private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe", ".winmd"};
 
         // paths to exclude
-        private static readonly string[] ExcludePaths = new[] {"_rels", "package","[Content_Types]"};
+        private static readonly string[] ExcludePaths = new[] {"_rels", "package","[Content_Types]", ".signature"};
 
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
@@ -270,7 +272,15 @@ namespace NuGetPe
             }
         }
 
-    
+        public bool IsSigned { get; private set; }
+
+        public bool IsVerified => false;
+
+        public X509Certificate2 PublisherCertificate { get; private set; }
+
+        public X509Certificate2 RepositoryCertificate => null;
+
+
         // Keep a list of open stream here, and close on dispose.
         private List<IDisposable> _danglingStreams = new List<IDisposable>();
 
@@ -283,7 +293,7 @@ namespace NuGetPe
 
             
             return (from file in reader.GetFiles()
-                    where IsPackageFile(file)
+                    where IsPackageFile(file, reader)
                     select new ZipPackageFile(reader, file)).ToList();
         }
 
@@ -304,11 +314,34 @@ namespace NuGetPe
             }
         }
 
-        private static bool IsPackageFile(string path)
+        private bool IsPackageFile(string path, PackageArchiveReader reader)
         {
             // We exclude any opc files and the manifest file (.nuspec)
+
+            // check for signature here as a hack until we have API support in nuget
+            if (path.StartsWith(".signature"))
+            {
+                IsSigned = true;
+                using (var ms = new MemoryStream())
+                using (var str = reader.GetStream(path))
+                {
+                    str.CopyTo(ms);
+                    PopulateSignatureProperties(ms.ToArray());
+                }
+                   
+            }
+
             return !path.EndsWith("/") && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
+        }
+
+        private void PopulateSignatureProperties(byte[] messageBytes)
+        {
+            var signedCms = new SignedCms();
+            signedCms.Decode(messageBytes);
+            var signerInfo = signedCms.SignerInfos[0]; // Should always be 1 total
+
+            PublisherCertificate = signerInfo.Certificate;
         }
 
         public override string ToString()
