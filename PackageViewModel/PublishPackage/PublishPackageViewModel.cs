@@ -24,7 +24,6 @@ namespace PackageExplorerViewModel
         private bool? _publishAsUnlisted = true;
         private bool? _appendV2ApiToUrl = true;
         private bool? _useApiKey = true;
-        private bool? _unlistPreviousVersions = false;
         private string _selectedPublishItem;
         private bool _showProgress;
         private string _status;
@@ -43,7 +42,6 @@ namespace PackageExplorerViewModel
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
             PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
             UseApiKey = _settingsManager.UseApiKey;
-            UnlistPreviousVersions = false;
         }
 
         public string PublishKey
@@ -54,7 +52,7 @@ namespace PackageExplorerViewModel
                 if (_publishKey != value)
                 {
                     _publishKey = value;
-                    OnPropertyChanged("PublishKey");
+                    OnPropertyChanged(nameof(PublishKey));
                 }
             }
         }
@@ -68,7 +66,7 @@ namespace PackageExplorerViewModel
                 if (_mruSourceManager.ActivePackageSource != value)
                 {
                     _mruSourceManager.ActivePackageSource = value;
-                    OnPropertyChanged("PublishUrl");
+                    OnPropertyChanged(nameof(PublishUrl));
                 }
             }
         }
@@ -81,7 +79,7 @@ namespace PackageExplorerViewModel
                 if (_selectedPublishItem != value)
                 {
                     _selectedPublishItem = value;
-                    OnPropertyChanged("SelectedPublishItem");
+                    OnPropertyChanged(nameof(SelectedPublishItem));
 
                     if (value != null)
                     {
@@ -115,7 +113,7 @@ namespace PackageExplorerViewModel
                 if (_publishAsUnlisted != value)
                 {
                     _publishAsUnlisted = value;
-                    OnPropertyChanged("PublishAsUnlisted");
+                    OnPropertyChanged(nameof(PublishAsUnlisted));
                 }
             }
         }
@@ -127,7 +125,7 @@ namespace PackageExplorerViewModel
                 if (_useApiKey != value)
                 {
                     _useApiKey = value;
-                    OnPropertyChanged("UseApiKey");
+                    OnPropertyChanged(nameof(UseApiKey));
                 }
             }
         }
@@ -149,19 +147,7 @@ namespace PackageExplorerViewModel
                 if (_appendV2ApiToUrl != value)
                 {
                     _appendV2ApiToUrl = value;
-                    OnPropertyChanged("AppendV2ApiToUrl");
-                }
-            }
-        }
-        public bool? UnlistPreviousVersions
-        {
-            get { return _unlistPreviousVersions; }
-            set
-            {
-                if (_unlistPreviousVersions != value)
-                {
-                    _unlistPreviousVersions = value;
-                    OnPropertyChanged("UnlistPreviousVersions");
+                    OnPropertyChanged(nameof(AppendV2ApiToUrl));
                 }
             }
         }
@@ -184,7 +170,7 @@ namespace PackageExplorerViewModel
                 if (_hasError != value)
                 {
                     _hasError = value;
-                    OnPropertyChanged("HasError");
+                    OnPropertyChanged(nameof(HasError));
                 }
             }
         }
@@ -197,7 +183,7 @@ namespace PackageExplorerViewModel
                 if (_showProgress != value)
                 {
                     _showProgress = value;
-                    OnPropertyChanged("ShowProgress");
+                    OnPropertyChanged(nameof(ShowProgress));
                 }
             }
         }
@@ -210,7 +196,7 @@ namespace PackageExplorerViewModel
                 if (_canPublish != value)
                 {
                     _canPublish = value;
-                    OnPropertyChanged("CanPublish");
+                    OnPropertyChanged(nameof(CanPublish));
                 }
             }
         }
@@ -236,7 +222,7 @@ namespace PackageExplorerViewModel
                 if (_status != value)
                 {
                     _status = value;
-                    OnPropertyChanged("Status");
+                    OnPropertyChanged(nameof(Status));
                 }
             }
         }
