@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using NuGet.Versioning;
 using NuGet.Packaging.Core;
+using System.Security.Cryptography.X509Certificates;
 
 namespace NuGetPe
 {
@@ -153,6 +154,14 @@ namespace NuGetPe
         public RepositoryMetadata Repository => CorePackage?.Repository;
 
         NuGetVersion IPackageMetadata.Version => NuGetVersion.Parse(Version);
+
+        public bool IsSigned => CorePackage?.IsSigned ?? false;
+
+        public bool IsVerified => CorePackage?.IsVerified ?? false;
+
+        public X509Certificate2 PublisherCertificate => CorePackage?.PublisherCertificate;
+
+        public X509Certificate2 RepositoryCertificate => CorePackage?.RepositoryCertificate;
 
         public IEnumerable<IPackageFile> GetFiles()
         {

@@ -159,6 +159,9 @@
   <data name="Dialog_OwnersLabel" xml:space="preserve">
     <value>Owners:</value>
   </data>
+  <data name="Dialog_PublisherLabel" xml:space="preserve">
+    <value>Publisher</value>
+  </data>
   <data name="Dialog_ReportAbuse" xml:space="preserve">
     <value>Report Abuse</value>
   </data>

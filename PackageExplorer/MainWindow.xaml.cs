@@ -7,11 +7,13 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Threading;
 using NuGet.Versioning;
 using NuGetPe;
@@ -421,6 +423,14 @@ namespace PackageExplorer
         {
             if (e.Command != NavigationCommands.GoToPage)
             {
+                return;
+            }
+
+            // We might get a certificate to display instead
+            if(e.Parameter is X509Certificate2 cert)
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                X509Certificate2UI.DisplayCertificate(cert, hwnd);
                 return;
             }
 

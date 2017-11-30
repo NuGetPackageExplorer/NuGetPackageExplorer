@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -189,7 +190,15 @@ namespace PackageExplorerViewModel
 
         public IEnumerable<PackageType> PackageTypes => Enumerable.Empty<PackageType>();
 
-        public RepositoryMetadata Repository => null; 
+        public RepositoryMetadata Repository => null;
+
+        public bool IsSigned => false;
+
+        public bool IsVerified => false;
+
+        public X509Certificate2 PublisherCertificate => null;
+
+        public X509Certificate2 RepositoryCertificate => null;
 
         #endregion
 

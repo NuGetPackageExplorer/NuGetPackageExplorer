@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -62,6 +63,8 @@ namespace PackageExplorerViewModel
                 }
             }
         }
+
+        public X509Certificate2 PublisherCertificate { get; set; }
 
         public string Owners
         {

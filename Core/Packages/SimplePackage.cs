@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using NuGet.Versioning;
 using NuGet.Packaging.Core;
+using System.Security.Cryptography.X509Certificates;
 
 namespace NuGetPe
 {
@@ -169,8 +170,16 @@ namespace NuGetPe
 
         public RepositoryMetadata Repository { get; private set; }
 
+        public bool IsSigned => false;
+
+        public bool IsVerified => false;
+
+        public X509Certificate2 PublisherCertificate => null;
+
+        public X509Certificate2 RepositoryCertificate => null;
+
         #endregion
-        
+
         public void Dispose()
         {
         }

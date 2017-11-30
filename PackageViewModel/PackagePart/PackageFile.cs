@@ -36,7 +36,7 @@ namespace PackageExplorerViewModel
             {
                 WatchPhysicalFile(physicalFile);
             }
-            ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsInEditFileMode);
+            ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsReadOnly && !viewModel.IsInEditFileMode);
         }
 
         #region IPackageFile members

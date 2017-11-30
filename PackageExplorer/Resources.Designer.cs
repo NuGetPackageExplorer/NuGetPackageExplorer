@@ -187,6 +187,15 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publisher.
+        /// </summary>
+        public static string Dialog_PublisherLabel {
+            get {
+                return ResourceManager.GetString("Dialog_PublisherLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Report Abuse.
         /// </summary>
         public static string Dialog_ReportAbuse {

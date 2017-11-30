@@ -102,9 +102,13 @@ namespace PackageExplorerViewModel
             _packageRules = packageRules;
 
             _packageMetadata = new EditablePackageMetadata(_package);
+
             PackageSource = source;
 
             _packageRoot = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
+
+            // HACK: this is after the package.GetFiles() since that reads the signature
+            _packageMetadata.PublisherCertificate = _package.PublisherCertificate;
         }
 
         internal IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata
@@ -134,6 +138,9 @@ namespace PackageExplorerViewModel
         {
             get { return FileEditorViewModel != null; }
         }
+
+        public bool IsReadOnly => _package.IsSigned; // Signed packages can not be altered. Remove the sig first
+        
 
         public FileEditorViewModel FileEditorViewModel
         {
@@ -289,7 +296,7 @@ namespace PackageExplorerViewModel
 
         private bool AddContentFileCanExecute(object parameter)
         {
-            if (IsInEditFileMode)
+            if (IsReadOnly || IsInEditFileMode)
             {
                 return false;
             }
@@ -346,7 +353,7 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            if (IsInEditFileMode)
+            if (IsReadOnly || IsInEditFileMode)
             {
                 return false;
             }
@@ -378,7 +385,7 @@ namespace PackageExplorerViewModel
 
         private bool AddNewFolderCanExecute(object parameter)
         {
-            if (IsInEditFileMode)
+            if (IsReadOnly || IsInEditFileMode)
             {
                 return false;
             }
@@ -436,7 +443,7 @@ namespace PackageExplorerViewModel
 
         private bool EditPackageCanExecute()
         {
-            return !IsInEditMetadataMode && !IsInEditFileMode;
+            return !IsReadOnly && !IsInEditMetadataMode && !IsInEditFileMode;
         }
 
         private void EditPackageExecute()
@@ -455,7 +462,7 @@ namespace PackageExplorerViewModel
             {
                 if (_applyEditCommand == null)
                 {
-                    _applyEditCommand = new RelayCommand(() => ApplyEditExecute(), () => !IsInEditFileMode);
+                    _applyEditCommand = new RelayCommand(() => ApplyEditExecute(), () => !IsReadOnly && !IsInEditFileMode);
                 }
 
                 return _applyEditCommand;
@@ -483,7 +490,7 @@ namespace PackageExplorerViewModel
             {
                 if (_cancelEditCommand == null)
                 {
-                    _cancelEditCommand = new RelayCommand(CancelEditExecute, () => !IsInEditFileMode);
+                    _cancelEditCommand = new RelayCommand(CancelEditExecute, () => !IsReadOnly && !IsInEditFileMode);
                 }
 
                 return _cancelEditCommand;
@@ -515,7 +522,7 @@ namespace PackageExplorerViewModel
 
         private bool DeleteContentCanExecute(object parameter)
         {
-            if (IsInEditFileMode)
+            if (IsReadOnly || IsInEditFileMode)
             {
                 return false;
             }
@@ -550,7 +557,7 @@ namespace PackageExplorerViewModel
 
         private bool RenameContentCanExecuted(object parameter)
         {
-            if (IsInEditFileMode)
+            if (IsReadOnly || IsInEditFileMode)
             {
                 return false;
             }
@@ -664,7 +671,7 @@ namespace PackageExplorerViewModel
 
         private bool SaveContentCanExecute(PackageFile file)
         {
-            return !IsInEditFileMode;
+            return !IsReadOnly && !IsInEditFileMode;
         }
 
         #endregion
@@ -892,7 +899,8 @@ namespace PackageExplorerViewModel
 
         private bool CanEditFileCommandExecute(PackagePart file)
         {
-            return (file is PackageFile) && 
+            return !IsReadOnly && 
+                   (file is PackageFile) && 
                    !IsInEditFileMode &&
                    !FileHelper.IsBinaryFile(file.Path);
         }
@@ -926,7 +934,7 @@ namespace PackageExplorerViewModel
 
         private bool CanEditMetadataSourceCommandExecute()
         {
-            return !IsInEditFileMode && !IsInEditMetadataMode;
+            return !IsReadOnly && !IsInEditFileMode && !IsInEditMetadataMode;
         }
 
         private IEditablePackageFile CreatePackageMetadataFile()
@@ -958,7 +966,7 @@ namespace PackageExplorerViewModel
 
         private bool AddNewFileCanExecute(object parameter)
         {
-            if (IsInEditFileMode)
+            if (IsReadOnly || IsInEditFileMode)
             {
                 return false;
             }
