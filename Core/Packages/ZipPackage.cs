@@ -319,7 +319,7 @@ namespace NuGetPe
             // We exclude any opc files and the manifest file (.nuspec)
 
             // check for signature here as a hack until we have API support in nuget
-            if (path.StartsWith(".signature"))
+            if (path.StartsWith(".signature.p7s"))
             {
                 IsSigned = true;
                 using (var ms = new MemoryStream())
