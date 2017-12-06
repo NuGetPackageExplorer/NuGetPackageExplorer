@@ -11,10 +11,10 @@ namespace NuGetPe.Utility
 {
     public static class ManifestUtility
     {
-        public const string TokenMetadataStart = "0.0.0+TOKENSTART.";
+        public const string TokenMetadataStart = "0.0.0-TOKENSTART.";
         public const string TokenMetadataEnd = ".TOKENEND";
         static readonly Regex tokenRegex = new Regex(@"([$])(?:(?=(\\?))\2.)*?\1", RegexOptions.Compiled);
-        static readonly Regex metadataRegEx = new Regex(@"0\.0\.0\+TOKENSTART\.([^.]+)\.TOKENEND", RegexOptions.Compiled);
+        static readonly Regex metadataRegEx = new Regex(@"0\.0\.0\-TOKENSTART\.([^.]+)\.TOKENEND", RegexOptions.Compiled);
 
         public static Stream ReadManifest(string file)
         {
@@ -33,6 +33,17 @@ namespace NuGetPe.Utility
             if (version != null)
             {
                 version.Value = ReplaceTokenWithMetadata(version.Value);
+            }
+
+            // Get dependency nodes
+            var deps = xdoc.Root.Descendants(ns + "dependency");
+            foreach (var dep in deps)
+            {
+                var val = dep.GetOptionalAttributeValue("version");
+                if (!string.IsNullOrWhiteSpace(val))
+                {
+                    dep.SetAttributeValue("version", ReplaceTokenWithMetadata(val));
+                }
             }
 
             var ms = new MemoryStream();
@@ -92,6 +103,17 @@ namespace NuGetPe.Utility
             if (version != null)
             {
                 version.Value = ReplaceMetadataWithToken(version.Value);
+            }
+
+            // Get dependency nodes
+            var deps = xdoc.Root.Descendants(ns + "dependency");
+            foreach (var dep in deps)
+            {
+                var val = dep.GetOptionalAttributeValue("version");
+                if (!string.IsNullOrWhiteSpace(val))
+                {
+                    dep.SetAttributeValue("version", ReplaceMetadataWithToken(val));
+                }
             }
 
             xdoc.Save(destinationStream);
