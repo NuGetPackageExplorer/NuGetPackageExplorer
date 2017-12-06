@@ -11,6 +11,7 @@ using NuGetPe;
 using NuGetPackageExplorer.Types;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using NuGet.Packaging;
+using NuGetPe.Utility;
 
 namespace PackageExplorerViewModel
 {
@@ -1265,7 +1266,13 @@ namespace PackageExplorerViewModel
                         })
                     );
                 }
-                manifest.Save(fileStream);
+                using (var ms = new MemoryStream())
+                {
+                    manifest.Save(ms);
+                    ms.Position = 0;
+                    ManifestUtility.SaveToStream(ms, fileStream);
+                }
+                    
             }
         }
 
@@ -1398,11 +1405,15 @@ namespace PackageExplorerViewModel
             {
                 try
                 {
-                    Manifest manifest = Manifest.ReadFrom(metadataFileStream, true);
-                    var newMetadata = new EditablePackageMetadata(manifest.Metadata, _uiServices);
-                    PackageMetadata = newMetadata;
+                    using (var str = ManifestUtility.ReadManifest(metadataFileStream))
+                    {
+                        Manifest manifest = Manifest.ReadFrom(str, true);
+                        var newMetadata = new EditablePackageMetadata(manifest.Metadata, _uiServices);
+                        PackageMetadata = newMetadata;
 
-                    return true;
+                        return true;
+                    }
+                        
                 }
                 catch (Exception exception)
                 {
