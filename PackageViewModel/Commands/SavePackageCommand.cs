@@ -26,6 +26,8 @@ namespace PackageExplorerViewModel
         {
             var isSigned = ViewModel.IsSigned;
 
+            var hasTokens = ViewModel.IsTokenized;
+
             var action = parameter as string;
             if (action == SaveAsAction || action == SaveMetadataAction)
             {
@@ -33,8 +35,13 @@ namespace PackageExplorerViewModel
                 isSigned = false;    
             }
 
+            if (action == SaveMetadataAction)
+            {
+                // allowed for tokenized things
+                hasTokens = false;
+            }
 
-            return !isSigned && !ViewModel.IsInEditFileMode;
+            return !isSigned && !hasTokens && !ViewModel.IsInEditFileMode;
         }
 
         public event EventHandler CanExecuteChanged;

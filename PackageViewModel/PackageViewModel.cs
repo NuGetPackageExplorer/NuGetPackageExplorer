@@ -184,6 +184,7 @@ namespace PackageExplorerViewModel
                 {
                     _packageMetadata = value;
                     OnPropertyChanged("PackageMetadata");
+                    OnPropertyChanged("IsTokenized");
                 }
             }
         }
@@ -754,7 +755,7 @@ namespace PackageExplorerViewModel
 
         private bool PublishCanExecute()
         {
-            return !IsInEditMetadataMode && !IsInEditFileMode;
+            return !IsTokenized && !IsInEditMetadataMode && !IsInEditFileMode;
         }
 
         #endregion
@@ -1196,7 +1197,12 @@ namespace PackageExplorerViewModel
             HasEdit = true;
             PackageMetadata.ResetErrors();
             IsInEditMetadataMode = false;
-            OnPropertyChanged("WindowTitle");
+
+            OnPropertyChanged(nameof(IsTokenized));
+            OnPropertyChanged(nameof(WindowTitle));
+
+            _saveCommand.RaiseCanExecuteChangedEvent();
+            _publishCommand.RaiseCanExecuteChanged();
         }
 
         internal void OnSaved(string fileName)
@@ -1382,6 +1388,19 @@ namespace PackageExplorerViewModel
                 }
             }
         }
+
+        private bool IsPackageTokenized()
+        {
+            if (PackageMetadata.Version.IsTokenized())
+                return true;
+
+            // any deps
+            return PackageMetadata.DependencySets
+                    .SelectMany(ds => ds.Packages)
+                    .Any(dp => dp.VersionRange.MinVersion.IsTokenized() || dp.VersionRange.MaxVersion.IsTokenized());
+        }
+
+        public bool IsTokenized => IsPackageTokenized();
 
         internal bool IsShowingFileContent(PackageFile file)
         {
