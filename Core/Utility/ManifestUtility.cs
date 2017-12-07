@@ -12,8 +12,8 @@ namespace NuGetPe.Utility
 {
     public static class ManifestUtility
     {
-        public const string TokenMetadataStart = "0.0.0-TOKENSTART.";
-        public const string TokenMetadataEnd = ".TOKENEND";
+        const string TokenMetadataStart = "0.0.0-TOKENSTART.";
+        const string TokenMetadataEnd = ".TOKENEND";
         static readonly Regex tokenRegex = new Regex(@"([$])(?:(?=(\\?))\2.)*?\1", RegexOptions.Compiled);
         static readonly Regex metadataRegEx = new Regex(@"0\.0\.0\-TOKENSTART\.([^.]+)\.TOKENEND", RegexOptions.Compiled);
 
