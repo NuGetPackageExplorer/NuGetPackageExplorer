@@ -11,6 +11,7 @@ using NuGet.Packaging.Signing;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+using NuGetPe.Utility;
 using PackageType = NuGet.Packaging.Core.PackageType;
 
 namespace PackageExplorerViewModel
@@ -571,7 +572,7 @@ namespace PackageExplorerViewModel
 
         public override string ToString()
         {
-            return Id + "." + Version;
+            return Id + "." + ManifestUtility.ReplaceMetadataWithToken(Version.ToFullString());
         }
 
         private string IsValid(string propertyName)

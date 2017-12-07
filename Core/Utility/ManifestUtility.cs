@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using NuGet.Versioning;
 
 namespace NuGetPe.Utility
 {
@@ -19,6 +20,14 @@ namespace NuGetPe.Utility
         public static Stream ReadManifest(string file)
         {
             return ReadManifest(File.OpenRead(file));
+        }
+
+
+        public static bool IsTokenized(this NuGetVersion version)
+        {
+            var labels = version.ReleaseLabels.ToList();
+
+            return labels.Count >= 3 && labels[0] == "TOKENSTART" && labels[labels.Count - 1] == "TOKENEND";
         }
 
         public static Stream ReadManifest(Stream stream)
@@ -61,6 +70,9 @@ namespace NuGetPe.Utility
         {
             // see if it's a token
 
+            if (value == null)
+                return value;
+
             var matches = tokenRegex.Matches(value);
             foreach (Match match in matches)
             {
@@ -78,6 +90,8 @@ namespace NuGetPe.Utility
         /// <returns></returns>
         public static string ReplaceMetadataWithToken(string value)
         {
+            if (value == null)
+                return value;
 
             // see if it's a token
             var matches = metadataRegEx.Matches(value);

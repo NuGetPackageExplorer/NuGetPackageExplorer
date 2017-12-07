@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
 using NuGet.Packaging.Core;
+using NuGetPe.Utility;
 
 namespace PackageExplorer
 {
@@ -15,7 +16,7 @@ namespace PackageExplorer
 
             var dependency = (PackageDependency)value;
             
-            return $"{dependency.Id} {dependency.VersionRange.PrettyPrint()}";
+            return $"{dependency.Id} {ManifestUtility.ReplaceMetadataWithToken(dependency.VersionRange.PrettyPrint())}";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

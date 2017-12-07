@@ -39,6 +39,7 @@
             <self:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
             <self:NuGetVersionConverter x:Key="NuGetVersionConverter" />
             <self:CertificateToSubjectConverter x:Key="CertificateToSubjectConverter" />
+            <self:NuGetVersionPreReleaseConverter x:Key="NuGetVersionPreReleaseConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
@@ -237,7 +238,7 @@
                         <StackPanel Style="{StaticResource DetailMetadataStyle}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_VersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Version, Converter={StaticResource NuGetVersionConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
-                            <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version.IsPrerelease, Mode=OneWay, Converter={StaticResource BooleanToVisConverter}}" />
+                            <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version, Mode=OneWay, Converter={StaticResource NuGetVersionPreReleaseConverter}}" />
                         </StackPanel>
 
                         <!-- Publisher -->
