@@ -12,10 +12,12 @@ namespace NuGetPe.Utility
 {
     public static class ManifestUtility
     {
-        const string TokenMetadataStart = "0.0.0-TOKENSTART.";
-        const string TokenMetadataEnd = ".TOKENEND";
+        const string TokenStart = "TOKENSTART";
+        const string TokenEnd = "TOKENEND";
+        const string TokenMetadataStart = "0.0.0-" + TokenStart + ".";
+        const string TokenMetadataEnd = "." + TokenEnd;
         static readonly Regex tokenRegex = new Regex(@"([$])(?:(?=(\\?))\2.)*?\1", RegexOptions.Compiled);
-        static readonly Regex metadataRegEx = new Regex(@"0\.0\.0\-TOKENSTART\.([^.]+)\.TOKENEND", RegexOptions.Compiled);
+        static readonly Regex metadataRegEx = new Regex($@"0\.0\.0\-{TokenStart}\.([^.]+)\.{TokenEnd}", RegexOptions.Compiled);
 
         public static Stream ReadManifest(string file)
         {
@@ -27,7 +29,7 @@ namespace NuGetPe.Utility
         {
             var labels = version.ReleaseLabels.ToList();
 
-            return labels.Count >= 3 && labels[0] == "TOKENSTART" && labels[labels.Count - 1] == "TOKENEND";
+            return labels.Count >= 3 && labels[0] == TokenStart && labels[labels.Count - 1] == TokenEnd;
         }
 
         public static Stream ReadManifest(Stream stream)
