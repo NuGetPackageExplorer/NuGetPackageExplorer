@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Deployment.Application;
 using System.Globalization;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Documents;
 using StringResources = PackageExplorer.Resources.Resources;
@@ -15,25 +16,10 @@ namespace PackageExplorer
         public AboutWindow()
         {
             InitializeComponent();
-
-            ProductTitle.Text = String.Format(
-                CultureInfo.CurrentCulture,
-                "{0} ({1})",
-                StringResources.Dialog_Title,
-                GetApplicationVersion());
+            
+            ProductTitle.Text = $"{StringResources.Dialog_Title} ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion})";
         }
-
-        private static Version GetApplicationVersion()
-        {
-            if (ApplicationDeployment.IsNetworkDeployed)
-            {
-                return ApplicationDeployment.CurrentDeployment.CurrentVersion;
-            }
-            else
-            {
-                return typeof(MainWindow).Assembly.GetName().Version;
-            }
-        }
+        
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
