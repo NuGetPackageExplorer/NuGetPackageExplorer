@@ -211,12 +211,9 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private void RaiseCanExecuteChangedEvent()
+        internal void RaiseCanExecuteChangedEvent()
         {
-            if (CanExecuteChanged != null)
-            {
-                CanExecuteChanged(this, EventArgs.Empty);
-            }
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

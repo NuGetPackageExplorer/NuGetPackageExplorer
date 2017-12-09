@@ -52,7 +52,7 @@ namespace PackageExplorerViewModel
         private string _packageSource;
         private RelayCommand _publishCommand;
         private RelayCommand<object> _renameContentCommand;
-        private ICommand _saveCommand;
+        private SavePackageCommand _saveCommand;
         private ICommand _saveContentCommand;
         private object _selectedItem;
         private bool _showContentViewer;
@@ -106,10 +106,9 @@ namespace PackageExplorerViewModel
             PackageSource = source;
 
             _packageRoot = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
-
-            // HACK: this is after the package.GetFiles() since that reads the signature
-            _packageMetadata.PublisherCertificate = _package.PublisherCertificate;
         }
+
+
 
         internal IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata
         {

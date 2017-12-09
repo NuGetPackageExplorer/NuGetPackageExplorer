@@ -6,6 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel.Types;
+using System.Threading.Tasks;
 
 namespace PackageExplorerViewModel
 {
@@ -58,8 +59,14 @@ namespace PackageExplorerViewModel
 
         #region IPackageViewModelFactory Members
 
-        public PackageViewModel CreateViewModel(IPackage package, string packageSource)
+        public async Task<PackageViewModel> CreateViewModel(IPackage package, string packageSource)
         {
+            // If it's a zip package, we need to load the verification data so it's ready for later
+            if (package is ZipPackage zip)
+            {
+                await zip.LoadSignatureDataAsync();
+            }
+
             return new PackageViewModel(
                 package,
                 packageSource,

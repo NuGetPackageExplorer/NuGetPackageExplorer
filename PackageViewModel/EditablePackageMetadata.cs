@@ -6,6 +6,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
 using NuGet.Versioning;
 using NuGetPe;
 
@@ -36,11 +37,29 @@ namespace PackageExplorerViewModel
 
         public EditablePackageMetadata()
         {
-        }
+            RepositoryCertificates = new List<X509Certificate2>(); // no null collections!
+        }   
 
-        public EditablePackageMetadata(IPackageMetadata source)
+        public EditablePackageMetadata(IPackageMetadata source) 
+            : this()
         {
             CopyFrom(source);
+        }
+
+        public EditablePackageMetadata(IPackage source)
+            : this()
+        {
+            CopyFrom(source);
+            // Zip Packages may be signed, we need to load that data async
+            if (source is ZipPackage zip)
+                LoadSignatureData(zip);
+        }
+
+        private void LoadSignatureData(ZipPackage package)
+        {
+            PublisherCertificate = package.PublisherCertificate;
+            RepositoryCertificates = package.RepositoryCertificates;
+            ValidationResult = package.VerificationResult;
         }
 
         public string Authors
@@ -64,7 +83,44 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public X509Certificate2 PublisherCertificate { get; set; }
+        public X509Certificate2 PublisherCertificate
+        {
+            get { return publisherCertificate; }
+            set
+            {
+                if (publisherCertificate != value)
+                {
+                    publisherCertificate = value;
+                    RaisePropertyChange(nameof(PublisherCertificate));
+                }
+            }
+        }
+
+        public VerifySignaturesResult ValidationResult
+        {
+            get { return validationResult; }
+            set
+            {
+                if (validationResult != value)
+                {
+                    validationResult = value;
+                    RaisePropertyChange(nameof(ValidationResult));
+                }
+            }
+        }
+
+        public IReadOnlyList<X509Certificate2> RepositoryCertificates
+        {
+            get { return repositoryCertificates; }
+            set
+            {
+                if (repositoryCertificates != value)
+                {
+                    repositoryCertificates = value;
+                    RaisePropertyChange(nameof(RepositoryCertificates));
+                }
+            }
+        }
 
         public string Owners
         {
@@ -134,6 +190,9 @@ namespace PackageExplorerViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         private bool _developmentDependency;
         RepositoryMetadata repository;
+        X509Certificate2 publisherCertificate;
+        VerifySignaturesResult validationResult;
+        IReadOnlyList<X509Certificate2> repositoryCertificates;
 
         #endregion
 

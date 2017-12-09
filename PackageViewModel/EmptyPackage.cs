@@ -193,13 +193,7 @@ namespace PackageExplorerViewModel
         public RepositoryMetadata Repository => null;
 
         public bool IsSigned => false;
-
-        public bool IsVerified => false;
-
-        public X509Certificate2 PublisherCertificate => null;
-
-        public X509Certificate2 RepositoryCertificate => null;
-
+        
         #endregion
 
         public void Dispose()

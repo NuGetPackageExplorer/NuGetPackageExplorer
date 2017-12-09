@@ -4,8 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.Pkcs;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading;
+using System.Threading.Tasks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
 using NuGet.Versioning;
 
 namespace NuGetPe
@@ -15,6 +18,7 @@ namespace NuGetPe
         private const string AssemblyReferencesDir = "lib";
         private const string ResourceAssemblyExtension = ".resources.dll";
         private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe", ".winmd"};
+        private static readonly List<X509Certificate2> emptyList = new List<X509Certificate2>();
 
         // paths to exclude
         private static readonly string[] ExcludePaths = new[] {"_rels", "package","[Content_Types]", ".signature"};
@@ -51,6 +55,8 @@ namespace NuGetPe
 
             };
             EnsureManifest();
+
+            RepositoryCertificates = emptyList;
         }
 
         public string Source { get; }
@@ -278,7 +284,9 @@ namespace NuGetPe
 
         public X509Certificate2 PublisherCertificate { get; private set; }
 
-        public X509Certificate2 RepositoryCertificate => null;
+        public IReadOnlyList<X509Certificate2> RepositoryCertificates { get; private set; }
+
+        public VerifySignaturesResult VerificationResult { get; private set; }
 
 
         // Keep a list of open stream here, and close on dispose.
@@ -304,6 +312,40 @@ namespace NuGetPe
 
         #endregion
 
+        public async Task LoadSignatureDataAsync()
+        {
+            using (var reader = new PackageArchiveReader(_streamFactory(), false))
+            {
+                IsSigned = await reader.IsSignedAsync(CancellationToken.None);
+                if (IsSigned)
+                {
+                    // Load signature and verification data
+                    var sigs = await reader.GetSignaturesAsync(CancellationToken.None);
+                    var reposigs = new List<X509Certificate2>();
+                    RepositoryCertificates = reposigs;
+
+                    foreach (var sig in sigs)
+                    {
+                        // There will only be one
+                        if (sig.Type == SignatureType.Author)
+                        {
+                            PublisherCertificate = sig.SignerInfo.Certificate;
+                        }
+                        if (sig.Type == SignatureType.Repository)
+                        {
+                            reposigs.Add(sig.SignerInfo.Certificate);
+                        }
+                    }
+
+                    // Check verification 
+                    var trustProviders = SignatureVerificationProviderFactory.GetSignatureVerificationProviders();
+                    var verifier = new PackageSignatureVerifier(trustProviders, SignedPackageVerifierSettings.RequireSigned);
+
+                    var verificationResult = await verifier.VerifySignaturesAsync(reader, CancellationToken.None);
+                }
+            }
+        }
+
         private void EnsureManifest()
         {
             using (Stream stream = _streamFactory())
@@ -318,30 +360,8 @@ namespace NuGetPe
         {
             // We exclude any opc files and the manifest file (.nuspec)
 
-            // check for signature here as a hack until we have API support in nuget
-            if (path.StartsWith(".signature.p7s"))
-            {
-                IsSigned = true;
-                using (var ms = new MemoryStream())
-                using (var str = reader.GetStream(path))
-                {
-                    str.CopyTo(ms);
-                    PopulateSignatureProperties(ms.ToArray());
-                }
-                   
-            }
-
             return !path.EndsWith("/") && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
-        }
-
-        private void PopulateSignatureProperties(byte[] messageBytes)
-        {
-            var signedCms = new SignedCms();
-            signedCms.Decode(messageBytes);
-            var signerInfo = signedCms.SignerInfos[0]; // Should always be 1 total
-
-            PublisherCertificate = signerInfo.Certificate;
         }
 
         public override string ToString()
