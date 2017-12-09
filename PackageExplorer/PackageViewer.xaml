@@ -50,11 +50,27 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type nugetpe:SignatureInfo}">
-                <TextBlock Style="{StaticResource DetailMetadataValueStyle}" >
-                    <Hyperlink Command="GoToPage" CommandParameter="{Binding SignerInfo.Certificate, Mode=OneWay}">
-                        <Run Text="{Binding SignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
-                    </Hyperlink>
-                </TextBlock>
+                <StackPanel>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}" >
+                        <Hyperlink Command="GoToPage" CommandParameter="{Binding SignerInfo.Certificate, Mode=OneWay}">
+                            <Run Text="{Binding SignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}"
+                               Visibility="{Binding Timestamp, Converter={StaticResource NullToVisibilityConverter}}"
+                               >
+                        <Run Text="@"/>
+                        <Run Text="{Binding Timestamp, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}"
+                               Visibility="{Binding TimestampSignerInfo.Certificate, Converter={StaticResource NullToVisibilityConverter}}"
+                               >
+                        <Run Text="by"/>
+                        <Hyperlink Command="GoToPage" CommandParameter="{Binding TimestampSignerInfo.Certificate, Mode=OneWay}">
+                            <Run Text="{Binding TimestampSignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type pack:PackageDependencyGroup}">
@@ -203,6 +219,19 @@
                             <ContentPresenter Content="{Binding PublisherSignature, Mode=OneWay}" />
                             
                         </StackPanel>
+
+                        <!-- Repositories list -->
+                        <TextBlock 
+                            Text="{x:Static resources:Resources.Dialog_RepositorySignatures}" 
+                            Style="{StaticResource DetailMetadataLabelStyle}" 
+                            Visibility="{Binding RepositorySignatures.Count, Converter={StaticResource countConverter}, Mode=OneWay}"
+                            />
+
+                        <ItemsControl x:Name="RepositoryItems" Margin="25,5,0,0" 
+                                      ItemsSource="{Binding RepositorySignatures}"
+                                      Visibility="{Binding RepositorySignatures.Count, Converter={StaticResource countConverter}, Mode=OneWay}"
+                                      >
+                        </ItemsControl>
 
                         <!-- Title -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Title, Converter={StaticResource NullToVisibilityConverter}}">

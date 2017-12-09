@@ -205,6 +205,15 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Repository Signatures:.
+        /// </summary>
+        public static string Dialog_RepositorySignatures {
+            get {
+                return ResourceManager.GetString("Dialog_RepositorySignatures", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Requires License Acceptance:.
         /// </summary>
         public static string Dialog_RequireLicenseLabel {

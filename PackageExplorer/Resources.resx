@@ -165,6 +165,9 @@
   <data name="Dialog_ReportAbuse" xml:space="preserve">
     <value>Report Abuse</value>
   </data>
+  <data name="Dialog_RepositorySignatures" xml:space="preserve">
+    <value>Repository Signatures:</value>
+  </data>
   <data name="Dialog_RequireLicenseLabel" xml:space="preserve">
     <value>Requires License Acceptance:</value>
   </data>
