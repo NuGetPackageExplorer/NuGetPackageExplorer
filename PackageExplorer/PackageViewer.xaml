@@ -11,7 +11,7 @@
     xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core"
     xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core" 
     xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
-    xmlns:cert="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System"
+    xmlns:nugetpe="clr-namespace:NuGetPe;assembly=Core"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
@@ -49,10 +49,10 @@
                 </TextBlock>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type cert:X509Certificate2}">
+            <DataTemplate DataType="{x:Type nugetpe:SignatureInfo}">
                 <TextBlock Style="{StaticResource DetailMetadataValueStyle}" >
-                    <Hyperlink Command="GoToPage" CommandParameter="{Binding Mode=OneWay}">
-                        <Run Text="{Binding Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                    <Hyperlink Command="GoToPage" CommandParameter="{Binding SignerInfo.Certificate, Mode=OneWay}">
+                        <Run Text="{Binding SignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
                     </Hyperlink>
                 </TextBlock>
             </DataTemplate>
@@ -197,10 +197,10 @@
 
                         <!-- Publisher -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" 
-                                    Visibility="{Binding PublisherCertificate, Converter={StaticResource NullToVisibilityConverter}}">
+                                    Visibility="{Binding PublisherSignature, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_PublisherLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                            <ContentPresenter Content="{Binding PublisherCertificate, Mode=OneWay}" />
+                            <ContentPresenter Content="{Binding PublisherSignature, Mode=OneWay}" />
                             
                         </StackPanel>
 

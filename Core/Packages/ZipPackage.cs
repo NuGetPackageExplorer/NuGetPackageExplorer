@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Packaging;
@@ -17,7 +16,7 @@ namespace NuGetPe
         private const string AssemblyReferencesDir = "lib";
         private const string ResourceAssemblyExtension = ".resources.dll";
         private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe", ".winmd"};
-        private static readonly List<X509Certificate2> emptyList = new List<X509Certificate2>();
+        private static readonly List<SignatureInfo> emptyList = new List<SignatureInfo>();
 
         // paths to exclude
         private static readonly string[] ExcludePaths = new[] {"_rels", "package","[Content_Types]", ".signature"};
@@ -55,7 +54,7 @@ namespace NuGetPe
             };
             EnsureManifest();
 
-            RepositoryCertificates = emptyList;
+            RepositorySignatures = emptyList;
         }
 
         public string Source { get; }
@@ -281,9 +280,9 @@ namespace NuGetPe
 
         public bool IsVerified => false;
 
-        public X509Certificate2 PublisherCertificate { get; private set; }
+        public SignatureInfo PublisherSignature { get; private set; }
 
-        public IReadOnlyList<X509Certificate2> RepositoryCertificates { get; private set; }
+        public IReadOnlyList<SignatureInfo> RepositorySignatures { get; private set; }
 
         public VerifySignaturesResult VerificationResult { get; private set; }
 
@@ -320,19 +319,19 @@ namespace NuGetPe
                 {
                     // Load signature and verification data
                     var sigs = await reader.GetSignaturesAsync(CancellationToken.None);
-                    var reposigs = new List<X509Certificate2>();
-                    RepositoryCertificates = reposigs;
+                    var reposigs = new List<SignatureInfo>();
+                    RepositorySignatures = reposigs;
 
                     foreach (var sig in sigs)
                     {
                         // There will only be one
                         if (sig.Type == SignatureType.Author)
                         {
-                            PublisherCertificate = sig.SignerInfo.Certificate;
+                            PublisherSignature = new SignatureInfo(sig);
                         }
                         if (sig.Type == SignatureType.Repository)
                         {
-                            reposigs.Add(sig.SignerInfo.Certificate);
+                            reposigs.Add(new SignatureInfo(sig));
                         }
                     }
 

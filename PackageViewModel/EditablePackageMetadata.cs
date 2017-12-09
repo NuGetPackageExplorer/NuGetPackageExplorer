@@ -37,7 +37,7 @@ namespace PackageExplorerViewModel
 
         public EditablePackageMetadata()
         {
-            RepositoryCertificates = new List<X509Certificate2>(); // no null collections!
+            RepositorySignatures = new List<SignatureInfo>(); // no null collections!
         }   
 
         public EditablePackageMetadata(IPackageMetadata source) 
@@ -57,8 +57,8 @@ namespace PackageExplorerViewModel
 
         private void LoadSignatureData(ZipPackage package)
         {
-            PublisherCertificate = package.PublisherCertificate;
-            RepositoryCertificates = package.RepositoryCertificates;
+            PublisherSignature = package.PublisherSignature;
+            RepositorySignatures = package.RepositorySignatures;
             ValidationResult = package.VerificationResult;
         }
 
@@ -83,7 +83,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public X509Certificate2 PublisherCertificate
+        public SignatureInfo PublisherSignature
         {
             get { return publisherCertificate; }
             set
@@ -91,7 +91,7 @@ namespace PackageExplorerViewModel
                 if (publisherCertificate != value)
                 {
                     publisherCertificate = value;
-                    RaisePropertyChange(nameof(PublisherCertificate));
+                    RaisePropertyChange(nameof(PublisherSignature));
                 }
             }
         }
@@ -109,7 +109,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public IReadOnlyList<X509Certificate2> RepositoryCertificates
+        public IReadOnlyList<SignatureInfo> RepositorySignatures
         {
             get { return repositoryCertificates; }
             set
@@ -117,7 +117,7 @@ namespace PackageExplorerViewModel
                 if (repositoryCertificates != value)
                 {
                     repositoryCertificates = value;
-                    RaisePropertyChange(nameof(RepositoryCertificates));
+                    RaisePropertyChange(nameof(RepositorySignatures));
                 }
             }
         }
@@ -190,9 +190,9 @@ namespace PackageExplorerViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         private bool _developmentDependency;
         RepositoryMetadata repository;
-        X509Certificate2 publisherCertificate;
+        SignatureInfo publisherCertificate;
         VerifySignaturesResult validationResult;
-        IReadOnlyList<X509Certificate2> repositoryCertificates;
+        IReadOnlyList<SignatureInfo> repositoryCertificates;
 
         #endregion
 

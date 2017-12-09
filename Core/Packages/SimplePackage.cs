@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using NuGet.Versioning;
 using NuGet.Packaging.Core;
-using System.Security.Cryptography.X509Certificates;
 
 namespace NuGetPe
 {
