@@ -11,6 +11,7 @@
     xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core"
     xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core" 
     xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
+    xmlns:cert="clr-namespace:System.Security.Cryptography.X509Certificates;assembly=System"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
@@ -44,6 +45,14 @@
                 <TextBlock ToolTip="Open this package from online feed.">
                     <Hyperlink Command="Print" CommandParameter="{Binding Id, Mode=OneWay}">
                         <Run Text="{Binding Mode=OneWay, Converter={StaticResource PackageDependencyConverter}}"></Run>
+                    </Hyperlink>
+                </TextBlock>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type cert:X509Certificate2}">
+                <TextBlock Style="{StaticResource DetailMetadataValueStyle}" >
+                    <Hyperlink Command="GoToPage" CommandParameter="{Binding Mode=OneWay}">
+                        <Run Text="{Binding Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
                     </Hyperlink>
                 </TextBlock>
             </DataTemplate>
@@ -190,11 +199,8 @@
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" 
                                     Visibility="{Binding PublisherCertificate, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_PublisherLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                            <TextBlock Style="{StaticResource DetailMetadataValueStyle}" >
-                                <Hyperlink Command="GoToPage" CommandParameter="{Binding PublisherCertificate}">
-                                    <Run Text="{Binding PublisherCertificate, Converter={StaticResource CertificateToSubjectConverter}}" />
-                                </Hyperlink>
-                            </TextBlock>
+
+                            <ContentPresenter Content="{Binding PublisherCertificate, Mode=OneWay}" />
                             
                         </StackPanel>
 

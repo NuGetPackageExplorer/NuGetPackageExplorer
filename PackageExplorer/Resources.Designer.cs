@@ -187,7 +187,7 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publisher.
+        ///   Looks up a localized string similar to Publisher:.
         /// </summary>
         public static string Dialog_PublisherLabel {
             get {
