@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.Versioning;
@@ -61,5 +62,7 @@ namespace PackageExplorerViewModel
         {
             get { return new FrameworkName[0]; }
         }
+
+        public DateTimeOffset LastWriteTime => DateTimeOffset.MinValue;
     }
 }

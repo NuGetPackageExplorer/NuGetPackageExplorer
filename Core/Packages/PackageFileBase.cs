@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Versioning;
 using NuGet.Frameworks;
@@ -61,5 +62,7 @@ namespace NuGetPe
                 yield break;
             }
         }
+
+        public DateTimeOffset LastWriteTime => DateTimeOffset.MinValue;
     }
 }

@@ -4,8 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
 using System.Windows.Input;
-using NuGet.Frameworks;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
 using NuGet.Packaging;
 
@@ -59,7 +57,7 @@ namespace PackageExplorerViewModel
             get { return _file.TargetFramework; }
         }
 
- public Stream GetStream()
+        public Stream GetStream()
         {
             return _file.GetStream();
         }
@@ -96,6 +94,8 @@ namespace PackageExplorerViewModel
             get;
             private set;
         }
+
+        public DateTimeOffset LastWriteTime => _file.LastWriteTime;
 
         private void WatchPhysicalFile(PhysicalPackageFile physicalFile)
         {
