@@ -11,6 +11,7 @@
     xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core"
     xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core" 
     xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
+    xmlns:signing="clr-namespace:NuGet.Packaging.Signing;assembly=NuGet.Packaging"
     xmlns:nugetpe="clr-namespace:NuGetPe;assembly=Core"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
@@ -47,6 +48,26 @@
                         <Run Text="{Binding Mode=OneWay, Converter={StaticResource PackageDependencyConverter}}"></Run>
                     </Hyperlink>
                 </TextBlock>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodel:EditablePackageMetadata}" x:Key="VerifySignaturesResult">
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Name="isValid" />
+                    <Button Margin="3,0,0,0" Command="{Binding ShowValidationResultsCommand}">
+                        <Image Name="icon"  />
+                    </Button>
+                </StackPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding ValidationResult.Valid}" Value="True">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Valid}" />
+                        <Setter TargetName="icon" Property="Source" Value="Images/Validate.png" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ValidationResult.Valid}" Value="false">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Invalid}" />
+                        <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type nugetpe:SignatureInfo}">
@@ -232,6 +253,14 @@
                                       Visibility="{Binding RepositorySignatures.Count, Converter={StaticResource countConverter}, Mode=OneWay}"
                                       >
                         </ItemsControl>
+
+                        <!-- Validation -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" 
+                                    Visibility="{Binding ValidationResult, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_SignatureValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                            <ContentPresenter Content="{Binding Mode=OneWay}" ContentTemplate="{StaticResource VerifySignaturesResult}" Margin="3,0,0,0" />
+                        </StackPanel>
 
                         <!-- Title -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Title, Converter={StaticResource NullToVisibilityConverter}}">

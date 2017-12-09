@@ -128,6 +128,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ValidationResultWindow.xaml.cs">
+      <DependentUpon>ValidationResultWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
@@ -243,6 +246,10 @@
     <Compile Include="Interop\WindowPlacement.cs" />
     <Compile Include="Interop\WindowPlacementHelper.cs" />
     <Compile Include="Wpf\SemanticVersionValidationRule.cs" />
+    <Page Include="ValidationResultWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="AboutWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

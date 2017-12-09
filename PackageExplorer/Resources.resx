@@ -182,6 +182,9 @@
 
 Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
+  <data name="Dialog_SignatureValidation" xml:space="preserve">
+    <value>Signature Validation:</value>
+  </data>
   <data name="Dialog_TagLabel" xml:space="preserve">
     <value>Tags:</value>
   </data>
@@ -190,6 +193,12 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="Dialog_TitleLabel" xml:space="preserve">
     <value>Title:</value>
+  </data>
+  <data name="Dialog_ValidationResult" xml:space="preserve">
+    <value>Validation Results:</value>
+  </data>
+  <data name="Dialog_ValidationResultTitle" xml:space="preserve">
+    <value>Package Validation Results</value>
   </data>
   <data name="Dialog_VersionLabel" xml:space="preserve">
     <value>Version:</value>
@@ -217,5 +226,11 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="ProxyConnectToMessage" xml:space="preserve">
     <value>Connect to {0}</value>
+  </data>
+  <data name="Validation_Invalid" xml:space="preserve">
+    <value>Invalid</value>
+  </data>
+  <data name="Validation_Valid" xml:space="preserve">
+    <value>Valid</value>
   </data>
 </root>

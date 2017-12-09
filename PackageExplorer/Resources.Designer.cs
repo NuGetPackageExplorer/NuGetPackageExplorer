@@ -252,6 +252,15 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Signature Validation:.
+        /// </summary>
+        public static string Dialog_SignatureValidation {
+            get {
+                return ResourceManager.GetString("Dialog_SignatureValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tags:.
         /// </summary>
         public static string Dialog_TagLabel {
@@ -275,6 +284,24 @@ namespace PackageExplorer.Resources {
         public static string Dialog_TitleLabel {
             get {
                 return ResourceManager.GetString("Dialog_TitleLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Validation Results:.
+        /// </summary>
+        public static string Dialog_ValidationResult {
+            get {
+                return ResourceManager.GetString("Dialog_ValidationResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Validation Results.
+        /// </summary>
+        public static string Dialog_ValidationResultTitle {
+            get {
+                return ResourceManager.GetString("Dialog_ValidationResultTitle", resourceCulture);
             }
         }
         
@@ -356,6 +383,24 @@ namespace PackageExplorer.Resources {
         public static string ProxyConnectToMessage {
             get {
                 return ResourceManager.GetString("ProxyConnectToMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid.
+        /// </summary>
+        public static string Validation_Invalid {
+            get {
+                return ResourceManager.GetString("Validation_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid.
+        /// </summary>
+        public static string Validation_Valid {
+            get {
+                return ResourceManager.GetString("Validation_Valid", resourceCulture);
             }
         }
     }

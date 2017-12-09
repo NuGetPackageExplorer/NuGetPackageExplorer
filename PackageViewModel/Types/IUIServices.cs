@@ -22,6 +22,7 @@ namespace NuGetPackageExplorer.Types
         bool OpenRenameDialog(string currentName, string description, out string newName);
 
         bool OpenPublishDialog(object viewModel);
+        bool OpenSignatureValidationDialog(object viewModel);
         bool OpenFolderDialog(string title, string initialPath, out string selectedPath);
 
         bool Confirm(string title, string message);

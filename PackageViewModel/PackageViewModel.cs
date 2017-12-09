@@ -101,7 +101,7 @@ namespace PackageExplorerViewModel
             _contentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
-            _packageMetadata = new EditablePackageMetadata(_package);
+            _packageMetadata = new EditablePackageMetadata(_package, _uiServices);
 
             PackageSource = source;
 
@@ -1349,7 +1349,7 @@ namespace PackageExplorerViewModel
                 try
                 {
                     Manifest manifest = Manifest.ReadFrom(metadataFileStream, true);
-                    var newMetadata = new EditablePackageMetadata(manifest.Metadata);
+                    var newMetadata = new EditablePackageMetadata(manifest.Metadata, _uiServices);
                     PackageMetadata = newMetadata;
 
                     return true;
