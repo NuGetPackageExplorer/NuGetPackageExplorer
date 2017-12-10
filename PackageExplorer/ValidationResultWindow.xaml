@@ -23,32 +23,26 @@
                 <Image Name="icon" Margin="3,10,0,15" />
             </StackPanel>
             <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding Valid}" Value="True">
-                    <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Valid}" />
+                <DataTrigger Binding="{Binding Trust}" Value="Trusted">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Trusted}" />
                     <Setter TargetName="icon" Property="Source" Value="Images/Validate.png" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Valid}" Value="false">
+                <DataTrigger Binding="{Binding Trust}" Value="Invalid">
                     <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Invalid}" />
                     <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Trust}" Value="Untrusted">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Untrusted}" />
+                    <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Trust}" Value="Unknown">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Unknown}" />
+                    <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
                 </DataTrigger>
             </DataTemplate.Triggers>
         </DataTemplate>
 
-        <DataTemplate DataType="{x:Type viewModel:ValidationResultViewModel}" x:Key="data">
-            <StackPanel>
-                <TextBlock Text="Errors" />
-                <TextBlock Text="{Binding Trust, Mode=OneWay}" />
-                <ItemsControl ItemsSource="{Binding ErrorIssues, Mode=OneWay}" />
-
-                <TextBlock Text="Warnings" />
-                <TextBlock Text="{Binding Trust, Mode=OneWay}" />
-                <ItemsControl ItemsSource="{Binding WarningIssues, Mode=OneWay}" />
-
-                <TextBlock Text="Information" />
-                <TextBlock Text="{Binding Trust, Mode=OneWay}" />
-                <ItemsControl ItemsSource="{Binding InformationIssues, Mode=OneWay}" />
-            </StackPanel>
-        </DataTemplate>
+        
         
         <DataTemplate DataType="{x:Type NuGetCommon:ILogMessage}">
             <StackPanel>
@@ -74,7 +68,38 @@
 
         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="15,20,15,0">
             <ContentPresenter DockPanel.Dock="Top" Content="{Binding}" ContentTemplate="{StaticResource Results}" />
-            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource data}" />
+            <StackPanel>
+                <Expander IsExpanded="True"
+                          Visibility="{Binding ErrorIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/error.png"/>
+                            <TextBlock Text="Errors" Margin="3,0,0,0" />
+                        </StackPanel>
+                    </Expander.Header>
+                    <ItemsControl ItemsSource="{Binding ErrorIssues, Mode=OneWay}" />
+                </Expander>
+                <Expander IsExpanded="True"
+                          Visibility="{Binding WarningIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/Warning.png"/>
+                            <TextBlock Text="Warnings" Margin="3,0,0,0" />
+                        </StackPanel>
+                    </Expander.Header>
+                    <ItemsControl ItemsSource="{Binding WarningIssues, Mode=OneWay}" />
+                </Expander>
+                <Expander IsExpanded="True"
+                          Visibility="{Binding InformationIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
+                    <Expander.Header>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Images/information.png"/>
+                            <TextBlock Text="Information" Margin="3,0,0,0" />
+                        </StackPanel>
+                    </Expander.Header>
+                    <ItemsControl ItemsSource="{Binding InformationIssues, Mode=OneWay}" />
+                </Expander>
+            </StackPanel>
         </StackPanel>
     </DockPanel>
 </self:StandardDialog>

@@ -396,11 +396,29 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Valid.
+        ///   Looks up a localized string similar to Trusted.
         /// </summary>
-        public static string Validation_Valid {
+        public static string Validation_Trusted {
             get {
-                return ResourceManager.GetString("Validation_Valid", resourceCulture);
+                return ResourceManager.GetString("Validation_Trusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uknown.
+        /// </summary>
+        public static string Validation_Unknown {
+            get {
+                return ResourceManager.GetString("Validation_Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untrusted.
+        /// </summary>
+        public static string Validation_Untrusted {
+            get {
+                return ResourceManager.GetString("Validation_Untrusted", resourceCulture);
             }
         }
     }

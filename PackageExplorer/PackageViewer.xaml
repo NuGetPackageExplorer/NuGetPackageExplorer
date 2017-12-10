@@ -7,11 +7,9 @@
     xmlns:self="clr-namespace:PackageExplorer" 
     xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" 
     xmlns:resources="clr-namespace:PackageExplorer.Resources" 
-    xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types"
     xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core"
     xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core" 
     xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
-    xmlns:signing="clr-namespace:NuGet.Packaging.Signing;assembly=NuGet.Packaging"
     xmlns:nugetpe="clr-namespace:NuGetPe;assembly=Core"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
@@ -59,13 +57,21 @@
                     </Button>
                 </StackPanel>
                 <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding ValidationResult.Valid}" Value="True">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Valid}" />
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Trusted">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Trusted}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/Validate.png" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding ValidationResult.Valid}" Value="false">
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Invalid">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Invalid}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Untrusted">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Untrusted}" />
+                        <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Unknown">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Unknown}" />
+                        <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>

@@ -71,13 +71,13 @@ namespace PackageExplorerViewModel
         {
             PublisherSignature = package.PublisherSignature;
             RepositorySignatures = package.RepositorySignatures;
-            ValidationResult = package.VerificationResult;
+            ValidationResult = new ValidationResultViewModel(package.VerificationResult);
         }
 
 
         private void OnShowValidationResult()
         {
-            uiServices.OpenSignatureValidationDialog(new ValidationResultViewModel(ValidationResult));
+            uiServices.OpenSignatureValidationDialog(ValidationResult);
         }
 
         public string Authors
@@ -114,7 +114,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public VerifySignaturesResult ValidationResult
+        public ValidationResultViewModel ValidationResult
         {
             get { return validationResult; }
             set
@@ -209,7 +209,7 @@ namespace PackageExplorerViewModel
         private bool _developmentDependency;
         RepositoryMetadata repository;
         SignatureInfo publisherCertificate;
-        VerifySignaturesResult validationResult;
+        ValidationResultViewModel validationResult;
         IReadOnlyList<SignatureInfo> repositoryCertificates;
 
         #endregion
