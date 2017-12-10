@@ -188,6 +188,24 @@ namespace PackageExplorer
             return result ?? false;
         }
 
+        public bool OpenSignatureValidationDialog(object viewModel)
+        {
+            var dialog = new ValidationResultWindow
+            {
+                Owner = Window.Value,
+                DataContext = viewModel
+            };
+
+            var disposable = viewModel as IDisposable;
+            if (disposable != null)
+            {
+                dialog.Closed += OnDialogClosed;
+            }
+
+            bool? result = dialog.ShowDialog();
+            return result ?? false;
+        }
+
         private void OnDialogClosed(object sender, EventArgs e)
         {
             var window = (Window)sender;

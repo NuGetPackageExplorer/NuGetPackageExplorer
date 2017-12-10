@@ -157,12 +157,6 @@ namespace NuGetPe
 
         public bool IsSigned => CorePackage?.IsSigned ?? false;
 
-        public bool IsVerified => CorePackage?.IsVerified ?? false;
-
-        public X509Certificate2 PublisherCertificate => CorePackage?.PublisherCertificate;
-
-        public X509Certificate2 RepositoryCertificate => CorePackage?.RepositoryCertificate;
-
         public IEnumerable<IPackageFile> GetFiles()
         {
             return CorePackage.GetFiles();

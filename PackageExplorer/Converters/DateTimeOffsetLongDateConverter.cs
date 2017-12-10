@@ -18,6 +18,10 @@ namespace PackageExplorer
 
                 if (dateTimeOffset != Constants.Unpublished)
                 {
+                    var format = parameter as string;
+                    if (!string.IsNullOrWhiteSpace(format))
+                        return dateTimeOffset.LocalDateTime.ToString(format);
+
                     return dateTimeOffset.LocalDateTime.ToLongDateString();
                 }
             }

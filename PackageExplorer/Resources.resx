@@ -129,6 +129,9 @@
   <data name="Dialog_DownloadingPackage" xml:space="preserve">
     <value>Downloading package {0} {1}</value>
   </data>
+  <data name="Dialog_Errors" xml:space="preserve">
+    <value>Errors</value>
+  </data>
   <data name="Dialog_FrameworkAssembliesLabel" xml:space="preserve">
     <value>Framework Assembly References:</value>
   </data>
@@ -137,6 +140,9 @@
   </data>
   <data name="Dialog_IdLabel" xml:space="preserve">
     <value>Id:</value>
+  </data>
+  <data name="Dialog_Information" xml:space="preserve">
+    <value>Information</value>
   </data>
   <data name="Dialog_InvalidPackageUrl" xml:space="preserve">
     <value>The package URL {0} is invalid and can not be opened.</value>
@@ -160,10 +166,13 @@
     <value>Owners:</value>
   </data>
   <data name="Dialog_PublisherLabel" xml:space="preserve">
-    <value>Publisher</value>
+    <value>Publisher:</value>
   </data>
   <data name="Dialog_ReportAbuse" xml:space="preserve">
     <value>Report Abuse</value>
+  </data>
+  <data name="Dialog_RepositorySignatures" xml:space="preserve">
+    <value>Repository Signatures:</value>
   </data>
   <data name="Dialog_RequireLicenseLabel" xml:space="preserve">
     <value>Requires License Acceptance:</value>
@@ -179,6 +188,12 @@
 
 Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
+  <data name="Dialog_ShowDetails" xml:space="preserve">
+    <value>Show details</value>
+  </data>
+  <data name="Dialog_SignatureValidation" xml:space="preserve">
+    <value>Signature Validation:</value>
+  </data>
   <data name="Dialog_TagLabel" xml:space="preserve">
     <value>Tags:</value>
   </data>
@@ -188,11 +203,20 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="Dialog_TitleLabel" xml:space="preserve">
     <value>Title:</value>
   </data>
+  <data name="Dialog_ValidationResult" xml:space="preserve">
+    <value>Validation Results:</value>
+  </data>
+  <data name="Dialog_ValidationResultTitle" xml:space="preserve">
+    <value>Package Validation Results</value>
+  </data>
   <data name="Dialog_VersionLabel" xml:space="preserve">
     <value>Version:</value>
   </data>
   <data name="Dialog_ViewLicense" xml:space="preserve">
     <value>View License Terms</value>
+  </data>
+  <data name="Dialog_Warnings" xml:space="preserve">
+    <value>Warnings</value>
   </data>
   <data name="MoveContentFileToFolder" xml:space="preserve">
     <value>Do you want to add the file '{0}' to '{1}' folder instead?</value>
@@ -214,5 +238,17 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="ProxyConnectToMessage" xml:space="preserve">
     <value>Connect to {0}</value>
+  </data>
+  <data name="Validation_Invalid" xml:space="preserve">
+    <value>Invalid</value>
+  </data>
+  <data name="Validation_Trusted" xml:space="preserve">
+    <value>Trusted</value>
+  </data>
+  <data name="Validation_Unknown" xml:space="preserve">
+    <value>Uknown</value>
+  </data>
+  <data name="Validation_Untrusted" xml:space="preserve">
+    <value>Untrusted</value>
   </data>
 </root>

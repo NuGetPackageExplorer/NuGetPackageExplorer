@@ -7,10 +7,10 @@
     xmlns:self="clr-namespace:PackageExplorer" 
     xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" 
     xmlns:resources="clr-namespace:PackageExplorer.Resources" 
-    xmlns:types="clr-namespace:NuGetPe;assembly=NuGetPackageExplorer.Types"
     xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core"
     xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core" 
     xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
+    xmlns:nugetpe="clr-namespace:NuGetPe;assembly=Core"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
@@ -46,6 +46,60 @@
                         <Run Text="{Binding Mode=OneWay, Converter={StaticResource PackageDependencyConverter}}"></Run>
                     </Hyperlink>
                 </TextBlock>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodel:EditablePackageMetadata}" x:Key="VerifySignaturesResult">
+                
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Name="isValid" />
+                    <Image Name="icon" Margin="3,0,0,0" Cursor="Hand" ToolTip="Show details">
+                        <Image.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding ShowValidationResultsCommand}" />
+                        </Image.InputBindings>
+                    </Image>
+                </StackPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Trusted">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Trusted}" />
+                        <Setter TargetName="icon" Property="Source" Value="Images/Validate.png" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Invalid">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Invalid}" />
+                        <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Untrusted">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Untrusted}" />
+                        <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Unknown">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Unknown}" />
+                        <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type nugetpe:SignatureInfo}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}" >
+                        <Hyperlink Command="GoToPage" CommandParameter="{Binding SignerInfo.Certificate, Mode=OneWay}">
+                            <Run Text="{Binding SignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}"
+                               Visibility="{Binding Timestamp, Converter={StaticResource NullToVisibilityConverter}}"
+                               >
+                        <Run Text="@"/>
+                        <Run Text="{Binding Timestamp, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}"
+                               Visibility="{Binding TimestampSignerInfo.Certificate, Converter={StaticResource NullToVisibilityConverter}}"
+                               >
+                        <Run Text="by"/>
+                        <Hyperlink Command="GoToPage" CommandParameter="{Binding TimestampSignerInfo.Certificate, Mode=OneWay}">
+                            <Run Text="{Binding TimestampSignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type pack:PackageDependencyGroup}">
@@ -188,14 +242,32 @@
 
                         <!-- Publisher -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" 
-                                    Visibility="{Binding PublisherCertificate, Converter={StaticResource NullToVisibilityConverter}}">
+                                    Visibility="{Binding PublisherSignature, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_PublisherLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                            <TextBlock Style="{StaticResource DetailMetadataValueStyle}" >
-                                <Hyperlink Command="GoToPage" CommandParameter="{Binding PublisherCertificate}">
-                                    <Run Text="{Binding PublisherCertificate, Converter={StaticResource CertificateToSubjectConverter}}" />
-                                </Hyperlink>
-                            </TextBlock>
+
+                            <ContentPresenter Content="{Binding PublisherSignature, Mode=OneWay}" />
                             
+                        </StackPanel>
+
+                        <!-- Repositories list -->
+                        <TextBlock 
+                            Text="{x:Static resources:Resources.Dialog_RepositorySignatures}" 
+                            Style="{StaticResource DetailMetadataLabelStyle}" 
+                            Visibility="{Binding RepositorySignatures.Count, Converter={StaticResource countConverter}, Mode=OneWay}"
+                            />
+
+                        <ItemsControl x:Name="RepositoryItems" Margin="25,5,0,0" 
+                                      ItemsSource="{Binding RepositorySignatures}"
+                                      Visibility="{Binding RepositorySignatures.Count, Converter={StaticResource countConverter}, Mode=OneWay}"
+                                      >
+                        </ItemsControl>
+
+                        <!-- Validation -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" 
+                                    Visibility="{Binding ValidationResult, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_SignatureValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                            <ContentPresenter Content="{Binding Mode=OneWay}" ContentTemplate="{StaticResource VerifySignaturesResult}" Margin="3,0,0,0" />
                         </StackPanel>
 
                         <!-- Title -->

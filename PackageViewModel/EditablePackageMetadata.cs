@@ -4,16 +4,21 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
+using System.Windows.Input;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
 using NuGet.Versioning;
+using NuGetPackageExplorer.Types;
 using NuGetPe;
+using PackageType = NuGet.Packaging.Core.PackageType;
 
 namespace PackageExplorerViewModel
 {
     public sealed class EditablePackageMetadata : IPackageMetadata, IDataErrorInfo, INotifyPropertyChanged
     {
         private readonly Dictionary<string, string> _propertyErrors = new Dictionary<string, string>();
+        private readonly IUIServices uiServices;
         private string _authors;
         private string _copyright;
         private string _description;
@@ -34,13 +39,45 @@ namespace PackageExplorerViewModel
         private ICollection<PackageReferenceSet> _packageAssemblyReferences;
         private Version _minClientVersion;
 
-        public EditablePackageMetadata()
-        {
-        }
+        private RelayCommand _showValidationResultsCommand;
 
-        public EditablePackageMetadata(IPackageMetadata source)
+        public ICommand ShowValidationResultsCommand => _showValidationResultsCommand;
+
+        private EditablePackageMetadata()
+        {
+            RepositorySignatures = new List<SignatureInfo>(); // no null collections!
+
+            _showValidationResultsCommand = new RelayCommand(OnShowValidationResult);
+        }   
+
+        public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices) 
+            : this()
         {
             CopyFrom(source);
+            this.uiServices = uiServices;
+        }
+
+        public EditablePackageMetadata(IPackage source, IUIServices uiServices)
+            : this()
+        {
+            CopyFrom(source);
+            // Zip Packages may be signed, we need to load that data async
+            if (source is ZipPackage zip)
+                LoadSignatureData(zip);
+            this.uiServices = uiServices;
+        }
+
+        private void LoadSignatureData(ZipPackage package)
+        {
+            PublisherSignature = package.PublisherSignature;
+            RepositorySignatures = package.RepositorySignatures;
+            ValidationResult = new ValidationResultViewModel(package.VerificationResult);
+        }
+
+
+        private void OnShowValidationResult()
+        {
+            uiServices.OpenSignatureValidationDialog(ValidationResult);
         }
 
         public string Authors
@@ -64,7 +101,44 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public X509Certificate2 PublisherCertificate { get; set; }
+        public SignatureInfo PublisherSignature
+        {
+            get { return publisherCertificate; }
+            set
+            {
+                if (publisherCertificate != value)
+                {
+                    publisherCertificate = value;
+                    RaisePropertyChange(nameof(PublisherSignature));
+                }
+            }
+        }
+
+        public ValidationResultViewModel ValidationResult
+        {
+            get { return validationResult; }
+            set
+            {
+                if (validationResult != value)
+                {
+                    validationResult = value;
+                    RaisePropertyChange(nameof(ValidationResult));
+                }
+            }
+        }
+
+        public IReadOnlyList<SignatureInfo> RepositorySignatures
+        {
+            get { return repositoryCertificates; }
+            set
+            {
+                if (repositoryCertificates != value)
+                {
+                    repositoryCertificates = value;
+                    RaisePropertyChange(nameof(RepositorySignatures));
+                }
+            }
+        }
 
         public string Owners
         {
@@ -134,6 +208,9 @@ namespace PackageExplorerViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         private bool _developmentDependency;
         RepositoryMetadata repository;
+        SignatureInfo publisherCertificate;
+        ValidationResultViewModel validationResult;
+        IReadOnlyList<SignatureInfo> repositoryCertificates;
 
         #endregion
 

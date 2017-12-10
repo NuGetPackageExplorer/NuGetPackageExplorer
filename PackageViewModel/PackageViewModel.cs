@@ -52,7 +52,7 @@ namespace PackageExplorerViewModel
         private string _packageSource;
         private RelayCommand _publishCommand;
         private RelayCommand<object> _renameContentCommand;
-        private ICommand _saveCommand;
+        private SavePackageCommand _saveCommand;
         private ICommand _saveContentCommand;
         private object _selectedItem;
         private bool _showContentViewer;
@@ -101,15 +101,14 @@ namespace PackageExplorerViewModel
             _contentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
-            _packageMetadata = new EditablePackageMetadata(_package);
+            _packageMetadata = new EditablePackageMetadata(_package, _uiServices);
 
             PackageSource = source;
 
             _packageRoot = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
-
-            // HACK: this is after the package.GetFiles() since that reads the signature
-            _packageMetadata.PublisherCertificate = _package.PublisherCertificate;
         }
+
+
 
         internal IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata
         {
@@ -1350,7 +1349,7 @@ namespace PackageExplorerViewModel
                 try
                 {
                     Manifest manifest = Manifest.ReadFrom(metadataFileStream, true);
-                    var newMetadata = new EditablePackageMetadata(manifest.Metadata);
+                    var newMetadata = new EditablePackageMetadata(manifest.Metadata, _uiServices);
                     PackageMetadata = newMetadata;
 
                     return true;

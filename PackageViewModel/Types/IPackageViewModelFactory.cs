@@ -1,11 +1,12 @@
 ﻿using NuGetPe;
 using PackageExplorerViewModel;
+using System.Threading.Tasks;
 
 namespace NuGetPackageExplorer.Types
 {
     public interface IPackageViewModelFactory
     {
-        PackageViewModel CreateViewModel(IPackage package, string packageSource);
+        Task<PackageViewModel> CreateViewModel(IPackage package, string packageSource);
         PackageChooserViewModel CreatePackageChooserViewModel(string fixedPackageSource);
         PluginManagerViewModel CreatePluginManagerViewModel();
     }

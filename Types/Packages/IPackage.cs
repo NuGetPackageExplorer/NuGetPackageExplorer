@@ -30,10 +30,5 @@ namespace NuGetPe
         Stream GetStream();
 
         bool IsSigned { get; }
-
-        bool IsVerified { get; }
-
-        X509Certificate2 PublisherCertificate { get; }
-        X509Certificate2 RepositoryCertificate { get; }
     }
 }

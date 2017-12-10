@@ -97,6 +97,15 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Errors.
+        /// </summary>
+        public static string Dialog_Errors {
+            get {
+                return ResourceManager.GetString("Dialog_Errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Framework Assembly References:.
         /// </summary>
         public static string Dialog_FrameworkAssembliesLabel {
@@ -120,6 +129,15 @@ namespace PackageExplorer.Resources {
         public static string Dialog_IdLabel {
             get {
                 return ResourceManager.GetString("Dialog_IdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information.
+        /// </summary>
+        public static string Dialog_Information {
+            get {
+                return ResourceManager.GetString("Dialog_Information", resourceCulture);
             }
         }
         
@@ -187,7 +205,7 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publisher.
+        ///   Looks up a localized string similar to Publisher:.
         /// </summary>
         public static string Dialog_PublisherLabel {
             get {
@@ -201,6 +219,15 @@ namespace PackageExplorer.Resources {
         public static string Dialog_ReportAbuse {
             get {
                 return ResourceManager.GetString("Dialog_ReportAbuse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repository Signatures:.
+        /// </summary>
+        public static string Dialog_RepositorySignatures {
+            get {
+                return ResourceManager.GetString("Dialog_RepositorySignatures", resourceCulture);
             }
         }
         
@@ -243,6 +270,24 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show details.
+        /// </summary>
+        public static string Dialog_ShowDetails {
+            get {
+                return ResourceManager.GetString("Dialog_ShowDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signature Validation:.
+        /// </summary>
+        public static string Dialog_SignatureValidation {
+            get {
+                return ResourceManager.GetString("Dialog_SignatureValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tags:.
         /// </summary>
         public static string Dialog_TagLabel {
@@ -270,6 +315,24 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Validation Results:.
+        /// </summary>
+        public static string Dialog_ValidationResult {
+            get {
+                return ResourceManager.GetString("Dialog_ValidationResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Package Validation Results.
+        /// </summary>
+        public static string Dialog_ValidationResultTitle {
+            get {
+                return ResourceManager.GetString("Dialog_ValidationResultTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version:.
         /// </summary>
         public static string Dialog_VersionLabel {
@@ -284,6 +347,15 @@ namespace PackageExplorer.Resources {
         public static string Dialog_ViewLicense {
             get {
                 return ResourceManager.GetString("Dialog_ViewLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warnings.
+        /// </summary>
+        public static string Dialog_Warnings {
+            get {
+                return ResourceManager.GetString("Dialog_Warnings", resourceCulture);
             }
         }
         
@@ -347,6 +419,42 @@ namespace PackageExplorer.Resources {
         public static string ProxyConnectToMessage {
             get {
                 return ResourceManager.GetString("ProxyConnectToMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid.
+        /// </summary>
+        public static string Validation_Invalid {
+            get {
+                return ResourceManager.GetString("Validation_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Trusted.
+        /// </summary>
+        public static string Validation_Trusted {
+            get {
+                return ResourceManager.GetString("Validation_Trusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uknown.
+        /// </summary>
+        public static string Validation_Unknown {
+            get {
+                return ResourceManager.GetString("Validation_Unknown", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Untrusted.
+        /// </summary>
+        public static string Validation_Untrusted {
+            get {
+                return ResourceManager.GetString("Validation_Untrusted", resourceCulture);
             }
         }
     }

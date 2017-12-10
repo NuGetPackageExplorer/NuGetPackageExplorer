@@ -167,7 +167,7 @@ namespace PackageExplorer
             return false;
         }
 
-        private void LoadPackage(IPackage package, string packagePath, PackageType packageType)
+        private async void LoadPackage(IPackage package, string packagePath, PackageType packageType)
         {
             DisposeViewModel();
 
@@ -189,13 +189,20 @@ namespace PackageExplorer
                     EditorService = packageViewer.PackageMetadataEditor;
                 }
 
-                PackageViewModel packageViewModel = PackageViewModelFactory.CreateViewModel(package, packagePath);
-                packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
-
-                DataContext = packageViewModel;
-                if (!String.IsNullOrEmpty(packagePath))
+                try
                 {
-                    _mruManager.NotifyFileAdded(package, packagePath, packageType);
+                    PackageViewModel packageViewModel = await PackageViewModelFactory.CreateViewModel(package, packagePath);
+                    packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+
+                    DataContext = packageViewModel;
+                    if (!String.IsNullOrEmpty(packagePath))
+                    {
+                        _mruManager.NotifyFileAdded(package, packagePath, packageType);
+                    }
+                }
+                catch (Exception e)
+                {
+                    UIServices.Show($"Error loading package\n{e.Message}", MessageLevel.Error);
                 }
             }
         }
