@@ -6,7 +6,6 @@
     xmlns:viewModel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"
     xmlns:settings="clr-namespace:PackageExplorer.Properties" 
     xmlns:resources="clr-namespace:PackageExplorer.Resources" 
-    xmlns:signing="clr-namespace:NuGet.Packaging.Signing;assembly=NuGet.Packaging"
     xmlns:NuGetCommon="clr-namespace:NuGet.Common;assembly=NuGet.Common"
     FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" 
     Title="{x:Static resources:Resources.Dialog_ValidationResultTitle}" 
@@ -74,7 +73,7 @@
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Images/error.png"/>
-                            <TextBlock Text="Errors" Margin="3,0,0,0" />
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_Errors}" Margin="3,0,0,0" />
                         </StackPanel>
                     </Expander.Header>
                     <ItemsControl ItemsSource="{Binding ErrorIssues, Mode=OneWay}" />
@@ -84,7 +83,7 @@
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Images/Warning.png"/>
-                            <TextBlock Text="Warnings" Margin="3,0,0,0" />
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_Warnings}" Margin="3,0,0,0" />
                         </StackPanel>
                     </Expander.Header>
                     <ItemsControl ItemsSource="{Binding WarningIssues, Mode=OneWay}" />
@@ -94,7 +93,7 @@
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Images/information.png"/>
-                            <TextBlock Text="Information" Margin="3,0,0,0" />
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_Information}" Margin="3,0,0,0" />
                         </StackPanel>
                     </Expander.Header>
                     <ItemsControl ItemsSource="{Binding InformationIssues, Mode=OneWay}" />

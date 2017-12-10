@@ -97,6 +97,15 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Errors.
+        /// </summary>
+        public static string Dialog_Errors {
+            get {
+                return ResourceManager.GetString("Dialog_Errors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Framework Assembly References:.
         /// </summary>
         public static string Dialog_FrameworkAssembliesLabel {
@@ -120,6 +129,15 @@ namespace PackageExplorer.Resources {
         public static string Dialog_IdLabel {
             get {
                 return ResourceManager.GetString("Dialog_IdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information.
+        /// </summary>
+        public static string Dialog_Information {
+            get {
+                return ResourceManager.GetString("Dialog_Information", resourceCulture);
             }
         }
         
@@ -252,6 +270,15 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show details.
+        /// </summary>
+        public static string Dialog_ShowDetails {
+            get {
+                return ResourceManager.GetString("Dialog_ShowDetails", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Signature Validation:.
         /// </summary>
         public static string Dialog_SignatureValidation {
@@ -320,6 +347,15 @@ namespace PackageExplorer.Resources {
         public static string Dialog_ViewLicense {
             get {
                 return ResourceManager.GetString("Dialog_ViewLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Warnings.
+        /// </summary>
+        public static string Dialog_Warnings {
+            get {
+                return ResourceManager.GetString("Dialog_Warnings", resourceCulture);
             }
         }
         

@@ -52,9 +52,11 @@
                 
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Name="isValid" />
-                    <Button Margin="3,0,0,0" Command="{Binding ShowValidationResultsCommand}">
-                        <Image Name="icon"  />
-                    </Button>
+                    <Image Name="icon" Margin="3,0,0,0" Cursor="Hand" ToolTip="Show details">
+                        <Image.InputBindings>
+                            <MouseBinding Gesture="LeftClick" Command="{Binding ShowValidationResultsCommand}" />
+                        </Image.InputBindings>
+                    </Image>
                 </StackPanel>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Trusted">
