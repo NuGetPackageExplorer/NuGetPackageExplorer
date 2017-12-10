@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using NuGet.Versioning;
 
-namespace NuGetPe.Utility
+namespace NuGetPe
 {
     public static class ManifestUtility
     {

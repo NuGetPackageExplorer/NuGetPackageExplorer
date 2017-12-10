@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows.Input;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
-using NuGet.Packaging.Signing;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
-using NuGetPe.Utility;
 using PackageType = NuGet.Packaging.Core.PackageType;
 
 namespace PackageExplorerViewModel

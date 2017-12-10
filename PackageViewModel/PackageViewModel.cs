@@ -11,7 +11,6 @@ using NuGetPe;
 using NuGetPackageExplorer.Types;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using NuGet.Packaging;
-using NuGetPe.Utility;
 
 namespace PackageExplorerViewModel
 {

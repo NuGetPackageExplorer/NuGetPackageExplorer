@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Data;
 using NuGet.Packaging.Core;
-using NuGetPe.Utility;
+using NuGetPe;
 
 namespace PackageExplorer
 {

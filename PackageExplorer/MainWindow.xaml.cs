@@ -24,7 +24,6 @@ using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
 using NuGet.Packaging;
-using NuGetPe.Utility;
 
 namespace PackageExplorer
 {

@@ -2,10 +2,8 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using NuGet.Packaging;
 using NuGet.Versioning;
 using NuGetPe;
-using NuGetPe.Utility;
 
 namespace PackageExplorer
 {
