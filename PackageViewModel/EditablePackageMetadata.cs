@@ -69,9 +69,12 @@ namespace PackageExplorerViewModel
 
         private void LoadSignatureData(ZipPackage package)
         {
-            PublisherSignature = package.PublisherSignature;
-            RepositorySignatures = package.RepositorySignatures;
-            ValidationResult = new ValidationResultViewModel(package.VerificationResult);
+            if (package.IsSigned)
+            {
+                PublisherSignature = package.PublisherSignature;
+                RepositorySignatures = package.RepositorySignatures;
+                ValidationResult = new ValidationResultViewModel(package.VerificationResult);
+            }
         }
 
 
