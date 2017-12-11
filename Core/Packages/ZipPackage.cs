@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
@@ -293,14 +296,15 @@ namespace NuGetPe
         public IEnumerable<IPackageFile> GetFiles()
         {
             Stream stream = _streamFactory();
-            var reader = new PackageArchiveReader(stream, false); // should not close
+            var reader = new MyPackageArchiveReader(stream, false); // should not close
            
             _danglingStreams.Add(reader);           // clean up on dispose
 
-            
-            return (from file in reader.GetFiles()
-                    where IsPackageFile(file, reader)
-                    select new ZipPackageFile(reader, file)).ToList();
+
+            var entries = reader.GetZipEntries();
+            return (from entry in entries
+                    where IsPackageFile(entry)
+                    select new ZipPackageFile(reader, entry)).ToList();
         }
 
         public Stream GetStream()
@@ -354,10 +358,11 @@ namespace NuGetPe
             }
         }
 
-        private bool IsPackageFile(string path, PackageArchiveReader reader)
+        private static bool IsPackageFile(ZipArchiveEntry entry)
         {
             // We exclude any opc files and the manifest file (.nuspec)
-
+            var path = entry.FullName;
+            
             return !path.EndsWith("/") && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
         }
@@ -370,6 +375,18 @@ namespace NuGetPe
         public void Dispose()
         {
             _danglingStreams.ForEach(ds => ds.Dispose());
+        }
+
+
+        private class MyPackageArchiveReader : PackageArchiveReader
+        {
+           /// <summary>Nupkg package reader</summary>
+            /// <param name="stream">Nupkg data stream.</param>
+            /// <param name="leaveStreamOpen">If true the nupkg stream will not be closed by the zip reader.</param>
+            public MyPackageArchiveReader(Stream stream, bool leaveStreamOpen) : base(stream, leaveStreamOpen)
+            {
+            }
+            public ReadOnlyCollection<ZipArchiveEntry> GetZipEntries() => Zip?.Entries;
         }
     }
 }
