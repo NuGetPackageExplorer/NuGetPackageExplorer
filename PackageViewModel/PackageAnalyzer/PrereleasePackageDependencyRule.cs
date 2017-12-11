@@ -35,7 +35,7 @@ namespace PackageExplorerViewModel.Rules
                 return false;
             }
 
-            return pd.VersionRange.MinVersion.IsPrerelease || pd.VersionRange.MaxVersion.IsPrerelease;
+            return pd.VersionRange.MinVersion?.IsPrerelease == true || pd.VersionRange.MaxVersion?.IsPrerelease == true;
         }
         
         private static PackageIssue CreatePackageIssue(PackageDependency target)
