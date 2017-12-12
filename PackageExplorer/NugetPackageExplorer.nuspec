@@ -16,7 +16,7 @@
         <summary>Makes creating and examining nuget packages very easy.</summary>
         <tags>nuget admin nupkg nuspec</tags>
         <dependencies>
-            <dependency id="DotNet4.5" />
+            <dependency id="DotNet4.6.1" />
         </dependencies>
     </metadata>
     <files>
