@@ -21,8 +21,10 @@ steps:
     # restore 
     msbuild .\PackageExplorer\PackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
     
-    # version
-    $vers = & $env:NUGET_PACKAGES\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
+    # version    
+    nuget install NerdBank.GitVersioning -Version 2.0.41 -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
+    
+    $vers = & $(Build.SourcesDirectory)\packages\nerdbank.gitversioning\tools\Get-Version.ps1
     $ver = $vers.SimpleVersion
         
     # Update appxmanifests. These must be done before build.
@@ -45,7 +47,7 @@ steps:
     $doc | % { $_.Replace("ver_number", "$ver.0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
     
     # Choco uses MajorMinorVersion
-    $vers = & $env:NUGET_PACKAGES\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
+    $vers = & $(Build.SourcesDirectory)\packages\nerdbank.gitversioning\tools\Get-Version.ps1
     $ver = $vers.MajorMinorVersion
     
     nuget pack .\PackageExplorer\NuGetPackageExplorer.nuspec -version $ver -OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly  
