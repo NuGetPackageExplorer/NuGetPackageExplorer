@@ -15,11 +15,16 @@ steps:
     versionSpec: 4.4.1
 
 - powershell: |
-    # restore 
-    msbuild /t:restore PackageExplorer\PackageExplorer.csproj
     
-    # version
-    $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
+    mkdir $(Build.ArtifactStagingDirectory)\Logs
+
+    # restore 
+    msbuild .\PackageExplorer\PackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
+    
+    # version    
+    nuget install NerdBank.GitVersioning -Version 2.0.41 -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
+    
+    $vers = & $(Build.SourcesDirectory)\packages\nerdbank.gitversioning\tools\Get-Version.ps1
     $ver = $vers.SimpleVersion
         
     # Update appxmanifests. These must be done before build.
@@ -30,9 +35,9 @@ steps:
     $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
     
     # Build PackageExplorer
-    msbuild .\PackageExplorer\PackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) 
-    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /p:AppxBundle=Always
-    msbuild .\PackageExplorer.Package\PackageExplorer.Package.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload 
+    msbuild .\PackageExplorer\PackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-PackageExplorer.binlog
+    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /p:AppxBundle=Always /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-NightlyPackage.binlog
+    msbuild .\PackageExplorer.Package\PackageExplorer.Package.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-Package.binlog
     
     # Update versions
     $doc = Get-Content ".\Build\ci_badge.svg"    
@@ -42,7 +47,7 @@ steps:
     $doc | % { $_.Replace("ver_number", "$ver.0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
     
     # Choco uses MajorMinorVersion
-    $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
+    $vers = & $(Build.SourcesDirectory)\packages\nerdbank.gitversioning\tools\Get-Version.ps1
     $ver = $vers.MajorMinorVersion
     
     nuget pack .\PackageExplorer\NuGetPackageExplorer.nuspec -version $ver -OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly  
@@ -89,6 +94,14 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
     artifactType: container
     artifactName: Zip
+  condition: always()
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Log Artifacts
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)\Logs
+    artifactType: container
+    artifactName: Logs
   condition: always()
 
 - task: PublishBuildArtifacts@1
