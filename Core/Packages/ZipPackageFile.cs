@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.IO.Packaging;
 using NuGet.Packaging;
 
@@ -10,11 +11,12 @@ namespace NuGetPe
     {
         private readonly Func<Stream> _streamFactory;
 
-        public ZipPackageFile(PackageArchiveReader reader, string path) 
-            : base(path.Replace('/', '\\'))
+        public ZipPackageFile(PackageArchiveReader reader, ZipArchiveEntry entry) 
+            : base(entry.FullName.Replace('/', '\\'))
         {
             Debug.Assert(reader != null, "reader should not be null");
-            _streamFactory = () => reader.GetStream(path);
+            LastWriteTime = entry.LastWriteTime;
+            _streamFactory = () => reader.GetStream(entry.FullName);
         }
 
         public override Stream GetStream()
