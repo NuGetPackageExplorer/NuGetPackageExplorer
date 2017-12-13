@@ -35,7 +35,7 @@ steps:
     $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
     
     # Build PackageExplorer
-    msbuild .\PackageExplorer\PackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-PackageExplorer.binlog
+    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-PackageExplorer.binlog
     msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /p:AppxBundle=Always /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-NightlyPackage.binlog
     msbuild .\PackageExplorer.Package\PackageExplorer.Package.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-Package.binlog
     
