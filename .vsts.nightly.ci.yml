@@ -19,7 +19,7 @@ steps:
     mkdir $(Build.ArtifactStagingDirectory)\Logs
 
     # restore 
-    msbuild .\PackageExplorer\PackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
+    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
     
     # version    
     nuget install NerdBank.GitVersioning -Version 2.0.41 -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion

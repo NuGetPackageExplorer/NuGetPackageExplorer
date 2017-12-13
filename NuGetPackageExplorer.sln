@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2003
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageExplorer", "PackageExplorer\PackageExplorer.csproj", "{3B56B367-7763-4F70-9933-2B8B23718A0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetPackageExplorer", "PackageExplorer\NuGetPackageExplorer.csproj", "{3B56B367-7763-4F70-9933-2B8B23718A0D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageViewModel", "PackageViewModel\PackageViewModel.csproj", "{A1E66420-E485-4719-A37F-5B49AAFB43AB}"
 EndProject

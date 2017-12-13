@@ -22,7 +22,7 @@ namespace PackageExplorer.Resources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,10 +36,10 @@ namespace PackageExplorer.Resources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PackageExplorer.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("NuGetPackageExplorer.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -51,7 +51,7 @@ namespace PackageExplorer.Resources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -63,7 +63,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Authors:.
         /// </summary>
-        internal static string Dialog_CreatedByLabel {
+        public static string Dialog_CreatedByLabel {
             get {
                 return ResourceManager.GetString("Dialog_CreatedByLabel", resourceCulture);
             }
@@ -72,7 +72,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Dependencies:.
         /// </summary>
-        internal static string Dialog_DependenciesLabel {
+        public static string Dialog_DependenciesLabel {
             get {
                 return ResourceManager.GetString("Dialog_DependenciesLabel", resourceCulture);
             }
@@ -81,7 +81,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Development Dependency:.
         /// </summary>
-        internal static string Dialog_DevelopmentDependencyLabel {
+        public static string Dialog_DevelopmentDependencyLabel {
             get {
                 return ResourceManager.GetString("Dialog_DevelopmentDependencyLabel", resourceCulture);
             }
@@ -90,7 +90,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Downloading package {0} {1}.
         /// </summary>
-        internal static string Dialog_DownloadingPackage {
+        public static string Dialog_DownloadingPackage {
             get {
                 return ResourceManager.GetString("Dialog_DownloadingPackage", resourceCulture);
             }
@@ -99,7 +99,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Errors.
         /// </summary>
-        internal static string Dialog_Errors {
+        public static string Dialog_Errors {
             get {
                 return ResourceManager.GetString("Dialog_Errors", resourceCulture);
             }
@@ -108,7 +108,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Framework Assembly References:.
         /// </summary>
-        internal static string Dialog_FrameworkAssembliesLabel {
+        public static string Dialog_FrameworkAssembliesLabel {
             get {
                 return ResourceManager.GetString("Dialog_FrameworkAssembliesLabel", resourceCulture);
             }
@@ -117,7 +117,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Author: Luan Nguyen (@dotnetjunky). For more information, visit http://nuget.codeplex.com..
         /// </summary>
-        internal static string Dialog_HelpAbout {
+        public static string Dialog_HelpAbout {
             get {
                 return ResourceManager.GetString("Dialog_HelpAbout", resourceCulture);
             }
@@ -126,7 +126,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Id:.
         /// </summary>
-        internal static string Dialog_IdLabel {
+        public static string Dialog_IdLabel {
             get {
                 return ResourceManager.GetString("Dialog_IdLabel", resourceCulture);
             }
@@ -135,7 +135,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Information.
         /// </summary>
-        internal static string Dialog_Information {
+        public static string Dialog_Information {
             get {
                 return ResourceManager.GetString("Dialog_Information", resourceCulture);
             }
@@ -144,7 +144,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to The package URL {0} is invalid and can not be opened..
         /// </summary>
-        internal static string Dialog_InvalidPackageUrl {
+        public static string Dialog_InvalidPackageUrl {
             get {
                 return ResourceManager.GetString("Dialog_InvalidPackageUrl", resourceCulture);
             }
@@ -153,7 +153,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Language:.
         /// </summary>
-        internal static string Dialog_LanguageLabel {
+        public static string Dialog_LanguageLabel {
             get {
                 return ResourceManager.GetString("Dialog_LanguageLabel", resourceCulture);
             }
@@ -162,7 +162,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Min client version:.
         /// </summary>
-        internal static string Dialog_MinVersionLabel {
+        public static string Dialog_MinVersionLabel {
             get {
                 return ResourceManager.GetString("Dialog_MinVersionLabel", resourceCulture);
             }
@@ -171,7 +171,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Package Information.
         /// </summary>
-        internal static string Dialog_MoreInfo {
+        public static string Dialog_MoreInfo {
             get {
                 return ResourceManager.GetString("Dialog_MoreInfo", resourceCulture);
             }
@@ -180,7 +180,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to No Dependencies.
         /// </summary>
-        internal static string Dialog_NoDependencyLabel {
+        public static string Dialog_NoDependencyLabel {
             get {
                 return ResourceManager.GetString("Dialog_NoDependencyLabel", resourceCulture);
             }
@@ -189,7 +189,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to All supported files|*.nupkg;*.nuspec|NuGet package file (*.nupkg)|*.nupkg|NuSpec file (*.nuspec)|*.nuspec.
         /// </summary>
-        internal static string Dialog_OpenFileFilter {
+        public static string Dialog_OpenFileFilter {
             get {
                 return ResourceManager.GetString("Dialog_OpenFileFilter", resourceCulture);
             }
@@ -198,7 +198,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Owners:.
         /// </summary>
-        internal static string Dialog_OwnersLabel {
+        public static string Dialog_OwnersLabel {
             get {
                 return ResourceManager.GetString("Dialog_OwnersLabel", resourceCulture);
             }
@@ -207,7 +207,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Publisher:.
         /// </summary>
-        internal static string Dialog_PublisherLabel {
+        public static string Dialog_PublisherLabel {
             get {
                 return ResourceManager.GetString("Dialog_PublisherLabel", resourceCulture);
             }
@@ -216,7 +216,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Report Abuse.
         /// </summary>
-        internal static string Dialog_ReportAbuse {
+        public static string Dialog_ReportAbuse {
             get {
                 return ResourceManager.GetString("Dialog_ReportAbuse", resourceCulture);
             }
@@ -225,7 +225,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Repository Signatures:.
         /// </summary>
-        internal static string Dialog_RepositorySignatures {
+        public static string Dialog_RepositorySignatures {
             get {
                 return ResourceManager.GetString("Dialog_RepositorySignatures", resourceCulture);
             }
@@ -234,7 +234,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Requires License Acceptance:.
         /// </summary>
-        internal static string Dialog_RequireLicenseLabel {
+        public static string Dialog_RequireLicenseLabel {
             get {
                 return ResourceManager.GetString("Dialog_RequireLicenseLabel", resourceCulture);
             }
@@ -243,7 +243,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Do you want to save your changes?.
         /// </summary>
-        internal static string Dialog_SaveQuestion {
+        public static string Dialog_SaveQuestion {
             get {
                 return ResourceManager.GetString("Dialog_SaveQuestion", resourceCulture);
             }
@@ -252,7 +252,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Serviceable:.
         /// </summary>
-        internal static string Dialog_ServiceableLabel {
+        public static string Dialog_ServiceableLabel {
             get {
                 return ResourceManager.GetString("Dialog_ServiceableLabel", resourceCulture);
             }
@@ -263,7 +263,7 @@ namespace PackageExplorer.Resources {
         ///
         ///Do you want to add &apos;{0}&apos; to the list of package publish sources?.
         /// </summary>
-        internal static string Dialog_SetActivePackagePublishSource {
+        public static string Dialog_SetActivePackagePublishSource {
             get {
                 return ResourceManager.GetString("Dialog_SetActivePackagePublishSource", resourceCulture);
             }
@@ -272,7 +272,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Show details.
         /// </summary>
-        internal static string Dialog_ShowDetails {
+        public static string Dialog_ShowDetails {
             get {
                 return ResourceManager.GetString("Dialog_ShowDetails", resourceCulture);
             }
@@ -281,7 +281,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Signature Validation:.
         /// </summary>
-        internal static string Dialog_SignatureValidation {
+        public static string Dialog_SignatureValidation {
             get {
                 return ResourceManager.GetString("Dialog_SignatureValidation", resourceCulture);
             }
@@ -290,7 +290,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Tags:.
         /// </summary>
-        internal static string Dialog_TagLabel {
+        public static string Dialog_TagLabel {
             get {
                 return ResourceManager.GetString("Dialog_TagLabel", resourceCulture);
             }
@@ -299,7 +299,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to NuGet Package Explorer.
         /// </summary>
-        internal static string Dialog_Title {
+        public static string Dialog_Title {
             get {
                 return ResourceManager.GetString("Dialog_Title", resourceCulture);
             }
@@ -308,7 +308,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Title:.
         /// </summary>
-        internal static string Dialog_TitleLabel {
+        public static string Dialog_TitleLabel {
             get {
                 return ResourceManager.GetString("Dialog_TitleLabel", resourceCulture);
             }
@@ -317,7 +317,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Validation Results:.
         /// </summary>
-        internal static string Dialog_ValidationResult {
+        public static string Dialog_ValidationResult {
             get {
                 return ResourceManager.GetString("Dialog_ValidationResult", resourceCulture);
             }
@@ -326,7 +326,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Package Validation Results.
         /// </summary>
-        internal static string Dialog_ValidationResultTitle {
+        public static string Dialog_ValidationResultTitle {
             get {
                 return ResourceManager.GetString("Dialog_ValidationResultTitle", resourceCulture);
             }
@@ -335,7 +335,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Version:.
         /// </summary>
-        internal static string Dialog_VersionLabel {
+        public static string Dialog_VersionLabel {
             get {
                 return ResourceManager.GetString("Dialog_VersionLabel", resourceCulture);
             }
@@ -344,7 +344,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to View License Terms.
         /// </summary>
-        internal static string Dialog_ViewLicense {
+        public static string Dialog_ViewLicense {
             get {
                 return ResourceManager.GetString("Dialog_ViewLicense", resourceCulture);
             }
@@ -353,7 +353,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Warnings.
         /// </summary>
-        internal static string Dialog_Warnings {
+        public static string Dialog_Warnings {
             get {
                 return ResourceManager.GetString("Dialog_Warnings", resourceCulture);
             }
@@ -362,7 +362,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Do you want to add the file &apos;{0}&apos; to &apos;{1}&apos; folder instead?.
         /// </summary>
-        internal static string MoveContentFileToFolder {
+        public static string MoveContentFileToFolder {
             get {
                 return ResourceManager.GetString("MoveContentFileToFolder", resourceCulture);
             }
@@ -371,7 +371,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to NuGet does not do anything special with files at the package root. The extension of this file indicates that it is intended to be placed in the &apos;{0}&apos; folder. .
         /// </summary>
-        internal static string MoveContentFileToFolderExplanation {
+        public static string MoveContentFileToFolderExplanation {
             get {
                 return ResourceManager.GetString("MoveContentFileToFolderExplanation", resourceCulture);
             }
@@ -380,7 +380,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to (not framework specific).
         /// </summary>
-        internal static string NoFxDependencyGroup {
+        public static string NoFxDependencyGroup {
             get {
                 return ResourceManager.GetString("NoFxDependencyGroup", resourceCulture);
             }
@@ -389,7 +389,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Network connection is not detected..
         /// </summary>
-        internal static string NoNetworkConnection {
+        public static string NoNetworkConnection {
             get {
                 return ResourceManager.GetString("NoNetworkConnection", resourceCulture);
             }
@@ -398,7 +398,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Failed to download package correctly. The contents of the package could not be verified..
         /// </summary>
-        internal static string PackageContentsVerifyError {
+        public static string PackageContentsVerifyError {
             get {
                 return ResourceManager.GetString("PackageContentsVerifyError", resourceCulture);
             }
@@ -407,7 +407,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to There are no contents or dependencies in the package..
         /// </summary>
-        internal static string PackageHasNoFile {
+        public static string PackageHasNoFile {
             get {
                 return ResourceManager.GetString("PackageHasNoFile", resourceCulture);
             }
@@ -416,7 +416,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Connect to {0}.
         /// </summary>
-        internal static string ProxyConnectToMessage {
+        public static string ProxyConnectToMessage {
             get {
                 return ResourceManager.GetString("ProxyConnectToMessage", resourceCulture);
             }
@@ -425,7 +425,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Invalid.
         /// </summary>
-        internal static string Validation_Invalid {
+        public static string Validation_Invalid {
             get {
                 return ResourceManager.GetString("Validation_Invalid", resourceCulture);
             }
@@ -434,7 +434,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Trusted.
         /// </summary>
-        internal static string Validation_Trusted {
+        public static string Validation_Trusted {
             get {
                 return ResourceManager.GetString("Validation_Trusted", resourceCulture);
             }
@@ -443,7 +443,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Uknown.
         /// </summary>
-        internal static string Validation_Unknown {
+        public static string Validation_Unknown {
             get {
                 return ResourceManager.GetString("Validation_Unknown", resourceCulture);
             }
@@ -452,7 +452,7 @@ namespace PackageExplorer.Resources {
         /// <summary>
         ///   Looks up a localized string similar to Untrusted.
         /// </summary>
-        internal static string Validation_Untrusted {
+        public static string Validation_Untrusted {
             get {
                 return ResourceManager.GetString("Validation_Untrusted", resourceCulture);
             }

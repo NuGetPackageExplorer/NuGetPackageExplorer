@@ -66,7 +66,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="..\PackageExplorer\bin\$(Configuration)\**\*.*"> 
+    <Content Include="..\PackageExplorer\bin\$(Configuration)\net461\**\*.*"> 
       <Link>win32\%(RecursiveDir)%(Filename)%(Extension)</Link> 
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory> 
     </Content> 
