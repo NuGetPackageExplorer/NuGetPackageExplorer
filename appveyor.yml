@@ -10,7 +10,7 @@ skip_commits:
 skip_branch_with_pr: true   
 
 before_build:
-    - ps: msbuild /t:restore PackageExplorer\PackageExplorer.csproj
+    - ps: msbuild /t:restore PackageExplorer\NuGetPackageExplorer.csproj
     - ps: |
         $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.0.41\tools\Get-Version.ps1
         $nugetVer = $vers.Version
