@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Deployment.Application;
 using System.Globalization;
 using System.Reflection;
 using System.Windows;

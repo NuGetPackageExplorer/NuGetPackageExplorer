@@ -1,15 +1,12 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Deployment.Application;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using CodeExecutor;
-using NuGet.Versioning;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
@@ -60,28 +57,7 @@ namespace PackageExplorer
                     return;
                 }
             }
-
-            // activation via ClickOnce url
-            if (ApplicationDeployment.IsNetworkDeployed &&
-                ApplicationDeployment.CurrentDeployment != null &&
-                ApplicationDeployment.CurrentDeployment.ActivationUri != null)
-            {
-                string queryString = ApplicationDeployment.CurrentDeployment.ActivationUri.Query;
-                var arguments = HttpUtility.ParseQueryString(queryString);
-
-                string downloadUrl = arguments["url"];
-                Uri uri;
-
-                if (!String.IsNullOrEmpty(downloadUrl) && Uri.TryCreate(downloadUrl, UriKind.Absolute, out uri))
-                {
-                    string id = arguments["id"];
-                    string versionString = arguments["version"];
-                    NuGetVersion.TryParse(versionString, out NuGetVersion version);
-
-                    await window.DownloadAndOpenDataServicePackage(downloadUrl, id, version);
-                    return;
-                }
-            }
+           
 
             if (AppDomain.CurrentDomain.SetupInformation != null &&
                 AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
