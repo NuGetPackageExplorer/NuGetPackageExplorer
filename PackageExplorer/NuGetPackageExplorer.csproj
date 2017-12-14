@@ -14,7 +14,7 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <Title>NuGet Package Explorer</Title>
     <Description>This is a NuGet package explorer tool which lets you view the metadata of a .nupkg package. After installing it, you can double click on .nupkg packages to open them in Package Explorer.</Description>
-    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
+    <EmbeddedResourceGeneratorVisibilityIsInternal>false</EmbeddedResourceGeneratorVisibilityIsInternal>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL" SpecificVersion="false" HintPath="..\lib\Ookii.Dialogs.Wpf.dll" />
@@ -24,7 +24,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Security" />
     
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.0-build.14" />  
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.0-build.23" />  
     <PackageReference Include="AvalonEdit" Version="5.0.4" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
@@ -38,29 +38,8 @@
     <Resource Include="Images\*.*" />
     <Content Include="Resources\fxAssemblies.txt" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="nuspec.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-
-    <EmbeddedResource Include="**/*.resx" Generator="PublicResXFileCodeGenerator" LastGenOutput="%(Filename).Designer$(_SdkLanguageExtension)" />
-    <_ResxFiles Include="**/*.resx" DesignerName="%(RecursiveDir)%(Filename).Designer$(_SdkLanguageExtension)" />
-    <Compile Update="@(_ResxFiles -> '%(DesignerName)')" AutoGen="True" DesignTime="True" DependentUpon="$([System.String]::Copy(&quot;%(Filename)&quot;).Replace(&quot;.Designer&quot;,&quot;&quot;)).resx" />
-    <Compile Update="Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-
     <EmbeddedResource Update="Resources.resx" CustomToolNamespace="PackageExplorer.Resources" />
   </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Resources.resx" CustomToolNamespace="PackageExplorer.Resources">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </None>
-  </ItemGroup>
- 
   
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
   <!-- workaround for https://github.com/NuGet/Home/issues/5894 -->
