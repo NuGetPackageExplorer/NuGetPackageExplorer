@@ -284,6 +284,7 @@ namespace PackageExplorerViewModel
             var dataServiceQuery = query as DataServiceQuery<PackageInfo>;
             if (dataServiceQuery != null)
             {
+                dataServiceQuery = dataServiceQuery.AddQueryOption("semVerLevel", "2.0.0");
                 IEnumerable<PackageInfo> queryResponse =
                     await Task.Factory.FromAsync<IEnumerable<PackageInfo>>(dataServiceQuery.BeginExecute(null, null), dataServiceQuery.EndExecute);
 
