@@ -55,8 +55,12 @@
         <ApplicationName>NuGetPackageExplorer</ApplicationName>
         <PackageExplorerRoot>$(MSBuildProjectDirectory)\..</PackageExplorerRoot>
         <ManifestFilePath>$(MSBuildProjectDirectory)\VisualStyleManifest.xml</ManifestFilePath>
-        <ManifestToolPath>$(ProgramFiles)\Microsoft SDKs\Windows\v7.1A\bin\mt.exe</ManifestToolPath>
-        <MageToolPath>$(ProgramFiles)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools\mage.exe</MageToolPath>
+        <ManifestToolPath Condition="$(ManifestToolPath) == '' AND Exists('$(ProgramFiles)\Microsoft SDKs\Windows\v7.1A\bin\mt.exe')">$(ProgramFiles)\Microsoft SDKs\Windows\v7.1A\bin\mt.exe</ManifestToolPath>
+        <ManifestToolPath Condition="$(ManifestToolPath) == '' AND Exists('$(ProgramFiles)\Windows Kits\10\bin\x86\mt.exe')">$(ProgramFiles)\Windows Kits\10\bin\x86\mt.exe</ManifestToolPath>
+        <MageToolPath Condition="$(MageToolPath) == '' AND Exists('$(ProgramFiles)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools\mage.exe')">$(ProgramFiles)\Microsoft SDKs\Windows\v8.1A\bin\NETFX 4.5.1 Tools\mage.exe</MageToolPath>
+        <MageToolPath Condition="$(MageToolPath) == '' AND Exists('$(ProgramFiles)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\mage.exe')">$(ProgramFiles)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6 Tools\mage.exe</MageToolPath>
+        <MageToolPath Condition="$(MageToolPath) == '' AND Exists('$(ProgramFiles)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\mage.exe')">$(ProgramFiles)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.1 Tools\mage.exe</MageToolPath>
+        <MageToolPath Condition="$(MageToolPath) == '' AND Exists('$(ProgramFiles)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.2 Tools\mage.exe')">$(ProgramFiles)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.6.2 Tools\mage.exe</MageToolPath>
         <CertificateFilePath>$(PackageExplorerRoot)\$(CertificateFileName)</CertificateFilePath>
         <PublisherName>NuGet Package Explorer</PublisherName>
         <DropDirectory>$(PackageExplorerRoot)\bin</DropDirectory>
