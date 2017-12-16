@@ -88,6 +88,7 @@
 
     <Target Name="BuildAndPublish">
         <RemoveDir Directories="$(PublishedDirectory)" Condition="Exists('$(PublishedDirectory)')" ContinueOnError="True" />
+        <MSBuild Projects="$(PackageExplorerRoot)\NuGetPackageExplorer.sln" Targets="Restore" />
         <MSBuild Projects="$(PackageExplorerRoot)\NuGetPackageExplorer.sln" Targets="Publish" />
     </Target>
 
