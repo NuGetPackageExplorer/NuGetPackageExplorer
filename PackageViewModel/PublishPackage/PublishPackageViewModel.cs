@@ -68,7 +68,7 @@ namespace PackageExplorerViewModel
                 if (_publishCredentialUsername != value)
                 {
                     _publishCredentialUsername = value;
-                    OnPropertyChanged("PublishCredentialUsername");
+                    OnPropertyChanged(nameof(PublishCredentialUsername));
                     CheckIfAuthIsSet();
                 }
             }
@@ -81,7 +81,7 @@ namespace PackageExplorerViewModel
                 if (_publishCredentialPassword != value)
                 {
                     _publishCredentialPassword = value;
-                    OnPropertyChanged("PublishCredentialPassword");
+                    OnPropertyChanged(nameof(PublishCredentialPassword));
                     CheckIfAuthIsSet();
                 }
             }
