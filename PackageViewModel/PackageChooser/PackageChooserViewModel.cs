@@ -45,15 +45,6 @@ namespace PackageExplorerViewModel
             bool autoLoadPackages,
             string fixedPackageSource)
         {
-            if (packageSourceManager == null)
-            {
-                throw new ArgumentNullException("packageSourceManager");
-            }
-            if (credentialManager == null)
-            {
-                throw new ArgumentNullException("credentialManager");
-            }
-
             _showPrereleasePackages = showPrereleasePackages;
             _fixedPackageSource = fixedPackageSource;
             _autoLoadPackages = autoLoadPackages;
@@ -65,8 +56,8 @@ namespace PackageExplorerViewModel
             LoadedCommand = new RelayCommand(async () => await Sort("VersionDownloadCount", ListSortDirection.Descending));
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
-            _packageSourceManager = packageSourceManager;
-            _credentialManager = credentialManager;
+            _packageSourceManager = packageSourceManager ?? throw new ArgumentNullException("packageSourceManager");
+            _credentialManager = credentialManager ?? throw new ArgumentNullException("credentialManager");
         }
 
         public IPackageRepository ActiveRepository
