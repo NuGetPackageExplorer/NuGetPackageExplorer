@@ -1,13 +1,6 @@
 @echo Off
 setlocal enableextensions enabledelayedexpansion
 
-set password=%1
-
-set deployUrl=%2
-if "%deployUrl%" == "" (
-   set deployUrl=https://npe.codeplex.com/releases/clickonce/
-)
-
 if exist "%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe" (
 	FOR /F "delims=" %%E in ('"%ProgramFiles(x86)%\Microsoft Visual Studio\installer\vswhere.exe" -latest -property installationPath') DO (
 		set "MSBUILD_EXE=%%E\MSBuild\15.0\Bin\MSBuild.exe"
@@ -31,9 +24,9 @@ FOR /F "delims=" %%E IN ('dir /b /ad "%ProgramFiles(x86)%\Microsoft Visual Studi
 	)
 )
 
-echo Could not find MSBuild 15
-set "MSBUILD_EXE=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
+echo Could not find MSBuild 15, it is required to build.
+exit /b 1
 
 :build
 "%MSBUILD_EXE%" NuGetPackageExplorer.sln /t:Restore
-"%MSBUILD_EXE%" NuGetPackageExplorer.sln /bl /verbosity:minimal /p:Configuration=Release;DeploymentUrl="%deployUrl%";Password="%password%";EnableCodeAnalysis=true
+"%MSBUILD_EXE%" NuGetPackageExplorer.sln /m /bl /verbosity:minimal /p:Configuration=Release
