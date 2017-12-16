@@ -35,4 +35,5 @@ echo Could not find MSBuild 15
 set "MSBUILD_EXE=%WINDIR%\Microsoft.NET\Framework\v4.0.30319\msbuild.exe"
 
 :build
-"%MSBUILD_EXE%" build\build.proj /bl /verbosity:minimal /p:Configuration=release;DeploymentUrl="%deployUrl%";Password="%password%";EnableCodeAnalysis=true
+"%MSBUILD_EXE%" NuGetPackageExplorer.sln /t:Restore
+"%MSBUILD_EXE%" NuGetPackageExplorer.sln /bl /verbosity:minimal /p:Configuration=Release;DeploymentUrl="%deployUrl%";Password="%password%";EnableCodeAnalysis=true
