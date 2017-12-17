@@ -1116,6 +1116,12 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public string GetCurrentPackageTempFile()
         {
+            // handle signed packages since they cannot be resaved without losing the signature
+            if (IsReadOnly && _package is ZipPackage zip)
+            {
+                return zip.Source;
+            }
+
             string tempFile = Path.GetTempFileName();
             PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, useTempFile: false);
             if (File.Exists(tempFile))
