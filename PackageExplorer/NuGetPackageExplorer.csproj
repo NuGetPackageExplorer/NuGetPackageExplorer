@@ -37,7 +37,6 @@
   <ItemGroup>    
     <Resource Include="Images\*.*" />
     <Content Include="Resources\fxAssemblies.txt" CopyToOutputDirectory="PreserveNewest" />
-    <Content Include="nuspec.ico" />
     <EmbeddedResource Update="Resources.resx" CustomToolNamespace="PackageExplorer.Resources" />
   </ItemGroup>
   
