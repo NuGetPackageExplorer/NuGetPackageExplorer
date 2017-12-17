@@ -59,6 +59,7 @@ namespace PackageExplorerViewModel
         private bool _showPackageAnalysis;
         private ICommand _viewContentCommand;
         private ICommand _viewPackageAnalysisCommand;
+        private ICommand _removeSignatureCommand;
 
         #endregion
 
@@ -104,6 +105,7 @@ namespace PackageExplorerViewModel
             _packageMetadata = new EditablePackageMetadata(_package, _uiServices);
 
             PackageSource = source;
+            _isSigned = package.IsSigned;
 
             _packageRoot = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
         }
@@ -138,8 +140,20 @@ namespace PackageExplorerViewModel
             get { return FileEditorViewModel != null; }
         }
 
-        public bool IsReadOnly => _package.IsSigned; // Signed packages can not be altered. Remove the sig first
-        
+        public bool IsSigned
+        {
+            get { return _isSigned; }
+            set
+            {
+                if (_isSigned != value)
+                {
+                    _isSigned = value;
+                    OnPropertyChanged(nameof(IsSigned));
+                    _saveCommand.RaiseCanExecuteChangedEvent();
+                }
+            }
+        }
+
 
         public FileEditorViewModel FileEditorViewModel
         {
@@ -295,7 +309,7 @@ namespace PackageExplorerViewModel
 
         private bool AddContentFileCanExecute(object parameter)
         {
-            if (IsReadOnly || IsInEditFileMode)
+            if (IsSigned || IsInEditFileMode)
             {
                 return false;
             }
@@ -352,7 +366,7 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            if (IsReadOnly || IsInEditFileMode)
+            if (IsSigned || IsInEditFileMode)
             {
                 return false;
             }
@@ -384,7 +398,7 @@ namespace PackageExplorerViewModel
 
         private bool AddNewFolderCanExecute(object parameter)
         {
-            if (IsReadOnly || IsInEditFileMode)
+            if (IsSigned || IsInEditFileMode)
             {
                 return false;
             }
@@ -442,7 +456,7 @@ namespace PackageExplorerViewModel
 
         private bool EditPackageCanExecute()
         {
-            return !IsReadOnly && !IsInEditMetadataMode && !IsInEditFileMode;
+            return !IsSigned && !IsInEditMetadataMode && !IsInEditFileMode;
         }
 
         private void EditPackageExecute()
@@ -461,7 +475,7 @@ namespace PackageExplorerViewModel
             {
                 if (_applyEditCommand == null)
                 {
-                    _applyEditCommand = new RelayCommand(() => ApplyEditExecute(), () => !IsReadOnly && !IsInEditFileMode);
+                    _applyEditCommand = new RelayCommand(() => ApplyEditExecute(), () => !IsSigned && !IsInEditFileMode);
                 }
 
                 return _applyEditCommand;
@@ -489,7 +503,7 @@ namespace PackageExplorerViewModel
             {
                 if (_cancelEditCommand == null)
                 {
-                    _cancelEditCommand = new RelayCommand(CancelEditExecute, () => !IsReadOnly && !IsInEditFileMode);
+                    _cancelEditCommand = new RelayCommand(CancelEditExecute, () => !IsSigned && !IsInEditFileMode);
                 }
 
                 return _cancelEditCommand;
@@ -521,7 +535,7 @@ namespace PackageExplorerViewModel
 
         private bool DeleteContentCanExecute(object parameter)
         {
-            if (IsReadOnly || IsInEditFileMode)
+            if (IsSigned || IsInEditFileMode)
             {
                 return false;
             }
@@ -556,7 +570,7 @@ namespace PackageExplorerViewModel
 
         private bool RenameContentCanExecuted(object parameter)
         {
-            if (IsReadOnly || IsInEditFileMode)
+            if (IsSigned || IsInEditFileMode)
             {
                 return false;
             }
@@ -670,7 +684,7 @@ namespace PackageExplorerViewModel
 
         private bool SaveContentCanExecute(PackageFile file)
         {
-            return !IsReadOnly && !IsInEditFileMode;
+            return !IsSigned && !IsInEditFileMode;
         }
 
         #endregion
@@ -747,6 +761,7 @@ namespace PackageExplorerViewModel
         #region ExportCommand
 
         private string _folderPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        private bool _isSigned;
 
         public RelayCommand ExportCommand
         {
@@ -898,7 +913,7 @@ namespace PackageExplorerViewModel
 
         private bool CanEditFileCommandExecute(PackagePart file)
         {
-            return !IsReadOnly && 
+            return !IsSigned && 
                    (file is PackageFile) && 
                    !IsInEditFileMode &&
                    !FileHelper.IsBinaryFile(file.Path);
@@ -907,6 +922,35 @@ namespace PackageExplorerViewModel
         internal void CloseEditFileMode()
         {
             FileEditorViewModel = null;
+        }
+
+        #endregion
+
+        #region RemoveSignatureCommand
+
+        public ICommand RemoveSignaturesCommand
+        {
+            get
+            {
+                if (_removeSignatureCommand == null)
+                {
+                    _removeSignatureCommand = new RelayCommand(RemoveSignatureCommandExecute, CanRemoveSignatureCommandExecute);
+                }
+                return _removeSignatureCommand;
+            }
+        }
+
+        private void RemoveSignatureCommandExecute()
+        {
+            // Set this to false, enabling save
+            PackageMetadata.ClearSignatures();
+            IsSigned = false;
+            CommitEdit();
+        }
+
+        private bool CanRemoveSignatureCommandExecute()
+        {
+            return IsSigned;
         }
 
         #endregion
@@ -933,7 +977,7 @@ namespace PackageExplorerViewModel
 
         private bool CanEditMetadataSourceCommandExecute()
         {
-            return !IsReadOnly && !IsInEditFileMode && !IsInEditMetadataMode;
+            return !IsSigned && !IsInEditFileMode && !IsInEditMetadataMode;
         }
 
         private IEditablePackageFile CreatePackageMetadataFile()
@@ -965,7 +1009,7 @@ namespace PackageExplorerViewModel
 
         private bool AddNewFileCanExecute(object parameter)
         {
-            if (IsReadOnly || IsInEditFileMode)
+            if (IsSigned || IsInEditFileMode)
             {
                 return false;
             }
@@ -1116,6 +1160,12 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public string GetCurrentPackageTempFile()
         {
+            // handle signed packages since they cannot be resaved without losing the signature
+            if (IsSigned && _package is ZipPackage zip)
+            {
+                return zip.Source;
+            }
+
             string tempFile = Path.GetTempFileName();
             PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, useTempFile: false);
             if (File.Exists(tempFile))
