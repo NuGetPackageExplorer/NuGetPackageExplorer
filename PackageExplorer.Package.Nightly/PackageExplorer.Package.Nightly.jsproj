@@ -70,6 +70,7 @@
       <Link>win32\%(RecursiveDir)%(Filename)%(Extension)</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\nupkg.png" />
     <Content Include="Assets\nuspec.png" />
     <Content Include="Assets\SmallTile.scale-100.png" />
     <Content Include="Assets\SmallTile.scale-200.png" />
@@ -90,7 +91,6 @@
     <Content Include="Assets\Square44x44Logo.targetsize-16.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-256.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-256_altform-unplated.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-256_altform-unplated.psd" />
     <Content Include="Assets\Square44x44Logo.targetsize-48.png" />
     <Content Include="Assets\Square44x44Logo.targetsize-48_altform-unplated.png" />
     <Content Include="Assets\StoreLogo.scale-100.png" />

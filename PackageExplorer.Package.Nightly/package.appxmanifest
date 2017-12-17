@@ -26,20 +26,20 @@
       </uap:VisualElements>
       <Extensions>
         <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="package">
+            <uap:DisplayName>NuGet package file</uap:DisplayName>
+            <uap:Logo>Assets\nupkg.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.nupkg</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
           <uap:FileTypeAssociation Name="spec">
             <uap:DisplayName>NuGet spec file</uap:DisplayName>
             <uap:Logo>Assets\nuspec.png</uap:Logo>
             <uap:SupportedFileTypes>
               <uap:FileType>.nuspec</uap:FileType>
-            </uap:SupportedFileTypes>
-          </uap:FileTypeAssociation>
-        </uap:Extension>
-        <uap:Extension Category="windows.fileTypeAssociation">
-          <uap:FileTypeAssociation Name="package">
-            <uap:DisplayName>NuGet package file</uap:DisplayName>
-            <uap:Logo>Assets\Square150x150Logo.png</uap:Logo>
-            <uap:SupportedFileTypes>
-              <uap:FileType>.nupkg</uap:FileType>
             </uap:SupportedFileTypes>
           </uap:FileTypeAssociation>
         </uap:Extension>
