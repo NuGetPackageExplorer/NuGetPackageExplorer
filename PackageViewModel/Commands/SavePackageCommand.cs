@@ -24,17 +24,17 @@ namespace PackageExplorerViewModel
 
         public bool CanExecute(object parameter)
         {
-            var readOnly = ViewModel.IsReadOnly;
+            var isSigned = ViewModel.IsSigned;
 
             var action = parameter as string;
             if (action == SaveAsAction || action == SaveMetadataAction)
             {
                 // These actions are allowed since it doesn't modify the file itself
-                readOnly = false;    
+                isSigned = false;    
             }
 
 
-            return !readOnly && !ViewModel.IsInEditFileMode;
+            return !isSigned && !ViewModel.IsInEditFileMode;
         }
 
         public event EventHandler CanExecuteChanged;

@@ -116,6 +116,11 @@
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
 
+                <Separator />
+
+                <self:GrayscaleMenuItem Header="Remove Package Signatures" Command="{Binding RemoveSignaturesCommand, FallbackValue={StaticResource DisabledCommand}}">
+  
+                </self:GrayscaleMenuItem>
 
                 <MenuItem Visibility="{Binding SelectedItem, Converter={StaticResource PackagePartConverter}, ConverterParameter=file, FallbackValue=Collapsed}" Command="{Binding EditFileCommand}" CommandParameter="{Binding SelectedItem, FallbackValue={x:Null}}">
                     <MenuItem.Header>

@@ -610,5 +610,11 @@ namespace PackageExplorerViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public void ClearSignatures()
+        {
+            PublisherSignature = null;
+            RepositorySignatures = new List<SignatureInfo>();
+        }
     }
 }
