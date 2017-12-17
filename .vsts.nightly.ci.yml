@@ -58,8 +58,8 @@ steps:
   displayName: Zip PackageExplorer files
   inputs:
     archiveType: zip
-    rootFolder: PackageExplorer/bin/$(BuildConfiguration)
-    archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.zip
+    rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net461
+    archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.$(Build.BuildNumber).zip
     includeRootFolder: false
     
 - task: PowerShell@2
