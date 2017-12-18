@@ -1,4 +1,4 @@
-![Logo](https://cloud.githubusercontent.com/assets/5808377/11324261/06c2ccd8-912d-11e5-87e4-9898b2217baa.png)
+![Logo](images/npe-logo.png)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/nhowjp0e1w0225v7/branch/master?svg=true)](https://ci.appveyor.com/project/NuGetPackageExplorer/nugetpackageexplorer/branch/master)
 [![Twitter Follow](https://img.shields.io/twitter/follow/NuGetPE.svg?style=social?maxAge=2592000)](https://twitter.com/NuGetPE)
