@@ -7,7 +7,7 @@ using NuGetPe;
 
 namespace PackageExplorer
 {
-    [ValueConversion(typeof(NuGetVersionConverter), typeof(string))]
+    [ValueConversion(typeof(NuGetVersion), typeof(string))]
     public class NuGetVersionConverter : IValueConverter
     {
         #region IValueConverter Members
@@ -15,7 +15,7 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var version =  value as NuGetVersion;
-            return version?.ToFullString();
+            return ManifestUtility.ReplaceMetadataWithToken(version?.ToFullString());
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -27,6 +27,7 @@ namespace PackageExplorer
             }
             else
             {
+                stringValue = ManifestUtility.ReplaceTokenWithMetadata(stringValue);
                 NuGetVersion version;
                 if (NuGetVersion.TryParse(stringValue, out version))
                 {

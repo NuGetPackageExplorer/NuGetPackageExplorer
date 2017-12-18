@@ -183,6 +183,7 @@ namespace PackageExplorerViewModel
                 {
                     _packageMetadata = value;
                     OnPropertyChanged("PackageMetadata");
+                    OnPropertyChanged("IsTokenized");
                 }
             }
         }
@@ -753,7 +754,7 @@ namespace PackageExplorerViewModel
 
         private bool PublishCanExecute()
         {
-            return !IsInEditMetadataMode && !IsInEditFileMode;
+            return !IsTokenized && !IsInEditMetadataMode && !IsInEditFileMode;
         }
 
         #endregion
@@ -1195,7 +1196,12 @@ namespace PackageExplorerViewModel
             HasEdit = true;
             PackageMetadata.ResetErrors();
             IsInEditMetadataMode = false;
-            OnPropertyChanged("WindowTitle");
+
+            OnPropertyChanged(nameof(IsTokenized));
+            OnPropertyChanged(nameof(WindowTitle));
+
+            _saveCommand.RaiseCanExecuteChangedEvent();
+            _publishCommand.RaiseCanExecuteChanged();
         }
 
         internal void OnSaved(string fileName)
@@ -1265,7 +1271,13 @@ namespace PackageExplorerViewModel
                         })
                     );
                 }
-                manifest.Save(fileStream);
+                using (var ms = new MemoryStream())
+                {
+                    manifest.Save(ms);
+                    ms.Position = 0;
+                    ManifestUtility.SaveToStream(ms, fileStream);
+                }
+                    
             }
         }
 
@@ -1376,6 +1388,19 @@ namespace PackageExplorerViewModel
             }
         }
 
+        private bool IsPackageTokenized()
+        {
+            if (PackageMetadata.Version.IsTokenized())
+                return true;
+
+            // any deps
+            return PackageMetadata.DependencySets
+                    .SelectMany(ds => ds.Packages)
+                    .Any(dp => dp.VersionRange.MinVersion.IsTokenized() || dp.VersionRange.MaxVersion.IsTokenized());
+        }
+
+        public bool IsTokenized => IsPackageTokenized();
+
         internal bool IsShowingFileContent(PackageFile file)
         {
             return ShowContentViewer && CurrentFileInfo.File == file;
@@ -1398,11 +1423,15 @@ namespace PackageExplorerViewModel
             {
                 try
                 {
-                    Manifest manifest = Manifest.ReadFrom(metadataFileStream, true);
-                    var newMetadata = new EditablePackageMetadata(manifest.Metadata, _uiServices);
-                    PackageMetadata = newMetadata;
+                    using (var str = ManifestUtility.ReadManifest(metadataFileStream))
+                    {
+                        Manifest manifest = Manifest.ReadFrom(str, true);
+                        var newMetadata = new EditablePackageMetadata(manifest.Metadata, _uiServices);
+                        PackageMetadata = newMetadata;
 
-                    return true;
+                        return true;
+                    }
+                        
                 }
                 catch (Exception exception)
                 {

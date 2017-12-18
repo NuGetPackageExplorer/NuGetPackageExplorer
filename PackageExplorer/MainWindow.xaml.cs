@@ -148,8 +148,11 @@ namespace PackageExplorer
                 }
                 else if (extension.Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase))
                 {
-                    var builder = new PackageBuilder(packagePath, null, false);
-                    package = builder.Build();
+                    using (var str = ManifestUtility.ReadManifest(packagePath))
+                    {
+                        var builder = new PackageBuilder(str, Path.GetDirectoryName(packagePath));
+                        package = builder.Build();
+                    }
                 }
 
                 if (package != null)

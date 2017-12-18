@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Windows.Input;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
-using NuGet.Packaging.Signing;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
@@ -571,7 +569,7 @@ namespace PackageExplorerViewModel
 
         public override string ToString()
         {
-            return Id + "." + Version;
+            return Id + "." + ManifestUtility.ReplaceMetadataWithToken(Version.ToFullString());
         }
 
         private string IsValid(string propertyName)
