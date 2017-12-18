@@ -21,8 +21,12 @@ namespace PackageExplorerViewModel
         private bool _canPublish = true;
         private bool _hasError;
         private string _publishKey;
+        private string _publishCredentialUsername;
+        private string _publishCredentialPassword;
+        private bool _isAuthSet;
         private bool? _publishAsUnlisted = true;
         private bool? _appendV2ApiToUrl = true;
+        private bool? _useApiKey = true;
         private string _selectedPublishItem;
         private bool _showProgress;
         private string _status;
@@ -40,6 +44,7 @@ namespace PackageExplorerViewModel
             _packageFilePath = viewModel.GetCurrentPackageTempFile();
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
             PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
+            UseApiKey = _settingsManager.UseApiKey;
         }
 
         public string PublishKey
@@ -50,7 +55,34 @@ namespace PackageExplorerViewModel
                 if (_publishKey != value)
                 {
                     _publishKey = value;
-                    OnPropertyChanged("PublishKey");
+                    OnPropertyChanged(nameof(PublishKey));
+                    CheckIfAuthIsSet();
+                }
+            }
+        }
+        public string PublishCredentialUsername
+        {
+            get { return _publishCredentialUsername; }
+            set
+            {
+                if (_publishCredentialUsername != value)
+                {
+                    _publishCredentialUsername = value;
+                    OnPropertyChanged(nameof(PublishCredentialUsername));
+                    CheckIfAuthIsSet();
+                }
+            }
+        }
+        public string PublishCredentialPassword
+        {
+            get { return _publishCredentialPassword; }
+            set
+            {
+                if (_publishCredentialPassword != value)
+                {
+                    _publishCredentialPassword = value;
+                    OnPropertyChanged(nameof(PublishCredentialPassword));
+                    CheckIfAuthIsSet();
                 }
             }
         }
@@ -64,7 +96,7 @@ namespace PackageExplorerViewModel
                 if (_mruSourceManager.ActivePackageSource != value)
                 {
                     _mruSourceManager.ActivePackageSource = value;
-                    OnPropertyChanged("PublishUrl");
+                    OnPropertyChanged(nameof(PublishUrl));
                 }
             }
         }
@@ -77,7 +109,7 @@ namespace PackageExplorerViewModel
                 if (_selectedPublishItem != value)
                 {
                     _selectedPublishItem = value;
-                    OnPropertyChanged("SelectedPublishItem");
+                    OnPropertyChanged(nameof(SelectedPublishItem));
 
                     if (value != null)
                     {
@@ -111,8 +143,30 @@ namespace PackageExplorerViewModel
                 if (_publishAsUnlisted != value)
                 {
                     _publishAsUnlisted = value;
-                    OnPropertyChanged("PublishAsUnlisted");
+                    OnPropertyChanged(nameof(PublishAsUnlisted));
                 }
+            }
+        }
+        public bool? UseApiKey
+        {
+            get { return _useApiKey; }
+            set
+            {
+                if (_useApiKey != value)
+                {
+                    _useApiKey = value;
+                    OnPropertyChanged(nameof(UseApiKey));
+                    CheckIfAuthIsSet();
+                }
+            }
+        }
+        public bool? UseCredentials
+
+        {
+            get { return !UseApiKey; }
+            set
+            {
+                UseApiKey = !value;
             }
         }
 
@@ -124,11 +178,11 @@ namespace PackageExplorerViewModel
                 if (_appendV2ApiToUrl != value)
                 {
                     _appendV2ApiToUrl = value;
-                    OnPropertyChanged("AppendV2ApiToUrl");
+                    OnPropertyChanged(nameof(AppendV2ApiToUrl));
                 }
             }
         }
-        
+
         public string Id
         {
             get { return _package.Id; }
@@ -147,7 +201,7 @@ namespace PackageExplorerViewModel
                 if (_hasError != value)
                 {
                     _hasError = value;
-                    OnPropertyChanged("HasError");
+                    OnPropertyChanged(nameof(HasError));
                 }
             }
         }
@@ -160,7 +214,7 @@ namespace PackageExplorerViewModel
                 if (_showProgress != value)
                 {
                     _showProgress = value;
-                    OnPropertyChanged("ShowProgress");
+                    OnPropertyChanged(nameof(ShowProgress));
                 }
             }
         }
@@ -173,9 +227,26 @@ namespace PackageExplorerViewModel
                 if (_canPublish != value)
                 {
                     _canPublish = value;
-                    OnPropertyChanged("CanPublish");
+                    OnPropertyChanged(nameof(CanPublish));
                 }
             }
+        }
+        public bool IsAuthSet
+        {
+            get { return _isAuthSet; }
+            set
+            {
+                if (_isAuthSet != value)
+                {
+                    _isAuthSet = value;
+                    OnPropertyChanged(nameof(IsAuthSet));
+                }
+            }
+        }
+
+        private void CheckIfAuthIsSet()
+        {
+            IsAuthSet = (UseApiKey.HasValue && UseApiKey.Value && !string.IsNullOrWhiteSpace(PublishKey)) || (UseCredentials.HasValue && UseCredentials.Value && !string.IsNullOrWhiteSpace(PublishCredentialPassword)); ;
         }
 
         public GalleryServer GalleryServer
@@ -199,7 +270,7 @@ namespace PackageExplorerViewModel
                 if (_status != value)
                 {
                     _status = value;
-                    OnPropertyChanged("Status");
+                    OnPropertyChanged(nameof(Status));
                 }
             }
         }
@@ -211,7 +282,10 @@ namespace PackageExplorerViewModel
             ShowProgress = false;
             HasError = false;
             Status = (PublishAsUnlisted == true) ? "Package published and unlisted successfully." : "Package published successfully.";
-            _settingsManager.WriteApiKey(PublishUrl, PublishKey);
+            if (UseApiKey.HasValue && UseApiKey.Value)
+            {
+                _settingsManager.WriteApiKey(PublishUrl, PublishKey);
+            }
             CanPublish = true;
         }
 
@@ -238,8 +312,15 @@ namespace PackageExplorerViewModel
 
             try
             {
-                await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false);
-
+                if (UseCredentials.HasValue && UseCredentials.Value)
+                {
+                    await GalleryServer.PushPackageWithCredentials(_packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false, PublishCredentialUsername, PublishCredentialPassword);
+                }
+                else
+                {
+                    await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false);
+                }
+                
                 OnCompleted();
             }
             catch (Exception exception)
@@ -267,6 +348,7 @@ namespace PackageExplorerViewModel
         public void Dispose()
         {
             _settingsManager.PublishAsUnlisted = (bool)PublishAsUnlisted;
+            _settingsManager.UseApiKey = UseApiKey ?? true;
         }
     }
 }

@@ -271,5 +271,17 @@ namespace PackageExplorer.Properties {
                 this["AutoLoadPackages"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseApiKey {
+            get {
+                return ((bool)(this["UseApiKey"]));
+            }
+            set {
+                this["UseApiKey"] = value;
+            }
+        }
     }
 }

@@ -57,11 +57,44 @@
             </ComboBox>
         </DockPanel>
 
-        <!-- Publish key -->
+        <!-- Publish Auth type-->
         <DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
+            <Label DockPanel.Dock="Left" Content="Auth type:" Width="75" />
+            <RadioButton x:Name="UseApiKey" 
+                         GroupName="AuthType" 
+                         IsEnabled="{Binding CanPublish}" 
+                         VerticalAlignment="Center" 
+                         IsChecked="{Binding UseApiKey}" 
+                         Content="API Key" 
+                         ToolTip="Use this when only an API Key is required" Checked="UseApiKey_Checked"
+                         />
+            <RadioButton x:Name="UseCredentials" 
+                         GroupName="AuthType" 
+                         IsEnabled="{Binding CanPublish}" 
+                         IsChecked="{Binding UseCredentials}" 
+                         VerticalAlignment="Center" 
+                         Content="Credentials" 
+                         ToolTip="Use credentials are required" Margin="10,0,0,0" Checked="UseCredentials_Checked"
+                         />
+        </DockPanel>
+        <!-- Publish key -->
+        <DockPanel x:Name="PanelApiKey" DockPanel.Dock="Top" Margin="7,0,10,5">
             <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishKey}" Content="Publish _key:" Width="75" />
             <TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0" Text="{Binding PublishKey}">
             </TextBox>
+        </DockPanel>
+        <!-- Publish key -->
+        <DockPanel x:Name="PanelCredentials" DockPanel.Dock="Top" Margin="0,0,0,0">
+            <DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishCredentialUsername}" Content="_Username:" Width="75" />
+                <TextBox x:Name="PublishCredentialUsername" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0" Text="{Binding PublishCredentialUsername}">
+                </TextBox>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
+                <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishCredentialPassword}" Content="_Password:" Width="75" />
+                <PasswordBox x:Name="PublishCredentialPassword" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0" PasswordChanged="PublishCredentialPassword_PasswordChanged">
+                </PasswordBox>
+            </DockPanel>
         </DockPanel>
         <CheckBox Margin="10,5,0,5" VerticalContentAlignment="Center" IsChecked="{Binding AppendV2ApiToUrl, BindingGroupName=Nothing, Mode=TwoWay}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="Append 'api/v2/package' to publish url" ToolTip="Check this for publishing to NuGet.org."/>
 
@@ -80,7 +113,7 @@
                     <Button.IsEnabled>
                         <MultiBinding Converter="{StaticResource andConverter}">
                             <Binding Path="Text" ElementName="PublishUrl" Converter="{StaticResource nullToBoolConverter}" />
-                            <Binding Path="Text" ElementName="PublishKey" Converter="{StaticResource nullToBoolConverter}" />
+                            <Binding Path="IsAuthSet" />
                             <Binding Path="CanPublish" />
                         </MultiBinding>
                     </Button.IsEnabled>

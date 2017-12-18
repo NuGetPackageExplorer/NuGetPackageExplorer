@@ -122,6 +122,17 @@ namespace PackageExplorer
                 Settings.Default.PublishAsUnlisted = value;
             }
         }
+        public bool UseApiKey
+        {
+            get
+            {
+                return Settings.Default.UseApiKey;
+            }
+            set
+            {
+                Settings.Default.UseApiKey = value;
+            }
+        }
 
         #endregion
     }
