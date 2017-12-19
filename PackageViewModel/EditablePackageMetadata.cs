@@ -46,7 +46,7 @@ namespace PackageExplorerViewModel
         {
             RepositorySignatures = new List<SignatureInfo>(); // no null collections!
 
-            _showValidationResultsCommand = new RelayCommand(OnShowValidationResult);
+            _showValidationResultsCommand = new RelayCommand(OnShowValidationResult, () => ValidationResult != null );
         }   
 
         public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices) 
