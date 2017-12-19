@@ -11,6 +11,7 @@
     xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core" 
     xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
     xmlns:nugetpe="clr-namespace:NuGetPe;assembly=Core"
+    xmlns:spinners="clr-namespace:xamlSpinnersWPF"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
@@ -50,31 +51,39 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewmodel:EditablePackageMetadata}" x:Key="VerifySignaturesResult">
-                
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Name="isValid" />
-                    <Image Name="icon" Margin="3,0,0,0" Cursor="Hand" ToolTip="Show details">
-                        <Image.InputBindings>
-                            <MouseBinding Gesture="LeftClick" Command="{Binding ShowValidationResultsCommand}" />
-                        </Image.InputBindings>
-                    </Image>
+
+                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{x:Static resources:Resources.Dialog_ShowDetails}" >
+                    <StackPanel.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding ShowValidationResultsCommand}" />
+                    </StackPanel.InputBindings>
+                    <TextBlock Name="isValid" Text="{x:Static resources:Resources.Validation_Pending}" />
+                    <Image Name="icon" Margin="3,0,0,0" Visibility="Collapsed"  />
+                    <spinners:ucSpinnerDotCircle x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" Foreground="Black" />
                 </StackPanel>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Trusted">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Trusted}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/Validate.png" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Invalid">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Invalid}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Untrusted">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Untrusted}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Unknown">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Unknown}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
                 </DataTemplate.Triggers>
             </DataTemplate>
@@ -265,7 +274,7 @@
 
                         <!-- Validation -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" 
-                                    Visibility="{Binding ValidationResult, Converter={StaticResource NullToVisibilityConverter}}">
+                                    Visibility="{Binding IsSigned, Converter={StaticResource boolToVis}}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_SignatureValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
                             <ContentPresenter Content="{Binding Mode=OneWay}" ContentTemplate="{StaticResource VerifySignaturesResult}" Margin="3,0,0,0" />
