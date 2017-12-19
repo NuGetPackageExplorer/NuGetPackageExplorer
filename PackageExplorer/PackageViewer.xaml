@@ -50,14 +50,13 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewmodel:EditablePackageMetadata}" x:Key="VerifySignaturesResult">
-                
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Name="isValid" />
-                    <Image Name="icon" Margin="3,0,0,0" Cursor="Hand" ToolTip="Show details">
-                        <Image.InputBindings>
-                            <MouseBinding Gesture="LeftClick" Command="{Binding ShowValidationResultsCommand}" />
-                        </Image.InputBindings>
-                    </Image>
+
+                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{x:Static resources:Resources.Dialog_ShowDetails}" >
+                    <StackPanel.InputBindings>
+                        <MouseBinding Gesture="LeftClick" Command="{Binding ShowValidationResultsCommand}" />
+                    </StackPanel.InputBindings>
+                    <TextBlock Name="isValid" Text="{x:Static resources:Resources.Validation_Pending}" />
+                    <Image Name="icon" Margin="3,0,0,0"  />
                 </StackPanel>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Trusted">
@@ -265,7 +264,7 @@
 
                         <!-- Validation -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" 
-                                    Visibility="{Binding ValidationResult, Converter={StaticResource NullToVisibilityConverter}}">
+                                    Visibility="{Binding IsSigned, Converter={StaticResource boolToVis}}">
                             <TextBlock Text="{x:Static resources:Resources.Dialog_SignatureValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
                             <ContentPresenter Content="{Binding Mode=OneWay}" ContentTemplate="{StaticResource VerifySignaturesResult}" Margin="3,0,0,0" />

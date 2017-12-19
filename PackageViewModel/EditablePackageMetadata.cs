@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
@@ -65,16 +66,17 @@ namespace PackageExplorerViewModel
             this.uiServices = uiServices;
         }
 
-        private void LoadSignatureData(ZipPackage package)
+        private async void LoadSignatureData(ZipPackage package)
         {
             if (package.IsSigned)
             {
                 PublisherSignature = package.PublisherSignature;
                 RepositorySignatures = package.RepositorySignatures;
+
+                await Task.Run(() => package.VerifySignatureAsync());
                 ValidationResult = new ValidationResultViewModel(package.VerificationResult);
             }
         }
-
 
         private void OnShowValidationResult()
         {

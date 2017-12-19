@@ -270,7 +270,7 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show details.
+        ///   Looks up a localized string similar to Show details....
         /// </summary>
         public static string Dialog_ShowDetails {
             get {
@@ -423,11 +423,29 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid.
         /// </summary>
         public static string Validation_Invalid {
             get {
                 return ResourceManager.GetString("Validation_Invalid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending.
+        /// </summary>
+        public static string Validation_Pending {
+            get {
+                return ResourceManager.GetString("Validation_Pending", resourceCulture);
             }
         }
         
@@ -441,7 +459,7 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Uknown.
+        ///   Looks up a localized string similar to Unkown.
         /// </summary>
         public static string Validation_Unknown {
             get {

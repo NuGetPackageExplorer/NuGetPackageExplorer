@@ -321,7 +321,7 @@ namespace NuGetPe
                 IsSigned = await reader.IsSignedAsync(CancellationToken.None);
                 if (IsSigned)
                 {
-                    // Load signature and verification data
+                    // Load signature data
                     var sigs = await reader.GetSignaturesAsync(CancellationToken.None);
                     var reposigs = new List<SignatureInfo>();
                     RepositorySignatures = reposigs;
@@ -338,7 +338,17 @@ namespace NuGetPe
                             reposigs.Add(new SignatureInfo(sig));
                         }
                     }
+                }
+            }
+        }
 
+        public async Task VerifySignatureAsync()
+        {
+            using (var reader = new PackageArchiveReader(_streamFactory(), false))
+            {
+                var signed = await reader.IsSignedAsync(CancellationToken.None);
+                if (signed)
+                {
                     // Check verification 
                     var trustProviders = SignatureVerificationProviderFactory.GetSignatureVerificationProviders();
                     var verifier = new PackageSignatureVerifier(trustProviders, SignedPackageVerifierSettings.RequireSigned);
