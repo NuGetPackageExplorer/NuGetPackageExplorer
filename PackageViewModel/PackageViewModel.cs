@@ -1396,7 +1396,7 @@ namespace PackageExplorerViewModel
             // any deps
             return PackageMetadata.DependencySets
                     .SelectMany(ds => ds.Packages)
-                    .Any(dp => dp.VersionRange.MinVersion.IsTokenized() || dp.VersionRange.MaxVersion.IsTokenized());
+                    .Any(dp => dp.VersionRange.MinVersion?.IsTokenized() == true || dp.VersionRange.MaxVersion?.IsTokenized() == true);
         }
 
         public bool IsTokenized => IsPackageTokenized();
