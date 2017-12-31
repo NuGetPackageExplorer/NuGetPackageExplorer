@@ -22,11 +22,11 @@
 
   
   <PropertyGroup>
-    <NerdbankGitVersioningVersion>2.0.41</NerdbankGitVersioningVersion>
+    <NerdbankGitVersioningVersion>2.1.7</NerdbankGitVersioningVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.0.41" PrivateAssets="all" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.1.7" PrivateAssets="all" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\CommonAssemblyInfo.cs" LinkBase="Properties" />
   </ItemGroup>
 
