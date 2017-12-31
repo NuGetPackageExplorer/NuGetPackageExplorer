@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Security.Cryptography.X509Certificates;
 
 namespace NuGetPe
 {
@@ -28,7 +27,5 @@ namespace NuGetPe
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This might be expensive")]
         Stream GetStream();
-
-        bool IsSigned { get; }
     }
 }

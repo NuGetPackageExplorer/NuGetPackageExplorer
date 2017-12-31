@@ -6,7 +6,8 @@ using System.IO;
 using System.Linq;
 using NuGet.Versioning;
 using NuGet.Packaging.Core;
-using System.Security.Cryptography.X509Certificates;
+using NuGet.Packaging.Signing;
+using System.Threading.Tasks;
 
 namespace NuGetPe
 {
@@ -19,7 +20,7 @@ namespace NuGetPe
         keepInContent: false)]
     [EntityPropertyMapping("Summary", SyndicationItemProperty.Summary, SyndicationTextContentKind.Plaintext,
         keepInContent: false)]
-    public class DataServicePackage : IPackage
+    public class DataServicePackage : ISignaturePackage
     {
         public string Version { get; set; }
         public string Authors { get; set; }
@@ -31,7 +32,7 @@ namespace NuGetPe
         public DateTimeOffset? Published { get; set; }
         public bool IsPrerelease { get; set; }
 
-        public IPackage CorePackage { get; set; }
+        public ISignaturePackage CorePackage { get; set; }
 
         #region IPackage Members
 
@@ -157,6 +158,16 @@ namespace NuGetPe
 
         public bool IsSigned => CorePackage?.IsSigned ?? false;
 
+        public bool IsVerified => CorePackage?.IsVerified ?? false;
+
+        public SignatureInfo PublisherSignature => CorePackage?.PublisherSignature;
+
+        public IReadOnlyList<SignatureInfo> RepositorySignatures => CorePackage?.RepositorySignatures ?? new List<SignatureInfo>();
+
+        public VerifySignaturesResult VerificationResult => CorePackage?.VerificationResult;
+
+        public string Source => CorePackage?.Source;
+
         public IEnumerable<IPackageFile> GetFiles()
         {
             return CorePackage.GetFiles();
@@ -176,6 +187,16 @@ namespace NuGetPe
 
         public void Dispose()
         {
+        }
+
+        public Task LoadSignatureDataAsync()
+        {
+            return CorePackage?.LoadSignatureDataAsync();
+        }
+
+        public Task VerifySignatureAsync()
+        {
+            return CorePackage?.VerifySignatureAsync();
         }
     }
 }

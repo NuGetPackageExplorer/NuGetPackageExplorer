@@ -310,9 +310,9 @@ namespace PackageExplorer
             else 
             {
                 var packageVersion = new NuGetVersion(selectedPackageInfo.Version);
-                IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
+                var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
 
-                Func<IPackage, DispatcherOperation> processPackageAction = (package) =>
+                Func<ISignaturePackage, DispatcherOperation> processPackageAction = (package) =>
                                                         {
                                                             DataServicePackage servicePackage = selectedPackageInfo.AsDataServicePackage();
                                                             servicePackage.CorePackage = package;
@@ -329,7 +329,7 @@ namespace PackageExplorer
 
                 if (cachePackage == null || cachePackage.GetHash() != selectedPackageInfo.PackageHash)
                 {
-                    IPackage downloadedPackage = await PackageDownloader.Download(
+                    var downloadedPackage = await PackageDownloader.Download(
                         selectedPackageInfo.DownloadUrl,
                         selectedPackageInfo.Id,
                         packageVersion.ToString());

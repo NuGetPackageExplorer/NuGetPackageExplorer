@@ -62,7 +62,7 @@ namespace PackageExplorerViewModel
         public async Task<PackageViewModel> CreateViewModel(IPackage package, string packageSource)
         {
             // If it's a zip package, we need to load the verification data so it's ready for later
-            if (package is ZipPackage zip)
+            if (package is ISignaturePackage zip)
             {
                 await zip.LoadSignatureDataAsync();
             }

@@ -43,7 +43,7 @@ namespace NuGetPe
             throw new NotSupportedException();
         }
 
-        public IPackage FindPackage(string packageId, NuGetVersion version)
+        public ISignaturePackage FindPackage(string packageId, NuGetVersion version)
         {
             string path = GetPackageFilePath(packageId, version);
 

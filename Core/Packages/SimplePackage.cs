@@ -169,8 +169,6 @@ namespace NuGetPe
 
         public RepositoryMetadata Repository { get; private set; }
 
-        public bool IsSigned => false;
-
         #endregion
 
         public void Dispose()

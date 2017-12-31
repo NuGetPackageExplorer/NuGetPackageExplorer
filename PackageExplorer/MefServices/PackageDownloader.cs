@@ -42,7 +42,7 @@ namespace PackageExplorer
             }
         }
 
-        public async Task<IPackage> Download(Uri downloadUri, string packageId, string packageVersion)
+        public async Task<ISignaturePackage> Download(Uri downloadUri, string packageId, string packageVersion)
         {
             string tempFilePath = await DownloadWithProgress(downloadUri, packageId, packageVersion);
             return (tempFilePath == null) ? null : new ZipPackage(tempFilePath);

@@ -105,7 +105,8 @@ namespace PackageExplorerViewModel
             _packageMetadata = new EditablePackageMetadata(_package, _uiServices);
 
             PackageSource = source;
-            _isSigned = package.IsSigned;
+
+            _isSigned = _packageMetadata.IsSigned;
 
             _packageRoot = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
         }
@@ -1162,7 +1163,7 @@ namespace PackageExplorerViewModel
         public string GetCurrentPackageTempFile()
         {
             // handle signed packages since they cannot be resaved without losing the signature
-            if (IsSigned && _package is ZipPackage zip)
+            if (IsSigned && _package is ISignaturePackage zip)
             {
                 return zip.Source;
             }
