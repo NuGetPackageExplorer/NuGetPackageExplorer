@@ -61,12 +61,12 @@ namespace PackageExplorerViewModel
         {
             CopyFrom(source);
             // Zip Packages may be signed, we need to load that data async
-            if (source is ZipPackage zip)
+            if (source is ISignaturePackage zip)
                 LoadSignatureData(zip);
             this.uiServices = uiServices;
         }
 
-        private async void LoadSignatureData(ZipPackage package)
+        private async void LoadSignatureData(ISignaturePackage package)
         {
             if (package.IsSigned)
             {

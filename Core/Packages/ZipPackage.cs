@@ -6,7 +6,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
@@ -14,7 +13,7 @@ using NuGet.Versioning;
 
 namespace NuGetPe
 {
-    public class ZipPackage : IPackage, IDisposable
+    public class ZipPackage : IDisposable, ISignaturePackage
     {
         private const string AssemblyReferencesDir = "lib";
         private const string ResourceAssemblyExtension = ".resources.dll";
