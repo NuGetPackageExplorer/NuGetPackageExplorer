@@ -10,9 +10,9 @@ steps:
   displayName: Setup Environment Variables
 
 - task: NuGetToolInstaller@0
-  displayName: Use NuGet 4.4
+  displayName: Use NuGet 4.5
   inputs:
-    versionSpec: 4.4.1
+    versionSpec: 4.5.0
 
 - powershell: |
     
@@ -22,7 +22,7 @@ steps:
     msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
     
     # version    
-    nuget install NerdBank.GitVersioning -Version 2.0.41 -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
+    nuget install NerdBank.GitVersioning -Version 2.1.7 -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
     
     $vers = & $(Build.SourcesDirectory)\packages\nerdbank.gitversioning\tools\Get-Version.ps1
     $ver = $vers.SimpleVersion

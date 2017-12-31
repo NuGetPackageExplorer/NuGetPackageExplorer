@@ -351,7 +351,7 @@ namespace NuGetPe
                 {
                     // Check verification 
                     var trustProviders = SignatureVerificationProviderFactory.GetSignatureVerificationProviders();
-                    var verifier = new PackageSignatureVerifier(trustProviders, SignedPackageVerifierSettings.RequireSigned);
+                    var verifier = new PackageSignatureVerifier(trustProviders, SignedPackageVerifierSettings.VerifyCommandDefaultPolicy);
 
                     VerificationResult = await verifier.VerifySignaturesAsync(reader, CancellationToken.None);
                 }
