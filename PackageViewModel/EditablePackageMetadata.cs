@@ -72,6 +72,7 @@ namespace PackageExplorerViewModel
             {
                 PublisherSignature = package.PublisherSignature;
                 RepositorySignatures = package.RepositorySignatures;
+                IsSigned = true;
 
                 await Task.Run(() => package.VerifySignatureAsync());
                 ValidationResult = new ValidationResultViewModel(package.VerificationResult);
@@ -116,6 +117,8 @@ namespace PackageExplorerViewModel
                 }
             }
         }
+
+        public bool IsSigned { get; private set; }
 
         public ValidationResultViewModel ValidationResult
         {
@@ -615,6 +618,7 @@ namespace PackageExplorerViewModel
         {
             PublisherSignature = null;
             RepositorySignatures = new List<SignatureInfo>();
+            IsSigned = false;
         }
     }
 }
