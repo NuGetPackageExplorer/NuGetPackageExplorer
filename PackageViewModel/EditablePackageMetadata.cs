@@ -213,10 +213,10 @@ namespace PackageExplorerViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
         private bool _developmentDependency;
-        RepositoryMetadata repository;
-        SignatureInfo publisherCertificate;
-        ValidationResultViewModel validationResult;
-        IReadOnlyList<SignatureInfo> repositoryCertificates;
+        private RepositoryMetadata repository;
+        private SignatureInfo publisherCertificate;
+        private ValidationResultViewModel validationResult;
+        private IReadOnlyList<SignatureInfo> repositoryCertificates;
 
         #endregion
 

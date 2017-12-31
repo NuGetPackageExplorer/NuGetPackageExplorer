@@ -389,7 +389,7 @@ namespace NuGetPe
 
         private class MyPackageArchiveReader : PackageArchiveReader
         {
-            ZipArchive zipArchive;
+            private ZipArchive zipArchive;
 
            /// <summary>Nupkg package reader</summary>
             /// <param name="stream">Nupkg data stream.</param>
