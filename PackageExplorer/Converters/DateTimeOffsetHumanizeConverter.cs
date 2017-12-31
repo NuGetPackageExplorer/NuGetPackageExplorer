@@ -13,15 +13,13 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateTimeOffset)
+            if (value is DateTimeOffset dateTimeOffset)
             {
-                DateTimeOffset dateTimeOffset = (DateTimeOffset)value;
-
                 if (dateTimeOffset != Constants.Unpublished)
                 {
                     return dateTimeOffset.LocalDateTime.Humanize(false, null, culture);
                 }
-            }   
+            }
             return null;
         }
 

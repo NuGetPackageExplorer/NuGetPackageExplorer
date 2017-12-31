@@ -22,30 +22,10 @@ namespace PackageExplorerViewModel
             IPackageChooser packageChooser,
             INuGetPackageDownloader packageDownloader)
         {
-            if (pluginManager == null)
-            {
-                throw new ArgumentNullException("pluginManager");
-            }
-
-            if (packageChooser == null)
-            {
-                throw new ArgumentNullException("packageChooser");
-            }
-
-            if (uiServices == null)
-            {
-                throw new ArgumentNullException("uiServices");
-            }
-
-            if (packageDownloader == null)
-            {
-                throw new ArgumentNullException("packageDownloader");
-            }
-
-            _pluginManager = pluginManager;
-            _uiServices = uiServices;
-            _packageChooser = packageChooser;
-            _packageDownloader = packageDownloader;
+            _pluginManager = pluginManager ?? throw new ArgumentNullException("pluginManager");
+            _uiServices = uiServices ?? throw new ArgumentNullException("uiServices");
+            _packageChooser = packageChooser ?? throw new ArgumentNullException("packageChooser");
+            _packageDownloader = packageDownloader ?? throw new ArgumentNullException("packageDownloader");
 
             DeleteCommand = new RelayCommand<PluginInfo>(DeleteCommandExecute, DeleteCommandCanExecute);
             AddCommand = new RelayCommand<string>(AddCommandExecute);
@@ -71,7 +51,7 @@ namespace PackageExplorerViewModel
 
         public int Compare(PluginInfo x, PluginInfo y)
         {
-            int result = String.Compare(x.Id, y.Id, StringComparison.CurrentCultureIgnoreCase);
+            var result = string.Compare(x.Id, y.Id, StringComparison.CurrentCultureIgnoreCase);
             if (result != 0)
             {
                 return result;
@@ -108,7 +88,7 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            PackageInfo selectedPackageInfo = _packageChooser.SelectPluginPackage();
+            var selectedPackageInfo = _packageChooser.SelectPluginPackage();
             if (selectedPackageInfo != null)
             {
                 IPackage package = await _packageDownloader.Download(
@@ -125,11 +105,10 @@ namespace PackageExplorerViewModel
 
         private void AddLocalPlugin()
         {
-            string selectedFile;
-            bool result = _uiServices.OpenFileDialog(
+            var result = _uiServices.OpenFileDialog(
                 "Select Plugin Package",
                 "NuGet package (*.nupkg)|*.nupkg",
-                out selectedFile);
+                out var selectedFile);
 
             if (result)
             {
@@ -139,7 +118,7 @@ namespace PackageExplorerViewModel
 
         private void AddSelectedPluginPackage(IPackage selectedPackage)
         {
-            PluginInfo packageInfo = _pluginManager.AddPlugin(selectedPackage);
+            var packageInfo = _pluginManager.AddPlugin(selectedPackage);
             if (packageInfo != null)
             {
                 Plugins.Add(packageInfo);
@@ -148,7 +127,7 @@ namespace PackageExplorerViewModel
 
         private void DeleteCommandExecute(PluginInfo file)
         {
-            bool confirmed = _uiServices.Confirm(
+            var confirmed = _uiServices.Confirm(
                 "Confirm deleting " + file,
                 Resources.ConfirmToDeletePlugin,
                 isWarning: true);
@@ -158,7 +137,7 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            bool succeeded = _pluginManager.DeletePlugin(file);
+            var succeeded = _pluginManager.DeletePlugin(file);
             if (succeeded)
             {
                 Plugins.Remove(file);

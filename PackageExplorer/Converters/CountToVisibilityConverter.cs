@@ -13,7 +13,7 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double count = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
+            var count = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
 
             double threshold = 0;
             if (parameter != null)
@@ -21,7 +21,7 @@ namespace PackageExplorer
                 threshold = System.Convert.ToDouble(parameter, CultureInfo.InvariantCulture);
             }
 
-            Visibility returnValue = count > threshold ? Visibility.Visible : Visibility.Collapsed;
+            var returnValue = count > threshold ? Visibility.Visible : Visibility.Collapsed;
 
             if (Inverted)
             {

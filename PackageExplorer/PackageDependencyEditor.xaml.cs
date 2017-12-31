@@ -64,7 +64,7 @@ namespace PackageExplorer
                 return;
             }
 
-            bool canClose = String.IsNullOrEmpty(NewDependencyId.Text) || AddNewDependency();
+            var canClose = string.IsNullOrEmpty(NewDependencyId.Text) || AddNewDependency();
             if (canClose)
             {
                 DialogResult = true;
@@ -88,7 +88,7 @@ namespace PackageExplorer
 
         private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
         {
-            PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
+            var selectedPackage = PackageChooser.SelectPackage(null);
             if (selectedPackage != null)
             {
                 _newPackageDependency.Id = selectedPackage.Id;
@@ -109,7 +109,7 @@ namespace PackageExplorer
         private void OnRemoveGroupClicked(object sender, RoutedEventArgs e)
         {
             // remember the currently selected index;
-            int selectedIndex = DependencyGroupList.SelectedIndex;
+            var selectedIndex = DependencyGroupList.SelectedIndex;
 
             _dependencySets.Remove((EditablePackageDependencySet)DependencyGroupList.SelectedItem);
 
@@ -128,8 +128,8 @@ namespace PackageExplorer
 
         private bool AddNewDependency()
         {
-            if (String.IsNullOrEmpty(NewDependencyId.Text) &&
-                String.IsNullOrEmpty(NewDependencyVersion.Text))
+            if (string.IsNullOrEmpty(NewDependencyId.Text) &&
+                string.IsNullOrEmpty(NewDependencyVersion.Text))
             {
                 return true;
             }

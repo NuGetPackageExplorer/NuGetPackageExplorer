@@ -83,17 +83,14 @@ namespace PackageExplorerViewModel
 
         private void RaisePropertyChange(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private string IsValid(string columnName)
         {
             if (columnName == "Id")
             {
-                if (String.IsNullOrEmpty(Id))
+                if (string.IsNullOrEmpty(Id))
                 {
                     return VersionSpec != null ? "Package id must not be empty." : (string)null;
                 }
@@ -103,7 +100,7 @@ namespace PackageExplorerViewModel
                     return "'" + Id + "' is an invalid package id.";
                 }
 
-                EditablePackageDependencySet activeDependencySet = _getActiveDependencySet();
+                var activeDependencySet = _getActiveDependencySet();
                 if (activeDependencySet != null)
                 {
                     if (activeDependencySet.Dependencies.Any(p => p.Id.Equals(Id, StringComparison.OrdinalIgnoreCase)))

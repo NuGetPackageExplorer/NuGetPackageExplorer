@@ -23,15 +23,16 @@ namespace NuGetPe.AssemblyMetadata
         
         public IEnumerable<AssemblyName> GetReferencedAssemblyNames()
         {
-            foreach (AssemblyReferenceHandle referenceHandle in _metadataReader.AssemblyReferences)
+            foreach (var referenceHandle in _metadataReader.AssemblyReferences)
             {
                 var assemblyReference = _metadataReader.GetAssemblyReference(referenceHandle);
 
-                var assemblyName = new AssemblyName();
-                
-                assemblyName.Name = _metadataReader.GetString(assemblyReference.Name);
-                assemblyName.Version = assemblyReference.Version;
-                assemblyName.CultureName = _metadataReader.GetString(assemblyReference.Culture);
+                var assemblyName = new AssemblyName
+                {
+                    Name = _metadataReader.GetString(assemblyReference.Name),
+                    Version = assemblyReference.Version,
+                    CultureName = _metadataReader.GetString(assemblyReference.Culture)
+                };
 
                 if (!assemblyReference.PublicKeyOrToken.IsNil)
                 {
@@ -54,9 +55,9 @@ namespace NuGetPe.AssemblyMetadata
         
         public IEnumerable<AttributeInfo> GetAssemblyAttributes()
         {
-            foreach (CustomAttributeHandle attributeHandle in _metadataReader.CustomAttributes)
+            foreach (var attributeHandle in _metadataReader.CustomAttributes)
             {
-                CustomAttribute customAttribute = _metadataReader.GetCustomAttribute(attributeHandle);
+                var customAttribute = _metadataReader.GetCustomAttribute(attributeHandle);
                 if (customAttribute.Parent.Kind != HandleKind.AssemblyDefinition) continue;
 
                 var constructorRef = _metadataReader.GetMemberReference((MemberReferenceHandle) customAttribute.Constructor);
@@ -133,7 +134,7 @@ namespace NuGetPe.AssemblyMetadata
             
             public string GetPrimitiveType(PrimitiveTypeCode typeCode)
             {
-                if (PrimitiveTypeMappings.TryGetValue(typeCode, out Type type))
+                if (PrimitiveTypeMappings.TryGetValue(typeCode, out var type))
                 {
                     return type.FullName;
                 }
@@ -143,15 +144,15 @@ namespace NuGetPe.AssemblyMetadata
 
             public string GetTypeFromDefinition(MetadataReader reader, TypeDefinitionHandle handle, byte rawTypeKind)
             {
-                TypeDefinition definition = reader.GetTypeDefinition(handle);
+                var definition = reader.GetTypeDefinition(handle);
 
-                string name = definition.Namespace.IsNil
+                var name = definition.Namespace.IsNil
                     ? reader.GetString(definition.Name)
                     : reader.GetString(definition.Namespace) + "." + reader.GetString(definition.Name);
 
                 if (IsNested(definition.Attributes))
                 {
-                    TypeDefinitionHandle declaringTypeHandle = definition.GetDeclaringType();
+                    var declaringTypeHandle = definition.GetDeclaringType();
                     return GetTypeFromDefinition(reader, declaringTypeHandle, 0) + "+" + name;
                 }
 
@@ -168,9 +169,9 @@ namespace NuGetPe.AssemblyMetadata
 
             public string GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind)
             {
-                TypeReference reference = reader.GetTypeReference(handle);
+                var reference = reader.GetTypeReference(handle);
 
-                string name = reference.Namespace.IsNil
+                var name = reference.Namespace.IsNil
                     ? reader.GetString(reference.Name)
                     : reader.GetString(reference.Namespace) + "." + reader.GetString(reference.Name);
 
@@ -209,7 +210,7 @@ namespace NuGetPe.AssemblyMetadata
 
             public PrimitiveTypeCode GetUnderlyingEnumType(string type)
             {
-                Type runtimeType = Type.GetType(type, false);
+                var runtimeType = Type.GetType(type, false);
 
                 if (runtimeType != null)
                 {

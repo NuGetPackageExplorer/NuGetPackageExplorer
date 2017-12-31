@@ -206,7 +206,7 @@ namespace PackageExplorer
 
         private void FileContentContainer_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            Settings settings = Settings.Default;
+            var settings = Settings.Default;
 
             if ((bool)e.NewValue)
             {
@@ -235,15 +235,15 @@ namespace PackageExplorer
 
             if ((bool)e.NewValue)
             {
-                double metadataWidth = ContentGrid.ColumnDefinitions[0].ActualWidth;
-                double contentsWidth = ContentGrid.ColumnDefinitions[2].ActualWidth;
-                double totalWidth = metadataWidth + contentsWidth;
+                var metadataWidth = ContentGrid.ColumnDefinitions[0].ActualWidth;
+                var contentsWidth = ContentGrid.ColumnDefinitions[2].ActualWidth;
+                var totalWidth = metadataWidth + contentsWidth;
 
                 _analysisPaneWidth = Math.Max(_analysisPaneWidth, analysisPaneMinWidth);
-                double newContentsWidth = Math.Max(
+                var newContentsWidth = Math.Max(
                     ContentGrid.ColumnDefinitions[2].MinWidth,
                     totalWidth - metadataWidth - _analysisPaneWidth);
-                double newMetadataWidth = Math.Max(
+                var newMetadataWidth = Math.Max(
                     ContentGrid.ColumnDefinitions[0].MinWidth,
                     totalWidth - newContentsWidth - _analysisPaneWidth);
 
@@ -259,12 +259,12 @@ namespace PackageExplorer
             }
             else
             {
-                double metadataWidth = ContentGrid.ColumnDefinitions[0].ActualWidth;
-                double contentsWidth = ContentGrid.ColumnDefinitions[2].ActualWidth;
+                var metadataWidth = ContentGrid.ColumnDefinitions[0].ActualWidth;
+                var contentsWidth = ContentGrid.ColumnDefinitions[2].ActualWidth;
                 _analysisPaneWidth = ContentGrid.ColumnDefinitions[4].ActualWidth;
-                double totalWidth = metadataWidth + contentsWidth + _analysisPaneWidth;
+                var totalWidth = metadataWidth + contentsWidth + _analysisPaneWidth;
 
-                double newContentsWidth = contentsWidth + _analysisPaneWidth;
+                var newContentsWidth = contentsWidth + _analysisPaneWidth;
 
                 ContentGrid.ColumnDefinitions[0].Width = new GridLength(metadataWidth / totalWidth, GridUnitType.Star);
                 ContentGrid.ColumnDefinitions[2].Width = new GridLength(newContentsWidth / totalWidth, GridUnitType.Star);
@@ -284,8 +284,7 @@ namespace PackageExplorer
 
         private void OnTreeViewSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var model = DataContext as PackageViewModel;
-            if (model != null)
+            if (DataContext is PackageViewModel model)
             {
                 model.SelectedItem = PackagesTreeView.SelectedItem;
             }
@@ -294,10 +293,9 @@ namespace PackageExplorer
         private void OnTreeViewItemDoubleClick(object sender, RoutedEventArgs args)
         {
             var item = (TreeViewItem)sender;
-            var file = item.DataContext as PackageFile;
-            if (file != null)
+            if (item.DataContext is PackageFile file)
             {
-                ICommand command = ((PackageViewModel)DataContext).ViewContentCommand;
+                var command = ((PackageViewModel)DataContext).ViewContentCommand;
                 command.Execute(file);
 
                 args.Handled = true;
@@ -307,7 +305,7 @@ namespace PackageExplorer
         private void TreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             var tv = (TreeView)sender;
-            IInputElement element = tv.InputHitTest(e.GetPosition(tv));
+            var element = tv.InputHitTest(e.GetPosition(tv));
             while (!((element is TreeView) || element == null))
             {
                 if (element is TreeViewItem)
@@ -315,15 +313,13 @@ namespace PackageExplorer
                     break;
                 }
 
-                if (element is FrameworkElement)
+                if (element is FrameworkElement fe)
                 {
-                    var fe = (FrameworkElement)element;
                     element = (IInputElement)(fe.Parent ?? fe.TemplatedParent);
                 }
-                else if (element is FrameworkContentElement)
+                else if (element is FrameworkContentElement fce)
                 {
-                    var fe = (FrameworkContentElement)element;
-                    element = (IInputElement)fe.Parent;
+                    element = (IInputElement)fce.Parent;
                 }
                 else
                 {
@@ -341,8 +337,7 @@ namespace PackageExplorer
         {
             PackageFolder folder;
 
-            var item = sender as TreeViewItem;
-            if (item != null)
+            if (sender is TreeViewItem item)
             {
                 folder = item.DataContext as PackageFolder;
             }
@@ -351,26 +346,25 @@ namespace PackageExplorer
                 folder = RootFolder;
             }
 
-            DragDropEffects effects = DragDropEffects.None;
+            var effects = DragDropEffects.None;
             if (folder != null)
             {
-                IDataObject data = e.Data;
+                var data = e.Data;
                 if (data.GetDataPresent(DataFormats.FileDrop))
                 {
                     effects = DragDropEffects.Copy;
                 }
                 else
                 {
-                    var packagePart = data.GetData(PackageFileDataFormat, false) as PackagePart;
                     // make sure we don't drag a file or folder into the same parent
-                    if (packagePart != null &&
+                    if (data.GetData(PackageFileDataFormat, false) is PackagePart packagePart &&
                         !folder.Contains(packagePart) &&
                         !folder.ContainsFile(packagePart.Name) &&
                         !folder.ContainsFolder(packagePart.Name) &&
                         !folder.IsDescendantOf(packagePart))
                     {
                         // we only allow copying file for now
-                        bool copying = (packagePart is PackageFile) && (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
+                        var copying = (packagePart is PackageFile) && (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
                         effects = copying ? DragDropEffects.Copy : DragDropEffects.Move;
                     }
                 }
@@ -384,18 +378,16 @@ namespace PackageExplorer
         {
             PackageFolder folder = null;
 
-            var item = sender as TreeViewItem;
-            if (item != null)
+            if (sender is TreeViewItem item)
             {
                 folder = item.DataContext as PackageFolder;
             }
 
-            IDataObject data = e.Data;
+            var data = e.Data;
             if (data.GetDataPresent(DataFormats.FileDrop))
             {
-                object value = data.GetData(DataFormats.FileDrop);
-                var filenames = value as string[];
-                if (filenames != null && filenames.Length > 0)
+                var value = data.GetData(DataFormats.FileDrop);
+                if (value is string[] filenames && filenames.Length > 0)
                 {
                     var viewModel = DataContext as PackageViewModel;
                     viewModel.AddDraggedAndDroppedFiles(folder, filenames);
@@ -404,21 +396,18 @@ namespace PackageExplorer
             }
             else if (data.GetDataPresent(PackageFileDataFormat))
             {
-                var packagePart = data.GetData(PackageFileDataFormat) as PackagePart;
-                if (packagePart != null)
+                if (data.GetData(PackageFileDataFormat) is PackagePart packagePart)
                 {
                     folder = folder ?? RootFolder;
 
-                    var file = packagePart as PackageFile;
-                    if (file != null)
+                    if (packagePart is PackageFile file)
                     {
-                        bool copying = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
+                        var copying = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
                         folder.AddFile(file, copying);
                     }
                     else
                     {
-                        var childFolder = packagePart as PackageFolder;
-                        if (childFolder != null && !folder.IsDescendantOf(childFolder))
+                        if (packagePart is PackageFolder childFolder && !folder.IsDescendantOf(childFolder))
                         {
                             folder.AddFolder(childFolder);
                         }
@@ -436,12 +425,10 @@ namespace PackageExplorer
                 return;
             }
 
-            var item = sender as TreeViewItem;
-            if (item != null)
+            if (sender is TreeViewItem item)
             {
                 // allow dragging file and folder
-                var packagePart = item.DataContext as PackagePart;
-                if (packagePart != null)
+                if (item.DataContext is PackagePart packagePart)
                 {
                     _dragItem = item;
                     _dragPoint = e.GetPosition(item);
@@ -460,13 +447,12 @@ namespace PackageExplorer
             var item = sender as TreeViewItem;
             if (item == _dragItem)
             {
-                System.Windows.Point newPoint = e.GetPosition(item);
+                var newPoint = e.GetPosition(item);
                 if (Math.Abs(newPoint.X - _dragPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
                     Math.Abs(newPoint.Y - _dragPoint.Y) >= SystemParameters.MinimumVerticalDragDistance)
                 {
                     // initiate a dragging
-                    var packagePart = item.DataContext as PackagePart;
-                    if (packagePart != null)
+                    if (item.DataContext is PackagePart packagePart)
                     {
                         _isPressing = false;
                         _isDragging = true;
@@ -513,7 +499,7 @@ namespace PackageExplorer
 
             var commandBinding = new Binding("AddContentFolderCommand");
 
-            bool addSeparator = menu.Items.Count > 0;
+            var addSeparator = menu.Items.Count > 0;
             if (addSeparator)
             {
                 var separator = new Separator();
@@ -525,15 +511,15 @@ namespace PackageExplorer
             {
                 var item = new MenuItem
                            {
-                               Header = String.Format(CultureInfo.CurrentCulture, "Add {0} folder", pair.Key),
+                               Header = string.Format(CultureInfo.CurrentCulture, "Add {0} folder", pair.Key),
                                Visibility = Visibility.Collapsed
                            };
                 item.SetBinding(VisibilityProperty, visibilityBinding);
 
-                string[] values = pair.Value;
+                var values = pair.Value;
                 if (values.Length > 2)
                 {
-                    for (int i = 0; i < values.Length; i += 2)
+                    for (var i = 0; i < values.Length; i += 2)
                     {
                         var childItem = new MenuItem
                                         {

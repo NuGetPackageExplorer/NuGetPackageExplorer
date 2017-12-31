@@ -23,17 +23,17 @@ namespace NuGetPe
                 sourceDirectory += "\\";
             }
 
-            int numberOfFilesCopied = 0;
-            foreach (IPackageFile file in package.GetFiles())
+            var numberOfFilesCopied = 0;
+            foreach (var file in package.GetFiles())
             {
                 if (file.Path.StartsWith(sourceDirectory, StringComparison.OrdinalIgnoreCase))
                 {
-                    string suffixPath = file.Path.Substring(sourceDirectory.Length);
-                    string targetPath = Path.Combine(targetRootDirectory, suffixPath);
+                    var suffixPath = file.Path.Substring(sourceDirectory.Length);
+                    var targetPath = Path.Combine(targetRootDirectory, suffixPath);
 
-                    using (FileStream stream = File.OpenWrite(targetPath))
+                    using (var stream = File.OpenWrite(targetPath))
                     {
-                        using (Stream packageStream = file.GetStream())
+                        using (var packageStream = file.GetStream())
                         {
                             packageStream.CopyTo(stream);
                         }

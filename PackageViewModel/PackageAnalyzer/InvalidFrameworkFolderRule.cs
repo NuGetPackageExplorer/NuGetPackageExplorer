@@ -18,10 +18,10 @@ namespace PackageExplorerViewModel.Rules
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
             var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (IPackageFile file in package.GetFiles())
+            foreach (var file in package.GetFiles())
             {
-                string path = file.Path;
-                string[] parts = path.Split(Path.DirectorySeparatorChar);
+                var path = file.Path;
+                var parts = path.Split(Path.DirectorySeparatorChar);
                 if (parts.Length >= 3 && parts[0].Equals("lib", StringComparison.OrdinalIgnoreCase))
                 {
                     set.Add(parts[1]);

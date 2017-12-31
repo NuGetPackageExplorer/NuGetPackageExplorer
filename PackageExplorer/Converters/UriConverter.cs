@@ -12,20 +12,19 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var uri = (Uri) value;
-            return uri == null ? null : uri.ToString();
+            return uri?.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = (string) value;
-            if (String.IsNullOrEmpty(stringValue))
+            if (string.IsNullOrEmpty(stringValue))
             {
                 return null;
             }
             else
             {
-                Uri uri;
-                if (Uri.TryCreate(stringValue, UriKind.Absolute, out uri))
+                if (Uri.TryCreate(stringValue, UriKind.Absolute, out var uri))
                 {
                     return uri;
                 }

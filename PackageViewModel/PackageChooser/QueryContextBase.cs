@@ -35,13 +35,12 @@ namespace PackageExplorerViewModel
 
         protected async Task<IEnumerable<T>> LoadData(IQueryable<T> query)
         {
-            var dataServiceQuery = query as DataServiceQuery<T>;
-            if (dataServiceQuery != null)
+            if (query is DataServiceQuery<T> dataServiceQuery)
             {
                 dataServiceQuery = dataServiceQuery.AddQueryOption("semVerLevel", "2.0.0");
                 var queryResponse = (QueryOperationResponse<T>)
                     await Task.Factory.FromAsync<IEnumerable<T>>(dataServiceQuery.BeginExecute(null, null), dataServiceQuery.EndExecute);
-                
+
                 try
                 {
                     _totalItemCount = (int)queryResponse.TotalCount;

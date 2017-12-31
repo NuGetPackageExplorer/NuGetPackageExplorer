@@ -17,7 +17,7 @@ namespace PackageExplorer
             var comboBoxes = new ComboBox[] { NetFx, SilverlightFx, WPSLFx, WindowsFx };
 
             var builder = new StringBuilder();
-            for (int i = 0; i < comboBoxes.Length; i++)
+            for (var i = 0; i < comboBoxes.Length; i++)
             {
                 if (!comboBoxes[i].IsEnabled)
                 {

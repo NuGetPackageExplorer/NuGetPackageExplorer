@@ -55,8 +55,7 @@ namespace PackageExplorer
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var viewModel = e.NewValue as FileEditorViewModel;
-            if (viewModel != null && viewModel.FileInEdit != null)
+            if (e.NewValue is FileEditorViewModel viewModel && viewModel.FileInEdit != null)
             {
                 SyntaxDefinitions.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(viewModel.FileInEdit.Path);
                 Editor.Load(viewModel.FileInEdit.GetStream());
@@ -66,7 +65,7 @@ namespace PackageExplorer
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e)
         {
             var item = (MenuItem) sender;
-            int size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
+            var size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
             Settings.Default.FontSize = size;
         }
 

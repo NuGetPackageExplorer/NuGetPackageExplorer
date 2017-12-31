@@ -10,7 +10,7 @@ namespace NuGetPe
 
         public LocalPackageRepository(string source)
         {
-            if (String.IsNullOrEmpty(source))
+            if (string.IsNullOrEmpty(source))
             {
                 throw new ArgumentException("Argument cannot be null or empty.", "source");
             }

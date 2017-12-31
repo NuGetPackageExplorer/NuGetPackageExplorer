@@ -40,32 +40,32 @@ namespace NuGetPe
 
         public string Title
         {
-            get { return CorePackage == null ? null : CorePackage.Title; }
+            get { return CorePackage?.Title; }
         }
 
         public IEnumerable<string> Owners
         {
-            get { return CorePackage == null ? null : CorePackage.Owners; }
+            get { return CorePackage?.Owners; }
         }
 
         public Uri IconUrl
         {
-            get { return CorePackage == null ? null : CorePackage.IconUrl; }
+            get { return CorePackage?.IconUrl; }
         }
 
         public Uri LicenseUrl
         {
-            get { return CorePackage == null ? null : CorePackage.LicenseUrl; }
+            get { return CorePackage?.LicenseUrl; }
         }
 
         public Uri ProjectUrl
         {
-            get { return CorePackage == null ? null : CorePackage.ProjectUrl; }
+            get { return CorePackage?.ProjectUrl; }
         }
 
         public Uri ReportAbuseUrl
         {
-            get { return CorePackage == null ? null : CorePackage.ReportAbuseUrl; }
+            get { return CorePackage?.ReportAbuseUrl; }
         }
 
         public int DownloadCount { get; set; }
@@ -84,32 +84,32 @@ namespace NuGetPe
 
         public string Description
         {
-            get { return CorePackage == null ? null : CorePackage.Description; }
+            get { return CorePackage?.Description; }
         }
 
         public string Summary
         {
-            get { return CorePackage == null ? null : CorePackage.Summary; }
+            get { return CorePackage?.Summary; }
         }
 
         public string ReleaseNotes
         {
-            get { return CorePackage == null ? null : CorePackage.ReleaseNotes; }
+            get { return CorePackage?.ReleaseNotes; }
         }
 
         public string Copyright
         {
-            get { return CorePackage == null ? null : CorePackage.Copyright; }
+            get { return CorePackage?.Copyright; }
         }
 
         public string Language
         {
-            get { return CorePackage == null ? null : CorePackage.Language; }
+            get { return CorePackage?.Language; }
         }
 
         public string Tags
         {
-            get { return CorePackage == null ? null : CorePackage.Tags; }
+            get { return CorePackage?.Tags; }
         }
 
         public bool Serviceable

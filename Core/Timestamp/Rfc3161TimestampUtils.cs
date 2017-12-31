@@ -26,10 +26,10 @@ namespace NuGet.Packaging.Signing
             if (algorithmIdentifier == null || algorithmIdentifier.Length < 3)
                 return false;
 
-            bool allowPeriod = false;
-            bool startsWith0 = false;
+            var allowPeriod = false;
+            var startsWith0 = false;
 
-            foreach (char c in algorithmIdentifier)
+            foreach (var c in algorithmIdentifier)
             {
                 if (c == '0')
                 {
@@ -77,12 +77,12 @@ namespace NuGet.Packaging.Signing
         public static byte[] GetSignature(this SignerInfo signerInfo)
         {
             var field = typeof(SignerInfo).GetField("m_pbCmsgSignerInfo", BindingFlags.Instance | BindingFlags.NonPublic);
-            SafeHandle pbCmsgSignerInfo = (SafeHandle)field.GetValue(signerInfo);
+            var pbCmsgSignerInfo = (SafeHandle)field.GetValue(signerInfo);
 
             byte[] ret;
             unsafe
             {
-                CMSG_SIGNER_INFO* ptr = (CMSG_SIGNER_INFO*)pbCmsgSignerInfo.DangerousGetHandle();
+                var ptr = (CMSG_SIGNER_INFO*)pbCmsgSignerInfo.DangerousGetHandle();
                 ret = new byte[ptr->EncryptedHash.cbData];
                 Marshal.Copy(ptr->EncryptedHash.pbData, ret, 0, ret.Length);
                 return ret;
@@ -115,9 +115,9 @@ namespace NuGet.Packaging.Signing
             if (bytes == null)
                 return string.Empty;
 
-            StringBuilder builder = new StringBuilder(bytes.Length * 2);
+            var builder = new StringBuilder(bytes.Length * 2);
 
-            foreach (byte b in bytes)
+            foreach (var b in bytes)
             {
                 builder.Append(b.ToString("X2"));
             }
@@ -127,11 +127,11 @@ namespace NuGet.Packaging.Signing
 
         internal static byte[] HexToByteArray(this string hexString)
         {
-            byte[] bytes = new byte[hexString.Length / 2];
+            var bytes = new byte[hexString.Length / 2];
 
-            for (int i = 0; i < hexString.Length; i += 2)
+            for (var i = 0; i < hexString.Length; i += 2)
             {
-                string s = hexString.Substring(i, 2);
+                var s = hexString.Substring(i, 2);
                 bytes[i / 2] = byte.Parse(s, NumberStyles.HexNumber, null);
             }
 

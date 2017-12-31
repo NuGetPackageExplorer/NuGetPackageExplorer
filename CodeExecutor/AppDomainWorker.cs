@@ -9,14 +9,14 @@ namespace CodeExecutor
     {
         public bool? CheckIsNpeMetroInstalled(string assemblyPath)
         {
-            object ret = ExecuteCode(assemblyPath, "Windows8Shim.NpeAppChecker", "CheckIsNpeMetroInstalled");
+            var ret = ExecuteCode(assemblyPath, "Windows8Shim.NpeAppChecker", "CheckIsNpeMetroInstalled");
             return (bool?)ret;
         }
 
         private object ExecuteCode(string assemblyPath, string typeName, string methodName)
         {
             var assembly = Assembly.LoadFrom(assemblyPath);
-            Type type = assembly.GetType(typeName);
+            var type = assembly.GetType(typeName);
             if (type != null)
             {
                 var methodInfo = type.GetMethod(methodName, BindingFlags.Public | BindingFlags.Static);

@@ -12,7 +12,7 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = (string) value;
-            if (String.IsNullOrEmpty(stringValue))
+            if (string.IsNullOrEmpty(stringValue))
             {
                 return stringValue;
             }

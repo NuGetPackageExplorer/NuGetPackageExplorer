@@ -11,7 +11,7 @@ namespace NuGetPe
 
         public PhysicalFileSystem(string root)
         {
-            if (String.IsNullOrEmpty(root))
+            if (string.IsNullOrEmpty(root))
             {
                 throw new ArgumentException("Argument cannot be null or empty.", "root");
             }

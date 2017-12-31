@@ -21,12 +21,12 @@ namespace PackageExplorer
             const int SWP_FRAMECHANGED = 0x0020;
 
 
-            IntPtr hwnd = new WindowInteropHelper(this).Handle;
+            var hwnd = new WindowInteropHelper(this).Handle;
 
-            int value = NativeMethods.GetWindowLong(hwnd, GWL_STYLE);
+            var value = NativeMethods.GetWindowLong(hwnd, GWL_STYLE);
             NativeMethods.SetWindowLong(hwnd, GWL_STYLE, value & -131073 & -65537);
 
-            int extendedStyle = NativeMethods.GetWindowLong(hwnd, GWL_EXSTYLE);
+            var extendedStyle = NativeMethods.GetWindowLong(hwnd, GWL_EXSTYLE);
             NativeMethods.SetWindowLong(hwnd, GWL_EXSTYLE, extendedStyle | WS_EX_DLGMODALFRAME);
 
             // Update the window's non-client area to reflect the changes

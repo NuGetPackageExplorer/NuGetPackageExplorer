@@ -4,7 +4,7 @@
     {
         public static string ToStringSafe(this object obj)
         {
-            return obj == null ? null : obj.ToString();
+            return obj?.ToString();
         }
     }
 }

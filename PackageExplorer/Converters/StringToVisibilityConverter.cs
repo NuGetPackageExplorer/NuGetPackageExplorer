@@ -15,9 +15,9 @@ namespace PackageExplorer
             var stringValue = (string) value;
             
             var parameterValue = (string) parameter;
-            string[] candidates = parameterValue.Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+            var candidates = parameterValue.Split(new char[] {';'}, StringSplitOptions.RemoveEmptyEntries);
 
-            bool contains = candidates.Any(s => Matching(s, stringValue)); 
+            var contains = candidates.Any(s => Matching(s, stringValue)); 
             return contains ? Visibility.Visible : Visibility.Collapsed;
         }
 
@@ -25,18 +25,18 @@ namespace PackageExplorer
         {
             if (pattern.IndexOf('*') > -1) 
             {
-                string[] patternParts = pattern.Split('\\');
-                string[] valueParts = value.Split('\\');
+                var patternParts = pattern.Split('\\');
+                var valueParts = value.Split('\\');
 
                 if (patternParts.Length != valueParts.Length) 
                 {
                     return false;
                 }
 
-                for (int i = 0; i < patternParts.Length; i++)
+                for (var i = 0; i < patternParts.Length; i++)
                 {
                     if (patternParts[i] != "*" && 
-                        !String.Equals(patternParts[i], valueParts[i], StringComparison.OrdinalIgnoreCase))
+                        !string.Equals(patternParts[i], valueParts[i], StringComparison.OrdinalIgnoreCase))
                     {
                         return false;
                     }
@@ -46,7 +46,7 @@ namespace PackageExplorer
             }
             else 
             {
-                return String.Equals(pattern, value, StringComparison.OrdinalIgnoreCase);
+                return string.Equals(pattern, value, StringComparison.OrdinalIgnoreCase);
             }
         }
 

@@ -26,7 +26,7 @@ namespace PackageExplorerViewModel
 
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
-            string fileNameToUse = useTempFile ? Path.GetTempFileName() : targetFilePath;
+            var fileNameToUse = useTempFile ? Path.GetTempFileName() : targetFilePath;
             try
             {
                 using (Stream stream = File.Create(fileNameToUse))
@@ -71,7 +71,7 @@ namespace PackageExplorerViewModel
         public static IEnumerable<PackageIssue> Validate
             (this IPackage package, IEnumerable<IPackageRule> rules, string packageSource)
         {
-            foreach (IPackageRule rule in rules)
+            foreach (var rule in rules)
             {
                 if (rule != null)
                 {
@@ -86,7 +86,7 @@ namespace PackageExplorerViewModel
                     }
 
                     // can't yield inside a try/catch block
-                    foreach (PackageIssue issue in issues)
+                    foreach (var issue in issues)
                     {
                         yield return issue;
                     }

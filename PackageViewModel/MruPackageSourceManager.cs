@@ -36,17 +36,17 @@ namespace PackageExplorerViewModel
 
         private void LoadDataFromSettings()
         {
-            IList<string> savedFiles = _sourceSettings.GetSources();
-            for (int i = savedFiles.Count - 1; i >= 0; --i)
+            var savedFiles = _sourceSettings.GetSources();
+            for (var i = savedFiles.Count - 1; i >= 0; --i)
             {
-                string s = savedFiles[i];
+                var s = savedFiles[i];
                 if (s != null)
                 {
                     AddSource(s);
                 }
             }
 
-            if (!String.IsNullOrEmpty(_sourceSettings.ActiveSource))
+            if (!string.IsNullOrEmpty(_sourceSettings.ActiveSource))
             {
                 AddSource(_sourceSettings.ActiveSource);
                 ActivePackageSource = _sourceSettings.ActiveSource;
@@ -58,7 +58,7 @@ namespace PackageExplorerViewModel
                 _sources.Insert(0, _sourceSettings.DefaultSource);
             }
 
-            if (String.IsNullOrEmpty(ActivePackageSource))
+            if (string.IsNullOrEmpty(ActivePackageSource))
             {
                 // assign the active package source to the first one if it's not already assigned
                 ActivePackageSource = _sources[0];
@@ -77,7 +77,7 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException("newSource");
             }
 
-            string defaultFeed = _sourceSettings.DefaultSource;
+            var defaultFeed = _sourceSettings.DefaultSource;
 
             if (newSource.Equals(defaultFeed, StringComparison.OrdinalIgnoreCase))
             {
@@ -99,7 +99,7 @@ namespace PackageExplorerViewModel
 
         private void SmartRemove(string item)
         {
-            for (int i = 0; i < _sources.Count; i++)
+            for (var i = 0; i < _sources.Count; i++)
             {
                 if (_sources[i].Equals(item, StringComparison.OrdinalIgnoreCase))
                 {

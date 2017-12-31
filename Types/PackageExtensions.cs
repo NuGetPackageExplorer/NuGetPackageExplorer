@@ -17,7 +17,7 @@ namespace NuGetPackageExplorer.Types
                 throw new ArgumentNullException("folder");
             }
 
-            if (String.IsNullOrEmpty(folder))
+            if (string.IsNullOrEmpty(folder))
             {
                 // return files at the root
                 return from s in package.GetFiles()
@@ -26,7 +26,7 @@ namespace NuGetPackageExplorer.Types
             }
             else
             {
-                string prefix = folder + Path.DirectorySeparatorChar;
+                var prefix = folder + Path.DirectorySeparatorChar;
                 return from s in package.GetFiles()
                        where s.Path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
                        select s.Path;
@@ -35,7 +35,7 @@ namespace NuGetPackageExplorer.Types
 
         public static IEnumerable<string> GetFilesUnderRoot(this IPackage package)
         {
-            return GetFilesInFolder(package, String.Empty);
+            return GetFilesInFolder(package, string.Empty);
         }
     }
 }

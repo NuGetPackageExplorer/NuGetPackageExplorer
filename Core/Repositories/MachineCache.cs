@@ -45,7 +45,7 @@ namespace NuGetPe
 
         public ISignaturePackage FindPackage(string packageId, NuGetVersion version)
         {
-            string path = GetPackageFilePath(packageId, version);
+            var path = GetPackageFilePath(packageId, version);
 
             if (File.Exists(path))
             {
@@ -76,7 +76,7 @@ namespace NuGetPe
             ClearCache(cacheDirectory, MaxNumberOfPackages);
 
             // now copy the package to the cache
-            string filePath = GetPackageFilePath(package.Id, package.Version);
+            var filePath = GetPackageFilePath(package.Id, package.Version);
             using (Stream stream = package.GetStream(),
                           fileStream = File.Create(filePath))
             {
@@ -90,12 +90,12 @@ namespace NuGetPe
         private static void ClearCache(DirectoryInfo cacheDirectory, int threshold)
         {
             // If we exceed the package count then clear the cache
-            FileInfo[] packageFiles = cacheDirectory.GetFiles("*" + Constants.PackageExtension,
+            var packageFiles = cacheDirectory.GetFiles("*" + Constants.PackageExtension,
                                                               SearchOption.TopDirectoryOnly);
-            int totalFileCount = packageFiles.Length;
+            var totalFileCount = packageFiles.Length;
             if (totalFileCount >= threshold)
             {
-                foreach (FileInfo packageFile in packageFiles)
+                foreach (var packageFile in packageFiles)
                 {
                     try
                     {
@@ -145,15 +145,15 @@ namespace NuGetPe
 
         private static string GetCachePath(Func<string, string> getEnvironmentVariable, Func<Environment.SpecialFolder, string> getFolderPath)
         {
-            string cacheOverride = getEnvironmentVariable(NuGetCachePathEnvironmentVariable);
-            if (!String.IsNullOrEmpty(cacheOverride))
+            var cacheOverride = getEnvironmentVariable(NuGetCachePathEnvironmentVariable);
+            if (!string.IsNullOrEmpty(cacheOverride))
             {
                 return cacheOverride;
             }
             else
             {
-                string localAppDataPath = getFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                if (String.IsNullOrEmpty(localAppDataPath))
+                var localAppDataPath = getFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                if (string.IsNullOrEmpty(localAppDataPath))
                 {
                     return null;
                 }

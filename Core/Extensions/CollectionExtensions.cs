@@ -16,7 +16,7 @@ namespace NuGetPe
         public static int RemoveAll<T>(this ICollection<T> collection, Func<T, bool> match)
         {
             IList<T> toRemove = collection.Where(match).ToList();
-            foreach (T item in toRemove)
+            foreach (var item in toRemove)
             {
                 collection.Remove(item);
             }

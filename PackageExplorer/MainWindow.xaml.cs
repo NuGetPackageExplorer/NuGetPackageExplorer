@@ -122,10 +122,10 @@ namespace PackageExplorer
                 return;
             }
 
-            object oldContent = PackageSourceItem.Content;
+            var oldContent = PackageSourceItem.Content;
             PackageSourceItem.SetCurrentValue(ContentProperty, "Loading " + packagePath + "...");
 
-            bool succeeded = await Dispatcher.InvokeAsync(
+            var succeeded = await Dispatcher.InvokeAsync(
                 () => OpenLocalPackageCore(packagePath), DispatcherPriority.Loaded);
 
             if (!succeeded)
@@ -141,7 +141,7 @@ namespace PackageExplorer
 
             try
             {
-                string extension = Path.GetExtension(packagePath);
+                var extension = Path.GetExtension(packagePath);
                 if (extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     package = new ZipPackage(packagePath);
@@ -194,11 +194,11 @@ namespace PackageExplorer
 
                 try
                 {
-                    PackageViewModel packageViewModel = await PackageViewModelFactory.CreateViewModel(package, packagePath);
+                    var packageViewModel = await PackageViewModelFactory.CreateViewModel(package, packagePath);
                     packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
 
                     DataContext = packageViewModel;
-                    if (!String.IsNullOrEmpty(packagePath))
+                    if (!string.IsNullOrEmpty(packagePath))
                     {
                         _mruManager.NotifyFileAdded(package, packagePath, packageType);
                     }
@@ -233,8 +233,7 @@ namespace PackageExplorer
         private void DisposeViewModel()
         {
             // dispose the old view model before opening a new one.
-            var currentViewModel = DataContext as PackageViewModel;
-            if (currentViewModel != null)
+            if (DataContext is PackageViewModel currentViewModel)
             {
                 currentViewModel.PropertyChanged -= OnPackageViewModelPropertyChanged;
                 currentViewModel.Dispose();
@@ -243,13 +242,13 @@ namespace PackageExplorer
 
         private void NewMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
-            bool canceled = AskToSaveCurrentFile();
+            var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
                 return;
             }
 
-            LoadPackage(new EmptyPackage(), String.Empty, PackageType.LocalPackage);
+            LoadPackage(new EmptyPackage(), string.Empty, PackageType.LocalPackage);
         }
 
         private void OpenMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
@@ -260,7 +259,7 @@ namespace PackageExplorer
         private async void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
             var parameter = (string) e.Parameter;
-            if (!String.IsNullOrEmpty(parameter))
+            if (!string.IsNullOrEmpty(parameter))
             {
                 parameter = "id:" + parameter;
             }
@@ -269,17 +268,16 @@ namespace PackageExplorer
 
         private Task OpenPackageFromLocal()
         {
-            bool canceled = AskToSaveCurrentFile();
+            var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
                 return Task.FromResult(0);
             }
 
-            string selectedFile;
-            bool result = UIServices.OpenFileDialog(
+            var result = UIServices.OpenFileDialog(
                 "Select File",
                 StringResources.Dialog_OpenFileFilter,
-                out selectedFile);
+                out var selectedFile);
 
             if (result)
             {
@@ -291,13 +289,13 @@ namespace PackageExplorer
 
         private async Task OpenPackageFromRepository(string searchTerm)
         {
-            bool canceled = AskToSaveCurrentFile();
+            var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
                 return;
             }
 
-            PackageInfo selectedPackageInfo = PackageChooser.SelectPackage(searchTerm);
+            var selectedPackageInfo = PackageChooser.SelectPackage(searchTerm);
             if (selectedPackageInfo == null)
             {
                 return;
@@ -312,20 +310,20 @@ namespace PackageExplorer
                 var packageVersion = new NuGetVersion(selectedPackageInfo.Version);
                 var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
 
-                Func<ISignaturePackage, DispatcherOperation> processPackageAction = (package) =>
-                                                        {
-                                                            DataServicePackage servicePackage = selectedPackageInfo.AsDataServicePackage();
-                                                            servicePackage.CorePackage = package;
-                                                            LoadPackage(servicePackage,
-                                                                        selectedPackageInfo.DownloadUrl.ToString(),
-                                                                        PackageType.DataServicePackage);
+                DispatcherOperation processPackageAction(ISignaturePackage package)
+                {
+                    var servicePackage = selectedPackageInfo.AsDataServicePackage();
+                    servicePackage.CorePackage = package;
+                    LoadPackage(servicePackage,
+                                selectedPackageInfo.DownloadUrl.ToString(),
+                                PackageType.DataServicePackage);
 
-                                                            // adding package to the cache, but with low priority
-                                                            return Dispatcher.BeginInvoke(
-                                                                (Action<IPackage>) MachineCache.Default.AddPackage,
-                                                                DispatcherPriority.ApplicationIdle,
-                                                                package);
-                                                        };
+                    // adding package to the cache, but with low priority
+                    return Dispatcher.BeginInvoke(
+                        (Action<IPackage>)MachineCache.Default.AddPackage,
+                        DispatcherPriority.ApplicationIdle,
+                        package);
+                }
 
                 if (cachePackage == null || cachePackage.GetHash() != selectedPackageInfo.PackageHash)
                 {
@@ -360,7 +358,7 @@ namespace PackageExplorer
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            bool isCanceled = AskToSaveCurrentFile();
+            var isCanceled = AskToSaveCurrentFile();
             e.Cancel = isCanceled;
 
             if (!isCanceled)
@@ -386,7 +384,7 @@ namespace PackageExplorer
             if (HasUnsavedChanges || (IsInEditFileMode && viewModel.FileEditorViewModel.HasEdit))
             {
                 // if there is unsaved changes, ask user for confirmation
-                bool? result = UIServices.ConfirmWithCancel("You have unsaved changes in the current package.", StringResources.Dialog_SaveQuestion);
+                var result = UIServices.ConfirmWithCancel("You have unsaved changes in the current package.", StringResources.Dialog_SaveQuestion);
 
                 if (result == null)
                 {
@@ -401,7 +399,7 @@ namespace PackageExplorer
                         viewModel.FileEditorViewModel.SaveOnExit((IFileEditorService) Content);
                     }
 
-                    ICommand saveCommand = viewModel.SaveCommand;
+                    var saveCommand = viewModel.SaveCommand;
                     const string parameter = "ForceSave";
                     saveCommand.Execute(parameter);
                 }
@@ -413,19 +411,19 @@ namespace PackageExplorer
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e)
         {
             var item = (MenuItem) sender;
-            int size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
+            var size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
             Settings.Default.FontSize = size;
         }
 
         private void LoadSettings()
         {
-            Settings settings = Settings.Default;
+            var settings = Settings.Default;
             this.LoadWindowPlacementFromSettings(settings.WindowPlacement);
         }
 
         private void SaveSettings()
         {
-            Settings settings = Settings.Default;
+            var settings = Settings.Default;
             settings.WindowPlacement = this.SaveWindowPlacementToSettings();
         }
 
@@ -459,7 +457,7 @@ namespace PackageExplorer
 
         private void CloseMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
-            bool isCanceled = AskToSaveCurrentFile();
+            var isCanceled = AskToSaveCurrentFile();
             if (isCanceled)
             {
                 return;
@@ -477,7 +475,7 @@ namespace PackageExplorer
 
         private async void RecentFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            bool canceled = AskToSaveCurrentFile();
+            var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
                 return;
@@ -517,8 +515,7 @@ namespace PackageExplorer
                 return;
             }
 
-            Uri downloadUrl;
-            if (Uri.TryCreate(packageUrl, UriKind.Absolute, out downloadUrl) && downloadUrl.IsRemoteUri())
+            if (Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl) && downloadUrl.IsRemoteUri())
             {
                 IPackage downloadedPackage = await PackageDownloader.Download(downloadUrl, id, version.ToString());
                 if (downloadedPackage != null)
@@ -529,7 +526,7 @@ namespace PackageExplorer
             else
             {
                 UIServices.Show(
-                    String.Format(
+                    string.Format(
                         CultureInfo.CurrentCulture,
                         StringResources.Dialog_InvalidPackageUrl,
                         packageUrl),
@@ -564,8 +561,8 @@ namespace PackageExplorer
             // if the Control key (and only Control key) is pressed 
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                int fontSizeDelta = e.Delta > 0 ? 2 : -2;
-                int newFontSize = Settings.Default.FontSize + fontSizeDelta;
+                var fontSizeDelta = e.Delta > 0 ? 2 : -2;
+                var newFontSize = Settings.Default.FontSize + fontSizeDelta;
                 newFontSize = Math.Max(newFontSize, 12);
                 newFontSize = Math.Min(newFontSize, 18);
                 Settings.Default.FontSize = newFontSize;
@@ -576,7 +573,7 @@ namespace PackageExplorer
 
         private void ViewDownloadCache_Click(object sender, EventArgs args)
         {
-            string cacheSource = MachineCache.Default.Source;
+            var cacheSource = MachineCache.Default.Source;
             if (Directory.Exists(cacheSource))
             {
                 Process.Start(cacheSource);
@@ -589,7 +586,7 @@ namespace PackageExplorer
 
         private void ClearDownloadCache_Click(object sender, EventArgs args)
         {
-            bool result = MachineCache.Default.Clear();
+            var result = MachineCache.Default.Clear();
             if (result)
             {
                 UIServices.Show("The NuGet download cache has been cleared successfully.", MessageLevel.Information);
@@ -604,14 +601,13 @@ namespace PackageExplorer
 
         private void Window_DragOver(object sender, DragEventArgs e)
         {
-            IDataObject data = e.Data;
+            var data = e.Data;
             if (data.GetDataPresent(DataFormats.FileDrop))
             {
-                object value = data.GetData(DataFormats.FileDrop);
-                var filenames = value as string[];
-                if (filenames != null && filenames.Length > 0)
+                var value = data.GetData(DataFormats.FileDrop);
+                if (value is string[] filenames && filenames.Length > 0)
                 {
-                    string firstFile = filenames[0];
+                    var firstFile = filenames[0];
                     if (FileUtility.IsSupportedFile(firstFile))
                     {
                         e.Effects = DragDropEffects.Copy;
@@ -627,19 +623,18 @@ namespace PackageExplorer
 
         private async void Window_Drop(object sender, DragEventArgs e)
         {
-            IDataObject data = e.Data;
+            var data = e.Data;
             if (data.GetDataPresent(DataFormats.FileDrop))
             {
-                object value = data.GetData(DataFormats.FileDrop);
-                var filenames = value as string[];
-                if (filenames != null && filenames.Length > 0)
+                var value = data.GetData(DataFormats.FileDrop);
+                if (value is string[] filenames && filenames.Length > 0)
                 {
-                    string firstFile = filenames.FirstOrDefault(FileUtility.IsSupportedFile);
+                    var firstFile = filenames.FirstOrDefault(FileUtility.IsSupportedFile);
                     if (firstFile != null)
                     {
                         e.Handled = true;
 
-                        bool canceled = AskToSaveCurrentFile();
+                        var canceled = AskToSaveCurrentFile();
                         if (!canceled)
                         {
                             await OpenLocalPackage(firstFile);

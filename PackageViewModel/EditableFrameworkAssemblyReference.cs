@@ -50,10 +50,7 @@ namespace PackageExplorerViewModel
 
         private void RaisePropertyChange(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public FrameworkAssemblyReference AsReadOnly()
@@ -72,7 +69,7 @@ namespace PackageExplorerViewModel
             {
                 if (columnName == "AssemblyName")
                 {
-                    if (String.IsNullOrEmpty(AssemblyName))
+                    if (string.IsNullOrEmpty(AssemblyName))
                     {
                         return _supportedFrameworks == null ? (string)null : "Assembly name must not be empty.";
                     }

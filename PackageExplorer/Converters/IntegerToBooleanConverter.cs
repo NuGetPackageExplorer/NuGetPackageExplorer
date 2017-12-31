@@ -16,7 +16,7 @@ namespace PackageExplorer
                 intValue = 12;
             }
 
-            int compareValue = System.Convert.ToInt32(parameter, culture);
+            var compareValue = System.Convert.ToInt32(parameter, culture);
             return intValue == compareValue;
         }
 

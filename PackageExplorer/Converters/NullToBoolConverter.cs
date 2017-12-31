@@ -10,10 +10,9 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stringValue = value as string;
-            if (stringValue != null)
+            if (value is string stringValue)
             {
-                return !String.IsNullOrWhiteSpace(stringValue);
+                return !string.IsNullOrWhiteSpace(stringValue);
             }
 
             return value != null;

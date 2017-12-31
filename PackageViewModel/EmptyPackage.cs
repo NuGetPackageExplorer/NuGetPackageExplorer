@@ -36,7 +36,7 @@ namespace PackageExplorerViewModel
 
         public string Title
         {
-            get { return String.Empty; }
+            get { return string.Empty; }
         }
 
         public IEnumerable<string> Authors

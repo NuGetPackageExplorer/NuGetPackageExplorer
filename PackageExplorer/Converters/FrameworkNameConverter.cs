@@ -18,9 +18,9 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var path = (string) value;
-            string name = Path.GetFileName(path);
+            var name = Path.GetFileName(path);
 
-            string[] parts = path.Split('\\');
+            var parts = path.Split('\\');
             if (parts.Length == 2 && 
                 WellknownPackageFolders.Any(s => s.Equals(parts[0], StringComparison.OrdinalIgnoreCase)))
             {
@@ -38,7 +38,7 @@ namespace PackageExplorer
                     }
                     else
                     {
-                        return String.Empty;
+                        return string.Empty;
                     }
                 }
 
@@ -52,7 +52,7 @@ namespace PackageExplorer
                 }
             }
 
-            return String.Empty;
+            return string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -85,11 +85,11 @@ namespace NuGet.Packaging.Signing
             if (serialNumber.Length == 0)
                 throw new ArgumentException("Non-empty array is required", nameof(serialNumber));
 
-            long accuracy = accuracyInMicroseconds.GetValueOrDefault();
+            var accuracy = accuracyInMicroseconds.GetValueOrDefault();
             if (accuracy < 0 || accuracy > 4294967295000000)
                 throw new ArgumentOutOfRangeException(nameof(accuracyInMicroseconds));
 
-            TstInfo tstInfo = new TstInfo
+            var tstInfo = new TstInfo
             {
                 Version = 1,
                 PolicyId = policyId,
@@ -111,7 +111,7 @@ namespace NuGet.Packaging.Signing
         internal Rfc3161TimestampTokenInfo(IntPtr pTsContext)
         {
             var context = (Rfc3161TimestampWin32.CRYPT_TIMESTAMP_CONTEXT)Marshal.PtrToStructure(pTsContext, typeof(Rfc3161TimestampWin32.CRYPT_TIMESTAMP_CONTEXT));
-            byte[] encoded = new byte[context.cbEncoded];
+            var encoded = new byte[context.cbEncoded];
             Marshal.Copy(context.pbEncoded, encoded, 0, context.cbEncoded);
 
             RawData = encoded;
@@ -126,7 +126,7 @@ namespace NuGet.Packaging.Signing
         {
             get
             {
-                Oid value = Decoded.HashAlgorithmId;
+                var value = Decoded.HashAlgorithmId;
 
                 return new Oid(value.Value, value.FriendlyName);
             }
@@ -142,7 +142,7 @@ namespace NuGet.Packaging.Signing
             if (hash == null)
                 return false;
 
-            byte[] value = Decoded.HashedMessage;
+            var value = Decoded.HashedMessage;
 
             if (hash.Length != value.Length)
             {
@@ -211,7 +211,7 @@ namespace NuGet.Packaging.Signing
         {
             var info = (Rfc3161TimestampWin32.CRYPT_TIMESTAMP_INFO)Marshal.PtrToStructure(pTstInfo, typeof(Rfc3161TimestampWin32.CRYPT_TIMESTAMP_INFO));
 
-            TstInfo tstInfo = new TstInfo
+            var tstInfo = new TstInfo
             {
                 Version = info.dwVersion,
                 PolicyId = Marshal.PtrToStringAnsi(info.pszTSAPolicyId),
@@ -225,7 +225,7 @@ namespace NuGet.Packaging.Signing
             // Convert to BigEndian.
             Array.Reverse(tstInfo.SerialNumber);
 
-            string hashAlgOidValue = Marshal.PtrToStringAnsi(info.HashAlgorithm.pszOid);
+            var hashAlgOidValue = Marshal.PtrToStringAnsi(info.HashAlgorithm.pszOid);
             Oid hashAlgOid;
 
             try
@@ -249,7 +249,7 @@ namespace NuGet.Packaging.Signing
             {
                 var accuracy = (Rfc3161TimestampWin32.CRYPT_TIMESTAMP_ACCURACY)Marshal.PtrToStructure(info.pvAccuracy, typeof(Rfc3161TimestampWin32.CRYPT_TIMESTAMP_ACCURACY));
 
-                long accuracyMicroSeconds =
+                var accuracyMicroSeconds =
                     accuracy.dwSeconds * 1_000_000L +
                     accuracy.dwMillis * 1000L +
                     accuracy.dwSeconds;
@@ -272,12 +272,12 @@ namespace NuGet.Packaging.Signing
 
         private static unsafe TstInfo Decode(byte[] rawData)
         {
-            byte[] really = new byte[rawData.Length];
+            var really = new byte[rawData.Length];
 
             fixed (byte* pbData = rawData)
             {
-                IntPtr decodedPtr = IntPtr.Zero;
-                int cbStruct = 0;
+                var decodedPtr = IntPtr.Zero;
+                var cbStruct = 0;
 
                 try
                 {
@@ -296,12 +296,12 @@ namespace NuGet.Packaging.Signing
                         throw new CryptographicException(Marshal.GetLastWin32Error());
                     }
 
-                    TstInfo tstInfo = ReadTstInfo(decodedPtr);
+                    var tstInfo = ReadTstInfo(decodedPtr);
 
                     //fixed (byte* pbReally = really)
                     {
                         uint cbReally = 0;
-                        IntPtr letThemEncodeIt = IntPtr.Zero;
+                        var letThemEncodeIt = IntPtr.Zero;
 
                         if (!Rfc3161TimestampWin32.CryptEncodeObjectEx(
                             Rfc3161TimestampWin32.CryptEncodingTypes.X509_ASN_ENCODING,
@@ -331,19 +331,19 @@ namespace NuGet.Packaging.Signing
 
         private static unsafe byte[] Encode(TstInfo tstInfo)
         {
-            string algOid = tstInfo.HashAlgorithmId.Value;
+            var algOid = tstInfo.HashAlgorithmId.Value;
 
-            byte[] policyOidBytes = new byte[tstInfo.PolicyId.Length + 1];
-            byte[] algOidBytes = new byte[algOid.Length + 1];
-            byte[] serialNumberBigEndian = tstInfo.SerialNumber;
-            byte[] serialNumberLittleEndian = new byte[serialNumberBigEndian.Length];
+            var policyOidBytes = new byte[tstInfo.PolicyId.Length + 1];
+            var algOidBytes = new byte[algOid.Length + 1];
+            var serialNumberBigEndian = tstInfo.SerialNumber;
+            var serialNumberLittleEndian = new byte[serialNumberBigEndian.Length];
 
-            for (int i = 0; i < serialNumberLittleEndian.Length; i++)
+            for (var i = 0; i < serialNumberLittleEndian.Length; i++)
             {
                 serialNumberLittleEndian[i] = serialNumberBigEndian[serialNumberBigEndian.Length - i - 1];
             }
 
-            long filetime = tstInfo.Timestamp.ToFileTime();
+            var filetime = tstInfo.Timestamp.ToFileTime();
 
             fixed (byte* pbPolicyOid = policyOidBytes)
             fixed (char* pszPolicyOid = tstInfo.PolicyId)
@@ -357,14 +357,14 @@ namespace NuGet.Packaging.Signing
                 Encoding.ASCII.GetBytes(pszPolicyOid, tstInfo.PolicyId.Length, pbPolicyOid, policyOidBytes.Length);
                 Encoding.ASCII.GetBytes(pszAlgOid, algOid.Length, pbAlgOid, algOidBytes.Length);
 
-                Rfc3161TimestampWin32.CRYPT_TIMESTAMP_INFO info = new Rfc3161TimestampWin32.CRYPT_TIMESTAMP_INFO
+                var info = new Rfc3161TimestampWin32.CRYPT_TIMESTAMP_INFO
                 {
                     dwVersion = tstInfo.Version,
                     pszTSAPolicyId = (IntPtr)pbPolicyOid,
                     fOrdering = tstInfo.IsOrdering,
                 };
 
-                Rfc3161TimestampWin32.CRYPT_TIMESTAMP_ACCURACY accuracy = default(Rfc3161TimestampWin32.CRYPT_TIMESTAMP_ACCURACY);
+                var accuracy = default(Rfc3161TimestampWin32.CRYPT_TIMESTAMP_ACCURACY);
 
                 info.HashAlgorithm.pszOid = (IntPtr)pbAlgOid;
                 info.HashedMessage.cbData = (uint)tstInfo.HashedMessage.Length;
@@ -377,9 +377,8 @@ namespace NuGet.Packaging.Signing
 
                 if (tstInfo.AccuracyInMicroseconds.HasValue)
                 {
-                    long val = tstInfo.AccuracyInMicroseconds.Value;
-                    long rem;
-                    val = Math.DivRem(val, 1000, out rem);
+                    var val = tstInfo.AccuracyInMicroseconds.Value;
+                    val = Math.DivRem(val, 1000, out var rem);
                     accuracy.dwMicros = (int)rem;
                     val = Math.DivRem(val, 1000, out rem);
                     accuracy.dwMillis = (int)rem;
@@ -409,7 +408,7 @@ namespace NuGet.Packaging.Signing
                 if (tstInfo.Extensions != null)
                     throw new NotImplementedException();
 
-                IntPtr encodedDataPtr = IntPtr.Zero;
+                var encodedDataPtr = IntPtr.Zero;
                 uint cbEncoded = 0;
 
                 try
@@ -426,7 +425,7 @@ namespace NuGet.Packaging.Signing
                         throw new CryptographicException(Marshal.GetLastWin32Error());
                     }
 
-                    byte[] encoded = new byte[cbEncoded];
+                    var encoded = new byte[cbEncoded];
                     Marshal.Copy(encodedDataPtr, encoded, 0, (int)cbEncoded);
                     return encoded;
                 }
@@ -443,7 +442,7 @@ namespace NuGet.Packaging.Signing
             if (blob.cbData == 0)
                 return null;
 
-            byte[] answer = new byte[blob.cbData];
+            var answer = new byte[blob.cbData];
             Marshal.Copy(blob.pbData, answer, 0, answer.Length);
             return answer;
         }

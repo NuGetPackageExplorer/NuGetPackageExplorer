@@ -66,7 +66,7 @@ namespace PackageExplorer
             {
                 var pluginInfo = new PluginInfo(plugin.Id, plugin.Version);
 
-                string targetPath = GetTargetPath(pluginInfo);
+                var targetPath = GetTargetPath(pluginInfo);
                 if (Directory.Exists(targetPath))
                 {
                     UIServices.Value.Show(
@@ -79,11 +79,11 @@ namespace PackageExplorer
                     if (Directory.Exists(targetPath))
                     {
                         // make sure there is no .delete file lurking around for this plugin
-                        string deleteMePath = targetPath + DeleteMeExtension;
+                        var deleteMePath = targetPath + DeleteMeExtension;
                         File.Delete(deleteMePath);
 
                         // copy assemblies
-                        int numberOfFilesCopied = 
+                        var numberOfFilesCopied = 
                             FrameworkFolderForAssemblies.Sum(folder => plugin.UnpackPackage(folder, targetPath));
 
                         if (numberOfFilesCopied == 0)
@@ -95,7 +95,7 @@ namespace PackageExplorer
                         }
                         else
                         {
-                            bool succeeded = AddPluginToCatalog(pluginInfo, targetPath, quietMode: false);
+                            var succeeded = AddPluginToCatalog(pluginInfo, targetPath, quietMode: false);
                             if (!succeeded)
                             {
                                 DeletePlugin(pluginInfo);
@@ -120,7 +120,7 @@ namespace PackageExplorer
                 throw new ArgumentNullException("plugin");
             }
 
-            string targetPath = GetTargetPath(plugin);
+            var targetPath = GetTargetPath(plugin);
             if (Directory.Exists(targetPath))
             {
                 RemovePluginFromCatalog(plugin);
@@ -153,8 +153,8 @@ namespace PackageExplorer
             if (!pluginDirectoryInfo.Exists)
             {
                 // creates the plugins directory if it doesn't exist
-                string localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                DirectoryInfo nugetDirectory = CreateChildDirectory(new DirectoryInfo(localAppData), NuGetDirectoryName);
+                var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var nugetDirectory = CreateChildDirectory(new DirectoryInfo(localAppData), NuGetDirectoryName);
                 CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
             }
 
@@ -162,10 +162,10 @@ namespace PackageExplorer
             _pluginToCatalog = new Dictionary<PluginInfo, DirectoryCatalog>();
             _pluginCatalog = new AggregateCatalog();
 
-            for (int i = _plugins.Count - 1; i >= 0; i--)
+            for (var i = _plugins.Count - 1; i >= 0; i--)
             {
-                PluginInfo pluginInfo = _plugins[i];
-                bool succeeded = AddPluginToCatalog(pluginInfo, GetTargetPath(pluginInfo), quietMode: true);
+                var pluginInfo = _plugins[i];
+                var succeeded = AddPluginToCatalog(pluginInfo, GetTargetPath(pluginInfo), quietMode: true);
                 if (!succeeded)
                 {
                     _plugins.RemoveAt(i);
@@ -205,7 +205,7 @@ namespace PackageExplorer
             {
                 _pluginToCatalog.Remove(pluginInfo);
 
-                string errorMessage = BuildErrorMessage(exception);
+                var errorMessage = BuildErrorMessage(exception);
                 if (quietMode)
                 {
                     Trace.WriteLine(errorMessage, "Plugins Loader");
@@ -221,8 +221,7 @@ namespace PackageExplorer
 
         private void RemovePluginFromCatalog(PluginInfo pluginInfo)
         {
-            DirectoryCatalog catalog;
-            if (_pluginToCatalog.TryGetValue(pluginInfo, out catalog))
+            if (_pluginToCatalog.TryGetValue(pluginInfo, out var catalog))
             {
                 _pluginCatalog.Catalogs.Remove(catalog);
             }
@@ -231,22 +230,21 @@ namespace PackageExplorer
         private static DirectoryInfo CreateChildDirectory(DirectoryInfo parentInfo, string path)
         {
             // if the child directory doesn't exist, create it
-            DirectoryInfo child = parentInfo.EnumerateDirectories(path, SearchOption.TopDirectoryOnly).FirstOrDefault() ??
+            var child = parentInfo.EnumerateDirectories(path, SearchOption.TopDirectoryOnly).FirstOrDefault() ??
                                   parentInfo.CreateSubdirectory(path);
             return child;
         }
 
         private PluginInfo ConvertFromDirectoryToPluginInfo(DirectoryInfo directory)
         {
-            string name = directory.Name;
+            var name = directory.Name;
             const string regex = @"^(.+)\[(.+?)\]$";
-            Match match = Regex.Match(name, regex);
+            var match = Regex.Match(name, regex);
             if (match.Success)
             {
-                string id = match.Groups[1].Value;
-                string versionString = match.Groups[2].Value;
-                NuGetVersion version;
-                if (NuGetVersion.TryParse(versionString, out version))
+                var id = match.Groups[1].Value;
+                var versionString = match.Groups[2].Value;
+                if (NuGetVersion.TryParse(versionString, out var version))
                 {
                     return new PluginInfo(id, version);
                 }
@@ -257,7 +255,7 @@ namespace PackageExplorer
 
         private static string GetTargetPath(PluginInfo plugin)
         {
-            string pluginName = plugin.Id + "[" + plugin.Version + "]";
+            var pluginName = plugin.Id + "[" + plugin.Version + "]";
             return Path.Combine(PluginsDirectory, pluginName);
         }
 
@@ -270,8 +268,8 @@ namespace PackageExplorer
 
             // when a plugin assembly is loaded by the app, we can't delete it directly.
             // instead, we create a .deleteme file at the same location and delete it when the app exits.
-            string deleteMeFile = targetPath + DeleteMeExtension;
-            File.WriteAllText(deleteMeFile, String.Empty);
+            var deleteMeFile = targetPath + DeleteMeExtension;
+            File.WriteAllText(deleteMeFile, string.Empty);
         }
 
         private static void DeleteAllDeleteMeFiles()
@@ -281,16 +279,16 @@ namespace PackageExplorer
                 var pluginDirectoryInfo = new DirectoryInfo(PluginsDirectory);
                 if (pluginDirectoryInfo.Exists)
                 {
-                    IEnumerable<FileInfo> deleteMeFiles = pluginDirectoryInfo.EnumerateFiles("*" + DeleteMeExtension,
+                    var deleteMeFiles = pluginDirectoryInfo.EnumerateFiles("*" + DeleteMeExtension,
                                                                                              SearchOption.
                                                                                                  TopDirectoryOnly);
-                    foreach (FileInfo file in deleteMeFiles)
+                    foreach (var file in deleteMeFiles)
                     {
                         // delete the .deleteme file
                         file.Delete();
 
                         // also delete the real plugin directory
-                        string pluginDirectory = Path.Combine(PluginsDirectory,
+                        var pluginDirectory = Path.Combine(PluginsDirectory,
                                                               Path.GetFileNameWithoutExtension(file.Name));
                         if (Directory.Exists(pluginDirectory))
                         {
@@ -312,7 +310,7 @@ namespace PackageExplorer
             builder.AppendLine();
             builder.AppendLine();
 
-            foreach (Exception loaderException in exception.LoaderExceptions)
+            foreach (var loaderException in exception.LoaderExceptions)
             {
                 builder.AppendLine(loaderException.Message);
             }

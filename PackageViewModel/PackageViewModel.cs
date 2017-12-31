@@ -73,32 +73,11 @@ namespace PackageExplorerViewModel
             IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata,
             IList<Lazy<IPackageRule>> packageRules)
         {
-            if (package == null)
-            {
-                throw new ArgumentNullException("package");
-            }
-            if (mruManager == null)
-            {
-                throw new ArgumentNullException("mruManager");
-            }
-            if (uiServices == null)
-            {
-                throw new ArgumentNullException("uiServices");
-            }
-            if (editorService == null)
-            {
-                throw new ArgumentNullException("editorService");
-            }
-            if (settingsManager == null)
-            {
-                throw new ArgumentNullException("settingsManager");
-            }
-
-            _settingsManager = settingsManager;
-            _editorService = editorService;
-            _uiServices = uiServices;
-            _mruManager = mruManager;
-            _package = package;
+            _settingsManager = settingsManager ?? throw new ArgumentNullException("settingsManager");
+            _editorService = editorService ?? throw new ArgumentNullException("editorService");
+            _uiServices = uiServices ?? throw new ArgumentNullException("uiServices");
+            _mruManager = mruManager ?? throw new ArgumentNullException("mruManager");
+            _package = package ?? throw new ArgumentNullException("package");
             _contentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
@@ -328,15 +307,14 @@ namespace PackageExplorerViewModel
 
         private void AddExistingFileToFolder(PackageFolder folder)
         {
-            string[] selectedFiles;
-            bool result = UIServices.OpenMultipleFilesDialog(
+            var result = UIServices.OpenMultipleFilesDialog(
                 "Select Files",
                 "All files (*.*)|*.*",
-                out selectedFiles);
+                out var selectedFiles);
 
             if (result)
             {
-                foreach (string file in selectedFiles)
+                foreach (var file in selectedFiles)
                 {
                     folder.AddFile(file, isTempFile: false);
                 }
@@ -413,8 +391,8 @@ namespace PackageExplorerViewModel
         {
             parameter = parameter ?? SelectedItem ?? RootFolder;
             var folder = parameter as PackageFolder;
-            string folderName = "NewFolder";
-            bool result = UIServices.OpenRenameDialog(
+            var folderName = "NewFolder";
+            var result = UIServices.OpenRenameDialog(
                 folderName,
                 "Provide name for the new folder.",
                 out folderName);
@@ -486,7 +464,7 @@ namespace PackageExplorerViewModel
 
         internal bool ApplyEditExecute()
         {
-            bool valid = _editorService.CommitEdit();
+            var valid = _editorService.CommitEdit();
             if (valid)
             {
                 CommitEdit();
@@ -547,8 +525,7 @@ namespace PackageExplorerViewModel
 
         private void DeleteContentExecute(object parameter)
         {
-            var file = (parameter ?? SelectedItem) as PackagePart;
-            if (file != null)
+            if ((parameter ?? SelectedItem) is PackagePart file)
             {
                 file.Delete();
             }
@@ -582,14 +559,12 @@ namespace PackageExplorerViewModel
 
         private void RenameContentExecuted(object parameter)
         {
-            var part = (parameter ?? SelectedItem) as PackagePart;
-            if (part != null)
+            if ((parameter ?? SelectedItem) is PackagePart part)
             {
-                string newName;
-                bool result = UIServices.OpenRenameDialog(
+                var result = UIServices.OpenRenameDialog(
                     part.Name,
                     "Provide new name for '" + part.Name + "'.",
-                    out newName);
+                    out var newName);
 
                 if (result)
                 {
@@ -628,8 +603,7 @@ namespace PackageExplorerViewModel
         private void OpenContentFileExecute(object parameter)
         {
             parameter = parameter ?? SelectedItem;
-            var file = parameter as PackageFile;
-            if (file != null)
+            if (parameter is PackageFile file)
             {
                 FileHelper.OpenFileInShell(file, UIServices);
             }
@@ -670,14 +644,12 @@ namespace PackageExplorerViewModel
 
         private void SaveContentExecute(PackageFile file)
         {
-            string selectedFileName;
-            string title = "Save " + file.Name;
+            var title = "Save " + file.Name;
             const string filter = "All files (*.*)|*.*";
-            int filterIndex;
-            if (UIServices.OpenSaveFileDialog(title, file.Name, /* initial directory */ null, filter, /* overwritePrompt */ true, 
-                                              out selectedFileName, out filterIndex))
+            if (UIServices.OpenSaveFileDialog(title, file.Name, /* initial directory */ null, filter, /* overwritePrompt */ true,
+                                              out var selectedFileName, out var filterIndex))
             {
-                using (FileStream fileStream = File.OpenWrite(selectedFileName))
+                using (var fileStream = File.OpenWrite(selectedFileName))
                 {
                     file.GetStream().CopyTo(fileStream);
                 }
@@ -730,7 +702,7 @@ namespace PackageExplorerViewModel
             }
 
             // validate the package to see if there is any error before actually creating the package.
-            PackageIssue firstIssue = Validate().FirstOrDefault(p => p.Level == PackageIssueLevel.Error);
+            var firstIssue = Validate().FirstOrDefault(p => p.Level == PackageIssueLevel.Error);
             if (firstIssue != null)
             {
                 UIServices.Show(
@@ -780,8 +752,7 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void ExportExecute()
         {
-            string rootPath;
-            if (_uiServices.OpenFolderDialog("Choose a folder to export package to:", _folderPath, out rootPath))
+            if (_uiServices.OpenFolderDialog("Choose a folder to export package to:", _folderPath, out var rootPath))
             {
                 try
                 {
@@ -825,7 +796,7 @@ namespace PackageExplorerViewModel
                  "NuGetPackageExplorer.Types.IUIServices.Show(System.String,NuGetPackageExplorer.Types.MessageLevel)")]
         private void PackageCommandExecute(LazyPackageCommand packageCommand)
         {
-            IPackage package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
+            var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
             try
             {
                 packageCommand.Value.Execute(package, PackageSource);
@@ -902,7 +873,7 @@ namespace PackageExplorerViewModel
             // before editing file, try to commit metadata pending changes to avoid data loss
             if (IsInEditMetadataMode)
             {
-                bool isMetadataValid = ApplyEditExecute();
+                var isMetadataValid = ApplyEditExecute();
                 if (!isMetadataValid)
                 {
                     UIServices.Show(Resources.EditFormHasInvalidInput, MessageLevel.Error);
@@ -984,8 +955,8 @@ namespace PackageExplorerViewModel
 
         private IEditablePackageFile CreatePackageMetadataFile()
         {
-            string packageName = PackageMetadata + NuGetPe.Constants.ManifestExtension;
-            string filePath = Path.GetTempFileName();
+            var packageName = PackageMetadata + NuGetPe.Constants.ManifestExtension;
+            var filePath = Path.GetTempFileName();
             
             ExportManifest(filePath, askForConfirmation: false, includeFilesSection: false);
 
@@ -1028,15 +999,14 @@ namespace PackageExplorerViewModel
 
         private void AddNewFileToFolder(PackageFolder folder)
         {
-            string newName;
-            bool result = UIServices.OpenRenameDialog(
+            var result = UIServices.OpenRenameDialog(
                 "NewFile.txt",
                 "Provide name for the new file.",
-                out newName);
+                out var newName);
             if (result)
             {
-                string sourcePath = FileHelper.CreateTempFile(newName);
-                PackageFile file = folder.AddFile(sourcePath, isTempFile: true);
+                var sourcePath = FileHelper.CreateTempFile(newName);
+                var file = folder.AddFile(sourcePath, isTempFile: true);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1064,15 +1034,14 @@ namespace PackageExplorerViewModel
 
         private void AddScriptCommandExecute(string scriptName)
         {
-            string content = scriptName.Equals("init.ps1", StringComparison.OrdinalIgnoreCase)
+            var content = scriptName.Equals("init.ps1", StringComparison.OrdinalIgnoreCase)
                                  ? Constants.ContentForInit
                                  : Constants.ContentForInstall;
-            string sourcePath = FileHelper.CreateTempFile(scriptName, content);
+            var sourcePath = FileHelper.CreateTempFile(scriptName, content);
 
-            var selectedFolder = SelectedItem as PackageFolder;
-            if (selectedFolder != null)
+            if (SelectedItem is PackageFolder selectedFolder)
             {
-                PackageFile file = selectedFolder.AddFile(sourcePath, isTempFile: true);
+                var file = selectedFolder.AddFile(sourcePath, isTempFile: true);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1111,11 +1080,10 @@ namespace PackageExplorerViewModel
 
         private bool AddBuildFileCommandCanExecute(string extension)
         {
-            var selectedFolder = SelectedItem as PackageFolder;
 
-            if (selectedFolder != null)
+            if (SelectedItem is PackageFolder selectedFolder)
             {
-                string fileName = PackageMetadata.Id + extension;
+                var fileName = PackageMetadata.Id + extension;
                 return !selectedFolder.ContainsFile(fileName);
             }
 
@@ -1124,13 +1092,12 @@ namespace PackageExplorerViewModel
 
         private void AddBuildFileCommandExecute(string extension)
         {
-            string fileName = PackageMetadata.Id + extension;
-            string sourcePath = FileHelper.CreateTempFile(fileName, Constants.ContentForBuildFile);
+            var fileName = PackageMetadata.Id + extension;
+            var sourcePath = FileHelper.CreateTempFile(fileName, Constants.ContentForBuildFile);
 
-            var selectedFolder = SelectedItem as PackageFolder;
-            if (selectedFolder != null)
+            if (SelectedItem is PackageFolder selectedFolder)
             {
-                PackageFile file = selectedFolder.AddFile(sourcePath, isTempFile: true);
+                var file = selectedFolder.AddFile(sourcePath, isTempFile: true);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1168,7 +1135,7 @@ namespace PackageExplorerViewModel
                 return zip.Source;
             }
 
-            string tempFile = Path.GetTempFileName();
+            var tempFile = Path.GetTempFileName();
             PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, useTempFile: false);
             if (File.Exists(tempFile))
             {
@@ -1218,8 +1185,8 @@ namespace PackageExplorerViewModel
 
         public IEnumerable<PackageIssue> Validate()
         {
-            IPackage package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-            string packageFileName = Path.IsPathRooted(PackageSource) ? Path.GetFileName(PackageSource) : null;
+            var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
+            var packageFileName = Path.IsPathRooted(PackageSource) ? Path.GetFileName(PackageSource) : null;
             return package.Validate(_packageRules.Select(r => r.Value), packageFileName);
         }
 
@@ -1246,28 +1213,28 @@ namespace PackageExplorerViewModel
         {
             if (File.Exists(fullpath) && askForConfirmation)
             {
-                bool confirmed = UIServices.Confirm(
+                var confirmed = UIServices.Confirm(
                     Resources.ConfirmToReplaceFile_Title,
-                    String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullpath));
+                    string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullpath));
                 if (!confirmed)
                 {
                     return;
                 }
             }
 
-            string rootPath = Path.GetDirectoryName(fullpath);
+            var rootPath = Path.GetDirectoryName(fullpath);
 
             using (Stream fileStream = File.Create(fullpath))
             {
-                Manifest manifest = Manifest.Create(PackageMetadata);
+                var manifest = Manifest.Create(PackageMetadata);
                 if (includeFilesSection)
                 {
-                    string tempPath = Path.GetTempPath();
+                    var tempPath = Path.GetTempPath();
                     
                     manifest.Files.AddRange(RootFolder.GetFiles().Select(
                         f => new ManifestFile
                         {
-                            Source = String.IsNullOrEmpty(f.OriginalPath()) || f.OriginalPath().StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()),
+                            Source = string.IsNullOrEmpty(f.OriginalPath()) || f.OriginalPath().StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()),
                             Target = f.Path
                         })
                     );
@@ -1315,20 +1282,20 @@ namespace PackageExplorerViewModel
             {
                 bool? rememberedAnswer = null;
 
-                for (int i = 0; i < fileNames.Length; i++)
+                for (var i = 0; i < fileNames.Length; i++)
                 {
-                    string file = fileNames[i];
+                    var file = fileNames[i];
                     if (File.Exists(file))
                     {
                         bool movingFile;
 
                         PackageFolder targetFolder;
-                        string guessFolderName = FileHelper.GuessFolderNameFromFile(file);
+                        var guessFolderName = FileHelper.GuessFolderNameFromFile(file);
 
                         if (rememberedAnswer == null)
                         {
                             // ask user if he wants to move file
-                            Tuple<bool?, bool> answer = UIServices.ConfirmMoveFile(
+                            var answer = UIServices.ConfirmMoveFile(
                                 Path.GetFileName(file),
                                 guessFolderName, fileNames.Length - i - 1);
 
@@ -1375,7 +1342,7 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                foreach (string file in fileNames)
+                foreach (var file in fileNames)
                 {
                     if (File.Exists(file))
                     {
@@ -1426,7 +1393,7 @@ namespace PackageExplorerViewModel
                 {
                     using (var str = ManifestUtility.ReadManifest(metadataFileStream))
                     {
-                        Manifest manifest = Manifest.ReadFrom(str, true);
+                        var manifest = Manifest.ReadFrom(str, true);
                         var newMetadata = new EditablePackageMetadata(manifest.Metadata, _uiServices);
                         PackageMetadata = newMetadata;
 
@@ -1436,7 +1403,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception exception)
                 {
-                    bool confirmExit = UIServices.ConfirmCloseEditor(
+                    var confirmExit = UIServices.ConfirmCloseEditor(
                         "There is an error in the metadata source.", 
                         exception.GetBaseException().Message + 
                         Environment.NewLine +

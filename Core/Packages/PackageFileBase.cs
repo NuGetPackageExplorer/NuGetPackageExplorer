@@ -14,9 +14,8 @@ namespace NuGetPe
         protected PackageFileBase(string path)
         {
             Path = path;
-            
-            string effectivePath;
-            FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out effectivePath);
+
+            FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out var effectivePath);
             _targetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
             EffectivePath = effectivePath;
         }

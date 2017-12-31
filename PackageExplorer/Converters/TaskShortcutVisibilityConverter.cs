@@ -11,7 +11,7 @@ namespace PackageExplorer
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            bool visible = values[0] == null && (bool) values[1];
+            var visible = values[0] == null && (bool) values[1];
             return visible ? Visibility.Visible : Visibility.Collapsed;
         }
 

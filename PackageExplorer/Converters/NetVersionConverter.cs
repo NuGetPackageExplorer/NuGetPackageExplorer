@@ -14,20 +14,19 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var version = (Version)value;
-            return version == null ? String.Empty : version.ToString();
+            return version == null ? string.Empty : version.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = (string)value;
-            if (String.IsNullOrWhiteSpace(stringValue))
+            if (string.IsNullOrWhiteSpace(stringValue))
             {
                 return null;
             }
             else
             {
-                Version version;
-                if (Version.TryParse(stringValue, out version))
+                if (Version.TryParse(stringValue, out var version))
                 {
                     return version;
                 }

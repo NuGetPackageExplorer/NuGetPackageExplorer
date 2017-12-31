@@ -29,12 +29,12 @@ namespace PackageExplorerViewModel
 
         public IList<string> GetSources()
         {
-            IList<string> sources = _settingsManager.GetPackageSources();
+            var sources = _settingsManager.GetPackageSources();
 
             if (_settingsManager.IsFirstTimeAfterUpdate)
             {
                 // migrate nuget v1 feed to v2 feed
-                for (int i = 0; i < sources.Count; i++)
+                for (var i = 0; i < sources.Count; i++)
                 {
                     if (sources[i].Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
                     {

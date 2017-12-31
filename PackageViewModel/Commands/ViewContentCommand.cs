@@ -44,8 +44,7 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                var file = (parameter ?? ViewModel.SelectedItem) as PackageFile;
-                if (file != null)
+                if ((parameter ?? ViewModel.SelectedItem) is PackageFile file)
                 {
                     ShowFile(file);
                 }
@@ -66,19 +65,19 @@ namespace PackageExplorerViewModel
         private void ShowFile(PackageFile file)
         {
             object content = null;
-            bool isBinary = false;
+            var isBinary = false;
 
             // find all plugins which can handle this file's extension
-            IEnumerable<IPackageContentViewer> contentViewers = FindContentViewer(file);
+            var contentViewers = FindContentViewer(file);
             if (contentViewers != null)
             {
                 isBinary = true;
                 try
                 {
                     // iterate over all plugins, looking for the first one that return non-null content
-                    foreach (IPackageContentViewer viewer in contentViewers)
+                    foreach (var viewer in contentViewers)
                     {
-                        using (Stream stream = file.GetStream())
+                        using (var stream = file.GetStream())
                         {
                             content = viewer.GetView(Path.GetExtension(file.Name), stream);
                             if (content != null)
@@ -139,7 +138,7 @@ namespace PackageExplorerViewModel
 
         private IEnumerable<IPackageContentViewer> FindContentViewer(PackageFile file)
         {
-            string extension = Path.GetExtension(file.Name);
+            var extension = Path.GetExtension(file.Name);
             return from p in ViewModel.ContentViewerMetadata
                    where p.Metadata.SupportedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase)
                    orderby p.Metadata.Priority
@@ -148,7 +147,7 @@ namespace PackageExplorerViewModel
 
         private static string ReadFileContent(PackageFile file, out long size)
         {
-            using (Stream stream = file.GetStream())
+            using (var stream = file.GetStream())
             using(var ms = new MemoryStream())
             using (var reader = new StreamReader(ms))
             {

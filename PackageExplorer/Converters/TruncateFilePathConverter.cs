@@ -38,12 +38,12 @@ namespace PackageExplorer
         private static string Truncate(string path)
         {
             char separator;
-            string prefix = "";
+            var prefix = "";
 
             if (Path.IsPathRooted(path))
             {
                 separator = Path.DirectorySeparatorChar;
-                int index = path.IndexOf(Path.VolumeSeparatorChar);
+                var index = path.IndexOf(Path.VolumeSeparatorChar);
                 if (index > -1)
                 {
                     prefix = path.Substring(0, Math.Min(path.Length, index + 2));
@@ -53,7 +53,7 @@ namespace PackageExplorer
             else
             {
                 separator = '/';
-                int index = path.IndexOf(Uri.SchemeDelimiter, StringComparison.OrdinalIgnoreCase);
+                var index = path.IndexOf(Uri.SchemeDelimiter, StringComparison.OrdinalIgnoreCase);
                 if (index > -1)
                 {
                     prefix = path.Substring(0, Math.Min(path.Length, index + 3));
@@ -61,10 +61,10 @@ namespace PackageExplorer
                 }
             }
 
-            string[] parts = path.Split(new[] {separator}, StringSplitOptions.RemoveEmptyEntries);
-            int remainingLength = MaxLength - prefix.Length - 3; // 3 is the length of '...'
-            string res = "";
-            for (int i = parts.Length - 1; i >= 0; --i)
+            var parts = path.Split(new[] {separator}, StringSplitOptions.RemoveEmptyEntries);
+            var remainingLength = MaxLength - prefix.Length - 3; // 3 is the length of '...'
+            var res = "";
+            for (var i = parts.Length - 1; i >= 0; --i)
             {
                 if (res.Length + parts[i].Length + 1 <= remainingLength)
                 {
@@ -78,7 +78,7 @@ namespace PackageExplorer
 
             if (res.Length == 0 && parts.Length > 0)
             {
-                string lastPart = parts[parts.Length - 1];
+                var lastPart = parts[parts.Length - 1];
                 res = lastPart.Substring(Math.Max(0, lastPart.Length - remainingLength));
             }
 

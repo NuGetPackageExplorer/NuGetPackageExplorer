@@ -19,9 +19,9 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            foreach (IPackageFile file in package.GetFiles())
+            foreach (var file in package.GetFiles())
             {
-                string path = file.Path;
+                var path = file.Path;
 
                 // if not a .transform file, ignore 
                 if (!path.EndsWith(CodeTransformExtension, StringComparison.OrdinalIgnoreCase) &&

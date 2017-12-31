@@ -17,10 +17,10 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            foreach (IPackageFile file in package.GetFiles())
+            foreach (var file in package.GetFiles())
             {
-                string path = file.Path;
-                string directory = Path.GetDirectoryName(path);
+                var path = file.Path;
+                var directory = Path.GetDirectoryName(path);
 
                 // if under 'lib' directly
                 if (directory.Equals(LibFolder, StringComparison.OrdinalIgnoreCase))

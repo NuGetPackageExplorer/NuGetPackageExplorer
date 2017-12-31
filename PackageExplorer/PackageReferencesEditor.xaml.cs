@@ -91,7 +91,7 @@ namespace PackageExplorer
         private void OnRemoveGroupClicked(object sender, RoutedEventArgs e)
         {
             // remember the currently selected index;
-            int selectedIndex = ReferenceGroupList.SelectedIndex;
+            var selectedIndex = ReferenceGroupList.SelectedIndex;
 
             _referenceSets.Remove((EditablePackageReferenceSet)ReferenceGroupList.SelectedItem);
 
@@ -110,8 +110,8 @@ namespace PackageExplorer
 
         private void AddNewReference()
         {
-            string newReference = NewReferenceFile.Text.Trim();
-            if (String.IsNullOrEmpty(newReference))
+            var newReference = NewReferenceFile.Text.Trim();
+            if (string.IsNullOrEmpty(newReference))
             {
                 return;
             }
@@ -124,7 +124,7 @@ namespace PackageExplorer
 
         private void ClearDependencyTextBox()
         {
-            NewReferenceFile.Text = String.Empty;
+            NewReferenceFile.Text = string.Empty;
         }
     }
 }

@@ -29,7 +29,7 @@ namespace PackageExplorer
                 return false;
             }
 
-            string scheme = url.Scheme;
+            var scheme = url.Scheme;
             return (scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) ||
                     scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase));
         }
@@ -41,7 +41,7 @@ namespace PackageExplorer
                 return null;
             }
 
-            MatchCollection matches = Regex.Matches(uri.Query, @"[\?&](([^&=]+)=([^&=#]*))");
+            var matches = Regex.Matches(uri.Query, @"[\?&](([^&=]+)=([^&=#]*))");
             return matches.Cast<Match>().ToDictionary(
                 m => Uri.UnescapeDataString(m.Groups[2].Value),
                 m => Uri.UnescapeDataString(m.Groups[3].Value),

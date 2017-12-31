@@ -29,16 +29,16 @@ namespace PackageExplorerViewModel
         public static bool IsBinaryFile(string path)
         {
             // TODO: check for content type of the file here
-            string extension = Path.GetExtension(path).ToUpper(CultureInfo.InvariantCulture);
-            return String.IsNullOrEmpty(extension) || BinaryFileExtensions.Any(p => p.Equals(extension));
+            var extension = Path.GetExtension(path).ToUpper(CultureInfo.InvariantCulture);
+            return string.IsNullOrEmpty(extension) || BinaryFileExtensions.Any(p => p.Equals(extension));
         }
 
         public static void OpenFileInShell(PackageFile file, IUIServices uiServices)
         {
             if (IsExecutableScript(file.Name))
             {
-                bool confirm = uiServices.Confirm(
-                    String.Format(CultureInfo.CurrentCulture, Resources.OpenExecutableScriptWarning_Title, file.Name),
+                var confirm = uiServices.Confirm(
+                    string.Format(CultureInfo.CurrentCulture, Resources.OpenExecutableScriptWarning_Title, file.Name),
                     Resources.OpenExecutableScriptWarning,
                     isWarning: true);
                 if (!confirm)
@@ -50,7 +50,7 @@ namespace PackageExplorerViewModel
             // copy to temporary file
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
-            string tempFileName = Path.Combine(GetTempFilePath(), file.Name);
+            var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
             using (Stream tempFileStream = File.Create(tempFileName))
             {
                 file.GetStream().CopyTo(tempFileStream);
@@ -64,7 +64,7 @@ namespace PackageExplorerViewModel
 
         private static bool IsExecutableScript(string fileName)
         {
-            string extension = Path.GetExtension(fileName).ToUpperInvariant();
+            var extension = Path.GetExtension(fileName).ToUpperInvariant();
             return Array.IndexOf(_executableScriptsExtensions, extension) > -1;
         }
 
@@ -73,7 +73,7 @@ namespace PackageExplorerViewModel
             // copy to temporary file
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
-            string tempFileName = Path.Combine(GetTempFilePath(), file.Name);
+            var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
 
             using (Stream tempFileStream = File.Create(tempFileName))
             {
@@ -96,7 +96,7 @@ namespace PackageExplorerViewModel
 
         public static string GuessFolderNameFromFile(string file)
         {
-            string extension = Path.GetExtension(file).ToUpperInvariant();
+            var extension = Path.GetExtension(file).ToUpperInvariant();
             if (extension == ".DLL" || extension == ".PDB")
             {
                 return "lib";
@@ -113,7 +113,7 @@ namespace PackageExplorerViewModel
 
         public static string GetTempFilePath()
         {
-            string tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            var tempPath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             if (!Directory.Exists(tempPath))
             {
                 Directory.CreateDirectory(tempPath);
@@ -124,24 +124,24 @@ namespace PackageExplorerViewModel
 
         public static string CreateTempFile(string fileName, string content = "")
         {
-            if (String.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(fileName))
             {
                 throw new ArgumentException("Argument is null or empty", "fileName");
             }
 
-            string filePath = Path.Combine(GetTempFilePath(), fileName);
+            var filePath = Path.Combine(GetTempFilePath(), fileName);
             File.WriteAllText(filePath, content);
             return filePath;
         }
 
         public static string CreateTempFile(string fileName, Stream content)
         {
-            if (String.IsNullOrEmpty(fileName))
+            if (string.IsNullOrEmpty(fileName))
             {
                 throw new ArgumentException("Argument is null or empty", "fileName");
             }
 
-            string filePath = Path.Combine(GetTempFilePath(), fileName);
+            var filePath = Path.Combine(GetTempFilePath(), fileName);
             using (Stream targetStream = File.Create(filePath))
             {
                 content.CopyTo(targetStream);

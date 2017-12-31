@@ -94,7 +94,7 @@ namespace PackageExplorerViewModel
 
             if (Children != null)
             {
-                foreach (PackagePart child in Children)
+                foreach (var child in Children)
                 {
                     child.UpdatePath();
                 }
@@ -128,7 +128,7 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException("child");
             }
 
-            bool removed = Children.Remove(child);
+            var removed = Children.Remove(child);
             if (removed)
             {
                 child.Dispose();
@@ -211,7 +211,7 @@ namespace PackageExplorerViewModel
             if (!AddContentFolderCanExecute(folderName))
             {
                 PackageViewModel.UIServices.Show(
-                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
+                    string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
                     MessageLevel.Error);
                 return null;
             }
@@ -226,7 +226,7 @@ namespace PackageExplorerViewModel
             if (!AddContentFolderCanExecute(childFolder.Name))
             {
                 PackageViewModel.UIServices.Show(
-                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, childFolder.Name),
+                    string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, childFolder.Name),
                     MessageLevel.Error);
                 return;
             }
@@ -259,19 +259,19 @@ namespace PackageExplorerViewModel
                 throw new ArgumentException("File does not exist.", "filePath");
             }
 
-            string newFileName = System.IO.Path.GetFileName(filePath);
+            var newFileName = System.IO.Path.GetFileName(filePath);
             if (ContainsFolder(newFileName))
             {
                 PackageViewModel.UIServices.Show(Resources.FileNameConflictWithExistingDirectory, MessageLevel.Error);
                 return null;
             }
 
-            bool showingRemovedFile = false;
+            var showingRemovedFile = false;
             if (ContainsFile(newFileName))
             {
-                bool confirmed = PackageViewModel.UIServices.Confirm(
+                var confirmed = PackageViewModel.UIServices.Confirm(
                     Resources.ConfirmToReplaceExsitingFile_Title,
-                    String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceExsitingFile, newFileName),
+                    string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceExsitingFile, newFileName),
                     isWarning: true);
 
                 if (confirmed)
@@ -288,7 +288,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            string newTargetPath = this.Path + "\\" + newFileName;
+            var newTargetPath = this.Path + "\\" + newFileName;
             var physicalFile = new PhysicalPackageFile
             {
                 SourcePath = filePath,
@@ -326,12 +326,12 @@ namespace PackageExplorerViewModel
             if (makeCopy)
             {
                 string fileCopyPath;
-                using (Stream originalFileStream = file.GetStream())
+                using (var originalFileStream = file.GetStream())
                 {
                     fileCopyPath = FileHelper.CreateTempFile(file.Name, originalFileStream);
                 }
 
-                string newTargetPath = this.Path + "\\" + file.Name;
+                var newTargetPath = this.Path + "\\" + file.Name;
                 var physicalFile = new PhysicalPackageFile
                 {
                     SourcePath = fileCopyPath,
@@ -359,9 +359,8 @@ namespace PackageExplorerViewModel
 
         internal void ReplaceFile(PackageFile oldFile)
         {
-            string selectedFileName;
-            bool result = PackageViewModel.UIServices.OpenFileDialog("Select New File", "All files (*.*)|*.*",
-                                                                     out selectedFileName);
+            var result = PackageViewModel.UIServices.OpenFileDialog("Select New File", "All files (*.*)|*.*",
+                                                                     out var selectedFileName);
             if (result)
             {
                 ReplaceFile(oldFile, selectedFileName);
@@ -370,12 +369,12 @@ namespace PackageExplorerViewModel
 
         internal void ReplaceFile(PackageFile oldFile, string newFilePath)
         {
-            bool showingFile = PackageViewModel.IsShowingFileContent(oldFile);
+            var showingFile = PackageViewModel.IsShowingFileContent(oldFile);
 
             // temporarily remove the old file in order to add a new file
             Children.Remove(oldFile);
 
-            PackageFile newFile = AddFile(newFilePath, isTempFile: false);
+            var newFile = AddFile(newFilePath, isTempFile: false);
             if (newFile != null)
             {
                 // new file added successfully, officially delete the old file by disposing it
@@ -401,11 +400,11 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            string folderName = dirInfo.Name;
+            var folderName = dirInfo.Name;
             if (!AddContentFolderCanExecute(folderName))
             {
                 PackageViewModel.UIServices.Show(
-                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
+                    string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
                     MessageLevel.Error);
                 return;
             }
@@ -415,12 +414,12 @@ namespace PackageExplorerViewModel
 
         private void AddPhysicalFolderCore(DirectoryInfo dirInfo)
         {
-            PackageFolder childPackgeFolder = AddFolder(dirInfo.Name);
-            foreach (FileInfo file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly))
+            var childPackgeFolder = AddFolder(dirInfo.Name);
+            foreach (var file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly))
             {
                 childPackgeFolder.AddFile(file.FullName, isTempFile: false);
             }
-            foreach (DirectoryInfo subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly))
+            foreach (var subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly))
             {
                 childPackgeFolder.AddPhysicalFolderCore(subFolder);
             }
@@ -428,7 +427,7 @@ namespace PackageExplorerViewModel
 
         private void RemoveChildByName(string name)
         {
-            int count = Children.RemoveAll(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var count = Children.RemoveAll(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             Debug.Assert(count <= 1);
             if (count == 1)
             {
@@ -438,13 +437,13 @@ namespace PackageExplorerViewModel
 
         public override void Export(string rootPath)
         {
-            string fullPath = System.IO.Path.Combine(rootPath, Path);
+            var fullPath = System.IO.Path.Combine(rootPath, Path);
             if (!Directory.Exists(fullPath))
             {
                 Directory.CreateDirectory(fullPath);
             }
 
-            foreach (PackagePart part in Children)
+            foreach (var part in Children)
             {
                 part.Export(rootPath);
             }
@@ -452,7 +451,7 @@ namespace PackageExplorerViewModel
 
         protected override void Dispose(bool disposing)
         {
-            foreach (PackagePart part in Children)
+            foreach (var part in Children)
             {
                 part.Dispose();
             }

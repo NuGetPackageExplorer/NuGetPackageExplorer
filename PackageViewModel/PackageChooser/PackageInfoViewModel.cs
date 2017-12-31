@@ -175,13 +175,13 @@ namespace PackageExplorerViewModel
 
             try
             {
-                IQueryable<IPackage> query = _repository.GetPackagesById(LatestPackageInfo.Id, ShowPrerelease);
+                var query = _repository.GetPackagesById(LatestPackageInfo.Id, ShowPrerelease);
                 query = query.OrderByDescending(p => p.Published);
 
-                IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, _repository);
+                var packageInfos = GetPackageInfos(query, _repository);
 
                 PackageInfo[] packageInfoList = null;
-                bool resourceNotFoundError = false;
+                var resourceNotFoundError = false;
                 try
                 {
                     packageInfoList = await LoadData(packageInfos, _downloadCancelSource.Token);
@@ -205,10 +205,9 @@ namespace PackageExplorerViewModel
                     }
                 }
 
-                var dataServiceRepository = _repository as DataServicePackageRepository;
-                if (dataServiceRepository != null)
+                if (_repository is DataServicePackageRepository dataServiceRepository)
                 {
-                    foreach (PackageInfo entity in packageInfoList)
+                    foreach (var entity in packageInfoList)
                     {
                         entity.DownloadUrl = dataServiceRepository.GetReadStreamUri(entity);
                     }
@@ -266,7 +265,7 @@ namespace PackageExplorerViewModel
                     {
                         Id = p.Id,
                         Version = p.Version.ToString(),
-                        Authors = String.Join(", ", p.Authors),
+                        Authors = string.Join(", ", p.Authors),
                         DownloadCount = p.DownloadCount,
                         VersionDownloadCount = p.VersionDownloadCount,
                         PackageHash = p.PackageHash,
@@ -281,11 +280,10 @@ namespace PackageExplorerViewModel
         {
             PackageInfo[] results;
 
-            var dataServiceQuery = query as DataServiceQuery<PackageInfo>;
-            if (dataServiceQuery != null)
+            if (query is DataServiceQuery<PackageInfo> dataServiceQuery)
             {
                 dataServiceQuery = dataServiceQuery.AddQueryOption("semVerLevel", "2.0.0");
-                IEnumerable<PackageInfo> queryResponse =
+                var queryResponse =
                     await Task.Factory.FromAsync<IEnumerable<PackageInfo>>(dataServiceQuery.BeginExecute(null, null), dataServiceQuery.EndExecute);
 
                 token.ThrowIfCancellationRequested();
