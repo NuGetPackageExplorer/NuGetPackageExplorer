@@ -10,9 +10,9 @@ namespace CodeExecutor
         {
             get
             {
-                string fullPath = typeof(RemoteCodeExecutor).Assembly.Location;
-                string directory = Path.GetDirectoryName(fullPath);
-                string assemblyPath = Path.Combine(directory, "Windows8Shim.dll");
+                var fullPath = typeof(RemoteCodeExecutor).Assembly.Location;
+                var directory = Path.GetDirectoryName(fullPath);
+                var assemblyPath = Path.Combine(directory, "Windows8Shim.dll");
 
                 if (!File.Exists(assemblyPath))
                 {
@@ -28,7 +28,7 @@ namespace CodeExecutor
 
         private static void ExecuteRemotely(Action<AppDomainWorker> workerAction)
         {
-            AppDomain domain = AppDomain.CreateDomain("CodeInvoker");
+            var domain = AppDomain.CreateDomain("CodeInvoker");
             try
             {
                 // load CodeExecutor.dll into the other app domain

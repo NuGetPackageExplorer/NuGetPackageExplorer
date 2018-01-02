@@ -28,7 +28,7 @@ namespace NuGetPe
 
         public static string GetHash(this IPackage package, CryptoHashProvider hashProvider)
         {
-            using (Stream stream = package.GetStream())
+            using (var stream = package.GetStream())
                 return Convert.ToBase64String(hashProvider.CalculateHash(stream));
         }
 
@@ -41,8 +41,8 @@ namespace NuGetPe
         {
             if (searchTerm.StartsWith("id:", StringComparison.OrdinalIgnoreCase))
             {
-                string id = searchTerm.Substring(3).Trim();
-                if (String.IsNullOrEmpty(id))
+                var id = searchTerm.Substring(3).Trim();
+                if (string.IsNullOrEmpty(id))
                 {
                     return new IPackage[0].AsQueryable();
                 }
@@ -69,7 +69,7 @@ namespace NuGetPe
                 return packages;
             }
 
-            IEnumerable<string> nonNullTerms = searchTerms.Where(s => s != null);
+            var nonNullTerms = searchTerms.Where(s => s != null);
             if (!nonNullTerms.Any())
             {
                 return packages;
@@ -89,9 +89,9 @@ namespace NuGetPe
         private static Expression<Func<IPackage, bool>> BuildSearchExpression(IEnumerable<string> searchTerms)
         {
             Debug.Assert(searchTerms != null);
-            ParameterExpression parameterExpression = Expression.Parameter(typeof(IPackageMetadata));
+            var parameterExpression = Expression.Parameter(typeof(IPackageMetadata));
             // package.Id.ToLower().Contains(term1) || package.Id.ToLower().Contains(term2)  ...
-            Expression condition = (from term in searchTerms
+            var condition = (from term in searchTerms
                                     from property in _packagePropertiesToSearch
                                     select BuildExpressionForTerm(parameterExpression, term, property)).Aggregate(
                                         Expression.OrElse);
@@ -109,13 +109,13 @@ namespace NuGetPe
                 term = " " + term + " ";
             }
 
-            MethodInfo stringContains = typeof(String).GetMethod("Contains", new[] {typeof(string)});
-            MethodInfo stringToLower = typeof(String).GetMethod("ToLower", Type.EmptyTypes);
+            var stringContains = typeof(String).GetMethod("Contains", new[] {typeof(string)});
+            var stringToLower = typeof(String).GetMethod("ToLower", Type.EmptyTypes);
 
             // package.Id / package.Description
-            MemberExpression propertyExpression = Expression.Property(packageParameterExpression, propertyName);
+            var propertyExpression = Expression.Property(packageParameterExpression, propertyName);
             // .ToLower()
-            MethodCallExpression toLowerExpression = Expression.Call(propertyExpression, stringToLower);
+            var toLowerExpression = Expression.Call(propertyExpression, stringToLower);
 
             // Handle potentially null properties
             // package.{propertyName} != null && package.{propertyName}.ToLower().Contains(term.ToLower())

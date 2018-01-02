@@ -13,17 +13,16 @@ namespace PackageExplorer
         {
             if (targetType == typeof(string))
             {
-                var stringValue = value as string;
-                if (stringValue != null)
+                if (value is string stringValue)
                 {
                     return stringValue;
                 }
                 else
                 {
-                    var parts = (IEnumerable<string>) value;
+                    var parts = (IEnumerable<string>)value;
                     if (parts != null)
                     {
-                        return String.Join(", ", parts);
+                        return string.Join(", ", parts);
                     }
                 }
             }

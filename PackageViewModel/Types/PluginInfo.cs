@@ -8,17 +8,13 @@ namespace NuGetPackageExplorer.Types
     {
         public PluginInfo(string id, NuGetVersion version)
         {
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
             {
                 throw new ArgumentException("Id cannot be null or empty.", "id");
             }
-            if (version == null)
-            {
-                throw new ArgumentNullException("version");
-            }
 
             Id = id;
-            Version = version;
+            Version = version ?? throw new ArgumentNullException("version");
         }
 
         public string Id { get; private set; }

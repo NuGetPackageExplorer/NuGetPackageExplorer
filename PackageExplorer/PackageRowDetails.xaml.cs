@@ -23,7 +23,7 @@ namespace PackageExplorer
         {
             var gridView = (GridView)PackageGrid.View;
             Debug.Assert(parent.Columns.Count == gridView.Columns.Count);
-            for (int i = 0; i < gridView.Columns.Count; i++)
+            for (var i = 0; i < gridView.Columns.Count; i++)
             {
                 var binding = new Binding("ActualWidth")
                 {
@@ -49,7 +49,7 @@ namespace PackageExplorer
         public void RemoveBindings()
         {
             var gridView = (GridView)PackageGrid.View;
-            for (int i = 0; i < gridView.Columns.Count; i++)
+            for (var i = 0; i < gridView.Columns.Count; i++)
             {
                 BindingOperations.ClearBinding(
                     gridView.Columns[i],

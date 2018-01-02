@@ -25,18 +25,18 @@ namespace PackageExplorer
             var sizes = new[] {1024L*1024*1024, 1024*1024, 1024, 1};
             var unit = new[] {" GB", " MB", " KB", " bytes"};
 
-            for (int i = 0; i < sizes.Length; i++)
+            for (var i = 0; i < sizes.Length; i++)
             {
                 if (fileSize >= sizes[i])
                 {
                     if (fileSize%sizes[i] == 0)
                     {
-                        long f = fileSize/sizes[i];
+                        var f = fileSize/sizes[i];
                         return f.ToString(culture) + unit[i];
                     }
                     else
                     {
-                        double f = fileSize*1.0/sizes[i];
+                        var f = fileSize*1.0/sizes[i];
                         return f.ToString("F0", culture) + unit[i];
                     }
                 }

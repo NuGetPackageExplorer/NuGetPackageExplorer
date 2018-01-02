@@ -102,8 +102,8 @@ namespace PackageExplorer
         // return null = no pending asesmbly
         private bool? AddPendingFrameworkAssembly()
         {
-            if (String.IsNullOrEmpty(NewAssemblyName.Text) &&
-                String.IsNullOrEmpty(NewSupportedFramework.Text))
+            if (string.IsNullOrEmpty(NewAssemblyName.Text) &&
+                string.IsNullOrEmpty(NewSupportedFramework.Text))
             {
                 return null;
             }
@@ -162,13 +162,13 @@ namespace PackageExplorer
 
         bool IPackageEditorService.CommitEdit()
         {
-            bool? addPendingAssembly = AddPendingFrameworkAssembly();
+            var addPendingAssembly = AddPendingFrameworkAssembly();
             if (addPendingAssembly == false)
             {
                 return false;
             }
 
-            bool valid = PackageMetadataGroup.CommitEdit();
+            var valid = PackageMetadataGroup.CommitEdit();
             if (valid)
             {
                 var viewModel = (PackageViewModel) DataContext;

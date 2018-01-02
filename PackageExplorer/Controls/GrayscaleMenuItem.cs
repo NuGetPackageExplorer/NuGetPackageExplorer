@@ -29,11 +29,9 @@ namespace PackageExplorer
 
         private void UpdateImageContent()
         {
-            var icon = Icon as Image;
-            if (icon != null)
+            if (Icon is Image icon)
             {
-                var effect = icon.Effect as GrayscaleEffect.GrayscaleEffect;
-                if (effect != null)
+                if (icon.Effect is GrayscaleEffect.GrayscaleEffect effect)
                 {
                     effect.DesaturationFactor = IsEnabled ? 1 : 0;
                 }

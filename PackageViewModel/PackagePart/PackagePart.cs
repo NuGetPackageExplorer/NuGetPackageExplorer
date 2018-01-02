@@ -28,12 +28,7 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException("name");
             }
 
-            if (viewModel == null)
-            {
-                throw new ArgumentNullException("viewModel");
-            }
-
-            _viewModel = viewModel;
+            _viewModel = viewModel ?? throw new ArgumentNullException("viewModel");
             _parent = parent;
 
             OnNameChange(name);
@@ -156,7 +151,7 @@ namespace PackageExplorerViewModel
                 return 1;
             }
 
-            return String.Compare(Path, other.Path, StringComparison.OrdinalIgnoreCase);
+            return string.Compare(Path, other.Path, StringComparison.OrdinalIgnoreCase);
         }
 
         #endregion
@@ -195,7 +190,7 @@ namespace PackageExplorerViewModel
                         (Parent.ContainsFile(newName) || Parent.ContainsFolder(newName)))
                     {
                         PackageViewModel.UIServices.Show(
-                            String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, newName),
+                            string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, newName),
                             MessageLevel.Error);
                         return;
                     }
@@ -210,9 +205,9 @@ namespace PackageExplorerViewModel
         {
             if (requireConfirmation)
             {
-                bool confirm = PackageViewModel.UIServices.Confirm(
+                var confirm = PackageViewModel.UIServices.Confirm(
                     Resources.ConfirmToDeleteContent_Title,
-                    String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToDeleteContent, Name),
+                    string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToDeleteContent, Name),
                     isWarning: true);
 
                 if (!confirm)
@@ -260,15 +255,12 @@ namespace PackageExplorerViewModel
 
         protected void OnPropertyChanged(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         protected void RecalculatePath()
         {
-            Path = (Parent == null || String.IsNullOrEmpty(Parent.Path)) ? Name : (Parent.Path + "\\" + Name);
+            Path = (Parent == null || string.IsNullOrEmpty(Parent.Path)) ? Name : (Parent.Path + "\\" + Name);
         }
 
         internal virtual void UpdatePath()

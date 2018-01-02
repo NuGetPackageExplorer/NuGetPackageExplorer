@@ -31,10 +31,10 @@ namespace PackageExplorerViewModel
 
         public void Add(T item)
         {
-            bool added = _items.Add(item);
+            var added = _items.Add(item);
             if (added)
             {
-                int index = IndexOf(item);
+                var index = IndexOf(item);
                 var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index);
                 RaiseCollectionChangedEvent(args);
             }
@@ -70,8 +70,8 @@ namespace PackageExplorerViewModel
 
         public bool Remove(T item)
         {
-            int index = IndexOf(item);
-            bool successful = _items.Remove(item);
+            var index = IndexOf(item);
+            var successful = _items.Remove(item);
             if (successful)
             {
                 var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index);
@@ -106,8 +106,8 @@ namespace PackageExplorerViewModel
 
         private int IndexOf(T item)
         {
-            int index = 0;
-            foreach (T t in _items)
+            var index = 0;
+            foreach (var t in _items)
             {
                 if (t.Equals(item))
                 {
@@ -121,10 +121,7 @@ namespace PackageExplorerViewModel
 
         private void RaiseCollectionChangedEvent(NotifyCollectionChangedEventArgs args)
         {
-            if (CollectionChanged != null)
-            {
-                CollectionChanged(this, args);
-            }
+            CollectionChanged?.Invoke(this, args);
 
             // if the collection changes, raise the Count property changed event too.
             RaiseCountPropertyChanged();
@@ -132,10 +129,7 @@ namespace PackageExplorerViewModel
 
         private void RaiseCountPropertyChanged()
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, CountPropertyChangeEventArgs);
-            }
+            PropertyChanged?.Invoke(this, CountPropertyChangeEventArgs);
         }
     }
 }

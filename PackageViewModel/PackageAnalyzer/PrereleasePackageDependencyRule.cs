@@ -43,10 +43,10 @@ namespace PackageExplorerViewModel.Rules
             return new PackageIssue(
                 PackageIssueLevel.Error,
                 "Invalid prerelease dependency",
-                String.Format(CultureInfo.CurrentCulture,
+                string.Format(CultureInfo.CurrentCulture,
                               "A stable release of a package must not have a dependency on a prerelease package, '{0}'.",
                               target),
-                String.Format(CultureInfo.CurrentCulture,
+                string.Format(CultureInfo.CurrentCulture,
                               "Either modify the version spec of dependency '{0}' or update the version field.", target)
                 );
         }

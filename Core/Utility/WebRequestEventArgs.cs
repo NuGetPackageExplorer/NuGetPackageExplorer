@@ -7,12 +7,7 @@ namespace NuGetPe
     {
         public WebRequestEventArgs(WebRequest request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException("request");
-            }
-
-            Request = request;
+            Request = request ?? throw new ArgumentNullException("request");
         }
 
         public WebRequest Request { get; private set; }

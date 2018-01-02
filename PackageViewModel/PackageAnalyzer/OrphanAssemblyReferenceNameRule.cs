@@ -17,7 +17,7 @@ namespace PackageExplorerViewModel.Rules
         {
             if (package.PackageAssemblyReferences.Any())
             {
-                IEnumerable<string> allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
+                var allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
                 var libFilesSet = new HashSet<string>(allLibFiles, StringComparer.OrdinalIgnoreCase);
 
                 return from reference in package.PackageAssemblyReferences.SelectMany(set => set.References)

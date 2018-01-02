@@ -17,7 +17,7 @@ namespace PackageExplorer
 
         private async void OnPublishButtonClick(object sender, RoutedEventArgs e)
         {
-            bool isValid = DialogBindingGroup.UpdateSources();
+            var isValid = DialogBindingGroup.UpdateSources();
             if (isValid)
             {
                 var viewModel = (PublishPackageViewModel)DataContext;

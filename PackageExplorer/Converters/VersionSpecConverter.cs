@@ -20,7 +20,7 @@ namespace PackageExplorer
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = (string) value;
-            if (String.IsNullOrEmpty(stringValue))
+            if (string.IsNullOrEmpty(stringValue))
             {
                 return null;
             }
@@ -28,7 +28,7 @@ namespace PackageExplorer
             {
                 stringValue = ManifestUtility.ReplaceTokenWithMetadata(stringValue);
 
-                if (VersionRange.TryParse(stringValue, out VersionRange versionSpec))
+                if (VersionRange.TryParse(stringValue, out var versionSpec))
                 {
                     return versionSpec;
                 }

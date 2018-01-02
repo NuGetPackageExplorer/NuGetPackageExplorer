@@ -15,7 +15,7 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            if (package.Description.Length > DescriptionLengthThreshold && String.IsNullOrEmpty(package.Summary))
+            if (package.Description.Length > DescriptionLengthThreshold && string.IsNullOrEmpty(package.Summary))
             {
                 yield return new PackageIssue(
                     PackageIssueLevel.Warning,

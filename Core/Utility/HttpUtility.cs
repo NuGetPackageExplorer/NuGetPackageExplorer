@@ -16,8 +16,8 @@ namespace NuGetPe
                 throw new ArgumentNullException("client");
             }
 
-            Version version = typeof(HttpUtility).Assembly.GetNameSafe().Version;
-            return String.Format(CultureInfo.InvariantCulture, UserAgentTemplate, client, version, Environment.OSVersion);
+            var version = typeof(HttpUtility).Assembly.GetNameSafe().Version;
+            return string.Format(CultureInfo.InvariantCulture, UserAgentTemplate, client, version, Environment.OSVersion);
         }
 
         public static void SetUserAgent(WebRequest request, string userAgent)
@@ -46,18 +46,18 @@ namespace NuGetPe
         public static NameValueCollection ParseQueryString(string query)
         {
             var result = new NameValueCollection();
-            if (!String.IsNullOrEmpty(query))
+            if (!string.IsNullOrEmpty(query))
             {
                 if (query.StartsWith("?", StringComparison.OrdinalIgnoreCase))
                 {
                     query = query.Substring(1);
                 }
 
-                string[] parts = query.Split('&', '=');
-                for (int i = 0; i < parts.Length; i += 2)
+                var parts = query.Split('&', '=');
+                for (var i = 0; i < parts.Length; i += 2)
                 {
-                    string name = parts[i];
-                    string value = (i + 1 < parts.Length) ? parts[i + 1] : null;
+                    var name = parts[i];
+                    var value = (i + 1 < parts.Length) ? parts[i + 1] : null;
                     result[name] = value;
                 }
             }

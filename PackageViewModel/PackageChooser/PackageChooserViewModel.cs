@@ -103,7 +103,7 @@ namespace PackageExplorerViewModel
         {
             get
             {
-                return _selectedPackageViewModel == null ? null : _selectedPackageViewModel.EffectiveSelectedPackage;
+                return _selectedPackageViewModel?.EffectiveSelectedPackage;
             }
         }
 
@@ -324,11 +324,11 @@ namespace PackageExplorerViewModel
                 token = CurrentCancellationTokenSource.Token;
             }
 
-            CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
+            var usedTokenSource = CurrentCancellationTokenSource;
 
             try
             {
-                IList<PackageInfo> packageInfos = await QueryPackages(token);
+                var packageInfos = await QueryPackages(token);
 
                 if (usedTokenSource != CurrentCancellationTokenSource)
                 {
@@ -358,10 +358,9 @@ namespace PackageExplorerViewModel
                     return;
                 }
 
-                string errorMessage = exception.Message;
+                var errorMessage = exception.Message;
 
-                var queryException = exception as DataServiceQueryException;
-                if (queryException != null && queryException.Response != null)
+                if (exception is DataServiceQueryException queryException && queryException.Response != null)
                 {
                     errorMessage = errorMessage + ". The remote server returned status code: " + queryException.Response.StatusCode + ".";
                 }
@@ -375,15 +374,14 @@ namespace PackageExplorerViewModel
 
         private async Task<IList<PackageInfo>> QueryPackages(CancellationToken token)
         {
-            IList<PackageInfo> result = await _currentQuery.GetItemsForCurrentPage(token);
+            var result = await _currentQuery.GetItemsForCurrentPage(token);
 
-            IPackageRepository repository = GetPackageRepository();
+            var repository = GetPackageRepository();
 
             // this is the only way we can the download uri for each data service package
-            var dataServiceRepository = repository as DataServicePackageRepository;
-            if (dataServiceRepository != null)
+            if (repository is DataServicePackageRepository dataServiceRepository)
             {
-                foreach (PackageInfo entity in result)
+                foreach (var entity in result)
                 {
                     entity.DownloadUrl = dataServiceRepository.GetReadStreamUri(entity);
                 }
@@ -400,9 +398,9 @@ namespace PackageExplorerViewModel
             ClearPackages(isErrorCase: true);
 
             CurrentCancellationTokenSource = new CancellationTokenSource();
-            CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
+            var usedTokenSource = CurrentCancellationTokenSource;
 
-            IPackageRepository repository = GetPackageRepository();
+            var repository = GetPackageRepository();
 
             if (repository == null)
             {
@@ -412,10 +410,9 @@ namespace PackageExplorerViewModel
             IQueryable<IPackage> query = null;
 
             // special case for searching
-            if (!String.IsNullOrEmpty(_currentSearch))
+            if (!string.IsNullOrEmpty(_currentSearch))
             {
-                var searchableRepository = repository as IPackageSearchable;
-                if (searchableRepository != null)
+                if (repository is IPackageSearchable searchableRepository)
                 {
                     query = searchableRepository.Search(_currentSearch, ShowPrereleasePackages);
                 }
@@ -438,7 +435,7 @@ namespace PackageExplorerViewModel
                     return Task.FromResult(0);
                 }
 
-                if (!String.IsNullOrEmpty(_currentSearch))
+                if (!string.IsNullOrEmpty(_currentSearch))
                 {
                     query = query.Search(_currentSearch);
                 }
@@ -475,7 +472,7 @@ namespace PackageExplorerViewModel
                     break;
             }
 
-            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, showPrerelease: ShowPrereleasePackages);
+            var packageInfos = GetPackageInfos(query, repository, showPrerelease: ShowPrereleasePackages);
             _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(packageInfos, ShowLatestVersionPageSize);
 
             return LoadPage(CurrentCancellationTokenSource.Token);
@@ -516,7 +513,7 @@ namespace PackageExplorerViewModel
                 {
                     Id = p.Id,
                     Version = p.Version.ToString(),
-                    Authors = String.Join(", ", p.Authors),
+                    Authors = string.Join(", ", p.Authors),
                     DownloadCount = p.DownloadCount,
                     VersionDownloadCount = p.VersionDownloadCount,
                     PackageHash = p.PackageHash,
@@ -529,7 +526,7 @@ namespace PackageExplorerViewModel
 
         private async void Search(string searchTerm)
         {
-            searchTerm = searchTerm ?? CurrentTypingSearch ?? String.Empty;
+            searchTerm = searchTerm ?? CurrentTypingSearch ?? string.Empty;
             searchTerm = searchTerm.Trim();
             if (_currentSearch != searchTerm)
             {
@@ -541,18 +538,18 @@ namespace PackageExplorerViewModel
 
         private bool CanSearch(string searchTerm)
         {
-            return IsEditable && !String.IsNullOrEmpty(searchTerm);
+            return IsEditable && !string.IsNullOrEmpty(searchTerm);
         }
 
         private async void ClearSearch()
         {
-            CurrentTypingSearch = _currentSearch = String.Empty;
+            CurrentTypingSearch = _currentSearch = string.Empty;
             await LoadPackages();
         }
 
         private bool CanClearSearch()
         {
-            return IsEditable && !String.IsNullOrEmpty(_currentSearch);
+            return IsEditable && !string.IsNullOrEmpty(_currentSearch);
         }
 
         private async void Sort(string column)
@@ -646,7 +643,7 @@ namespace PackageExplorerViewModel
 
         private void ClearMessage()
         {
-            ShowMessage(String.Empty, isError: false);
+            ShowMessage(string.Empty, isError: false);
         }
 
         public void OnAfterShow()
@@ -742,7 +739,7 @@ namespace PackageExplorerViewModel
 
         private Task MoveLast()
         {
-            bool canMoveLast = _currentQuery.MoveLast();
+            var canMoveLast = _currentQuery.MoveLast();
             if (canMoveLast)
             {
                 return LoadPage(CancellationToken.None);
@@ -753,7 +750,7 @@ namespace PackageExplorerViewModel
 
         private Task MoveNext()
         {
-            bool canMoveNext = _currentQuery.MoveNext();
+            var canMoveNext = _currentQuery.MoveNext();
             if (canMoveNext)
             {
                 return LoadPage(CancellationToken.None);
@@ -764,7 +761,7 @@ namespace PackageExplorerViewModel
 
         private Task MovePrevious()
         {
-            bool canMovePrevious = _currentQuery.MovePrevious();
+            var canMovePrevious = _currentQuery.MovePrevious();
             if (canMovePrevious)
             {
                 return LoadPage(CancellationToken.None);

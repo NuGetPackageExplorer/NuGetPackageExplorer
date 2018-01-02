@@ -42,24 +42,24 @@ namespace PackageExplorerViewModel
 
         public async Task CreateMultipartRequest(HttpWebRequest request)
         {
-            string boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x", CultureInfo.InvariantCulture);
+            var boundary = "---------------------------" + DateTime.Now.Ticks.ToString("x", CultureInfo.InvariantCulture);
             request.ContentType = "multipart/form-data; boundary=" + boundary;
             request.ContentLength = CalculateContentLength(boundary);
 
-            using (Stream stream = await Task.Factory.FromAsync<Stream>(request.BeginGetRequestStream, request.EndGetRequestStream, state: null))
+            using (var stream = await Task.Factory.FromAsync<Stream>(request.BeginGetRequestStream, request.EndGetRequestStream, state: null))
             {
                 foreach (var item in _formData)
                 {
-                    string header = String.Format(CultureInfo.InvariantCulture, FormDataTemplate, boundary, item.Key, item.Value);
-                    byte[] headerBytes = Encoding.UTF8.GetBytes(header);
+                    var header = string.Format(CultureInfo.InvariantCulture, FormDataTemplate, boundary, item.Key, item.Value);
+                    var headerBytes = Encoding.UTF8.GetBytes(header);
                     stream.Write(headerBytes, 0, headerBytes.Length);
                 }
 
-                byte[] newlineBytes = Encoding.UTF8.GetBytes(Environment.NewLine);
+                var newlineBytes = Encoding.UTF8.GetBytes(Environment.NewLine);
                 foreach (var file in _files)
                 {
-                    string header = String.Format(CultureInfo.InvariantCulture, FileTemplate, boundary, file.FieldName, file.FieldName, file.ContentType);
-                    byte[] headerBytes = Encoding.UTF8.GetBytes(header);
+                    var header = string.Format(CultureInfo.InvariantCulture, FileTemplate, boundary, file.FieldName, file.FieldName, file.ContentType);
+                    var headerBytes = Encoding.UTF8.GetBytes(header);
                     stream.Write(headerBytes, 0, headerBytes.Length);
 
                     Stream fileStream = file.FileInfo.OpenRead();
@@ -68,8 +68,8 @@ namespace PackageExplorerViewModel
                     stream.Write(newlineBytes, 0, newlineBytes.Length);
                 }
 
-                string trailer = String.Format(CultureInfo.InvariantCulture, "--{0}--", boundary);
-                byte[] trailerBytes = Encoding.UTF8.GetBytes(trailer);
+                var trailer = string.Format(CultureInfo.InvariantCulture, "--{0}--", boundary);
+                var trailerBytes = Encoding.UTF8.GetBytes(trailer);
                 stream.Write(trailerBytes, 0, trailerBytes.Length);
             }
         }
@@ -80,25 +80,25 @@ namespace PackageExplorerViewModel
 
             foreach (var item in _formData)
             {
-                string header = String.Format(CultureInfo.InvariantCulture, FormDataTemplate, boundary, item.Key, item.Value);
-                byte[] headerBytes = Encoding.UTF8.GetBytes(header);
+                var header = string.Format(CultureInfo.InvariantCulture, FormDataTemplate, boundary, item.Key, item.Value);
+                var headerBytes = Encoding.UTF8.GetBytes(header);
 
                 totalContentLength += headerBytes.Length;
             }
 
-            byte[] newlineBytes = Encoding.UTF8.GetBytes(Environment.NewLine);
+            var newlineBytes = Encoding.UTF8.GetBytes(Environment.NewLine);
             foreach (var file in _files)
             {
-                string header = String.Format(CultureInfo.InvariantCulture, FileTemplate, boundary, file.FieldName, file.FieldName, file.ContentType);
-                byte[] headerBytes = Encoding.UTF8.GetBytes(header);
+                var header = string.Format(CultureInfo.InvariantCulture, FileTemplate, boundary, file.FieldName, file.FieldName, file.ContentType);
+                var headerBytes = Encoding.UTF8.GetBytes(header);
 
                 totalContentLength += headerBytes.Length;
                 totalContentLength += file.FileInfo.Length;
                 totalContentLength += newlineBytes.Length;
             }
 
-            string trailer = String.Format(CultureInfo.InvariantCulture, "--{0}--", boundary);
-            byte[] trailerBytes = Encoding.UTF8.GetBytes(trailer);
+            var trailer = string.Format(CultureInfo.InvariantCulture, "--{0}--", boundary);
+            var trailerBytes = Encoding.UTF8.GetBytes(trailer);
 
             totalContentLength += trailerBytes.Length;
 

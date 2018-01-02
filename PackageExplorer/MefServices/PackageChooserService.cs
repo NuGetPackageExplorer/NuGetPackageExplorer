@@ -49,24 +49,22 @@ namespace PackageExplorer
 
         private async void OnPackageDownloadRequested(object sender, EventArgs e)
         {
-            PackageInfo packageInfo = _viewModel.SelectedPackage;
+            var packageInfo = _viewModel.SelectedPackage;
             if (packageInfo != null)
             {
-                string selectedFilePath;
-                int selectedIndex;
 
-                string packageName = packageInfo.Id + "." + packageInfo.Version.ToString() + NuGetPe.Constants.PackageExtension;
-                string title = "Save " + packageName;
+                var packageName = packageInfo.Id + "." + packageInfo.Version.ToString() + NuGetPe.Constants.PackageExtension;
+                var title = "Save " + packageName;
                 const string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
 
-                bool accepted = UIServices.OpenSaveFileDialog(
+                var accepted = UIServices.OpenSaveFileDialog(
                     title,
                     packageName,
                     null,
                     filter,
                     overwritePrompt: true,
-                    selectedFilePath: out selectedFilePath,
-                    selectedFilterIndex: out selectedIndex);
+                    selectedFilePath: out var selectedFilePath,
+                    selectedFilterIndex: out var selectedIndex);
 
                 if (accepted)
                 {

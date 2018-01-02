@@ -18,8 +18,8 @@ namespace PackageExplorer
 
         public object GetView(string extension, Stream stream)
         {
-            string tempFile = Path.GetTempFileName();
-            using (FileStream fileStream = File.OpenWrite(tempFile))
+            var tempFile = Path.GetTempFileName();
+            using (var fileStream = File.OpenWrite(tempFile))
             {
                 stream.CopyTo(fileStream);
             }

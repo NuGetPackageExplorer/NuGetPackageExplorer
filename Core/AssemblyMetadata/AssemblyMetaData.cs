@@ -45,9 +45,7 @@ namespace NuGetPe.AssemblyMetadata
         /// </summary>
         public void SetReferencedAssemblyNames(IEnumerable<AssemblyName> referencedAssemblyNames)
         {
-            if (referencedAssemblyNames == null) throw new ArgumentNullException(nameof(referencedAssemblyNames));
-
-            ReferencedAsseblies = referencedAssemblyNames;
+            ReferencedAsseblies = referencedAssemblyNames ?? throw new ArgumentNullException(nameof(referencedAssemblyNames));
         }
 
         /// <summary>

@@ -18,7 +18,7 @@ namespace PackageExplorer
 
         public override string ToString()
         {
-            return String.Format(
+            return string.Format(
                 CultureInfo.InvariantCulture,
                 "{0}|{1}|{2}|{3}|{4}|{5}",
                 length,
@@ -31,19 +31,19 @@ namespace PackageExplorer
 
         public static WindowPlacement Parse(string value)
         {
-            string[] parts = value.Split('|');
+            var parts = value.Split('|');
 
             if (parts.Length != 6)
             {
                 return new WindowPlacement();
             }
 
-            int flength = int.Parse(parts[0], CultureInfo.InvariantCulture);
-            int fflags = int.Parse(parts[1], CultureInfo.InvariantCulture);
-            int fshowCmd = int.Parse(parts[2], CultureInfo.InvariantCulture);
-            Point fminPosition = Point.Parse(parts[3]);
-            Point fmaxPosition = Point.Parse(parts[4]);
-            Rect fnormalPosition = Rect.Parse(parts[5]);
+            var flength = int.Parse(parts[0], CultureInfo.InvariantCulture);
+            var fflags = int.Parse(parts[1], CultureInfo.InvariantCulture);
+            var fshowCmd = int.Parse(parts[2], CultureInfo.InvariantCulture);
+            var fminPosition = Point.Parse(parts[3]);
+            var fmaxPosition = Point.Parse(parts[4]);
+            var fnormalPosition = Rect.Parse(parts[5]);
 
             return new WindowPlacement
                    {
@@ -76,12 +76,12 @@ namespace PackageExplorer
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3}", Left, Top, Width, Height);
+            return string.Format(CultureInfo.InvariantCulture, "{0};{1};{2};{3}", Left, Top, Width, Height);
         }
 
         public static Rect Parse(string value)
         {
-            int[] ss = Array.ConvertAll(value.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
+            var ss = Array.ConvertAll(value.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
                                         v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 4 ? new Rect(ss[0], ss[1], ss[2], ss[3]) : new Rect();
         }
@@ -102,12 +102,12 @@ namespace PackageExplorer
 
         public override string ToString()
         {
-            return String.Format(CultureInfo.InvariantCulture, "{0};{1}", X, Y);
+            return string.Format(CultureInfo.InvariantCulture, "{0};{1}", X, Y);
         }
 
         public static Point Parse(string value)
         {
-            int[] ss = Array.ConvertAll(value.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
+            var ss = Array.ConvertAll(value.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries),
                                         v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 2 ? new Point(ss[0], ss[1]) : new Point();
         }

@@ -18,8 +18,8 @@ namespace PackageExplorer
                 //The copy is necessary because DsGetRdnW modifies the pointer to advance it. We need to keep
                 //The original so we can free it later, otherwise we'll leak memory.
                 var distinguishedNamePtrCopy = distinguishedNamePtr;
-                uint pcDN = (uint)distingishedName.Length;
-                while (pcDN != 0 && NativeMethods.DsGetRdnW(ref distinguishedNamePtrCopy, ref pcDN, out IntPtr ppKey, out uint pcKey, out IntPtr ppVal, out uint pcVal) == 0)
+                var pcDN = (uint)distingishedName.Length;
+                while (pcDN != 0 && NativeMethods.DsGetRdnW(ref distinguishedNamePtrCopy, ref pcDN, out var ppKey, out var pcKey, out var ppVal, out var pcVal) == 0)
                 {
                     if (pcKey == 0 || pcVal == 0)
                     {

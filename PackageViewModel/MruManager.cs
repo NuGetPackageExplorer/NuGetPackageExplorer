@@ -25,13 +25,13 @@ namespace PackageExplorerViewModel
         [ImportingConstructor]
         public MruManager(ISettingsManager settingsManager)
         {
-            IList<string> savedFiles = settingsManager.GetMruFiles();
+            var savedFiles = settingsManager.GetMruFiles();
 
             _files = new ObservableCollection<MruItem>();
-            for (int i = savedFiles.Count - 1; i >= 0; --i)
+            for (var i = savedFiles.Count - 1; i >= 0; --i)
             {
-                string s = savedFiles[i];
-                MruItem item = ConvertStringToMruItem(s);
+                var s = savedFiles[i];
+                var item = ConvertStringToMruItem(s);
                 if (item != null)
                 {
                     AddFile(item);
@@ -79,11 +79,11 @@ namespace PackageExplorerViewModel
         private void OnApplicationExit()
         {
             var sc = new List<string>();
-            foreach (MruItem item in _files)
+            foreach (var item in _files)
             {
                 if (item != null)
                 {
-                    string s = ConvertMruItemToString(item);
+                    var s = ConvertMruItemToString(item);
                     sc.Add(s);
                 }
             }
@@ -109,7 +109,7 @@ namespace PackageExplorerViewModel
         private static string ConvertMruItemToString(MruItem item)
         {
             // in v1.0, we stored MruItem as "{path}|{package name}|{package type}"
-            return String.Format(CultureInfo.InvariantCulture, "{0}|{1}|{2}|{3}", item.Id, item.Version, item.Path,
+            return string.Format(CultureInfo.InvariantCulture, "{0}|{1}|{2}|{3}", item.Id, item.Version, item.Path,
                                  item.PackageType);
         }
 
@@ -119,20 +119,20 @@ namespace PackageExplorerViewModel
             Justification = "Called by MEF.")]
         private static MruItem ConvertStringToMruItem(string s)
         {
-            if (String.IsNullOrEmpty(s))
+            if (string.IsNullOrEmpty(s))
             {
                 return null;
             }
 
-            string[] parts = s.Split('|');
+            var parts = s.Split('|');
             if (parts.Length != 4)
             {
                 return null;
             }
 
-            for (int i = 0; i < parts.Length; i++)
+            for (var i = 0; i < parts.Length; i++)
             {
-                if (String.IsNullOrEmpty(parts[i]))
+                if (string.IsNullOrEmpty(parts[i]))
                 {
                     return null;
                 }
@@ -152,14 +152,12 @@ namespace PackageExplorerViewModel
         private static MruItem ParseMruItem(string[] parts)
         {
             // v1.1 onwards
-            PackageType type;
-            if (!Enum.TryParse(parts[3], out type))
+            if (!Enum.TryParse(parts[3], out PackageType type))
             {
                 return null;
             }
 
-            NuGetVersion version;
-            if (!NuGetVersion.TryParse(parts[1], out version))
+            if (!NuGetVersion.TryParse(parts[1], out var version))
             {
                 return null;
             }

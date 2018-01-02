@@ -35,8 +35,8 @@ namespace PackageExplorer
 
 		public async Task Download(string targetFilePath, Uri downloadUri, string packageId, string packageVersion)
         {
-            string sourceFilePath = await DownloadWithProgress(downloadUri, packageId, packageVersion);
-            if (!String.IsNullOrEmpty(sourceFilePath))
+            var sourceFilePath = await DownloadWithProgress(downloadUri, packageId, packageVersion);
+            if (!string.IsNullOrEmpty(sourceFilePath))
             {
                 File.Copy(sourceFilePath, targetFilePath, overwrite: true);
             }
@@ -44,20 +44,20 @@ namespace PackageExplorer
 
         public async Task<ISignaturePackage> Download(Uri downloadUri, string packageId, string packageVersion)
         {
-            string tempFilePath = await DownloadWithProgress(downloadUri, packageId, packageVersion);
+            var tempFilePath = await DownloadWithProgress(downloadUri, packageId, packageVersion);
             return (tempFilePath == null) ? null : new ZipPackage(tempFilePath);
         }
 
         private async Task<string> DownloadWithProgress(Uri downloadUri, string packageId, string packageVersion)
         {
-            string progressDialogText = Resources.Resources.Dialog_DownloadingPackage;
-            if (!String.IsNullOrEmpty(packageId))
+            var progressDialogText = Resources.Resources.Dialog_DownloadingPackage;
+            if (!string.IsNullOrEmpty(packageId))
             {
-                progressDialogText = String.Format(CultureInfo.CurrentCulture, progressDialogText, packageId, packageVersion);
+                progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, packageId, packageVersion);
             }
             else
             {
-                progressDialogText = String.Format(CultureInfo.CurrentCulture, progressDialogText, downloadUri, String.Empty);
+                progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, downloadUri, string.Empty);
             }
 
             _progressDialog = new ProgressDialog
@@ -88,7 +88,7 @@ namespace PackageExplorer
 
             try
             {
-                string tempFilePath = await DownloadData(downloadUri, OnReportProgress, cts.Token);
+                var tempFilePath = await DownloadData(downloadUri, OnReportProgress, cts.Token);
                 return tempFilePath;
             }
             catch (OperationCanceledException)
@@ -137,27 +137,29 @@ namespace PackageExplorer
 
         private async Task<string> DownloadData(Uri url, Action<int, string> reportProgressAction, CancellationToken cancelToken)
         {
-	        var handler = new HttpClientHandler();
-	        handler.Credentials = CredentialManager.Get(url);
+            var handler = new HttpClientHandler
+            {
+                Credentials = CredentialManager.Get(url)
+            };
             var httpClient = new HttpClient(handler);
             httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(HttpUtility.CreateUserAgentString(Constants.UserAgentClient));
 
-            using (HttpResponseMessage response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancelToken))
+            using (var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead, cancelToken))
             {
-                using (Stream responseStream = await response.Content.ReadAsStreamAsync())
+                using (var responseStream = await response.Content.ReadAsStreamAsync())
                 {
                     const int chunkSize = 4 * 1024;
                     var totalBytes = (int)(response.Content.Headers.ContentLength ?? 0);
                     var buffer = new byte[chunkSize];
-                    int readSoFar = 0;
+                    var readSoFar = 0;
 
                     // while reading data from network, we write it to a temp file
-                    string tempFilePath = Path.GetTempFileName();
-                    using (FileStream fileStream = File.OpenWrite(tempFilePath))
+                    var tempFilePath = Path.GetTempFileName();
+                    using (var fileStream = File.OpenWrite(tempFilePath))
                     {
                         while (readSoFar < totalBytes)
                         {
-                            int bytesRead = await responseStream.ReadAsync(buffer, 0, Math.Min(chunkSize, totalBytes - readSoFar), cancelToken);
+                            var bytesRead = await responseStream.ReadAsync(buffer, 0, Math.Min(chunkSize, totalBytes - readSoFar), cancelToken);
                             readSoFar += bytesRead;
 
                             cancelToken.ThrowIfCancellationRequested();
@@ -184,8 +186,8 @@ namespace PackageExplorer
 
         private void OnProgress(int bytesReceived, int totalBytes, Action<int, string> reportProgress)
         {
-            int percentComplete = (int)((bytesReceived * 100L) / totalBytes);
-            string description = String.Format(
+            var percentComplete = (int)((bytesReceived * 100L) / totalBytes);
+            var description = string.Format(
                 CultureInfo.CurrentCulture,
                 "Downloaded {0}KB of {1}KB...",
                 ToKB(bytesReceived),

@@ -54,7 +54,7 @@ namespace PackageExplorer
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Window rootWindow = Window.GetWindow(this);
+            var rootWindow = Window.GetWindow(this);
             if (rootWindow != null && _findCommand != null)
             {
                 // add the Find command to the window so that we can press Ctrl+F from anywhere to bring up the search box

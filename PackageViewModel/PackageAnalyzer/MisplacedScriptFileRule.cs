@@ -18,9 +18,9 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            foreach (IPackageFile file in package.GetFiles())
+            foreach (var file in package.GetFiles())
             {
-                string path = file.Path;
+                var path = file.Path;
                 if (!path.EndsWith(ScriptExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
@@ -32,8 +32,8 @@ namespace PackageExplorerViewModel.Rules
                 }
                 else
                 {
-                    string directory = Path.GetDirectoryName(path);
-                    string name = Path.GetFileNameWithoutExtension(path);
+                    var directory = Path.GetDirectoryName(path);
+                    var name = Path.GetFileNameWithoutExtension(path);
                     if (!directory.Equals(ToolsFolder, StringComparison.OrdinalIgnoreCase) ||
                         !name.Equals("install", StringComparison.OrdinalIgnoreCase) &&
                         !name.Equals("uninstall", StringComparison.OrdinalIgnoreCase) &&

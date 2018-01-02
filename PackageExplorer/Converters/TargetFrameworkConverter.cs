@@ -10,7 +10,7 @@ namespace PackageExplorer
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            NuGetFramework framework = (NuGetFramework)value;
+            var framework = (NuGetFramework)value;
             if (framework == null) 
             {
                 return null;
@@ -21,8 +21,8 @@ namespace PackageExplorer
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            string stringValue = (string)value;
-            if (String.IsNullOrEmpty(stringValue))
+            var stringValue = (string)value;
+            if (string.IsNullOrEmpty(stringValue))
             {
                 return null;
             }

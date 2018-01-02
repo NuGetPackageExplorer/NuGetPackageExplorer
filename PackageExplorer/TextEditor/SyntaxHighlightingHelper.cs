@@ -41,7 +41,7 @@ namespace PackageExplorer
                 return TextHighlightingDefinition.Instance;
             }
 
-            string extension = Path.GetExtension(name).ToUpperInvariant();
+            var extension = Path.GetExtension(name).ToUpperInvariant();
             if (_nugetExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
             {
                 // treat these extension as xml

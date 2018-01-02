@@ -40,7 +40,7 @@ namespace PackageExplorerViewModel
         public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
         {
             var pagedQuery = Source.Skip(_pageIndex * _pageSize).Take(_pageSize);
-            T[] queryResponse = (await LoadData(pagedQuery)).ToArray();
+            var queryResponse = (await LoadData(pagedQuery)).ToArray();
 
             token.ThrowIfCancellationRequested();
 

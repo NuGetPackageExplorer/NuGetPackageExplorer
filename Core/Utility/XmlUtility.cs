@@ -12,7 +12,7 @@ namespace NuGetPe
             {
                 try
                 {
-                    using (Stream configSream = fileSystem.OpenFile(path))
+                    using (var configSream = fileSystem.OpenFile(path))
                     {
                         return XDocument.Load(configSream);
                     }

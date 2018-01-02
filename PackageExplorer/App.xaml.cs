@@ -50,8 +50,8 @@ namespace PackageExplorer
 
             if (e.Args.Length > 0)
             {
-                string file = e.Args[0];
-                bool successful = await LoadFile(window, file);
+                var file = e.Args[0];
+                var successful = await LoadFile(window, file);
                 if (successful)
                 {
                     return;
@@ -63,10 +63,10 @@ namespace PackageExplorer
                 AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
             {
                 // click-once deployment
-                string[] activationData = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
+                var activationData = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
                 if (activationData != null && activationData.Length > 0)
                 {
-                    string file = activationData[0];
+                    var file = activationData[0];
                     await LoadFile(window, file);
                     return;
                 }
@@ -77,11 +77,11 @@ namespace PackageExplorer
         {
             if (NativeMethods.IsWindows8OrLater && Settings.Default.SolicitInstallNpeForWin8)
             {
-                bool isInstalled = RemoteCodeExecutor.IsNpeMetroInstalled;
+                var isInstalled = RemoteCodeExecutor.IsNpeMetroInstalled;
                 if (!isInstalled)
                 {
-                    IUIServices uiServices = Container.GetExportedValue<IUIServices>();
-                    bool? result = uiServices.AskToInstallNpeOnWindows8();
+                    var uiServices = Container.GetExportedValue<IUIServices>();
+                    var result = uiServices.AskToInstallNpeOnWindows8();
 
                     // if result == null, remind user next time
                     Settings.Default.SolicitInstallNpeForWin8 = (result != false);
@@ -96,7 +96,7 @@ namespace PackageExplorer
 
         private static void MigrateSettings()
         {
-            Settings settings = Settings.Default;
+            var settings = Settings.Default;
             if (settings.IsFirstTime)
             {
                 settings.Upgrade();

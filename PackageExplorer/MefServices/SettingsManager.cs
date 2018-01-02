@@ -26,7 +26,7 @@ namespace PackageExplorer
 
         public IList<string> GetMruFiles()
         {
-            StringCollection files = Settings.Default.MruFiles;
+            var files = Settings.Default.MruFiles;
             return files == null ? new List<string>() : files.Cast<string>().ToList();
         }
 
@@ -39,8 +39,8 @@ namespace PackageExplorer
 
         public IList<string> GetPackageSources()
         {
-            StringCollection sources = Settings.Default.MruPackageSources;
-            List<string> packageSources = (sources == null) ? new List<string>() : sources.Cast<string>().ToList();
+            var sources = Settings.Default.MruPackageSources;
+            var packageSources = (sources == null) ? new List<string>() : sources.Cast<string>().ToList();
             return packageSources;
         }
 
@@ -59,8 +59,8 @@ namespace PackageExplorer
 
         public IList<string> GetPublishSources()
         {
-            StringCollection sources = Settings.Default.PublishPackageSources;
-            List<string> packageSources = (sources == null) ? new List<string>() : sources.Cast<string>().ToList();
+            var sources = Settings.Default.PublishPackageSources;
+            var packageSources = (sources == null) ? new List<string>() : sources.Cast<string>().ToList();
             return packageSources;
         }
 
@@ -80,9 +80,9 @@ namespace PackageExplorer
         public string ReadApiKey(string source)
         {
             var settings = new UserSettings(new PhysicalFileSystem(Environment.CurrentDirectory));
-            string key = settings.GetDecryptedValue(ApiKeysSectionName, source);
+            var key = settings.GetDecryptedValue(ApiKeysSectionName, source);
 
-            if (String.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(key))
             {
                 if (IsFirstTimeAfterUpdate && source.Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
                 {

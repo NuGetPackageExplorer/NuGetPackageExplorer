@@ -9,8 +9,8 @@ namespace PackageExplorer
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            string stringValue = (string)value;
-            if (String.IsNullOrEmpty(stringValue))
+            var stringValue = (string)value;
+            if (string.IsNullOrEmpty(stringValue))
             {
                 return ValidationResult.ValidResult;
             }
@@ -20,8 +20,7 @@ namespace PackageExplorer
                 return ValidationResult.ValidResult;
             }
 
-            Version version;
-            if (Version.TryParse(stringValue, out version))
+            if (Version.TryParse(stringValue, out var version))
             {
                 return ValidationResult.ValidResult;
             }

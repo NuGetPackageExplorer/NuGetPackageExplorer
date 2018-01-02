@@ -55,7 +55,7 @@ namespace NuGetPe.AssemblyMetadata
                         continue;
                     }
 
-                    string displayName = ReadAttributeDisplayName(attribute);
+                    var displayName = ReadAttributeDisplayName(attribute);
                     result.AddMetadata(displayName, value);
                 }
             }
@@ -92,7 +92,7 @@ namespace NuGetPe.AssemblyMetadata
 
         private static string ReadAttributeDisplayName(AssemblyMetadataParser.AttributeInfo attribute)
         {
-            string shortName = attribute.FullTypeName.Split(".+".ToCharArray()).Last();
+            var shortName = attribute.FullTypeName.Split(".+".ToCharArray()).Last();
 
             const string attributeSuffix = "Attribute";
             

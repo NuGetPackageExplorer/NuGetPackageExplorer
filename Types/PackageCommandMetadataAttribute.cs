@@ -11,7 +11,7 @@ namespace NuGetPackageExplorer.Types
 
         public PackageCommandMetadataAttribute(string text) : base(typeof(IPackageCommand))
         {
-            if (String.IsNullOrEmpty("text"))
+            if (string.IsNullOrEmpty("text"))
             {
                 throw new ArgumentNullException("text");
             }

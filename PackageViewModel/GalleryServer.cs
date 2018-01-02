@@ -18,7 +18,7 @@ namespace PackageExplorerViewModel
 
         public GalleryServer(string source, string userAgent)
         {
-            if (String.IsNullOrEmpty(source))
+            if (string.IsNullOrEmpty(source))
             {
                 throw new ArgumentException("Argument cannot be null or empty.", "source");
             }
@@ -33,11 +33,11 @@ namespace PackageExplorerViewModel
 
         public async Task PushPackage(string apiKey, string filePath, IPackageMetadata package, bool pushAsUnlisted, bool appendV2ApiToUrl)
         {
-            string requestUri = CreateRequestUri(appendV2ApiToUrl);
+            var requestUri = CreateRequestUri(appendV2ApiToUrl);
 
             // Nuget Server returns Created. VSTS Returns Accepted 
-            HttpStatusCode expectedStatus = HttpStatusCode.Created | HttpStatusCode.Accepted;
-            HttpWebRequest httpRequest = CreatePushRequest(requestUri);
+            var expectedStatus = HttpStatusCode.Created | HttpStatusCode.Accepted;
+            var httpRequest = CreatePushRequest(requestUri);
             ConfigureRequestAuthApi(httpRequest, apiKey);
 
             var multipartRequest = new MultipartWebRequest();
@@ -56,11 +56,11 @@ namespace PackageExplorerViewModel
         }
         public async Task PushPackageWithCredentials(string filePath, IPackageMetadata package, bool pushAsUnlisted, bool appendV2ApiToUrl, string username, string password)
         {
-            string requestUri = CreateRequestUri(appendV2ApiToUrl);
+            var requestUri = CreateRequestUri(appendV2ApiToUrl);
 
             // Nuget Server returns Created. VSTS Returns Accepted 
-            HttpStatusCode expectedStatus = HttpStatusCode.Created | HttpStatusCode.Accepted;
-            HttpWebRequest httpRequest = CreatePushRequest(requestUri);
+            var expectedStatus = HttpStatusCode.Created | HttpStatusCode.Accepted;
+            var httpRequest = CreatePushRequest(requestUri);
             ConfigureRequestAuthCredentials(httpRequest, username, password);
 
             var multipartRequest = new MultipartWebRequest();
@@ -80,8 +80,8 @@ namespace PackageExplorerViewModel
 
         private Task DeletePackageFromServer(string apiKey, string packageId, string packageVersion, bool appendV2ApiToUrl)
         {
-            string requestUri = CreateRequestUri(appendV2ApiToUrl) + "/" + packageId + "/" + packageVersion;
-            HttpWebRequest httpRequest = CreateDeleteRequest(requestUri);
+            var requestUri = CreateRequestUri(appendV2ApiToUrl) + "/" + packageId + "/" + packageVersion;
+            var httpRequest = CreateDeleteRequest(requestUri);
 
             ConfigureRequestAuthApi(httpRequest, apiKey);
 
@@ -89,8 +89,8 @@ namespace PackageExplorerViewModel
         }
         private Task DeletePackageFromServerWithCredentials(string packageId, string packageVersion, bool appendV2ApiToUrl, string username, string password)
         {
-            string requestUri = CreateRequestUri(appendV2ApiToUrl) + "/" + packageId + "/" + packageVersion;
-            HttpWebRequest httpRequest = CreateDeleteRequest(requestUri);
+            var requestUri = CreateRequestUri(appendV2ApiToUrl) + "/" + packageId + "/" + packageVersion;
+            var httpRequest = CreateDeleteRequest(requestUri);
 
             ConfigureRequestAuthCredentials(httpRequest, username, password);
 
@@ -105,7 +105,7 @@ namespace PackageExplorerViewModel
         }
         private HttpWebRequest CreatePushRequest(string requestUri)
         {
-            HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
+            var httpRequest = WebRequest.CreateHttp(requestUri);
 
             httpRequest.Method = "PUT";
             httpRequest.AllowAutoRedirect = true;
@@ -117,7 +117,7 @@ namespace PackageExplorerViewModel
         }
         private HttpWebRequest CreateDeleteRequest(string requestUri)
         {
-            HttpWebRequest httpRequest = WebRequest.CreateHttp(requestUri);
+            var httpRequest = WebRequest.CreateHttp(requestUri);
             httpRequest.UseDefaultCredentials = true;
             httpRequest.Method = "DELETE";
             httpRequest.UserAgent = _userAgent;
@@ -151,7 +151,7 @@ namespace PackageExplorerViewModel
                     (!expectedStatusCode.HasValue && (int)response.StatusCode >= 400)))
                 {
                     throw new InvalidOperationException(
-                        String.Format(CultureInfo.CurrentCulture, "Failed to process request: '{0}'.", response.StatusDescription));
+                        string.Format(CultureInfo.CurrentCulture, "Failed to process request: '{0}'.", response.StatusDescription));
                 }
             }
             catch (WebException e)
@@ -164,7 +164,7 @@ namespace PackageExplorerViewModel
                 if (expectedStatusCode != response.StatusCode)
                 {
                     throw new InvalidOperationException(
-                        String.Format(CultureInfo.CurrentCulture, "Failed to process request: '{0}'.", response.StatusDescription));
+                        string.Format(CultureInfo.CurrentCulture, "Failed to process request: '{0}'.", response.StatusDescription));
                 }
             }
             finally

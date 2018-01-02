@@ -4,7 +4,7 @@
     {
         public static string SafeTrim(this string value)
         {
-            return value == null ? null : value.Trim();
+            return value?.Trim();
         }
     }
 }

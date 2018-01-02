@@ -30,7 +30,7 @@ namespace NuGetPe
 
         public ZipPackage(string filePath)
         {
-            if (String.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(filePath))
             {
                 throw new ArgumentException("Argument cannot be null.", "filePath");
             }
@@ -294,7 +294,7 @@ namespace NuGetPe
 
         public IEnumerable<IPackageFile> GetFiles()
         {
-            Stream stream = _streamFactory();
+            var stream = _streamFactory();
             var reader = new MyPackageArchiveReader(stream, false); // should not close
            
             _danglingStreams.Add(reader);           // clean up on dispose
@@ -359,7 +359,7 @@ namespace NuGetPe
 
         private void EnsureManifest()
         {
-            using (Stream stream = _streamFactory())
+            using (var stream = _streamFactory())
             using (var reader = new PackageArchiveReader(stream))
             {
                 var manifest = Manifest.ReadFrom(reader.GetNuspec(), false);
@@ -389,7 +389,7 @@ namespace NuGetPe
 
         private class MyPackageArchiveReader : PackageArchiveReader
         {
-            ZipArchive zipArchive;
+            private ZipArchive zipArchive;
 
            /// <summary>Nupkg package reader</summary>
             /// <param name="stream">Nupkg data stream.</param>

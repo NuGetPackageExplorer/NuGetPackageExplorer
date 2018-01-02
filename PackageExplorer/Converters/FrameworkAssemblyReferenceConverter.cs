@@ -17,19 +17,19 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var frameworkNames = (IEnumerable<NuGetFramework>) value;
-            return frameworkNames == null ? String.Empty : String.Join("; ", frameworkNames.Select(fn => fn.DotNetFrameworkName));
+            return frameworkNames == null ? string.Empty : string.Join("; ", frameworkNames.Select(fn => fn.DotNetFrameworkName));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = (string) value;
-            if (!String.IsNullOrEmpty(stringValue))
+            if (!string.IsNullOrEmpty(stringValue))
             {
-                string[] parts = stringValue.Split(new[] {';', ','}, StringSplitOptions.RemoveEmptyEntries);
+                var parts = stringValue.Split(new[] {';', ','}, StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length > 0)
                 {
                     var names = new NuGetFramework[parts.Length];
-                    for (int i = 0; i < parts.Length; i++)
+                    for (var i = 0; i < parts.Length; i++)
                     {
                         try
                         {

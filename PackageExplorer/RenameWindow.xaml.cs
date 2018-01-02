@@ -41,7 +41,7 @@ namespace PackageExplorer
         public string Description
         {
             get { return DescriptionText.Text; }
-            set { DescriptionText.Text = value ?? String.Empty; }
+            set { DescriptionText.Text = value ?? string.Empty; }
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
@@ -78,7 +78,7 @@ namespace PackageExplorer
                 var stringValue = (string) value;
                 if (stringValue != null)
                 {
-                    char[] invalidChars = Path.GetInvalidFileNameChars();
+                    var invalidChars = Path.GetInvalidFileNameChars();
                     if (invalidChars.Any(stringValue.Contains))
                     {
                         return new ValidationResult(false, "Invalid char found in the name.");

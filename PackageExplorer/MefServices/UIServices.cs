@@ -32,7 +32,7 @@ namespace PackageExplorer
                              InitialDirectory = !string.IsNullOrEmpty(initialDirectory) ? Path.GetDirectoryName(initialDirectory) : initialDirectory
                          };
 
-            bool? result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             if (result ?? false)
             {
                 selectedFilePath = dialog.FileName;
@@ -60,7 +60,7 @@ namespace PackageExplorer
                              Filter = filter
                          };
 
-            bool? result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             if (result ?? false)
             {
                 selectedFileName = dialog.FileName;
@@ -86,7 +86,7 @@ namespace PackageExplorer
                              Filter = filter
                          };
 
-            bool? result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             if (result ?? false)
             {
                 selectedFileNames = dialog.FileNames;
@@ -157,7 +157,7 @@ namespace PackageExplorer
                              Owner = Window.Value
                          };
 
-            bool? result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             if (result ?? false)
             {
                 newName = dialog.NewName;
@@ -178,13 +178,12 @@ namespace PackageExplorer
                              DataContext = viewModel
                          };
 
-            var disposable = viewModel as IDisposable;
-            if (disposable != null)
+            if (viewModel is IDisposable disposable)
             {
                 dialog.Closed += OnDialogClosed;
             }
 
-            bool? result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             return result ?? false;
         }
 
@@ -196,21 +195,19 @@ namespace PackageExplorer
                 DataContext = viewModel
             };
 
-            var disposable = viewModel as IDisposable;
-            if (disposable != null)
+            if (viewModel is IDisposable disposable)
             {
                 dialog.Closed += OnDialogClosed;
             }
 
-            bool? result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             return result ?? false;
         }
 
         private void OnDialogClosed(object sender, EventArgs e)
         {
             var window = (Window)sender;
-            var disposable = window.DataContext as IDisposable;
-            if (disposable != null)
+            if (window.DataContext is IDisposable disposable)
             {
                 disposable.Dispose();
             }
@@ -227,7 +224,7 @@ namespace PackageExplorer
                              UseDescriptionForTitle = true
                          };
 
-            bool? result = dialog.ShowDialog(Window.Value);
+            var result = dialog.ShowDialog(Window.Value);
             if (result ?? false)
             {
                 selectedPath = dialog.SelectedPath;
@@ -252,7 +249,7 @@ namespace PackageExplorer
                 throw new ArgumentOutOfRangeException("numberOfItemsLeft");
             }
 
-            string mainInstruction = String.Format(
+            var mainInstruction = string.Format(
                 CultureInfo.CurrentCulture,
                 Resources.Resources.MoveContentFileToFolder,
                 fileName,
@@ -290,7 +287,7 @@ namespace PackageExplorer
                 dialog.Buttons.Add(noButton);
                 dialog.Buttons.Add(remindButton);
 
-                TaskDialogButton result = dialog.ShowDialog();
+                var result = dialog.ShowDialog();
                 if (result == yesButton)
                 {
                     return true;
@@ -329,7 +326,7 @@ namespace PackageExplorer
                 dialog.Buttons.Add(yesButton);
                 dialog.Buttons.Add(noButton);
 
-                TaskDialogButton result = dialog.ShowDialog();
+                var result = dialog.ShowDialog();
                 return result == yesButton;
             }
         }
@@ -354,7 +351,7 @@ namespace PackageExplorer
                 dialog.Buttons.Add(noButton);
                 dialog.Buttons.Add(cancelButton);
 
-                TaskDialogButton result = dialog.ShowDialog();
+                var result = dialog.ShowDialog();
                 if (result == yesButton)
                 {
                     return true;
@@ -371,7 +368,7 @@ namespace PackageExplorer
         private Tuple<bool?, bool> ConfirmMoveFileUsingTaskDialog(string fileName, string targetFolder,
                                                                   int numberOfItemsLeft, string mainInstruction)
         {
-            string content = String.Format(
+            var content = string.Format(
                 CultureInfo.CurrentCulture,
                 Resources.Resources.MoveContentFileToFolderExplanation,
                 targetFolder);
@@ -408,7 +405,7 @@ namespace PackageExplorer
             dialog.Buttons.Add(noMoveButton);
             dialog.Buttons.Add(new TaskDialogButton(ButtonType.Cancel));
 
-            TaskDialogButton result = dialog.ShowDialog(Window.Value);
+            var result = dialog.ShowDialog(Window.Value);
 
             bool? movingFile;
             if (result == moveButton)
@@ -425,7 +422,7 @@ namespace PackageExplorer
                 movingFile = null;
             }
 
-            bool remember = dialog.IsVerificationChecked;
+            var remember = dialog.IsVerificationChecked;
             return Tuple.Create(movingFile, remember);
         }
 
@@ -455,7 +452,7 @@ namespace PackageExplorer
                 dialog.Buttons.Add(yesButton);
                 dialog.Buttons.Add(noButton);
 
-                TaskDialogButton result = dialog.ShowDialog();
+                var result = dialog.ShowDialog();
                 return result == yesButton;
             }
         }
@@ -467,7 +464,7 @@ namespace PackageExplorer
                 Owner = Window.Value
             };
 
-            bool? result = dialog.ShowDialog();
+            var result = dialog.ShowDialog();
             if (result ?? false)
             {
                 portableFramework = dialog.GetSelectedFrameworkName();

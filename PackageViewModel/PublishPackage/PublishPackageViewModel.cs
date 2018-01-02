@@ -119,8 +119,8 @@ namespace PackageExplorerViewModel
                         if (!_suppressReadingApiKey)
                         {
                             // when the selection change, we retrieve the API key for that source
-                            string key = _settingsManager.ReadApiKey(value);
-                            if (!String.IsNullOrEmpty(key))
+                            var key = _settingsManager.ReadApiKey(value);
+                            if (!string.IsNullOrEmpty(key))
                             {
                                 PublishKey = key;
                             }

@@ -12,10 +12,8 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateTimeOffset)
+            if (value is DateTimeOffset dateTimeOffset)
             {
-                DateTimeOffset dateTimeOffset = (DateTimeOffset)value;
-
                 if (dateTimeOffset != Constants.Unpublished)
                 {
                     var format = parameter as string;

@@ -12,8 +12,8 @@ namespace PackageExplorer
             {
                 return value;
             }
-            string stringValue = (string)value;
-            int maxLength = System.Convert.ToInt32(parameter, culture);
+            var stringValue = (string)value;
+            var maxLength = System.Convert.ToInt32(parameter, culture);
             if (maxLength < 5)
             {
                 throw new ArgumentOutOfRangeException("parameter");
@@ -24,8 +24,8 @@ namespace PackageExplorer
                 return stringValue;
             }
 
-            int prefixLength = (maxLength - 3) / 2;
-            int suffixLength = maxLength - 3 - prefixLength;
+            var prefixLength = (maxLength - 3) / 2;
+            var suffixLength = maxLength - 3 - prefixLength;
 
             return stringValue.Substring(0, prefixLength) + "..." + stringValue.Substring(stringValue.Length - suffixLength);
         }

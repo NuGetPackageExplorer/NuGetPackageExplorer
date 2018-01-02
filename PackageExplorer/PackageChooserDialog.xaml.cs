@@ -50,7 +50,7 @@ namespace PackageExplorer
 
         private void RedrawSortGlyph(string sortColumn, ListSortDirection sortDirection)
         {
-            foreach (DataGridColumn column in ParentPackageGrid.Columns)
+            foreach (var column in ParentPackageGrid.Columns)
             {
                 if (column.SortMemberPath.Equals(sortColumn, StringComparison.OrdinalIgnoreCase))
                 {
@@ -91,7 +91,7 @@ namespace PackageExplorer
             }
             else if (e.Key == Key.Escape)
             {
-                ICommand clearSearchCommand = ClearSearchButton.Command;
+                var clearSearchCommand = ClearSearchButton.Command;
                 if (clearSearchCommand.CanExecute(null))
                 {
                     // simulate Clear Search command execution
@@ -113,7 +113,7 @@ namespace PackageExplorer
 
             if (_viewModel.AutoLoadPackages)
             {
-                if (String.IsNullOrEmpty(_pendingSearch))
+                if (string.IsNullOrEmpty(_pendingSearch))
                 {
                     await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
                 }
@@ -132,8 +132,7 @@ namespace PackageExplorer
             // HACK: Make space for the search image inside the search box
             if (SearchBox.Template != null)
             {
-                var contentHost = SearchBox.Template.FindName("PART_ContentHost", SearchBox) as FrameworkElement;
-                if (contentHost != null)
+                if (SearchBox.Template.FindName("PART_ContentHost", SearchBox) is FrameworkElement contentHost)
                 {
                     contentHost.Margin = new Thickness(0, 0, 40, 0);
                     contentHost.Width = 160;
@@ -160,7 +159,7 @@ namespace PackageExplorer
         {
             if (!e.NewSize.IsEmpty)
             {
-                Settings settings = Settings.Default;
+                var settings = Settings.Default;
                 settings.PackageChooserDialogHeight = e.NewSize.Height;
                 settings.PackageChooserDialogWidth = e.NewSize.Width;
             }
@@ -180,7 +179,7 @@ namespace PackageExplorer
 
         private void FocusSearchBox()
         {
-            bool gotFocus = SearchBox.Focus();
+            var gotFocus = SearchBox.Focus();
             if (gotFocus)
             {
                 // move caret to the end 
@@ -198,8 +197,8 @@ namespace PackageExplorer
         {
             if (e.Key == Key.Enter)
             {
-                string source = PackageSourceBox.Text;
-                if (!String.IsNullOrEmpty(source))
+                var source = PackageSourceBox.Text;
+                if (!string.IsNullOrEmpty(source))
                 {
                     _viewModel.ChangePackageSourceCommand.Execute(source);
                     e.Handled = true;
@@ -220,7 +219,7 @@ namespace PackageExplorer
             // We only do work from the second time.
             if (IsVisible && IsLoaded)
             {
-                if (String.IsNullOrEmpty(_pendingSearch))
+                if (string.IsNullOrEmpty(_pendingSearch))
                 {
                     // there is no pending search operation, just set focus on the search box
                     await Dispatcher.InvokeAsync(new Action(OnAfterShow), DispatcherPriority.Background);

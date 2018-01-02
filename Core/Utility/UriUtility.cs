@@ -11,7 +11,7 @@ namespace NuGetPe
         /// </summary>
         internal static string GetPath(Uri uri)
         {
-            string path = uri.OriginalString;
+            var path = uri.OriginalString;
             if (path.StartsWith("/", StringComparison.Ordinal))
             {
                 path = path.Substring(1);

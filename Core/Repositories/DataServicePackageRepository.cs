@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Data.Services.Client;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -13,9 +13,11 @@ namespace NuGetPe
 
 	    public DataServicePackageRepository(Uri uri, ICredentials credentials)
 	    {
-		    _context = new DataServiceContext(uri);
-		    _context.Credentials = credentials;
-		    _context.SendingRequest += OnSendingRequest;
+            _context = new DataServiceContext(uri)
+            {
+                Credentials = credentials
+            };
+            _context.SendingRequest += OnSendingRequest;
 		    _context.IgnoreMissingProperties = true;
 		    _context.Credentials = credentials;
 	    }
@@ -79,7 +81,7 @@ namespace NuGetPe
 
         public IQueryable<DataServicePackage> LegacyGetPackagesById(string id)
         {
-            IQueryable<DataServicePackage> query = _context.CreateQuery<DataServicePackage>(Constants.PackageServiceEntitySetName)
+            var query = _context.CreateQuery<DataServicePackage>(Constants.PackageServiceEntitySetName)
                                                            .Where(p => p.Id.ToLower() == id.ToLower());
 
             return query;
@@ -89,8 +91,8 @@ namespace NuGetPe
         {
             if (searchTerm.StartsWith("id:", StringComparison.OrdinalIgnoreCase))
             {
-                string id = searchTerm.Substring(3).Trim();
-                if (String.IsNullOrEmpty(id))
+                var id = searchTerm.Substring(3).Trim();
+                if (string.IsNullOrEmpty(id))
                 {
                     return new IPackage[0].AsQueryable();
                 }

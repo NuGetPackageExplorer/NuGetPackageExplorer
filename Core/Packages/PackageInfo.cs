@@ -27,7 +27,7 @@ namespace NuGetPe
             {
                 _version = value;
 
-                if (String.IsNullOrEmpty(_version))
+                if (string.IsNullOrEmpty(_version))
                 {
                     _semanticVersion = new NuGetVersion(0, 0, 0, 0);
                 }

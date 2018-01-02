@@ -62,7 +62,7 @@ namespace PackageExplorerViewModel
             // if there is unsaved changes, ask user for confirmation
             if (HasEdit)
             {
-                bool? result = _packageViewModel.UIServices.ConfirmWithCancel(
+                var result = _packageViewModel.UIServices.ConfirmWithCancel(
                     "You have unsaved changes in the current file.",
                     Resources.Dialog_SaveQuestion);
                 if (result == null)
@@ -75,7 +75,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            bool successful = PersitChanges();
+            var successful = PersitChanges();
             if (successful)
             {
                 // return back to Package view

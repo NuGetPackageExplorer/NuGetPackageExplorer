@@ -22,15 +22,9 @@ namespace PackageExplorerViewModel
         private PackageFile(IPackageFile file, string name, PackageFolder parent, PackageViewModel viewModel)
             : base(name, parent, viewModel)
         {
-            if (file == null)
-            {
-                throw new ArgumentNullException("file");
-            }
+            _file = file ?? throw new ArgumentNullException("file");
 
-            _file = file;
-
-            var physicalFile = file as PhysicalPackageFile;
-            if (physicalFile != null)
+            if (file is PhysicalPackageFile physicalFile)
             {
                 WatchPhysicalFile(physicalFile);
             }
@@ -99,8 +93,8 @@ namespace PackageExplorerViewModel
 
         private void WatchPhysicalFile(PhysicalPackageFile physicalFile)
         {
-            string folderPath = System.IO.Path.GetDirectoryName(physicalFile.SourcePath);
-            string fileName = System.IO.Path.GetFileName(physicalFile.SourcePath);
+            var folderPath = System.IO.Path.GetDirectoryName(physicalFile.SourcePath);
+            var fileName = System.IO.Path.GetFileName(physicalFile.SourcePath);
 
             _watcher = new FileSystemWatcher(folderPath, fileName)
                        {
@@ -129,7 +123,7 @@ namespace PackageExplorerViewModel
         private void ShowMessageAndDeleteFile()
         {
             PackageViewModel.UIServices.Show(
-                String.Format(CultureInfo.CurrentCulture, Resources.PhysicalFileMissing, Path),
+                string.Format(CultureInfo.CurrentCulture, Resources.PhysicalFileMissing, Path),
                 MessageLevel.Warning);
             Delete(false);
         }
@@ -157,19 +151,19 @@ namespace PackageExplorerViewModel
 
         public override void Export(string rootPath)
         {
-            string fullPath = System.IO.Path.Combine(rootPath, Path);
+            var fullPath = System.IO.Path.Combine(rootPath, Path);
             if (File.Exists(fullPath))
             {
-                bool confirmed = PackageViewModel.UIServices.Confirm(
+                var confirmed = PackageViewModel.UIServices.Confirm(
                     Resources.ConfirmToReplaceFile_Title,
-                    String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullPath));
+                    string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullPath));
                 if (!confirmed)
                 {
                     return;
                 }
             }
 
-            using (FileStream stream = File.Create(fullPath))
+            using (var stream = File.Create(fullPath))
             {
                 GetStream().CopyTo(stream);
             }
@@ -177,7 +171,7 @@ namespace PackageExplorerViewModel
 
         public bool Save(string editedFilePath)
         {
-            if (!String.Equals(OriginalPath, editedFilePath, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(OriginalPath, editedFilePath, StringComparison.OrdinalIgnoreCase))
             {
                 ReplaceWith(editedFilePath);
             }

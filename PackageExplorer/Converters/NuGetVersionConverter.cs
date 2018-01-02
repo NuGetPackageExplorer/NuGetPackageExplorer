@@ -21,15 +21,14 @@ namespace PackageExplorer
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = (string) value;
-            if (String.IsNullOrWhiteSpace(stringValue))
+            if (string.IsNullOrWhiteSpace(stringValue))
             {
                 return null;
             }
             else
             {
                 stringValue = ManifestUtility.ReplaceTokenWithMetadata(stringValue);
-                NuGetVersion version;
-                if (NuGetVersion.TryParse(stringValue, out version))
+                if (NuGetVersion.TryParse(stringValue, out var version))
                 {
                     return version;
                 }
