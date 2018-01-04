@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -320,23 +320,30 @@ namespace NuGetPe
                 IsSigned = await reader.IsSignedAsync(CancellationToken.None);
                 if (IsSigned)
                 {
-                    // Load signature data
-                    var sigs = await reader.GetSignaturesAsync(CancellationToken.None);
-                    var reposigs = new List<SignatureInfo>();
-                    RepositorySignatures = reposigs;
-
-                    foreach (var sig in sigs)
+                    try
                     {
-                        // There will only be one
-                        if (sig.Type == SignatureType.Author)
+                        // Load signature data
+                        var sigs = await reader.GetSignaturesAsync(CancellationToken.None);
+                        var reposigs = new List<SignatureInfo>();
+                        RepositorySignatures = reposigs;
+
+                        foreach (var sig in sigs)
                         {
-                            PublisherSignature = new SignatureInfo(sig);
-                        }
-                        if (sig.Type == SignatureType.Repository)
-                        {
-                            reposigs.Add(new SignatureInfo(sig));
+                            // There will only be one
+                            if (sig.Type == SignatureType.Author)
+                            {
+                                PublisherSignature = new SignatureInfo(sig);
+                            }
+                            if (sig.Type == SignatureType.Repository)
+                            {
+                                reposigs.Add(new SignatureInfo(sig));
+                            }
                         }
                     }
+                    catch (SignatureException)
+                    {
+                    }
+                    
                 }
             }
         }
