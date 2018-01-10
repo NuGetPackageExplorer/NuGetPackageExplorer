@@ -24,11 +24,11 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Security" />
     
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.0-build.23" />  
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.0" />  
     <PackageReference Include="AvalonEdit" Version="5.0.4" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.6.0-preview3-4785" />  
+    <PackageReference Include="NuGet.PackageManagement" Version="4.7.0-preview1-4796" />  
     
     <ProjectReference Include="..\CodeExecutor\CodeExecutor.csproj" />
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
