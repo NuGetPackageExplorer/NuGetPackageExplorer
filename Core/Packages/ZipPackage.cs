@@ -18,7 +18,6 @@ namespace NuGetPe
         private const string AssemblyReferencesDir = "lib";
         private const string ResourceAssemblyExtension = ".resources.dll";
         private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe", ".winmd"};
-        private static readonly List<SignatureInfo> emptyList = new List<SignatureInfo>();
 
         // paths to exclude
         private static readonly string[] ExcludePaths = new[] {"_rels", "package","[Content_Types]", ".signature"};
@@ -55,8 +54,6 @@ namespace NuGetPe
 
             };
             EnsureManifest();
-
-            RepositorySignatures = emptyList;
         }
 
         public string Source { get; }
@@ -284,7 +281,7 @@ namespace NuGetPe
 
         public SignatureInfo PublisherSignature { get; private set; }
 
-        public IReadOnlyList<SignatureInfo> RepositorySignatures { get; private set; }
+        public SignatureInfo RepositorySignature { get; private set; }
 
         public VerifySignaturesResult VerificationResult { get; private set; }
 
@@ -323,21 +320,16 @@ namespace NuGetPe
                     try
                     {
                         // Load signature data
-                        var sigs = await reader.GetSignaturesAsync(CancellationToken.None);
-                        var reposigs = new List<SignatureInfo>();
-                        RepositorySignatures = reposigs;
-
-                        foreach (var sig in sigs)
+                        // TODO: Repo + Author sig?
+                        var sig = await reader.GetSignatureAsync(CancellationToken.None);
+                    
+                        // There will only be one
+                        if (sig.Type == SignatureType.Author)
                         {
-                            // There will only be one
-                            if (sig.Type == SignatureType.Author)
-                            {
-                                PublisherSignature = new SignatureInfo(sig);
-                            }
-                            if (sig.Type == SignatureType.Repository)
-                            {
-                                reposigs.Add(new SignatureInfo(sig));
-                            }
+                            PublisherSignature = new SignatureInfo(sig);
+                        } else if (sig.Type == SignatureType.Repository)
+                        {
+                            RepositorySignature = new SignatureInfo(sig);
                         }
                     }
                     catch (SignatureException)

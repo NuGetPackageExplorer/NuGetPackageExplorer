@@ -259,19 +259,15 @@
                             
                         </StackPanel>
 
-                        <!-- Repositories list -->
-                        <TextBlock 
-                            Text="{x:Static resources:Resources.Dialog_RepositorySignatures}" 
-                            Style="{StaticResource DetailMetadataLabelStyle}" 
-                            Visibility="{Binding RepositorySignatures.Count, Converter={StaticResource countConverter}, Mode=OneWay}"
-                            />
+                        <!-- Repository -->
+                        <StackPanel Style="{StaticResource DetailMetadataStyle}" 
+                                    Visibility="{Binding RepositorySignature, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static resources:Resources.Dialog_RepositoryLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                        <ItemsControl x:Name="RepositoryItems" Margin="25,5,0,0" 
-                                      ItemsSource="{Binding RepositorySignatures}"
-                                      Visibility="{Binding RepositorySignatures.Count, Converter={StaticResource countConverter}, Mode=OneWay}"
-                                      >
-                        </ItemsControl>
+                            <ContentPresenter Content="{Binding RepositorySignature, Mode=OneWay}" />
 
+                        </StackPanel>
+  
                         <!-- Validation -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" 
                                     Visibility="{Binding IsSigned, Converter={StaticResource boolToVis}}">

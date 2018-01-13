@@ -44,8 +44,6 @@ namespace PackageExplorerViewModel
 
         private EditablePackageMetadata()
         {
-            RepositorySignatures = new List<SignatureInfo>(); // no null collections!
-
             _showValidationResultsCommand = new RelayCommand(OnShowValidationResult, () => ValidationResult != null );
         }   
 
@@ -71,7 +69,7 @@ namespace PackageExplorerViewModel
             if (package.IsSigned)
             {
                 PublisherSignature = package.PublisherSignature;
-                RepositorySignatures = package.RepositorySignatures;
+                RepositorySignature = package.RepositorySignature;
                 IsSigned = true;
 
                 await Task.Run(() => package.VerifySignatureAsync());
@@ -133,15 +131,15 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public IReadOnlyList<SignatureInfo> RepositorySignatures
+        public SignatureInfo RepositorySignature
         {
-            get { return repositoryCertificates; }
+            get { return repositoryCertificate; }
             set
             {
-                if (repositoryCertificates != value)
+                if (repositoryCertificate != value)
                 {
-                    repositoryCertificates = value;
-                    RaisePropertyChange(nameof(RepositorySignatures));
+                    repositoryCertificate = value;
+                    RaisePropertyChange(nameof(RepositorySignature));
                 }
             }
         }
@@ -216,7 +214,7 @@ namespace PackageExplorerViewModel
         private RepositoryMetadata repository;
         private SignatureInfo publisherCertificate;
         private ValidationResultViewModel validationResult;
-        private IReadOnlyList<SignatureInfo> repositoryCertificates;
+        private SignatureInfo repositoryCertificate;
 
         #endregion
 
@@ -616,7 +614,7 @@ namespace PackageExplorerViewModel
         public void ClearSignatures()
         {
             PublisherSignature = null;
-            RepositorySignatures = new List<SignatureInfo>();
+            RepositorySignature = null;
             IsSigned = false;
         }
     }
