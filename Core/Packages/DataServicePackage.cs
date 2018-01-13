@@ -1,4 +1,4 @@
-using NuGet.Packaging;
+﻿using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Data.Services.Common;
@@ -162,7 +162,7 @@ namespace NuGetPe
 
         public SignatureInfo PublisherSignature => CorePackage?.PublisherSignature;
 
-        public IReadOnlyList<SignatureInfo> RepositorySignatures => CorePackage?.RepositorySignatures ?? new List<SignatureInfo>();
+        public SignatureInfo RepositorySignature => CorePackage?.RepositorySignature;
 
         public VerifySignaturesResult VerificationResult => CorePackage?.VerificationResult;
 

@@ -223,11 +223,11 @@ namespace PackageExplorer.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Repository Signatures:.
+        ///   Looks up a localized string similar to Repository:.
         /// </summary>
-        public static string Dialog_RepositorySignatures {
+        public static string Dialog_RepositoryLabel {
             get {
-                return ResourceManager.GetString("Dialog_RepositorySignatures", resourceCulture);
+                return ResourceManager.GetString("Dialog_RepositoryLabel", resourceCulture);
             }
         }
         
