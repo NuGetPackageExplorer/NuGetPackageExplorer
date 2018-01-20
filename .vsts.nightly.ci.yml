@@ -46,11 +46,9 @@ steps:
     $doc = Get-Content ".\Build\store_badge.svg"    
     $doc | % { $_.Replace("ver_number", "$ver.0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
     
-    # Choco uses MajorMinorVersion
-    $vers = & $(Build.SourcesDirectory)\packages\nerdbank.gitversioning\tools\Get-Version.ps1
-    $ver = $vers.MajorMinorVersion
-    
-    nuget pack .\PackageExplorer\NuGetPackageExplorer.nuspec -version $ver -OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly  
+    # Choco and NuGet versions    
+    nuget pack .\PackageExplorer\NuGetPackageExplorer.nuspec -version $ver -OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly\Choco
+    msbuild /t:pack .\Types\Types.csproj /p:Configuration=$(BuildConfiguration) /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
         
   displayName: Build Nightly
   
