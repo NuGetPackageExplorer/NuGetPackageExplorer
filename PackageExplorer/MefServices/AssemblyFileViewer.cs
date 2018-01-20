@@ -18,18 +18,20 @@ namespace PackageExplorer
         public object GetView(string extension, Stream stream)
         {
             var tempFile = Path.GetTempFileName();
-            using (var fileStream = File.OpenWrite(tempFile))
-            {
-                stream.CopyTo(fileStream);
-            }
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
             try
             {
+                using (var fileStream = File.OpenWrite(tempFile))
+                {
+                    stream.CopyTo(fileStream);
+                }
+
                 var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile);
 
-                var grid = new Grid();
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
                 if (assemblyMetadata != null)
                 {
@@ -59,9 +61,8 @@ namespace PackageExplorer
                         grid.Children.Add(value);
                     }
                 }
-
-                return grid;
             }
+            catch { }
             finally
             {
                 if (File.Exists(tempFile))
@@ -75,6 +76,8 @@ namespace PackageExplorer
                     }
                 }
             }
+
+            return grid;
         }
 
         #endregion
