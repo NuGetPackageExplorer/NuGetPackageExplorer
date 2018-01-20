@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <Authors>Luan Nguyen,Julian Verdurmen</Authors>
+    <Authors>Luan Nguyen,Julian Verdurmen,Oren Novotny</Authors>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageIconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/images/nuget.png</PackageIconUrl>

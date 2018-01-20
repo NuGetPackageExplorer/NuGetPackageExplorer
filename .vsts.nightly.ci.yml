@@ -22,7 +22,7 @@ steps:
     msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
     
     # version    
-    nuget install NerdBank.GitVersioning -Version 2.1.7 -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
+    nuget install NerdBank.GitVersioning -Version 2.1.11 -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
     
     $vers = & $(Build.SourcesDirectory)\packages\nerdbank.gitversioning\tools\Get-Version.ps1
     $ver = $vers.SimpleVersion

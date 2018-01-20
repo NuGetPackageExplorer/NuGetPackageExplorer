@@ -9,13 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageViewModel", "Package
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{32DED69B-057F-4E5E-B171-A9B1557CA2BC}"
-	ProjectSection(SolutionItems) = preProject
-		Build\Build.proj = Build\Build.proj
-		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
-		Directory.Build.props = Directory.Build.props
-	EndProjectSection
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Types", "Types\Types.csproj", "{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9BCEC868-73D3-4393-8099-D4DF2DC6DB74}"
@@ -23,6 +16,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		.vsts.nightly.ci.yml = .vsts.nightly.ci.yml
 		appveyor.yml = appveyor.yml
+		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
+		Directory.Build.props = Directory.Build.props
 		LICENSE = LICENSE
 		README-developers.md = README-developers.md
 		README.md = README.md
