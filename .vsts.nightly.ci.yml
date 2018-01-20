@@ -53,6 +53,8 @@ steps:
 
     nuget install chocolatey -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion 
     $choco = "$(Build.SourcesDirectory)\packages\chocolatey\tools\chocolateyInstall\choco.exe"
+    
+    mkdir $(Build.ArtifactStagingDirectory)\Nightly\Choco
 
     & $choco pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $nugetVer --OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly\Choco
     msbuild /t:pack .\Types\Types.csproj /p:Configuration=$(BuildConfiguration) /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
