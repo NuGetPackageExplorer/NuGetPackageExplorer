@@ -16,7 +16,7 @@ skip_branch_with_pr: true
 before_build:
     - ps: msbuild /t:restore PackageExplorer\NuGetPackageExplorer.csproj
     - ps: |
-        $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.1.7\tools\Get-Version.ps1
+        $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.1.11\tools\Get-Version.ps1
         $nugetVer = $vers.Version
         
         # Update appxmanifest
@@ -28,7 +28,7 @@ build:
   verbosity: minimal
 after_build:
 - ps: |
-    $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.1.7\tools\Get-Version.ps1
+    $vers = & $env:UserProfile\.nuget\packages\nerdbank.gitversioning\2.1.11\tools\Get-Version.ps1
     $nugetVer = $vers.NuGetPackageVersion
     choco pack PackageExplorer\NugetPackageExplorer.nuspec --version $nugetVer
 
