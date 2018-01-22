@@ -19,12 +19,16 @@
             </TextBlock>
 
             <TextBlock Margin="0,5,0,0">
-				<Run Text="Author: Luan Nguyen (" /><Hyperlink NavigateUri="http://twitter.com/dotnetjunky/" Click="Hyperlink_Click"><Run Text="@dotnetjunky" /></Hyperlink><Run Text=")" />
+				<Run Text="Original Author: " /><Hyperlink NavigateUri="https://twitter.com/dotnetjunky" Click="Hyperlink_Click"><Run Text="Luan Nguyen" /></Hyperlink>
             </TextBlock>
             <TextBlock Margin="0,5,0,0">
-                <Run Text="Maintainers: Daniel Plaisted, Julian Verdurmen, Oren Novotny" /></TextBlock>
+                <Run Text="Maintainers: " />
+                <Hyperlink NavigateUri="https://github.com/304NotModified" Click="Hyperlink_Click"><Run Text="Julian Verdurmen" /></Hyperlink><Run Text=", "/>
+                <Hyperlink NavigateUri="https://twitter.com/onovotny" Click="Hyperlink_Click"><Run Text="Oren Novotny" /></Hyperlink><Run Text=", "/>
+                <Hyperlink NavigateUri="https://twitter.com/dsplaisted" Click="Hyperlink_Click"><Run Text="Daniel Plaisted" /></Hyperlink>
+            </TextBlock>
             <TextBlock Margin="0,5,0,0">
-				<Run Text="Text editor powered by " /><Hyperlink NavigateUri="http://wiki.sharpdevelop.net/AvalonEdit.ashx" Click="Hyperlink_Click"><Run Text="AvalonEdit control" /></Hyperlink><Run Text="." />
+				<Run Text="Text editor powered by " /><Hyperlink NavigateUri="https://github.com/icsharpcode/SharpDevelop/wiki/AvalonEdit" Click="Hyperlink_Click"><Run Text="AvalonEdit control" /></Hyperlink><Run Text="." />
             </TextBlock>
             <TextBlock Margin="0,5,0,0">
 				<Run Text="Some dialogs are provided by " /><Hyperlink NavigateUri="http://www.ookii.org/software/dialogs/" Click="Hyperlink_Click"><Run Text="Ookii.Dialogs" /></Hyperlink><Run Text="." />
