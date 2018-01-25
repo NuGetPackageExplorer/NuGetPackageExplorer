@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace NuGetPe
 {
@@ -7,11 +8,14 @@ namespace NuGetPe
         public EmptyFolderFile(string folderPath)
             : base(System.IO.Path.Combine(folderPath, NuGetPe.Constants.PackageEmptyFileName))
         {
+            LastWriteTime = DateTimeOffset.UtcNow; 
         }
 
         public override Stream GetStream()
         {
             return Stream.Null;
         }
+
+        
     }
 }
