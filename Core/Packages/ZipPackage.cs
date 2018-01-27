@@ -218,12 +218,7 @@ namespace NuGetPe
 
         public int DownloadCount
         {
-            get { return 0; }
-        }
-
-        public int VersionDownloadCount
-        {
-            get { return 0; }
+            get { return -1; }
         }
 
         public bool IsAbsoluteLatestVersion

@@ -124,11 +124,6 @@ namespace PackageExplorerViewModel
             get { return -1; }
         }
 
-        public int VersionDownloadCount
-        {
-            get { return -1; }
-        }
-
         public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies
         {
             get { return Enumerable.Empty<FrameworkAssemblyReference>(); }

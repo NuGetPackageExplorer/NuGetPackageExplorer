@@ -1,19 +1,11 @@
 ﻿using System;
-using System.Data.Services.Common;
 using NuGet.Packaging.Core;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 
 namespace NuGetPe
 {
-    public interface IPackageInfoType
-    {
-        bool ShowAll { get; set; }
-    }
-
-    [DataServiceKey("Id", "Version")]
-    [HasStreamAttribute]
-    public class PackageInfo : IPackageInfoType
+    public class PackageInfo
     {
         public PackageInfo() { }
 
@@ -27,7 +19,7 @@ namespace NuGetPe
             }
             Authors = packageSearchMetadata.Authors;
             Published = packageSearchMetadata.Published;
-            VersionDownloadCount = DownloadCount = (int)packageSearchMetadata.DownloadCount.GetValueOrDefault();
+            DownloadCount = (int)packageSearchMetadata.DownloadCount.GetValueOrDefault();
         }
 
         private string _version;
@@ -58,9 +50,7 @@ namespace NuGetPe
         public PackageIdentity Identity => new PackageIdentity(Id, SemanticVersion);
 
         public string Authors { get; set; }
-        public int VersionDownloadCount { get; set; }
         public int DownloadCount { get; set; }
-        public bool ShowAll { get; set; }
         public DateTimeOffset? Published { get; set; }
 
         public bool IsUnlisted
@@ -76,14 +66,6 @@ namespace NuGetPe
             get
             {
                 return SemanticVersion != null && SemanticVersion.IsPrerelease;
-            }
-        }
-
-        public int EffectiveDownloadCount
-        {
-            get
-            {
-                return ShowAll ? VersionDownloadCount : DownloadCount;
             }
         }
 
