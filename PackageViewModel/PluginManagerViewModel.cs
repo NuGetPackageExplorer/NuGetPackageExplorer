@@ -93,10 +93,9 @@ namespace PackageExplorerViewModel
             if (selectedPackageInfo != null)
             {
                 var repository = _packageChooser.PluginRepository;
-                var downloadResource = await repository.GetResourceAsync<DownloadResource>();
 
                 IPackage package = await _packageDownloader.Download(
-                    downloadResource,
+                    repository,
                     selectedPackageInfo.Identity);
 
                 if (package != null)

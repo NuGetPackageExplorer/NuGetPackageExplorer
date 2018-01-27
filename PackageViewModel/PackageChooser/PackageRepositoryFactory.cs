@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
@@ -9,8 +8,6 @@ namespace PackageExplorerViewModel
 {
     public static class PackageRepositoryFactory
     {
-        private static IEnumerable<Lazy<INuGetResourceProvider>> _providers = Repository.Provider.GetCoreV3();
-
         public static SourceRepository CreateRepository(string source, ICredentialManager credentialManager)
         {
             if (source == null)
@@ -27,7 +24,7 @@ namespace PackageExplorerViewModel
             {
                 return null;
             }
-            
+
             var packageSource = new PackageSource(source);
 
             if (!uri.IsFile)
@@ -43,7 +40,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            return Repository.CreateSource(_providers, packageSource);
+            return Repository.CreateSource(Repository.Provider.GetCoreV3(), packageSource);
         }
 
         public static SourceRepository CreateRepository(string source) => CreateRepository(source, null);

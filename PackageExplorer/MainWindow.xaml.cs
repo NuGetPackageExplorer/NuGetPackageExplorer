@@ -321,10 +321,8 @@ namespace PackageExplorer
 
             if (cachePackage == null)
             {
-                var downloadResource = await repository.GetResourceAsync<DownloadResource>();
-
                 var downloadedPackage = await PackageDownloader.Download(
-                    downloadResource,
+                    repository,
                     selectedPackageInfo.Identity);
 
                 if (downloadedPackage != null)
@@ -512,10 +510,9 @@ namespace PackageExplorer
             if (Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl) && downloadUrl.IsRemoteUri())
             {
                 var repository = PackageRepositoryFactory.CreateRepository(packageUrl);
-                var downloadResouce = await repository.GetResourceAsync<DownloadResource>();
                 var packageIdentity = new NuGet.Packaging.Core.PackageIdentity(id, version);
 
-                var downloadedPackage = await PackageDownloader.Download(downloadResouce, packageIdentity);
+                var downloadedPackage = await PackageDownloader.Download(repository, packageIdentity);
                 if (downloadedPackage != null)
                 {
                     LoadPackage(downloadedPackage, packageUrl, PackageType.DataServicePackage);

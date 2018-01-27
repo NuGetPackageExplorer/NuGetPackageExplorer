@@ -78,9 +78,7 @@ namespace PackageExplorer
                         selectedFilePath += NuGetPe.Constants.PackageExtension;
                     }
 
-                    var downloadResource = await repository.GetResourceAsync<DownloadResource>();
-
-                    await PackageDownloader.Download(selectedFilePath, downloadResource, packageInfo.Identity);                    
+                    await PackageDownloader.Download(selectedFilePath, repository, packageInfo.Identity);                    
                 }
             }
         }

@@ -7,7 +7,7 @@ namespace NuGetPackageExplorer.Types
 {
     public interface INuGetPackageDownloader
     {
-        Task<ISignaturePackage> Download(DownloadResource downloadResource, PackageIdentity packageIdentity);
-        Task Download(string targetFilePath, DownloadResource downloadResource, PackageIdentity packageIdentity);
+        Task<ISignaturePackage> Download(SourceRepository sourceRepository, PackageIdentity packageIdentity);
+        Task Download(string targetFilePath, SourceRepository sourceRepository, PackageIdentity packageIdentity);
     }
 }
