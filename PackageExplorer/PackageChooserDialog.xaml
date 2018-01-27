@@ -83,20 +83,15 @@
 
             <TextBlock Margin="0,0,7,0" VerticalAlignment="Center">
                 <TextBlock.Text>
-                    <MultiBinding Mode="OneWay" StringFormat="{}{0:N0} to {1:N0} of {2:N0}" ConverterCulture="{x:Static g:CultureInfo.CurrentCulture}">
+                    <MultiBinding Mode="OneWay" StringFormat="{}{0:N0} to {1:N0}" ConverterCulture="{x:Static g:CultureInfo.CurrentCulture}">
                         <Binding Path="BeginPackage" />
                         <Binding Path="EndPackage" />
-                        <Binding Path="TotalPackageCount" />
                     </MultiBinding>
                 </TextBlock.Text>
             </TextBlock>
 
             <self:GrayscaleButton Style="{StaticResource NavigationButtonStyle}" Command="{Binding NavigationCommand}" CommandParameter="Next">
                 <self:GrayscaleImage Source="Images/MoveNextHS.png" />
-            </self:GrayscaleButton>
-
-            <self:GrayscaleButton Style="{StaticResource NavigationButtonStyle}" Command="{Binding NavigationCommand}" CommandParameter="Last">
-                <self:GrayscaleImage Source="Images/MoveLastHS.png" />
             </self:GrayscaleButton>
         </StackPanel>
 
@@ -155,8 +150,7 @@
             Margin="0,5" 
             SelectedItem="{Binding SelectedPackageViewModel}"
             RowDetailsVisibilityMode="VisibleWhenSelected"
-            ItemsSource="{Binding Packages}"
-            Sorting="PackageGrid_Sorting">
+            ItemsSource="{Binding Packages}">
 
             <DataGrid.CellStyle>
                 <Style TargetType="DataGridCell">
@@ -225,17 +219,6 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding LatestPackageInfo.EffectiveDownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-
-                <DataGridTemplateColumn Header="Size" Width="100" SortMemberPath="PackageSize">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock 
-                                Text="{Binding LatestPackageInfo.PackageSize, Converter={StaticResource FileSizeConverter}}" 
-                                Visibility="{Binding ShowingAllVersions, Converter={StaticResource invertedBoolToVis}}"
-                                TextAlignment="Center" />
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

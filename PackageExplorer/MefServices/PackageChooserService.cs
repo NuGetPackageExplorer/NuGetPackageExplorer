@@ -3,6 +3,7 @@ using System.ComponentModel.Composition;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
+using NuGet.Protocol.Core.Types;
 
 namespace PackageExplorer
 {
@@ -31,6 +32,8 @@ namespace PackageExplorer
 
         #region IPackageChooser Members
 
+        public SourceRepository Repository => _viewModel.ActiveRepository;
+
         public PackageInfo SelectPackage(string searchTerm)
         {
             if (_dialog == null)
@@ -49,11 +52,12 @@ namespace PackageExplorer
 
         private async void OnPackageDownloadRequested(object sender, EventArgs e)
         {
+            var repository = _viewModel.ActiveRepository;
             var packageInfo = _viewModel.SelectedPackage;
             if (packageInfo != null)
             {
 
-                var packageName = packageInfo.Id + "." + packageInfo.Version.ToString() + NuGetPe.Constants.PackageExtension;
+                var packageName = packageInfo.Id + "." + packageInfo.Version + NuGetPe.Constants.PackageExtension;
                 var title = "Save " + packageName;
                 const string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
 
@@ -74,10 +78,14 @@ namespace PackageExplorer
                         selectedFilePath += NuGetPe.Constants.PackageExtension;
                     }
 
-                    await PackageDownloader.Download(selectedFilePath, packageInfo.DownloadUrl, packageInfo.Id, packageInfo.Version);                    
+                    var downloadResource = await repository.GetResourceAsync<DownloadResource>();
+
+                    await PackageDownloader.Download(selectedFilePath, downloadResource, packageInfo.Identity);                    
                 }
             }
         }
+
+        public SourceRepository PluginRepository => _pluginViewModel.ActiveRepository;
 
         public PackageInfo SelectPluginPackage()
         {

@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Services.Client;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NuGet.Common;
 using NuGet.Packaging;
+using NuGet.Protocol.Core.Types;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
     public class PackageInfoViewModel : ViewModelBase
     {
-        private readonly IPackageRepository _repository;
+        private readonly SourceRepository _repository;
         private bool _isLoading;
         private string _errorMessage;
         private bool _showingAllVersions;
@@ -24,9 +24,9 @@ namespace PackageExplorerViewModel
         private bool _hasFinishedLoading;
 
         public PackageInfoViewModel(
-            PackageInfo info, 
+            PackageInfo info,
             bool showPrereleasePackages,
-            IPackageRepository repository,
+            SourceRepository repository,
             PackageChooserViewModel parentViewModel)
         {
             Debug.Assert(info != null);
@@ -105,7 +105,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public bool HasFinishedLoading 
+        public bool HasFinishedLoading
         {
             get
             {
@@ -134,7 +134,7 @@ namespace PackageExplorerViewModel
                 {
                     _isLoading = value;
                     OnPropertyChanged();
-                    
+
                     // we don't need to raise this event because the Cancel button
                     // is only visible when IsLoading = true anyway.
                     //CancelCommand.RaiseCanExecuteChanged();
@@ -175,51 +175,14 @@ namespace PackageExplorerViewModel
 
             try
             {
-                var query = _repository.GetPackagesById(LatestPackageInfo.Id, ShowPrerelease);
-                query = query.OrderByDescending(p => p.Published);
+                var packageMetadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
 
-                var packageInfos = GetPackageInfos(query, _repository);
+                var query = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Id, ShowPrerelease, ShowPrerelease, new SourceCacheContext(), NullLogger.Instance, _downloadCancelSource.Token);
 
-                PackageInfo[] packageInfoList = null;
-                var resourceNotFoundError = false;
-                try
-                {
-                    packageInfoList = await LoadData(packageInfos, _downloadCancelSource.Token);
-                }
-                catch (DataServiceQueryException ex)
-                {
-                    resourceNotFoundError = IsResourceNotFoundError(ex);
-                    if (!resourceNotFoundError) throw;
-                }
-
-                // for a 404 error, use the legacy way to find packages by id,
-                // which requires filtering pre-release packages after the fact
-                if (resourceNotFoundError)
-                {
-                    query = ((DataServicePackageRepository)_repository).LegacyGetPackagesById(LatestPackageInfo.Id);
-                    packageInfos = GetPackageInfos(query, _repository);
-                    packageInfoList = await LoadData(packageInfos, _downloadCancelSource.Token);
-                    if (!ShowPrerelease)
-                    {
-                        packageInfoList = Array.FindAll(packageInfoList, p => !p.IsPrerelease);
-                    }
-                }
-
-                if (_repository is DataServicePackageRepository dataServiceRepository)
-                {
-                    foreach (var entity in packageInfoList)
-                    {
-                        entity.DownloadUrl = dataServiceRepository.GetReadStreamUri(entity);
-                    }
-                }
-
-                foreach (var p in packageInfoList)
-                {
-                    p.ShowAll = true;
-                }
+                query = query.OrderByDescending(p => p.Identity.Version);
 
                 // now show packages
-                AllPackages.AddRange(packageInfoList);
+                AllPackages.AddRange(query.Select(p => new PackageInfo(p)));
 
                 HasFinishedLoading = true;
             }
@@ -235,69 +198,6 @@ namespace PackageExplorerViewModel
                 _downloadCancelSource = null;
                 IsLoading = false;
             }
-        }
-
-        private static bool IsResourceNotFoundError(DataServiceQueryException ex)
-        {
-            return ex.InnerException is DataServiceClientException &&
-                ((DataServiceClientException)ex.InnerException).StatusCode == 404;
-        }
-
-        private static IQueryable<PackageInfo> GetPackageInfos(IQueryable<IPackage> query, IPackageRepository repository)
-        {
-            if (repository is DataServicePackageRepository)
-            {
-                return query.Cast<DataServicePackage>().Select(p => new PackageInfo
-                    {
-                        Id = p.Id,
-                        Version = p.Version,
-                        Authors = p.Authors,
-                        DownloadCount = p.DownloadCount,
-                        VersionDownloadCount = p.VersionDownloadCount,
-                        PackageHash = p.PackageHash,
-                        PackageSize = p.PackageSize,
-                        Published = p.Published
-                    });
-            }
-            else
-            {
-                return query.Cast<ZipPackage>().Select(p => new PackageInfo
-                    {
-                        Id = p.Id,
-                        Version = p.Version.ToString(),
-                        Authors = string.Join(", ", p.Authors),
-                        DownloadCount = p.DownloadCount,
-                        VersionDownloadCount = p.VersionDownloadCount,
-                        PackageHash = p.PackageHash,
-                        PackageSize = p.PackageSize,
-                        DownloadUrl = new Uri(p.Source),
-                        Published = p.Published,
-                    });
-            }
-        }
-
-        protected async Task<PackageInfo[]> LoadData(IQueryable<PackageInfo> query, CancellationToken token)
-        {
-            PackageInfo[] results;
-
-            if (query is DataServiceQuery<PackageInfo> dataServiceQuery)
-            {
-                dataServiceQuery = dataServiceQuery.AddQueryOption("semVerLevel", "2.0.0");
-                var queryResponse =
-                    await Task.Factory.FromAsync<IEnumerable<PackageInfo>>(dataServiceQuery.BeginExecute(null, null), dataServiceQuery.EndExecute);
-
-                token.ThrowIfCancellationRequested();
-                results = queryResponse.ToArray();
-            }
-            else
-            {
-                results = await Task.Run((Func<PackageInfo[]>)query.ToArray, token);
-            }
-
-            // sort by Version descending
-            Array.Sort(results, (a, b) => b.SemanticVersion.CompareTo(a.SemanticVersion));
-
-            return results;
         }
 
         private bool CanToggleAllVersions()
@@ -344,8 +244,8 @@ namespace PackageExplorerViewModel
 
         private bool CanCancelDownload()
         {
-            return IsLoading && 
-                   _downloadCancelSource != null && 
+            return IsLoading &&
+                   _downloadCancelSource != null &&
                    !_downloadCancelSource.IsCancellationRequested;
         }
 
@@ -364,8 +264,8 @@ namespace PackageExplorerViewModel
             {
                 OnCancelDownload();
             }
-            
-            if (ShowingAllVersions) 
+
+            if (ShowingAllVersions)
             {
                 ShowingAllVersions = false;
             }

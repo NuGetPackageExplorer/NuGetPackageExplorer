@@ -28,7 +28,6 @@
     <PackageReference Include="AvalonEdit" Version="5.0.4" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.6.0-rtm-4849" />
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
   </ItemGroup>
 

@@ -11,6 +11,7 @@ using NuGetPe;
 using NuGetPackageExplorer.Types;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using NuGet.Packaging;
+using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -27,6 +28,7 @@ namespace PackageExplorerViewModel
         private readonly PackageFolder _packageRoot;
         private readonly IList<Lazy<IPackageRule>> _packageRules;
         private readonly ISettingsManager _settingsManager;
+        private readonly ICredentialManager _credentialManager;
         private readonly IUIServices _uiServices;
 
         private ICommand _addContentFileCommand;
@@ -70,10 +72,12 @@ namespace PackageExplorerViewModel
             IUIServices uiServices,
             IPackageEditorService editorService,
             ISettingsManager settingsManager,
+            ICredentialManager credentialManager,
             IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata,
             IList<Lazy<IPackageRule>> packageRules)
         {
             _settingsManager = settingsManager ?? throw new ArgumentNullException("settingsManager");
+            _credentialManager = credentialManager ?? throw new ArgumentNullException("credentialManager");
             _editorService = editorService ?? throw new ArgumentNullException("editorService");
             _uiServices = uiServices ?? throw new ArgumentNullException("uiServices");
             _mruManager = mruManager ?? throw new ArgumentNullException("mruManager");
@@ -720,6 +724,7 @@ namespace PackageExplorerViewModel
                 var publishPackageViewModel = new PublishPackageViewModel(
                     mruSourceManager,
                     _settingsManager,
+                    _credentialManager,
                     this);
                 _uiServices.OpenPublishDialog(publishPackageViewModel);
             }

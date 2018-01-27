@@ -74,6 +74,7 @@ namespace PackageExplorerViewModel
                 UIServices,
                 EditorService.Value,
                 SettingsManager,
+                CredentialManager,
                 ContentViewerMetadata,
                 PackageRules);
         }

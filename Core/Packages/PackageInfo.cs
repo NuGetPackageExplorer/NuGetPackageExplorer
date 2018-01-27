@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Data.Services.Common;
+using NuGet.Packaging.Core;
+using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 
 namespace NuGetPe
@@ -13,6 +15,21 @@ namespace NuGetPe
     [HasStreamAttribute]
     public class PackageInfo : IPackageInfoType
     {
+        public PackageInfo() { }
+
+        public PackageInfo(IPackageSearchMetadata packageSearchMetadata)
+        {
+            Id = packageSearchMetadata.Identity.Id;
+            if (packageSearchMetadata.Identity.HasVersion)
+            {
+                _version = packageSearchMetadata.Identity.Version.ToString();
+                _semanticVersion = packageSearchMetadata.Identity.Version;
+            }
+            Authors = packageSearchMetadata.Authors;
+            Published = packageSearchMetadata.Published;
+            VersionDownloadCount = DownloadCount = (int)packageSearchMetadata.DownloadCount.GetValueOrDefault();
+        }
+
         private string _version;
         private NuGetVersion _semanticVersion;
 
@@ -38,12 +55,11 @@ namespace NuGetPe
             }
         }
 
+        public PackageIdentity Identity => new PackageIdentity(Id, SemanticVersion);
+
         public string Authors { get; set; }
         public int VersionDownloadCount { get; set; }
         public int DownloadCount { get; set; }
-        public string PackageHash { get; set; }
-        public Uri DownloadUrl { get; set; }
-        public long PackageSize { get; set; }
         public bool ShowAll { get; set; }
         public DateTimeOffset? Published { get; set; }
 
@@ -71,35 +87,12 @@ namespace NuGetPe
             }
         }
 
-        public bool IsLocalPackage
-        {
-            get
-            {
-                return DownloadUrl.IsFile;
-            }
-        }
-
         public NuGetVersion SemanticVersion
         {
             get
             {
                 return _semanticVersion;
             }
-        }
-
-        public DataServicePackage AsDataServicePackage()
-        {
-            return new DataServicePackage
-                   {
-                       Id = Id,
-                       Version = _semanticVersion.ToNormalizedString(),
-                       Authors = Authors,
-                       VersionDownloadCount = VersionDownloadCount,
-                       DownloadCount = DownloadCount,
-                       PackageHash = PackageHash,
-                       Published = Published,
-                       IsPrerelease = IsPrerelease
-                   };
         }
     }
 }

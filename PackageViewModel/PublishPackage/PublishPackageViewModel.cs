@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
 using System.Net;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
 using NuGet.Packaging;
+using NuGet.Protocol.Core.Types;
+using NuGet.Common;
+using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -18,6 +17,7 @@ namespace PackageExplorerViewModel
         private readonly IPackageMetadata _package;
         private readonly string _packageFilePath;
         private readonly ISettingsManager _settingsManager;
+        private readonly ICredentialManager _credentialManager;
         private bool _canPublish = true;
         private bool _hasError;
         private string _publishKey;
@@ -31,15 +31,16 @@ namespace PackageExplorerViewModel
         private bool _showProgress;
         private string _status;
         private bool _suppressReadingApiKey;
-        private GalleryServer _uploadHelper;
 
         public PublishPackageViewModel(
             MruPackageSourceManager mruSourceManager,
             ISettingsManager settingsManager,
+            ICredentialManager credentialManager,
             PackageViewModel viewModel)
         {
             _mruSourceManager = mruSourceManager;
             _settingsManager = settingsManager;
+            _credentialManager = credentialManager;
             _package = viewModel.PackageMetadata;
             _packageFilePath = viewModel.GetCurrentPackageTempFile();
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
@@ -249,19 +250,6 @@ namespace PackageExplorerViewModel
             IsAuthSet = (UseApiKey.HasValue && UseApiKey.Value && !string.IsNullOrWhiteSpace(PublishKey)) || (UseCredentials.HasValue && UseCredentials.Value && !string.IsNullOrWhiteSpace(PublishCredentialPassword)); ;
         }
 
-        public GalleryServer GalleryServer
-        {
-            get
-            {
-                if (_uploadHelper == null ||
-                    !PublishUrl.Equals(_uploadHelper.Source, StringComparison.OrdinalIgnoreCase))
-                {
-                    _uploadHelper = new GalleryServer(PublishUrl, HttpUtility.CreateUserAgentString(Constants.UserAgentClient));
-                }
-                return _uploadHelper;
-            }
-        }
-
         public string Status
         {
             get { return _status; }
@@ -312,15 +300,27 @@ namespace PackageExplorerViewModel
 
             try
             {
+                var url = PublishUrl;
+                if (AppendV2ApiToUrl.HasValue && AppendV2ApiToUrl.Value)
+                {
+                    url = url.TrimEnd('/') + "/api/v2/package";
+                }
+
                 if (UseCredentials.HasValue && UseCredentials.Value)
                 {
-                    await GalleryServer.PushPackageWithCredentials(_packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false, PublishCredentialUsername, PublishCredentialPassword);
+                    _credentialManager.Add(new NetworkCredential(PublishCredentialUsername, PublishCredentialPassword), new Uri(url));
                 }
-                else
+
+                var repository = PackageRepositoryFactory.CreateRepository(url, _credentialManager);
+                var updateResource = await repository.GetResourceAsync<PackageUpdateResource>();
+
+                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKey, s => PublishKey, NullLogger.Instance);
+
+                if (PublishAsUnlisted == true)
                 {
-                    await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false);
+                    await updateResource.Delete(Id, Version, s => PublishKey, s => true, NullLogger.Instance);
                 }
-                
+
                 OnCompleted();
             }
             catch (Exception exception)
