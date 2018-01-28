@@ -159,11 +159,6 @@ namespace PackageExplorerViewModel
             get { return 0; }
         }
 
-        public string PackageHash
-        {
-            get { return null; }
-        }
-
         public DateTimeOffset? Published
         {
             get { return DateTimeOffset.Now; }

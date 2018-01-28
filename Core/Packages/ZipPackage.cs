@@ -257,11 +257,6 @@ namespace NuGetPe
             }
         }
 
-        public string PackageHash
-        {
-            get { return null; }
-        }
-
         public bool IsPrerelease
         {
             get

@@ -148,11 +148,6 @@ namespace NuGetPe
             get { return 0; }
         }
 
-        public string PackageHash
-        {
-            get { return null; }
-        }
-
         public Version MinClientVersion
         {
             get; private set;
