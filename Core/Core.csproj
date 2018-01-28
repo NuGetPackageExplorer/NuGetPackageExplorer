@@ -21,7 +21,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.6.0-rtm-4849" />
     <PackageReference Include="System.Reflection.Metadata" Version="1.5.0" />
   </ItemGroup>
   

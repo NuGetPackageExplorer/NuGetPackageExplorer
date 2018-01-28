@@ -428,7 +428,7 @@ namespace PackageExplorerViewModel
             Packages.Clear();
             if (_packageRepository != null)
             {
-                Packages.AddRange(packages.Select(p => new PackageInfoViewModel(new PackageInfo(p), ShowPrereleasePackages, _packageRepository, this)));
+                Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, _packageRepository, this)));
             }
             UpdatePageNumber(beginPackage, endPackage);
         }

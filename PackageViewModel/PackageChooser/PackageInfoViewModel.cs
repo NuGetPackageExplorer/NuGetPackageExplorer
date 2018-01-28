@@ -44,6 +44,14 @@ namespace PackageExplorerViewModel
             CancelCommand = new RelayCommand(OnCancelDownload, CanCancelDownload);
         }
 
+        public PackageInfoViewModel(
+            IPackageSearchMetadata info,
+            bool showPrereleasePackages,
+            SourceRepository repository,
+            PackageChooserViewModel parentViewModel)
+            : this(ToPackageInfo(info), showPrereleasePackages, repository, parentViewModel)
+        { }
+
         public ObservableCollection<PackageInfo> AllPackages { get; private set; }
 
         public PackageInfo SelectedPackage
@@ -182,7 +190,7 @@ namespace PackageExplorerViewModel
                 query = query.OrderByDescending(p => p.Identity.Version);
 
                 // now show packages
-                AllPackages.AddRange(query.Select(p => new PackageInfo(p)));
+                AllPackages.AddRange(query.Select(ToPackageInfo));
 
                 HasFinishedLoading = true;
             }
@@ -269,6 +277,18 @@ namespace PackageExplorerViewModel
             {
                 ShowingAllVersions = false;
             }
+        }
+
+        private static PackageInfo ToPackageInfo(IPackageSearchMetadata packageSearchMetadata)
+        {
+            return new PackageInfo
+            {
+                Id = packageSearchMetadata.Identity.Id,
+                SemanticVersion = packageSearchMetadata.Identity.Version,
+                Authors = packageSearchMetadata.Authors,
+                Published = packageSearchMetadata.Published,
+                DownloadCount = (int)packageSearchMetadata.DownloadCount.GetValueOrDefault(),
+            };
         }
     }
 }

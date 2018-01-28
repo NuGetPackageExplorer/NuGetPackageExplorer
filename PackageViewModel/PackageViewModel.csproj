@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="NuGet.PackageManagement" Version="4.6.0-rtm-4849" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <Reference Include="PresentationCore" />
     <Reference Include="System.ComponentModel.Composition" />
