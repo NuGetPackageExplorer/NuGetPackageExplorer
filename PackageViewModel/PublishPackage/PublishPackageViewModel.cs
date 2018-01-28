@@ -156,12 +156,12 @@ namespace PackageExplorerViewModel
                 {
                     _useApiKey = value;
                     OnPropertyChanged(nameof(UseApiKey));
+                    OnPropertyChanged(nameof(UseCredentials));
                     CheckIfAuthIsSet();
                 }
             }
         }
         public bool? UseCredentials
-
         {
             get { return !UseApiKey; }
             set
@@ -246,7 +246,8 @@ namespace PackageExplorerViewModel
 
         private void CheckIfAuthIsSet()
         {
-            IsAuthSet = (UseApiKey.HasValue && UseApiKey.Value && !string.IsNullOrWhiteSpace(PublishKey)) || (UseCredentials.HasValue && UseCredentials.Value && !string.IsNullOrWhiteSpace(PublishCredentialPassword)); ;
+            IsAuthSet = (UseApiKey.HasValue && UseApiKey.Value && !string.IsNullOrWhiteSpace(PublishKey)) || 
+                (UseCredentials.HasValue && UseCredentials.Value && !string.IsNullOrWhiteSpace(PublishCredentialUsername) && !string.IsNullOrWhiteSpace(PublishCredentialPassword));
         }
 
         public GalleryServer GalleryServer
