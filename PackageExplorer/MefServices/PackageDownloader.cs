@@ -96,7 +96,7 @@ namespace PackageExplorer
 
                 var providers = Repository.Provider.GetCoreV3().Concat(new[] { new Lazy<INuGetResourceProvider>(() => httpProgressProvider) });
                 var repository = Repository.CreateSource(providers, sourceRepository.PackageSource);
-                var downloadResource = await repository.GetResourceAsync<DownloadResource>();
+                var downloadResource = await repository.GetResourceAsync<DownloadResource>(cts.Token);
 
                 var context = new PackageDownloadContext(new SourceCacheContext(), Path.GetTempPath(), true);
 

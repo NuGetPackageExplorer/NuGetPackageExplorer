@@ -354,7 +354,7 @@ namespace PackageExplorerViewModel
             }
 
 
-            var searchResource = await repository.GetResourceAsync<PackageSearchResource>();
+            var searchResource = await repository.GetResourceAsync<PackageSearchResource>(CurrentCancellationTokenSource.Token);
             var filter = new SearchFilter(ShowPrereleasePackages);
 
             _currentQuery = new ShowLatestVersionQueryContext<IPackageSearchMetadata>(searchResource, _currentSearch, filter, ShowLatestVersionPageSize);

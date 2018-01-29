@@ -26,7 +26,7 @@ namespace PackageExplorerViewModel
 
         #region IQueryContext<T> Members
 
-        public int CurrentPage { get { return _pageIndex; } }
+        public int CurrentPage => _pageIndex;
 
         public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
         {

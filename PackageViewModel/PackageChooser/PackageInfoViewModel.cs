@@ -183,7 +183,7 @@ namespace PackageExplorerViewModel
 
             try
             {
-                var packageMetadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
+                var packageMetadataResource = await _repository.GetResourceAsync<PackageMetadataResource>(_downloadCancelSource.Token);
 
                 var query = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Id, ShowPrerelease, ShowPrerelease, new SourceCacheContext(), NullLogger.Instance, _downloadCancelSource.Token);
 
