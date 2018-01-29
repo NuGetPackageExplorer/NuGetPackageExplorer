@@ -1,13 +1,12 @@
 ﻿using System;
 using NuGet.Versioning;
-using NuGetPe;
 
 namespace NuGetPackageExplorer.Types
 {
     public enum PackageType
     {
         LocalPackage,
-        DataServicePackage
+        RemotePackage
     }
 
     public sealed class MruItem : IEquatable<MruItem>
@@ -25,7 +24,9 @@ namespace NuGetPackageExplorer.Types
             {
                 return false;
             }
-            return Path.Equals(other.Path, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(Path, other.Path, StringComparison.OrdinalIgnoreCase) && 
+                string.Equals(Id, other.Id, StringComparison.OrdinalIgnoreCase) && 
+                Version == other.Version;
         }
 
         #endregion
@@ -37,7 +38,16 @@ namespace NuGetPackageExplorer.Types
 
         public override int GetHashCode()
         {
-            return Path.GetHashCode();
+            return Tuple.Create(Path, Id, Version).GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrEmpty(Id))
+            {
+                return string.Format("{0} {1}", Id, Version);
+            }
+            return Path;
         }
     }
 }

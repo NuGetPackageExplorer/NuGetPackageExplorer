@@ -24,7 +24,7 @@ using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
 using NuGet.Packaging;
-using NuGet.Protocol.Core.Types;
+using PackageExplorerViewModel.Types;
 
 namespace PackageExplorer
 {
@@ -62,6 +62,9 @@ namespace PackageExplorer
 
         [Import]
         public IPackageViewModelFactory PackageViewModelFactory { get; set; }
+
+        [Import]
+        public ICredentialManager CredentialManager { get; set; }
 
         [ImportMany(AllowRecomposition = true)]
         public ObservableCollection<LazyPackageCommand> PackageCommands
@@ -310,7 +313,7 @@ namespace PackageExplorer
             {
                 LoadPackage(package,
                             repository.PackageSource.Source,
-                            PackageType.DataServicePackage);
+                            PackageType.RemotePackage);
 
                 // adding package to the cache, but with low priority
                 return Dispatcher.BeginInvoke(
@@ -507,15 +510,15 @@ namespace PackageExplorer
                 return;
             }
 
-            if (Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl) && downloadUrl.IsRemoteUri())
+            if (id != null && version != null && Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl) && downloadUrl.IsRemoteUri())
             {
-                var repository = PackageRepositoryFactory.CreateRepository(packageUrl);
+                var repository = PackageRepositoryFactory.CreateRepository(packageUrl, CredentialManager);
                 var packageIdentity = new NuGet.Packaging.Core.PackageIdentity(id, version);
 
                 var downloadedPackage = await PackageDownloader.Download(repository, packageIdentity);
                 if (downloadedPackage != null)
                 {
-                    LoadPackage(downloadedPackage, packageUrl, PackageType.DataServicePackage);
+                    LoadPackage(downloadedPackage, packageUrl, PackageType.RemotePackage);
                 }
             }
             else

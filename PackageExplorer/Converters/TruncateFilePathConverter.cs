@@ -13,7 +13,7 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var path = (string) value;
+            var path = value?.ToString();
             if (path == null)
             {
                 return null;
@@ -61,7 +61,11 @@ namespace PackageExplorer
                 }
             }
 
-            var parts = path.Split(new[] {separator}, StringSplitOptions.RemoveEmptyEntries);
+            var parts = path.Split(new[] { separator }, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length == 1)
+            {
+                return parts[0];
+            }
             var remainingLength = MaxLength - prefix.Length - 3; // 3 is the length of '...'
             var res = "";
             for (var i = parts.Length - 1; i >= 0; --i)

@@ -6,12 +6,12 @@ using NuGet.Protocol.Core.Types;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
 using Ookii.Dialogs.Wpf;
+using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
 using System;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -93,9 +93,9 @@ namespace PackageExplorer
             try
             {
                 var httpProgressProvider = new ProgressHttpHandlerResourceV3Provider(OnProgress);
+                var additionalProviders = new[] { new Lazy<INuGetResourceProvider>(() => httpProgressProvider) };
 
-                var providers = Repository.Provider.GetCoreV3().Concat(new[] { new Lazy<INuGetResourceProvider>(() => httpProgressProvider) });
-                var repository = Repository.CreateSource(providers, sourceRepository.PackageSource);
+                var repository = PackageRepositoryFactory.CreateRepository(sourceRepository.PackageSource, additionalProviders);
                 var downloadResource = await repository.GetResourceAsync<DownloadResource>(cts.Token);
 
                 var context = new PackageDownloadContext(new SourceCacheContext(), Path.GetTempPath(), true);
