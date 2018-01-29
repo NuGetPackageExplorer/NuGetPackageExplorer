@@ -9,7 +9,7 @@
       <Value Profile="(Default)">400</Value>
     </Setting>
     <Setting Name="PackageSource" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://nuget.org/api/v2/</Value>
+      <Value Profile="(Default)">https://api.nuget.org/v3/index.json</Value>
     </Setting>
     <Setting Name="WindowPlacement" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

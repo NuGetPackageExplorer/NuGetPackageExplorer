@@ -18,7 +18,8 @@ namespace PackageExplorerViewModel
             if (settingsManager.IsFirstTimeAfterUpdate)
             {
                 // migrate active package source
-                if (ActiveSource.Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
+                if (ActiveSource.Equals(NuGetConstants.V2FeedUrl, StringComparison.OrdinalIgnoreCase) ||
+                    ActiveSource.Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
                 {
                     ActiveSource = NuGetConstants.DefaultFeedUrl;
                 }
