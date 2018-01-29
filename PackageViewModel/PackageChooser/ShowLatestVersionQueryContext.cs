@@ -9,19 +9,21 @@ namespace PackageExplorerViewModel
 {
     internal class ShowLatestVersionQueryContext<T> : IQueryContext<T> where T : IPackageSearchMetadata
     {
-        private readonly PackageSearchResource _packageSearchResouce;
+        private readonly SourceRepository _sourceRepository;
         private readonly string _searchText;
-        private readonly SearchFilter _searchFilter;
+        private readonly bool _showPreReleasePackages;
         private readonly int _pageSize;
+        private PackageSearchResource _packageSearchResouce;
+        private SearchFilter _searchFilter;
         private int _pageIndex;
         private int? _lastPageIndex;
         private int? _lastPageCount;
 
-        public ShowLatestVersionQueryContext(PackageSearchResource source, string search, SearchFilter filter, int pageSize)
+        public ShowLatestVersionQueryContext(SourceRepository sourceRepository, string search, bool showPreReleasePackages, int pageSize)
         {
-            _packageSearchResouce = source;
+            _sourceRepository = sourceRepository;
             _searchText = search;
-            _searchFilter = filter;
+            _showPreReleasePackages = showPreReleasePackages;
             _pageSize = pageSize;
     }
 
@@ -37,6 +39,12 @@ namespace PackageExplorerViewModel
 
         public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
         {
+            if (_packageSearchResouce == null)
+            {
+                _packageSearchResouce = await _sourceRepository.GetResourceAsync<PackageSearchResource>(token);
+                _searchFilter = new SearchFilter(_showPreReleasePackages);
+            }
+
             var result = await _packageSearchResouce.SearchAsync(_searchText, _searchFilter, _pageIndex * _pageSize, _pageSize, NullLogger.Instance, token);
 
             token.ThrowIfCancellationRequested();
