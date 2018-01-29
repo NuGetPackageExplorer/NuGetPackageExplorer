@@ -201,7 +201,7 @@ namespace PackageExplorer
         {
             var response = await base.SendAsync(request, cancellationToken);
 
-            if (response.Content.Headers.ContentType.MediaType == "binary/octet-stream")
+            if (IsBinaryMediaType(response.Content.Headers.ContentType.MediaType))
             {
                 var totalSize = response.Content.Headers.ContentLength;
 
@@ -214,6 +214,12 @@ namespace PackageExplorer
             }
 
             return response;
+        }
+
+        private static bool IsBinaryMediaType(string mediaType)
+        {
+            return mediaType == "application/octet-stream" || // NuGet Protocol v3
+                mediaType == "binary/octet-stream"; // NuGet Protocol v2
         }
     }
 
@@ -246,10 +252,10 @@ namespace PackageExplorer
         {
             var result = _inner.Read(buffer, offset, count);
 
-            _length += result;
-
             if (result > 0)
             {
+                _length += result;
+
                 _progress(_length);
             }
 
@@ -261,6 +267,16 @@ namespace PackageExplorer
         public override void SetLength(long value) => _inner.SetLength(value);
 
         public override void Write(byte[] buffer, int offset, int count) => _inner.Write(buffer, offset, count);
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _inner.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 
     internal class ProgressHttpHandlerResourceV3Provider : ResourceProvider
