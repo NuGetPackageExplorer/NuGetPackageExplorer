@@ -143,11 +143,6 @@ namespace NuGetPe
             get { return DateTimeOffset.UtcNow; }
         }
 
-        public long PackageSize
-        {
-            get { return 0; }
-        }
-
         public Version MinClientVersion
         {
             get; private set;

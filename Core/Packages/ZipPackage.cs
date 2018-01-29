@@ -244,19 +244,6 @@ namespace NuGetPe
             }
         }
 
-        private long? _packageSize;
-        public long PackageSize
-        {
-            get
-            {
-                if (_packageSize == null)
-                {
-                    _packageSize = new FileInfo(Source).Length;
-                }
-                return _packageSize.Value;
-            }
-        }
-
         public bool IsPrerelease
         {
             get
