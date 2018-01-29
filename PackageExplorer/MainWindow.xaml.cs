@@ -63,9 +63,6 @@ namespace PackageExplorer
         [Import]
         public IPackageViewModelFactory PackageViewModelFactory { get; set; }
 
-        [Import]
-        public ICredentialManager CredentialManager { get; set; }
-
         [ImportMany(AllowRecomposition = true)]
         public ObservableCollection<LazyPackageCommand> PackageCommands
         {
@@ -512,7 +509,7 @@ namespace PackageExplorer
 
             if (id != null && version != null && Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl) && downloadUrl.IsRemoteUri())
             {
-                var repository = PackageRepositoryFactory.CreateRepository(packageUrl, CredentialManager);
+                var repository = PackageRepositoryFactory.CreateRepository(packageUrl);
                 var packageIdentity = new NuGet.Packaging.Core.PackageIdentity(id, version);
 
                 var downloadedPackage = await PackageDownloader.Download(repository, packageIdentity);

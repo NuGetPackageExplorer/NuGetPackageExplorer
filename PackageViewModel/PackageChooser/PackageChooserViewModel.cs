@@ -9,7 +9,6 @@ using System.Windows.Input;
 using NuGet.Packaging;
 using NuGet.Protocol.Core.Types;
 using NuGetPe;
-using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -28,7 +27,6 @@ namespace PackageExplorerViewModel
         private bool _isEditable = true;
         private SourceRepository _packageRepository;
         private MruPackageSourceManager _packageSourceManager;
-        private readonly ICredentialManager _credentialManager;
         private bool _showPrereleasePackages;
         private bool _autoLoadPackages;
         private string _statusContent;
@@ -36,7 +34,6 @@ namespace PackageExplorerViewModel
 
         public PackageChooserViewModel(
             MruPackageSourceManager packageSourceManager,
-            ICredentialManager credentialManager,
             bool showPrereleasePackages,
             bool autoLoadPackages,
             string fixedPackageSource)
@@ -52,7 +49,6 @@ namespace PackageExplorerViewModel
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
             _packageSourceManager = packageSourceManager ?? throw new ArgumentNullException("packageSourceManager");
-            _credentialManager = credentialManager ?? throw new ArgumentNullException("credentialManager");
         }
 
         public SourceRepository ActiveRepository
@@ -253,7 +249,7 @@ namespace PackageExplorerViewModel
         {
             if (_packageRepository == null)
             {
-                _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource, _credentialManager);
+                _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
             }
 
             return _packageRepository;

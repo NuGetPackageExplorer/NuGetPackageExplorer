@@ -7,7 +7,6 @@ using NuGetPackageExplorer.Types;
 using NuGetPe;
 using Ookii.Dialogs.Wpf;
 using PackageExplorerViewModel;
-using PackageExplorerViewModel.Types;
 using System;
 using System.ComponentModel.Composition;
 using System.Globalization;
@@ -31,9 +30,6 @@ namespace PackageExplorer
 
         [Import]
         public IUIServices UIServices { get; set; }
-
-        [Import(typeof(ICredentialManager))]
-        public ICredentialManager CredentialManager { get; set; }
 
         #region IPackageDownloader Members
 

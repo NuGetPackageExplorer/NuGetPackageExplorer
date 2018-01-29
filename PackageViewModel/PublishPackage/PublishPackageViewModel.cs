@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.Threading.Tasks;
 using NuGetPackageExplorer.Types;
 using NuGet.Packaging;
 using NuGet.Protocol.Core.Types;
 using NuGet.Common;
-using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -17,15 +15,10 @@ namespace PackageExplorerViewModel
         private readonly IPackageMetadata _package;
         private readonly string _packageFilePath;
         private readonly ISettingsManager _settingsManager;
-        private readonly ICredentialManager _credentialManager;
         private bool _canPublish = true;
         private bool _hasError;
         private string _publishKey;
-        private string _publishCredentialUsername;
-        private string _publishCredentialPassword;
-        private bool _isAuthSet;
         private bool? _publishAsUnlisted = true;
-        private bool? _useApiKey = true;
         private string _selectedPublishItem;
         private bool _showProgress;
         private string _status;
@@ -34,17 +27,14 @@ namespace PackageExplorerViewModel
         public PublishPackageViewModel(
             MruPackageSourceManager mruSourceManager,
             ISettingsManager settingsManager,
-            ICredentialManager credentialManager,
             PackageViewModel viewModel)
         {
             _mruSourceManager = mruSourceManager;
             _settingsManager = settingsManager;
-            _credentialManager = credentialManager;
             _package = viewModel.PackageMetadata;
             _packageFilePath = viewModel.GetCurrentPackageTempFile();
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
             PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
-            UseApiKey = _settingsManager.UseApiKey;
         }
 
         public string PublishKey
@@ -56,33 +46,6 @@ namespace PackageExplorerViewModel
                 {
                     _publishKey = value;
                     OnPropertyChanged(nameof(PublishKey));
-                    CheckIfAuthIsSet();
-                }
-            }
-        }
-        public string PublishCredentialUsername
-        {
-            get { return _publishCredentialUsername; }
-            set
-            {
-                if (_publishCredentialUsername != value)
-                {
-                    _publishCredentialUsername = value;
-                    OnPropertyChanged(nameof(PublishCredentialUsername));
-                    CheckIfAuthIsSet();
-                }
-            }
-        }
-        public string PublishCredentialPassword
-        {
-            get { return _publishCredentialPassword; }
-            set
-            {
-                if (_publishCredentialPassword != value)
-                {
-                    _publishCredentialPassword = value;
-                    OnPropertyChanged(nameof(PublishCredentialPassword));
-                    CheckIfAuthIsSet();
                 }
             }
         }
@@ -147,28 +110,6 @@ namespace PackageExplorerViewModel
                 }
             }
         }
-        public bool? UseApiKey
-        {
-            get { return _useApiKey; }
-            set
-            {
-                if (_useApiKey != value)
-                {
-                    _useApiKey = value;
-                    OnPropertyChanged(nameof(UseApiKey));
-                    CheckIfAuthIsSet();
-                }
-            }
-        }
-        public bool? UseCredentials
-
-        {
-            get { return !UseApiKey; }
-            set
-            {
-                UseApiKey = !value;
-            }
-        }
 
         public string Id
         {
@@ -218,23 +159,6 @@ namespace PackageExplorerViewModel
                 }
             }
         }
-        public bool IsAuthSet
-        {
-            get { return _isAuthSet; }
-            set
-            {
-                if (_isAuthSet != value)
-                {
-                    _isAuthSet = value;
-                    OnPropertyChanged(nameof(IsAuthSet));
-                }
-            }
-        }
-
-        private void CheckIfAuthIsSet()
-        {
-            IsAuthSet = (UseApiKey.HasValue && UseApiKey.Value && !string.IsNullOrWhiteSpace(PublishKey)) || (UseCredentials.HasValue && UseCredentials.Value && !string.IsNullOrWhiteSpace(PublishCredentialPassword)); ;
-        }
 
         public string Status
         {
@@ -256,10 +180,7 @@ namespace PackageExplorerViewModel
             ShowProgress = false;
             HasError = false;
             Status = (PublishAsUnlisted == true) ? "Package published and unlisted successfully." : "Package published successfully.";
-            if (UseApiKey.HasValue && UseApiKey.Value)
-            {
-                _settingsManager.WriteApiKey(PublishUrl, PublishKey);
-            }
+            _settingsManager.WriteApiKey(PublishUrl, PublishKey);
             CanPublish = true;
         }
 
@@ -286,14 +207,7 @@ namespace PackageExplorerViewModel
 
             try
             {
-                var url = PublishUrl;
-
-                if (UseCredentials.HasValue && UseCredentials.Value)
-                {
-                    _credentialManager.Add(new NetworkCredential(PublishCredentialUsername, PublishCredentialPassword), new Uri(url));
-                }
-
-                var repository = PackageRepositoryFactory.CreateRepository(url, _credentialManager);
+                var repository = PackageRepositoryFactory.CreateRepository(PublishUrl);
                 var updateResource = await repository.GetResourceAsync<PackageUpdateResource>();
 
                 await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKey, s => PublishKey, NullLogger.Instance);
@@ -330,7 +244,6 @@ namespace PackageExplorerViewModel
         public void Dispose()
         {
             _settingsManager.PublishAsUnlisted = (bool)PublishAsUnlisted;
-            _settingsManager.UseApiKey = UseApiKey ?? true;
         }
     }
 }

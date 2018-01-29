@@ -4,7 +4,6 @@ using System.Linq;
 using NuGet.Configuration;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
-using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -23,7 +22,7 @@ namespace PackageExplorerViewModel
         }
         public static SourceRepository CreateRepository(PackageSource packageSource) => CreateRepository(packageSource, null);
 
-        public static SourceRepository CreateRepository(string source, ICredentialManager credentialManager)
+        public static SourceRepository CreateRepository(string source)
         {
             if (source == null)
             {
@@ -40,22 +39,9 @@ namespace PackageExplorerViewModel
                 return null;
             }
 
-            var packageSource = new PackageSource(source);
-
-            if (!uri.IsFile)
-            {
-                credentialManager.TryAddUriCredentials(uri);
-
-                var credentials = credentialManager.Get(uri);
-
-                if (credentials != null)
-                {
-                    var credential = credentials.GetCredential(uri, "");
-                    packageSource.Credentials = new PackageSourceCredential(source, credential.UserName, credential.Password, true);
-                }
-            }
-
-            return CreateRepository(packageSource);
+            return CreateRepository(new PackageSource(source));
         }
     }
+
+
 }
