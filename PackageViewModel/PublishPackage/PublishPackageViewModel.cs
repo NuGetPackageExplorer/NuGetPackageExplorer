@@ -25,7 +25,6 @@ namespace PackageExplorerViewModel
         private string _publishCredentialPassword;
         private bool _isAuthSet;
         private bool? _publishAsUnlisted = true;
-        private bool? _appendV2ApiToUrl = true;
         private bool? _useApiKey = true;
         private string _selectedPublishItem;
         private bool _showProgress;
@@ -171,19 +170,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public bool? AppendV2ApiToUrl
-        {
-            get { return _appendV2ApiToUrl; }
-            set
-            {
-                if (_appendV2ApiToUrl != value)
-                {
-                    _appendV2ApiToUrl = value;
-                    OnPropertyChanged(nameof(AppendV2ApiToUrl));
-                }
-            }
-        }
-
         public string Id
         {
             get { return _package.Id; }
@@ -191,7 +177,7 @@ namespace PackageExplorerViewModel
 
         public string Version
         {
-            get { return _package.Version.ToString(); }
+            get { return _package.Version.ToFullString(); }
         }
 
         public bool HasError
@@ -301,10 +287,6 @@ namespace PackageExplorerViewModel
             try
             {
                 var url = PublishUrl;
-                if (AppendV2ApiToUrl.HasValue && AppendV2ApiToUrl.Value)
-                {
-                    url = url.TrimEnd('/') + "/api/v2/package";
-                }
 
                 if (UseCredentials.HasValue && UseCredentials.Value)
                 {

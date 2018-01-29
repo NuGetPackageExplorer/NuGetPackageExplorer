@@ -6,17 +6,16 @@ namespace NuGetPe
 {
     public class PackageInfo
     {
-        public string Id { get; set; }
-        public NuGetVersion SemanticVersion { get; set; }
-        public string Version
+        public PackageInfo(PackageIdentity identity)
         {
-            get
-            {
-                return SemanticVersion.ToString();
-            }
+            Identity = identity ?? throw new ArgumentNullException(nameof(identity));
         }
 
-        public PackageIdentity Identity => new PackageIdentity(Id, SemanticVersion);
+        public PackageIdentity Identity { get; }
+
+        public string Id => Identity.Id;
+        public NuGetVersion SemanticVersion => Identity.Version;
+        public string Version => SemanticVersion.ToFullString();
 
         public string Authors { get; set; }
         public int DownloadCount { get; set; }

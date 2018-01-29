@@ -49,7 +49,7 @@ namespace PackageExplorerViewModel
             bool showPrereleasePackages,
             SourceRepository repository,
             PackageChooserViewModel parentViewModel)
-            : this(ToPackageInfo(info), showPrereleasePackages, repository, parentViewModel)
+            : this(CreatePackageInfo(info), showPrereleasePackages, repository, parentViewModel)
         { }
 
         public ObservableCollection<PackageInfo> AllPackages { get; private set; }
@@ -190,7 +190,7 @@ namespace PackageExplorerViewModel
                 query = query.OrderByDescending(p => p.Identity.Version);
 
                 // now show packages
-                AllPackages.AddRange(query.Select(ToPackageInfo));
+                AllPackages.AddRange(query.Select(CreatePackageInfo));
 
                 HasFinishedLoading = true;
             }
@@ -279,12 +279,10 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private static PackageInfo ToPackageInfo(IPackageSearchMetadata packageSearchMetadata)
+        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata)
         {
-            return new PackageInfo
+            return new PackageInfo(packageSearchMetadata.Identity)
             {
-                Id = packageSearchMetadata.Identity.Id,
-                SemanticVersion = packageSearchMetadata.Identity.Version,
                 Authors = packageSearchMetadata.Authors,
                 Published = packageSearchMetadata.Published,
                 DownloadCount = (int)packageSearchMetadata.DownloadCount.GetValueOrDefault(),

@@ -108,7 +108,7 @@ namespace PackageExplorer
                     }
                     if (result.Status == DownloadResourceResultStatus.NotFound)
                     {
-                        throw new Exception(string.Format("Package '{0}' not found", packageIdentity.Id + packageIdentity.Version.ToString()));
+                        throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
                     }
 
                     var tempFilePath = Path.GetTempFileName();
