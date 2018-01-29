@@ -5,29 +5,26 @@ using System.Threading.Tasks;
 using NuGet.Configuration;
 using NuGet.Credentials;
 using NuGetPackageExplorer.Types;
-using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
     public class CredentialDialogProvider : ICredentialProvider
     {
         private readonly Lazy<IUIServices> _uiServices;
-        private readonly Lazy<ICredentialManager> _credentialManager;
 
-        public CredentialDialogProvider(Lazy<IUIServices> uIServices, Lazy<ICredentialManager> credentialManager)
+        public CredentialDialogProvider(Lazy<IUIServices> uIServices)
         {
             _uiServices = uIServices ?? throw new ArgumentNullException(nameof(uIServices)); 
-            _credentialManager = credentialManager ?? throw new ArgumentNullException(nameof(credentialManager)); 
         }
 
         public string Id => "NPECredentialDialog";
 
         public async Task<CredentialResponse> GetAsync(Uri uri, IWebProxy proxy, CredentialRequestType type, string message, bool isRetry, bool nonInteractive, CancellationToken cancellationToken)
         {
-            //if (nonInteractive)
-            //{
-            //    return new CredentialResponse(CredentialStatus.ProviderNotApplicable);
-            //}
+            if (nonInteractive)
+            {
+                return new CredentialResponse(CredentialStatus.ProviderNotApplicable);
+            }
 
             bool success = false;
             NetworkCredential credential = null;
@@ -41,8 +38,6 @@ namespace PackageExplorerViewModel
 
             if (success)
             {
-                _credentialManager.Value.Add(credential, uri);
-
                 return new CredentialResponse(credential);
             }
             return new CredentialResponse(CredentialStatus.UserCanceled);

@@ -41,12 +41,13 @@ namespace PackageExplorer
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
             var credentialManagerProvider = new CredentialManagerProvider(Container.GetExport<ICredentialManager>());
-            var credentialDialogProvider = new CredentialDialogProvider(Container.GetExport<IUIServices>(), Container.GetExport<ICredentialManager>());
+            var credentialDialogProvider = new CredentialDialogProvider(Container.GetExport<IUIServices>());
 
             HttpHandlerResourceV3.CredentialService = new CredentialService(new ICredentialProvider[] {
                 credentialManagerProvider,
                 credentialDialogProvider,
-            }, true);
+            }, false);
+            HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) => Container.GetExportedValue<ICredentialManager>().Add(credentials, uri);
 
             MigrateSettings();
 
