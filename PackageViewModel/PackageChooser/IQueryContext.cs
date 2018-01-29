@@ -6,7 +6,9 @@ namespace PackageExplorerViewModel
 {
     internal interface IQueryContext<T>
     {
-        int CurrentPage { get; }
+        int BeginPackage { get; }
+        int EndPackage { get; }
+        bool IsLast { get; }
 
         Task<IList<T>> GetItemsForCurrentPage(CancellationToken token);
 

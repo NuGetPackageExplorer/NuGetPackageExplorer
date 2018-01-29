@@ -14,7 +14,8 @@ namespace PackageExplorerViewModel
         private readonly SearchFilter _searchFilter;
         private readonly int _pageSize;
         private int _pageIndex;
-        private int? _maxPageIndex;
+        private int? _lastPageIndex;
+        private int? _lastPageCount;
 
         public ShowLatestVersionQueryContext(PackageSearchResource source, string search, SearchFilter filter, int pageSize)
         {
@@ -28,6 +29,12 @@ namespace PackageExplorerViewModel
 
         public int CurrentPage => _pageIndex;
 
+        public int BeginPackage => _pageIndex * _pageSize;
+
+        public int EndPackage => _pageIndex * _pageSize + (IsLast ? _lastPageCount.Value : _pageSize);
+
+        public bool IsLast => _pageIndex == _lastPageIndex;
+
         public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
         {
             var result = await _packageSearchResouce.SearchAsync(_searchText, _searchFilter, _pageIndex * _pageSize, _pageSize, NullLogger.Instance, token);
@@ -38,7 +45,8 @@ namespace PackageExplorerViewModel
 
             if (list.Count < _pageSize)
             {
-                _maxPageIndex = _pageIndex;
+                _lastPageIndex = _pageIndex;
+                _lastPageCount = list.Count;
             }
 
             return list;
@@ -52,7 +60,7 @@ namespace PackageExplorerViewModel
 
         public bool MoveNext()
         {
-            if (!_maxPageIndex.HasValue || _pageIndex < _maxPageIndex)
+            if (!_lastPageIndex.HasValue || _pageIndex < _lastPageIndex)
             {
                 _pageIndex++;
                 return true;

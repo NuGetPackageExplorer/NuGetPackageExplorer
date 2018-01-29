@@ -104,11 +104,11 @@ namespace PackageExplorer
                 {
                     if (result.Status == DownloadResourceResultStatus.Cancelled)
                     {
-                        throw new TaskCanceledException();
+                        throw new OperationCanceledException();
                     }
                     if (result.Status == DownloadResourceResultStatus.NotFound)
                     {
-                        throw new Exception(String.Format("Package '{0}' not found", packageIdentity.Id + packageIdentity.Version.ToString()));
+                        throw new Exception(string.Format("Package '{0}' not found", packageIdentity.Id + packageIdentity.Version.ToString()));
                     }
 
                     var tempFilePath = Path.GetTempFileName();

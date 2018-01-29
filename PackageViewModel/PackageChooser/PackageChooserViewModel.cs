@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data.Services.Client;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -21,7 +19,6 @@ namespace PackageExplorerViewModel
         private const int PageBuffer = 30;
         private readonly string _fixedPackageSource;
         private int _beginPackage;
-        private int? _lastPackage;
         private CancellationTokenSource _currentCancellationTokenSource;
         private IQueryContext<IPackageSearchMetadata> _currentQuery;
         private string _currentSearch;
@@ -294,7 +291,7 @@ namespace PackageExplorerViewModel
                 }
 
                 ClearMessage();
-                ShowPackages(packageInfos, _currentQuery.CurrentPage * ShowLatestVersionPageSize, _currentQuery.CurrentPage * ShowLatestVersionPageSize + ShowLatestVersionPageSize);
+                ShowPackages(packageInfos, _currentQuery.BeginPackage, _currentQuery.EndPackage);
             }
             catch (OperationCanceledException)
             {
@@ -305,7 +302,7 @@ namespace PackageExplorerViewModel
                 }
 
                 ClearMessage();
-                UpdatePageNumber(_currentQuery.CurrentPage * ShowLatestVersionPageSize, _currentQuery.CurrentPage * ShowLatestVersionPageSize + ShowLatestVersionPageSize);
+                UpdatePageNumber(_currentQuery.BeginPackage, _currentQuery.EndPackage);
             }
             catch (Exception exception)
             {
@@ -316,11 +313,6 @@ namespace PackageExplorerViewModel
                 }
 
                 var errorMessage = exception.Message;
-
-                if (exception is DataServiceQueryException queryException && queryException.Response != null)
-                {
-                    errorMessage = errorMessage + ". The remote server returned status code: " + queryException.Response.StatusCode + ".";
-                }
 
                 ShowMessage(errorMessage, true);
                 ClearPackages(isErrorCase: true);
@@ -535,10 +527,6 @@ namespace PackageExplorerViewModel
             {
                 return LoadPage(CancellationToken.None);
             }
-            else
-            {
-                _lastPackage = EndPackage;
-            }
 
             return Task.FromResult(0);
         }
@@ -562,7 +550,7 @@ namespace PackageExplorerViewModel
 
         private bool CanMoveNext()
         {
-            return !_lastPackage.HasValue || EndPackage < _lastPackage;
+            return !_currentQuery?.IsLast ?? false;
         }
 
         private bool CanMovePrevious()
