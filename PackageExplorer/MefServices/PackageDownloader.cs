@@ -109,27 +109,30 @@ namespace PackageExplorer
                 var repository = PackageRepositoryFactory.CreateRepository(sourceRepository.PackageSource, additionalProviders);
                 var downloadResource = await repository.GetResourceAsync<DownloadResource>(cts.Token);
 
-                var context = new PackageDownloadContext(new SourceCacheContext(), Path.GetTempPath(), true);
-
-                using (var result = await downloadResource.GetDownloadResourceResultAsync(packageIdentity, context, string.Empty, NullLogger.Instance, cts.Token))
+                using (var sourceCacheContext = new SourceCacheContext())
                 {
-                    if (result.Status == DownloadResourceResultStatus.Cancelled)
-                    {
-                        throw new OperationCanceledException();
-                    }
-                    if (result.Status == DownloadResourceResultStatus.NotFound)
-                    {
-                        throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
-                    }
+                    var context = new PackageDownloadContext(sourceCacheContext, Path.GetTempPath(), true);
 
-                    var tempFilePath = Path.GetTempFileName();
-
-                    using (var fileStream = File.OpenWrite(tempFilePath))
+                    using (var result = await downloadResource.GetDownloadResourceResultAsync(packageIdentity, context, string.Empty, NullLogger.Instance, cts.Token))
                     {
-                        await result.PackageStream.CopyToAsync(fileStream);
-                    }
+                        if (result.Status == DownloadResourceResultStatus.Cancelled)
+                        {
+                            throw new OperationCanceledException();
+                        }
+                        if (result.Status == DownloadResourceResultStatus.NotFound)
+                        {
+                            throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
+                        }
 
-                    return tempFilePath;
+                        var tempFilePath = Path.GetTempFileName();
+
+                        using (var fileStream = File.OpenWrite(tempFilePath))
+                        {
+                            await result.PackageStream.CopyToAsync(fileStream);
+                        }
+
+                        return tempFilePath;
+                    }
                 }
             }
             catch (OperationCanceledException)

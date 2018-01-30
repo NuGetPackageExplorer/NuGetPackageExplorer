@@ -185,12 +185,15 @@ namespace PackageExplorerViewModel
             {
                 var packageMetadataResource = await _repository.GetResourceAsync<PackageMetadataResource>(_downloadCancelSource.Token);
 
-                var query = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Id, ShowPrerelease, ShowPrerelease, new SourceCacheContext(), NullLogger.Instance, _downloadCancelSource.Token);
+                using (var sourceCacheContext = new SourceCacheContext())
+                {
+                    var query = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Id, ShowPrerelease, ShowPrerelease, sourceCacheContext, NullLogger.Instance, _downloadCancelSource.Token);
 
-                query = query.OrderByDescending(p => p.Identity.Version);
+                    query = query.OrderByDescending(p => p.Identity.Version);
 
-                // now show packages
-                AllPackages.AddRange(query.Select(CreatePackageInfo));
+                    // now show packages
+                    AllPackages.AddRange(query.Select(CreatePackageInfo));
+                }
 
                 HasFinishedLoading = true;
             }
