@@ -33,9 +33,9 @@ namespace PackageExplorerViewModel
 
         public int BeginPackage => _pageIndex * _pageSize;
 
-        public int EndPackage => _pageIndex * _pageSize + (IsLast ? _lastPageCount.Value : _pageSize);
+        public int EndPackage => _pageIndex * _pageSize + (IsLastPage ? _lastPageCount.Value : _pageSize);
 
-        public bool IsLast => _pageIndex == _lastPageIndex;
+        public bool IsLastPage => _pageIndex == _lastPageIndex;
 
         public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
         {

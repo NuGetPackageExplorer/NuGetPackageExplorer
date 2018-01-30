@@ -26,7 +26,7 @@
         <DockPanel.BindingGroup>
             <BindingGroup x:Name="DialogBindingGroup" NotifyOnValidationError="true" />
         </DockPanel.BindingGroup>
-        
+
         <!-- Main instruction -->
         <TextBlock DockPanel.Dock="Top" Text="Enter your publish key." FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
 

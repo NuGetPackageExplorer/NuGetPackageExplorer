@@ -542,7 +542,7 @@ namespace PackageExplorerViewModel
 
         private bool CanMoveNext()
         {
-            return !_currentQuery?.IsLast ?? false;
+            return !_currentQuery?.IsLastPage ?? false;
         }
 
         private bool CanMovePrevious()

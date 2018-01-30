@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using NuGet.Protocol.Core.Types;
 using NuGetPe;
 using PackageExplorerViewModel;
 
