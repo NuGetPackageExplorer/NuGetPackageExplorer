@@ -22,7 +22,11 @@ namespace PackageExplorer
     [Export(typeof(INuGetPackageDownloader))]
     internal class PackageDownloader : INuGetPackageDownloader
     {
+        private static readonly FileSizeConverter FileSizeConverter = new FileSizeConverter();
+
         private ProgressDialog _progressDialog;
+        private string _lastDescription;
+        private long? _lastPecent;
         private readonly object _progressDialogLock = new object();
 
         [Import]
@@ -67,7 +71,6 @@ namespace PackageExplorer
                 ShowTimeRemaining = true,
                 CancellationText = "Canceling download..."
             };
-            _progressDialog.ShowDialog(MainWindow.Value);
 
             // polling for Cancel button being clicked
             var cts = new CancellationTokenSource();
@@ -78,10 +81,22 @@ namespace PackageExplorer
 
             timer.Tick += (o, e) =>
                           {
-                              if (_progressDialog.CancellationPending)
+                              lock (_progressDialogLock)
                               {
-                                  timer.Stop();
-                                  cts.Cancel();
+                                  if (_progressDialog.CancellationPending)
+                                  {
+                                      timer.Stop();
+                                      cts.Cancel();
+                                  }
+                                  else if (_progressDialog.Description != _lastDescription)
+                                  {
+                                      if (!_progressDialog.IsOpen)
+                                      {
+                                          _progressDialog.ProgressBarStyle = _lastPecent.HasValue ? ProgressBarStyle.ProgressBar : ProgressBarStyle.MarqueeProgressBar;
+                                          _progressDialog.ShowDialog(MainWindow.Value);
+                                      }
+                                      _progressDialog.ReportProgress((int)_lastPecent.GetValueOrDefault(), null, _lastDescription);
+                                  }
                               }
                           };
             timer.Start();
@@ -141,24 +156,6 @@ namespace PackageExplorer
             }
         }
 
-        private void OnReportProgress(int percent, string description)
-        {
-            if (_progressDialog != null)
-            {
-                // report progress must be done via UI thread
-                UIServices.BeginInvoke(() =>
-                    {
-                        lock (_progressDialogLock)
-                        {
-                            if (_progressDialog != null)
-                            {
-                                _progressDialog.ReportProgress(percent, null, description);
-                            }
-                        }
-                    });
-            }
-        }
-
         #endregion
 
         private void OnError(Exception error)
@@ -166,29 +163,33 @@ namespace PackageExplorer
             UIServices.Show((error.InnerException ?? error).Message, MessageLevel.Error);
         }
 
-        private void OnProgress(int bytesReceived, int totalBytes)
+        private void OnProgress(long bytesReceived, long? totalBytes)
         {
-            var percentComplete = (int)((bytesReceived * 100L) / totalBytes);
-            var description = string.Format(
-                CultureInfo.CurrentCulture,
-                "Downloaded {0}KB of {1}KB...",
-                ToKB(bytesReceived),
-                ToKB(totalBytes));
-            OnReportProgress(percentComplete, description);
-        }
-
-        private static long ToKB(long totalBytes)
-        {
-            return (totalBytes + 1023) / 1024;
+            if (totalBytes.HasValue)
+            {
+                _lastPecent = (int)((bytesReceived * 100L) / totalBytes);
+                _lastDescription = string.Format(
+                   CultureInfo.CurrentCulture,
+                   "Downloaded {0} of {1}...",
+                   FileSizeConverter.Convert(bytesReceived, typeof(string), null, CultureInfo.CurrentCulture),
+                   FileSizeConverter.Convert(totalBytes.Value, typeof(string), null, CultureInfo.CurrentCulture));
+            } else
+            {
+                _lastPecent = totalBytes;
+                _lastDescription = string.Format(
+                        CultureInfo.CurrentCulture,
+                        "Downloaded {0}...",
+                        FileSizeConverter.Convert(bytesReceived, typeof(string), null, CultureInfo.CurrentCulture));
+            }
         }
     }
 
     // helper classes for getting http progress events
     internal class ProgressHttpMessageHandler : DelegatingHandler
     {
-        private readonly Action<int, int> _progressAction;
+        private Action<long, long?> _progressAction;
 
-        public ProgressHttpMessageHandler(HttpClientHandler handler, Action<int, int> progressAction) : base(handler)
+        public ProgressHttpMessageHandler(HttpClientHandler handler, Action<long, long?> progressAction) : base(handler)
         {
             _progressAction = progressAction;
         }
@@ -200,13 +201,9 @@ namespace PackageExplorer
             if (IsBinaryMediaType(response.Content.Headers.ContentType.MediaType))
             {
                 var totalSize = response.Content.Headers.ContentLength;
+                var innerStream = await response.Content.ReadAsStreamAsync();
 
-                if (totalSize.HasValue)
-                {
-                    var innerStream = await response.Content.ReadAsStreamAsync();
-
-                    response.Content = new StreamContent(new ProgressStream(innerStream, size => _progressAction(size, (int)totalSize.Value)));
-                }
+                response.Content = new StreamContent(new ProgressStream(innerStream, size => _progressAction(size, totalSize)));
             }
 
             return response;
@@ -222,11 +219,11 @@ namespace PackageExplorer
     internal class ProgressStream : Stream
     {
         private readonly Stream _inner;
-        private readonly Action<int> _progress;
+        private readonly Action<long> _progress;
 
-        private int _length;
+        private long _length;
 
-        public ProgressStream(Stream inner, Action<int> progress)
+        public ProgressStream(Stream inner, Action<long> progress)
         {
             _inner = inner;
             _progress = progress;
@@ -277,9 +274,9 @@ namespace PackageExplorer
 
     internal class ProgressHttpHandlerResourceV3Provider : ResourceProvider
     {
-        private readonly Action<int, int> _progressAction;
+        private readonly Action<long, long?> _progressAction;
 
-        public ProgressHttpHandlerResourceV3Provider(Action<int, int> progressAction)
+        public ProgressHttpHandlerResourceV3Provider(Action<long, long?> progressAction)
             : base(typeof(HttpHandlerResource),
                   nameof(ProgressHttpHandlerResourceV3Provider),
                   NuGetResourceProviderPositions.First)
