@@ -176,7 +176,8 @@ namespace PackageExplorer
                    "Downloaded {0} of {1}...",
                    FileSizeConverter.Convert(bytesReceived, typeof(string), null, CultureInfo.CurrentCulture),
                    FileSizeConverter.Convert(totalBytes.Value, typeof(string), null, CultureInfo.CurrentCulture));
-            } else
+            }
+            else
             {
                 _lastPecent = totalBytes;
                 _lastDescription = string.Format(
@@ -275,6 +276,7 @@ namespace PackageExplorer
         }
     }
 
+    // https://github.com/NuGet/NuGet.Client/blob/5244dc7596f0cc0ed65984dc8c040d23b0e9c09b/src/NuGet.Core/NuGet.Protocol/HttpSource/HttpHandlerResourceV3Provider.cs
     internal class ProgressHttpHandlerResourceV3Provider : ResourceProvider
     {
         private readonly Action<long, long?> _progressAction;
@@ -319,10 +321,22 @@ namespace PackageExplorer
                 messageHandler = new ProxyAuthenticationHandler(clientHandler, HttpHandlerResourceV3.CredentialService, ProxyCache.Instance);
             }
 
-            messageHandler = new HttpSourceAuthenticationHandler(packageSource, clientHandler, HttpHandlerResourceV3.CredentialService)
             {
-                InnerHandler = messageHandler
-            };
+                var innerHandler = messageHandler;
+
+                messageHandler = new StsAuthenticationHandler(packageSource, TokenStore.Instance)
+                {
+                    InnerHandler = innerHandler
+                };
+            }
+            {
+                var innerHandler = messageHandler;
+
+                messageHandler = new HttpSourceAuthenticationHandler(packageSource, clientHandler, HttpHandlerResourceV3.CredentialService)
+                {
+                    InnerHandler = innerHandler
+                };
+            }
 
             var resource = new HttpHandlerResourceV3(clientHandler, messageHandler);
 

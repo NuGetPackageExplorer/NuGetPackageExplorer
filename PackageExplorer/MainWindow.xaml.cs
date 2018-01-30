@@ -303,8 +303,8 @@ namespace PackageExplorer
             }
 
             var repository = PackageChooser.Repository;
-            var packageVersion = selectedPackageInfo.SemanticVersion;
-            var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
+
+            var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, selectedPackageInfo.SemanticVersion);
 
             DispatcherOperation processPackageAction(ISignaturePackage package)
             {
@@ -507,7 +507,7 @@ namespace PackageExplorer
                 return;
             }
 
-            if (id != null && version != null && Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl) && downloadUrl.IsRemoteUri())
+            if (id != null && version != null && Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl))
             {
                 var repository = PackageRepositoryFactory.CreateRepository(packageUrl);
                 var packageIdentity = new NuGet.Packaging.Core.PackageIdentity(id, version);
