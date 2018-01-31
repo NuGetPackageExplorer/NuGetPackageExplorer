@@ -23,6 +23,10 @@
     </Window.Resources>
 
     <DockPanel LastChildFill="False">
+        <DockPanel.BindingGroup>
+            <BindingGroup x:Name="DialogBindingGroup" NotifyOnValidationError="true" />
+        </DockPanel.BindingGroup>
+
         <!-- Main instruction -->
         <TextBlock DockPanel.Dock="Top" Text="Enter your publish key." FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
 
@@ -79,7 +83,7 @@
             <TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0" Text="{Binding PublishKey}">
             </TextBox>
         </DockPanel>
-        <!-- Credentials -->
+        <!-- Publish key -->
         <DockPanel x:Name="PanelCredentials" DockPanel.Dock="Top" Margin="0,0,0,0">
             <DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
                 <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishCredentialUsername}" Content="_Username:" Width="75" />
@@ -108,7 +112,7 @@
                 <Button x:Name="PublishButton" IsDefault="True" Padding="15,2" Content="_Publish" Margin="5" Click="OnPublishButtonClick">
                     <Button.IsEnabled>
                         <MultiBinding Converter="{StaticResource andConverter}">
-                            <Binding Path="(Validation.HasError)" ElementName="PublishUrl" Converter="{StaticResource inverseBool}" />
+                            <Binding Path="Text" ElementName="PublishUrl" Converter="{StaticResource nullToBoolConverter}" />
                             <Binding Path="IsAuthSet" />
                             <Binding Path="CanPublish" />
                         </MultiBinding>

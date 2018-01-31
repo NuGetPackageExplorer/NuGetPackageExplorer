@@ -17,12 +17,16 @@ namespace PackageExplorer
 
         private async void OnPublishButtonClick(object sender, RoutedEventArgs e)
         {
-            var viewModel = (PublishPackageViewModel)DataContext;
-            if (viewModel.UseCredentials.HasValue && viewModel.UseCredentials.Value)
+            var isValid = DialogBindingGroup.UpdateSources();
+            if (isValid)
             {
-                viewModel.PublishCredentialPassword = PublishCredentialPassword.Password;
+                var viewModel = (PublishPackageViewModel)DataContext;
+                if (viewModel.UseCredentials.HasValue && viewModel.UseCredentials.Value)
+                {
+                    viewModel.PublishCredentialPassword = PublishCredentialPassword.Password;
+                }
+                await viewModel.PushPackage();
             }
-            await viewModel.PushPackage();
         }
 
         private void PublishCredentialPassword_PasswordChanged(object sender, RoutedEventArgs e)

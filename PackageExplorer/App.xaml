@@ -9,7 +9,6 @@
             <self:IntegerToBooleanConverter x:Key="FontSizeToBoolConverter" />
             <self:BooleanToVisibilityConverter x:Key="invertedBoolToVis" Inverted="True" />
             <self:BooleanToVisibilityConverter x:Key="boolToVis" />
-            <self:InverseBooleanConverter x:Key="inverseBool" />
             <self:CountToVisibilityConverter x:Key="countConverter" />
             <self:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
             <self:NullToBoolConverter x:Key="nullToBoolConverter" />
