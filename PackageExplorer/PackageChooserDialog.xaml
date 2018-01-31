@@ -181,7 +181,7 @@
             </DataGrid.RowDetailsTemplate>
 
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Id" Width="180" CanUserReorder="False" SortMemberPath="Id">
+                <DataGridTemplateColumn Header="Id" Width="180" CanUserReorder="False">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding LatestPackageInfo.Id}" Margin="4,0,0,0" />
@@ -189,7 +189,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Version" Width="100" CanUserSort="False" SortMemberPath="Version">
+                <DataGridTemplateColumn Header="Version" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock 
@@ -200,7 +200,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Authors" Width="160" CanUserSort="False" SortMemberPath="Authors">
+                <DataGridTemplateColumn Header="Authors" Width="160">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock
@@ -213,7 +213,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Downloads" Width="110" SortMemberPath="DownloadCount">
+                <DataGridTemplateColumn Header="Downloads" Width="110">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding LatestPackageInfo.DownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" TextAlignment="Center" />
@@ -221,7 +221,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTemplateColumn Header="Published" Width="100" SortMemberPath="Published">
+                <DataGridTemplateColumn Header="Published" Width="100">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <TextBlock 
