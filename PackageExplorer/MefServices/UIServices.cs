@@ -483,6 +483,7 @@ namespace PackageExplorer
             {
                 dialog.WindowTitle = Resources.Resources.Dialog_Title;
                 dialog.MainInstruction = "Credentials for " + target;
+                dialog.Content = "Enter PATs in the username field.";
                 dialog.Target = target;
 
                 if (dialog.ShowDialog())
