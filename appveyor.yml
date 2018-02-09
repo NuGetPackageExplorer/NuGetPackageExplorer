@@ -41,5 +41,5 @@ after_build:
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 artifacts:
 - path: '**\NugetPackageExplorer*.nupkg'
-- path: '**\*.appxupload'
+- path: '**\*.appxbundle'
 deploy: off
