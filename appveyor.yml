@@ -22,6 +22,10 @@ before_build:
         # Update appxmanifest
         $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"
         $doc | % { $_.Replace("3.25.0.0", "$nugetVer") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
+        
+        # Update appxmanifest
+        $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+        $doc | % { $_.Replace("3.25.0.0", "$nugetVer") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
     
 build:
   project: NuGetPackageExplorer.sln
@@ -37,5 +41,5 @@ after_build:
     Get-ChildItem .\*.nupkg | % { Push-AppveyorArtifact $_.FullName -FileName $_.Name }
 artifacts:
 - path: '**\NugetPackageExplorer*.nupkg'
-- path: '**\*.appxupload'
+- path: '**\*.appxbundle'
 deploy: off

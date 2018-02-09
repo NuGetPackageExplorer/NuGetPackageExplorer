@@ -36,8 +36,8 @@ steps:
     
     # Build PackageExplorer
     msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-PackageExplorer.binlog
-    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /p:AppxBundle=Always /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-NightlyPackage.binlog
-    msbuild .\PackageExplorer.Package\PackageExplorer.Package.jsproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:AppxBundle=Always /p:UapAppxPackageBuildMode=StoreUpload /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-Package.binlog
+    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-NightlyPackage.binlog
+    msbuild .\PackageExplorer.Package\PackageExplorer.Package.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-Package.binlog
     
     # Update versions
     $doc = Get-Content ".\Build\ci_badge.svg"    
