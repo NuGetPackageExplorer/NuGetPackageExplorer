@@ -22,6 +22,10 @@ before_build:
         # Update appxmanifest
         $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"
         $doc | % { $_.Replace("3.25.0.0", "$nugetVer") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
+        
+        # Update appxmanifest
+        $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+        $doc | % { $_.Replace("3.25.0.0", "$nugetVer") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
     
 build:
   project: NuGetPackageExplorer.sln
