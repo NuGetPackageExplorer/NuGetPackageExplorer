@@ -19,7 +19,7 @@
     <Resource Language="en-US" />
   </Resources>
   <Applications>
-    <Application Id="App" Executable="win32\NuGetPackageExplorer.exe" EntryPoint="Windows.FullTrustApplication">
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
       <uap:VisualElements DisplayName="NuGet Package Explorer" Description="NuGet Package Explorer" BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png">
         <uap:DefaultTile Square310x310Logo="Assets\Square310x310Logo.png" Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="NuGet Package Explorer" Square71x71Logo="Assets\SmallTile.png">
           <uap:ShowNameOnTiles>
@@ -51,7 +51,7 @@
         </uap:Extension>
         <uap3:Extension
           Category="windows.appExecutionAlias"
-          Executable="win32\NuGetPackageExplorer.exe"
+          Executable="NuGetPackageExplorer\NuGetPackageExplorer.exe"
           EntryPoint="Windows.FullTrustApplication">
           <uap3:AppExecutionAlias>
             <desktop:ExecutionAlias Alias="NuGetPackageExplorer.exe" />
