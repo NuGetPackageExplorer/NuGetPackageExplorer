@@ -50,13 +50,13 @@
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="PackageExplorer.Package_StoreKey.pfx" />
-    <None Include="Package.StoreAssociation.xml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\*.png" />
     <Content Include="..\PackageExplorer\bin\$(Configuration)\net461\**\*.dll">
       <Link>NuGetPackageExplorer\%(RecursiveDir)%(Filename)%(Extension)</Link>
     </Content>
+    <None Include="Package.xml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
