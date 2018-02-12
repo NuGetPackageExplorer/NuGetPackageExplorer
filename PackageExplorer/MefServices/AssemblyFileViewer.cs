@@ -10,7 +10,7 @@ using NuGetPe.AssemblyMetadata;
 
 namespace PackageExplorer
 {
-    [PackageContentViewerMetadata(100, ".dll", ".exe", ".winmd")]
+    [PackageContentViewerMetadata(100, ".dll", ".exe", ".winmd", SupportsWindows10S = false)]
     internal class AssemblyFileViewer : IPackageContentViewer
     {
         #region IPackageContentViewer Members
