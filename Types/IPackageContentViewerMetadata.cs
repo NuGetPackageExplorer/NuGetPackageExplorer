@@ -8,5 +8,7 @@ namespace NuGetPackageExplorer.Types
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         string[] SupportedExtensions { get; }
+
+        bool SupportsWindows10S { get; }
     }
 }
