@@ -217,12 +217,12 @@
 
                         <MenuItem Header="_Analyze Package" InputGestureText="Ctrl+Q" Command="{Binding ViewPackageAnalysisCommand}" Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
                         <Separator Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
-                        <MenuItem Header="_Plugin Manager..." Click="AddPluginFromAssembly_Click">
+                        <MenuItem Header="_Plugin Manager..." Click="AddPluginFromAssembly_Click" x:Name="pluginMenuItem">
                             <MenuItem.Icon>
                                 <Image Source="images/cog.png" />
                             </MenuItem.Icon>
                         </MenuItem>
-                        <Separator />
+                        <Separator x:Name="mnuPluginSep" />
                         <MenuItem Header="Vi_ew NuGet download cache" Click="ViewDownloadCache_Click" />
                         <MenuItem Header="Clea_r NuGet download cache" Click="ClearDownloadCache_Click" />
                     </CompositeCollection>

@@ -42,6 +42,13 @@ namespace PackageExplorer
 
             RecentFilesMenuItem.DataContext = _mruManager = mruManager;
             RecentFilesContainer.Collection = _mruManager.Files;
+
+            if (AppCompat.IsWindows10S)
+            {
+                pluginMenuItem.Visibility = Visibility.Collapsed;
+                pluginMenuItem.IsEnabled = false;
+                mnuPluginSep.Visibility = Visibility.Collapsed;
+            }
         }
 
         [Import]
