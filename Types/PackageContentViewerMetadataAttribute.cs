@@ -28,5 +28,7 @@ namespace NuGetPackageExplorer.Types
         {
             get { return _priority; }
         }
+
+        public bool SupportsWindows10S { get; set; } = true;
     }
 }
