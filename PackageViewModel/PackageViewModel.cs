@@ -1057,8 +1057,7 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            var selectedFolder = SelectedItem as PackageFolder;
-            return selectedFolder != null && !selectedFolder.ContainsFile(scriptName);
+            return SelectedItem is PackageFolder selectedFolder && !selectedFolder.ContainsFile(scriptName);
         }
 
         #endregion
