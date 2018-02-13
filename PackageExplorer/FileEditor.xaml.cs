@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -36,7 +37,7 @@ namespace PackageExplorer
             Editor.Options.ConvertTabsToSpaces = true;
 
             Editor.TextArea.SelectionCornerRadius = 0;
-            
+
             var searchInput = SearchPanel.Install(Editor.TextArea);
         }
 
@@ -53,18 +54,29 @@ namespace PackageExplorer
 
         #endregion
 
-        private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private async void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is FileEditorViewModel viewModel && viewModel.FileInEdit != null)
             {
                 SyntaxDefinitions.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(viewModel.FileInEdit.Path);
-                Editor.Load(viewModel.FileInEdit.GetStream());
+                var stream = viewModel.FileInEdit.GetStream();
+                if (!stream.CanSeek)
+                {
+                    var memoryStream = new MemoryStream();
+                    using (stream)
+                    {
+                        await stream.CopyToAsync(memoryStream);
+                    }
+                    memoryStream.Position = 0;
+                    stream = memoryStream;
+                }
+                Editor.Load(stream);
             }
         }
 
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e)
         {
-            var item = (MenuItem) sender;
+            var item = (MenuItem)sender;
             var size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
             Settings.Default.FontSize = size;
         }
