@@ -25,7 +25,7 @@ namespace NuGetPe
         {
             get
             {
-                return Published == Constants.Unpublished;
+                return Published == Constants.Unpublished || Published == Constants.V2Unpublished;
             }
         }
 
