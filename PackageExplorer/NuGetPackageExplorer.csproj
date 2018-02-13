@@ -23,7 +23,7 @@
     <Reference Include="System.ComponentModel.Composition" />    
     <Reference Include="System.Net.Http" />
     
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.0" />  
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.1" />  
     <PackageReference Include="AvalonEdit" Version="5.0.4" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
     <PackageReference Include="Humanizer" Version="2.2.0" />
