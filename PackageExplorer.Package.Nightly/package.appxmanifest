@@ -80,6 +80,15 @@
           </uap:FileTypeAssociation>
         </uap:Extension>
         <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="symbolspackage">
+            <uap:DisplayName>NuGet Symbols package file</uap:DisplayName>
+            <uap:Logo>Assets\nupkg.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.snupkg</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
           <uap:FileTypeAssociation Name="spec">
             <uap:DisplayName>NuGet spec file</uap:DisplayName>
             <uap:Logo>Assets\nuspec.png</uap:Logo>

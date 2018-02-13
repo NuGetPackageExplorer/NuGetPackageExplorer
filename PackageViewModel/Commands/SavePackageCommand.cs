@@ -138,7 +138,7 @@ namespace PackageExplorerViewModel
         {
             var packageName = ViewModel.PackageMetadata + NuGetPe.Constants.PackageExtension;
             var title = "Save " + packageName;
-            const string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
+            const string filter = "NuGet package file (*.nupkg)|*.nupkg|NuGet Symbols package file (*.snupkg)|*.snupkg|All files (*.*)|*.*";
             var initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;
             if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, initialDirectory, filter, /* overwritePrompt */ false,
                                                         out var selectedPackagePath, out var filterIndex))

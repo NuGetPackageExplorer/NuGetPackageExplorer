@@ -59,7 +59,7 @@ namespace PackageExplorer
 
                 var packageName = packageInfo.Id + "." + packageInfo.Version + NuGetPe.Constants.PackageExtension;
                 var title = "Save " + packageName;
-                const string filter = "NuGet package file (*.nupkg)|*.nupkg|All files (*.*)|*.*";
+                const string filter = "NuGet package file (*.nupkg)|*.nupkg|NuGet Symbols package file (*.snupkg)|*.snupkg|All files (*.*)|*.*";
 
                 var accepted = UIServices.OpenSaveFileDialog(
                     title,

@@ -11,7 +11,7 @@
         <iconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/nuget.png</iconUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>NuGet Package Explorer is an application which allows creating and exploring NuGet packages easily. 
-        After installing it, you can double click on a .nupkg file to view the package content. 
+        After installing it, you can double click on a .nupkg or .snupkg file to view the package content. 
         You can also load packages directly from the official NuGet feed.</description>
         <summary>Makes creating and examining nuget packages very easy.</summary>
         <releaseNotes>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/releases</releaseNotes>

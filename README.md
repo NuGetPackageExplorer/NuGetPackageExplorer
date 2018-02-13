@@ -30,7 +30,7 @@ Chocolatey is another great way to install and update your application.
 
 ## What is NuGet Package Explorer?
 
-NuGet Package Explorer (NPE) is an application that makes it easy to create and explore NuGet packages. You can load a .nupkg file from disk or directly from a feed such as [nuget.org](https://www.nuget.org/).
+NuGet Package Explorer (NPE) is an application that makes it easy to create and explore NuGet packages. You can load a .nupkg or .snupkg file from disk or directly from a feed such as [nuget.org](https://www.nuget.org/).
 
 To build packages from the command line, use NuGet command-line tools, as documented on the [official NuGet site](https://docs.nuget.org/ndocs/create-packages/creating-a-package).
 
