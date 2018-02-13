@@ -13,10 +13,5 @@ namespace NuGetPe
         {
             return package.Id + " " + package.Version;
         }
-
-        public static bool IsListed(this IPackage package)
-        {
-            return package.Published > Constants.Unpublished;
-        }
     }
 }
