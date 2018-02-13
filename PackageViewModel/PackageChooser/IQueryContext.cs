@@ -8,12 +8,11 @@ namespace PackageExplorerViewModel
     {
         int BeginPackage { get; }
         int EndPackage { get; }
-        int TotalItemCount { get; }
+        bool IsLastPage { get; }
 
         Task<IList<T>> GetItemsForCurrentPage(CancellationToken token);
 
         bool MoveFirst();
-        bool MoveLast();
         bool MoveNext();
         bool MovePrevious();
     }

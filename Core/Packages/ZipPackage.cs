@@ -218,12 +218,7 @@ namespace NuGetPe
 
         public int DownloadCount
         {
-            get { return 0; }
-        }
-
-        public int VersionDownloadCount
-        {
-            get { return 0; }
+            get { return -1; }
         }
 
         public bool IsAbsoluteLatestVersion
@@ -247,24 +242,6 @@ namespace NuGetPe
                 }
                 return _lastUpdated.Value;
             }
-        }
-
-        private long? _packageSize;
-        public long PackageSize
-        {
-            get
-            {
-                if (_packageSize == null)
-                {
-                    _packageSize = new FileInfo(Source).Length;
-                }
-                return _packageSize.Value;
-            }
-        }
-
-        public string PackageHash
-        {
-            get { return null; }
         }
 
         public bool IsPrerelease

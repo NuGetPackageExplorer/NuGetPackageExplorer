@@ -9,7 +9,7 @@ namespace NuGetPe
     /// <summary>
     /// The machine cache represents a location on the machine where packages are cached. It is a specific implementation of a local repository and can be used as such.
     /// </summary>
-    public class MachineCache : IPackageRepository
+    public class MachineCache 
     {
         // Maximum number of packages that can live in this cache.
         private const int MaxNumberOfPackages = 100;
@@ -31,16 +31,6 @@ namespace NuGetPe
         public string Source
         {
             get { return _cacheRoot; }
-        }
-
-        public IQueryable<IPackage> GetPackages()
-        {
-            throw new NotSupportedException();
-        }
-
-        public IQueryable<IPackage> GetPackagesById(string id, bool includePrerelease)
-        {
-            throw new NotSupportedException();
         }
 
         public ISignaturePackage FindPackage(string packageId, NuGetVersion version)

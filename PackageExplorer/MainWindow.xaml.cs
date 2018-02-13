@@ -24,6 +24,7 @@ using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources.Resources;
 using NuGet.Packaging;
+using PackageExplorerViewModel.Types;
 
 namespace PackageExplorer
 {
@@ -75,7 +76,7 @@ namespace PackageExplorer
             get
             {
                 return PackageCommandsContainer != null
-                           ? (ObservableCollection<LazyPackageCommand>) PackageCommandsContainer.Collection
+                           ? (ObservableCollection<LazyPackageCommand>)PackageCommandsContainer.Collection
                            : null;
             }
             set
@@ -94,7 +95,7 @@ namespace PackageExplorer
         {
             get
             {
-                var viewModel = (PackageViewModel) DataContext;
+                var viewModel = (PackageViewModel)DataContext;
                 return (viewModel != null && viewModel.HasEdit);
             }
         }
@@ -103,7 +104,7 @@ namespace PackageExplorer
         {
             get
             {
-                var viewModel = (PackageViewModel) DataContext;
+                var viewModel = (PackageViewModel)DataContext;
                 return (viewModel != null && viewModel.IsInEditFileMode);
             }
         }
@@ -187,10 +188,10 @@ namespace PackageExplorer
                 {
                     var packageViewer = new PackageViewer(UIServices, PackageChooser);
                     var binding = new Binding
-                                  {
-                                      Converter = new NullToVisibilityConverter(),
-                                      FallbackValue = Visibility.Collapsed
-                                  };
+                    {
+                        Converter = new NullToVisibilityConverter(),
+                        FallbackValue = Visibility.Collapsed
+                    };
                     packageViewer.SetBinding(VisibilityProperty, binding);
 
                     MainContentContainer.Children.Add(packageViewer);
@@ -219,15 +220,15 @@ namespace PackageExplorer
 
         private void OnPackageViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var viewModel = (PackageViewModel) sender;
+            var viewModel = (PackageViewModel)sender;
             if (e.PropertyName == "IsInEditFileMode")
             {
                 if (viewModel.IsInEditFileMode)
                 {
                     var fileEditor = new FileEditor
-                                     {
-                                         DataContext = viewModel.FileEditorViewModel
-                                     };
+                    {
+                        DataContext = viewModel.FileEditorViewModel
+                    };
                     Content = fileEditor;
                 }
                 else
@@ -265,7 +266,7 @@ namespace PackageExplorer
 
         private async void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
-            var parameter = (string) e.Parameter;
+            var parameter = (string)e.Parameter;
             if (!string.IsNullOrEmpty(parameter))
             {
                 parameter = "id:" + parameter;
@@ -308,46 +309,37 @@ namespace PackageExplorer
                 return;
             }
 
-            if (selectedPackageInfo.IsLocalPackage)
+            var repository = PackageChooser.Repository;
+
+            var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, selectedPackageInfo.SemanticVersion);
+
+            DispatcherOperation processPackageAction(ISignaturePackage package)
             {
-                await OpenLocalPackage(selectedPackageInfo.DownloadUrl.LocalPath);
+                LoadPackage(package,
+                            repository.PackageSource.Source,
+                            PackageType.RemotePackage);
+
+                // adding package to the cache, but with low priority
+                return Dispatcher.BeginInvoke(
+                    (Action<IPackage>)MachineCache.Default.AddPackage,
+                    DispatcherPriority.ApplicationIdle,
+                    package);
             }
-            else 
+
+            if (cachePackage == null)
             {
-                var packageVersion = new NuGetVersion(selectedPackageInfo.Version);
-                var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
+                var downloadedPackage = await PackageDownloader.Download(
+                    repository,
+                    selectedPackageInfo.Identity);
 
-                DispatcherOperation processPackageAction(ISignaturePackage package)
+                if (downloadedPackage != null)
                 {
-                    var servicePackage = selectedPackageInfo.AsDataServicePackage();
-                    servicePackage.CorePackage = package;
-                    LoadPackage(servicePackage,
-                                selectedPackageInfo.DownloadUrl.ToString(),
-                                PackageType.DataServicePackage);
-
-                    // adding package to the cache, but with low priority
-                    return Dispatcher.BeginInvoke(
-                        (Action<IPackage>)MachineCache.Default.AddPackage,
-                        DispatcherPriority.ApplicationIdle,
-                        package);
+                    await processPackageAction(downloadedPackage);
                 }
-
-                if (cachePackage == null || cachePackage.GetHash() != selectedPackageInfo.PackageHash)
-                {
-                    var downloadedPackage = await PackageDownloader.Download(
-                        selectedPackageInfo.DownloadUrl,
-                        selectedPackageInfo.Id,
-                        packageVersion.ToString());
-
-                    if (downloadedPackage != null)
-                    {
-                        await processPackageAction(downloadedPackage);
-                    }
-                }
-                else
-                {
-                    await processPackageAction(cachePackage);
-                }
+            }
+            else
+            {
+                await processPackageAction(cachePackage);
             }
         }
 
@@ -358,7 +350,7 @@ namespace PackageExplorer
 
         private void HelpCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new AboutWindow {Owner = this};
+            var dialog = new AboutWindow { Owner = this };
             dialog.ShowDialog();
             e.Handled = true;
         }
@@ -387,7 +379,7 @@ namespace PackageExplorer
         /// <returns>true if user cancels the impending action</returns>
         private bool AskToSaveCurrentFile()
         {
-            var viewModel = (PackageViewModel) DataContext;
+            var viewModel = (PackageViewModel)DataContext;
             if (HasUnsavedChanges || (IsInEditFileMode && viewModel.FileEditorViewModel.HasEdit))
             {
                 // if there is unsaved changes, ask user for confirmation
@@ -403,7 +395,7 @@ namespace PackageExplorer
                     {
                         // force a Save from outside the file editor.
                         // In this case, Content is the FileEditor user control
-                        viewModel.FileEditorViewModel.SaveOnExit((IFileEditorService) Content);
+                        viewModel.FileEditorViewModel.SaveOnExit((IFileEditorService)Content);
                     }
 
                     var saveCommand = viewModel.SaveCommand;
@@ -417,7 +409,7 @@ namespace PackageExplorer
 
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e)
         {
-            var item = (MenuItem) sender;
+            var item = (MenuItem)sender;
             var size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
             Settings.Default.FontSize = size;
         }
@@ -442,7 +434,7 @@ namespace PackageExplorer
             }
 
             // We might get a certificate to display instead
-            if(e.Parameter is X509Certificate2 cert)
+            if (e.Parameter is X509Certificate2 cert)
             {
                 var hwnd = new WindowInteropHelper(this).Handle;
                 X509Certificate2UI.DisplayCertificate(cert, hwnd);
@@ -452,7 +444,7 @@ namespace PackageExplorer
             var uri = e.Parameter as Uri;
             if (uri == null)
             {
-                var url = (string) e.Parameter;
+                var url = (string)e.Parameter;
                 Uri.TryCreate(url, UriKind.Absolute, out uri);
             }
 
@@ -488,7 +480,7 @@ namespace PackageExplorer
                 return;
             }
 
-            var menuItem = (MenuItem) sender;
+            var menuItem = (MenuItem)sender;
             var mruItem = menuItem.DataContext as MruItem;
             if (mruItem == null)
             {
@@ -522,12 +514,15 @@ namespace PackageExplorer
                 return;
             }
 
-            if (Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl) && downloadUrl.IsRemoteUri())
+            if (id != null && version != null && Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl))
             {
-                IPackage downloadedPackage = await PackageDownloader.Download(downloadUrl, id, version.ToString());
+                var repository = PackageRepositoryFactory.CreateRepository(packageUrl);
+                var packageIdentity = new NuGet.Packaging.Core.PackageIdentity(id, version);
+
+                var downloadedPackage = await PackageDownloader.Download(repository, packageIdentity);
                 if (downloadedPackage != null)
                 {
-                    LoadPackage(downloadedPackage, packageUrl, PackageType.DataServicePackage);
+                    LoadPackage(downloadedPackage, packageUrl, PackageType.RemotePackage);
                 }
             }
             else
@@ -545,10 +540,10 @@ namespace PackageExplorer
         private void AddPluginFromAssembly_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new PluginManagerDialog
-                         {
-                             Owner = this,
-                             DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
-                         };
+            {
+                Owner = this,
+                DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
+            };
             dialog.ShowDialog();
         }
 

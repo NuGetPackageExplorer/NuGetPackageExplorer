@@ -1,16 +1,32 @@
 ﻿using System;
-using NuGetPe;
-using PackageExplorerViewModel.Types;
+using System.Collections.Generic;
+using System.Linq;
+using NuGet.Configuration;
+using NuGet.Protocol;
+using NuGet.Protocol.Core.Types;
 
 namespace PackageExplorerViewModel
 {
-    internal static class PackageRepositoryFactory
+    public static class PackageRepositoryFactory
     {
-        public static IPackageRepository CreateRepository(string source, ICredentialManager credentialManager)
+        public static SourceRepository CreateRepository(PackageSource packageSource, IEnumerable<Lazy<INuGetResourceProvider>> additionalProviders)
+        {
+            var providers = Repository.Provider.GetCoreV3();
+
+            if (additionalProviders != null)
+            {
+                providers = providers.Concat(additionalProviders);
+            }
+
+            return Repository.CreateSource(providers, packageSource);
+        }
+        public static SourceRepository CreateRepository(PackageSource packageSource) => CreateRepository(packageSource, null);
+
+        public static SourceRepository CreateRepository(string source)
         {
             if (source == null)
             {
-                throw new ArgumentNullException("source");
+                throw new ArgumentNullException(nameof(source));
             }
             Uri uri;
             try
@@ -23,16 +39,9 @@ namespace PackageExplorerViewModel
                 return null;
             }
 
-
-            if (uri.IsFile)
-            {
-                return new LocalPackageRepository(source);
-            }
-            else
-            {
-                credentialManager.TryAddUriCredentials(uri);
-                return new DataServicePackageRepository(uri, credentialManager.Get(uri));
-            }
+            return CreateRepository(new PackageSource(source));
         }
     }
+
+
 }

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -124,11 +123,6 @@ namespace PackageExplorerViewModel
             get { return -1; }
         }
 
-        public int VersionDownloadCount
-        {
-            get { return -1; }
-        }
-
         public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies
         {
             get { return Enumerable.Empty<FrameworkAssemblyReference>(); }
@@ -157,16 +151,6 @@ namespace PackageExplorerViewModel
         public DateTimeOffset LastUpdated
         {
             get { return DateTimeOffset.MinValue; }
-        }
-
-        public long PackageSize
-        {
-            get { return 0; }
-        }
-
-        public string PackageHash
-        {
-            get { return null; }
         }
 
         public DateTimeOffset? Published

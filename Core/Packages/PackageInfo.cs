@@ -1,50 +1,24 @@
 ﻿using System;
-using System.Data.Services.Common;
+using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
 namespace NuGetPe
 {
-    public interface IPackageInfoType
+    public class PackageInfo
     {
-        bool ShowAll { get; set; }
-    }
-
-    [DataServiceKey("Id", "Version")]
-    [HasStreamAttribute]
-    public class PackageInfo : IPackageInfoType
-    {
-        private string _version;
-        private NuGetVersion _semanticVersion;
-
-        public string Id { get; set; }
-        public string Version
+        public PackageInfo(PackageIdentity identity)
         {
-            get
-            {
-                return _version;
-            }
-            set
-            {
-                _version = value;
-
-                if (string.IsNullOrEmpty(_version))
-                {
-                    _semanticVersion = new NuGetVersion(0, 0, 0, 0);
-                }
-                else
-                {
-                    NuGetVersion.TryParse(_version, out _semanticVersion);
-                }
-            }
+            Identity = identity ?? throw new ArgumentNullException(nameof(identity));
         }
 
+        public PackageIdentity Identity { get; }
+
+        public string Id => Identity.Id;
+        public NuGetVersion SemanticVersion => Identity.Version;
+        public string Version => SemanticVersion.ToFullString();
+
         public string Authors { get; set; }
-        public int VersionDownloadCount { get; set; }
         public int DownloadCount { get; set; }
-        public string PackageHash { get; set; }
-        public Uri DownloadUrl { get; set; }
-        public long PackageSize { get; set; }
-        public bool ShowAll { get; set; }
         public DateTimeOffset? Published { get; set; }
 
         public bool IsUnlisted
@@ -62,44 +36,6 @@ namespace NuGetPe
                 return SemanticVersion != null && SemanticVersion.IsPrerelease;
             }
         }
-
-        public int EffectiveDownloadCount
-        {
-            get
-            {
-                return ShowAll ? VersionDownloadCount : DownloadCount;
-            }
-        }
-
-        public bool IsLocalPackage
-        {
-            get
-            {
-                return DownloadUrl.IsFile;
-            }
-        }
-
-        public NuGetVersion SemanticVersion
-        {
-            get
-            {
-                return _semanticVersion;
-            }
-        }
-
-        public DataServicePackage AsDataServicePackage()
-        {
-            return new DataServicePackage
-                   {
-                       Id = Id,
-                       Version = _semanticVersion.ToNormalizedString(),
-                       Authors = Authors,
-                       VersionDownloadCount = VersionDownloadCount,
-                       DownloadCount = DownloadCount,
-                       PackageHash = PackageHash,
-                       Published = Published,
-                       IsPrerelease = IsPrerelease
-                   };
-        }
+        
     }
 }

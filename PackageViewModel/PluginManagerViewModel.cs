@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGet.Protocol.Core.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -91,10 +92,11 @@ namespace PackageExplorerViewModel
             var selectedPackageInfo = _packageChooser.SelectPluginPackage();
             if (selectedPackageInfo != null)
             {
+                var repository = _packageChooser.PluginRepository;
+
                 IPackage package = await _packageDownloader.Download(
-                    selectedPackageInfo.DownloadUrl,
-                    selectedPackageInfo.Id,
-                    selectedPackageInfo.Version);
+                    repository,
+                    selectedPackageInfo.Identity);
 
                 if (package != null)
                 {

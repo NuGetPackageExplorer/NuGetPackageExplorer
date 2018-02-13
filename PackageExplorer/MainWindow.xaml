@@ -94,7 +94,7 @@
                     <MenuItem.ItemContainerStyle>
                         <Style TargetType="{x:Type MenuItem}">
                             <EventSetter Event="Click" Handler="RecentFileMenuItem_Click" />
-                            <Setter Property="Header" Value="{Binding Path, Converter={StaticResource TruncatePathConverter}}" />
+                            <Setter Property="Header" Value="{Binding ., Converter={StaticResource TruncatePathConverter}}" />
                             <Setter Property="ToolTip" Value="{Binding Path}" />
                         </Style>
                     </MenuItem.ItemContainerStyle>

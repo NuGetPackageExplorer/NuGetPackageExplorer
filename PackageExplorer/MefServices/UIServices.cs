@@ -2,7 +2,7 @@
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.IO;
-using System.Threading.Tasks;
+using System.Net;
 using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Win32;
@@ -473,6 +473,26 @@ namespace PackageExplorer
             else
             {
                 portableFramework = null;
+                return false;
+            }
+        }
+
+        public bool OpenCredentialsDialog(string target, out NetworkCredential networkCredential)
+        {
+            using (var dialog = new CredentialDialog())
+            {
+                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.MainInstruction = "Credentials for " + target;
+                dialog.Content = "Enter PATs in the username field.";
+                dialog.Target = target;
+
+                if (dialog.ShowDialog())
+                {
+                    networkCredential = dialog.Credentials;
+                    return true;
+                }
+
+                networkCredential = null;
                 return false;
             }
         }

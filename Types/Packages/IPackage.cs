@@ -1,4 +1,4 @@
-using NuGet.Packaging;
+﻿using NuGet.Packaging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -15,8 +15,6 @@ namespace NuGetPe
         bool IsPrerelease { get; }
 
         DateTimeOffset LastUpdated { get; }
-
-        long PackageSize { get; }
 
         DateTimeOffset? Published { get; }
         

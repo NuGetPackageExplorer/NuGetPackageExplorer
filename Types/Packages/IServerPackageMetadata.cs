@@ -6,7 +6,5 @@ namespace NuGetPe
     {
         Uri ReportAbuseUrl { get; }
         int DownloadCount { get; }
-        int VersionDownloadCount { get; }
-        string PackageHash { get; }
     }
 }
