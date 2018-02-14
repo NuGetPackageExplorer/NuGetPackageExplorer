@@ -24,11 +24,6 @@ namespace PackageExplorer
     {
         private static readonly FileSizeConverter FileSizeConverter = new FileSizeConverter();
 
-        private ProgressDialog _progressDialog;
-        private string _lastDescription;
-        private long? _lastPecent;
-        private readonly object _progressDialogLock = new object();
-
         [Import]
         public Lazy<MainWindow> MainWindow { get; set; }
 
@@ -64,18 +59,18 @@ namespace PackageExplorer
                 progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, packageIdentity.Id, string.Empty);
             }
 
-            lock (_progressDialogLock)
+            string description = null;
+            int? percent = null;
+            bool updated = false;
+
+            var progressDialogLock = new object();
+            var progressDialog = new ProgressDialog
             {
-                _progressDialog?.Dispose();
-                
-                _progressDialog = new ProgressDialog
-                {
-                    Text = progressDialogText,
-                    WindowTitle = Resources.Resources.Dialog_Title,
-                    ShowTimeRemaining = true,
-                    CancellationText = "Canceling download..."
-                };
-            }
+                Text = progressDialogText,
+                WindowTitle = Resources.Resources.Dialog_Title,
+                ShowTimeRemaining = true,
+                CancellationText = "Canceling download..."
+            };
 
             // polling for Cancel button being clicked
             var cts = new CancellationTokenSource();
@@ -86,21 +81,22 @@ namespace PackageExplorer
 
             timer.Tick += (o, e) =>
                           {
-                              lock (_progressDialogLock)
+                              lock (progressDialogLock)
                               {
-                                  if (_progressDialog.CancellationPending)
+                                  if (progressDialog.CancellationPending)
                                   {
                                       timer.Stop();
                                       cts.Cancel();
                                   }
-                                  else if (_progressDialog.Description != _lastDescription)
+                                  else if (updated)
                                   {
-                                      if (!_progressDialog.IsOpen)
+                                      if (!progressDialog.IsOpen)
                                       {
-                                          _progressDialog.ProgressBarStyle = _lastPecent.HasValue ? ProgressBarStyle.ProgressBar : ProgressBarStyle.MarqueeProgressBar;
-                                          _progressDialog.ShowDialog(MainWindow.Value);
+                                          progressDialog.ProgressBarStyle = percent.HasValue ? ProgressBarStyle.ProgressBar : ProgressBarStyle.MarqueeProgressBar;
+                                          progressDialog.ShowDialog(MainWindow.Value);
                                       }
-                                      _progressDialog.ReportProgress((int)_lastPecent.GetValueOrDefault(), null, _lastDescription);
+                                      progressDialog.ReportProgress(percent.GetValueOrDefault(), null, description);
+                                      updated = false;
                                   }
                               }
                           };
@@ -114,7 +110,7 @@ namespace PackageExplorer
                 var repository = PackageRepositoryFactory.CreateRepository(sourceRepository.PackageSource, additionalProviders);
                 var downloadResource = await repository.GetResourceAsync<DownloadResource>(cts.Token);
 
-                using (var sourceCacheContext = new SourceCacheContext())
+                using (var sourceCacheContext = new SourceCacheContext() { NoCache = true })
                 {
                     var context = new PackageDownloadContext(sourceCacheContext, Path.GetTempPath(), true);
 
@@ -154,13 +150,35 @@ namespace PackageExplorer
                 timer.Stop();
 
                 // close progress dialog when done
-                lock (_progressDialogLock)
+                lock (progressDialogLock)
                 {
-                    _progressDialog.Close();
-                    _progressDialog = null;
+                    progressDialog.Close();
+                    progressDialog = null;
                 }
 
                 MainWindow.Value.Activate();
+            }
+
+            void OnProgress(long bytesReceived, long? totalBytes)
+            {
+                if (totalBytes.HasValue)
+                {
+                    percent = (int)((bytesReceived * 100L) / totalBytes);
+                    description = string.Format(
+                       CultureInfo.CurrentCulture,
+                       "Downloaded {0} of {1}...",
+                       FileSizeConverter.Convert(bytesReceived, typeof(string), null, CultureInfo.CurrentCulture),
+                       FileSizeConverter.Convert(totalBytes.Value, typeof(string), null, CultureInfo.CurrentCulture));
+                }
+                else
+                {
+                    percent = null;
+                    description = string.Format(
+                        CultureInfo.CurrentCulture,
+                        "Downloaded {0}...",
+                        FileSizeConverter.Convert(bytesReceived, typeof(string), null, CultureInfo.CurrentCulture));
+                }
+                updated = true;
             }
         }
 
@@ -169,27 +187,6 @@ namespace PackageExplorer
         private void OnError(Exception error)
         {
             UIServices.Show((error.InnerException ?? error).Message, MessageLevel.Error);
-        }
-
-        private void OnProgress(long bytesReceived, long? totalBytes)
-        {
-            if (totalBytes.HasValue)
-            {
-                _lastPecent = (int)((bytesReceived * 100L) / totalBytes);
-                _lastDescription = string.Format(
-                   CultureInfo.CurrentCulture,
-                   "Downloaded {0} of {1}...",
-                   FileSizeConverter.Convert(bytesReceived, typeof(string), null, CultureInfo.CurrentCulture),
-                   FileSizeConverter.Convert(totalBytes.Value, typeof(string), null, CultureInfo.CurrentCulture));
-            }
-            else
-            {
-                _lastPecent = totalBytes;
-                _lastDescription = string.Format(
-                        CultureInfo.CurrentCulture,
-                        "Downloaded {0}...",
-                        FileSizeConverter.Convert(bytesReceived, typeof(string), null, CultureInfo.CurrentCulture));
-            }
         }
     }
 
