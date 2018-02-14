@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet.Packaging;
+using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGetPe;
 
@@ -26,6 +27,7 @@ namespace PackageExplorerViewModel
         private bool _hasError;
         private bool _isEditable = true;
         private SourceRepository _packageRepository;
+        private FeedType _feedType;
         private MruPackageSourceManager _packageSourceManager;
         private bool _showPrereleasePackages;
         private bool _autoLoadPackages;
@@ -249,6 +251,7 @@ namespace PackageExplorerViewModel
         {
             if (_packageRepository == null)
             {
+                _feedType = FeedType.Undefined;
                 _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
             }
 
@@ -342,6 +345,7 @@ namespace PackageExplorerViewModel
             }
 
             _currentQuery = new ShowLatestVersionQueryContext<IPackageSearchMetadata>(repository, _currentSearch, ShowPrereleasePackages, ShowLatestVersionPageSize);
+            _feedType = await repository.GetFeedType(usedTokenSource.Token);
 
             await LoadPage(CurrentCancellationTokenSource.Token);
         }
@@ -412,7 +416,7 @@ namespace PackageExplorerViewModel
             Packages.Clear();
             if (_packageRepository != null)
             {
-                Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, _packageRepository, this)));
+                Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, _packageRepository, _feedType, this)));
             }
             UpdatePageNumber(beginPackage, endPackage);
         }
