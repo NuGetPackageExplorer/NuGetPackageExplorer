@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -22,6 +23,7 @@ namespace PackageExplorerViewModel
         private readonly PackageChooserViewModel _parentViewModel;
         private CancellationTokenSource _downloadCancelSource;
         private bool _hasFinishedLoading;
+        private Func<Task<IEnumerable<VersionInfo>>> _versionInfos = () => Task.FromResult(Enumerable.Empty<VersionInfo>());
 
         public PackageInfoViewModel(
             PackageInfo info,
@@ -49,8 +51,10 @@ namespace PackageExplorerViewModel
             bool showPrereleasePackages,
             SourceRepository repository,
             PackageChooserViewModel parentViewModel)
-            : this(CreatePackageInfo(info), showPrereleasePackages, repository, parentViewModel)
-        { }
+            : this(CreatePackageInfo(info, null), showPrereleasePackages, repository, parentViewModel)
+        {
+            _versionInfos = info.GetVersionsAsync;
+        }
 
         public ObservableCollection<PackageInfo> AllPackages { get; private set; }
 
@@ -183,6 +187,8 @@ namespace PackageExplorerViewModel
 
             try
             {
+                var versions = await _versionInfos();
+
                 var packageMetadataResource = await _repository.GetResourceAsync<PackageMetadataResource>(_downloadCancelSource.Token);
 
                 using (var sourceCacheContext = new SourceCacheContext())
@@ -192,7 +198,7 @@ namespace PackageExplorerViewModel
                     query = query.OrderByDescending(p => p.Identity.Version);
 
                     // now show packages
-                    AllPackages.AddRange(query.Select(CreatePackageInfo));
+                    AllPackages.AddRange(query.Select(p => CreatePackageInfo(p, versions)));
                 }
 
                 HasFinishedLoading = true;
@@ -282,13 +288,15 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata)
+        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, IEnumerable<VersionInfo> versionInfos)
         {
+            var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
+
             return new PackageInfo(packageSearchMetadata.Identity)
             {
                 Authors = packageSearchMetadata.Authors,
                 Published = packageSearchMetadata.Published,
-                DownloadCount = (int)packageSearchMetadata.DownloadCount.GetValueOrDefault(),
+                DownloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault()),
             };
         }
     }
