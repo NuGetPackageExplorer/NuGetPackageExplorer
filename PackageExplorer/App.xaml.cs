@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -99,7 +100,15 @@ namespace PackageExplorer
             // IMPORTANT: Call this after calling _container.Dispose(). Some exports relies on Dispose()
             // being called to save settings values.
             Settings.Default.IsFirstTimeAfterMigrate = false;
-            Settings.Default.Save();
+
+            // Try to save, if there's an IO error, just ignore it here, nothing we can do
+            try
+            {
+                Settings.Default.Save();
+            }
+            catch 
+            {
+            }
         }
     }
 }
