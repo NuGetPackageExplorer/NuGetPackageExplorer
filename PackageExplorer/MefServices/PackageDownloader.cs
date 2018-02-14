@@ -64,13 +64,18 @@ namespace PackageExplorer
                 progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, packageIdentity.Id, string.Empty);
             }
 
-            _progressDialog = new ProgressDialog
+            lock (_progressDialogLock)
             {
-                Text = progressDialogText,
-                WindowTitle = Resources.Resources.Dialog_Title,
-                ShowTimeRemaining = true,
-                CancellationText = "Canceling download..."
-            };
+                _progressDialog?.Dispose();
+                
+                _progressDialog = new ProgressDialog
+                {
+                    Text = progressDialogText,
+                    WindowTitle = Resources.Resources.Dialog_Title,
+                    ShowTimeRemaining = true,
+                    CancellationText = "Canceling download..."
+                };
+            }
 
             // polling for Cancel button being clicked
             var cts = new CancellationTokenSource();
