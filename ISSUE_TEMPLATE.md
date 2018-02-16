@@ -16,12 +16,12 @@ In case of a BUG:
 
 - What is the current result?
 - What is the expected result?
-- Please post full exception details in case of an Exception (message, stacktrace, inner exceptions)
-- Are there any work arrounds? yes/no
-- Is there a version in which it did worked? 
+- Please post full exception details in case of an Exception (message, stacktrace, inner exceptions).
+- Are there any workarounds? yes/no
+- Is there a version in which it did work?
 - Is there a package on Nuget.org which shows the bug?
 
-in case of a FEATURE REQUEST:
+In case of a FEATURE REQUEST:
  
  - Why do we need it?
  - Please provide an use case.
