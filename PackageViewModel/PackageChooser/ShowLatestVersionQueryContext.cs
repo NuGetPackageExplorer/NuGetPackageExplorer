@@ -32,7 +32,7 @@ namespace PackageExplorerViewModel
 
         public int CurrentPage => _pageIndex;
 
-        public int BeginPackage => _pageIndex * _pageSize;
+        public int BeginPackage => _pageIndex * _pageSize + (_lastPageIndex == 0 && _lastPageCount == 0 ? 0 : 1);
 
         public int EndPackage => _pageIndex * _pageSize + (IsLastPage ? _lastPageCount.Value : _pageSize);
 
