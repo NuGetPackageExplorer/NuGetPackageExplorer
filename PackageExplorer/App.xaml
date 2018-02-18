@@ -100,10 +100,7 @@
             <!-- used on the package chooser dialog -->
             <Style x:Key="DownloadButtonStyle" TargetType="{x:Type TextBlock}">
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding LatestPackageInfo.DownloadUrl.IsFile}" Value="True">
-                        <Setter Property="Visibility" Value="Collapsed" />
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding LatestPackageInfo.DownloadUrl.IsUnc}" Value="True">
+                    <DataTrigger Binding="{Binding LatestPackageInfo.IsRemotePackage}" Value="False">
                         <Setter Property="Visibility" Value="Collapsed" />
                     </DataTrigger>
                 </Style.Triggers>

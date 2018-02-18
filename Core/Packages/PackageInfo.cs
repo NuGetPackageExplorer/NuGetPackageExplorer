@@ -21,6 +21,8 @@ namespace NuGetPe
         public int DownloadCount { get; set; }
         public DateTimeOffset? Published { get; set; }
 
+        public bool IsRemotePackage { get; set; }
+
         public bool IsUnlisted
         {
             get

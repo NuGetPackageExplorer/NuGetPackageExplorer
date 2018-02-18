@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet.Common;
 using NuGet.Packaging;
+using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGetPe;
 
@@ -16,6 +17,7 @@ namespace PackageExplorerViewModel
     public class PackageInfoViewModel : ViewModelBase
     {
         private readonly SourceRepository _repository;
+        private readonly FeedType _feedType;
         private bool _isLoading;
         private string _errorMessage;
         private bool _showingAllVersions;
@@ -29,6 +31,7 @@ namespace PackageExplorerViewModel
             PackageInfo info,
             bool showPrereleasePackages,
             SourceRepository repository,
+            FeedType feedType,
             PackageChooserViewModel parentViewModel)
         {
             Debug.Assert(info != null);
@@ -50,8 +53,9 @@ namespace PackageExplorerViewModel
             IPackageSearchMetadata info,
             bool showPrereleasePackages,
             SourceRepository repository,
+            FeedType feedType,
             PackageChooserViewModel parentViewModel)
-            : this(CreatePackageInfo(info, null), showPrereleasePackages, repository, parentViewModel)
+            : this(CreatePackageInfo(info, feedType, null), showPrereleasePackages, repository, feedType, parentViewModel)
         {
             _versionInfos = info.GetVersionsAsync;
         }
@@ -198,7 +202,7 @@ namespace PackageExplorerViewModel
                     query = query.OrderByDescending(p => p.Identity.Version);
 
                     // now show packages
-                    AllPackages.AddRange(query.Select(p => CreatePackageInfo(p, versions)));
+                    AllPackages.AddRange(query.Select(p => CreatePackageInfo(p, _feedType, versions)));
                 }
 
                 HasFinishedLoading = true;
@@ -288,7 +292,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, IEnumerable<VersionInfo> versionInfos)
+        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, FeedType feedType, IEnumerable<VersionInfo> versionInfos)
         {
             var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
 
@@ -297,6 +301,7 @@ namespace PackageExplorerViewModel
                 Authors = packageSearchMetadata.Authors,
                 Published = packageSearchMetadata.Published,
                 DownloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault()),
+                IsRemotePackage = (feedType == FeedType.HttpV3 || feedType == FeedType.HttpV2),
             };
         }
     }
