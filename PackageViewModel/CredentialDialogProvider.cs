@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,13 +9,15 @@ using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {
+    [Export]
     public class CredentialDialogProvider : ICredentialProvider
     {
-        private readonly Lazy<IUIServices> _uiServices;
+        private readonly IUIServices _uiServices;
 
-        public CredentialDialogProvider(Lazy<IUIServices> uIServices)
+        [ImportingConstructor]
+        public CredentialDialogProvider(IUIServices uiServices)
         {
-            _uiServices = uIServices ?? throw new ArgumentNullException(nameof(uIServices)); 
+            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices)); 
         }
 
         public string Id => "NPECredentialDialog";
@@ -29,9 +32,9 @@ namespace PackageExplorerViewModel
             bool success = false;
             NetworkCredential credential = null;
 
-            await _uiServices.Value.BeginInvoke(() =>
+            await _uiServices.BeginInvoke(() =>
             {
-                success = _uiServices.Value.OpenCredentialsDialog(uri.GetLeftPart(UriPartial.Authority), out credential);
+                success = _uiServices.OpenCredentialsDialog(uri.GetLeftPart(UriPartial.Authority), out credential);
             });
 
             cancellationToken.ThrowIfCancellationRequested();

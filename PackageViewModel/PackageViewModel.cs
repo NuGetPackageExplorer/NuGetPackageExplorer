@@ -28,6 +28,7 @@ namespace PackageExplorerViewModel
         private readonly IList<Lazy<IPackageRule>> _packageRules;
         private readonly ISettingsManager _settingsManager;
         private readonly IUIServices _uiServices;
+        private readonly CredentialPublishProvider _credentialPublishProvider;
 
         private ICommand _addContentFileCommand;
         private ICommand _addContentFolderCommand;
@@ -70,14 +71,16 @@ namespace PackageExplorerViewModel
             IUIServices uiServices,
             IPackageEditorService editorService,
             ISettingsManager settingsManager,
+            CredentialPublishProvider credentialPublishProvider,
             IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata,
             IList<Lazy<IPackageRule>> packageRules)
         {
-            _settingsManager = settingsManager ?? throw new ArgumentNullException("settingsManager");
-            _editorService = editorService ?? throw new ArgumentNullException("editorService");
-            _uiServices = uiServices ?? throw new ArgumentNullException("uiServices");
-            _mruManager = mruManager ?? throw new ArgumentNullException("mruManager");
-            _package = package ?? throw new ArgumentNullException("package");
+            _settingsManager = settingsManager ?? throw new ArgumentNullException(nameof(settingsManager));
+            _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
+            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
+            _mruManager = mruManager ?? throw new ArgumentNullException(nameof(mruManager));
+            _credentialPublishProvider = credentialPublishProvider ?? throw new ArgumentNullException(nameof(credentialPublishProvider));
+            _package = package ?? throw new ArgumentNullException(nameof(package));
             _contentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
@@ -720,6 +723,7 @@ namespace PackageExplorerViewModel
                 var publishPackageViewModel = new PublishPackageViewModel(
                     mruSourceManager,
                     _settingsManager,
+                    _credentialPublishProvider,
                     this);
                 _uiServices.OpenPublishDialog(publishPackageViewModel);
             }

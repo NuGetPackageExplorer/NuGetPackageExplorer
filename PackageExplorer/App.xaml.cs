@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
@@ -7,7 +6,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using NuGet.Credentials;
 using NuGet.Protocol;
-using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
@@ -41,12 +39,10 @@ namespace PackageExplorer
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            var credentialManagerProvider = new CredentialManagerProvider(Container.GetExport<ICredentialManager>());
-            var credentialDialogProvider = new CredentialDialogProvider(Container.GetExport<IUIServices>());
-
             HttpHandlerResourceV3.CredentialService = new CredentialService(new ICredentialProvider[] {
-                credentialManagerProvider,
-                credentialDialogProvider,
+                Container.GetExportedValue<CredentialManagerProvider>(),
+                Container.GetExportedValue<CredentialPublishProvider>(),
+                Container.GetExportedValue<CredentialDialogProvider>(),
             }, false);
             HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) => Container.GetExportedValue<ICredentialManager>().Add(credentials, uri);
 

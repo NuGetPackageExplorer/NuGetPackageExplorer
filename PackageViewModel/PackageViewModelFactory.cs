@@ -32,6 +32,9 @@ namespace PackageExplorerViewModel
         [Import]
         public ISettingsManager SettingsManager { get; set; }
 
+        [Import]
+        public CredentialPublishProvider CredentialPublishProvider { get; set; }
+
         [Import(typeof(IPluginManager))]
         public IPluginManager PluginManager { get; set; }
 
@@ -70,6 +73,7 @@ namespace PackageExplorerViewModel
                 UIServices,
                 EditorService.Value,
                 SettingsManager,
+                CredentialPublishProvider,
                 ContentViewerMetadata,
                 PackageRules);
         }
