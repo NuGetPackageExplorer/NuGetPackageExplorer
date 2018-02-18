@@ -126,7 +126,7 @@ namespace PackageExplorer
                 if (SearchBox.Template.FindName("PART_ContentHost", SearchBox) is FrameworkElement contentHost)
                 {
                     contentHost.Margin = new Thickness(0, 0, 40, 0);
-                    contentHost.Width = 160;
+                    contentHost.Width = 360;
                 }
             }
         }
