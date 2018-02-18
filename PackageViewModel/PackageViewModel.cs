@@ -658,7 +658,7 @@ namespace PackageExplorerViewModel
 
         private bool SaveContentCanExecute(PackageFile file)
         {
-            return !IsSigned && !IsInEditFileMode;
+            return !IsInEditFileMode;
         }
 
         #endregion
