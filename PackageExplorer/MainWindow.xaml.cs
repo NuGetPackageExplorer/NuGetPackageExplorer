@@ -269,7 +269,7 @@ namespace PackageExplorer
             var parameter = (string)e.Parameter;
             if (!string.IsNullOrEmpty(parameter))
             {
-                parameter = "id:" + parameter;
+                parameter = "packageId:" + parameter;
             }
             await OpenPackageFromRepository(parameter);
         }
