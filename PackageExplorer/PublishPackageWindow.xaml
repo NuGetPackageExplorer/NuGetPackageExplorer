@@ -28,7 +28,7 @@
         </DockPanel.BindingGroup>
 
         <!-- Main instruction -->
-        <TextBlock DockPanel.Dock="Top" Text="Enter your publish key or PAT." FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
+        <TextBlock DockPanel.Dock="Top" Text="Enter your publish key or PAT (Personal Access Token)." FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
 
         <!-- Secondary instruction -->
         <TextBlock DockPanel.Dock="Top" Margin="10,0" Text="Provide the publish Url and the publish key or PAT associated with it." TextWrapping="Wrap" />
