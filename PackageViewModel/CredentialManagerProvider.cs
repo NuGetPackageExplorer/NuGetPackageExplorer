@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Composition;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,11 +9,13 @@ using PackageExplorerViewModel.Types;
 
 namespace PackageExplorerViewModel
 {
+    [Export]
     public class CredentialManagerProvider : ICredentialProvider
     {
-        private readonly Lazy<ICredentialManager> _credentialManager;
+        private readonly ICredentialManager _credentialManager;
 
-        public CredentialManagerProvider(Lazy<ICredentialManager> credentialManager)
+        [ImportingConstructor]
+        public CredentialManagerProvider(ICredentialManager credentialManager)
         {
             _credentialManager = credentialManager ?? throw new ArgumentNullException(nameof(credentialManager));
         }
@@ -23,16 +26,16 @@ namespace PackageExplorerViewModel
         {
             if (isRetry)
             {
-                return Task.FromResult(new CredentialResponse(CredentialStatus.ProviderNotApplicable));
+                return Task.FromResult(new CredentialResponse(CredentialStatus.UserCanceled));
             }
 
-            var credentials = _credentialManager.Value.Get(uri);
+            var credentials = _credentialManager.Get(uri);
 
             if (credentials != null)
             {
                 return Task.FromResult(new CredentialResponse(credentials));
             }
-            return Task.FromResult(new CredentialResponse(CredentialStatus.ProviderNotApplicable));
+            return Task.FromResult(new CredentialResponse(CredentialStatus.UserCanceled));
         }
     }
 }

@@ -15,9 +15,10 @@ namespace PackageExplorerViewModel
         private readonly IPackageMetadata _package;
         private readonly string _packageFilePath;
         private readonly ISettingsManager _settingsManager;
+        private readonly CredentialPublishProvider _credentialPublishProvider;
         private bool _canPublish = true;
         private bool _hasError;
-        private string _publishKey;
+        private string _publishKeyOrPAT;
         private bool? _publishAsUnlisted = true;
         private string _selectedPublishItem;
         private bool _showProgress;
@@ -27,25 +28,27 @@ namespace PackageExplorerViewModel
         public PublishPackageViewModel(
             MruPackageSourceManager mruSourceManager,
             ISettingsManager settingsManager,
+            CredentialPublishProvider credentialPublishProvider,
             PackageViewModel viewModel)
         {
             _mruSourceManager = mruSourceManager;
             _settingsManager = settingsManager;
+            _credentialPublishProvider = credentialPublishProvider;
             _package = viewModel.PackageMetadata;
             _packageFilePath = viewModel.GetCurrentPackageTempFile();
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
             PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
         }
 
-        public string PublishKey
+        public string PublishKeyOrPAT
         {
-            get { return _publishKey; }
+            get { return _publishKeyOrPAT; }
             set
             {
-                if (_publishKey != value)
+                if (_publishKeyOrPAT != value)
                 {
-                    _publishKey = value;
-                    OnPropertyChanged(nameof(PublishKey));
+                    _publishKeyOrPAT = value;
+                    OnPropertyChanged(nameof(PublishKeyOrPAT));
                 }
             }
         }
@@ -85,7 +88,7 @@ namespace PackageExplorerViewModel
                             var key = _settingsManager.ReadApiKey(value);
                             if (!string.IsNullOrEmpty(key))
                             {
-                                PublishKey = key;
+                                PublishKeyOrPAT = key;
                             }
                         }
                     }
@@ -180,7 +183,7 @@ namespace PackageExplorerViewModel
             ShowProgress = false;
             HasError = false;
             Status = (PublishAsUnlisted == true) ? "Package published and unlisted successfully." : "Package published successfully.";
-            _settingsManager.WriteApiKey(PublishUrl, PublishKey);
+            _settingsManager.WriteApiKey(PublishUrl, PublishKeyOrPAT);
             CanPublish = true;
         }
 
@@ -205,16 +208,18 @@ namespace PackageExplorerViewModel
             HasError = false;
             CanPublish = false;
 
+            _credentialPublishProvider.PersonalAccessToken = PublishKeyOrPAT;
+
             try
             {
                 var repository = PackageRepositoryFactory.CreateRepository(PublishUrl);
                 var updateResource = await repository.GetResourceAsync<PackageUpdateResource>();
 
-                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKey, s => PublishKey, NullLogger.Instance);
+                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, NullLogger.Instance);
 
                 if (PublishAsUnlisted == true)
                 {
-                    await updateResource.Delete(Id, Version, s => PublishKey, s => true, NullLogger.Instance);
+                    await updateResource.Delete(Id, Version, s => PublishKeyOrPAT, s => true, NullLogger.Instance);
                 }
 
                 OnCompleted();
@@ -227,6 +232,8 @@ namespace PackageExplorerViewModel
             {
                 // add the publish url to the list
                 _mruSourceManager.NotifyPackageSourceAdded(PublishUrl);
+
+                _credentialPublishProvider.PersonalAccessToken = null;
 
                 // this is to make sure the combo box doesn't goes blank after publishing
                 try
