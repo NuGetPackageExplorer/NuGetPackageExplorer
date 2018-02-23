@@ -61,7 +61,7 @@ namespace PackageExplorer
 
             string description = null;
             int? percent = null;
-            bool updated = false;
+            var updated = false;
 
             var progressDialogLock = new object();
             var progressDialog = new ProgressDialog
