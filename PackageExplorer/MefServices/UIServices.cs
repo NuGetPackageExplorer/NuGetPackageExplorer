@@ -143,7 +143,7 @@ namespace PackageExplorer
             MessageBox.Show(
                 Window.Value,
                 message,
-                Resources.Resources.Dialog_Title,
+                Resources.Dialog_Title,
                 MessageBoxButton.OK,
                 image);
         }
@@ -251,7 +251,7 @@ namespace PackageExplorer
 
             var mainInstruction = string.Format(
                 CultureInfo.CurrentCulture,
-                Resources.Resources.MoveContentFileToFolder,
+                Resources.MoveContentFileToFolder,
                 fileName,
                 targetFolder);
 
@@ -262,7 +262,7 @@ namespace PackageExplorer
         {
             using (var dialog = new TaskDialog())
             {
-                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.WindowTitle = Resources.Dialog_Title;
                 dialog.MainInstruction = "Great! You are running on Windows 8";
                 dialog.Content = "There is also a Windows Store app of NuGet Package Explorer that is designed to be touch friendly, fast and fluid. Do you want to install it now?";
                 dialog.AllowDialogCancellation = true;
@@ -309,7 +309,7 @@ namespace PackageExplorer
         {
             using (var dialog = new TaskDialog())
             {
-                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.WindowTitle = Resources.Dialog_Title;
                 dialog.MainInstruction = title;
                 dialog.Content = message;
                 dialog.AllowDialogCancellation = true;
@@ -335,7 +335,7 @@ namespace PackageExplorer
         {
             using (var dialog = new TaskDialog())
             {
-                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.WindowTitle = Resources.Dialog_Title;
                 dialog.MainInstruction = title;
                 dialog.AllowDialogCancellation = true;
                 dialog.Content = message;
@@ -370,14 +370,14 @@ namespace PackageExplorer
         {
             var content = string.Format(
                 CultureInfo.CurrentCulture,
-                Resources.Resources.MoveContentFileToFolderExplanation,
+                Resources.MoveContentFileToFolderExplanation,
                 targetFolder);
 
             var dialog = new TaskDialog
                          {
                              MainInstruction = mainInstruction,
                              Content = content,
-                             WindowTitle = Resources.Resources.Dialog_Title,
+                             WindowTitle = Resources.Dialog_Title,
                              ButtonStyle = TaskDialogButtonStyle.CommandLinks
                          };
 
@@ -430,7 +430,7 @@ namespace PackageExplorer
         {
             using (var dialog = new TaskDialog())
             {
-                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.WindowTitle = Resources.Dialog_Title;
                 dialog.MainInstruction = title;
                 dialog.Content = message;
                 dialog.AllowDialogCancellation = false;
@@ -481,7 +481,7 @@ namespace PackageExplorer
         {
             using (var dialog = new CredentialDialog())
             {
-                dialog.WindowTitle = Resources.Resources.Dialog_Title;
+                dialog.WindowTitle = Resources.Dialog_Title;
                 dialog.MainInstruction = "Credentials for " + target;
                 dialog.Content = "Enter PATs in the username field.";
                 dialog.Target = target;

@@ -49,7 +49,7 @@ namespace PackageExplorer
 
         private async Task<string> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity)
         {
-            var progressDialogText = Resources.Resources.Dialog_DownloadingPackage;
+            var progressDialogText = Resources.Dialog_DownloadingPackage;
             if (packageIdentity.HasVersion)
             {
                 progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, packageIdentity.Id, packageIdentity.Version);
@@ -61,13 +61,13 @@ namespace PackageExplorer
 
             string description = null;
             int? percent = null;
-            bool updated = false;
+            var updated = false;
 
             var progressDialogLock = new object();
             var progressDialog = new ProgressDialog
             {
                 Text = progressDialogText,
-                WindowTitle = Resources.Resources.Dialog_Title,
+                WindowTitle = Resources.Dialog_Title,
                 ShowTimeRemaining = true,
                 CancellationText = "Canceling download..."
             };

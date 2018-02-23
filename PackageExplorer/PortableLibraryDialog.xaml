@@ -4,7 +4,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:PackageExplorer" 
         xmlns:settings="clr-namespace:PackageExplorer.Properties"
-        xmlns:resources="clr-namespace:PackageExplorer.Resources"
         FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" 
         Title="Pick Target Frameworks"
         WindowStartupLocation="CenterOwner" 

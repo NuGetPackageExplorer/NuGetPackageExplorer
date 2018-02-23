@@ -6,7 +6,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:self="clr-namespace:PackageExplorer" 
     xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" 
-    xmlns:resources="clr-namespace:PackageExplorer.Resources" 
     xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging.Core"
     xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging.Core" 
     xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
@@ -52,35 +51,35 @@
 
             <DataTemplate DataType="{x:Type viewmodel:EditablePackageMetadata}" x:Key="VerifySignaturesResult">
 
-                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{x:Static resources:Resources.Dialog_ShowDetails}" >
+                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{x:Static self:Resources.Dialog_ShowDetails}" >
                     <StackPanel.InputBindings>
                         <MouseBinding Gesture="LeftClick" Command="{Binding ShowValidationResultsCommand}" />
                     </StackPanel.InputBindings>
-                    <TextBlock Name="isValid" Text="{x:Static resources:Resources.Validation_Pending}" />
+                    <TextBlock Name="isValid" Text="{x:Static self:Resources.Validation_Pending}" />
                     <Image Name="icon" Margin="3,0,0,0" Visibility="Collapsed"  />
                     <spinners:ucSpinnerDotCircle x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" Foreground="Black" />
                 </StackPanel>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Trusted">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Trusted}" />
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Trusted}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/Validate.png" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Invalid">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Invalid}" />
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Invalid}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Untrusted">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Untrusted}" />
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Untrusted}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Unknown">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static resources:Resources.Validation_Unknown}" />
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Unknown}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
@@ -119,7 +118,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static resources:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static self:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
                     <ItemsControl
                         x:Name="dependenciesList"
                         Grid.Row="1"
@@ -131,7 +130,7 @@
                         Margin="20,0,0,0"
                         Visibility="{Binding Items.Count, ElementName=dependenciesList, Converter={StaticResource invertedCountConverter}}"
                         Style="{StaticResource NoDependencyTextBoxStyle}" 
-                        Text="{x:Static resources:Resources.Dialog_NoDependencyLabel}">
+                        Text="{x:Static self:Resources.Dialog_NoDependencyLabel}">
                     </TextBlock>
                 </Grid>
             </DataTemplate>
@@ -147,7 +146,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static resources:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static self:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
                     <ItemsControl
                         x:Name="referencesList"
                         Grid.Row="1"
@@ -239,13 +238,13 @@
 
                         <!-- Id -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_IdLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_IdLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Id}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>
 
                         <!-- Version -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_VersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_VersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Version, Converter={StaticResource NuGetVersionConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
                             <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version, Mode=OneWay, Converter={StaticResource NuGetVersionPreReleaseConverter}}" />
                         </StackPanel>
@@ -253,7 +252,7 @@
                         <!-- Publisher -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" 
                                     Visibility="{Binding PublisherSignature, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_PublisherLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_PublisherLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
                             <ContentPresenter Content="{Binding PublisherSignature, Mode=OneWay}" />
                             
@@ -262,7 +261,7 @@
                         <!-- Repository -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" 
                                     Visibility="{Binding RepositorySignature, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_RepositoryLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
                             <ContentPresenter Content="{Binding RepositorySignature, Mode=OneWay}" />
 
@@ -271,70 +270,70 @@
                         <!-- Validation -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" 
                                     Visibility="{Binding IsSigned, Converter={StaticResource boolToVis}}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_SignatureValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_SignatureValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
                             <ContentPresenter Content="{Binding Mode=OneWay}" ContentTemplate="{StaticResource VerifySignaturesResult}" Margin="3,0,0,0" />
                         </StackPanel>
 
                         <!-- Title -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Title, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_TitleLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_TitleLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Title}" Style="{StaticResource DetailMetadataValueStyle}" TextTrimming="CharacterEllipsis" />
                         </DockPanel>
 
                         <!-- Authors -->
                         <DockPanel Margin="0,3,0,0">
-                            <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_CreatedByLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_CreatedByLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Authors, Converter={StaticResource authorNamesConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
                         </DockPanel>
 
                         <!-- Owners -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Owners, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_OwnersLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_OwnersLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Owners, Converter={StaticResource authorNamesConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
                         </DockPanel>
 
                         <!-- Min client version -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding MinClientVersion, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_MinVersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_MinVersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding MinClientVersion}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>
 
                         <!-- Development Dependency -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding DevelopmentDependency, Converter={StaticResource boolToVis}}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_DevelopmentDependencyLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_DevelopmentDependencyLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding DevelopmentDependency, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>
 
                         <!-- Tags -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Tags, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock DockPanel.Dock="Left" Text="{x:Static resources:Resources.Dialog_TagLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_TagLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Tags}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
                         </DockPanel>
 
                         <!-- Language -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Language, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_LanguageLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_LanguageLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Language}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>
 
                         <!-- Require License Acceptance -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding RequireLicenseAcceptance, Converter={StaticResource boolToVis}}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_RequireLicenseLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_RequireLicenseLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding RequireLicenseAcceptance, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>
 
                         <!-- View License link -->
                         <TextBlock Visibility="{Binding LicenseUrl, Converter={StaticResource NullToVisibilityConverter}}">
                             <Hyperlink Command="GoToPage" CommandParameter="{Binding LicenseUrl}" ToolTip="{Binding LicenseUrl}">
-                                <Run Text="{x:Static resources:Resources.Dialog_ViewLicense}" />
+                                <Run Text="{x:Static self:Resources.Dialog_ViewLicense}" />
                             </Hyperlink>
                         </TextBlock>
 
                         <!-- Project Url -->
                         <TextBlock Visibility="{Binding ProjectUrl, Converter={StaticResource NullToVisibilityConverter}}">
                             <Hyperlink Command="GoToPage" CommandParameter="{Binding ProjectUrl}" ToolTip="{Binding ProjectUrl}">
-                                <Run Text="{x:Static resources:Resources.Dialog_MoreInfo}" />
+                                <Run Text="{x:Static self:Resources.Dialog_MoreInfo}" />
                             </Hyperlink>
                         </TextBlock>
 
@@ -345,7 +344,7 @@
 
                         <!-- Serviceable -->
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Serviceable, Converter={StaticResource boolToVis}}">
-                            <TextBlock Text="{x:Static resources:Resources.Dialog_ServiceableLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{x:Static self:Resources.Dialog_ServiceableLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Serviceable, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>
 
@@ -365,15 +364,15 @@
                         <TextBlock Style="{StaticResource DetailDescriptionTextBoxStyle}" Text="{Binding ReleaseNotes, Converter={StaticResource NormalizeTextConverter}}" Visibility="{Binding ReleaseNotes, Converter={StaticResource NullToVisibilityConverter}}"></TextBlock>
 
                         <!-- Dependencies list -->
-                        <TextBlock Text="{x:Static resources:Resources.Dialog_DependenciesLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{x:Static self:Resources.Dialog_DependenciesLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
                         <ItemsControl x:Name="DependencyItems" Margin="25,5,0,0" ItemsSource="{Binding DependencySets, Converter={StaticResource DependencySetConverter}}">
                         </ItemsControl>
 
-                        <TextBlock Margin="25,5,0,0" Visibility="{Binding Items.Count, ElementName=DependencyItems, Converter={StaticResource invertedCountConverter}}" Style="{StaticResource NoDependencyTextBoxStyle}" Text="{x:Static resources:Resources.Dialog_NoDependencyLabel}"></TextBlock>
+                        <TextBlock Margin="25,5,0,0" Visibility="{Binding Items.Count, ElementName=DependencyItems, Converter={StaticResource invertedCountConverter}}" Style="{StaticResource NoDependencyTextBoxStyle}" Text="{x:Static self:Resources.Dialog_NoDependencyLabel}"></TextBlock>
 
                         <!-- Framework assembly references -->
-                        <TextBlock Visibility="{Binding Items.Count, ElementName=FrameworkAssemblyItems, Converter={StaticResource countConverter}}" Text="{x:Static resources:Resources.Dialog_FrameworkAssembliesLabel}" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Visibility="{Binding Items.Count, ElementName=FrameworkAssemblyItems, Converter={StaticResource countConverter}}" Text="{x:Static self:Resources.Dialog_FrameworkAssembliesLabel}" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />
 
                         <ItemsControl x:Name="FrameworkAssemblyItems" Margin="25,5,0,0" ItemsSource="{Binding FrameworkAssemblies}">
                             <ItemsControl.ItemTemplate>
