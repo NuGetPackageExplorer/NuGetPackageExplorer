@@ -22,7 +22,7 @@ using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
-using StringResources = PackageExplorer.Resources.Resources;
+using StringResources = PackageExplorer.Resources;
 using NuGet.Packaging;
 using PackageExplorerViewModel.Types;
 

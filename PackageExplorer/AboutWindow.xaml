@@ -1,4 +1,4 @@
-﻿<self:StandardDialog x:Class="PackageExplorer.AboutWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:PackageExplorer" xmlns:settings="clr-namespace:PackageExplorer.Properties" xmlns:resources="clr-namespace:PackageExplorer.Resources" FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" Title="{x:Static resources:Resources.Dialog_Title}" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" SizeToContent="WidthAndHeight" ShowInTaskbar="False">
+﻿<self:StandardDialog x:Class="PackageExplorer.AboutWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:PackageExplorer" xmlns:settings="clr-namespace:PackageExplorer.Properties" FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" Title="{x:Static self:Resources.Dialog_Title}" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" SizeToContent="WidthAndHeight" ShowInTaskbar="False">
 
     <DockPanel LastChildFill="true">
 

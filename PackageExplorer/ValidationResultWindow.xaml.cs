@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Documents;
-using StringResources = PackageExplorer.Resources.Resources;
+using StringResources = PackageExplorer.Resources;
 
 namespace PackageExplorer
 {

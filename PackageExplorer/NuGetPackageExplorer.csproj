@@ -15,6 +15,7 @@
     <Title>NuGet Package Explorer</Title>
     <Description>This is a NuGet package explorer tool which lets you view the metadata of a .nupkg package. After installing it, you can double click on .nupkg packages to open them in Package Explorer.</Description>
     <EmbeddedResourceGeneratorVisibilityIsInternal>false</EmbeddedResourceGeneratorVisibilityIsInternal>
+    <RootNamespace>PackageExplorer</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL" SpecificVersion="false" HintPath="..\lib\Ookii.Dialogs.Wpf.dll" />
@@ -34,7 +35,7 @@
     <Resource Include="Images\*.*" />
     <Content Include="Resources\fxAssemblies.txt" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
-  
+
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
   <!-- workaround for https://github.com/NuGet/Home/issues/5894 -->
   <Import Project="obj\*.targets" Condition=" '$(MSBuildProjectExtension)' == '.tmp_proj'" />
