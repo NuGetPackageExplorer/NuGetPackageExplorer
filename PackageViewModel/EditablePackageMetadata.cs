@@ -572,7 +572,7 @@ namespace PackageExplorerViewModel
 
         public override string ToString()
         {
-            return Id + "." + ManifestUtility.ReplaceMetadataWithToken(Version.ToFullString());
+            return Id + " " + ManifestUtility.ReplaceMetadataWithToken(Version.ToFullString());
         }
 
         private string IsValid(string propertyName)
