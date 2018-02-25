@@ -44,7 +44,16 @@ namespace PackageExplorer
         public async Task<ISignaturePackage> Download(SourceRepository sourceRepository, PackageIdentity packageIdentity)
         {
             var tempFilePath = await DownloadWithProgress(sourceRepository, packageIdentity);
-            return (tempFilePath == null) ? null : new ZipPackage(tempFilePath);
+            try
+            {
+                return (tempFilePath == null) ? null : new ZipPackage(tempFilePath);
+            }
+            catch (Exception e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+                return null;
+            }
+            
         }
 
         private async Task<string> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity)
