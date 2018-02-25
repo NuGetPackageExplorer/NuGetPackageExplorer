@@ -47,7 +47,15 @@ namespace PackageExplorerViewModel
             {
                 if ((parameter ?? ViewModel.SelectedItem) is PackageFile file)
                 {
-                    ShowFile(file);
+                    try
+                    {
+                        ShowFile(file);
+                    }
+                    catch (Exception e)
+                    {
+                        ViewModel.UIServices.Show(e.Message, MessageLevel.Error);
+                    }
+                    
                 }
             }
         }
