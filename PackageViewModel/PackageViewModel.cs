@@ -1139,7 +1139,15 @@ namespace PackageExplorerViewModel
             }
 
             var tempFile = Path.GetTempFileName();
-            PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, useTempFile: false);
+            try
+            {
+                PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, useTempFile: false);
+            }
+            catch (Exception e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+            }
+            
             if (File.Exists(tempFile))
             {
                 return tempFile;
