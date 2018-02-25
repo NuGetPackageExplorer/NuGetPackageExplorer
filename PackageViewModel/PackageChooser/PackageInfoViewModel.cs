@@ -41,6 +41,7 @@ namespace PackageExplorerViewModel
             ShowPrerelease = showPrereleasePackages;
             _repository = repository;
             _parentViewModel = parentViewModel;
+            _feedType = feedType;
             AllPackages = new ObservableCollection<PackageInfo>();
 
             ToggleAllVersionsCommand = new RelayCommand(OnToggleAllVersions, CanToggleAllVersions);

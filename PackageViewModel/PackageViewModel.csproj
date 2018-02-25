@@ -7,8 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Credentials" Version="4.6.0-rtm-4922" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.6.0-rtm-4922" />
+    <PackageReference Include="NuGet.Credentials" Version="4.6.0-rtm-4956" />
+    <PackageReference Include="NuGet.PackageManagement" Version="4.6.0-rtm-4956" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <Reference Include="PresentationCore" />
     <Reference Include="System.ComponentModel.Composition" />
