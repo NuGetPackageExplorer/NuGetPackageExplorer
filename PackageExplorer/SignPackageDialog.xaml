@@ -63,10 +63,10 @@
             </TextBlock.Inlines>
         </TextBlock>
 
-        <!-- Timestamper Server -->
+        <!-- Timestamp Server -->
         <DockPanel DockPanel.Dock="Top" Margin="7,10,10,5">
             <Label DockPanel.Dock="Left" Target="{Binding ElementName=TimestampServerBox}" Content="{x:Static vm:Resources.TimestampServer}" ContentStringFormat="{}{0}:" Width="130" />
-            <TextBox x:Name="TimestampServerBox" Text="{Binding TimestamperServer, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Margin="0" />
+            <TextBox x:Name="TimestampServerBox" Text="{Binding TimestampServer, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Margin="0" />
         </DockPanel>
 
         <!-- Hash Algorithm Name -->
