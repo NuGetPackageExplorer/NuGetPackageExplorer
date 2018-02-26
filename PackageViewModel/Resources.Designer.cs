@@ -22,7 +22,7 @@ namespace PackageExplorerViewModel {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Resources {
+    public class Resources {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace PackageExplorerViewModel {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("PackageExplorerViewModel.Resources", typeof(Resources).Assembly);
@@ -51,7 +51,7 @@ namespace PackageExplorerViewModel {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,72 @@ namespace PackageExplorerViewModel {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string Browse {
+            get {
+                return ResourceManager.GetString("Browse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate.
+        /// </summary>
+        public static string Certificate {
+            get {
+                return ResourceManager.GetString("Certificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate Info.
+        /// </summary>
+        public static string CertificateInfo {
+            get {
+                return ResourceManager.GetString("CertificateInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate Store.
+        /// </summary>
+        public static string CertificateStore {
+            get {
+                return ResourceManager.GetString("CertificateStore", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Provide the code signing certificate for signing the package..
+        /// </summary>
+        public static string ChooseCertificate_Description {
+            get {
+                return ResourceManager.GetString("ChooseCertificate_Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a Certificate for Package Signing.
+        /// </summary>
+        public static string ChooseCertificate_Title {
+            get {
+                return ResourceManager.GetString("ChooseCertificate_Title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Close.
+        /// </summary>
+        public static string Close {
+            get {
+                return ResourceManager.GetString("Close", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete &apos;{0}&apos;?.
         /// </summary>
-        internal static string ConfirmToDeleteContent {
+        public static string ConfirmToDeleteContent {
             get {
                 return ResourceManager.GetString("ConfirmToDeleteContent", resourceCulture);
             }
@@ -72,7 +135,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to Deleted file or folder is not recoverable..
         /// </summary>
-        internal static string ConfirmToDeleteContent_Title {
+        public static string ConfirmToDeleteContent_Title {
             get {
                 return ResourceManager.GetString("ConfirmToDeleteContent_Title", resourceCulture);
             }
@@ -81,7 +144,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete this plugin?.
         /// </summary>
-        internal static string ConfirmToDeletePlugin {
+        public static string ConfirmToDeletePlugin {
             get {
                 return ResourceManager.GetString("ConfirmToDeletePlugin", resourceCulture);
             }
@@ -90,7 +153,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to Do you want to replace the existing file &apos;{0}&apos;?.
         /// </summary>
-        internal static string ConfirmToReplaceExsitingFile {
+        public static string ConfirmToReplaceExsitingFile {
             get {
                 return ResourceManager.GetString("ConfirmToReplaceExsitingFile", resourceCulture);
             }
@@ -99,7 +162,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to There is already a file with the same name in this folder..
         /// </summary>
-        internal static string ConfirmToReplaceExsitingFile_Title {
+        public static string ConfirmToReplaceExsitingFile_Title {
             get {
                 return ResourceManager.GetString("ConfirmToReplaceExsitingFile_Title", resourceCulture);
             }
@@ -108,7 +171,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to Do you want to replace existing file &apos;{0}&apos; on disk?.
         /// </summary>
-        internal static string ConfirmToReplaceFile {
+        public static string ConfirmToReplaceFile {
             get {
                 return ResourceManager.GetString("ConfirmToReplaceFile", resourceCulture);
             }
@@ -117,7 +180,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to There is already a file with the same name in this location..
         /// </summary>
-        internal static string ConfirmToReplaceFile_Title {
+        public static string ConfirmToReplaceFile_Title {
             get {
                 return ResourceManager.GetString("ConfirmToReplaceFile_Title", resourceCulture);
             }
@@ -126,7 +189,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to Connecting to package source....
         /// </summary>
-        internal static string ConnectingMessage {
+        public static string ConnectingMessage {
             get {
                 return ResourceManager.GetString("ConnectingMessage", resourceCulture);
             }
@@ -135,7 +198,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to Do you want to save your changes?.
         /// </summary>
-        internal static string Dialog_SaveQuestion {
+        public static string Dialog_SaveQuestion {
             get {
                 return ResourceManager.GetString("Dialog_SaveQuestion", resourceCulture);
             }
@@ -144,7 +207,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to NuGet Package Explorer.
         /// </summary>
-        internal static string Dialog_Title {
+        public static string Dialog_Title {
             get {
                 return ResourceManager.GetString("Dialog_Title", resourceCulture);
             }
@@ -153,7 +216,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to The operation cannot be completed because the edit form has some invalid input..
         /// </summary>
-        internal static string EditFormHasInvalidInput {
+        public static string EditFormHasInvalidInput {
             get {
                 return ResourceManager.GetString("EditFormHasInvalidInput", resourceCulture);
             }
@@ -162,7 +225,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to This package has been exported successfully..
         /// </summary>
-        internal static string ExportPackageSuccess {
+        public static string ExportPackageSuccess {
             get {
                 return ResourceManager.GetString("ExportPackageSuccess", resourceCulture);
             }
@@ -171,16 +234,25 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to The new file has the same name as another folder..
         /// </summary>
-        internal static string FileNameConflictWithExistingDirectory {
+        public static string FileNameConflictWithExistingDirectory {
             get {
                 return ResourceManager.GetString("FileNameConflictWithExistingDirectory", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hash Algorithm Name.
+        /// </summary>
+        public static string HashAlgorithName {
+            get {
+                return ResourceManager.GetString("HashAlgorithName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading....
         /// </summary>
-        internal static string LoadingMessage {
+        public static string LoadingMessage {
             get {
                 return ResourceManager.GetString("LoadingMessage", resourceCulture);
             }
@@ -189,7 +261,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to No network connection is detected..
         /// </summary>
-        internal static string NoNetworkConnection {
+        public static string NoNetworkConnection {
             get {
                 return ResourceManager.GetString("NoNetworkConnection", resourceCulture);
             }
@@ -198,7 +270,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to Opening this file can potentially harm your computer. Do you want to continue?.
         /// </summary>
-        internal static string OpenExecutableScriptWarning {
+        public static string OpenExecutableScriptWarning {
             get {
                 return ResourceManager.GetString("OpenExecutableScriptWarning", resourceCulture);
             }
@@ -207,7 +279,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to The file &apos;{0}&apos; is executable..
         /// </summary>
-        internal static string OpenExecutableScriptWarning_Title {
+        public static string OpenExecutableScriptWarning_Title {
             get {
                 return ResourceManager.GetString("OpenExecutableScriptWarning_Title", resourceCulture);
             }
@@ -216,16 +288,43 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to Failed to generate package due to this error:.
         /// </summary>
-        internal static string PackageCreationFailed {
+        public static string PackageCreationFailed {
             get {
                 return ResourceManager.GetString("PackageCreationFailed", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string Password {
+            get {
+                return ResourceManager.GetString("Password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password incorrect.
+        /// </summary>
+        public static string PasswordIncorrect {
+            get {
+                return ResourceManager.GetString("PasswordIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password required.
+        /// </summary>
+        public static string PasswordRequired {
+            get {
+                return ResourceManager.GetString("PasswordRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file &apos;{0}&apos; was either renamed or deleted from its physical location. It will now be removed from the package..
         /// </summary>
-        internal static string PhysicalFileMissing {
+        public static string PhysicalFileMissing {
             get {
                 return ResourceManager.GetString("PhysicalFileMissing", resourceCulture);
             }
@@ -234,7 +333,7 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to *** The plugin that registers to read this file type fails to read the content of this file. ***.
         /// </summary>
-        internal static string PluginFailToReadContent {
+        public static string PluginFailToReadContent {
             get {
                 return ResourceManager.GetString("PluginFailToReadContent", resourceCulture);
             }
@@ -243,16 +342,70 @@ namespace PackageExplorerViewModel {
         /// <summary>
         ///   Looks up a localized string similar to There is another file or folder with the same name as &apos;{0}&apos;..
         /// </summary>
-        internal static string RenameCausesNameCollison {
+        public static string RenameCausesNameCollison {
             get {
                 return ResourceManager.GetString("RenameCausesNameCollison", resourceCulture);
             }
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select Certificate.
+        /// </summary>
+        public static string SelectCertificate {
+            get {
+                return ResourceManager.GetString("SelectCertificate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign.
+        /// </summary>
+        public static string Sign {
+            get {
+                return ResourceManager.GetString("Sign", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Signing package....
+        /// </summary>
+        public static string SigningPackage {
+            get {
+                return ResourceManager.GetString("SigningPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Remove signature and signing package....
+        /// </summary>
+        public static string SigningPackageAndRemoveSignature {
+            get {
+                return ResourceManager.GetString("SigningPackageAndRemoveSignature", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sign Package.
+        /// </summary>
+        public static string SignPackage {
+            get {
+                return ResourceManager.GetString("SignPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Timestamp Server.
+        /// </summary>
+        public static string TimestampServer {
+            get {
+                return ResourceManager.GetString("TimestampServer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to *** The format of this file is not supported. ***.
         /// </summary>
-        internal static string UnsupportedFormatMessage {
+        public static string UnsupportedFormatMessage {
             get {
                 return ResourceManager.GetString("UnsupportedFormatMessage", resourceCulture);
             }

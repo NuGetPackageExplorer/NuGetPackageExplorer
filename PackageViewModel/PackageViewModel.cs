@@ -105,6 +105,11 @@ namespace PackageExplorerViewModel
             get { return _uiServices; }
         }
 
+        internal ISettingsManager SettingsManager
+        {
+            get { return _settingsManager; }
+        }
+
         public bool IsInEditMetadataMode
         {
             get { return _isInEditMode; }
@@ -1132,16 +1137,18 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public string GetCurrentPackageTempFile()
         {
-            // handle signed packages since they cannot be resaved without losing the signature
-            if (IsSigned && _package is ISignaturePackage zip)
-            {
-                return zip.Source;
-            }
-
             var tempFile = Path.GetTempFileName();
             try
             {
-                PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, useTempFile: false);
+                // handle signed packages since they cannot be resaved without losing the signature
+                if (IsSigned && _package is ISignaturePackage zip)
+                {
+                    File.Copy(zip.Source, tempFile, overwrite: true);
+                }
+                else
+                {
+                    PackageHelper.SavePackage(PackageMetadata, GetFiles(), tempFile, useTempFile: false);
+                }
             }
             catch (Exception e)
             {

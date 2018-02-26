@@ -204,6 +204,24 @@ namespace PackageExplorer
             return result ?? false;
         }
 
+        public bool OpenSignPackageDialog(object viewModel, out string signedPackagePath)
+        {
+            var dialog = new SignPackageDialog
+            {
+                Owner = Window.Value,
+                DataContext = viewModel
+            };
+
+            if (viewModel is IDisposable disposable)
+            {
+                dialog.Closed += OnDialogClosed;
+            }
+
+            var result = dialog.ShowDialog();
+            signedPackagePath = dialog.SignedPackagePath;
+            return result ?? false;
+        }
+
         private void OnDialogClosed(object sender, EventArgs e)
         {
             var window = (Window)sender;
@@ -483,7 +501,7 @@ namespace PackageExplorer
             {
                 dialog.WindowTitle = Resources.Dialog_Title;
                 dialog.MainInstruction = "Credentials for " + target;
-                dialog.Content = "Enter PATs in the username field.";
+                dialog.Content = "Enter Personal Access Tokens in the username field.";
                 dialog.Target = target;
 
                 if (dialog.ShowDialog())

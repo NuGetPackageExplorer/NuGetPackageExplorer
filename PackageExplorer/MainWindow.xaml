@@ -72,6 +72,7 @@
                 </self:GrayscaleMenuItem>
                 <MenuItem Header="Save _As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveAs" InputGestureText="Ctrl+Shift+S"/>
                 <MenuItem Header="Save _Metadata As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveMetadataAs" />
+                <MenuItem Header="Sign and Save As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SignAndSaveAs" />
                 <Separator />
                 <MenuItem Header="Expor_t..." Command="{Binding ExportCommand, FallbackValue={StaticResource DisabledCommand}}" />
                 <self:GrayscaleMenuItem Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" Header="_Publish..." InputGestureText="Ctrl+P">

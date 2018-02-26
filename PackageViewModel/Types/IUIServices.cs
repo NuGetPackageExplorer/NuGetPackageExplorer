@@ -26,6 +26,7 @@ namespace NuGetPackageExplorer.Types
 
         bool OpenPublishDialog(object viewModel);
         bool OpenSignatureValidationDialog(object viewModel);
+        bool OpenSignPackageDialog(object viewModel, out string signedPackagePath);
         bool OpenFolderDialog(string title, string initialPath, out string selectedPath);
 
         bool Confirm(string title, string message);

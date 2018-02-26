@@ -274,13 +274,41 @@ namespace PackageExplorer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UseApiKey {
+        public string SigningCertificate
+        {
             get {
-                return ((bool)(this["UseApiKey"]));
+                return ((string)(this["SigningCertificate"]));
             }
             set {
-                this["UseApiKey"] = value;
+                this["SigningCertificate"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public string TimestampServer
+        {
+            get
+            {
+                return ((string)(this["TimestampServer"]));
+            }
+            set
+            {
+                this["TimestampServer"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public string SigningHashAlgorithmName
+        {
+            get
+            {
+                return ((string)(this["SigningHashAlgorithmName"]));
+            }
+            set
+            {
+                this["SigningHashAlgorithmName"] = value;
             }
         }
     }

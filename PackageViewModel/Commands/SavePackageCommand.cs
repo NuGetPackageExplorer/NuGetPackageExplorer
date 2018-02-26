@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -14,6 +15,7 @@ namespace PackageExplorerViewModel
         private const string SaveAsAction = "SaveAs";
         private const string ForceSaveAction = "ForceSave";
         private const string SaveMetadataAction = "SaveMetadataAs";
+        private const string SignAndSaveAsAction = "SignAndSaveAs";
 
         public SavePackageCommand(PackageViewModel model)
             : base(model)
@@ -29,10 +31,10 @@ namespace PackageExplorerViewModel
             var hasTokens = ViewModel.IsTokenized;
 
             var action = parameter as string;
-            if (action == SaveAsAction || action == SaveMetadataAction)
+            if (action == SaveAsAction || action == SaveMetadataAction || action == SignAndSaveAsAction)
             {
                 // These actions are allowed since it doesn't modify the file itself
-                isSigned = false;    
+                isSigned = false;
             }
 
             if (action == SaveMetadataAction)
@@ -96,6 +98,10 @@ namespace PackageExplorerViewModel
             else if (action == SaveMetadataAction)
             {
                 SaveMetadataAs();
+            }
+            else if (action == SignAndSaveAsAction)
+            {
+                SignAndSaveAs();
             }
         }
 
@@ -194,6 +200,59 @@ namespace PackageExplorerViewModel
                 catch (Exception ex)
                 {
                     ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
+                }
+            }
+        }
+
+        private async void SignAndSaveAs()
+        {
+            var signViewModel = new SignPackageViewModel(ViewModel, ViewModel.UIServices, ViewModel.SettingsManager);
+
+            if (ViewModel.UIServices.OpenSignPackageDialog(signViewModel, out var signedPackagePath))
+            {
+                var packageName = ViewModel.PackageMetadata + NuGetPe.Constants.PackageExtension;
+                var title = "Save " + packageName;
+                const string filter = "NuGet package file (*.nupkg)|*.nupkg|NuGet Symbols package file (*.snupkg)|*.snupkg|All files (*.*)|*.*";
+                var initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;
+                if (ViewModel.UIServices.OpenSaveFileDialog(title, packageName, initialDirectory, filter, /* overwritePrompt */ false,
+                                                            out var selectedPackagePath, out var filterIndex))
+                {
+                    if (filterIndex == 1 &&
+                        !selectedPackagePath.EndsWith(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        selectedPackagePath += NuGetPe.Constants.PackageExtension;
+                    }
+
+                    // prompt if the file already exists on disk
+                    if (File.Exists(selectedPackagePath))
+                    {
+                        var confirmed = ViewModel.UIServices.Confirm(
+                            Resources.ConfirmToReplaceFile_Title,
+                            string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, selectedPackagePath));
+                        if (!confirmed)
+                        {
+                            return;
+                        }
+                    }
+
+                    try
+                    {
+                        File.Copy(signedPackagePath, selectedPackagePath, overwrite: true);
+                        ViewModel.OnSaved(selectedPackagePath);
+                        ViewModel.PackageSource = selectedPackagePath;
+                        ViewModel.PackageMetadata.ClearSignatures();
+                        using (var package = new ZipPackage(selectedPackagePath))
+                        {
+                            await package.LoadSignatureDataAsync();
+
+                            ViewModel.PackageMetadata.LoadSignatureData(package);
+                        }
+                        ViewModel.IsSigned = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
+                    }
                 }
             }
         }

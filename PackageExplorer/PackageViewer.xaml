@@ -38,7 +38,6 @@
             <self:PackageDependencyConverter x:Key="PackageDependencyConverter" />
             <self:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
             <self:NuGetVersionConverter x:Key="NuGetVersionConverter" />
-            <self:CertificateToSubjectConverter x:Key="CertificateToSubjectConverter" />
             <self:NuGetVersionPreReleaseConverter x:Key="NuGetVersionPreReleaseConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
@@ -101,7 +100,7 @@
                         <Run Text="{Binding Timestamp, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F, Mode=OneWay}" />
                     </TextBlock>
                     <TextBlock Style="{StaticResource DetailMetadataValueStyle}"
-                               Visibility="{Binding TimestampSignerInfo.Certificate, Converter={StaticResource NullToVisibilityConverter}}"
+                               Visibility="{Binding TimestampSignerInfo, Converter={StaticResource NullToVisibilityConverter}}"
                                >
                         <Run Text="by"/>
                         <Hyperlink Command="GoToPage" CommandParameter="{Binding TimestampSignerInfo.Certificate, Mode=OneWay}">

@@ -1,0 +1,93 @@
+﻿<self:StandardDialog x:Class="PackageExplorer.SignPackageDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:PackageExplorer" xmlns:vm="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"  MinWidth="300" MinHeight="150" FocusManager.FocusedElement="{Binding ElementName=CertificateButton}" Title="{x:Static vm:Resources.SignPackage}" ShowInTaskbar="False" ResizeMode="NoResize" Width="420" FontSize="9pt" FontFamily="Segoe UI" WindowStartupLocation="CenterOwner" SizeToContent="Height">
+
+    <Window.Resources>
+        <Style TargetType="{x:Type TextBlock}" x:Key="StatusTextStyle">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding HasError}" Value="True">
+                    <Setter Property="Foreground" Value="Red" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <DockPanel LastChildFill="False">
+        <DockPanel.BindingGroup>
+            <BindingGroup x:Name="DialogBindingGroup" NotifyOnValidationError="true" />
+        </DockPanel.BindingGroup>
+
+        <!-- Main instruction -->
+        <TextBlock DockPanel.Dock="Top" Text="{x:Static vm:Resources.ChooseCertificate_Title}" FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
+
+        <!-- Secondary instruction -->
+        <TextBlock DockPanel.Dock="Top" Margin="10,0" Text="{x:Static vm:Resources.ChooseCertificate_Description}" TextWrapping="Wrap" />
+
+        <!-- Id & Version -->
+        <TextBlock DockPanel.Dock="Top" Margin="10,10,10,0">
+            <TextBlock.Inlines>
+                <Run Text="Id: " />
+                <Run FontWeight="Bold" Text="{Binding Id, Mode=OneTime}" />
+                <Run Text=" Version: " />
+                <Run FontWeight="Bold" Text="{Binding Version, Mode=OneTime}" />
+            </TextBlock.Inlines>
+        </TextBlock>
+
+        <!-- Certificate -->
+        <DockPanel DockPanel.Dock="Top" Margin="7,10,10,5">
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=CertificateButton}" Content="{x:Static vm:Resources.Certificate}" ContentStringFormat="{}{0}:" Width="80" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox Margin="0" Text="{Binding CertificateFileName, Mode=OneWay}" IsReadOnly="True" Grid.Column="0" />
+                <Button x:Name="CertificateButton" Command="{Binding SelectCertificateFileCommand}" Grid.Column="1" Content="{x:Static vm:Resources.Browse}" ContentStringFormat="{}{0}..." Padding="5,0" />
+                <Button Command="{Binding SelectCertificateStoreCommand}" Grid.Column="2" Content="{x:Static vm:Resources.CertificateStore}" ContentStringFormat="{}{0}..." Padding="5,0" Margin="5,0,0,0" />
+            </Grid>
+        </DockPanel>
+
+        <!-- Password -->
+        <DockPanel DockPanel.Dock="Top" Margin="7,10,10,5" Visibility="{Binding ShowPassword, Converter={StaticResource boolToVis}}">
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=CertificatePasswordBox}" Content="{x:Static vm:Resources.Password}" ContentStringFormat="{}{0}:" Width="80" />
+            <PasswordBox x:Name="CertificatePasswordBox" VerticalContentAlignment="Center" Margin="0" PasswordChanged="OnCertificatePasswordChange" />
+        </DockPanel>
+
+        <!-- Certificate info -->
+        <TextBlock DockPanel.Dock="Top" Margin="10,10,10,0" Visibility="{Binding Certificate, Converter={StaticResource NullToVisibilityConverter}}">
+            <TextBlock.Inlines>
+                <Run Text="{x:Static vm:Resources.CertificateInfo}" />
+                <Run Text=": " />
+                <Hyperlink Command="{Binding ShowCertificateCommand}"> <!-- NavigationCommands do not work in UserControls? -->
+                    <Run FontWeight="Bold" Text="{Binding Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                </Hyperlink>
+            </TextBlock.Inlines>
+        </TextBlock>
+
+        <!-- Timestamp Server -->
+        <DockPanel DockPanel.Dock="Top" Margin="7,10,10,5">
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=TimestampServerBox}" Content="{x:Static vm:Resources.TimestampServer}" ContentStringFormat="{}{0}:" Width="130" />
+            <TextBox x:Name="TimestampServerBox" Text="{Binding TimestampServer, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Margin="0" />
+        </DockPanel>
+
+        <!-- Hash Algorithm Name -->
+        <DockPanel DockPanel.Dock="Top" Margin="7,10,10,5">
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=HashAlgorithmNameBox}" Content="{x:Static vm:Resources.HashAlgorithName}" ContentStringFormat="{}{0}:" Width="130" />
+            <ComboBox x:Name="HashAlgorithmNameBox" VerticalContentAlignment="Center" Margin="0" SelectedItem="{Binding HashAlgorithmName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding ValidHashAlgorithmNames}" />
+        </DockPanel>
+
+        <!-- Progress bar -->
+        <ProgressBar Margin="10,5" IsIndeterminate="true" Visibility="{Binding ShowProgress, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" DockPanel.Dock="Top" Height="22" Maximum="100" Value="{Binding PercentComplete, Mode=OneWay}" />
+
+        <!-- Status text -->
+        <TextBlock Style="{StaticResource StatusTextStyle}" Text="{Binding Status}" Margin="10,5" Visibility="{Binding Status, Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" DockPanel.Dock="Top" TextWrapping="Wrap" />
+
+        <Border DockPanel.Dock="Top" Margin="0,20,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
+            <UniformGrid Margin="10,5" HorizontalAlignment="Right" Rows="1" Columns="2">
+                <Button IsDefault="True" Padding="15,2" Content="{x:Static vm:Resources.Sign}" Margin="5" Click="OnSignButton_Click" IsEnabled="{Binding CanSign}" />
+                <Button IsCancel="True" Content="{x:Static vm:Resources.Close}" Margin="5,5,0,5" Padding="15,2" Click="OnCloseButton_Click"></Button>
+            </UniformGrid>
+        </Border>
+
+    </DockPanel>
+
+</self:StandardDialog>

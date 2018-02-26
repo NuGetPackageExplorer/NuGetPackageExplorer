@@ -18,6 +18,7 @@
             <self:FileSizeConverter x:Key="FileSizeConverter" />
             <self:DateTimeOffsetHumanizeConverter x:Key="DateTimeOffsetHumanizeConverter" />
             <self:DateTimeOffsetLongDateConverter x:Key="DateTimeOffsetLongDateConverter" />
+            <self:CertificateToSubjectConverter x:Key="CertificateToSubjectConverter" />
             
             <ContextMenu x:Key="TextBoxContextMenu">
                 <self:GrayscaleMenuItem Command="Cut">
