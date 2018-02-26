@@ -4,17 +4,16 @@
     <TargetFramework>net461</TargetFramework>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
+    <EmbeddedResourceGeneratorVisibilityIsInternal>false</EmbeddedResourceGeneratorVisibilityIsInternal>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="NuGet.Credentials" Version="4.6.0-rtm-4956" />
     <PackageReference Include="NuGet.PackageManagement" Version="4.6.0-rtm-4956" />
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.1" />  
     <ProjectReference Include="..\Core\Core.csproj" />
-    <Reference Include="PresentationCore" />
     <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="WindowsBase" />
-    <Compile Update="Resources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Resources.resx" />
-    <EmbeddedResource Update="Resources.resx" Generator="PublicResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" />
   </ItemGroup>
-
+  
+  <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 </Project>
