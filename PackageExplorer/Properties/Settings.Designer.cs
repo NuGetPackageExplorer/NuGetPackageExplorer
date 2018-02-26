@@ -283,5 +283,33 @@ namespace PackageExplorer.Properties {
                 this["SigningCertificate"] = value;
             }
         }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public string TimestampServer
+        {
+            get
+            {
+                return ((string)(this["TimestampServer"]));
+            }
+            set
+            {
+                this["TimestampServer"] = value;
+            }
+        }
+
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public string SigningHashAlgorithmName
+        {
+            get
+            {
+                return ((string)(this["SigningHashAlgorithmName"]));
+            }
+            set
+            {
+                this["SigningHashAlgorithmName"] = value;
+            }
+        }
     }
 }

@@ -29,5 +29,7 @@ namespace NuGetPackageExplorer.Types
         bool PublishAsUnlisted { get; set; }
 
         string SigningCertificate { get; set; }
+        string TimestampServer { get; set; }
+        string SigningHashAlgorithmName { get; set; }
     }
 }

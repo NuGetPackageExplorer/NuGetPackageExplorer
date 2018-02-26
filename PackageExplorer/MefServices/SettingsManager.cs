@@ -132,6 +132,18 @@ namespace PackageExplorer
             set => Settings.Default.SigningCertificate = value;
         }
 
+        public string TimestampServer
+        {
+            get => Settings.Default.TimestampServer;
+            set => Settings.Default.TimestampServer = value;
+        }
+
+        public string SigningHashAlgorithmName
+        {
+            get => Settings.Default.SigningHashAlgorithmName;
+            set => Settings.Default.SigningHashAlgorithmName = value;
+        }
+
         #endregion
     }
 }

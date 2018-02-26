@@ -11,12 +11,13 @@ namespace PackageExplorer
             InitializeComponent();
         }
 
+        public SignPackageViewModel ViewModel => (SignPackageViewModel)DataContext;
+
         public string SignedPackagePath { get; private set; }
 
         private void OnCertificatePasswordChange(object sender, EventArgs args)
         {
-            var viewModel = (SignPackageViewModel)DataContext;
-            viewModel.Password = CertificatePasswordBox.Password;
+            ViewModel.Password = CertificatePasswordBox.Password;
         }
 
         private void OnCloseButton_Click(object sender, RoutedEventArgs e)
@@ -26,8 +27,7 @@ namespace PackageExplorer
 
         private async void OnSignButton_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = (SignPackageViewModel)DataContext;
-            var result = await viewModel.SignPackage();
+            var result = await ViewModel.SignPackage();
             if (result != null)
             {
                 SignedPackagePath = result;

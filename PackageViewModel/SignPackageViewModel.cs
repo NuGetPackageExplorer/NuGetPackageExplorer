@@ -2,6 +2,7 @@
 using NuGet.Packaging.Signing;
 using NuGetPackageExplorer.Types;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
@@ -22,6 +23,8 @@ namespace PackageExplorerViewModel
         private X509Certificate2 _certificate;
         private string _password;
         private bool _showPassword;
+        private HashAlgorithmName _hashAlgorithmName = HashAlgorithmName.SHA256;
+        private string _timestamperServer;
         private string _status;
         private bool _hasError;
         private bool _showProgress;
@@ -61,8 +64,16 @@ namespace PackageExplorerViewModel
                                 CertificateFileName = null;
                             }
                         }
-                    } catch { }
+                    }
+                    catch { }
                 }
+            }
+
+            TimestamperServer = settingsManager.TimestampServer;
+
+            if (Enum.TryParse(settingsManager.SigningHashAlgorithmName, out HashAlgorithmName hashAlgorithmName))
+            {
+                _hashAlgorithmName = hashAlgorithmName;
             }
         }
 
@@ -113,6 +124,37 @@ namespace PackageExplorerViewModel
             set
             {
                 _showPassword = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public HashAlgorithmName HashAlgorithmName
+        {
+            get => _hashAlgorithmName;
+            set
+            {
+                _hashAlgorithmName = value;
+                OnPropertyChanged();
+                ValidateCertificate();
+            }
+        }
+
+        public IEnumerable<HashAlgorithmName> ValidHashAlgorithmNames
+        {
+            get
+            {
+                yield return HashAlgorithmName.SHA256;
+                yield return HashAlgorithmName.SHA384;
+                yield return HashAlgorithmName.SHA512;
+            }
+        }
+
+        public string TimestamperServer
+        {
+            get => _timestamperServer;
+            set
+            {
+                _timestamperServer = value;
                 OnPropertyChanged();
             }
         }
@@ -234,28 +276,54 @@ namespace PackageExplorerViewModel
         {
             ShowProgress = true;
             CanSign = false;
-            Status = "Signing package...";
+            HasError = false;
+            Status = _packageViewModel.IsSigned ? "Remove signature and signing package..." : "Signing package...";
 
             try
             {
                 // change to AuthorSignPackageRequest when NuGet.Client is updated
                 using (var tempCertificate = new X509Certificate2(Certificate))
-                using (var signRequest = new SignPackageRequest(tempCertificate, GetHashAlgorithmName(tempCertificate)))
+                using (var signRequest = new SignPackageRequest(tempCertificate, HashAlgorithmName))
                 {
-                    SigningUtility.Verify(signRequest, NullLogger.Instance);
-
                     var packagePath = _packageViewModel.GetCurrentPackageTempFile();
                     var originalPackageCopyPath = Path.GetTempFileName();
 
                     File.Copy(packagePath, originalPackageCopyPath, overwrite: true);
 
+                    ITimestampProvider timestampProvider = null;
+                    if (!string.IsNullOrEmpty(TimestamperServer))
+                    {
+                        timestampProvider = new Rfc3161TimestampProvider(new Uri(TimestamperServer));
+                    }
+                    var signatureProvider = new X509SignatureProvider(timestampProvider);
+
+                    if (_packageViewModel.IsSigned)
+                    {
+                        using (var packageReadStream = File.OpenRead(packagePath))
+                        using (var packageWriteStream = File.Open(originalPackageCopyPath, FileMode.Open))
+                        using (var package = new SignedPackageArchive(packageReadStream, packageWriteStream))
+                        {
+                            var signer = new Signer(package, signatureProvider);
+                            await signer.RemoveSignaturesAsync(NullLogger.Instance, CancellationToken.None);
+                        }
+
+                        File.Delete(packagePath);
+
+                        packagePath = originalPackageCopyPath;
+                        originalPackageCopyPath = Path.GetTempFileName();
+
+                        File.Copy(packagePath, originalPackageCopyPath, overwrite: true);
+                    }
+
                     using (var packageReadStream = File.OpenRead(packagePath))
                     using (var packageWriteStream = File.Open(originalPackageCopyPath, FileMode.Open))
                     using (var package = new SignedPackageArchive(packageReadStream, packageWriteStream))
                     {
-                        var signer = new Signer(package, new X509SignatureProvider(null));
+                        var signer = new Signer(package, signatureProvider);
                         await Task.Run(() => signer.SignAsync(signRequest, NullLogger.Instance, CancellationToken.None));
                     }
+
+                    File.Delete(packagePath);
 
                     return originalPackageCopyPath;
                 }
@@ -318,7 +386,7 @@ namespace PackageExplorerViewModel
 
                 using (var tempCertificate = new X509Certificate2(certificate))
                 // change to AuthorSignPackageRequest when NuGet.Client is updated
-                using (var signRequest = new SignPackageRequest(tempCertificate, GetHashAlgorithmName(tempCertificate)))
+                using (var signRequest = new SignPackageRequest(tempCertificate, HashAlgorithmName))
                 {
                     SigningUtility.Verify(signRequest, NullLogger.Instance);
                 }
@@ -351,22 +419,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        // https://github.com/NuGet/NuGet.Client/blob/894388a598834a1fe8a0e483a2bc050c05693313/src/NuGet.Core/NuGet.Packaging/Signing/Utility/CertificateUtility.cs#L112-L124
-        private static HashAlgorithmName GetHashAlgorithmName(X509Certificate2 certificate)
-        {
-            switch (certificate.SignatureAlgorithm.Value)
-            {
-                case Oids.Sha256WithRSAEncryption:
-                    return HashAlgorithmName.SHA256;
-                case Oids.Sha384WithRSAEncryption:
-                    return HashAlgorithmName.SHA384;
-                case Oids.Sha512WithRSAEncryption:
-                    return HashAlgorithmName.SHA512;
-                default:
-                    return HashAlgorithmName.Unknown;
-            }
-        }
-
         private void OnError(Exception ex)
         {
             ShowProgress = false;
@@ -394,6 +446,8 @@ namespace PackageExplorerViewModel
                     _settingsManager.SigningCertificate = Certificate.Thumbprint;
                 }
             }
+            _settingsManager.TimestampServer = TimestamperServer;
+            _settingsManager.SigningHashAlgorithmName = HashAlgorithmName.ToString();
 
             _certificateValidationTimer?.Dispose();
             _certificateValidationSemaphore?.Dispose();
