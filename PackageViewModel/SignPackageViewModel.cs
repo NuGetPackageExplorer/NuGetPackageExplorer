@@ -233,7 +233,7 @@ namespace PackageExplorerViewModel
 
                     foreach (var certificate in store.Certificates)
                     {
-                        if (CertificateUtility.IsValidForPurposeFast(certificate, Oids.CodeSigningEku))
+                        if (IsCertificateValidForNuGet(certificate))
                         {
                             collection.Add(certificate);
                         }
@@ -258,6 +258,14 @@ namespace PackageExplorerViewModel
                 OnError(ex);
             }
         }
+
+        static bool IsCertificateValidForNuGet(X509Certificate2 certificate) => CertificateUtility.IsValidForPurposeFast(certificate, Oids.CodeSigningEku) &&
+                                                                                CertificateUtility.IsCertificatePublicKeyValid(certificate) &&
+                                                                                CertificateUtility.IsSignatureAlgorithmSupported(certificate) &&
+                                                                                !CertificateUtility.HasExtendedKeyUsage(certificate, Oids.LifetimeSigningEku) &&
+                                                                                !CertificateUtility.IsCertificateValidityPeriodInTheFuture(certificate);
+
+
 
         private void ShowCertificateCommandExecute()
         {
