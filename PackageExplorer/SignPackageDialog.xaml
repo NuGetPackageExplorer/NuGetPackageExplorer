@@ -19,7 +19,7 @@
         <TextBlock DockPanel.Dock="Top" Text="Choose a Certificate for Package Signing" FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
 
         <!-- Secondary instruction -->
-        <TextBlock DockPanel.Dock="Top" Margin="10,0" Text="Provide the certificate for signing the package." TextWrapping="Wrap" />
+        <TextBlock DockPanel.Dock="Top" Margin="10,0" Text="Provide the code signing certificate for signing the package." TextWrapping="Wrap" />
 
         <!-- Id & Version -->
         <TextBlock DockPanel.Dock="Top" Margin="10,10,10,0">
@@ -38,14 +38,16 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBox Margin="0" Text="{Binding CertificateFileName, Mode=OneWay}" IsReadOnly="True" Grid.Column="0" />
-                <Button x:Name="CertificateButton" Command="{Binding SelectCertificateCommand}" Grid.Column="1" Content="Browse..." Padding="5,0" />
+                <Button x:Name="CertificateButton" Command="{Binding SelectCertificateFileCommand}" Grid.Column="1" Content="Browse..." Padding="5,0" />
+                <Button Command="{Binding SelectCertificateStoreCommand}" Grid.Column="2" Content="Certificate Store..." Padding="5,0" Margin="5,0,0,0" />
             </Grid>
         </DockPanel>
 
         <!-- Password -->
-        <DockPanel DockPanel.Dock="Top" Margin="7,10,10,5">
+        <DockPanel DockPanel.Dock="Top" Margin="7,10,10,5" Visibility="{Binding ShowPassword, Converter={StaticResource boolToVis}}">
             <Label DockPanel.Dock="Left" Target="{Binding ElementName=CertificatePasswordBox}" Content="Password:" Width="80" />
             <PasswordBox x:Name="CertificatePasswordBox" VerticalContentAlignment="Center" Margin="0" PasswordChanged="OnCertificatePasswordChange" />
         </DockPanel>
@@ -54,7 +56,9 @@
         <TextBlock DockPanel.Dock="Top" Margin="10,10,10,0" Visibility="{Binding Certificate, Converter={StaticResource NullToVisibilityConverter}}">
             <TextBlock.Inlines>
                 <Run Text="Certificate Info: " />
-                <Run FontWeight="Bold" Text="{Binding Certificate.FriendlyName}" />
+                <Hyperlink Command="{Binding ShowCertificateCommand}"> <!-- NavigationCommands do not work in UserControls? -->
+                    <Run FontWeight="Bold" Text="{Binding Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                </Hyperlink>
             </TextBlock.Inlines>
         </TextBlock>
 

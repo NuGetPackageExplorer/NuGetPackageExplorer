@@ -274,13 +274,13 @@ namespace PackageExplorer.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool UseApiKey {
+        public string SigningCertificate
+        {
             get {
-                return ((bool)(this["UseApiKey"]));
+                return ((string)(this["SigningCertificate"]));
             }
             set {
-                this["UseApiKey"] = value;
+                this["SigningCertificate"] = value;
             }
         }
     }

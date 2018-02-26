@@ -125,16 +125,11 @@ namespace PackageExplorer
                 Settings.Default.PublishAsUnlisted = value;
             }
         }
-        public bool UseApiKey
+
+        public string SigningCertificate
         {
-            get
-            {
-                return Settings.Default.UseApiKey;
-            }
-            set
-            {
-                Settings.Default.UseApiKey = value;
-            }
+            get => Settings.Default.SigningCertificate;
+            set => Settings.Default.SigningCertificate = value;
         }
 
         #endregion

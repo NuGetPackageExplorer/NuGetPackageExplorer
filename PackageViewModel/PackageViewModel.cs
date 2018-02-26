@@ -105,6 +105,11 @@ namespace PackageExplorerViewModel
             get { return _uiServices; }
         }
 
+        internal ISettingsManager SettingsManager
+        {
+            get { return _settingsManager; }
+        }
+
         public bool IsInEditMetadataMode
         {
             get { return _isInEditMode; }

@@ -27,5 +27,7 @@ namespace NuGetPackageExplorer.Types
         string ReadApiKey(string source);
         void WriteApiKey(string source, string apiKey);
         bool PublishAsUnlisted { get; set; }
+
+        string SigningCertificate { get; set; }
     }
 }
