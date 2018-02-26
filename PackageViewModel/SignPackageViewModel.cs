@@ -24,7 +24,7 @@ namespace PackageExplorerViewModel
         private string _password;
         private bool _showPassword;
         private HashAlgorithmName _hashAlgorithmName = HashAlgorithmName.SHA256;
-        private string _timestamperServer;
+        private string _timestampServer;
         private string _status;
         private bool _hasError;
         private bool _showProgress;
@@ -70,7 +70,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            TimestamperServer = settingsManager.TimestampServer;
+            TimestampServer = settingsManager.TimestampServer;
 
             if (Enum.TryParse(settingsManager.SigningHashAlgorithmName, out HashAlgorithmName hashAlgorithmName))
             {
@@ -150,12 +150,12 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string TimestamperServer
+        public string TimestampServer
         {
-            get => _timestamperServer;
+            get => _timestampServer;
             set
             {
-                _timestamperServer = value;
+                _timestampServer = value;
                 OnPropertyChanged();
             }
         }
@@ -295,9 +295,9 @@ namespace PackageExplorerViewModel
                     File.Copy(packagePath, originalPackageCopyPath, overwrite: true);
 
                     ITimestampProvider timestampProvider = null;
-                    if (!string.IsNullOrEmpty(TimestamperServer))
+                    if (!string.IsNullOrEmpty(TimestampServer))
                     {
-                        timestampProvider = new Rfc3161TimestampProvider(new Uri(TimestamperServer));
+                        timestampProvider = new Rfc3161TimestampProvider(new Uri(TimestampServer));
                     }
                     var signatureProvider = new X509SignatureProvider(timestampProvider);
 
@@ -453,7 +453,7 @@ namespace PackageExplorerViewModel
                     _settingsManager.SigningCertificate = Certificate.Thumbprint;
                 }
             }
-            _settingsManager.TimestampServer = TimestamperServer;
+            _settingsManager.TimestampServer = TimestampServer;
             _settingsManager.SigningHashAlgorithmName = HashAlgorithmName.ToString();
 
             try

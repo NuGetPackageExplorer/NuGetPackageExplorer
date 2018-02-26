@@ -65,7 +65,7 @@
     <Setting Name="SigningCertificate" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="TimestamperServer" Type="System.String" Scope="User">
+    <Setting Name="TimestampServer" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="SigningHashAlgorithmName" Type="System.String" Scope="User">

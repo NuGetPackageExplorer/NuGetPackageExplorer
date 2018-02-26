@@ -64,8 +64,8 @@
 
         <!-- Timestamper Server -->
         <DockPanel DockPanel.Dock="Top" Margin="7,10,10,5">
-            <Label DockPanel.Dock="Left" Target="{Binding ElementName=TimestamperServerBox}" Content="Timestamper Server:" Width="130" />
-            <TextBox x:Name="TimestamperServerBox" Text="{Binding TimestamperServer, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Margin="0" />
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=TimestampServerBox}" Content="Timestamp Server:" Width="130" />
+            <TextBox x:Name="TimestampServerBox" Text="{Binding TimestamperServer, UpdateSourceTrigger=PropertyChanged}" VerticalContentAlignment="Center" Margin="0" />
         </DockPanel>
 
         <!-- Hash Algorithm Name -->
