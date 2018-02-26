@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -203,7 +204,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private void SignAndSaveAs()
+        private async void SignAndSaveAs()
         {
             var signViewModel = new SignPackageViewModel(ViewModel, ViewModel.UIServices, ViewModel.SettingsManager);
 
@@ -238,6 +239,15 @@ namespace PackageExplorerViewModel
                     {
                         File.Copy(signedPackagePath, selectedPackagePath, overwrite: true);
                         ViewModel.OnSaved(selectedPackagePath);
+                        ViewModel.PackageSource = selectedPackagePath;
+                        ViewModel.PackageMetadata.ClearSignatures();
+                        using (var package = new ZipPackage(selectedPackagePath))
+                        {
+                            await package.LoadSignatureDataAsync();
+
+                            ViewModel.PackageMetadata.LoadSignatureData(package);
+                        }
+                        ViewModel.IsSigned = true;
                     }
                     catch (Exception ex)
                     {

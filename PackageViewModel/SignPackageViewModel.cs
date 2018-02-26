@@ -29,6 +29,7 @@ namespace PackageExplorerViewModel
         private bool _hasError;
         private bool _showProgress;
         private bool _canSign;
+        private CancellationTokenSource _cts;
         private Timer _certificateValidationTimer;
         private SemaphoreSlim _certificateValidationSemaphore;
 
@@ -279,6 +280,9 @@ namespace PackageExplorerViewModel
             HasError = false;
             Status = _packageViewModel.IsSigned ? "Remove signature and signing package..." : "Signing package...";
 
+            var cts = _cts = new CancellationTokenSource();
+            var token = cts.Token;
+
             try
             {
                 // change to AuthorSignPackageRequest when NuGet.Client is updated
@@ -304,7 +308,7 @@ namespace PackageExplorerViewModel
                         using (var package = new SignedPackageArchive(packageReadStream, packageWriteStream))
                         {
                             var signer = new Signer(package, signatureProvider);
-                            await signer.RemoveSignaturesAsync(NullLogger.Instance, CancellationToken.None);
+                            await signer.RemoveSignaturesAsync(NullLogger.Instance, token);
                         }
 
                         File.Delete(packagePath);
@@ -320,10 +324,12 @@ namespace PackageExplorerViewModel
                     using (var package = new SignedPackageArchive(packageReadStream, packageWriteStream))
                     {
                         var signer = new Signer(package, signatureProvider);
-                        await Task.Run(() => signer.SignAsync(signRequest, NullLogger.Instance, CancellationToken.None));
+                        await Task.Run(() => signer.SignAsync(signRequest, NullLogger.Instance, token));
                     }
 
                     File.Delete(packagePath);
+
+                    token.ThrowIfCancellationRequested();
 
                     return originalPackageCopyPath;
                 }
@@ -335,6 +341,7 @@ namespace PackageExplorerViewModel
             }
             finally
             {
+                cts.Dispose();
                 ShowProgress = false;
                 CanSign = true;
             }
@@ -448,6 +455,12 @@ namespace PackageExplorerViewModel
             }
             _settingsManager.TimestampServer = TimestamperServer;
             _settingsManager.SigningHashAlgorithmName = HashAlgorithmName.ToString();
+
+            try
+            {
+                _cts?.Cancel();
+            }
+            catch { }
 
             _certificateValidationTimer?.Dispose();
             _certificateValidationSemaphore?.Dispose();

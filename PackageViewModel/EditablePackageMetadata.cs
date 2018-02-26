@@ -34,6 +34,7 @@ namespace PackageExplorerViewModel
         private bool _serviceable;
         private string _title;
         private NuGetVersion _version;
+        private bool _isSigned;
         private ICollection<PackageDependencyGroup> _dependencySets;
         private ICollection<PackageReferenceSet> _packageAssemblyReferences;
         private Version _minClientVersion;
@@ -64,7 +65,7 @@ namespace PackageExplorerViewModel
             this.uiServices = uiServices;
         }
 
-        private async void LoadSignatureData(ISignaturePackage package)
+        public async void LoadSignatureData(ISignaturePackage package)
         {
             if (package.IsSigned)
             {
@@ -116,7 +117,18 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public bool IsSigned { get; private set; }
+        public bool IsSigned
+        {
+            get => _isSigned;
+            set
+            {
+                if (_isSigned != value)
+                {
+                    _isSigned = value;
+                    RaisePropertyChange(nameof(IsSigned));
+                }
+            }
+        }
 
         public ValidationResultViewModel ValidationResult
         {
@@ -615,6 +627,7 @@ namespace PackageExplorerViewModel
         {
             PublisherSignature = null;
             RepositorySignature = null;
+            ValidationResult = null;
             IsSigned = false;
         }
     }
