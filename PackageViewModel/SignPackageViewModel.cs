@@ -214,7 +214,7 @@ namespace PackageExplorerViewModel
 
         private void SelectCertificateFileCommandExecute()
         {
-            if (_uiServices.OpenFileDialog("Select Certificate", "Certificate (*.pfx, *.p12)|*.pfx;*.p12|All files (*.*)|*.*", out var fileName))
+            if (_uiServices.OpenFileDialog(Resources.SelectCertificate, "Certificate (*.pfx, *.p12)|*.pfx;*.p12|All files (*.*)|*.*", out var fileName))
             {
                 CertificateFileName = fileName;
             }
@@ -241,8 +241,8 @@ namespace PackageExplorerViewModel
 
                     var certificates = X509Certificate2UI.SelectFromCollection(
                         collection,
-                        "Choose a Certificate for Package Signing",
-                        "Provide the code signing certificate for signing the package.",
+                        Resources.ChooseCertificate_Title,
+                        Resources.ChooseCertificate_Description,
                         X509SelectionFlag.SingleSelection);
 
                     if (certificates.Count > 0)
@@ -278,7 +278,7 @@ namespace PackageExplorerViewModel
             ShowProgress = true;
             CanSign = false;
             HasError = false;
-            Status = _packageViewModel.IsSigned ? "Remove signature and signing package..." : "Signing package...";
+            Status = _packageViewModel.IsSigned ? Resources.SigningPackageAndRemoveSignature : Resources.SigningPackage;
 
             var cts = _cts = new CancellationTokenSource();
             var token = cts.Token;
@@ -407,12 +407,12 @@ namespace PackageExplorerViewModel
 
                 if (!ShowPassword)
                 {
-                    OnError(new Exception("Password required"));
+                    OnError(new Exception(Resources.PasswordRequired));
                     ShowPassword = true;
                 }
                 else
                 {
-                    OnError(new Exception("Invalid Password"));
+                    OnError(new Exception(Resources.PasswordIncorrect));
                 }
             }
             catch (Exception ex)

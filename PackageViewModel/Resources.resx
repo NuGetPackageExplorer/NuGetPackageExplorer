@@ -117,6 +117,27 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Browse" xml:space="preserve">
+    <value>Browse</value>
+  </data>
+  <data name="Certificate" xml:space="preserve">
+    <value>Certificate</value>
+  </data>
+  <data name="CertificateInfo" xml:space="preserve">
+    <value>Certificate Info</value>
+  </data>
+  <data name="CertificateStore" xml:space="preserve">
+    <value>Certificate Store</value>
+  </data>
+  <data name="ChooseCertificate_Description" xml:space="preserve">
+    <value>Provide the code signing certificate for signing the package.</value>
+  </data>
+  <data name="ChooseCertificate_Title" xml:space="preserve">
+    <value>Choose a Certificate for Package Signing</value>
+  </data>
+  <data name="Close" xml:space="preserve">
+    <value>Close</value>
+  </data>
   <data name="ConfirmToDeleteContent" xml:space="preserve">
     <value>Are you sure you want to delete '{0}'?</value>
   </data>
@@ -156,6 +177,9 @@
   <data name="FileNameConflictWithExistingDirectory" xml:space="preserve">
     <value>The new file has the same name as another folder.</value>
   </data>
+  <data name="HashAlgorithName" xml:space="preserve">
+    <value>Hash Algorithm Name</value>
+  </data>
   <data name="LoadingMessage" xml:space="preserve">
     <value>Loading...</value>
   </data>
@@ -171,6 +195,15 @@
   <data name="PackageCreationFailed" xml:space="preserve">
     <value>Failed to generate package due to this error:</value>
   </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="PasswordIncorrect" xml:space="preserve">
+    <value>Password incorrect</value>
+  </data>
+  <data name="PasswordRequired" xml:space="preserve">
+    <value>Password required</value>
+  </data>
   <data name="PhysicalFileMissing" xml:space="preserve">
     <value>The file '{0}' was either renamed or deleted from its physical location. It will now be removed from the package.</value>
   </data>
@@ -179,6 +212,24 @@
   </data>
   <data name="RenameCausesNameCollison" xml:space="preserve">
     <value>There is another file or folder with the same name as '{0}'.</value>
+  </data>
+  <data name="SelectCertificate" xml:space="preserve">
+    <value>Select Certificate</value>
+  </data>
+  <data name="Sign" xml:space="preserve">
+    <value>Sign</value>
+  </data>
+  <data name="SigningPackage" xml:space="preserve">
+    <value>Signing package...</value>
+  </data>
+  <data name="SigningPackageAndRemoveSignature" xml:space="preserve">
+    <value>Remove signature and signing package...</value>
+  </data>
+  <data name="SignPackage" xml:space="preserve">
+    <value>Sign Package</value>
+  </data>
+  <data name="TimestampServer" xml:space="preserve">
+    <value>Timestamp Server</value>
   </data>
   <data name="UnsupportedFormatMessage" xml:space="preserve">
     <value>*** The format of this file is not supported. ***</value>
