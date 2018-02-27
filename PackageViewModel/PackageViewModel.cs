@@ -1248,11 +1248,11 @@ namespace PackageExplorerViewModel
                 if (includeFilesSection)
                 {
                     var tempPath = Path.GetTempPath();
-                    
+
                     manifest.Files.AddRange(RootFolder.GetFiles().Select(
                         f => new ManifestFile
                         {
-                            Source = string.IsNullOrEmpty(f.OriginalPath()) || f.OriginalPath().StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()),
+                            Source = string.IsNullOrEmpty((f as PackageFile).OriginalPath) || (f as PackageFile).OriginalPath.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) ? f.Path : PathUtility.RelativePathTo(rootPath, (f as PackageFile).OriginalPath),
                             Target = f.Path
                         })
                     );
