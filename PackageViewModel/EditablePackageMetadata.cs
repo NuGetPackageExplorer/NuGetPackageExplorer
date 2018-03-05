@@ -587,6 +587,8 @@ namespace PackageExplorerViewModel
             return Id + " " + ManifestUtility.ReplaceMetadataWithToken(Version.ToFullString());
         }
 
+        public string FileName => Id + "." + ManifestUtility.ReplaceMetadataWithToken(Version.ToFullString());
+
         private string IsValid(string propertyName)
         {
             if (propertyName == "LicenseUrl")
