@@ -8,9 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Credentials" Version="4.6.0-rtm-4956" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.6.0-rtm-4956" />
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.1" />  
+    <PackageReference Include="NuGet.Credentials" Version="4.6.0" />
+    <PackageReference Include="NuGet.PackageManagement" Version="4.6.0" />
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" />  
     <ProjectReference Include="..\Core\Core.csproj" />
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
