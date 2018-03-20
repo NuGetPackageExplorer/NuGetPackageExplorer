@@ -964,7 +964,7 @@ namespace PackageExplorerViewModel
 
         private IEditablePackageFile CreatePackageMetadataFile()
         {
-            var packageName = PackageMetadata + NuGetPe.Constants.ManifestExtension;
+            var packageName = PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension;
             var filePath = Path.GetTempFileName();
             
             ExportManifest(filePath, askForConfirmation: false, includeFilesSection: false);
