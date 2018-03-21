@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <Description>Contains types to enable the plugin architecture in NuGet Package Explorer.</Description>
-    <Copyright>\x00a9 .NET Foundation. All rights reserved.</Copyright>
     <Product>NuGet Package Explorer</Product>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>NuGetPackageExplorer.snk</AssemblyOriginatorKeyFile>
