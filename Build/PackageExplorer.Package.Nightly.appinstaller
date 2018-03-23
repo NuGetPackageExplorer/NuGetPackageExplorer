@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppInstaller Uri="https://nugetpackageexplorer.blob.core.windows.net/nightly/PackageExplorer.Package.Nightly.appinstaller" Version="3.25.0.0" xmlns="http://schemas.microsoft.com/appx/appinstaller/2017/2">
+  <MainBundle Name="50582LuanNguyen.NuGetPackageExplorer.Nightly" Version="3.25.0.0" Publisher="CN=3466D5D7-00EE-41FA-A7A4-6F7CA3E1C7F8" Uri="https://nugetpackageexplorer.blob.core.windows.net/nightly/PackageExplorer.Package.Nightly_3.25.0.0_Test/PackageExplorer.Package.Nightly_3.25.0.0_x86.appxbundle" />
+  <UpdateSettings>
+    <OnLaunch HoursBetweenUpdateChecks="12" />
+  </UpdateSettings>
+</AppInstaller>

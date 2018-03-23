@@ -10,9 +10,9 @@ steps:
   displayName: Setup Environment Variables
 
 - task: NuGetToolInstaller@0
-  displayName: Use NuGet 4.5
+  displayName: Use NuGet 4.6
   inputs:
-    versionSpec: 4.5.0
+    versionSpec: 4.6.0
 
 - powershell: |
     
@@ -33,6 +33,9 @@ steps:
     
     $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
     $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+    
+    $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.appinstaller"    
+    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
     
     # Build PackageExplorer
     msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-PackageExplorer.binlog
