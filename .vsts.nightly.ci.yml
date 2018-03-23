@@ -17,6 +17,7 @@ steps:
 - powershell: |
     
     mkdir $(Build.ArtifactStagingDirectory)\Logs
+    mkdir $(Build.ArtifactStagingDirectory)\Nightly
 
     # restore 
     msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
