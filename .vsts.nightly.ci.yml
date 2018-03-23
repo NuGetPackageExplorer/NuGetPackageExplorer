@@ -34,7 +34,7 @@ steps:
     $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
     $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
     
-    $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.appinstaller"    
+    $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"    
     $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
     
     # Build PackageExplorer
