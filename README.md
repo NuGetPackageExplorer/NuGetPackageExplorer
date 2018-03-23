@@ -12,7 +12,7 @@ the release version with no interference.
 
 | Build Number | Link |
 | ------------ | ---- |
-| [![Nightly build number](https://nugetpackageexplorer.blob.core.windows.net/nightly/version_badge.svg?v=1)](https://nugetpackageexplorer.blob.core.windows.net/nightly/PackageExplorer.Package.Nightly.appxbundle)| [Download](https://nugetpackageexplorer.blob.core.windows.net/nightly/PackageExplorer.Package.Nightly.appxbundle)<br />*If you have a 6.0 version, uninstall it first*
+| [![Nightly build number](https://nugetpackageexplorer.blob.core.windows.net/nightly/version_badge.svg?v=1)](https://nugetpackageexplorer.blob.core.windows.net/nightly/install.html)| [Install](https://nugetpackageexplorer.blob.core.windows.net/nightly/install.html)
 | [![Stable build number](https://nugetpackageexplorer.blob.core.windows.net/store/version_badge.svg)](https://www.microsoft.com/store/apps/9wzdncrdmdm3) | [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) |
 | [![Chocolatey build number](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg)](https://chocolatey.org/packages/NugetPackageExplorer) | [Chocolatey](https://chocolatey.org/packages/NugetPackageExplorer) |
 

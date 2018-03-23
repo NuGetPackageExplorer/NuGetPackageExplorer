@@ -7,7 +7,7 @@ if([string]::IsNullOrEmpty($Env:SignClientSecret)){
 	return;
 }
 
-& nuget install SignClient -Version 0.9.0 -SolutionDir "$currentDirectory\..\" -Verbosity quiet -ExcludeVersion
+& nuget install SignClient -Version 0.9.1 -SolutionDir "$currentDirectory\..\" -Verbosity quiet -ExcludeVersion
 
 # Setup Variables we need to pass into the sign client tool
 
@@ -24,6 +24,16 @@ foreach ($appx in $appxs){
 	dotnet $appPath 'sign' -c $appSettings -i $appx -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
 
 	Write-Host "Finished signing $appx"
+}
+
+$insts = gci $Env:ArtifactDirectory\*.appinstaller -recurse | Select -ExpandProperty FullName
+
+foreach ($inst in $insts){
+	Write-Host "Submitting $inst for signing"
+
+	dotnet $appPath 'sign' -c $appSettings -i $inst -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
+
+	Write-Host "Finished signing $inst"
 }
 
 $nupkgs = gci $Env:ArtifactDirectory\*.nupkg -recurse | Select -ExpandProperty FullName

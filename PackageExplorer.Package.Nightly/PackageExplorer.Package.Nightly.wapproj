@@ -44,6 +44,9 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
     <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
+    <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
+    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
