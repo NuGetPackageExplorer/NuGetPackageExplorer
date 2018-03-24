@@ -160,6 +160,7 @@
                 <MenuItem Header="_Open in Windows shell..." Command="{Binding OpenCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Open _with..." Command="{Binding OpenWithCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Save As..." Command="{Binding SaveCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="Copy" Command="Copy" />
                 <Separator />
                 <MenuItem Header="_Edit" Command="{Binding EditCommand}" CommandParameter="{Binding}" />
                 <Separator />
@@ -215,6 +216,7 @@
                         <Image Source="Images/NewFolderHS.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Paste" Command="Paste" />
                 <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
                 <self:GrayscaleMenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}">
                     <self:GrayscaleMenuItem.Icon>
@@ -602,7 +604,7 @@
 
                 <TreeView.CommandBindings>
                     <CommandBinding Command="Copy" Executed="OnTreeViewItemCopy" />
-                    <CommandBinding Command="Paste" Executed="OnTreeViewItemPaste" />
+                    <CommandBinding Command="Paste" Executed="OnTreeViewItemPaste" CanExecute="OnTreeViewItemCanPaste" />
                 </TreeView.CommandBindings>
             </TreeView>
         </HeaderedContentControl>

@@ -480,6 +480,13 @@ namespace PackageExplorer
             }
         }
 
+        private void OnTreeViewItemCanPaste(object sender, CanExecuteRoutedEventArgs e)
+        {
+            e.CanExecute = Clipboard.ContainsData(PackageFileDataFormat) ||
+                Clipboard.ContainsData(NativeDragDrop.FileContents) ||
+                Clipboard.ContainsData(NativeDragDrop.FileGroupDescriptorW);
+        }
+
         private void OnTreeViewItemPaste(object sender, ExecutedRoutedEventArgs e)
         {
             PackageFolder folder = null;
