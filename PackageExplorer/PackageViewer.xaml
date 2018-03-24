@@ -599,6 +599,11 @@
                         </self:GrayscaleMenuItem>
                     </ContextMenu>
                 </TreeView.ContextMenu>
+
+                <TreeView.CommandBindings>
+                    <CommandBinding Command="Copy" Executed="OnTreeViewItemCopy" />
+                    <CommandBinding Command="Paste" Executed="OnTreeViewItemPaste" />
+                </TreeView.CommandBindings>
             </TreeView>
         </HeaderedContentControl>
 

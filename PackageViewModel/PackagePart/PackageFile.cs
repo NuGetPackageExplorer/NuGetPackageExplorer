@@ -133,6 +133,11 @@ namespace PackageExplorerViewModel
             yield return this;
         }
 
+        public override IEnumerable<PackagePart> GetPackageParts()
+        {
+            yield return this;
+        }
+
         public void Replace()
         {
             if (Parent != null)
