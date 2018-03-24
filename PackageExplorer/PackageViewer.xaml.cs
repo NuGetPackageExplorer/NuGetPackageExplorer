@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
@@ -516,12 +517,12 @@ namespace PackageExplorer
             {
                 if (data.GetData(PackageFileDataFormat) is string packagePartPath)
                 {
-                    folder = folder ?? RootFolder;
-
                     var packagePart = RootFolder.GetPackageParts().FirstOrDefault(part => part.Path == packagePartPath);
 
                     if (packagePart != null)
                     {
+                        folder = folder ?? RootFolder;
+
                         if (packagePart is PackageFile file)
                         {
                             folder.AddFile(file, copy);
@@ -533,12 +534,51 @@ namespace PackageExplorer
                                 folder.AddFolder(childFolder, copy);
                             }
                         }
+                        return true;
                     }
 
-                    return true;
                 }
             }
-            else if (data.GetDataPresent(DataFormats.FileDrop))
+            if (data.GetDataPresent(NativeDragDrop.FileGroupDescriptorW))
+            {
+                folder = folder ?? RootFolder;
+
+                foreach (var fileDescription in NativeDragDrop.GetFileGroupDescriptorW(data))
+                {
+                    var parts = fileDescription.Key.Split(Path.DirectorySeparatorChar);
+
+                    var name = parts[parts.Length - 1];
+                    var parentFolder = folder;
+                    for (var i = 0; i < parts.Length - 1; i++)
+                    {
+                        parentFolder = (PackageFolder)parentFolder[parts[i]];
+                    }
+
+                    if (fileDescription.Value != null)
+                    {
+                        var tempFile = Path.Combine(Path.GetTempPath(), name);
+                        using (var stream = fileDescription.Value)
+                        using (var fileStream = File.OpenWrite(tempFile))
+                        {
+                            stream.CopyTo(fileStream);
+                        }
+
+                        var physicalFile = new PhysicalPackageFile
+                        {
+                            SourcePath = tempFile,
+                            TargetPath = name,
+                        };
+
+                        parentFolder.AddFile(new PackageFile(physicalFile, name, parentFolder));
+                    }
+                    else
+                    {
+                        parentFolder.AddFolder(name);
+                    }
+                }
+                return true;
+            }
+            if (data.GetDataPresent(DataFormats.FileDrop))
             {
                 var value = data.GetData(DataFormats.FileDrop);
                 if (value is string[] filenames && filenames.Length > 0)
