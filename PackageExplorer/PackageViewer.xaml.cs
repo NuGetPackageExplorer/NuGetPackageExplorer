@@ -504,6 +504,14 @@ namespace PackageExplorer
 
         private bool HandleDataObject(PackageFolder folder, IDataObject data, bool copy)
         {
+            if (DataContext is PackageViewModel model)
+            {
+                if (model.IsSigned || model.IsInEditFileMode || model.IsInEditMetadataMode)
+                {
+                    return false;
+                }
+            }
+
             if (data.GetDataPresent(PackageFileDataFormat))
             {
                 if (data.GetData(PackageFileDataFormat) is string packagePartPath)
