@@ -356,27 +356,15 @@ namespace PackageExplorer
             {
                 var data = e.Data;
 
-                if (data.GetDataPresent(PackageFileDataFormat))
-                {
-                    if (data.GetData(PackageFileDataFormat) is string packagePartPath)
-                    {
-                        var packagePart = RootFolder.GetPackageParts().FirstOrDefault(part => part.Path == packagePartPath);
-
-                        // make sure we don't drag a file or folder into the same parent
-                        if (packagePart != null &&
-                            !folder.Contains(packagePart) &&
-                            !folder.ContainsFile(packagePart.Name) &&
-                            !folder.ContainsFolder(packagePart.Name) &&
-                            !folder.IsDescendantOf(packagePart))
-                        {
-                            var copying = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
-                            effects = copying ? DragDropEffects.Copy : DragDropEffects.Move;
-                        }
-                    }
-                }
-                else if (data.GetDataPresent(DataFormats.FileDrop))
+                if (CanHandleDataObject(folder, data))
                 {
                     effects = DragDropEffects.Copy;
+
+                    if (data.GetDataPresent(PackageFileDataFormat))
+                    {
+                        var copying = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
+                        effects = copying ? DragDropEffects.Copy : DragDropEffects.Move;
+                    }
                 }
             }
 
@@ -482,9 +470,14 @@ namespace PackageExplorer
 
         private void OnTreeViewItemCanPaste(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = Clipboard.ContainsData(PackageFileDataFormat) ||
-                Clipboard.ContainsData(NativeDragDrop.FileContents) ||
-                Clipboard.ContainsData(NativeDragDrop.FileGroupDescriptorW);
+            PackageFolder folder = null;
+
+            if (sender is TreeView treeView)
+            {
+                folder = treeView.SelectedItem as PackageFolder;
+            }
+
+            e.CanExecute = CanHandleDataObject(folder, Clipboard.GetDataObject());
         }
 
         private void OnTreeViewItemPaste(object sender, ExecutedRoutedEventArgs e)
@@ -510,14 +503,54 @@ namespace PackageExplorer
             }
         }
 
-        private bool HandleDataObject(PackageFolder folder, IDataObject data, bool copy)
+        private bool CanHandleDataObject(PackageFolder folder, IDataObject data)
         {
+            if (folder == null)
+            {
+                return false;
+            }
             if (DataContext is PackageViewModel model)
             {
                 if (model.IsSigned || model.IsInEditFileMode || model.IsInEditMetadataMode)
                 {
                     return false;
                 }
+            }
+
+            if (data.GetDataPresent(PackageFileDataFormat))
+            {
+                if (data.GetData(PackageFileDataFormat) is string packagePartPath)
+                {
+                    var packagePart = RootFolder.GetPackageParts().FirstOrDefault(part => part.Path == packagePartPath);
+
+                    // make sure we don't drag a file or folder into the same parent
+                    if (packagePart != null &&
+                        !folder.Contains(packagePart) &&
+                        !folder.ContainsFile(packagePart.Name) &&
+                        !folder.ContainsFolder(packagePart.Name) &&
+                        !folder.IsDescendantOf(packagePart))
+                    {
+                        return true;
+                    }
+                }
+            }
+            if (data.GetDataPresent(NativeDragDrop.FileGroupDescriptorW))
+            {
+                return true;
+            }
+            if (data.GetDataPresent(DataFormats.FileDrop))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool HandleDataObject(PackageFolder folder, IDataObject data, bool copy)
+        {
+            if (!CanHandleDataObject(folder, data))
+            {
+                return false;
             }
 
             if (data.GetDataPresent(PackageFileDataFormat))
