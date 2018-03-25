@@ -50,7 +50,7 @@ namespace PackageExplorer
             return bytes;
         }
 
-        public static IEnumerable<KeyValuePair<string, Stream>> GetFileGroupDescriptorW(WindowsIDataObject windowsDataObject)
+        public static IEnumerable<(string FilePath, Stream Stream)> GetFileGroupDescriptorW(WindowsIDataObject windowsDataObject)
         {
             if (!(windowsDataObject is ComIDataObject)) yield break;
 
@@ -59,17 +59,17 @@ namespace PackageExplorer
             for (var i = 0; i < fileNames.Length; i++)
             {
                 Stream stream = null;
-                if (!fileNames[i].Value) // not a directory
+                if (!fileNames[i].IsDirectory)
                 {
                     stream = GetStream(windowsDataObject, i);
                 }
 
-                yield return new KeyValuePair<string, Stream>(fileNames[i].Key, stream);
+                yield return (fileNames[i].FileName, stream);
             }
         }
 
         // https://stackoverflow.com/questions/8709076/drag-and-drop-multiple-attached-file-from-outlook-to-c-sharp-window-form
-        private static KeyValuePair<string, bool>[] GetFileGroupDescriptorWFileNames(WindowsIDataObject data)
+        private static (string FileName, bool IsDirectory)[] GetFileGroupDescriptorWFileNames(WindowsIDataObject data)
         {
             var fileGroupDescriptorWPointer = IntPtr.Zero;
             try
@@ -85,7 +85,7 @@ namespace PackageExplorer
                 var fileGroupDescriptor = Marshal.PtrToStructure<FILEGROUPDESCRIPTORW>(fileGroupDescriptorWPointer);
 
                 //create a new array to store file names in of the number of items in the file group descriptor
-                var fileNames = new KeyValuePair<string, bool>[fileGroupDescriptor.cItems];
+                var fileNames = new(string, bool)[fileGroupDescriptor.cItems];
 
                 //get the pointer to the first file descriptor
                 var fileDescriptorPointer = (IntPtr)((long)fileGroupDescriptorWPointer + Marshal.SizeOf(fileGroupDescriptor.cItems));
@@ -105,7 +105,7 @@ namespace PackageExplorer
                         }
                     }
 
-                    fileNames[fileDescriptorIndex] = new KeyValuePair<string, bool>( fileDescriptor.cFileName, isDirectory);
+                    fileNames[fileDescriptorIndex] = (fileDescriptor.cFileName, isDirectory);
 
                     //move the file descriptor pointer to the next file descriptor
                     fileDescriptorPointer = (IntPtr)((long)fileDescriptorPointer + Marshal.SizeOf(fileDescriptor));

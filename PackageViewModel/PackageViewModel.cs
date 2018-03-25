@@ -1374,11 +1374,11 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<KeyValuePair<string, Stream>> fileDescriptors)
+        public void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<(string FilePath, Stream Stream)> fileDescriptors)
         {
             foreach (var fileDescription in fileDescriptors)
             {
-                var parts = fileDescription.Key.Split(Path.DirectorySeparatorChar);
+                var parts = fileDescription.FilePath.Split(Path.DirectorySeparatorChar);
 
                 var name = parts[parts.Length - 1];
                 var parentFolder = folder;
@@ -1387,9 +1387,9 @@ namespace PackageExplorerViewModel
                     parentFolder = (PackageFolder)parentFolder[parts[i]];
                 }
 
-                if (fileDescription.Value != null) // file
+                if (fileDescription.Stream != null) // file
                 {
-                    var tempFile = FileHelper.CreateTempFile(name, fileDescription.Value);
+                    var tempFile = FileHelper.CreateTempFile(name, fileDescription.Stream);
 
                     var physicalFile = new PhysicalPackageFile
                     {
