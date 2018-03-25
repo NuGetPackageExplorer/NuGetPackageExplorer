@@ -58,14 +58,18 @@ namespace PackageExplorer
 
             for (var i = 0; i < fileNames.Length; i++)
             {
-                var stream = GetStream(windowsDataObject, i);
+                Stream stream = null;
+                if (!fileNames[i].Value) // not a directory
+                {
+                    stream = GetStream(windowsDataObject, i);
+                }
 
-                yield return new KeyValuePair<string, Stream>(fileNames[i], stream);
+                yield return new KeyValuePair<string, Stream>(fileNames[i].Key, stream);
             }
         }
 
         // https://stackoverflow.com/questions/8709076/drag-and-drop-multiple-attached-file-from-outlook-to-c-sharp-window-form
-        private static string[] GetFileGroupDescriptorWFileNames(WindowsIDataObject data)
+        private static KeyValuePair<string, bool>[] GetFileGroupDescriptorWFileNames(WindowsIDataObject data)
         {
             var fileGroupDescriptorWPointer = IntPtr.Zero;
             try
@@ -81,7 +85,7 @@ namespace PackageExplorer
                 var fileGroupDescriptor = Marshal.PtrToStructure<FILEGROUPDESCRIPTORW>(fileGroupDescriptorWPointer);
 
                 //create a new array to store file names in of the number of items in the file group descriptor
-                var fileNames = new string[fileGroupDescriptor.cItems];
+                var fileNames = new KeyValuePair<string, bool>[fileGroupDescriptor.cItems];
 
                 //get the pointer to the first file descriptor
                 var fileDescriptorPointer = (IntPtr)((long)fileGroupDescriptorWPointer + Marshal.SizeOf(fileGroupDescriptor.cItems));
@@ -91,7 +95,17 @@ namespace PackageExplorer
                 {
                     //marshal the pointer top the file descriptor as a FILEDESCRIPTORW struct and get the file name
                     var fileDescriptor = Marshal.PtrToStructure<FILEDESCRIPTORW>(fileDescriptorPointer);
-                    fileNames[fileDescriptorIndex] = fileDescriptor.cFileName;
+
+                    var isDirectory = false;
+                    if ((fileDescriptor.dwFlags & FD_ATTRIBUTES) == FD_ATTRIBUTES)
+                    {
+                        if ((fileDescriptor.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+                        {
+                            isDirectory = true;
+                        }
+                    }
+
+                    fileNames[fileDescriptorIndex] = new KeyValuePair<string, bool>( fileDescriptor.cFileName, isDirectory);
 
                     //move the file descriptor pointer to the next file descriptor
                     fileDescriptorPointer = (IntPtr)((long)fileDescriptorPointer + Marshal.SizeOf(fileDescriptor));
@@ -280,7 +294,11 @@ namespace PackageExplorer
         }
 
         // https://msdn.microsoft.com/en-us/library/windows/desktop/bb773288(v=vs.85).aspx
+        private const uint FD_ATTRIBUTES = 0x00000004;
         private const uint FD_SHOWPROGRESSUI = 0x00004000;
+
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/gg258117(v=vs.85).aspx
+        private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
 
         // https://msdn.microsoft.com/en-us/library/windows/desktop/bb773290(v=vs.85).aspx
         [StructLayout(LayoutKind.Sequential)]
