@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using ComIDataObject = System.Runtime.InteropServices.ComTypes.IDataObject;
@@ -35,18 +36,16 @@ namespace PackageExplorer
         {
             // Set up for call to StructureToPtr
             var size = Marshal.SizeOf(source.GetType());
-            var ptr = Marshal.AllocHGlobal(size);
             var bytes = new byte[size];
-            try
+
+            unsafe
             {
-                Marshal.StructureToPtr(source, ptr, false);
-                // Copy marshalled bytes to buffer
-                Marshal.Copy(ptr, bytes, 0, size);
+                fixed (byte* p = &MemoryMarshal.GetReference((ReadOnlySpan<byte>)bytes))
+                {
+                    Marshal.StructureToPtr(source, (IntPtr)p, false);
+                }
             }
-            finally
-            {
-                Marshal.FreeHGlobal(ptr);
-            }
+
             return bytes;
         }
 
@@ -71,53 +70,38 @@ namespace PackageExplorer
         // https://stackoverflow.com/questions/8709076/drag-and-drop-multiple-attached-file-from-outlook-to-c-sharp-window-form
         private static (string FileName, bool IsDirectory)[] GetFileGroupDescriptorWFileNames(WindowsIDataObject data)
         {
-            var fileGroupDescriptorWPointer = IntPtr.Zero;
-            try
+            var fileGroupDescriptorStream = (MemoryStream)data.GetData(FileGroupDescriptorW);
+            ReadOnlySpan<byte> fileGroupDescriptorBytes = fileGroupDescriptorStream.ToArray();
+
+            ref var fileGroupDescriptorPtr = ref MemoryMarshal.GetReference(fileGroupDescriptorBytes);
+            var fileGroupDescriptor = Unsafe.As<byte, FILEGROUPDESCRIPTORW>(ref fileGroupDescriptorPtr);
+
+            var fileNames = new (string, bool)[fileGroupDescriptor.cItems];
+            unsafe
             {
-                var fileGroupDescriptorStream = (MemoryStream)data.GetData(FileGroupDescriptorW);
-                var fileGroupDescriptorBytes = fileGroupDescriptorStream.ToArray();
-
-                //copy the file group descriptor into unmanaged memory
-                fileGroupDescriptorWPointer = Marshal.AllocHGlobal(fileGroupDescriptorBytes.Length);
-                Marshal.Copy(fileGroupDescriptorBytes, 0, fileGroupDescriptorWPointer, fileGroupDescriptorBytes.Length);
-
-                //marshal the unmanaged memory to to FILEGROUPDESCRIPTORW struct
-                var fileGroupDescriptor = Marshal.PtrToStructure<FILEGROUPDESCRIPTORW>(fileGroupDescriptorWPointer);
-
-                //create a new array to store file names in of the number of items in the file group descriptor
-                var fileNames = new(string, bool)[fileGroupDescriptor.cItems];
-
-                //get the pointer to the first file descriptor
-                var fileDescriptorPointer = (IntPtr)((long)fileGroupDescriptorWPointer + Marshal.SizeOf(fileGroupDescriptor.cItems));
-
-                //loop for the number of files acording to the file group descriptor
-                for (var fileDescriptorIndex = 0; fileDescriptorIndex < fileGroupDescriptor.cItems; fileDescriptorIndex++)
+                fixed (byte* pStart = &Unsafe.Add(ref fileGroupDescriptorPtr, Marshal.SizeOf<FILEGROUPDESCRIPTORW>()))
                 {
-                    //marshal the pointer top the file descriptor as a FILEDESCRIPTORW struct and get the file name
-                    var fileDescriptor = Marshal.PtrToStructure<FILEDESCRIPTORW>(fileDescriptorPointer);
-
-                    var isDirectory = false;
-                    if ((fileDescriptor.dwFlags & FD_ATTRIBUTES) == FD_ATTRIBUTES)
+                    var fileDescriptorRowPtr = pStart;
+                    for (var fileDescriptorIndex = 0; fileDescriptorIndex < fileGroupDescriptor.cItems; fileDescriptorIndex++)
                     {
-                        if ((fileDescriptor.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+                        var fileDescriptor = Marshal.PtrToStructure<FILEDESCRIPTORW>((IntPtr)fileDescriptorRowPtr);
+
+                        var isDirectory = false;
+                        if ((fileDescriptor.dwFlags & FD_ATTRIBUTES) == FD_ATTRIBUTES)
                         {
-                            isDirectory = true;
+                            if ((fileDescriptor.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == FILE_ATTRIBUTE_DIRECTORY)
+                            {
+                                isDirectory = true;
+                            }
                         }
+
+                        fileNames[fileDescriptorIndex] = (fileDescriptor.cFileName, isDirectory);
+
+                        fileDescriptorRowPtr += Marshal.SizeOf<FILEDESCRIPTORW>();
                     }
-
-                    fileNames[fileDescriptorIndex] = (fileDescriptor.cFileName, isDirectory);
-
-                    //move the file descriptor pointer to the next file descriptor
-                    fileDescriptorPointer = (IntPtr)((long)fileDescriptorPointer + Marshal.SizeOf(fileDescriptor));
                 }
-
-                return fileNames;
             }
-            finally
-            {
-                //free unmanaged memory pointer
-                Marshal.FreeHGlobal(fileGroupDescriptorWPointer);
-            }
+            return fileNames;
         }
 
         // https://stackoverflow.com/questions/8709076/drag-and-drop-multiple-attached-file-from-outlook-to-c-sharp-window-form
