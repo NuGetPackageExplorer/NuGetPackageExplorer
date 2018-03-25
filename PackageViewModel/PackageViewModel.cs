@@ -1374,6 +1374,43 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<KeyValuePair<string, Stream>> fileDescriptors)
+        {
+            foreach (var fileDescription in fileDescriptors)
+            {
+                var parts = fileDescription.Key.Split(Path.DirectorySeparatorChar);
+
+                var name = parts[parts.Length - 1];
+                var parentFolder = folder;
+                for (var i = 0; i < parts.Length - 1; i++)
+                {
+                    parentFolder = (PackageFolder)parentFolder[parts[i]];
+                }
+
+                if (fileDescription.Value != null) // file
+                {
+                    var tempFile = Path.Combine(Path.GetTempPath(), name);
+                    using (var stream = fileDescription.Value)
+                    using (var fileStream = File.OpenWrite(tempFile))
+                    {
+                        stream.CopyTo(fileStream);
+                    }
+
+                    var physicalFile = new PhysicalPackageFile
+                    {
+                        SourcePath = tempFile,
+                        TargetPath = name,
+                    };
+
+                    parentFolder.AddFile(new PackageFile(physicalFile, name, parentFolder));
+                }
+                else // folder
+                {
+                    parentFolder.AddFolder(name);
+                }
+            }
+        }
+
         private bool IsPackageTokenized()
         {
             if (PackageMetadata.Version.IsTokenized())
