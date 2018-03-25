@@ -1389,12 +1389,7 @@ namespace PackageExplorerViewModel
 
                 if (fileDescription.Value != null) // file
                 {
-                    var tempFile = Path.Combine(Path.GetTempPath(), name);
-                    using (var stream = fileDescription.Value)
-                    using (var fileStream = File.OpenWrite(tempFile))
-                    {
-                        stream.CopyTo(fileStream);
-                    }
+                    var tempFile = FileHelper.CreateTempFile(name, fileDescription.Value);
 
                     var physicalFile = new PhysicalPackageFile
                     {
