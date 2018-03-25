@@ -119,37 +119,34 @@ namespace PackageExplorer
             {
                 var comObjectData = (ComIDataObject)windowsObjectData;
 
-                if (comObjectData.QueryGetData(ref formatetc) <= 0)
+                //create STGMEDIUM to output request results into
+                var medium = new STGMEDIUM();
+
+                //using the Com IDataObject interface get the data using the defined FORMATETC
+                comObjectData.GetData(ref formatetc, out medium);
+
+                //retrieve the data depending on the returned store type
+                switch (medium.tymed)
                 {
-                    //create STGMEDIUM to output request results into
-                    var medium = new STGMEDIUM();
+                    case TYMED.TYMED_ISTREAM:
+                        //to handle a IStream it needs to be read into a managed byte and
+                        //returned as a Stream
 
-                    //using the Com IDataObject interface get the data using the defined FORMATETC
-                    comObjectData.GetData(ref formatetc, out medium);
+                        //marshal the returned pointer to a IStream object
+                        var iStream = (IStream)Marshal.GetObjectForIUnknown(medium.unionmember);
+                        Marshal.Release(medium.unionmember);
 
-                    //retrieve the data depending on the returned store type
-                    switch (medium.tymed)
-                    {
-                        case TYMED.TYMED_ISTREAM:
-                            //to handle a IStream it needs to be read into a managed byte and
-                            //returned as a Stream
+                        //get the STATSTG of the IStream to determine how many bytes are in it
+                        var iStreamStat = new System.Runtime.InteropServices.ComTypes.STATSTG();
+                        iStream.Stat(out iStreamStat, 0); // this will throw for folders
 
-                            //marshal the returned pointer to a IStream object
-                            var iStream = (IStream)Marshal.GetObjectForIUnknown(medium.unionmember);
-                            Marshal.Release(medium.unionmember);
+                        //wrapped the IStream in a Stream
+                        return new IStreamWrapper(iStream, iStreamStat);
 
-                            //get the STATSTG of the IStream to determine how many bytes are in it
-                            var iStreamStat = new System.Runtime.InteropServices.ComTypes.STATSTG();
-                            iStream.Stat(out iStreamStat, 0); // this will throw for folders
+                    case TYMED.TYMED_HGLOBAL:
+                        var stream = windowsObjectData.GetData(FileContents);
 
-                            //wrapped the IStream in a Stream
-                            return new IStreamWrapper(iStream, iStreamStat);
-
-                        case TYMED.TYMED_HGLOBAL:
-                            var stream = windowsObjectData.GetData(FileContents);
-
-                            return stream as Stream;
-                    }
+                        return stream as Stream;
                 }
             }
             catch { }
@@ -241,11 +238,12 @@ namespace PackageExplorer
                     buffer = buffer.Skip(offset).ToArray();
                 }
 
-                var written = 0;
-                var p = &written;
+                long result = 0;
+                var p = &result;
 
                 _inner.Write(buffer, count, (IntPtr)p);
 
+                var written = (int)result;
                 if (written != count)
                 {
                     Write(buffer, written, count - written);
