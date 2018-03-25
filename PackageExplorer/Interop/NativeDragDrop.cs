@@ -76,7 +76,7 @@ namespace PackageExplorer
             ref var fileGroupDescriptorPtr = ref MemoryMarshal.GetReference(fileGroupDescriptorBytes);
             var fileGroupDescriptor = Unsafe.As<byte, FILEGROUPDESCRIPTORW>(ref fileGroupDescriptorPtr);
 
-            var fileNames = new (string, bool)[fileGroupDescriptor.cItems];
+            var fileNames = new(string, bool)[fileGroupDescriptor.cItems];
             unsafe
             {
                 fixed (byte* pStart = &Unsafe.Add(ref fileGroupDescriptorPtr, Marshal.SizeOf<FILEGROUPDESCRIPTORW>()))
@@ -204,39 +204,29 @@ namespace PackageExplorer
                 _inner.Commit(0); // https://msdn.microsoft.com/en-us/library/windows/desktop/aa380320%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396
             }
 
-            public override int Read(byte[] buffer, int offset, int count)
+            public override unsafe int Read(byte[] buffer, int offset, int count)
             {
-                var ptr = Marshal.AllocHGlobal(Marshal.SizeOf<ulong>());
-                try
+                if (offset > 0)
                 {
-                    if (offset > 0)
-                    {
-                        buffer = buffer.Skip(offset).ToArray();
-                    }
-
-                    _inner.Read(buffer, count, ptr);
-
-                    return (int)Marshal.ReadInt64(ptr);
+                    buffer = buffer.Skip(offset).ToArray();
                 }
-                finally
-                {
-                    Marshal.FreeHGlobal(ptr);
-                }
+
+                ulong lng = 0;
+                var p = &lng;
+
+                _inner.Read(buffer, count, (IntPtr)p);
+
+                return (int)lng;
             }
 
-            public override long Seek(long offset, SeekOrigin origin)
+            public override unsafe long Seek(long offset, SeekOrigin origin)
             {
-                var ptr = Marshal.AllocHGlobal(Marshal.SizeOf<ulong>());
-                try
-                {
-                    _inner.Seek(offset, (int)origin, ptr);
+                long lng = 0;
+                var p = &lng;
 
-                    return Marshal.ReadInt64(ptr);
-                }
-                finally
-                {
-                    Marshal.FreeHGlobal(ptr);
-                }
+                _inner.Seek(offset, (int)origin, (IntPtr)p);
+
+                return lng;
             }
 
             public override void SetLength(long value)
@@ -244,28 +234,21 @@ namespace PackageExplorer
                 _inner.SetSize(value);
             }
 
-            public override void Write(byte[] buffer, int offset, int count)
+            public override unsafe void Write(byte[] buffer, int offset, int count)
             {
-                var ptr = Marshal.AllocHGlobal(Marshal.SizeOf<ulong>());
-                try
+                if (offset > 0)
                 {
-                    if (offset > 0)
-                    {
-                        buffer = buffer.Skip(offset).ToArray();
-                    }
-
-                    _inner.Write(buffer, count, ptr);
-
-                    var written = (int)Marshal.ReadInt64(ptr);
-
-                    if (written != count)
-                    {
-                        Write(buffer, written, count - written);
-                    }
+                    buffer = buffer.Skip(offset).ToArray();
                 }
-                finally
+
+                var written = 0;
+                var p = &written;
+
+                _inner.Write(buffer, count, (IntPtr)p);
+
+                if (written != count)
                 {
-                    Marshal.FreeHGlobal(ptr);
+                    Write(buffer, written, count - written);
                 }
             }
 
