@@ -19,6 +19,7 @@ namespace PackageExplorer
         {
             var fileGroupDescriptor = new FILEGROUPDESCRIPTORW() { cItems = 1 };
             var fileDescriptor = new FILEDESCRIPTORW() { cFileName = fileName };
+            fileDescriptor.dwFlags |= FD_SHOWPROGRESSUI;
 
             var fileGroupDescriptorBytes = StructureBytes(fileGroupDescriptor);
             var fileDescriptorBytes = StructureBytes(fileDescriptor);
@@ -278,8 +279,10 @@ namespace PackageExplorer
             }
         }
 
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/bb773288(v=vs.85).aspx
+        private const uint FD_SHOWPROGRESSUI = 0x00004000;
 
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/bb773290%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/bb773290(v=vs.85).aspx
         [StructLayout(LayoutKind.Sequential)]
         private struct FILEGROUPDESCRIPTORW
         {
@@ -287,7 +290,7 @@ namespace PackageExplorer
             // Followed by 0 or more FILEDESCRIPTORs
         }
 
-        // https://msdn.microsoft.com/en-us/library/windows/desktop/bb773288%28v=vs.85%29.aspx?f=255&MSPPError=-2147217396
+        // https://msdn.microsoft.com/en-us/library/windows/desktop/bb773288(v=vs.85).aspx
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
         private struct FILEDESCRIPTORW
         {
