@@ -685,17 +685,12 @@ namespace PackageExplorer
             {
                 if (_inner == null)
                 {
-                    _inner = _packageFile.GetStream();
-
-                    if (!_inner.CanSeek)
+                    var memoryStream = new MemoryStream();
+                    using (var stream = _packageFile.GetStream())
                     {
-                        var memoryStream = new MemoryStream();
-                        using (_inner)
-                        {
-                            _inner.CopyTo(memoryStream);
-                        }
-                        _inner = memoryStream;
+                        stream.CopyTo(memoryStream);
                     }
+                    _inner = memoryStream;
                 }
             }
 
@@ -733,7 +728,7 @@ namespace PackageExplorer
             {
                 base.Dispose(disposing);
 
-                _inner.Dispose();
+                _inner?.Dispose();
             }
         }
 
