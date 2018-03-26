@@ -607,7 +607,7 @@ namespace PackageExplorer
             if (packagePart is PackageFile packageFile)
             {
                 data.SetData(DataFormats.FileDrop, new[] { packageFile.Name });
-                data.SetData(NativeDragDrop.FileGroupDescriptorW, NativeDragDrop.CreateFileGroupDescriptorW(packageFile.Name));
+                data.SetData(NativeDragDrop.FileGroupDescriptorW, NativeDragDrop.CreateFileGroupDescriptorW(packageFile.Name, packageFile.LastWriteTime));
                 data.SetData(NativeDragDrop.FileContents, new LazyPackageFileStream(packageFile));
             }
 

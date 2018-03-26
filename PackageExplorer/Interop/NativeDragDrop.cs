@@ -16,11 +16,21 @@ namespace PackageExplorer
         public static readonly string FileGroupDescriptorW = "FileGroupDescriptorW";
         public static readonly string FileContents = "FileContents";
 
-        public static Stream CreateFileGroupDescriptorW(string fileName)
+        public static Stream CreateFileGroupDescriptorW(string fileName, DateTimeOffset lastWriteTime)
         {
             var fileGroupDescriptor = new FILEGROUPDESCRIPTORW() { cItems = 1 };
             var fileDescriptor = new FILEDESCRIPTORW() { cFileName = fileName };
             fileDescriptor.dwFlags |= FD_SHOWPROGRESSUI;
+
+            fileDescriptor.dwFlags |= FD_CREATETIME | FD_WRITESTIME;
+            var changeTime = lastWriteTime.ToLocalTime().ToFileTime();
+            var changeTimeFileTime = new System.Runtime.InteropServices.ComTypes.FILETIME
+            {
+                dwLowDateTime = (int)(changeTime & 0xffffffff),
+                dwHighDateTime = (int)(changeTime >> 32),
+            };
+            fileDescriptor.ftLastWriteTime = changeTimeFileTime;
+            fileDescriptor.ftCreationTime = changeTimeFileTime;
 
             var fileGroupDescriptorBytes = StructureBytes(fileGroupDescriptor);
             var fileDescriptorBytes = StructureBytes(fileDescriptor);
@@ -260,6 +270,8 @@ namespace PackageExplorer
 
         // https://msdn.microsoft.com/en-us/library/windows/desktop/bb773288(v=vs.85).aspx
         private const uint FD_ATTRIBUTES = 0x00000004;
+        private const uint FD_CREATETIME = 0x00000008;
+        private const uint FD_WRITESTIME = 0x00000020;
         private const uint FD_SHOWPROGRESSUI = 0x00004000;
 
         // https://msdn.microsoft.com/en-us/library/windows/desktop/gg258117(v=vs.85).aspx
