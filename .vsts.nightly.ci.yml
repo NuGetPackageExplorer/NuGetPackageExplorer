@@ -64,7 +64,14 @@ steps:
     msbuild /t:pack .\Types\Types.csproj /p:Configuration=$(BuildConfiguration) /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
         
   displayName: Build Nightly
-  
+
+- task: whitesource.whitesource.task-hash-collector.WhiteSource@18
+  inputs:
+    productNameOrToken: '$(WhiteSourceProductToken)'
+    projectToken: '$(WhiteSourceProjectToken)'
+    WhiteSourceService: 'WhiteSource - Oren Novotny'
+  condition: and(succeeded(), ne(variables['WhiteSourceProjectToken'], ''))
+    
 - task: ArchiveFiles@1
   displayName: Zip PackageExplorer files
   inputs:
