@@ -67,9 +67,9 @@ steps:
 
 - task: whitesource.whitesource.task-hash-collector.WhiteSource@18
   inputs:
-    productNameOrToken: '$(WhiteSourceProductToken)'
-    projectToken: '$(WhiteSourceProjectToken)'
-    WhiteSourceService: 'WhiteSource - Oren Novotny'
+    productNameOrToken: $(WhiteSourceProductToken)
+    projectToken: $(WhiteSourceProjectToken)
+    WhiteSourceService: ddc3039b-d66a-4a71-9fe5-36d4243f5901
   condition: and(succeeded(), ne(variables['WhiteSourceProjectToken'], ''))
     
 - task: ArchiveFiles@1
