@@ -213,7 +213,7 @@ namespace PackageExplorer
         {
             var response = await base.SendAsync(request, cancellationToken);
 
-            if (IsBinaryMediaType(response.Content.Headers.ContentType.MediaType))
+            if (IsBinaryMediaType(response.Content.Headers.ContentType?.MediaType))
             {
                 var totalSize = response.Content.Headers.ContentLength;
                 var innerStream = await response.Content.ReadAsStreamAsync();
