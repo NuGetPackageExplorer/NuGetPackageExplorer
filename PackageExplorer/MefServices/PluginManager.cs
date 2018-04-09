@@ -20,7 +20,7 @@ namespace PackageExplorer
         private const string NuGetDirectoryName = "NuGet";
         private const string PluginsDirectoryName = "PackageExplorerPlugins";
         private const string DeleteMeExtension = ".deleteme";
-        private static string[] FrameworkFolderForAssemblies = new string[] { "lib\\net40", "lib\\net45", "lib\\net451", "lib\\net452", "lib\\net46" };
+        private static string[] FrameworkFolderForAssemblies = new string[] { "lib\\net40", "lib\\net45", "lib\\net451", "lib\\net452", "lib\\net46", "lib\\net461" };
 
         // %localappdata%/NuGet/PackageExplorerPlugins
         private static readonly string PluginsDirectory = Path.Combine(
