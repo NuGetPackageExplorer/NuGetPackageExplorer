@@ -39,12 +39,12 @@ namespace PackageExplorer
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            HttpHandlerResourceV3.CredentialService = new CredentialService(new ICredentialProvider[] {
-                Container.GetExportedValue<CredentialManagerProvider>(),
-                Container.GetExportedValue<CredentialPublishProvider>(),
-                Container.GetExportedValue<CredentialDialogProvider>(),
-            }, false);
-            HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) => Container.GetExportedValue<ICredentialManager>().Add(credentials, uri);
+            InitCredentialService();
+            HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>
+            {
+                Container.GetExportedValue<ICredentialManager>().Add(credentials, uri);
+                InitCredentialService();
+            };
 
             MigrateSettings();
 
@@ -60,6 +60,15 @@ namespace PackageExplorer
                     return;
                 }
             }
+        }
+
+        private void InitCredentialService()
+        {
+            HttpHandlerResourceV3.CredentialService = new CredentialService(new ICredentialProvider[] {
+                Container.GetExportedValue<CredentialManagerProvider>(),
+                Container.GetExportedValue<CredentialPublishProvider>(),
+                Container.GetExportedValue<CredentialDialogProvider>(),
+            }, nonInteractive: false);
         }
 
         private static void MigrateSettings()
