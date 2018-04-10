@@ -504,10 +504,6 @@ namespace PackageExplorer
 
         private bool CanHandleDataObject(PackageFolder folder, IDataObject data)
         {
-            if (folder == null)
-            {
-                return false;
-            }
             if (DataContext is PackageViewModel model)
             {
                 if (model.IsSigned || model.IsInEditFileMode || model.IsInEditMetadataMode)
@@ -524,6 +520,7 @@ namespace PackageExplorer
 
                     // make sure we don't drag a file or folder into the same parent
                     if (packagePart != null &&
+                        folder != null &&
                         !folder.Contains(packagePart) &&
                         !folder.ContainsFile(packagePart.Name) &&
                         !folder.ContainsFolder(packagePart.Name) &&
