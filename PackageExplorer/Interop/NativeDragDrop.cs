@@ -22,15 +22,18 @@ namespace PackageExplorer
             var fileDescriptor = new FILEDESCRIPTORW() { cFileName = fileName };
             fileDescriptor.dwFlags |= FD_SHOWPROGRESSUI;
 
-            fileDescriptor.dwFlags |= FD_CREATETIME | FD_WRITESTIME;
-            var changeTime = lastWriteTime.ToLocalTime().ToFileTime();
-            var changeTimeFileTime = new System.Runtime.InteropServices.ComTypes.FILETIME
+            if (lastWriteTime != default(DateTimeOffset))
             {
-                dwLowDateTime = (int)(changeTime & 0xffffffff),
-                dwHighDateTime = (int)(changeTime >> 32),
-            };
-            fileDescriptor.ftLastWriteTime = changeTimeFileTime;
-            fileDescriptor.ftCreationTime = changeTimeFileTime;
+                fileDescriptor.dwFlags |= FD_CREATETIME | FD_WRITESTIME;
+                var changeTime = lastWriteTime.ToLocalTime().ToFileTime();
+                var changeTimeFileTime = new System.Runtime.InteropServices.ComTypes.FILETIME
+                {
+                    dwLowDateTime = (int)(changeTime & 0xffffffff),
+                    dwHighDateTime = (int)(changeTime >> 32),
+                };
+                fileDescriptor.ftLastWriteTime = changeTimeFileTime;
+                fileDescriptor.ftCreationTime = changeTimeFileTime;
+            }
 
             var fileGroupDescriptorBytes = StructureBytes(fileGroupDescriptor);
             var fileDescriptorBytes = StructureBytes(fileDescriptor);
