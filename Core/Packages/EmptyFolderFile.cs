@@ -16,6 +16,7 @@ namespace NuGetPe
             return Stream.Null;
         }
 
-        
+        public override DateTimeOffset LastWriteTime { get; }
+
     }
 }
