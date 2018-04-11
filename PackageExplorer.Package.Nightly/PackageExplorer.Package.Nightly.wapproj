@@ -64,7 +64,7 @@
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
   <Target Name="AppxPackagedFileReplaceRefWithLib" AfterTargets="_GenerateAppxPackageRecipe">
-    <ReplaceFileText InputFilename="$(TargetDir)\$(TargetName).build.appxrecipe" OutputFilename="$(TargetDir)\$(TargetName).build.appxrecipe" MatchExpression="\\ref\\" ReplacementText="\lib\" />
+    <ReplaceFileText InputFilename="$(AppxPackageRecipe)" OutputFilename="$(AppxPackageRecipe)" MatchExpression="\\ref\\" ReplacementText="\lib\" />
   </Target>
   <UsingTask TaskName="ReplaceFileText" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
     <ParameterGroup>
