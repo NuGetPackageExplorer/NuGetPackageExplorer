@@ -19,6 +19,7 @@ src/Server/Packages/*.nupkg
 src/Server/Server.Publish.xml
 DebugConstants.cs
 *.log
+*.binlog
 packages/*
 publish/
 /PackageExplorer.Package/bld/*
