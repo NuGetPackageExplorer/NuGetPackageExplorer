@@ -25,7 +25,7 @@ namespace PackageExplorer
             if (lastWriteTime != default(DateTimeOffset))
             {
                 fileDescriptor.dwFlags |= FD_CREATETIME | FD_WRITESTIME;
-                var changeTime = lastWriteTime.ToLocalTime().ToFileTime();
+                var changeTime = lastWriteTime.ToFileTime();
                 var changeTimeFileTime = new System.Runtime.InteropServices.ComTypes.FILETIME
                 {
                     dwLowDateTime = (int)(changeTime & 0xffffffff),
