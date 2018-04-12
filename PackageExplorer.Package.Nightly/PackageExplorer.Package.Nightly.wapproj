@@ -63,6 +63,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
+  <!-- Hack to get around https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/issues/391 -->
   <Target Name="AppxPackagedFileReplaceRefWithLib" AfterTargets="_GenerateAppxPackageRecipe">
     <ReplaceFileText InputFilename="$(AppxPackageRecipe)" OutputFilename="$(AppxPackageRecipe)" MatchExpression="\\ref\\" ReplacementText="\lib\" />
   </Target>

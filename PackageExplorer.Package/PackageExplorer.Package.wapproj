@@ -61,5 +61,31 @@
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
+  <!-- Hack to get around https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/issues/391 -->
+  <Target Name="AppxPackagedFileReplaceRefWithLib" AfterTargets="_GenerateAppxPackageRecipe">
+    <ReplaceFileText InputFilename="$(AppxPackageRecipe)" OutputFilename="$(AppxPackageRecipe)" MatchExpression="\\ref\\" ReplacementText="\lib\" />
+  </Target>
+  <UsingTask TaskName="ReplaceFileText" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll">
+    <ParameterGroup>
+      <InputFilename ParameterType="System.String" Required="true" />
+      <OutputFilename ParameterType="System.String" Required="true" />
+      <MatchExpression ParameterType="System.String" Required="true" />
+      <ReplacementText ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.Core" />
+      <Using Namespace="System" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.Text.RegularExpressions" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+            File.WriteAllText(
+                OutputFilename,
+                Regex.Replace(File.ReadAllText(InputFilename), MatchExpression, ReplacementText)
+                );
+          ]]>
+      </Code>
+    </Task>
+  </UsingTask>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>
