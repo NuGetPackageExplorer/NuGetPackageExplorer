@@ -324,7 +324,7 @@ namespace PackageExplorerViewModel
             {
                 foreach (var file in selectedFiles)
                 {
-                    folder.AddFile(file, isTempFile: false);
+                    folder.AddFile(file);
                 }
             }
         }
@@ -1015,7 +1015,7 @@ namespace PackageExplorerViewModel
             if (result)
             {
                 var sourcePath = FileHelper.CreateTempFile(newName);
-                var file = folder.AddFile(sourcePath, isTempFile: true);
+                var file = folder.AddFile(sourcePath);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1050,7 +1050,7 @@ namespace PackageExplorerViewModel
 
             if (SelectedItem is PackageFolder selectedFolder)
             {
-                var file = selectedFolder.AddFile(sourcePath, isTempFile: true);
+                var file = selectedFolder.AddFile(sourcePath);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1105,7 +1105,7 @@ namespace PackageExplorerViewModel
 
             if (SelectedItem is PackageFolder selectedFolder)
             {
-                var file = selectedFolder.AddFile(sourcePath, isTempFile: true);
+                var file = selectedFolder.AddFile(sourcePath);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1350,7 +1350,7 @@ namespace PackageExplorerViewModel
                             targetFolder = RootFolder;
                         }
 
-                        targetFolder.AddFile(file, isTempFile: false);
+                        targetFolder.AddFile(file);
                     }
                     else if (Directory.Exists(file))
                     {
@@ -1364,7 +1364,7 @@ namespace PackageExplorerViewModel
                 {
                     if (File.Exists(file))
                     {
-                        folder.AddFile(file, isTempFile: false);
+                        folder.AddFile(file);
                     }
                     else if (Directory.Exists(file))
                     {
@@ -1391,13 +1391,7 @@ namespace PackageExplorerViewModel
                 {
                     var tempFile = FileHelper.CreateTempFile(name, fileDescription.Stream);
 
-                    var physicalFile = new PhysicalPackageFile
-                    {
-                        SourcePath = tempFile,
-                        TargetPath = name,
-                    };
-
-                    parentFolder.AddFile(new PackageFile(physicalFile, name, parentFolder));
+                    parentFolder.AddFile(tempFile);
                 }
                 else // folder
                 {

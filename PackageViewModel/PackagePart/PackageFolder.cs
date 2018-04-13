@@ -267,7 +267,7 @@ namespace PackageExplorerViewModel
             PackageViewModel.NotifyChanges();
         }
 
-        public PackageFile AddFile(string filePath, bool isTempFile)
+        public PackageFile AddFile(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -304,11 +304,7 @@ namespace PackageExplorerViewModel
             }
 
             var newTargetPath = this.Path + "\\" + newFileName;
-            var physicalFile = new PhysicalPackageFile
-            {
-                SourcePath = filePath,
-                TargetPath = newTargetPath
-            };
+            var physicalFile = new DiskPackageFile(newTargetPath, filePath);
             var newFile = new PackageFile(physicalFile, newFileName, this);
 
             Children.Add(newFile);
@@ -347,11 +343,7 @@ namespace PackageExplorerViewModel
                 }
 
                 var newTargetPath = this.Path + "\\" + file.Name;
-                var physicalFile = new PhysicalPackageFile
-                {
-                    SourcePath = fileCopyPath,
-                    TargetPath = newTargetPath
-                };
+                var physicalFile = new DiskPackageFile(newTargetPath, fileCopyPath);
 
                 newFile = new PackageFile(physicalFile, file.Name, this);
             }
@@ -389,7 +381,7 @@ namespace PackageExplorerViewModel
             // temporarily remove the old file in order to add a new file
             Children.Remove(oldFile);
 
-            var newFile = AddFile(newFilePath, isTempFile: false);
+            var newFile = AddFile(newFilePath);
             if (newFile != null)
             {
                 // new file added successfully, officially delete the old file by disposing it
@@ -432,7 +424,7 @@ namespace PackageExplorerViewModel
             var childPackgeFolder = AddFolder(dirInfo.Name);
             foreach (var file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly))
             {
-                childPackgeFolder.AddFile(file.FullName, isTempFile: false);
+                childPackgeFolder.AddFile(file.FullName);
             }
             foreach (var subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly))
             {
