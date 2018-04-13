@@ -572,7 +572,6 @@ namespace PackageExplorer
                         }
                         return true;
                     }
-
                 }
             }
             if (data.GetDataPresent(NativeDragDrop.FileGroupDescriptorW))
@@ -603,8 +602,13 @@ namespace PackageExplorer
 
             if (packagePart is PackageFile packageFile)
             {
-                data.SetData(DataFormats.FileDrop, new[] { packageFile.Name });
-                data.SetData(NativeDragDrop.FileGroupDescriptorW, NativeDragDrop.CreateFileGroupDescriptorW(packageFile.Name, packageFile.LastWriteTime));
+                long? fileSize = null;
+                if (packageFile.OriginalPath != null)
+                {
+                    fileSize = new FileInfo(packageFile.OriginalPath).Length;
+                }
+
+                data.SetData(NativeDragDrop.FileGroupDescriptorW, NativeDragDrop.CreateFileGroupDescriptorW(packageFile.Name, packageFile.LastWriteTime, fileSize));
                 data.SetData(NativeDragDrop.FileContents, new LazyPackageFileStream(packageFile));
             }
 

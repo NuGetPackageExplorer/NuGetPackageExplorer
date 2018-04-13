@@ -35,6 +35,8 @@ namespace NuGetPe
             return _streamFactory();
         }
 
+        public override DateTimeOffset LastWriteTime { get; }
+
         public override string ToString()
         {
             return Path;

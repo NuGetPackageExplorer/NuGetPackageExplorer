@@ -62,6 +62,6 @@ namespace NuGetPe
             }
         }
 
-        public DateTimeOffset LastWriteTime { get; protected set; } = DateTimeOffset.MinValue;
+        public virtual DateTimeOffset LastWriteTime { get; } = DateTimeOffset.MinValue;
     }
 }
