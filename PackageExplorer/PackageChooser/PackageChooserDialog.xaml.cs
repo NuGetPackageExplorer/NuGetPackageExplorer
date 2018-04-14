@@ -16,7 +16,7 @@ namespace PackageExplorer
     public partial class PackageChooserDialog : StandardDialog
     {
         private readonly PackageChooserViewModel _viewModel;
-        private string _pendingSearch;        
+        private string _pendingSearch;
 
         public PackageChooserDialog(PackageChooserViewModel viewModel)
         {
@@ -39,32 +39,16 @@ namespace PackageExplorer
             FocusSearchBox();
         }
 
-        private void RedrawSortGlyph(string sortColumn, ListSortDirection sortDirection)
-        {
-            foreach (var column in ParentPackageGrid.Columns)
-            {
-                if (column.SortMemberPath.Equals(sortColumn, StringComparison.OrdinalIgnoreCase))
-                {
-                    column.SortDirection = sortDirection;
-                    break;
-                }
-            }
-        }
-
         private void OnOpenPackageRequested(object sender, EventArgs e)
         {
             Hide();
         }
 
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
-        {
-            CancelPendingRequestAndCloseDialog();
-        }
-
         private void CancelPendingRequestAndCloseDialog()
         {
             CancelPendingRequest();
-            ParentPackageGrid.SelectedItem = null;
+            ListBoxPackages.SelectedItem = null; //TODO
+            PackageDetailControl.DataContext = null;
             Hide();
         }
 
@@ -94,14 +78,11 @@ namespace PackageExplorer
 
         private void InvokeSearch(string searchTerm)
         {
-            // simulate Search command execution
             SearchButton.Command.Execute(searchTerm);
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            AdjustSearchBox();
-
             if (_viewModel.AutoLoadPackages)
             {
                 if (string.IsNullOrEmpty(_pendingSearch))
@@ -114,19 +95,6 @@ namespace PackageExplorer
                         new Action<string>(InvokeSearch),
                         DispatcherPriority.Background,
                         _pendingSearch);
-                }
-            }
-        }
-
-        private void AdjustSearchBox()
-        {
-            // HACK: Make space for the search image inside the search box
-            if (SearchBox.Template != null)
-            {
-                if (SearchBox.Template.FindName("PART_ContentHost", SearchBox) is FrameworkElement contentHost)
-                {
-                    contentHost.Margin = new Thickness(0, 0, 40, 0);
-                    contentHost.Width = 360;
                 }
             }
         }
@@ -192,6 +160,7 @@ namespace PackageExplorer
                 if (!string.IsNullOrEmpty(source))
                 {
                     _viewModel.ChangePackageSourceCommand.Execute(source);
+                    PackageDetailControl.Visibility = Visibility.Collapsed;
                     e.Handled = true;
                 }
             }
@@ -224,12 +193,24 @@ namespace PackageExplorer
 
         private void OnPackageDoubleClick(object sender, RoutedEventArgs e)
         {
-            var gridRow = (DataGridRow)sender;
-            var viewModel = (PackageInfoViewModel)gridRow.DataContext;
+            var listBoxItem = (ListBoxItem)sender;
+            var viewModel = (PackageInfoViewModel)listBoxItem.DataContext;
             if (!viewModel.ShowingAllVersions)
             {
                 viewModel.OpenCommand.Execute(null);
             }
+        }
+
+        private void PackageListBoxItem_OnPreviewMouseDown(object sender, RoutedEventArgs e)
+        {
+            var listBoxItem = (ListBoxItem)sender;
+            var packageInfoViewModel = (PackageInfoViewModel)listBoxItem.DataContext;
+            PackageDetailControl.DataContext = packageInfoViewModel;
+        }
+
+        private void ReloadDropDownButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            PackageDetailControl.Visibility = Visibility.Collapsed;
         }
     }
 }
