@@ -66,11 +66,11 @@
 
                 <!-- Search Button -->
                 <self:GrayscaleButton x:Name="SearchButton" Margin="-60,0,0,0" ToolTip="Search" VerticalAlignment="Center" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding SearchCommand}" CommandParameter="{Binding Text, ElementName=SearchBox}">
-                    <self:GrayscaleImage Source="Images/search.png" />
+                    <self:GrayscaleImage Source="../Images/search.png" />
                 </self:GrayscaleButton>
                 <!-- Clear search button -->
                 <self:GrayscaleButton x:Name="ClearSearchButton" Margin="-20,0,0,0" ToolTip="Clear search" VerticalAlignment="Center" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ClearSearchCommand}">
-                    <self:GrayscaleImage Source="Images/clear.png" Stretch="None" />
+                    <self:GrayscaleImage Source="../Images/clear.png" Stretch="None" />
                 </self:GrayscaleButton>
 
                 <!-- Checkbox: Show pre-release version of each package -->
