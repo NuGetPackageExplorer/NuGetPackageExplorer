@@ -208,9 +208,22 @@ namespace PackageExplorer
             PackageDetailControl.DataContext = packageInfoViewModel;
         }
 
-        private void ReloadDropDownButton_OnClick(object sender, RoutedEventArgs e)
+        private void PackageSourceBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            PackageDetailControl.Visibility = Visibility.Collapsed;
+            if (e.AddedItems == null || e.AddedItems.Count == 0)
+            {
+                e.Handled = true;
+                return;
+            }
+
+            var sourceUrl = e.AddedItems[0] as string;
+            if (!string.IsNullOrWhiteSpace(sourceUrl))
+            {
+                _viewModel.ChangePackageSourceCommand.Execute(sourceUrl);
+                PackageDetailControl.Visibility = Visibility.Collapsed;
+            }
+
+            e.Handled = true;
         }
     }
 }

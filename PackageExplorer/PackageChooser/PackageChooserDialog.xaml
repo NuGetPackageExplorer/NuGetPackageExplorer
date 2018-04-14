@@ -6,7 +6,6 @@
     xmlns:g="clr-namespace:System.Globalization;assembly=mscorlib"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
     mc:Ignorable="d" 
     x:Class="PackageExplorer.PackageChooserDialog"
     Title="Select Package" 
@@ -99,27 +98,13 @@
         <DockPanel Margin="0,10,0,10" LastChildFill="True" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
             <Label DockPanel.Dock="Left" Content="_Package source:" Target="{Binding ElementName=PackageSourceBox}" VerticalAlignment="Center" />
 
-            <xctk:SplitButton Content="_Reload" 
-                          DockPanel.Dock="Right"
-                          Padding="10,2"
-                              Click="ReloadDropDownButton_OnClick"
-                          Command="{Binding ChangePackageSourceCommand}"
-                          CommandParameter="{Binding Text, ElementName=PackageSourceBox}">
-                <xctk:SplitButton.IsEnabled>
-                    <MultiBinding Converter="{StaticResource andConverter}">
-                        <Binding Path="Text" ElementName="PackageSourceBox" Converter="{StaticResource nullToBoolConverter}" />
-                        <Binding Path="IsEditable" />
-                    </MultiBinding>
-                </xctk:SplitButton.IsEnabled>
-                <xctk:SplitButton.DropDownContent>
-                    <!-- Checkbox: auto load package on first load -->
-                    <CheckBox Margin="5,5" VerticalContentAlignment="Center" 
-                              IsChecked="{Binding AutoLoadPackages}" 
-                              HorizontalAlignment="Left" Content="Auto-load packages when this dialog first opens" />
-                </xctk:SplitButton.DropDownContent>
-            </xctk:SplitButton>
-
-            <ComboBox x:Name="PackageSourceBox" ItemsSource="{Binding PackageSources}" IsReadOnly="False" IsEditable="True" PreviewKeyDown="PackageSourceBox_PreviewKeyDown" VerticalContentAlignment="Center" Text="{Binding PackageSource, Mode=OneWay}" Margin="5,0">
+            <ComboBox x:Name="PackageSourceBox" ItemsSource="{Binding PackageSources}" IsReadOnly="False" IsEditable="True" 
+                      PreviewKeyDown="PackageSourceBox_PreviewKeyDown"
+                      SelectionChanged="PackageSourceBox_OnSelectionChanged"
+                      IsTextSearchEnabled="False"
+                      VerticalContentAlignment="Center" 
+                      Text="{Binding PackageSource, Mode=OneWay}" 
+                      Margin="5,0,0,0">
                 <ComboBox.IsEnabled>
                     <MultiBinding Converter="{StaticResource andConverter}">
                         <Binding Path="IsEditable" Mode="OneWay" />
