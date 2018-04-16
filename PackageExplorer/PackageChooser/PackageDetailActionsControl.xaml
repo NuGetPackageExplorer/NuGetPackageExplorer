@@ -65,8 +65,7 @@
             </ListView.ItemContainerStyle>
 
             <ListView.View>
-                <GridView AllowsColumnReorder="False" x:Name="PackageGridView" 
-                          ColumnHeaderContainerStyle="{StaticResource PackageVersionsHeaderStyle}">
+                <GridView AllowsColumnReorder="False" x:Name="PackageGridView">
 
                     <GridViewColumn Width="80" Header="Version">
                         <GridViewColumn.HeaderContainerStyle>
