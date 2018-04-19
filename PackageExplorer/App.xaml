@@ -117,10 +117,10 @@
 
             <!-- used on the package chooser dialog -->
             <Style x:Key="ShowAllVersionsRunStyle" TargetType="{x:Type Run}">
-                <Setter Property="Text" Value="show all versions" />
+                <Setter Property="Text" Value="{x:Static self:Resources.PackageChooser_ActionShowAllVersions}" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding ShowingAllVersions}" Value="True">
-                        <Setter Property="Text" Value="hide all versions" />
+                        <Setter Property="Text" Value="{x:Static self:Resources.PackageChooser_ActionHideAllVersions}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

@@ -21,7 +21,7 @@
                 <self:PackageDetailActionsControl HorizontalAlignment="Stretch"/>
 
                 <!-- Description -->
-                <Label FontWeight="Bold" HorizontalAlignment="Left">Description</Label>
+                <Label FontWeight="Bold" HorizontalAlignment="Left" Content="{x:Static self:Resources.PackageChooser_DetailDescription}" />
                 <TextBlock Text="{Binding LatestPackageInfo.Description}" TextWrapping="Wrap" Margin="5,0,0,10" HorizontalAlignment="Left"/>
 
                 <Grid>
@@ -52,15 +52,15 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Version -->
-                    <Label Grid.Row="0" Grid.Column="0">Version:</Label>
+                    <Label Grid.Row="0" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailVersion}" />
                     <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding LatestPackageInfo.Version}" />
 
                     <!-- Authors -->
-                    <Label Grid.Row="1" Grid.Column="0">Author(s):</Label>
+                    <Label Grid.Row="1" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailAuthors}" />
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LatestPackageInfo.Authors}" />
 
                     <!-- License URL -->
-                    <Label Grid.Row="2" Grid.Column="0">License:</Label>
+                    <Label Grid.Row="2" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailLicense}" />
                     <TextBlock Grid.Row="2" Grid.Column="1">
                         <Hyperlink NavigateUri="{Binding LatestPackageInfo.LicenseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
                             <Run Text="{Binding LatestPackageInfo.LicenseUrl}"/>
@@ -68,27 +68,27 @@
                     </TextBlock>
 
                     <!-- Published Date -->
-                    <Label Grid.Row="3" Grid.Column="0">Date published:</Label>
+                    <Label Grid.Row="3" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailDatePublished}" />
                     <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding LatestPackageInfo.Published}" />
 
-                    <!-- Project URL -->
-                    <Label Grid.Row="4" Grid.Column="0">Project URL:</Label>
+                    <!-- Project URL --> 
+                    <Label Grid.Row="4" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailProjectUrl}" />
                     <TextBlock Grid.Row="4" Grid.Column="1">
                         <Hyperlink NavigateUri="{Binding LatestPackageInfo.ProjectUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
                             <Run Text="{Binding LatestPackageInfo.ProjectUrl}"/>
                         </Hyperlink>
                     </TextBlock>
 
-                    <!-- Report Abuse URL -->
-                    <Label Grid.Row="5" Grid.Column="0">Report Abuse:</Label>
+                     <!-- Report Abuse URL -->
+                    <Label Grid.Row="5" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailReportAbuse}" />
                     <TextBlock Grid.Row="5" Grid.Column="1">
                         <Hyperlink NavigateUri="{Binding LatestPackageInfo.ReportAbuseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
                             <Run Text="{Binding LatestPackageInfo.ReportAbuseUrl}" />
                         </Hyperlink>
                     </TextBlock>
 
-                    <!-- Tags -->
-                    <Label Grid.Row="6" Grid.Column="0">Tags:</Label>
+                     <!-- Tags --> 
+                    <Label Grid.Row="6" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailTags}" />
                     <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding LatestPackageInfo.Tags}" />
                 </Grid>
             </StackPanel>
