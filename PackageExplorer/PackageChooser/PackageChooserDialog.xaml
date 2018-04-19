@@ -8,7 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" 
     x:Class="PackageExplorer.PackageChooserDialog"
-    Title="Select Package" 
+    Title="{x:Static self:Resources.PackageChooser_WindowTitle}" 
     ShowInTaskbar="False"
     WindowStartupLocation="CenterOwner"
     Tag="{Binding LoadedCommand}"
@@ -52,9 +52,9 @@
 
         <!-- Search Box -->
         <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-            <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,10,0,10">
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,10,0,10">
                 <TextBox x:Name="SearchBox" 
-                         ToolTipService.ToolTip="Search for package" 
+                         ToolTipService.ToolTip="{x:Static self:Resources.PackageChooser_SearchBoxTooltip}" 
                          Width="250"
                          HorizontalAlignment="Left" 
                          Padding="5,5,40,5" 
@@ -65,11 +65,11 @@
                          VerticalAlignment="Center"/>
 
                 <!-- Search Button -->
-                <self:GrayscaleButton x:Name="SearchButton" Margin="-60,0,0,0" ToolTip="Search" VerticalAlignment="Center" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding SearchCommand}" CommandParameter="{Binding Text, ElementName=SearchBox}">
+                <self:GrayscaleButton x:Name="SearchButton" Margin="-60,0,0,0" ToolTip="{x:Static self:Resources.PackageChooser_SearchButtonTooltip}" VerticalAlignment="Center" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding SearchCommand}" CommandParameter="{Binding Text, ElementName=SearchBox}">
                     <self:GrayscaleImage Source="../Images/search.png" />
                 </self:GrayscaleButton>
                 <!-- Clear search button -->
-                <self:GrayscaleButton x:Name="ClearSearchButton" Margin="-20,0,0,0" ToolTip="Clear search" VerticalAlignment="Center" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ClearSearchCommand}">
+                <self:GrayscaleButton x:Name="ClearSearchButton" Margin="-20,0,0,0" ToolTip="{x:Static self:Resources.PackageChooser_ClearSearchButtonTooltip}" VerticalAlignment="Center" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ClearSearchCommand}">
                     <self:GrayscaleImage Source="../Images/clear.png" Stretch="None" />
                 </self:GrayscaleButton>
 
@@ -77,10 +77,10 @@
                 <CheckBox Margin="10,0,0,0" VerticalAlignment="Center" 
                           IsEnabled="{Binding IsEditable}" 
                           IsChecked="{Binding ShowPrereleasePackages}" 
-                          Content="Show pre-release packages" />
+                          Content="{x:Static self:Resources.PackageChooser_ShowPreReleasePackages}" />
             </StackPanel>
 
-            <TextBlock IsHitTestVisible="False" Text="Search (Ctrl+E)" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
+            <TextBlock IsHitTestVisible="False" Text="{x:Static self:Resources.PackageChooser_SearchBoxWatermark}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
                 <TextBlock.Style>
                     <Style TargetType="{x:Type TextBlock}">
                         <Setter Property="Visibility" Value="Collapsed"/>
@@ -96,7 +96,7 @@
 
         <!-- Package Source -->
         <DockPanel Margin="0,10,0,10" LastChildFill="True" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
-            <Label DockPanel.Dock="Left" Content="_Package source:" Target="{Binding ElementName=PackageSourceBox}" VerticalAlignment="Center" />
+            <Label DockPanel.Dock="Left" Content="{x:Static self:Resources.PackageChooser_PackageSource}" Target="{Binding ElementName=PackageSourceBox}" VerticalAlignment="Center" />
 
             <ComboBox x:Name="PackageSourceBox" ItemsSource="{Binding PackageSources}" IsReadOnly="False" IsEditable="True" 
                       PreviewKeyDown="PackageSourceBox_PreviewKeyDown"
