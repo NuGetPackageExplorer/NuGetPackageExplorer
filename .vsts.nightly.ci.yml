@@ -1,6 +1,12 @@
 queue: "Private Preview Pool"
+
+trigger:
+- master
+- rel/*
+
 variables: 
   BuildConfiguration: Release
+  
 steps:
 - task: BatchScript@1
   inputs:
