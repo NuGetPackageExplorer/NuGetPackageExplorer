@@ -82,19 +82,16 @@ namespace PackageExplorer
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (_viewModel.AutoLoadPackages)
+            if (string.IsNullOrEmpty(_pendingSearch))
             {
-                if (string.IsNullOrEmpty(_pendingSearch))
-                {
-                    await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
-                }
-                else
-                {
-                    await Dispatcher.BeginInvoke(
-                        new Action<string>(InvokeSearch),
-                        DispatcherPriority.Background,
-                        _pendingSearch);
-                }
+                await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
+            }
+            else
+            {
+                await Dispatcher.BeginInvoke(
+                    new Action<string>(InvokeSearch),
+                    DispatcherPriority.Background,
+                    _pendingSearch);
             }
         }
 
