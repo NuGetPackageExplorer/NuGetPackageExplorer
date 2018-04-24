@@ -1,8 +1,6 @@
 ﻿using System.Diagnostics;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
-using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
@@ -14,12 +12,6 @@ namespace PackageExplorer
         public PackageDetailControl()
         {
             InitializeComponent();
-            DataContextChanged += OnDataContextChanged;
-        }
-
-        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            Visibility = DataContext is PackageInfoViewModel ? Visibility.Visible : Visibility.Collapsed;
         }
 
         private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)

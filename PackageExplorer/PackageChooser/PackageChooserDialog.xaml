@@ -123,11 +123,10 @@
                  ItemsSource="{Binding Packages}"
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                  ScrollViewer.CanContentScroll="False"
-                 SelectedItem="{Binding SelectedPackageViewModel}">
+                 SelectedValue="{Binding SelectedPackageViewModel}">
             <ListBox.ItemContainerStyle>
                 <Style TargetType="{x:Type ListBoxItem}">
                     <EventSetter Event="MouseDoubleClick" Handler="OnPackageDoubleClick" />
-                    <EventSetter Event="PreviewMouseDown" Handler="PackageListBoxItem_OnPreviewMouseDown" />
                     <Setter Property="Padding" Value="10,10,10,10"/>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
                 </Style>
@@ -185,7 +184,7 @@
 
         <!-- Package Detail -->
         <Border Grid.Row="3" Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" Margin="0,0,0,10">
-            <self:PackageDetailControl x:Name="PackageDetailControl" HorizontalAlignment="Stretch" />
+            <self:PackageDetailControl x:Name="PackageDetailControl" HorizontalAlignment="Stretch" DataContext="{Binding Path=SelectedPackageViewModel}" />
         </Border>
 
         <!-- Progress Panel -->

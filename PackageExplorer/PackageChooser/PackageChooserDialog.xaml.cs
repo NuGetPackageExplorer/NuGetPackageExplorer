@@ -47,8 +47,7 @@ namespace PackageExplorer
         private void CancelPendingRequestAndCloseDialog()
         {
             CancelPendingRequest();
-            ListBoxPackages.SelectedItem = null; //TODO
-            PackageDetailControl.DataContext = null;
+            _viewModel.SelectedPackageViewModel = null;
             Hide();
         }
 
@@ -160,7 +159,6 @@ namespace PackageExplorer
                 if (!string.IsNullOrEmpty(source))
                 {
                     _viewModel.ChangePackageSourceCommand.Execute(source);
-                    PackageDetailControl.Visibility = Visibility.Collapsed;
                     e.Handled = true;
                 }
             }
@@ -201,13 +199,6 @@ namespace PackageExplorer
             }
         }
 
-        private void PackageListBoxItem_OnPreviewMouseDown(object sender, RoutedEventArgs e)
-        {
-            var listBoxItem = (ListBoxItem)sender;
-            var packageInfoViewModel = (PackageInfoViewModel)listBoxItem.DataContext;
-            PackageDetailControl.DataContext = packageInfoViewModel;
-        }
-
         private void PackageSourceBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems == null || e.AddedItems.Count == 0)
@@ -220,7 +211,6 @@ namespace PackageExplorer
             if (!string.IsNullOrWhiteSpace(sourceUrl))
             {
                 _viewModel.ChangePackageSourceCommand.Execute(sourceUrl);
-                PackageDetailControl.Visibility = Visibility.Collapsed;
             }
 
             e.Handled = true;

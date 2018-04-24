@@ -317,6 +317,7 @@ namespace PackageExplorerViewModel
                 ClearPackages(isErrorCase: true);
             }
 
+            AutoSelectFirstAvailablePackage();
             RestoreUI();
         }
 
@@ -399,6 +400,11 @@ namespace PackageExplorerViewModel
         {
             BeginPackage = beginPackage;
             EndPackage = endPackage;
+        }
+
+        private void AutoSelectFirstAvailablePackage()
+        {
+            SelectedPackageViewModel = Packages?.FirstOrDefault();
         }
 
         private void ClearPackages(bool isErrorCase)
