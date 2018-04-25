@@ -184,7 +184,9 @@
 
         <!-- Package Detail -->
         <Border Grid.Row="3" Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" Margin="0,0,0,10">
-            <self:PackageDetailControl x:Name="PackageDetailControl" HorizontalAlignment="Stretch" DataContext="{Binding Path=SelectedPackageViewModel}" />
+            <self:PackageDetailControl x:Name="PackageDetailControl" HorizontalAlignment="Stretch" 
+                                       DataContext="{Binding Path=SelectedPackageViewModel}" 
+                                       Visibility="{Binding Path=., Converter={StaticResource NullToVisibilityConverter}}" />
         </Border>
 
         <!-- Progress Panel -->
