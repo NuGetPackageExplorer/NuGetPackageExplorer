@@ -41,7 +41,7 @@
             Margin="4,4,4,4"
             BorderBrush="LightGray"
             ItemsSource="{Binding AllPackages, Mode=OneWay}" 
-            SelectedItem="{Binding SelectedPackage, Mode=OneWay}"
+            SelectedValue="{Binding SelectedPackage, Mode=OneWay}"
             SelectionChanged="PackageGrid_SelectionChanged"
             SelectionMode="Single"
             HorizontalAlignment="Stretch"
