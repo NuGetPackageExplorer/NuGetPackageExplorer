@@ -175,7 +175,7 @@
                             </Label.Style>
                             <Label.Content>
                                 <TextBlock>
-                                    v<Run Text="{Binding LatestPackageInfo.Version, Mode=OneWay}"/>
+                                    v<Run Text="{Binding LatestPackageInfo.SemanticVersion, Mode=OneWay}"/>
                                 </TextBlock>
                             </Label.Content>
                         </Label>
