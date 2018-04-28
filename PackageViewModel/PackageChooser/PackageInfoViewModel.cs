@@ -38,6 +38,7 @@ namespace PackageExplorerViewModel
             Debug.Assert(repository != null);
 
             LatestPackageInfo = info;
+            SelectedPackage = info;
             ShowPrerelease = showPrereleasePackages;
             _repository = repository;
             _parentViewModel = parentViewModel;
@@ -76,14 +77,6 @@ namespace PackageExplorerViewModel
                     _selectedPackage = value;
                     OnPropertyChanged();
                 }
-            }
-        }
-
-        public PackageInfo EffectiveSelectedPackage
-        {
-            get
-            {
-                return ShowingAllVersions ? SelectedPackage : LatestPackageInfo;
             }
         }
 

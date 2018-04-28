@@ -27,7 +27,7 @@
 
                 <!-- Description -->
                 <Label FontWeight="Bold" HorizontalAlignment="Left" Content="{x:Static self:Resources.PackageChooser_DetailDescription}" />
-                <TextBlock Text="{Binding LatestPackageInfo.Description}" TextWrapping="Wrap" Margin="5,0,0,10" HorizontalAlignment="Left"/>
+                <TextBlock Text="{Binding SelectedPackage.Description}" TextWrapping="Wrap" Margin="5,0,0,10" HorizontalAlignment="Left"/>
 
                 <Grid>
                     <Grid.Resources>
@@ -58,43 +58,43 @@
 
                     <!-- Version -->
                     <Label Grid.Row="0" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailVersion}" />
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding LatestPackageInfo.Version}" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedPackage.Version}" />
 
                     <!-- Authors -->
                     <Label Grid.Row="1" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailAuthors}" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LatestPackageInfo.Authors}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedPackage.Authors}" />
 
                     <!-- License URL -->
                     <Label Grid.Row="2" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailLicense}" />
                     <TextBlock Grid.Row="2" Grid.Column="1">
-                        <Hyperlink NavigateUri="{Binding LatestPackageInfo.LicenseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
-                            <Run Text="{Binding LatestPackageInfo.LicenseUrl}"/>
+                        <Hyperlink NavigateUri="{Binding SelectedPackage.LicenseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
+                            <Run Text="{Binding SelectedPackage.LicenseUrl}"/>
                         </Hyperlink>
                     </TextBlock>
 
                     <!-- Published Date -->
-                    <Label Grid.Row="3" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailDatePublished}" />
-                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding LatestPackageInfo.Published}" />
+                    <Label Grid.Row="3" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailDatePublished}" Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedPackage.Published, Converter={StaticResource DateTimeOffsetLongDateConverter}}"  Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
 
                     <!-- Project URL --> 
                     <Label Grid.Row="4" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailProjectUrl}" />
                     <TextBlock Grid.Row="4" Grid.Column="1">
-                        <Hyperlink NavigateUri="{Binding LatestPackageInfo.ProjectUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
-                            <Run Text="{Binding LatestPackageInfo.ProjectUrl}"/>
+                        <Hyperlink NavigateUri="{Binding SelectedPackage.ProjectUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
+                            <Run Text="{Binding SelectedPackage.ProjectUrl}"/>
                         </Hyperlink>
                     </TextBlock>
 
                      <!-- Report Abuse URL -->
                     <Label Grid.Row="5" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailReportAbuse}" />
                     <TextBlock Grid.Row="5" Grid.Column="1">
-                        <Hyperlink NavigateUri="{Binding LatestPackageInfo.ReportAbuseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
-                            <Run Text="{Binding LatestPackageInfo.ReportAbuseUrl}" />
+                        <Hyperlink NavigateUri="{Binding SelectedPackage.ReportAbuseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
+                            <Run Text="{Binding SelectedPackage.ReportAbuseUrl}" />
                         </Hyperlink>
                     </TextBlock>
 
                      <!-- Tags --> 
                     <Label Grid.Row="6" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailTags}" />
-                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding LatestPackageInfo.Tags}" />
+                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SelectedPackage.Tags}" />
                 </Grid>
             </StackPanel>
         </Border>
