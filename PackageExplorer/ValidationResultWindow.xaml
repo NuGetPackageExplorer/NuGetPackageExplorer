@@ -21,16 +21,20 @@
                 <Image Name="icon" Margin="3,10,0,15" />
             </StackPanel>
             <DataTemplate.Triggers>
-                <DataTrigger Binding="{Binding Trust}" Value="Trusted">
-                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Trusted}" />
+                <DataTrigger Binding="{Binding Trust}" Value="Valid">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
                     <Setter TargetName="icon" Property="Source" Value="Images/Validate.png" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Trust}" Value="Invalid">
-                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Invalid}" />
+                <DataTrigger Binding="{Binding Trust}" Value="Illegal">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Illegal}" />
                     <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Trust}" Value="Untrusted">
                     <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Untrusted}" />
+                    <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Trust}" Value="Suspect">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Suspect}" />
                     <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Trust}" Value="Unknown">

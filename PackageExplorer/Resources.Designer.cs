@@ -630,11 +630,11 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid.
+        ///   Looks up a localized string similar to Illegal.
         /// </summary>
-        public static string Validation_Invalid {
+        public static string Validation_Illegal {
             get {
-                return ResourceManager.GetString("Validation_Invalid", resourceCulture);
+                return ResourceManager.GetString("Validation_Illegal", resourceCulture);
             }
         }
         
@@ -648,16 +648,16 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trusted.
+        ///   Looks up a localized string similar to Suspect.
         /// </summary>
-        public static string Validation_Trusted {
+        public static string Validation_Suspect {
             get {
-                return ResourceManager.GetString("Validation_Trusted", resourceCulture);
+                return ResourceManager.GetString("Validation_Suspect", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unkown.
+        ///   Looks up a localized string similar to Unknown.
         /// </summary>
         public static string Validation_Unknown {
             get {
@@ -671,6 +671,15 @@ namespace PackageExplorer {
         public static string Validation_Untrusted {
             get {
                 return ResourceManager.GetString("Validation_Untrusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid.
+        /// </summary>
+        public static string Validation_Valid {
+            get {
+                return ResourceManager.GetString("Validation_Valid", resourceCulture);
             }
         }
     }
