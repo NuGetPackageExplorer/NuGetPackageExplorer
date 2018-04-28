@@ -303,13 +303,6 @@ namespace PackageExplorerViewModel
                 Published = packageSearchMetadata.Published,
                 DownloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault()),
                 IsRemotePackage = (feedType == FeedType.HttpV3 || feedType == FeedType.HttpV2),
-                Description = packageSearchMetadata.Description,
-                Tags = packageSearchMetadata.Tags,
-                Summary = packageSearchMetadata.Summary,
-                LicenseUrl = packageSearchMetadata.LicenseUrl?.ToString() ?? string.Empty,
-                ProjectUrl = packageSearchMetadata.ProjectUrl?.ToString() ?? string.Empty,
-                ReportAbuseUrl = packageSearchMetadata.ReportAbuseUrl?.ToString() ?? string.Empty,
-                IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty
             };
         }
     }

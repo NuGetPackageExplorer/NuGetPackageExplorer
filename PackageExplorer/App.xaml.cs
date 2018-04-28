@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using NuGet.Credentials;
 using NuGet.Protocol;
 using PackageExplorer.Properties;
@@ -115,12 +114,6 @@ namespace PackageExplorer
             catch 
             {
             }
-        }
-
-        private void PackageIconImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
-        {
-            var image = sender as Image;
-            image.Source = Images.DefaultPackageIcon;
         }
     }
 }

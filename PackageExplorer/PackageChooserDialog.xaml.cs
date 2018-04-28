@@ -16,7 +16,7 @@ namespace PackageExplorer
     public partial class PackageChooserDialog : StandardDialog
     {
         private readonly PackageChooserViewModel _viewModel;
-        private string _pendingSearch;
+        private string _pendingSearch;        
 
         public PackageChooserDialog(PackageChooserViewModel viewModel)
         {
@@ -39,15 +39,32 @@ namespace PackageExplorer
             FocusSearchBox();
         }
 
+        private void RedrawSortGlyph(string sortColumn, ListSortDirection sortDirection)
+        {
+            foreach (var column in ParentPackageGrid.Columns)
+            {
+                if (column.SortMemberPath.Equals(sortColumn, StringComparison.OrdinalIgnoreCase))
+                {
+                    column.SortDirection = sortDirection;
+                    break;
+                }
+            }
+        }
+
         private void OnOpenPackageRequested(object sender, EventArgs e)
         {
             Hide();
         }
 
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            CancelPendingRequestAndCloseDialog();
+        }
+
         private void CancelPendingRequestAndCloseDialog()
         {
             CancelPendingRequest();
-            _viewModel.SelectedPackageViewModel = null;
+            ParentPackageGrid.SelectedItem = null;
             Hide();
         }
 
@@ -77,21 +94,40 @@ namespace PackageExplorer
 
         private void InvokeSearch(string searchTerm)
         {
+            // simulate Search command execution
             SearchButton.Command.Execute(searchTerm);
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(_pendingSearch))
+            AdjustSearchBox();
+
+            if (_viewModel.AutoLoadPackages)
             {
-                await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
+                if (string.IsNullOrEmpty(_pendingSearch))
+                {
+                    await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
+                }
+                else
+                {
+                    await Dispatcher.BeginInvoke(
+                        new Action<string>(InvokeSearch),
+                        DispatcherPriority.Background,
+                        _pendingSearch);
+                }
             }
-            else
+        }
+
+        private void AdjustSearchBox()
+        {
+            // HACK: Make space for the search image inside the search box
+            if (SearchBox.Template != null)
             {
-                await Dispatcher.BeginInvoke(
-                    new Action<string>(InvokeSearch),
-                    DispatcherPriority.Background,
-                    _pendingSearch);
+                if (SearchBox.Template.FindName("PART_ContentHost", SearchBox) is FrameworkElement contentHost)
+                {
+                    contentHost.Margin = new Thickness(0, 0, 40, 0);
+                    contentHost.Width = 360;
+                }
             }
         }
 
@@ -188,29 +224,12 @@ namespace PackageExplorer
 
         private void OnPackageDoubleClick(object sender, RoutedEventArgs e)
         {
-            var listBoxItem = (ListBoxItem)sender;
-            var viewModel = (PackageInfoViewModel)listBoxItem.DataContext;
+            var gridRow = (DataGridRow)sender;
+            var viewModel = (PackageInfoViewModel)gridRow.DataContext;
             if (!viewModel.ShowingAllVersions)
             {
                 viewModel.OpenCommand.Execute(null);
             }
-        }
-
-        private void PackageSourceBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (e.AddedItems == null || e.AddedItems.Count == 0)
-            {
-                e.Handled = true;
-                return;
-            }
-
-            var sourceUrl = e.AddedItems[0] as string;
-            if (!string.IsNullOrWhiteSpace(sourceUrl))
-            {
-                _viewModel.ChangePackageSourceCommand.Execute(sourceUrl);
-            }
-
-            e.Handled = true;
         }
     }
 }
