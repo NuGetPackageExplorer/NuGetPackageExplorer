@@ -148,9 +148,14 @@
                                VerticalAlignment="Top" HorizontalAlignment="Left"
                                Style="{StaticResource PackageIconImageStyle}"/>
 
-                        <StackPanel Orientation="Vertical" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top">
-                            <TextBlock HorizontalAlignment="Stretch">
-                                <Run Text="{Binding LatestPackageInfo.Id, Mode=OneWay}" FontWeight="Bold"/> by
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+                            <TextBlock Text="{Binding LatestPackageInfo.Id, Mode=OneWay}" FontWeight="Bold"/>
+                            <Rectangle Fill="{StaticResource PrefixReservedIndicator}" 
+                                       Width="16" Height="16" 
+                                       Margin="4,0,0,0"
+                                       Visibility="{Binding LatestPackageInfo.IsPrefixReserved, Converter={StaticResource boolToVis}}"/>
+                            <TextBlock HorizontalAlignment="Stretch" Margin="4,0,0,0">
+                                by
                                 <Run Text="{Binding LatestPackageInfo.Authors, Mode=OneWay}"/>,
                                 <Run Text="{Binding LatestPackageInfo.DownloadCount, Mode=OneWay, Converter={StaticResource NumberToStringConverter}}" FontWeight="Bold"/> downloads
                             </TextBlock>

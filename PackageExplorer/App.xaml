@@ -10,6 +10,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Xaml/MenuItems.xaml" />
                 <ResourceDictionary Source="Xaml/Toolbar.xaml" />
+                <ResourceDictionary Source="Xaml/PrefixReservedIndicator.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <self:IntegerToBooleanConverter x:Key="FontSizeToBoolConverter" />

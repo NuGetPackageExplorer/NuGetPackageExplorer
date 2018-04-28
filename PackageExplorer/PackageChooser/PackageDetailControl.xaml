@@ -16,6 +16,11 @@
 
                     <!-- Package Name -->
                     <TextBlock Text="{Binding LatestPackageInfo.Id}" TextWrapping="Wrap" FontSize="18" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    
+                    <Rectangle Fill="{StaticResource PrefixReservedIndicator}" 
+                               Width="18" Height="18"
+                               Margin="5,3,0,0"
+                               Visibility="{Binding LatestPackageInfo.IsPrefixReserved, Converter={StaticResource boolToVis}}"/>
                 </StackPanel>
 
                 <self:PackageDetailActionsControl HorizontalAlignment="Stretch"/>

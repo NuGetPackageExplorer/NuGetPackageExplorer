@@ -303,6 +303,7 @@ namespace PackageExplorerViewModel
                 Published = packageSearchMetadata.Published,
                 DownloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault()),
                 IsRemotePackage = (feedType == FeedType.HttpV3 || feedType == FeedType.HttpV2),
+                IsPrefixReserved = packageSearchMetadata.PrefixReserved,
                 Description = packageSearchMetadata.Description,
                 Tags = packageSearchMetadata.Tags,
                 Summary = packageSearchMetadata.Summary,

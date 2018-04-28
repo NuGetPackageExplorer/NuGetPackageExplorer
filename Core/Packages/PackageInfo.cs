@@ -29,6 +29,7 @@ namespace NuGetPe
         public string Tags { get; set; }
         public string ReportAbuseUrl { get; set; }
 
+        public bool IsPrefixReserved { get; set; }
         public bool IsRemotePackage { get; set; }
 
         public bool IsUnlisted
