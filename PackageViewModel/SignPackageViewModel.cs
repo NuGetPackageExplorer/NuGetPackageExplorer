@@ -293,9 +293,8 @@ namespace PackageExplorerViewModel
 
             try
             {
-                // change to AuthorSignPackageRequest when NuGet.Client is updated
                 using (var tempCertificate = new X509Certificate2(Certificate))
-                using (var signRequest = new SignPackageRequest(tempCertificate, HashAlgorithmName))
+                using (var signRequest = new AuthorSignPackageRequest(tempCertificate, HashAlgorithmName))
                 {
                     var packagePath = _packageViewModel.GetCurrentPackageTempFile();
                     var originalPackageCopyPath = Path.GetTempFileName();
@@ -315,8 +314,7 @@ namespace PackageExplorerViewModel
                         using (var packageWriteStream = File.Open(originalPackageCopyPath, FileMode.Open))
                         using (var package = new SignedPackageArchive(packageReadStream, packageWriteStream))
                         {
-                            var signer = new Signer(package, signatureProvider);
-                            await signer.RemoveSignaturesAsync(NullLogger.Instance, token);
+                            await package.RemoveSignatureAsync(token);
                         }
 
                         File.Delete(packagePath);
@@ -329,10 +327,9 @@ namespace PackageExplorerViewModel
 
                     using (var packageReadStream = File.OpenRead(packagePath))
                     using (var packageWriteStream = File.Open(originalPackageCopyPath, FileMode.Open))
-                    using (var package = new SignedPackageArchive(packageReadStream, packageWriteStream))
                     {
-                        var signer = new Signer(package, signatureProvider);
-                        await Task.Run(() => signer.SignAsync(signRequest, NullLogger.Instance, token));
+                        var options = new SigningOptions(new Lazy<Stream>(() => packageReadStream), new Lazy<Stream>(() => packageWriteStream), true, signatureProvider, NullLogger.Instance);
+                        await Task.Run(() => SigningUtility.SignAsync(options, signRequest, token));
                     }
 
                     File.Delete(packagePath);
@@ -400,8 +397,7 @@ namespace PackageExplorerViewModel
                 }
 
                 using (var tempCertificate = new X509Certificate2(certificate))
-                // change to AuthorSignPackageRequest when NuGet.Client is updated
-                using (var signRequest = new SignPackageRequest(tempCertificate, HashAlgorithmName))
+                using (var signRequest = new AuthorSignPackageRequest(tempCertificate, HashAlgorithmName))
                 {
                     SigningUtility.Verify(signRequest, NullLogger.Instance);
                 }
