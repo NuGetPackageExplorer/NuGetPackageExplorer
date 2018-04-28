@@ -9,9 +9,17 @@ namespace PackageExplorer
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is int i)
+            {
+                return i.ToMetric(decimals: 1);
+            }
+            if (value is double dbl)
+            {
+                return dbl.ToMetric(decimals: 1);
+            }
             if (value != null)
             {
-                var number = double.Parse(value.ToString());
+                var number = double.Parse(value.ToString(), culture);
                 return number.ToMetric(decimals: 1);
             }
 
