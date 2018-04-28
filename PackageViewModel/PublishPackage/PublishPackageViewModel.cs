@@ -215,11 +215,11 @@ namespace PackageExplorerViewModel
                 var repository = PackageRepositoryFactory.CreateRepository(PublishUrl);
                 var updateResource = await repository.GetResourceAsync<PackageUpdateResource>();
 
-                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, NullLogger.Instance);
+                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, false, NullLogger.Instance);
 
                 if (PublishAsUnlisted == true)
                 {
-                    await updateResource.Delete(Id, Version, s => PublishKeyOrPAT, s => true, NullLogger.Instance);
+                    await updateResource.Delete(Id, Version, s => PublishKeyOrPAT, s => true, false, NullLogger.Instance);
                 }
 
                 OnCompleted();
