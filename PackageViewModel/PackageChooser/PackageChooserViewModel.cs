@@ -198,7 +198,7 @@ namespace PackageExplorerViewModel
         {
             get
             {
-                return _selectedPackageViewModel?.EffectiveSelectedPackage;
+                return _selectedPackageViewModel?.SelectedPackage;
             }
         }
         
