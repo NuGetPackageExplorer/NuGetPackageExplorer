@@ -1,0 +1,213 @@
+﻿<self:StandardDialog 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:self="clr-namespace:PackageExplorer" 
+    xmlns:settings="clr-namespace:PackageExplorer.Properties" 
+    xmlns:g="clr-namespace:System.Globalization;assembly=mscorlib"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" 
+    x:Class="PackageExplorer.PackageChooserDialog"
+    Title="{x:Static self:Resources.PackageChooser_WindowTitle}" 
+    ShowInTaskbar="False"
+    WindowStartupLocation="CenterOwner"
+    Tag="{Binding LoadedCommand}"
+    Loaded="Window_Loaded"
+    PreviewKeyDown="Window_PreviewKeyDown" 
+    FontSize="{Binding FontSize, Mode=OneWay, Source={x:Static settings:Settings.Default}}" 
+    MinHeight="600" 
+    MinWidth="1050" 
+    IsVisibleChanged="StandardDialog_IsVisibleChanged" 
+    Closing="StandardDialog_Closing" 
+    Height="{Binding PackageChooserDialogHeight, Mode=OneWay, Source={x:Static settings:Settings.Default}}" 
+    Width="{Binding PackageChooserDialogWidth, Mode=OneWay, Source={x:Static settings:Settings.Default}}" 
+    SizeChanged="OnWindowSizeChanged">
+
+    <self:StandardDialog.Resources>
+        <Style TargetType="{x:Type Button}" x:Key="NavigationButtonStyle">
+            <Setter Property="Margin" Value="0,0,5,0" />
+        </Style>
+
+        <Style TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="Padding" Value="0,3" />
+        </Style>
+    </self:StandardDialog.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.6*" />
+            <ColumnDefinition Width="0.4*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Search Box -->
+        <Grid Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+            <StackPanel Grid.Row="0" Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="0,10,0,10">
+                <TextBox x:Name="SearchBox" 
+                         ToolTipService.ToolTip="{x:Static self:Resources.PackageChooser_SearchBoxTooltip}" 
+                         Width="250"
+                         HorizontalAlignment="Left" 
+                         Padding="5,5,40,5" 
+                         Margin="0,0,0,0" 
+                         KeyDown="SearchBox_KeyDown" 
+                         IsEnabled="{Binding IsEditable}" 
+                         Text="{Binding CurrentTypingSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         VerticalAlignment="Center"/>
+
+                <!-- Search Button -->
+                <self:GrayscaleButton x:Name="SearchButton" Margin="-60,0,0,0" ToolTip="{x:Static self:Resources.PackageChooser_SearchButtonTooltip}" VerticalAlignment="Center" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding SearchCommand}" CommandParameter="{Binding Text, ElementName=SearchBox}">
+                    <self:GrayscaleImage Source="../Images/search.png" />
+                </self:GrayscaleButton>
+                <!-- Clear search button -->
+                <self:GrayscaleButton x:Name="ClearSearchButton" Margin="-20,0,0,0" ToolTip="{x:Static self:Resources.PackageChooser_ClearSearchButtonTooltip}" VerticalAlignment="Center" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ClearSearchCommand}">
+                    <self:GrayscaleImage Source="../Images/clear.png" Stretch="None" />
+                </self:GrayscaleButton>
+
+                <!-- Checkbox: Show pre-release version of each package -->
+                <CheckBox Margin="10,0,0,0" VerticalAlignment="Center" 
+                          IsEnabled="{Binding IsEditable}" 
+                          IsChecked="{Binding ShowPrereleasePackages}" 
+                          Content="{x:Static self:Resources.PackageChooser_ShowPreReleasePackages}" />
+            </StackPanel>
+
+            <TextBlock IsHitTestVisible="False" Text="{x:Static self:Resources.PackageChooser_SearchBoxWatermark}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="10,0,0,0" Foreground="DarkGray">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                <Setter Property="Visibility" Value="Visible"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+        </Grid>
+
+        <!-- Package Source -->
+        <DockPanel Margin="0,10,0,10" LastChildFill="True" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center">
+            <Label DockPanel.Dock="Left" Content="{x:Static self:Resources.PackageChooser_PackageSource}" Target="{Binding ElementName=PackageSourceBox}" VerticalAlignment="Center" />
+
+            <ComboBox x:Name="PackageSourceBox" ItemsSource="{Binding PackageSources}" IsReadOnly="False" IsEditable="True" 
+                      PreviewKeyDown="PackageSourceBox_PreviewKeyDown"
+                      SelectionChanged="PackageSourceBox_OnSelectionChanged"
+                      IsTextSearchEnabled="False"
+                      VerticalContentAlignment="Center" 
+                      Text="{Binding PackageSource, Mode=OneWay}" 
+                      Margin="5,0,0,0">
+                <ComboBox.IsEnabled>
+                    <MultiBinding Converter="{StaticResource andConverter}">
+                        <Binding Path="IsEditable" Mode="OneWay" />
+                        <Binding Path="AllowsChangingPackageSource" Mode="OneWay" />
+                    </MultiBinding>
+                </ComboBox.IsEnabled>
+            </ComboBox>
+        </DockPanel>
+
+        <!-- Package List -->
+        <ListBox x:Name="ListBoxPackages" 
+                 Grid.Row="3" Grid.Column="0"
+                 Margin="0,0,0,10"
+                 BorderBrush="LightGray"
+                 BorderThickness="1"
+                 ItemsSource="{Binding Packages}"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                 ScrollViewer.CanContentScroll="False"
+                 SelectedValue="{Binding SelectedPackageViewModel}">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <EventSetter Event="MouseDoubleClick" Handler="OnPackageDoubleClick" />
+                    <Setter Property="Padding" Value="10,10,10,10"/>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <self:PackageListItem />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <!-- Package Detail -->
+        <Border Grid.Row="3" Grid.Column="1" BorderBrush="LightGray" BorderThickness="1" Margin="0,0,0,10">
+            <self:PackageDetailControl x:Name="PackageDetailControl" HorizontalAlignment="Stretch" 
+                                       DataContext="{Binding Path=SelectedPackageViewModel}" 
+                                       Visibility="{Binding Path=., Converter={StaticResource NullToVisibilityConverter}}" />
+        </Border>
+
+        <!-- Progress Panel -->
+        <StackPanel
+            Grid.Row="3"
+            Grid.Column="0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Orientation="Vertical"
+            Visibility="{Binding IsEditable, Converter={StaticResource invertedBoolToVis}}" 
+            d:IsHidden="False">
+            <ProgressBar Width="140" Height="24" IsIndeterminate="True" />
+            <Button Content="_Cancel" Margin="10" Padding="15, 2" HorizontalAlignment="Center" Command="{Binding CancelCommand}" />
+        </StackPanel>
+
+        <!-- Error Message -->
+        <TextBlock 
+            Grid.Row="5" 
+            Grid.ColumnSpan="2" 
+            Margin="-10,0,-10,0"
+            Padding="5"
+            Background="Beige"
+            MaxHeight="40"
+            Visibility="{Binding HasError, Converter={StaticResource boolToVis}, Mode=OneWay}"
+            Text="{Binding StatusContent}" 
+            Foreground="Black" 
+            VerticalAlignment="Center" 
+            TextWrapping="Wrap"
+            TextTrimming="CharacterEllipsis"/>
+
+        <!-- Background color for the footer -->
+        <Border Grid.Row="6" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" 
+                BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" 
+                Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"/>
+
+        <Grid Grid.Row="6" Grid.ColumnSpan="2" Height="25" VerticalAlignment="Center" Margin="0,15,0,0">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- navigation buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+
+                <self:GrayscaleButton Style="{StaticResource NavigationButtonStyle}" Command="{Binding NavigationCommand}" CommandParameter="First">
+                    <self:GrayscaleImage Source="../Images/MoveFirstHS.png" />
+                </self:GrayscaleButton>
+
+                <self:GrayscaleButton Style="{StaticResource NavigationButtonStyle}" Command="{Binding NavigationCommand}" CommandParameter="Previous">
+                    <self:GrayscaleImage Source="../Images/MovePreviousHS.png" />
+                </self:GrayscaleButton>
+
+                <TextBlock Margin="0,0,7,0" VerticalAlignment="Center">
+                    <TextBlock.Text>
+                        <MultiBinding Mode="OneWay" StringFormat="{}{0:N0} to {1:N0}" ConverterCulture="{x:Static g:CultureInfo.CurrentCulture}">
+                            <Binding Path="BeginPackage" />
+                            <Binding Path="EndPackage" />
+                        </MultiBinding>
+                    </TextBlock.Text>
+                </TextBlock>
+
+                <self:GrayscaleButton Style="{StaticResource NavigationButtonStyle}" Command="{Binding NavigationCommand}" CommandParameter="Next">
+                    <self:GrayscaleImage Source="../Images/MoveNextHS.png" />
+                </self:GrayscaleButton>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</self:StandardDialog>

@@ -1,0 +1,102 @@
+﻿<UserControl x:Class="PackageExplorer.PackageDetailControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:self="clr-namespace:PackageExplorer"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <Border Padding="10,10,0,10">
+            <StackPanel HorizontalAlignment="Stretch">
+
+                <StackPanel Orientation="Horizontal" Margin="5,0,0,10">
+                    <!-- Icon -->
+                    <Image VerticalAlignment="Top" HorizontalAlignment="Left" Style="{StaticResource PackageIconImageStyle}"/>
+
+                    <!-- Package Name -->
+                    <TextBlock Text="{Binding LatestPackageInfo.Id}" TextWrapping="Wrap" FontSize="18" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                    
+                    <Rectangle Fill="{StaticResource PrefixReservedIndicator}" 
+                               Width="18" Height="18"
+                               Margin="5,3,0,0"
+                               Visibility="{Binding LatestPackageInfo.IsPrefixReserved, Converter={StaticResource boolToVis}}"/>
+                </StackPanel>
+
+                <self:PackageDetailActionsControl HorizontalAlignment="Stretch"/>
+
+                <!-- Description -->
+                <Label FontWeight="Bold" HorizontalAlignment="Left" Content="{x:Static self:Resources.PackageChooser_DetailDescription}" />
+                <TextBlock Text="{Binding SelectedPackage.Description}" TextWrapping="Wrap" Margin="5,0,0,10" HorizontalAlignment="Left"/>
+
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="{x:Type Label}">
+                            <Setter Property="FontWeight" Value="Bold" />
+                            <Setter Property="Margin" Value="0,0,0,0" />
+                            <Setter Property="VerticalAlignment" Value="Top" />
+                        </Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Padding" Value="5" />
+                            <Setter Property="VerticalAlignment" Value="Top" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0.4*"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Version -->
+                    <Label Grid.Row="0" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailVersion}" />
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedPackage.Version}" />
+
+                    <!-- Authors -->
+                    <Label Grid.Row="1" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailAuthors}" />
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedPackage.Authors}" />
+
+                    <!-- License URL -->
+                    <Label Grid.Row="2" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailLicense}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1">
+                        <Hyperlink NavigateUri="{Binding SelectedPackage.LicenseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
+                            <Run Text="{Binding SelectedPackage.LicenseUrl}"/>
+                        </Hyperlink>
+                    </TextBlock>
+
+                    <!-- Published Date -->
+                    <Label Grid.Row="3" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailDatePublished}" Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
+                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedPackage.Published, Converter={StaticResource DateTimeOffsetLongDateConverter}}"  Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
+
+                    <!-- Project URL --> 
+                    <Label Grid.Row="4" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailProjectUrl}" />
+                    <TextBlock Grid.Row="4" Grid.Column="1">
+                        <Hyperlink NavigateUri="{Binding SelectedPackage.ProjectUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
+                            <Run Text="{Binding SelectedPackage.ProjectUrl}"/>
+                        </Hyperlink>
+                    </TextBlock>
+
+                     <!-- Report Abuse URL -->
+                    <Label Grid.Row="5" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailReportAbuse}" />
+                    <TextBlock Grid.Row="5" Grid.Column="1">
+                        <Hyperlink NavigateUri="{Binding SelectedPackage.ReportAbuseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
+                            <Run Text="{Binding SelectedPackage.ReportAbuseUrl}" />
+                        </Hyperlink>
+                    </TextBlock>
+
+                     <!-- Tags --> 
+                    <Label Grid.Row="6" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailTags}" />
+                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SelectedPackage.Tags}" />
+                </Grid>
+            </StackPanel>
+        </Border>
+    </ScrollViewer>
+</UserControl>
