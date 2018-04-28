@@ -74,7 +74,10 @@ namespace PackageExplorerViewModel
             {
                 if (_selectedPackage != value)
                 {
-                    _selectedPackage = value;
+                    if (value != null)
+                    {
+                        _selectedPackage = value;
+                    }
                     OnPropertyChanged();
                 }
             }
