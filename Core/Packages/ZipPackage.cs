@@ -302,7 +302,8 @@ namespace NuGetPe
                         if (sig.Type == SignatureType.Author)
                         {
                             PublisherSignature = new SignatureInfo(sig);
-                        } else if (sig.Type == SignatureType.Repository)
+                        }
+                        else if (sig.Type == SignatureType.Repository)
                         {
                             RepositorySignature = new SignatureInfo(sig);
                         }

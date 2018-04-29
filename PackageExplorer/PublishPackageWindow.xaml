@@ -64,6 +64,9 @@
             </TextBox>
         </DockPanel>
 
+        <!-- Service Endpoint -->
+        <CheckBox Margin="10,5,0,5" VerticalContentAlignment="Center" IsChecked="{Binding AppendV2ApiToUrl, BindingGroupName=Nothing, Mode=TwoWay}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="Append 'api/v2/package' to publish url" ToolTip="Check this for publishing to NuGet.org."/>
+        
         <!-- Publish as unlisted flag -->
         <CheckBox Margin="10,5" VerticalContentAlignment="Center" IsChecked="{Binding PublishAsUnlisted, Mode=TwoWay, BindingGroupName=Nothing}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="U_nlist this package so that it doesn't appear in search results" ToolTip="If checked, the package will be unlisted."></CheckBox>
 

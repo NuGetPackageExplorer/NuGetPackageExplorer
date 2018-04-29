@@ -299,8 +299,6 @@ namespace PackageExplorerViewModel
                     var packagePath = _packageViewModel.GetCurrentPackageTempFile();
                     var originalPackageCopyPath = Path.GetTempFileName();
 
-                    File.Copy(packagePath, originalPackageCopyPath, overwrite: true);
-
                     ITimestampProvider timestampProvider = null;
                     if (!string.IsNullOrEmpty(TimestampServer))
                     {
@@ -308,28 +306,14 @@ namespace PackageExplorerViewModel
                     }
                     var signatureProvider = new X509SignatureProvider(timestampProvider);
 
-                    if (_packageViewModel.IsSigned)
+                    using (var options = SigningOptions.CreateFromFilePaths(
+                        inputPackageFilePath: packagePath,
+                        outputPackageFilePath: originalPackageCopyPath,
+                        overwrite: true,
+                        signatureProvider: signatureProvider,
+                        logger: NullLogger.Instance))
                     {
-                        using (var packageReadStream = File.OpenRead(packagePath))
-                        using (var packageWriteStream = File.Open(originalPackageCopyPath, FileMode.Open))
-                        using (var package = new SignedPackageArchive(packageReadStream, packageWriteStream))
-                        {
-                            await package.RemoveSignatureAsync(token);
-                        }
-
-                        File.Delete(packagePath);
-
-                        packagePath = originalPackageCopyPath;
-                        originalPackageCopyPath = Path.GetTempFileName();
-
-                        File.Copy(packagePath, originalPackageCopyPath, overwrite: true);
-                    }
-
-                    using (var packageReadStream = File.OpenRead(packagePath))
-                    using (var packageWriteStream = File.Open(originalPackageCopyPath, FileMode.Open))
-                    {
-                        var options = new SigningOptions(new Lazy<Stream>(() => packageReadStream), new Lazy<Stream>(() => packageWriteStream), true, signatureProvider, NullLogger.Instance);
-                        await Task.Run(() => SigningUtility.SignAsync(options, signRequest, token));
+                        await SigningUtility.SignAsync(options, signRequest, token);
                     }
 
                     File.Delete(packagePath);
