@@ -1,10 +1,16 @@
-queue: "Hosted VS2017"
+queue: "Private Preview Pool"
+
+trigger:
+- master
+- rel/*
+
 variables: 
   BuildConfiguration: Release
+  
 steps:
 - task: BatchScript@1
   inputs:
-    filename: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\Tools\\VsDevCmd.bat"
+    filename: "C:\\Program Files (x86)\\Microsoft Visual Studio\\Preview\\Enterprise\\Common7\\Tools\\VsDevCmd.bat"
     arguments: -no_logo
     modifyEnvironment: true
   displayName: Setup Environment Variables
@@ -12,7 +18,7 @@ steps:
 - task: NuGetToolInstaller@0
   displayName: Use NuGet 4.6
   inputs:
-    versionSpec: 4.6.0
+    versionSpec: 4.6.2
 
 - powershell: |
     
