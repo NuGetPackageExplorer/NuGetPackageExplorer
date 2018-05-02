@@ -396,6 +396,204 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to download.
+        /// </summary>
+        public static string PackageChooser_ActionDownload {
+            get {
+                return ResourceManager.GetString("PackageChooser_ActionDownload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to hide all versions.
+        /// </summary>
+        public static string PackageChooser_ActionHideAllVersions {
+            get {
+                return ResourceManager.GetString("PackageChooser_ActionHideAllVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to open.
+        /// </summary>
+        public static string PackageChooser_ActionOpen {
+            get {
+                return ResourceManager.GetString("PackageChooser_ActionOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to show all versions.
+        /// </summary>
+        public static string PackageChooser_ActionShowAllVersions {
+            get {
+                return ResourceManager.GetString("PackageChooser_ActionShowAllVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear search.
+        /// </summary>
+        public static string PackageChooser_ClearSearchButtonTooltip {
+            get {
+                return ResourceManager.GetString("PackageChooser_ClearSearchButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloads.
+        /// </summary>
+        public static string PackageChooser_ColumnHeaderDownloads {
+            get {
+                return ResourceManager.GetString("PackageChooser_ColumnHeaderDownloads", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Published.
+        /// </summary>
+        public static string PackageChooser_ColumnHeaderPublished {
+            get {
+                return ResourceManager.GetString("PackageChooser_ColumnHeaderPublished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string PackageChooser_ColumnHeaderVersion {
+            get {
+                return ResourceManager.GetString("PackageChooser_ColumnHeaderVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author(s):.
+        /// </summary>
+        public static string PackageChooser_DetailAuthors {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailAuthors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date published:.
+        /// </summary>
+        public static string PackageChooser_DetailDatePublished {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailDatePublished", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Description.
+        /// </summary>
+        public static string PackageChooser_DetailDescription {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to License:.
+        /// </summary>
+        public static string PackageChooser_DetailLicense {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailLicense", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project URL:.
+        /// </summary>
+        public static string PackageChooser_DetailProjectUrl {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailProjectUrl", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Abuse:.
+        /// </summary>
+        public static string PackageChooser_DetailReportAbuse {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailReportAbuse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Tags:.
+        /// </summary>
+        public static string PackageChooser_DetailTags {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version:.
+        /// </summary>
+        public static string PackageChooser_DetailVersion {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Package source:.
+        /// </summary>
+        public static string PackageChooser_PackageSource {
+            get {
+                return ResourceManager.GetString("PackageChooser_PackageSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search for package.
+        /// </summary>
+        public static string PackageChooser_SearchBoxTooltip {
+            get {
+                return ResourceManager.GetString("PackageChooser_SearchBoxTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search (Ctrl+E).
+        /// </summary>
+        public static string PackageChooser_SearchBoxWatermark {
+            get {
+                return ResourceManager.GetString("PackageChooser_SearchBoxWatermark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search.
+        /// </summary>
+        public static string PackageChooser_SearchButtonTooltip {
+            get {
+                return ResourceManager.GetString("PackageChooser_SearchButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show pre-release packages.
+        /// </summary>
+        public static string PackageChooser_ShowPreReleasePackages {
+            get {
+                return ResourceManager.GetString("PackageChooser_ShowPreReleasePackages", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select Package.
+        /// </summary>
+        public static string PackageChooser_WindowTitle {
+            get {
+                return ResourceManager.GetString("PackageChooser_WindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to download package correctly. The contents of the package could not be verified..
         /// </summary>
         public static string PackageContentsVerifyError {
@@ -432,11 +630,11 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid.
+        ///   Looks up a localized string similar to Illegal.
         /// </summary>
-        public static string Validation_Invalid {
+        public static string Validation_Illegal {
             get {
-                return ResourceManager.GetString("Validation_Invalid", resourceCulture);
+                return ResourceManager.GetString("Validation_Illegal", resourceCulture);
             }
         }
         
@@ -450,16 +648,16 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Trusted.
+        ///   Looks up a localized string similar to Suspect.
         /// </summary>
-        public static string Validation_Trusted {
+        public static string Validation_Suspect {
             get {
-                return ResourceManager.GetString("Validation_Trusted", resourceCulture);
+                return ResourceManager.GetString("Validation_Suspect", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unkown.
+        ///   Looks up a localized string similar to Unknown.
         /// </summary>
         public static string Validation_Unknown {
             get {
@@ -473,6 +671,15 @@ namespace PackageExplorer {
         public static string Validation_Untrusted {
             get {
                 return ResourceManager.GetString("Validation_Untrusted", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid.
+        /// </summary>
+        public static string Validation_Valid {
+            get {
+                return ResourceManager.GetString("Validation_Valid", resourceCulture);
             }
         }
     }

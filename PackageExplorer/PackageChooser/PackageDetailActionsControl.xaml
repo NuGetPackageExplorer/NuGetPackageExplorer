@@ -1,0 +1,122 @@
+﻿<UserControl x:Class="PackageExplorer.PackageDetailActionsControl"
+             xmlns:self="clr-namespace:PackageExplorer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:g="clr-namespace:System.Globalization;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="80" d:DesignWidth="300">
+
+    <Grid Margin="0,0,0,10">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="0,0,0,0" HorizontalAlignment="Left">
+            <TextBlock Margin="5,0">
+                <Hyperlink Command="{Binding OpenCommand}">
+                    <Run Text="{x:Static self:Resources.PackageChooser_ActionOpen}" />
+                </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Margin="5,0" Style="{StaticResource DownloadButtonStyle}">
+                <Hyperlink Command="{Binding DownloadCommand}">
+                    <Run Text="{x:Static self:Resources.PackageChooser_ActionDownload}"/>
+                </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Margin="5,0">
+                <Hyperlink Command="{Binding ToggleAllVersionsCommand}">
+                    <Run Style="{StaticResource ShowAllVersionsRunStyle}" />
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+
+        <ListView 
+            x:Name="AllVersionsGrid" 
+            Grid.Row="1"
+            BorderThickness="1"
+            Margin="4,4,4,4"
+            BorderBrush="LightGray"
+            ItemsSource="{Binding AllPackages, Mode=OneWay}" 
+            SelectedValue="{Binding SelectedPackage, Mode=OneWay}"
+            SelectionChanged="PackageGrid_SelectionChanged"
+            SelectionMode="Single"
+            HorizontalAlignment="Stretch"
+            MaxHeight="150"
+            Visibility="{Binding ShowingAllVersionsList, Converter={StaticResource boolToVis}}"
+            IsTextSearchEnabled="False">
+
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <EventSetter Event="MouseDoubleClick" Handler="OnPackageDoubleClick" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsPrerelease, Mode=OneTime}" Value="true">
+                            <Setter Property="Foreground" Value="Maroon" />
+                        </DataTrigger>
+
+                        <DataTrigger Binding="{Binding IsUnlisted, Mode=OneTime}" Value="true">
+                            <Setter Property="FontStyle" Value="Italic" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.View>
+                <GridView AllowsColumnReorder="False" x:Name="PackageGridView">
+
+                    <GridViewColumn Width="80" Header="{x:Static self:Resources.PackageChooser_ColumnHeaderVersion}">
+                        <GridViewColumn.HeaderContainerStyle>
+                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                <Setter Property="Padding" Value="0,0,6,0"/>
+                            </Style>
+                        </GridViewColumn.HeaderContainerStyle>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding SemanticVersion}" HorizontalAlignment="Right"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="{x:Static self:Resources.PackageChooser_ColumnHeaderDownloads}">
+                        <GridViewColumn.HeaderContainerStyle>
+                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Right"/>
+                                <Setter Property="Padding" Value="0,0,6,0"/>
+                            </Style>
+                        </GridViewColumn.HeaderContainerStyle>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Right" Text="{Binding DownloadCount, StringFormat=N0, ConverterCulture={x:Static g:CultureInfo.CurrentCulture}}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="{x:Static self:Resources.PackageChooser_ColumnHeaderPublished}">
+                        <GridViewColumn.HeaderContainerStyle>
+                            <Style TargetType="{x:Type GridViewColumnHeader}">
+                                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+                                <Setter Property="Padding" Value="6,0,0,0"/>
+                            </Style>
+                        </GridViewColumn.HeaderContainerStyle>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock HorizontalAlignment="Left" Text="{Binding Published, Converter={StaticResource DateTimeOffsetHumanizeConverter}}" ToolTip="{Binding Published, Converter={StaticResource DateTimeOffsetLongDateConverter}}" TextAlignment="Center" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <StackPanel Grid.Row="1" Margin="0,5,0,5" Visibility="{Binding IsLoading, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" Orientation="Horizontal" HorizontalAlignment="Center">
+            <TextBlock Text="Loading..." />
+            <Control Margin="7,0,7,0" Template="{StaticResource loadingAnimation}" />
+            <Button Content="Cancel" Padding="5,0,5,0" Command="{Binding CancelCommand}" />
+        </StackPanel>
+    </Grid>
+</UserControl>

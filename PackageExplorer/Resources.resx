@@ -230,6 +230,72 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="NoNetworkConnection" xml:space="preserve">
     <value>Network connection is not detected.</value>
   </data>
+  <data name="PackageChooser_ActionDownload" xml:space="preserve">
+    <value>download</value>
+  </data>
+  <data name="PackageChooser_ActionHideAllVersions" xml:space="preserve">
+    <value>hide all versions</value>
+  </data>
+  <data name="PackageChooser_ActionOpen" xml:space="preserve">
+    <value>open</value>
+  </data>
+  <data name="PackageChooser_ActionShowAllVersions" xml:space="preserve">
+    <value>show all versions</value>
+  </data>
+  <data name="PackageChooser_ClearSearchButtonTooltip" xml:space="preserve">
+    <value>Clear search</value>
+  </data>
+  <data name="PackageChooser_ColumnHeaderDownloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="PackageChooser_ColumnHeaderPublished" xml:space="preserve">
+    <value>Published</value>
+  </data>
+  <data name="PackageChooser_ColumnHeaderVersion" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="PackageChooser_DetailAuthors" xml:space="preserve">
+    <value>Author(s):</value>
+  </data>
+  <data name="PackageChooser_DetailDatePublished" xml:space="preserve">
+    <value>Date published:</value>
+  </data>
+  <data name="PackageChooser_DetailDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PackageChooser_DetailLicense" xml:space="preserve">
+    <value>License:</value>
+  </data>
+  <data name="PackageChooser_DetailProjectUrl" xml:space="preserve">
+    <value>Project URL:</value>
+  </data>
+  <data name="PackageChooser_DetailReportAbuse" xml:space="preserve">
+    <value>Report Abuse:</value>
+  </data>
+  <data name="PackageChooser_DetailTags" xml:space="preserve">
+    <value>Tags:</value>
+  </data>
+  <data name="PackageChooser_DetailVersion" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="PackageChooser_PackageSource" xml:space="preserve">
+    <value>_Package source:</value>
+  </data>
+  <data name="PackageChooser_SearchBoxTooltip" xml:space="preserve">
+    <value>Search for package</value>
+  </data>
+  <data name="PackageChooser_SearchBoxWatermark" xml:space="preserve">
+    <value>Search (Ctrl+E)</value>
+  </data>
+  <data name="PackageChooser_SearchButtonTooltip" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="PackageChooser_ShowPreReleasePackages" xml:space="preserve">
+    <value>Show pre-release packages</value>
+  </data>
+  <data name="PackageChooser_WindowTitle" xml:space="preserve">
+    <value>Select Package</value>
+  </data>
   <data name="PackageContentsVerifyError" xml:space="preserve">
     <value>Failed to download package correctly. The contents of the package could not be verified.</value>
   </data>
@@ -242,19 +308,22 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="String1" xml:space="preserve">
     <value />
   </data>
-  <data name="Validation_Invalid" xml:space="preserve">
-    <value>Invalid</value>
+  <data name="Validation_Illegal" xml:space="preserve">
+    <value>Illegal</value>
   </data>
   <data name="Validation_Pending" xml:space="preserve">
     <value>Pending</value>
   </data>
-  <data name="Validation_Trusted" xml:space="preserve">
-    <value>Trusted</value>
+  <data name="Validation_Suspect" xml:space="preserve">
+    <value>Suspect</value>
   </data>
   <data name="Validation_Unknown" xml:space="preserve">
-    <value>Unkown</value>
+    <value>Unknown</value>
   </data>
   <data name="Validation_Untrusted" xml:space="preserve">
     <value>Untrusted</value>
+  </data>
+  <data name="Validation_Valid" xml:space="preserve">
+    <value>Valid</value>
   </data>
 </root>

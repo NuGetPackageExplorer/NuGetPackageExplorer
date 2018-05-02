@@ -80,11 +80,11 @@ namespace PackageExplorerViewModel
 
         public PackageChooserViewModel CreatePackageChooserViewModel(string fixedPackageSource)
         {
-            var model = new PackageChooserViewModel(
-                new MruPackageSourceManager(new PackageSourceSettings(SettingsManager)),
-                SettingsManager.ShowPrereleasePackages,
-                SettingsManager.AutoLoadPackages,
-                fixedPackageSource);
+            var packageSourceSettings = new PackageSourceSettings(SettingsManager);
+            var packageSourceManager = new MruPackageSourceManager(packageSourceSettings);
+            var model = new PackageChooserViewModel(packageSourceManager,
+                                                    SettingsManager.ShowPrereleasePackages,
+                                                    fixedPackageSource);
             model.PropertyChanged += OnPackageChooserViewModelPropertyChanged;
             return model;
         }
@@ -103,10 +103,6 @@ namespace PackageExplorerViewModel
             if (e.PropertyName == "ShowPrereleasePackages")
             {
                 SettingsManager.ShowPrereleasePackages = model.ShowPrereleasePackages;
-            }
-            else if (e.PropertyName == "AutoLoadPackages")
-            {
-                SettingsManager.AutoLoadPackages = model.AutoLoadPackages;
             }
         }
     }

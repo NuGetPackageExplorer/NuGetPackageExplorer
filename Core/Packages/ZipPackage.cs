@@ -296,15 +296,14 @@ namespace NuGetPe
                 {
                     try
                     {
-                        // Load signature data
-                        // TODO: Repo + Author sig?
-                        var sig = await reader.GetSignatureAsync(CancellationToken.None);
+                        var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None);
                     
-                        // There will only be one
+                        // There will only be one primary
                         if (sig.Type == SignatureType.Author)
                         {
                             PublisherSignature = new SignatureInfo(sig);
-                        } else if (sig.Type == SignatureType.Repository)
+                        }
+                        else if (sig.Type == SignatureType.Repository)
                         {
                             RepositorySignature = new SignatureInfo(sig);
                         }
@@ -326,9 +325,9 @@ namespace NuGetPe
                 {
                     // Check verification 
                     var trustProviders = SignatureVerificationProviderFactory.GetSignatureVerificationProviders();
-                    var verifier = new PackageSignatureVerifier(trustProviders, SignedPackageVerifierSettings.VerifyCommandDefaultPolicy);
+                    var verifier = new PackageSignatureVerifier(trustProviders);
 
-                    VerificationResult = await verifier.VerifySignaturesAsync(reader, CancellationToken.None);
+                    VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None);
                 }
             }
         }

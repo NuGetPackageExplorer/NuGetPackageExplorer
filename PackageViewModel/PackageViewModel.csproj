@@ -8,11 +8,26 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Credentials" Version="4.6.1" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.6.1" />
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.2" />  
+    <PackageReference Include="NuGet.Credentials" Version="4.7.0-rtm.5104" />
+    <PackageReference Include="NuGet.PackageManagement" Version="4.7.0-rtm.5104" />
+    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.3.1" />  
     <ProjectReference Include="..\Core\Core.csproj" />
     <Reference Include="System.ComponentModel.Composition" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />

@@ -1,0 +1,128 @@
+trigger:
+- master
+- rel/*
+
+queue: Hosted VS2017
+variables: 
+  BuildConfiguration: Release
+steps:
+- task: BatchScript@1
+  inputs:
+    filename: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\Tools\\VsDevCmd.bat"
+    arguments: -no_logo
+    modifyEnvironment: true
+  displayName: Setup Environment Variables
+
+- task: NuGetToolInstaller@0
+  displayName: Use NuGet 4.6
+  inputs:
+    versionSpec: 4.6.0
+
+- powershell: |
+    
+    mkdir $(Build.ArtifactStagingDirectory)\Logs
+    mkdir $(Build.ArtifactStagingDirectory)\Nightly
+
+    # restore 
+    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
+    
+    # version    
+    nuget install NerdBank.GitVersioning -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
+    
+    $vers = & $(Build.SourcesDirectory)\packages\nerdbank.gitversioning\tools\Get-Version.ps1
+    $ver = $vers.SimpleVersion
+        
+    # Update appxmanifests. These must be done before build.
+    $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"    
+    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
+    
+    $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
+    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+    
+    $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"    
+    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
+    
+    # Build PackageExplorer
+    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-PackageExplorer.binlog
+    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-NightlyPackage.binlog
+    msbuild .\PackageExplorer.Package\PackageExplorer.Package.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-Package.binlog
+    
+    # Update versions
+    $doc = Get-Content ".\Build\ci_badge.svg"    
+    $doc | % { $_.Replace("ver_number", "$ver.0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\version_badge.svg"
+    
+    $doc = Get-Content ".\Build\store_badge.svg"    
+    $doc | % { $_.Replace("ver_number", "$ver.0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
+    
+    # Choco and NuGet 
+    # Get choco
+
+    $nugetVer = $vers.NuGetPackageVersion
+
+    nuget install chocolatey -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion 
+    $choco = "$(Build.SourcesDirectory)\packages\chocolatey\tools\chocolateyInstall\choco.exe"
+    
+    mkdir $(Build.ArtifactStagingDirectory)\Nightly\Choco
+
+    & $choco pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $nugetVer --OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly\Choco
+    msbuild /t:pack .\Types\Types.csproj /p:Configuration=$(BuildConfiguration) /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
+        
+  displayName: Build Nightly
+    
+- task: ArchiveFiles@1
+  displayName: Zip PackageExplorer files
+  inputs:
+    archiveType: zip
+    rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net461
+    archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.$(Build.BuildNumber).zip
+    includeRootFolder: false
+    
+- task: PowerShell@2
+  displayName: Authenticode Sign Nightly artifacts
+  inputs:
+    filePath: Build/Sign-Package.ps1
+  env:
+    SignClientUser: $(SignClientUser)
+    SignClientSecret: $(SignClientSecret)
+    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Nightly
+
+- task: PowerShell@2
+  displayName: Authenticode Sign Zip artifacts
+  inputs:
+    filePath: Build/Sign-Zip.ps1
+  env:
+    SignClientUser: $(SignClientUser)
+    SignClientSecret: $(SignClientSecret)
+    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Zip   
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Nightly Artifact
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)\Nightly
+    artifactType: container
+    artifactName: Nightly
+  condition: always()
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Zip Artifact
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
+    artifactType: container
+    artifactName: Zip
+  condition: always()
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Log Artifacts
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)\Logs
+    artifactType: container
+    artifactName: Logs
+  condition: always()
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Store Artifacts
+  inputs:
+    pathToPublish: $(Build.ArtifactStagingDirectory)\Store
+    artifactType: container
+    artifactName: Store
+  condition: always()
