@@ -1,5 +1,0 @@
-queue: "Hosted VS2017"
-variables: 
-  BuildConfiguration: Release
-steps:
-- template: Build/build.yml
