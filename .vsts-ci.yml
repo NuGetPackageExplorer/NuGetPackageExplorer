@@ -1,7 +1,7 @@
 trigger:
 - master
 - rel/*
-
+ 
 queue: Hosted VS2017
 variables: 
   BuildConfiguration: Release
@@ -17,7 +17,7 @@ steps:
         SignClientUser: $(SignClientUser)
         SignClientSecret: $(SignClientSecret)
         ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Nightly
-
+        
     - task: PowerShell@2
       displayName: Authenticode Sign Zip artifacts
       inputs:
