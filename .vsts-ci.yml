@@ -1,4 +1,8 @@
-queue: "Hosted VS2017"
+trigger:
+- master
+- rel/*
+
+queue: Hosted VS2017
 variables: 
   BuildConfiguration: Release
 steps:
