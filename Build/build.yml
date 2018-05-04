@@ -14,6 +14,14 @@ steps:
   inputs:
     versionSpec: 4.6.2
 
+- task: DotNetCoreCLI@2
+  inputs:
+    command: build
+    projects: Build/setversion.csproj
+    arguments: -c $(BuildConfiguration)   
+  displayName: Set Version
+  condition: eq(variables['system.pullrequest.isfork'], false)
+
 - powershell: |
     
     mkdir $(Build.ArtifactStagingDirectory)\Logs
@@ -81,7 +89,7 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Nightly
     artifactType: container
     artifactName: Nightly
-  condition: always()
+  condition: eq(variables['system.pullrequest.isfork'], false)
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Zip Artifact
@@ -89,7 +97,7 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
     artifactType: container
     artifactName: Zip
-  condition: always()
+  condition: eq(variables['system.pullrequest.isfork'], false)
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Log Artifacts
@@ -97,7 +105,7 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Logs
     artifactType: container
     artifactName: Logs
-  condition: always()
+  condition: eq(variables['system.pullrequest.isfork'], false)
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Store Artifacts
@@ -105,4 +113,4 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Store
     artifactType: container
     artifactName: Store
-  condition: always()
+  condition: eq(variables['system.pullrequest.isfork'], false)
