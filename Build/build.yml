@@ -22,14 +22,9 @@ steps:
   displayName: Set Version
   condition: eq(variables['system.pullrequest.isfork'], false)
 
-- powershell: |
-    
-    mkdir $(Build.ArtifactStagingDirectory)\Logs
+- powershell: |   
     mkdir $(Build.ArtifactStagingDirectory)\Nightly
-
-    # restore 
-    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
-    
+        
     # version    
     nuget install NerdBank.GitVersioning -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
     
@@ -47,9 +42,9 @@ steps:
     $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
     
     # Build PackageExplorer
-    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-PackageExplorer.binlog
-    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-NightlyPackage.binlog
-    msbuild .\PackageExplorer.Package\PackageExplorer.Package.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-Package.binlog
+    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /restore /m /p:Configuration=$(BuildConfiguration) 
+    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" 
+    msbuild .\PackageExplorer.Package\PackageExplorer.Package.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload 
     
     # Update versions
     $doc = Get-Content ".\Build\ci_badge.svg"    
@@ -97,14 +92,6 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
     artifactType: container
     artifactName: Zip
-  condition: eq(variables['system.pullrequest.isfork'], false)
-
-- task: PublishBuildArtifacts@1
-  displayName: Publish Log Artifacts
-  inputs:
-    pathToPublish: $(Build.ArtifactStagingDirectory)\Logs
-    artifactType: container
-    artifactName: Logs
   condition: eq(variables['system.pullrequest.isfork'], false)
 
 - task: PublishBuildArtifacts@1
