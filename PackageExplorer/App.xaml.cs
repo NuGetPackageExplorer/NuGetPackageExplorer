@@ -1,15 +1,17 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using NuGet.Configuration;
 using NuGet.Credentials;
 using NuGet.Protocol;
-using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
+using Settings = PackageExplorer.Properties.Settings;
 
 namespace PackageExplorer
 {
@@ -65,11 +67,11 @@ namespace PackageExplorer
 
         private void InitCredentialService()
         {
-            HttpHandlerResourceV3.CredentialService = new CredentialService(new ICredentialProvider[] {
+            HttpHandlerResourceV3.CredentialService = new Lazy<ICredentialService>(() => new CredentialService(new ICredentialProvider[] {
                 Container.GetExportedValue<CredentialManagerProvider>(),
                 Container.GetExportedValue<CredentialPublishProvider>(),
                 Container.GetExportedValue<CredentialDialogProvider>(),
-            }, nonInteractive: false);
+            }, nonInteractive: false));
         }
 
         private static void MigrateSettings()
