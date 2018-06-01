@@ -329,7 +329,7 @@ namespace PackageExplorer
 
             if (proxy != null)
             {
-                messageHandler = new ProxyAuthenticationHandler(clientHandler, HttpHandlerResourceV3.CredentialService, ProxyCache.Instance);
+                messageHandler = new ProxyAuthenticationHandler(clientHandler, HttpHandlerResourceV3.CredentialService.Value, ProxyCache.Instance);
             }
 
             {
@@ -343,7 +343,7 @@ namespace PackageExplorer
             {
                 var innerHandler = messageHandler;
 
-                messageHandler = new HttpSourceAuthenticationHandler(packageSource, clientHandler, HttpHandlerResourceV3.CredentialService)
+                messageHandler = new HttpSourceAuthenticationHandler(packageSource, clientHandler, HttpHandlerResourceV3.CredentialService.Value)
                 {
                     InnerHandler = innerHandler
                 };
