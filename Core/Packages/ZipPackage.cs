@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace NuGetPe
                 catch (UnauthorizedAccessException)
                 {
                     //just try read
-                    return File.Open(filePath, FileMode.Open,FileAccess.Read);
+                    return File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
                 }
 
             };
