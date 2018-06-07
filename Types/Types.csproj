@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.2" />
-    <PackageReference Include="NuGet.Packaging" Version="4.7.0-rtm.5104" />
+    <PackageReference Include="NuGet.Packaging" Version="4.7.0" />
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   

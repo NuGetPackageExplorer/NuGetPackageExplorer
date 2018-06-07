@@ -1,6 +1,6 @@
 ![Logo](images/npe-logo.png)
 
-[![Build status](https://ci.appveyor.com/api/projects/status/nhowjp0e1w0225v7/branch/master?svg=true)](https://ci.appveyor.com/project/NuGetPackageExplorer/nugetpackageexplorer/branch/master)
+[![Build status](https://orennovotny.visualstudio.com/_apis/public/build/definitions/96789f1c-e804-4671-be78-d063a4eced9b/16/badge)](https://orennovotny.visualstudio.com/96789f1c-e804-4671-be78-d063a4eced9b/_build/index?definitionId=16)
 [![Twitter Follow](https://img.shields.io/twitter/follow/NuGetPE.svg?style=social?maxAge=2592000)](https://twitter.com/NuGetPE)
 [![Join the chat at https://gitter.im/NuGetPackageExplorer/NuGetPackageExplorer](https://badges.gitter.im/NuGetPackageExplorer/NuGetPackageExplorer.svg)](https://gitter.im/NuGetPackageExplorer/NuGetPackageExplorer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -12,7 +12,7 @@ the release version with no interference.
 
 | Build Number | Link |
 | ------------ | ---- |
-| [![Nightly build number](https://nugetpackageexplorer.blob.core.windows.net/nightly/version_badge.svg?v=1)](https://nugetpackageexplorer.blob.core.windows.net/nightly/PackageExplorer.Package.Nightly.appxbundle)| [Download](https://nugetpackageexplorer.blob.core.windows.net/nightly/PackageExplorer.Package.Nightly.appxbundle)
+| [![Nightly build number](https://nugetpackageexplorer.blob.core.windows.net/nightly/version_badge.svg?v=1)](https://nugetpackageexplorer.blob.core.windows.net/nightly/install.html)| [Install](https://nugetpackageexplorer.blob.core.windows.net/nightly/install.html) 
 | [![Stable build number](https://nugetpackageexplorer.blob.core.windows.net/store/version_badge.svg)](https://www.microsoft.com/store/apps/9wzdncrdmdm3) | [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) |
 | [![Chocolatey build number](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg)](https://chocolatey.org/packages/NugetPackageExplorer) | [Chocolatey](https://chocolatey.org/packages/NugetPackageExplorer) |
 
