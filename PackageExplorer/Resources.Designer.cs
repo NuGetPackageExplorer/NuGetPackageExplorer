@@ -223,11 +223,47 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Branch:.
+        /// </summary>
+        public static string Dialog_RepositoryBranch {
+            get {
+                return ResourceManager.GetString("Dialog_RepositoryBranch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Commit:.
+        /// </summary>
+        public static string Dialog_RepositoryCommit {
+            get {
+                return ResourceManager.GetString("Dialog_RepositoryCommit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Repository:.
         /// </summary>
         public static string Dialog_RepositoryLabel {
             get {
                 return ResourceManager.GetString("Dialog_RepositoryLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type:.
+        /// </summary>
+        public static string Dialog_RepositoryType {
+            get {
+                return ResourceManager.GetString("Dialog_RepositoryType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Url:.
+        /// </summary>
+        public static string Dialog_RepositoryUrl {
+            get {
+                return ResourceManager.GetString("Dialog_RepositoryUrl", resourceCulture);
             }
         }
         

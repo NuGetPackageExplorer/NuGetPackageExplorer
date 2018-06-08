@@ -116,6 +116,35 @@
                 </StackPanel>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type core:RepositoryMetadata}">
+                <StackPanel>
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Type, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryType}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Type}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Url, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryUrl}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Style="{StaticResource DetailMetadataValueStyle}">
+                            <Hyperlink Command="GoToPage" CommandParameter="{Binding Url, Mode=OneWay}">
+                                <Run Text="{Binding Url}" />
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Branch, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryBranch}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Branch}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+
+
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Commit, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryCommit}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Commit}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type pack:PackageDependencyGroup}">
                 <Grid Margin="0,0,0,8">
                     <Grid.RowDefinitions>
@@ -353,6 +382,15 @@
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Serviceable, Converter={StaticResource boolToVis}}">
                             <TextBlock Text="{x:Static self:Resources.Dialog_ServiceableLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Serviceable, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
+                        </StackPanel>
+
+                        <!-- Repository -->
+                        <StackPanel
+                            Visibility="{Binding Repository, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                            <ContentPresenter Margin="14,0,0,0" Content="{Binding Repository, Mode=OneWay}" />
+
                         </StackPanel>
 
                         <!-- Summary -->

@@ -171,8 +171,20 @@
   <data name="Dialog_ReportAbuse" xml:space="preserve">
     <value>Report Abuse</value>
   </data>
+  <data name="Dialog_RepositoryBranch" xml:space="preserve">
+    <value>Branch:</value>
+  </data>
+  <data name="Dialog_RepositoryCommit" xml:space="preserve">
+    <value>Commit:</value>
+  </data>
   <data name="Dialog_RepositoryLabel" xml:space="preserve">
     <value>Repository:</value>
+  </data>
+  <data name="Dialog_RepositoryType" xml:space="preserve">
+    <value>Type:</value>
+  </data>
+  <data name="Dialog_RepositoryUrl" xml:space="preserve">
+    <value>Url:</value>
   </data>
   <data name="Dialog_RequireLicenseLabel" xml:space="preserve">
     <value>Requires License Acceptance:</value>
