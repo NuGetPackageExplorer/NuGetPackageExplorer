@@ -92,12 +92,9 @@ namespace PackageExplorerViewModel
         {
             base.UpdatePath();
 
-            if (Children != null)
+            foreach (var child in Children)
             {
-                foreach (var child in Children)
-                {
-                    child.UpdatePath();
-                }
+                child.UpdatePath();
             }
         }
 
@@ -119,6 +116,11 @@ namespace PackageExplorerViewModel
             {
                 return Children.SelectMany(p => p.GetFiles());
             }
+        }
+
+        public override IEnumerable<PackagePart> GetPackageParts()
+        {
+            return new PackagePart[] { this }.Concat(Children.SelectMany(p => p.GetPackageParts()));
         }
 
         public void RemoveChild(PackagePart child)
@@ -182,28 +184,18 @@ namespace PackageExplorerViewModel
 
         public bool ContainsFolder(string folderName)
         {
-            if (Children == null)
-            {
-                return false;
-            }
-
             return Children.Any(p => p is PackageFolder && p.Name.Equals(folderName, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool ContainsFile(string fileName)
         {
-            if (Children == null)
-            {
-                return false;
-            }
-
             return Children.Any(p => p is PackageFile && p.Name.Equals(fileName, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool Contains(PackagePart child)
         {
             // we can't call Children.Contains(child) here because that will only check by file name, not the actual instance
-            return Children != null && Children.Any(p => p == child);
+            return Children.Any(p => p == child);
         }
 
         public PackageFolder AddFolder(string folderName)
@@ -221,7 +213,7 @@ namespace PackageExplorerViewModel
             return newFolder;
         }
 
-        public void AddFolder(PackageFolder childFolder)
+        public void AddFolder(PackageFolder childFolder, bool makeCopy = false)
         {
             if (!AddContentFolderCanExecute(childFolder.Name))
             {
@@ -236,12 +228,35 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            if (childFolder.Parent != null)
+            PackageFolder newFolder;
+
+            if (makeCopy)
             {
-                childFolder.Parent.Detach(childFolder);
+                newFolder = new PackageFolder(childFolder.Name, this);
+
+                foreach (var child in childFolder.Children)
+                {
+                    if (child is PackageFile packageFile)
+                    {
+                        newFolder.AddFile(packageFile, true);
+                    }
+                    else if (child is PackageFolder packageFolder)
+                    {
+                        newFolder.AddFolder(packageFolder, true);
+                    }
+                }
+            }
+            else
+            {
+                if (childFolder.Parent != null)
+                {
+                    childFolder.Parent.Detach(childFolder);
+                }
+
+                newFolder = childFolder;
             }
 
-            AddFolderCore(childFolder);
+            AddFolderCore(newFolder);
         }
 
         private void AddFolderCore(PackageFolder childFolder)
@@ -252,7 +267,7 @@ namespace PackageExplorerViewModel
             PackageViewModel.NotifyChanges();
         }
 
-        public PackageFile AddFile(string filePath, bool isTempFile)
+        public PackageFile AddFile(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -289,11 +304,7 @@ namespace PackageExplorerViewModel
             }
 
             var newTargetPath = this.Path + "\\" + newFileName;
-            var physicalFile = new PhysicalPackageFile
-            {
-                SourcePath = filePath,
-                TargetPath = newTargetPath
-            };
+            var physicalFile = new DiskPackageFile(newTargetPath, filePath);
             var newFile = new PackageFile(physicalFile, newFileName, this);
 
             Children.Add(newFile);
@@ -332,11 +343,7 @@ namespace PackageExplorerViewModel
                 }
 
                 var newTargetPath = this.Path + "\\" + file.Name;
-                var physicalFile = new PhysicalPackageFile
-                {
-                    SourcePath = fileCopyPath,
-                    TargetPath = newTargetPath
-                };
+                var physicalFile = new DiskPackageFile(newTargetPath, fileCopyPath);
 
                 newFile = new PackageFile(physicalFile, file.Name, this);
             }
@@ -374,7 +381,7 @@ namespace PackageExplorerViewModel
             // temporarily remove the old file in order to add a new file
             Children.Remove(oldFile);
 
-            var newFile = AddFile(newFilePath, isTempFile: false);
+            var newFile = AddFile(newFilePath);
             if (newFile != null)
             {
                 // new file added successfully, officially delete the old file by disposing it
@@ -417,7 +424,7 @@ namespace PackageExplorerViewModel
             var childPackgeFolder = AddFolder(dirInfo.Name);
             foreach (var file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly))
             {
-                childPackgeFolder.AddFile(file.FullName, isTempFile: false);
+                childPackgeFolder.AddFile(file.FullName);
             }
             foreach (var subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly))
             {

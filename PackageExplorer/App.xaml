@@ -1,9 +1,16 @@
-﻿<Application x:Class="PackageExplorer.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:PackageExplorer" Startup="Application_Startup" Exit="Application_Exit">
+﻿<Application x:Class="PackageExplorer.App" 
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+             xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+             xmlns:self="clr-namespace:PackageExplorer"
+             Startup="Application_Startup" 
+             Exit="Application_Exit">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Xaml/MenuItems.xaml" />
                 <ResourceDictionary Source="Xaml/Toolbar.xaml" />
+                <ResourceDictionary Source="Xaml/PrefixReservedIndicator.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <self:IntegerToBooleanConverter x:Key="FontSizeToBoolConverter" />
@@ -19,7 +26,9 @@
             <self:DateTimeOffsetHumanizeConverter x:Key="DateTimeOffsetHumanizeConverter" />
             <self:DateTimeOffsetLongDateConverter x:Key="DateTimeOffsetLongDateConverter" />
             <self:CertificateToSubjectConverter x:Key="CertificateToSubjectConverter" />
-            
+            <self:IconUrlToImageCacheConverter x:Key="IconUrlToImageCacheConverter" />
+            <self:NumberToStringConverter x:Key="NumberToStringConverter" />
+
             <ContextMenu x:Key="TextBoxContextMenu">
                 <self:GrayscaleMenuItem Command="Cut">
                     <self:GrayscaleMenuItem.Icon>
@@ -109,10 +118,10 @@
 
             <!-- used on the package chooser dialog -->
             <Style x:Key="ShowAllVersionsRunStyle" TargetType="{x:Type Run}">
-                <Setter Property="Text" Value="show all versions" />
+                <Setter Property="Text" Value="{x:Static self:Resources.PackageChooser_ActionShowAllVersions}" />
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding ShowingAllVersions}" Value="True">
-                        <Setter Property="Text" Value="hide all versions" />
+                        <Setter Property="Text" Value="{x:Static self:Resources.PackageChooser_ActionHideAllVersions}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -177,6 +186,26 @@
                     </Image.Source>
                 </Image>
             </ControlTemplate>
+
+            <Style
+                x:Key="PackageIconImageStyle"
+                TargetType="{x:Type Image}">
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="Height" Value="32" />
+                <Setter Property="Width" Value="32" />
+                <Setter Property="Source">
+                    <Setter.Value>
+                        <Binding
+                            Path="DataContext.LatestPackageInfo.IconUrl"
+                            RelativeSource="{RelativeSource Self}"
+                            Converter="{StaticResource IconUrlToImageCacheConverter}"
+                            ConverterParameter="{x:Static self:Images.DefaultPackageIcon}"
+                            TargetNullValue="{x:Static self:Images.DefaultPackageIcon}"
+                            FallbackValue="{x:Static self:Images.DefaultPackageIcon}"/>
+                    </Setter.Value>
+                </Setter>
+                <EventSetter Event="ImageFailed" Handler="PackageIconImage_ImageFailed"/>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

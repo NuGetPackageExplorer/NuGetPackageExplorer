@@ -4,6 +4,7 @@ using NuGetPe;
 using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
 using NuGet.Protocol.Core.Types;
+using System.Windows;
 
 namespace PackageExplorer
 {
@@ -40,12 +41,11 @@ namespace PackageExplorer
             {
                 _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
                 _viewModel.PackageDownloadRequested += OnPackageDownloadRequested;
-                _dialog = new PackageChooserDialog(_viewModel)
-                          {
-                              Owner = Window.Value
-                          };
+                _dialog = new PackageChooserDialog(_viewModel);
             }
 
+            _dialog.Owner = Window.Value;
+            ReCenterPackageChooserDialog(_dialog);
             _dialog.ShowDialog(searchTerm);
             return _viewModel.SelectedPackage;
         }
@@ -90,14 +90,30 @@ namespace PackageExplorer
             if (_pluginDialog == null)
             {
                 _pluginViewModel = ViewModelFactory.CreatePackageChooserViewModel(NuGetConstants.PluginFeedUrl);
-                _pluginDialog = new PackageChooserDialog(_pluginViewModel)
-                                {
-                                    Owner = Window.Value
-                                };
+                _pluginDialog = new PackageChooserDialog(_pluginViewModel);
             }
 
+            _pluginDialog.Owner = Window.Value;
+            ReCenterPackageChooserDialog(_pluginDialog);
             _pluginDialog.ShowDialog();
             return _pluginViewModel.SelectedPackage;
+        }
+
+        private void ReCenterPackageChooserDialog(StandardDialog dialog)
+        {
+            if (dialog.Owner == null) return;
+            var ownerCenterX = dialog.Owner.Left + dialog.Owner.Width / 2;
+            var ownerCenterY = dialog.Owner.Top + dialog.Owner.Height / 2;
+
+            if (ownerCenterX < dialog.ActualWidth / 2 || ownerCenterY < dialog.ActualHeight / 2)
+            {
+                dialog.Left = (SystemParameters.WorkArea.Width - dialog.ActualHeight) / 2;
+                dialog.Top = (SystemParameters.WorkArea.Height - dialog.ActualHeight) / 2;
+                return;
+            }
+
+            dialog.Left = ownerCenterX - dialog.ActualWidth / 2;
+            dialog.Top = ownerCenterY - dialog.ActualHeight / 2;
         }
 
         public void Dispose()

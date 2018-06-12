@@ -118,7 +118,7 @@ namespace PackageExplorerViewModel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.Confirm(System.String,System.String,System.Boolean)")]
         private void Save()
         {
-            var expectedPackageName = ViewModel.PackageMetadata + NuGetPe.Constants.PackageExtension;
+            var expectedPackageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.PackageExtension;
             var packageName = Path.GetFileName(ViewModel.PackageSource);
             if (!expectedPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase))
             {
@@ -142,7 +142,7 @@ namespace PackageExplorerViewModel
 
         private void SaveAs()
         {
-            var packageName = ViewModel.PackageMetadata + NuGetPe.Constants.PackageExtension;
+            var packageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.PackageExtension;
             var title = "Save " + packageName;
             const string filter = "NuGet package file (*.nupkg)|*.nupkg|NuGet Symbols package file (*.snupkg)|*.snupkg|All files (*.*)|*.*";
             var initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;
@@ -179,7 +179,7 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void SaveMetadataAs()
         {
-            var packageName = ViewModel.PackageMetadata + NuGetPe.Constants.ManifestExtension;
+            var packageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension;
             var title = "Save " + packageName;
             const string filter = "NuGet manifest file (*.nuspec)|*.nuspec|All files (*.*)|*.*";
             var initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;
@@ -210,7 +210,7 @@ namespace PackageExplorerViewModel
 
             if (ViewModel.UIServices.OpenSignPackageDialog(signViewModel, out var signedPackagePath))
             {
-                var packageName = ViewModel.PackageMetadata + NuGetPe.Constants.PackageExtension;
+                var packageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.PackageExtension;
                 var title = "Save " + packageName;
                 const string filter = "NuGet package file (*.nupkg)|*.nupkg|NuGet Symbols package file (*.snupkg)|*.snupkg|All files (*.*)|*.*";
                 var initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;

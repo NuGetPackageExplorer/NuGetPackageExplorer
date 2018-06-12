@@ -6,6 +6,7 @@ using System.Runtime.Versioning;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
 using NuGet.Packaging;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -24,7 +25,7 @@ namespace PackageExplorerViewModel
         {
             _file = file ?? throw new ArgumentNullException("file");
 
-            if (file is PhysicalPackageFile physicalFile)
+            if (file is DiskPackageFile physicalFile)
             {
                 WatchPhysicalFile(physicalFile);
             }
@@ -38,7 +39,7 @@ namespace PackageExplorerViewModel
         /// </summary>
         public string OriginalPath
         {
-            get { return (_file as PhysicalPackageFile)?.SourcePath; }
+            get { return _file.OriginalPath(); }
         }
 
         public string EffectivePath
@@ -91,10 +92,10 @@ namespace PackageExplorerViewModel
 
         public DateTimeOffset LastWriteTime => _file.LastWriteTime;
 
-        private void WatchPhysicalFile(PhysicalPackageFile physicalFile)
+        private void WatchPhysicalFile(DiskPackageFile physicalFile)
         {
-            var folderPath = System.IO.Path.GetDirectoryName(physicalFile.SourcePath);
-            var fileName = System.IO.Path.GetFileName(physicalFile.SourcePath);
+            var folderPath = System.IO.Path.GetDirectoryName(physicalFile.OriginalPath);
+            var fileName = System.IO.Path.GetFileName(physicalFile.OriginalPath);
 
             _watcher = new FileSystemWatcher(folderPath, fileName)
                        {
@@ -129,6 +130,11 @@ namespace PackageExplorerViewModel
         }
 
         public override IEnumerable<IPackageFile> GetFiles()
+        {
+            yield return this;
+        }
+
+        public override IEnumerable<PackagePart> GetPackageParts()
         {
             yield return this;
         }

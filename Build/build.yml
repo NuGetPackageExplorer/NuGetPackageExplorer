@@ -1,6 +1,6 @@
-queue: "Hosted VS2017"
-variables: 
-  BuildConfiguration: Release
+parameters: 
+  signSteps: []
+  
 steps:
 - task: BatchScript@1
   inputs:
@@ -10,17 +10,21 @@ steps:
   displayName: Setup Environment Variables
 
 - task: NuGetToolInstaller@0
-  displayName: Use NuGet 4.5
+  displayName: Use NuGet 4.6.2
   inputs:
-    versionSpec: 4.5.0
+    versionSpec: 4.6.2
 
-- powershell: |
-    
-    mkdir $(Build.ArtifactStagingDirectory)\Logs
+- task: DotNetCoreCLI@2
+  inputs:
+    command: build
+    projects: Build/setversion.csproj
+    arguments: -c $(BuildConfiguration)   
+  displayName: Set Version
+  condition: eq(variables['system.pullrequest.isfork'], false)
 
-    # restore 
-    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /t:restore /bl:$(Build.ArtifactStagingDirectory)\Logs\restore.binlog
-    
+- powershell: |   
+    mkdir $(Build.ArtifactStagingDirectory)\Nightly
+        
     # version    
     nuget install NerdBank.GitVersioning -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
     
@@ -34,10 +38,13 @@ steps:
     $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
     $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
     
+    $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"    
+    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
+    
     # Build PackageExplorer
-    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /m /p:Configuration=$(BuildConfiguration) /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-PackageExplorer.binlog
-    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-NightlyPackage.binlog
-    msbuild .\PackageExplorer.Package\PackageExplorer.Package.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload /bl:$(Build.ArtifactStagingDirectory)\Logs\Build-Package.binlog
+    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /restore /m /p:Configuration=$(BuildConfiguration) 
+    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" 
+    msbuild .\PackageExplorer.Package\PackageExplorer.Package.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload 
     
     # Update versions
     $doc = Get-Content ".\Build\ci_badge.svg"    
@@ -60,7 +67,7 @@ steps:
     msbuild /t:pack .\Types\Types.csproj /p:Configuration=$(BuildConfiguration) /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
         
   displayName: Build Nightly
-  
+    
 - task: ArchiveFiles@1
   displayName: Zip PackageExplorer files
   inputs:
@@ -69,23 +76,7 @@ steps:
     archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.$(Build.BuildNumber).zip
     includeRootFolder: false
     
-- task: PowerShell@2
-  displayName: Authenticode Sign Nightly artifacts
-  inputs:
-    filePath: Build/Sign-Package.ps1
-  env:
-    SignClientUser: $(SignClientUser)
-    SignClientSecret: $(SignClientSecret)
-    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Nightly
-
-- task: PowerShell@2
-  displayName: Authenticode Sign Zip artifacts
-  inputs:
-    filePath: Build/Sign-Zip.ps1
-  env:
-    SignClientUser: $(SignClientUser)
-    SignClientSecret: $(SignClientSecret)
-    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Zip   
+- ${{ parameters.signSteps }}
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Nightly Artifact
@@ -93,7 +84,7 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Nightly
     artifactType: container
     artifactName: Nightly
-  condition: always()
+  condition: eq(variables['system.pullrequest.isfork'], false)
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Zip Artifact
@@ -101,15 +92,7 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
     artifactType: container
     artifactName: Zip
-  condition: always()
-
-- task: PublishBuildArtifacts@1
-  displayName: Publish Log Artifacts
-  inputs:
-    pathToPublish: $(Build.ArtifactStagingDirectory)\Logs
-    artifactType: container
-    artifactName: Logs
-  condition: always()
+  condition: eq(variables['system.pullrequest.isfork'], false)
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Store Artifacts
@@ -117,4 +100,4 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Store
     artifactType: container
     artifactName: Store
-  condition: always()
+  condition: eq(variables['system.pullrequest.isfork'], false)

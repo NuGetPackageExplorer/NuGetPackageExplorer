@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,12 +34,12 @@ namespace PackageExplorer
                     {
                         "(no version)", "native"
                     }
-                },   
+                },
                 {
                     "ASP.NET 5",
                     new []
                     {
-                        "dnxcore", "dnxcore50", 
+                        "dnxcore", "dnxcore50",
                         "dotnet5.4","dotnet5.4"
                     }
                 },
@@ -68,9 +70,9 @@ namespace PackageExplorer
                     "Mono",
                     new[]
                     {
-                        "Android", "MonoAndroid", 
-                        "Mono", "Mono", 
-                        "iOS", "MonoTouch", 
+                        "Android", "MonoAndroid",
+                        "Mono", "Mono",
+                        "iOS", "MonoTouch",
                         "OSX", "MonoMac"
                     }
                 },
@@ -79,37 +81,37 @@ namespace PackageExplorer
                     "Xamarin",
                     new[]
                     {
-                        "Mac", "xamarinmac", 
+                        "Mac", "xamarinmac",
                         "iOS", "xamarinios",
-                        "Playstation 3", "xamarinpsthree", 
-                        "Playstation 4", "xamarinpsfour", 
+                        "Playstation 3", "xamarinpsthree",
+                        "Playstation 4", "xamarinpsfour",
                         "PS Vita", "xamarinpsvita",
                         "Watch OS", "xamarinwatchos",
                         "TV OS", "xamarintvos",
                         "XBox 360", "xamarinxboxthreesixty",
-                        "XBox One", "xamarinxboxone", 
+                        "XBox One", "xamarinxboxone",
                     }
                 },
                 {
                     "Windows Phone (Windows Runtime)",
                     new []
                     {
-                        "(no version)", "wpa", 
+                        "(no version)", "wpa",
                         "v8.1", "wpa81"
                     }
                 },
                   {
-                    "Windows Phone (appx)", 
+                    "Windows Phone (appx)",
                     new[] {
-                        "v8.1", "wpa81", 
+                        "v8.1", "wpa81",
                     }
                 },
                 {
-                    "Windows Phone (Silverlight)", 
+                    "Windows Phone (Silverlight)",
                     new[] {
-                        "v7.0", "sl3-wp", 
-                        "v7.1 (Mango)", "sl4-wp71", 
-                        "v8.0", "wp8", 
+                        "v7.0", "sl3-wp",
+                        "v7.1 (Mango)", "sl4-wp71",
+                        "v8.0", "wp8",
                         "v8.1", "wp81"}
                 },
 
@@ -117,27 +119,27 @@ namespace PackageExplorer
                     "Silverlight",
                     new[]
                     {
-                        "(no version)", "sl", 
-                        "v2.0", "sl2", 
-                        "v3.0", "sl30", 
-                        "v4.0", "sl40", 
+                        "(no version)", "sl",
+                        "v2.0", "sl2",
+                        "v3.0", "sl30",
+                        "v4.0", "sl40",
                         "v5.0", "sl50"
                     }
                 },
                 {
-                    "Windows Store", 
+                    "Windows Store",
                     new[] {
-                        "(no version)", "netcore", 
-                        "Windows 8", "netcore45", 
-                        "Windows 8.1", "netcore451", 
-                        "Windows 10", "uap10.0", 
+                        "(no version)", "netcore",
+                        "Windows 8", "netcore45",
+                        "Windows 8.1", "netcore451",
+                        "Windows 10", "uap10.0",
                     }
                 },
                 {
                     ".NET Client profile",
                     new []
                     {
-                        "v3.5 client", "net35-client", 
+                        "v3.5 client", "net35-client",
                         "v4.0 client", "net40-client"
                     }
                 },
@@ -166,15 +168,15 @@ namespace PackageExplorer
                     ".NET",
                     new[]
                     {
-                        "(no version)", "net", 
-                        "dotnet", "dotnet", 
-                        "v1.0", "net10", 
+                        "(no version)", "net",
+                        "dotnet", "dotnet",
+                        "v1.0", "net10",
                         "v1.1", "net11",
-                        "v2.0", "net20", 
-                        "v3.0", "net30", 
-                        "v3.5", "net35", 
-                        "v4.0", "net40", 
-                        "v4.5", "net45", 
+                        "v2.0", "net20",
+                        "v3.0", "net30",
+                        "v3.5", "net35",
+                        "v4.0", "net40",
+                        "v4.5", "net45",
                         "v4.5.1", "net451",
                         "v4.5.2", "net452",
                         "v4.6", "net46",
@@ -197,6 +199,8 @@ namespace PackageExplorer
 
             PackageMetadataEditor.UIServices = messageBoxServices;
             PackageMetadataEditor.PackageChooser = packageChooser;
+
+            DataContextChanged += OnDataContextChanged;
         }
 
         private PackageFolder RootFolder
@@ -350,21 +354,14 @@ namespace PackageExplorer
             if (folder != null)
             {
                 var data = e.Data;
-                if (data.GetDataPresent(DataFormats.FileDrop))
+
+                if (CanHandleDataObject(folder, data))
                 {
                     effects = DragDropEffects.Copy;
-                }
-                else
-                {
-                    // make sure we don't drag a file or folder into the same parent
-                    if (data.GetData(PackageFileDataFormat, false) is PackagePart packagePart &&
-                        !folder.Contains(packagePart) &&
-                        !folder.ContainsFile(packagePart.Name) &&
-                        !folder.ContainsFolder(packagePart.Name) &&
-                        !folder.IsDescendantOf(packagePart))
+
+                    if (data.GetDataPresent(PackageFileDataFormat))
                     {
-                        // we only allow copying file for now
-                        var copying = (packagePart is PackageFile) && (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
+                        var copying = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
                         effects = copying ? DragDropEffects.Copy : DragDropEffects.Move;
                     }
                 }
@@ -383,38 +380,10 @@ namespace PackageExplorer
                 folder = item.DataContext as PackageFolder;
             }
 
-            var data = e.Data;
-            if (data.GetDataPresent(DataFormats.FileDrop))
+            var copying = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
+            if (HandleDataObject(folder, e.Data, copying))
             {
-                var value = data.GetData(DataFormats.FileDrop);
-                if (value is string[] filenames && filenames.Length > 0)
-                {
-                    var viewModel = DataContext as PackageViewModel;
-                    viewModel.AddDraggedAndDroppedFiles(folder, filenames);
-                    e.Handled = true;
-                }
-            }
-            else if (data.GetDataPresent(PackageFileDataFormat))
-            {
-                if (data.GetData(PackageFileDataFormat) is PackagePart packagePart)
-                {
-                    folder = folder ?? RootFolder;
-
-                    if (packagePart is PackageFile file)
-                    {
-                        var copying = (e.KeyStates & DragDropKeyStates.ControlKey) == DragDropKeyStates.ControlKey;
-                        folder.AddFile(file, copying);
-                    }
-                    else
-                    {
-                        if (packagePart is PackageFolder childFolder && !folder.IsDescendantOf(childFolder))
-                        {
-                            folder.AddFolder(childFolder);
-                        }
-                    }
-
-                    e.Handled = true;
-                }
+                e.Handled = true;
             }
         }
 
@@ -457,7 +426,7 @@ namespace PackageExplorer
                         _isPressing = false;
                         _isDragging = true;
 
-                        var data = new DataObject(PackageFileDataFormat, packagePart);
+                        var data = CreateDataObject(packagePart);
                         DragDrop.DoDragDrop(item, data, DragDropEffects.Copy | DragDropEffects.Move);
                         ResetDraggingState();
                     }
@@ -489,13 +458,170 @@ namespace PackageExplorer
             menu.Opened -= PackageFolderContextMenu_Opened;
         }
 
+        private void OnTreeViewItemCopy(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (sender is TreeView treeView && treeView.SelectedItem is PackagePart packagePart)
+            {
+                var data = CreateDataObject(packagePart);
+                Clipboard.SetDataObject(data);
+            }
+        }
+
+        private void OnTreeViewItemCanPaste(object sender, CanExecuteRoutedEventArgs e)
+        {
+            PackageFolder folder = null;
+
+            if (sender is TreeView treeView)
+            {
+                folder = treeView.SelectedItem as PackageFolder;
+            }
+
+            e.CanExecute = CanHandleDataObject(folder, Clipboard.GetDataObject());
+        }
+
+        private void OnTreeViewItemPaste(object sender, ExecutedRoutedEventArgs e)
+        {
+            PackageFolder folder = null;
+
+            if (sender is TreeView treeView)
+            {
+                folder = treeView.SelectedItem as PackageFolder;
+            }
+
+            if (HandleDataObject(folder, Clipboard.GetDataObject(), true))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (Clipboard.ContainsData(PackageFileDataFormat))
+            {
+                Clipboard.Clear();
+            }
+        }
+
+        private bool CanHandleDataObject(PackageFolder folder, IDataObject data)
+        {
+            if (DataContext is PackageViewModel model)
+            {
+                if (model.IsSigned || model.IsInEditFileMode || model.IsInEditMetadataMode)
+                {
+                    return false;
+                }
+            }
+
+            if (data.GetDataPresent(PackageFileDataFormat))
+            {
+                if (data.GetData(PackageFileDataFormat) is string packagePartPath)
+                {
+                    var packagePart = RootFolder.GetPackageParts().FirstOrDefault(part => part.Path == packagePartPath);
+
+                    // make sure we don't drag a file or folder into the same parent
+                    if (packagePart != null &&
+                        folder != null &&
+                        !folder.Contains(packagePart) &&
+                        !folder.ContainsFile(packagePart.Name) &&
+                        !folder.ContainsFolder(packagePart.Name) &&
+                        !folder.IsDescendantOf(packagePart))
+                    {
+                        return true;
+                    }
+                }
+            }
+            if (data.GetDataPresent(NativeDragDrop.FileGroupDescriptorW))
+            {
+                return true;
+            }
+            if (data.GetDataPresent(DataFormats.FileDrop))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool HandleDataObject(PackageFolder folder, IDataObject data, bool copy)
+        {
+            if (!CanHandleDataObject(folder, data))
+            {
+                return false;
+            }
+
+            if (data.GetDataPresent(PackageFileDataFormat))
+            {
+                if (data.GetData(PackageFileDataFormat) is string packagePartPath)
+                {
+                    var packagePart = RootFolder.GetPackageParts().FirstOrDefault(part => part.Path == packagePartPath);
+
+                    if (packagePart != null)
+                    {
+                        folder = folder ?? RootFolder;
+
+                        if (packagePart is PackageFile file)
+                        {
+                            folder.AddFile(file, copy);
+                        }
+                        else
+                        {
+                            if (packagePart is PackageFolder childFolder && !folder.IsDescendantOf(childFolder))
+                            {
+                                folder.AddFolder(childFolder, copy);
+                            }
+                        }
+                        return true;
+                    }
+                }
+            }
+            if (data.GetDataPresent(NativeDragDrop.FileGroupDescriptorW))
+            {
+                folder = folder ?? RootFolder;
+
+                var viewModel = DataContext as PackageViewModel;
+                viewModel.AddDraggedAndDroppedFileDescriptors(folder, NativeDragDrop.GetFileGroupDescriptorW(data));
+                return true;
+            }
+            if (data.GetDataPresent(DataFormats.FileDrop))
+            {
+                var value = data.GetData(DataFormats.FileDrop);
+                if (value is string[] filenames && filenames.Length > 0)
+                {
+                    var viewModel = DataContext as PackageViewModel;
+                    viewModel.AddDraggedAndDroppedFiles(folder, filenames);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private IDataObject CreateDataObject(PackagePart packagePart)
+        {
+            var data = new DataObject();
+            data.SetData(PackageFileDataFormat, packagePart.Path);
+
+            if (packagePart is PackageFile packageFile)
+            {
+                long? fileSize = null;
+                if (packageFile.OriginalPath != null)
+                {
+                    fileSize = new FileInfo(packageFile.OriginalPath).Length;
+                }
+
+                data.SetData(NativeDragDrop.FileGroupDescriptorW, NativeDragDrop.CreateFileGroupDescriptorW(packageFile.Name, packageFile.LastWriteTime, fileSize));
+                data.SetData(NativeDragDrop.FileContents, new LazyPackageFileStream(packageFile));
+            }
+
+            return data;
+        }
+
         private static void AddFrameworkFoldersToContextMenu(ContextMenu menu)
         {
             var visibilityBinding = new Binding("Path")
-                                    {
-                                        Converter = new StringToVisibilityConverter(),
-                                        ConverterParameter = "lib;content;tools;build;ref;contentFiles"
-                                    };
+            {
+                Converter = new StringToVisibilityConverter(),
+                ConverterParameter = "lib;content;tools;build;ref;contentFiles"
+            };
 
             var commandBinding = new Binding("AddContentFolderCommand");
 
@@ -510,10 +636,10 @@ namespace PackageExplorer
             foreach (var pair in _frameworkFolders)
             {
                 var item = new MenuItem
-                           {
-                               Header = string.Format(CultureInfo.CurrentCulture, "Add {0} folder", pair.Key),
-                               Visibility = Visibility.Collapsed
-                           };
+                {
+                    Header = string.Format(CultureInfo.CurrentCulture, "Add {0} folder", pair.Key),
+                    Visibility = Visibility.Collapsed
+                };
                 item.SetBinding(VisibilityProperty, visibilityBinding);
 
                 var values = pair.Value;
@@ -522,10 +648,10 @@ namespace PackageExplorer
                     for (var i = 0; i < values.Length; i += 2)
                     {
                         var childItem = new MenuItem
-                                        {
-                                            Header = values[i],
-                                            CommandParameter = values[i + 1]
-                                        };
+                        {
+                            Header = values[i],
+                            CommandParameter = values[i + 1]
+                        };
                         childItem.SetBinding(MenuItem.CommandProperty, commandBinding);
                         item.Items.Add(childItem);
                     }
@@ -545,5 +671,67 @@ namespace PackageExplorer
                 menu.Items.Insert(0, item);
             }
         }
+
+        class LazyPackageFileStream : Stream
+        {
+            private readonly PackageFile _packageFile;
+            private Stream _inner;
+
+            public LazyPackageFileStream(PackageFile packageFile)
+            {
+                _packageFile = packageFile;
+            }
+
+            private void InitStream()
+            {
+                if (_inner == null)
+                {
+                    var memoryStream = new MemoryStream();
+                    using (var stream = _packageFile.GetStream())
+                    {
+                        stream.CopyTo(memoryStream);
+                    }
+                    _inner = memoryStream;
+                }
+            }
+
+            public override bool CanRead => true;
+
+            public override bool CanSeek => true;
+
+            public override bool CanWrite => false;
+
+            public override long Length { get { InitStream(); return _inner.Length; } }
+
+            public override long Position { get { InitStream(); return _inner.Position; } set { InitStream(); _inner.Position = value; } }
+
+            public override void Flush() => throw new NotImplementedException();
+
+            public override int Read(byte[] buffer, int offset, int count)
+            {
+                InitStream();
+
+                return _inner.Read(buffer, offset, count);
+            }
+
+            public override long Seek(long offset, SeekOrigin origin)
+            {
+                InitStream();
+
+                return _inner.Seek(offset, origin);
+            }
+
+            public override void SetLength(long value) => throw new NotImplementedException();
+
+            public override void Write(byte[] buffer, int offset, int count) => throw new NotImplementedException();
+
+            protected override void Dispose(bool disposing)
+            {
+                base.Dispose(disposing);
+
+                _inner?.Dispose();
+            }
+        }
+
     }
 }

@@ -213,7 +213,7 @@ namespace PackageExplorer
         {
             var response = await base.SendAsync(request, cancellationToken);
 
-            if (IsBinaryMediaType(response.Content.Headers.ContentType.MediaType))
+            if (IsBinaryMediaType(response.Content.Headers.ContentType?.MediaType))
             {
                 var totalSize = response.Content.Headers.ContentLength;
                 var innerStream = await response.Content.ReadAsStreamAsync();
@@ -329,7 +329,7 @@ namespace PackageExplorer
 
             if (proxy != null)
             {
-                messageHandler = new ProxyAuthenticationHandler(clientHandler, HttpHandlerResourceV3.CredentialService, ProxyCache.Instance);
+                messageHandler = new ProxyAuthenticationHandler(clientHandler, HttpHandlerResourceV3.CredentialService.Value, ProxyCache.Instance);
             }
 
             {
@@ -343,7 +343,7 @@ namespace PackageExplorer
             {
                 var innerHandler = messageHandler;
 
-                messageHandler = new HttpSourceAuthenticationHandler(packageSource, clientHandler, HttpHandlerResourceV3.CredentialService)
+                messageHandler = new HttpSourceAuthenticationHandler(packageSource, clientHandler, HttpHandlerResourceV3.CredentialService.Value)
                 {
                     InnerHandler = innerHandler
                 };

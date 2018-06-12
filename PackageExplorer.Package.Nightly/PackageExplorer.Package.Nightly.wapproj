@@ -44,6 +44,9 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
     <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
+    <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
+    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -53,12 +56,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\*.png" />
-    <Content Include="..\PackageExplorer\bin\$(Configuration)\net461\**\*.dll">
-      <Link>NuGetPackageExplorer\%(RecursiveDir)%(Filename)%(Extension)</Link>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
   </ItemGroup>
+
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>

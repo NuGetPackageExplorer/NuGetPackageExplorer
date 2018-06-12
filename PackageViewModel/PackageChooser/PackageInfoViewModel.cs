@@ -38,6 +38,7 @@ namespace PackageExplorerViewModel
             Debug.Assert(repository != null);
 
             LatestPackageInfo = info;
+            SelectedPackage = info;
             ShowPrerelease = showPrereleasePackages;
             _repository = repository;
             _parentViewModel = parentViewModel;
@@ -73,17 +74,12 @@ namespace PackageExplorerViewModel
             {
                 if (_selectedPackage != value)
                 {
-                    _selectedPackage = value;
+                    if (value != null)
+                    {
+                        _selectedPackage = value;
+                    }
                     OnPropertyChanged();
                 }
-            }
-        }
-
-        public PackageInfo EffectiveSelectedPackage
-        {
-            get
-            {
-                return ShowingAllVersions ? SelectedPackage : LatestPackageInfo;
             }
         }
 
@@ -303,6 +299,14 @@ namespace PackageExplorerViewModel
                 Published = packageSearchMetadata.Published,
                 DownloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault()),
                 IsRemotePackage = (feedType == FeedType.HttpV3 || feedType == FeedType.HttpV2),
+                IsPrefixReserved = packageSearchMetadata.PrefixReserved,
+                Description = packageSearchMetadata.Description,
+                Tags = packageSearchMetadata.Tags,
+                Summary = packageSearchMetadata.Summary,
+                LicenseUrl = packageSearchMetadata.LicenseUrl?.ToString() ?? string.Empty,
+                ProjectUrl = packageSearchMetadata.ProjectUrl?.ToString() ?? string.Empty,
+                ReportAbuseUrl = packageSearchMetadata.ReportAbuseUrl?.ToString() ?? string.Empty,
+                IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty
             };
         }
     }

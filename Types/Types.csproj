@@ -3,7 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <Description>Contains types to enable the plugin architecture in NuGet Package Explorer.</Description>
-    <Copyright>\x00a9 .NET Foundation. All rights reserved.</Copyright>
     <Product>NuGet Package Explorer</Product>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>NuGetPackageExplorer.snk</AssemblyOriginatorKeyFile>
@@ -13,7 +12,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.2" />
-    <PackageReference Include="NuGet.Packaging" Version="4.6.0-rtm-4956" />
+    <PackageReference Include="NuGet.Packaging" Version="4.7.0" />
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
   

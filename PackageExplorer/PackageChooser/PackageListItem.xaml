@@ -1,0 +1,59 @@
+﻿<UserControl x:Class="PackageExplorer.PackageListItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PackageExplorer"
+             mc:Ignorable="d" 
+             d:DesignHeight="70" d:DesignWidth="670">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="45"/>
+            <ColumnDefinition Width="0.8*"/>
+            <ColumnDefinition Width="0.2*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Image Grid.Column="0" Grid.RowSpan="2" Margin="0,4,0,0"
+                               VerticalAlignment="Top" HorizontalAlignment="Left"
+                               Style="{StaticResource PackageIconImageStyle}"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <TextBlock Text="{Binding LatestPackageInfo.Id, Mode=OneWay}" FontWeight="Bold"/>
+            <Rectangle Fill="{StaticResource PrefixReservedIndicator}" 
+                                       Width="16" Height="16" 
+                                       Margin="4,0,0,0"
+                                       Visibility="{Binding LatestPackageInfo.IsPrefixReserved, Converter={StaticResource boolToVis}}"/>
+            <TextBlock HorizontalAlignment="Stretch" Margin="4,0,0,0">
+                                by
+                                <Run Text="{Binding LatestPackageInfo.Authors, Mode=OneWay}"/>,
+                                <Run Text="{Binding LatestPackageInfo.DownloadCount, Mode=OneWay, Converter={StaticResource NumberToStringConverter}}" FontWeight="Bold"/> downloads
+            </TextBlock>
+
+        </StackPanel>
+
+        <Label Grid.Column="2" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" VerticalAlignment="Top" VerticalContentAlignment="Top" Padding="0">
+            <Label.Style>
+                <Style TargetType="Label">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding LatestPackageInfo.IsPrerelease}" Value="True">
+                            <Setter Property="Foreground" Value="Maroon" />
+                            <Setter Property="FontStyle" Value="Italic" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Label.Style>
+            <Label.Content>
+                <TextBlock>
+                                    v<Run Text="{Binding LatestPackageInfo.SemanticVersion, Mode=OneWay}"/>
+                </TextBlock>
+            </Label.Content>
+        </Label>
+
+        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding LatestPackageInfo.Summary}"
+                                   TextWrapping="Wrap" TextTrimming="CharacterEllipsis" HorizontalAlignment="Stretch" MaxHeight="40" />
+    </Grid>
+</UserControl>

@@ -59,20 +59,26 @@
                     <spinners:ucSpinnerDotCircle x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" Foreground="Black" />
                 </StackPanel>
                 <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Trusted">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Trusted}" />
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Valid">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/Validate.png" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Invalid">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Invalid}" />
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Illegal">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Illegal}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Untrusted">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Untrusted}" />
+                        <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Suspect">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Suspect}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
@@ -107,6 +113,35 @@
                             <Run Text="{Binding TimestampSignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
                         </Hyperlink>
                     </TextBlock>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type core:RepositoryMetadata}">
+                <StackPanel>
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Type, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryType}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Type}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Url, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryUrl}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Style="{StaticResource DetailMetadataValueStyle}">
+                            <Hyperlink Command="GoToPage" CommandParameter="{Binding Url, Mode=OneWay}">
+                                <Run Text="{Binding Url}" />
+                            </Hyperlink>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Branch, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryBranch}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Branch}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+
+
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Commit, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryCommit}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Commit}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
                 </StackPanel>
             </DataTemplate>
 
@@ -160,6 +195,7 @@
                 <MenuItem Header="_Open in Windows shell..." Command="{Binding OpenCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Open _with..." Command="{Binding OpenWithCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Save As..." Command="{Binding SaveCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="Copy" Command="Copy" />
                 <Separator />
                 <MenuItem Header="_Edit" Command="{Binding EditCommand}" CommandParameter="{Binding}" />
                 <Separator />
@@ -215,6 +251,7 @@
                         <Image Source="Images/NewFolderHS.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                <MenuItem Header="Paste" Command="Paste" />
                 <MenuItem Header="_Rename..." InputGestureText="F2" Command="{Binding RenameCommand}" CommandParameter="{Binding}" />
                 <self:GrayscaleMenuItem Header="_Delete" InputGestureText="Delete" Command="{Binding DeleteCommand}" CommandParameter="{Binding}">
                     <self:GrayscaleMenuItem.Icon>
@@ -345,6 +382,15 @@
                         <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Serviceable, Converter={StaticResource boolToVis}}">
                             <TextBlock Text="{x:Static self:Resources.Dialog_ServiceableLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
                             <TextBlock Text="{Binding Serviceable, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
+                        </StackPanel>
+
+                        <!-- Repository -->
+                        <StackPanel
+                            Visibility="{Binding Repository, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                            <ContentPresenter Margin="14,0,0,0" Content="{Binding Repository, Mode=OneWay}" />
+
                         </StackPanel>
 
                         <!-- Summary -->
@@ -599,6 +645,11 @@
                         </self:GrayscaleMenuItem>
                     </ContextMenu>
                 </TreeView.ContextMenu>
+
+                <TreeView.CommandBindings>
+                    <CommandBinding Command="Copy" Executed="OnTreeViewItemCopy" />
+                    <CommandBinding Command="Paste" Executed="OnTreeViewItemPaste" CanExecute="OnTreeViewItemCanPaste" />
+                </TreeView.CommandBindings>
             </TreeView>
         </HeaderedContentControl>
 

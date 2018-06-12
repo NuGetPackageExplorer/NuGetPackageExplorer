@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
@@ -8,12 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Credentials" Version="4.6.0-rtm-4956" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.6.0-rtm-4956" />
-    <PackageReference Include="MSBuild.Sdk.Extras" Version="1.2.1" />  
+    <PackageReference Include="NuGet.Credentials" Version="4.7.0" />
+    <PackageReference Include="NuGet.PackageManagement" Version="4.7.0" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
-  
-  <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
+
 </Project>

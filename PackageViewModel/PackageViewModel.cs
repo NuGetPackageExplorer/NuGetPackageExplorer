@@ -324,7 +324,7 @@ namespace PackageExplorerViewModel
             {
                 foreach (var file in selectedFiles)
                 {
-                    folder.AddFile(file, isTempFile: false);
+                    folder.AddFile(file);
                 }
             }
         }
@@ -964,7 +964,7 @@ namespace PackageExplorerViewModel
 
         private IEditablePackageFile CreatePackageMetadataFile()
         {
-            var packageName = PackageMetadata + NuGetPe.Constants.ManifestExtension;
+            var packageName = PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension;
             var filePath = Path.GetTempFileName();
             
             ExportManifest(filePath, askForConfirmation: false, includeFilesSection: false);
@@ -1015,7 +1015,7 @@ namespace PackageExplorerViewModel
             if (result)
             {
                 var sourcePath = FileHelper.CreateTempFile(newName);
-                var file = folder.AddFile(sourcePath, isTempFile: true);
+                var file = folder.AddFile(sourcePath);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1050,7 +1050,7 @@ namespace PackageExplorerViewModel
 
             if (SelectedItem is PackageFolder selectedFolder)
             {
-                var file = selectedFolder.AddFile(sourcePath, isTempFile: true);
+                var file = selectedFolder.AddFile(sourcePath);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1105,7 +1105,7 @@ namespace PackageExplorerViewModel
 
             if (SelectedItem is PackageFolder selectedFolder)
             {
-                var file = selectedFolder.AddFile(sourcePath, isTempFile: true);
+                var file = selectedFolder.AddFile(sourcePath);
                 // file can be null if it collides with other files in the same directory
                 if (file != null)
                 {
@@ -1350,7 +1350,7 @@ namespace PackageExplorerViewModel
                             targetFolder = RootFolder;
                         }
 
-                        targetFolder.AddFile(file, isTempFile: false);
+                        targetFolder.AddFile(file);
                     }
                     else if (Directory.Exists(file))
                     {
@@ -1364,12 +1364,38 @@ namespace PackageExplorerViewModel
                 {
                     if (File.Exists(file))
                     {
-                        folder.AddFile(file, isTempFile: false);
+                        folder.AddFile(file);
                     }
                     else if (Directory.Exists(file))
                     {
                         folder.AddPhysicalFolder(file);
                     }
+                }
+            }
+        }
+
+        public void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<(string FilePath, Stream Stream)> fileDescriptors)
+        {
+            foreach (var fileDescription in fileDescriptors)
+            {
+                var parts = fileDescription.FilePath.Split(Path.DirectorySeparatorChar);
+
+                var name = parts[parts.Length - 1];
+                var parentFolder = folder;
+                for (var i = 0; i < parts.Length - 1; i++)
+                {
+                    parentFolder = (PackageFolder)parentFolder[parts[i]];
+                }
+
+                if (fileDescription.Stream != null) // file
+                {
+                    var tempFile = FileHelper.CreateTempFile(name, fileDescription.Stream);
+
+                    parentFolder.AddFile(tempFile);
+                }
+                else // folder
+                {
+                    parentFolder.AddFolder(name);
                 }
             }
         }

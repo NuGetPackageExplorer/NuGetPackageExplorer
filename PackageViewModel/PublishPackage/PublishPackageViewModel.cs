@@ -20,6 +20,7 @@ namespace PackageExplorerViewModel
         private bool _hasError;
         private string _publishKeyOrPAT;
         private bool? _publishAsUnlisted = true;
+        private bool? _appendV2ApiToUrl = true;
         private string _selectedPublishItem;
         private bool _showProgress;
         private string _status;
@@ -110,6 +111,19 @@ namespace PackageExplorerViewModel
                 {
                     _publishAsUnlisted = value;
                     OnPropertyChanged(nameof(PublishAsUnlisted));
+                }
+            }
+        }
+
+        public bool? AppendV2ApiToUrl
+        {
+            get { return _appendV2ApiToUrl; }
+            set
+            {
+                if (_appendV2ApiToUrl != value)
+                {
+                    _appendV2ApiToUrl = value;
+                    OnPropertyChanged(nameof(AppendV2ApiToUrl));
                 }
             }
         }
@@ -215,11 +229,11 @@ namespace PackageExplorerViewModel
                 var repository = PackageRepositoryFactory.CreateRepository(PublishUrl);
                 var updateResource = await repository.GetResourceAsync<PackageUpdateResource>();
 
-                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, NullLogger.Instance);
+                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, AppendV2ApiToUrl != true, NullLogger.Instance);
 
                 if (PublishAsUnlisted == true)
                 {
-                    await updateResource.Delete(Id, Version, s => PublishKeyOrPAT, s => true, NullLogger.Instance);
+                    await updateResource.Delete(Id, Version, s => PublishKeyOrPAT, s => true, AppendV2ApiToUrl != true, NullLogger.Instance);
                 }
 
                 OnCompleted();

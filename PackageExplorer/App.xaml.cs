@@ -1,14 +1,17 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using NuGet.Configuration;
 using NuGet.Credentials;
 using NuGet.Protocol;
-using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
+using Settings = PackageExplorer.Properties.Settings;
 
 namespace PackageExplorer
 {
@@ -39,12 +42,12 @@ namespace PackageExplorer
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
-            HttpHandlerResourceV3.CredentialService = new CredentialService(new ICredentialProvider[] {
-                Container.GetExportedValue<CredentialManagerProvider>(),
-                Container.GetExportedValue<CredentialPublishProvider>(),
-                Container.GetExportedValue<CredentialDialogProvider>(),
-            }, false);
-            HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) => Container.GetExportedValue<ICredentialManager>().Add(credentials, uri);
+            InitCredentialService();
+            HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>
+            {
+                Container.GetExportedValue<ICredentialManager>().Add(credentials, uri);
+                InitCredentialService();
+            };
 
             MigrateSettings();
 
@@ -60,6 +63,15 @@ namespace PackageExplorer
                     return;
                 }
             }
+        }
+
+        private void InitCredentialService()
+        {
+            HttpHandlerResourceV3.CredentialService = new Lazy<ICredentialService>(() => new CredentialService(new ICredentialProvider[] {
+                Container.GetExportedValue<CredentialManagerProvider>(),
+                Container.GetExportedValue<CredentialPublishProvider>(),
+                Container.GetExportedValue<CredentialDialogProvider>(),
+            }, nonInteractive: false));
         }
 
         private static void MigrateSettings()
@@ -105,6 +117,12 @@ namespace PackageExplorer
             catch 
             {
             }
+        }
+
+        private void PackageIconImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            var image = sender as Image;
+            image.Source = Images.DefaultPackageIcon;
         }
     }
 }

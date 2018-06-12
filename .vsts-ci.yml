@@ -1,0 +1,28 @@
+trigger:
+- master
+- rel/*
+ 
+queue: Hosted VS2017
+variables: 
+  BuildConfiguration: Release
+steps:
+- template: Build/build.yml
+  parameters:
+    signSteps:
+    - task: PowerShell@2
+      displayName: Authenticode Sign Nightly artifacts
+      inputs:
+        filePath: Build/Sign-Package.ps1
+      env:
+        SignClientUser: $(SignClientUser)
+        SignClientSecret: $(SignClientSecret)
+        ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Nightly
+        
+    - task: PowerShell@2
+      displayName: Authenticode Sign Zip artifacts
+      inputs:
+        filePath: Build/Sign-Zip.ps1
+      env:
+        SignClientUser: $(SignClientUser)
+        SignClientSecret: $(SignClientSecret)
+        ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Zip 

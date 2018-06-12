@@ -41,7 +41,7 @@ namespace PackageExplorerViewModel.Rules
         private static PackageIssue CreatePackageIssue(PackageDependency target)
         {
             return new PackageIssue(
-                PackageIssueLevel.Error,
+                PackageIssueLevel.Warning,
                 "Invalid prerelease dependency",
                 string.Format(CultureInfo.CurrentCulture,
                               "A stable release of a package must not have a dependency on a prerelease package, '{0}'.",
