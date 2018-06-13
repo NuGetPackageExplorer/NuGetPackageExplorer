@@ -10,9 +10,9 @@ steps:
   displayName: Setup Environment Variables
 
 - task: NuGetToolInstaller@0
-  displayName: Use NuGet 4.6.2
+  displayName: Use NuGet 4.7.0
   inputs:
-    versionSpec: 4.6.2
+    versionSpec: 4.7.0
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -72,7 +72,7 @@ steps:
   displayName: Zip PackageExplorer files
   inputs:
     archiveType: zip
-    rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net461
+    rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net462
     archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.$(Build.BuildNumber).zip
     includeRootFolder: false
     
