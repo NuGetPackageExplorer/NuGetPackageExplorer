@@ -9,6 +9,8 @@ namespace PackageExplorer
     {
         public object GetView(string extension, System.IO.Stream stream)
         {
+            stream = StreamUtility.MakeSeekable(stream);
+
             // don't display file bigger than 1MB
             if (stream.Length > 1024 * 1024)
             {

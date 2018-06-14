@@ -12,6 +12,8 @@ namespace PackageExplorer
 
         public object GetView(string extension, Stream stream)
         {
+            stream = StreamUtility.MakeSeekable(stream);
+
             var source = new BitmapImage();
             source.BeginInit();
             source.CacheOption = BitmapCacheOption.OnLoad;
@@ -19,11 +21,11 @@ namespace PackageExplorer
             source.EndInit();
 
             return new Image
-                   {
-                       Source = source,
-                       Width = source.Width,
-                       Height = source.Height
-                   };
+            {
+                Source = source,
+                Width = source.Width,
+                Height = source.Height
+            };
         }
 
         #endregion
