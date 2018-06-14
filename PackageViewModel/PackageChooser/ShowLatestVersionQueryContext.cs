@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,25 +43,44 @@ namespace PackageExplorerViewModel
         {
             IEnumerable<IPackageSearchMetadata> result = null;
 
-            if (_packageSearchResouce == null && _rawPackageSearchResouce == null)
+            if (_searchText?.StartsWith("id:", StringComparison.OrdinalIgnoreCase) == true)
             {
-                _rawPackageSearchResouce = await _sourceRepository.GetResourceAsync<RawSearchResourceV3>(token);
-            }
-            if (_rawPackageSearchResouce != null)
-            {
-                var json = await _rawPackageSearchResouce.Search(_searchText, _searchFilter, _pageIndex * _pageSize, _pageSize, NullLogger.Instance, token);
-
-                result = json.Select(s => s.FromJToken<PackageSearchMetadata>());
-            }
-
-            if (result == null)
-            {
-                if (_packageSearchResouce == null)
+                var id = _searchText.Substring(3).Trim();
+                if (!string.IsNullOrEmpty(id))
                 {
-                    _packageSearchResouce = await _sourceRepository.GetResourceAsync<PackageSearchResource>(token);
+                    var findPackageByIdResource = await _sourceRepository.GetResourceAsync<PackageMetadataResource>();
+
+                    var metadata = await findPackageByIdResource.GetMetadataAsync(id, _searchFilter.IncludePrerelease, true, NullSourceCacheContext.Instance, NullLogger.Instance, token);
+
+                    result = metadata.OrderByDescending(m => m.Identity.Version).Take(1);
+                }
+                else
+                {
+                    result = Enumerable.Empty<IPackageSearchMetadata>();
+                }
+            }
+            else
+            {
+                if (_packageSearchResouce == null && _rawPackageSearchResouce == null)
+                {
+                    _rawPackageSearchResouce = await _sourceRepository.GetResourceAsync<RawSearchResourceV3>(token);
+                }
+                if (_rawPackageSearchResouce != null)
+                {
+                    var json = await _rawPackageSearchResouce.Search(_searchText, _searchFilter, _pageIndex * _pageSize, _pageSize, NullLogger.Instance, token);
+
+                    result = json.Select(s => s.FromJToken<PackageSearchMetadata>());
                 }
 
-                result = await _packageSearchResouce.SearchAsync(_searchText, _searchFilter, _pageIndex * _pageSize, _pageSize, NullLogger.Instance, token);
+                if (result == null)
+                {
+                    if (_packageSearchResouce == null)
+                    {
+                        _packageSearchResouce = await _sourceRepository.GetResourceAsync<PackageSearchResource>(token);
+                    }
+
+                    result = await _packageSearchResouce.SearchAsync(_searchText, _searchFilter, _pageIndex * _pageSize, _pageSize, NullLogger.Instance, token);
+                }
             }
 
             token.ThrowIfCancellationRequested();
