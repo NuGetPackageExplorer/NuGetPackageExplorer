@@ -4,7 +4,7 @@
     <TargetFramework>net461</TargetFramework>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
-    <EmbeddedResourceGeneratedCodeIsPublic>true</EmbeddedResourceGeneratedCodeIsPublic>
+    <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
   </PropertyGroup>
 
   <ItemGroup>
