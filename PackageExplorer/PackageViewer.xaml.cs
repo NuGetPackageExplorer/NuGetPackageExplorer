@@ -672,7 +672,7 @@ namespace PackageExplorer
             }
         }
 
-        class LazyPackageFileStream : Stream
+        private class LazyPackageFileStream : Stream
         {
             private readonly PackageFile _packageFile;
             private Stream _inner;

@@ -39,7 +39,7 @@ namespace PackageExplorerViewModel
         private ICollection<PackageReferenceSet> _packageAssemblyReferences;
         private Version _minClientVersion;
 
-        private RelayCommand _showValidationResultsCommand;
+        private readonly RelayCommand _showValidationResultsCommand;
 
         public ICommand ShowValidationResultsCommand => _showValidationResultsCommand;
 

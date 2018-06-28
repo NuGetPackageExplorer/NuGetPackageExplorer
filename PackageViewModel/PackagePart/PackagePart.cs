@@ -276,8 +276,7 @@ namespace PackageExplorerViewModel
 
         public override bool Equals(object obj)
         {
-            var other = obj as PackagePart;
-            if (other == null)
+            if (!(obj is PackagePart other))
             {
                 return false;
             }

@@ -259,13 +259,12 @@ namespace PackageExplorerViewModel
             }
         }
 
-        static bool IsCertificateValidForNuGet(X509Certificate2 certificate) => CertificateUtility.IsValidForPurposeFast(certificate, Oids.CodeSigningEku) &&
-                                                                                CertificateUtility.IsCertificatePublicKeyValid(certificate) &&
-                                                                                CertificateUtility.IsSignatureAlgorithmSupported(certificate) &&
-                                                                                !CertificateUtility.HasExtendedKeyUsage(certificate, Oids.LifetimeSigningEku) &&
-                                                                                !CertificateUtility.IsCertificateValidityPeriodInTheFuture(certificate);
-
-
+        private static bool IsCertificateValidForNuGet(X509Certificate2 certificate) => 
+            CertificateUtility.IsValidForPurposeFast(certificate, Oids.CodeSigningEku) &&
+            CertificateUtility.IsCertificatePublicKeyValid(certificate) &&
+            CertificateUtility.IsSignatureAlgorithmSupported(certificate) &&
+            !CertificateUtility.HasExtendedKeyUsage(certificate, Oids.LifetimeSigningEku) &&
+            !CertificateUtility.IsCertificateValidityPeriodInTheFuture(certificate);
 
         private void ShowCertificateCommandExecute()
         {

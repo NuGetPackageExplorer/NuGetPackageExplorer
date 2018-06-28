@@ -202,7 +202,7 @@ namespace PackageExplorer
     // helper classes for getting http progress events
     internal class ProgressHttpMessageHandler : DelegatingHandler
     {
-        private Action<long, long?> _progressAction;
+        private readonly Action<long, long?> _progressAction;
 
         public ProgressHttpMessageHandler(HttpClientHandler handler, Action<long, long?> progressAction) : base(handler)
         {

@@ -14,7 +14,7 @@ namespace PackageExplorerViewModel
         private string _id;
         private string _exclude;
         private VersionRange _versionSpec;
-        private Func<EditablePackageDependencySet> _getActiveDependencySet;
+        private readonly Func<EditablePackageDependencySet> _getActiveDependencySet;
 
         public EditablePackageDependency(Func<EditablePackageDependencySet> getActiveDependencySet)
         {

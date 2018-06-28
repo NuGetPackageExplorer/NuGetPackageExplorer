@@ -10,7 +10,7 @@ namespace PackageExplorerViewModel
     public class EditablePackageReferenceSet : INotifyPropertyChanged
     {
         private NuGetFramework _targetFramework;
-        private ObservableCollection<string> _references;
+        private readonly ObservableCollection<string> _references;
 
         public EditablePackageReferenceSet()
         {
