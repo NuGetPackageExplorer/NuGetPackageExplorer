@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Data;
 using NuGet.Frameworks;
-using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -16,16 +14,16 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var frameworkNames = (IEnumerable<NuGetFramework>) value;
+            var frameworkNames = (IEnumerable<NuGetFramework>)value;
             return frameworkNames == null ? string.Empty : string.Join("; ", frameworkNames.Select(fn => fn.DotNetFrameworkName));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stringValue = (string) value;
+            var stringValue = (string)value;
             if (!string.IsNullOrEmpty(stringValue))
             {
-                var parts = stringValue.Split(new[] {';', ','}, StringSplitOptions.RemoveEmptyEntries);
+                var parts = stringValue.Split(new[] { ';', ',' }, StringSplitOptions.RemoveEmptyEntries);
                 if (parts.Length > 0)
                 {
                     var names = new NuGetFramework[parts.Length];

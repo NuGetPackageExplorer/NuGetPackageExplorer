@@ -1,10 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.Versioning;
 using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
-using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -41,7 +39,8 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<PackageDependency> Dependencies
         {
-            get; }
+            get;
+        }
 
         public PackageDependencyGroup AsReadOnly()
         {

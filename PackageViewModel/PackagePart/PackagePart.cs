@@ -4,9 +4,8 @@ using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Windows.Input;
-using NuGetPe;
-using NuGetPackageExplorer.Types;
 using NuGet.Packaging;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -276,8 +275,7 @@ namespace PackageExplorerViewModel
 
         public override bool Equals(object obj)
         {
-            var other = obj as PackagePart;
-            if (other == null)
+            if (!(obj is PackagePart other))
             {
                 return false;
             }

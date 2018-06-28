@@ -1,8 +1,7 @@
-﻿using NuGet;
-using NuGet.ProjectManagement;
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using NuGet.ProjectManagement;
 
 namespace PackageExplorer
 {
@@ -18,7 +17,9 @@ namespace PackageExplorer
                 {
                     var format = parameter as string;
                     if (!string.IsNullOrWhiteSpace(format))
+                    {
                         return dateTimeOffset.LocalDateTime.ToString(format);
+                    }
 
                     return dateTimeOffset.LocalDateTime.ToLongDateString();
                 }

@@ -71,7 +71,10 @@ namespace PackageExplorer
 
         public static IEnumerable<(string FilePath, Stream Stream)> GetFileGroupDescriptorW(WindowsIDataObject windowsDataObject)
         {
-            if (!(windowsDataObject is ComIDataObject)) yield break;
+            if (!(windowsDataObject is ComIDataObject))
+            {
+                yield break;
+            }
 
             var fileNames = GetFileGroupDescriptorWFileNames(windowsDataObject);
 
@@ -128,12 +131,14 @@ namespace PackageExplorer
         private static Stream GetStream(WindowsIDataObject windowsObjectData, int index)
         {
             //create a FORMATETC struct to request the data with
-            var formatetc = new FORMATETC();
-            formatetc.cfFormat = (short)System.Windows.DataFormats.GetDataFormat(FileContents).Id;
-            formatetc.dwAspect = DVASPECT.DVASPECT_CONTENT;
-            formatetc.lindex = index;
-            formatetc.ptd = IntPtr.Zero;
-            formatetc.tymed = TYMED.TYMED_ISTREAM | TYMED.TYMED_HGLOBAL;
+            var formatetc = new FORMATETC
+            {
+                cfFormat = (short)System.Windows.DataFormats.GetDataFormat(FileContents).Id,
+                dwAspect = DVASPECT.DVASPECT_CONTENT,
+                lindex = index,
+                ptd = IntPtr.Zero,
+                tymed = TYMED.TYMED_ISTREAM | TYMED.TYMED_HGLOBAL
+            };
 
             try
             {
@@ -288,6 +293,7 @@ namespace PackageExplorer
         // https://msdn.microsoft.com/en-us/library/windows/desktop/gg258117(v=vs.85).aspx
         private const int FILE_ATTRIBUTE_DIRECTORY = 0x10;
 
+#pragma warning disable IDE1006 // Naming Styles
         // https://msdn.microsoft.com/en-us/library/windows/desktop/bb773290(v=vs.85).aspx
         [StructLayout(LayoutKind.Sequential)]
         private struct FILEGROUPDESCRIPTORW
@@ -315,5 +321,6 @@ namespace PackageExplorer
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
             public string cFileName;
         }
+#pragma warning restore IDE1006 // Naming Styles
     }
 }

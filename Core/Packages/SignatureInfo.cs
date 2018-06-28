@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.Pkcs;
-using System.Text;
-using System.Threading.Tasks;
 using NuGet.Packaging.Signing;
 
 namespace NuGetPe
@@ -19,13 +16,13 @@ namespace NuGetPe
             Timestamp = ts?.GeneralizedTime;
             TimestampSignerInfo = ts?.SignerInfo;
         }
-        
+
         public SignerInfo SignerInfo => signature.SignerInfo;
 
         public SignatureType Type => signature.Type;
 
         public DateTimeOffset? Timestamp { get; }
 
-        public SignerInfo TimestampSignerInfo {get;}
+        public SignerInfo TimestampSignerInfo { get; }
     }
 }

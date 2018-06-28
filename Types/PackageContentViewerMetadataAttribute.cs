@@ -8,26 +8,17 @@ namespace NuGetPackageExplorer.Types
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field, AllowMultiple = false)]
     public sealed class PackageContentViewerMetadataAttribute : ExportAttribute
     {
-        private readonly int _priority;
-        private readonly string[] _supportedExtensions;
-
         public PackageContentViewerMetadataAttribute(int priority, params string[] supportedExtensions) :
             base(typeof(IPackageContentViewer))
         {
-            _supportedExtensions = supportedExtensions;
-            _priority = priority;
+            SupportedExtensions = supportedExtensions;
+            Priority = priority;
         }
 
         [SuppressMessage("Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
-        public string[] SupportedExtensions
-        {
-            get { return _supportedExtensions; }
-        }
+        public string[] SupportedExtensions { get; }
 
-        public int Priority
-        {
-            get { return _priority; }
-        }
+        public int Priority { get; }
 
         public bool SupportsWindows10S { get; set; } = true;
     }

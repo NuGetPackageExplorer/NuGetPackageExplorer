@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
-using NuGet.Packaging;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {

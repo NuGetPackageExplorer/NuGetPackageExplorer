@@ -62,8 +62,8 @@ namespace NuGetPe
             }
 
             var attributesToRemove = from e in source.Attributes()
-                                                         where AttributeEquals(e, target.Attribute(e.Name))
-                                                         select e;
+                                     where AttributeEquals(e, target.Attribute(e.Name))
+                                     select e;
             // Remove the attributes
             foreach (var a in attributesToRemove.ToList())
             {

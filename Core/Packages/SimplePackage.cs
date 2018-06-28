@@ -1,12 +1,11 @@
-﻿using NuGet.Packaging;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using NuGet.Versioning;
+using NuGet.Packaging;
 using NuGet.Packaging.Core;
+using NuGet.Versioning;
 
 namespace NuGetPe
 {
@@ -45,7 +44,7 @@ namespace NuGetPe
             ContentFiles = packageBuilder.ContentFiles;
             PackageTypes = packageBuilder.PackageTypes;
             MinClientVersion = packageBuilder.MinClientVersion;
-            
+
             _packageBuilder = packageBuilder;
         }
 

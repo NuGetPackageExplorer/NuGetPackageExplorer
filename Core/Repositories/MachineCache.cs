@@ -1,15 +1,14 @@
-﻿using NuGet.Versioning;
-using System;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Security;
+using NuGet.Versioning;
 
 namespace NuGetPe
 {
     /// <summary>
     /// The machine cache represents a location on the machine where packages are cached. It is a specific implementation of a local repository and can be used as such.
     /// </summary>
-    public class MachineCache 
+    public class MachineCache
     {
         // Maximum number of packages that can live in this cache.
         private const int MaxNumberOfPackages = 100;

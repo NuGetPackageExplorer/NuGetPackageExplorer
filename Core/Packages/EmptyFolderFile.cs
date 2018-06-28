@@ -8,7 +8,7 @@ namespace NuGetPe
         public EmptyFolderFile(string folderPath)
             : base(System.IO.Path.Combine(folderPath, NuGetPe.Constants.PackageEmptyFileName))
         {
-            LastWriteTime = DateTimeOffset.UtcNow; 
+            LastWriteTime = DateTimeOffset.UtcNow;
         }
 
         public override Stream GetStream()

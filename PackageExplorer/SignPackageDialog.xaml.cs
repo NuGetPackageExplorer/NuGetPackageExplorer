@@ -1,6 +1,6 @@
-﻿using PackageExplorerViewModel;
-using System;
+﻿using System;
 using System.Windows;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {

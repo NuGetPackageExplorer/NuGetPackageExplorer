@@ -94,10 +94,10 @@ namespace PackageExplorer
         private static void AddToCache(string iconUrl, BitmapSource iconBitmapImage)
         {
             var policy = new CacheItemPolicy
-                         {
-                             SlidingExpiration = TimeSpan.FromMinutes(10),
-                             RemovedCallback = CacheEntryRemoved
-                         };
+            {
+                SlidingExpiration = TimeSpan.FromMinutes(10),
+                RemovedCallback = CacheEntryRemoved
+            };
             BitmapImageCache.Set(iconUrl, iconBitmapImage, policy);
         }
 
@@ -117,7 +117,10 @@ namespace PackageExplorer
         private void IconBitmapImage_DownloadOrDecodeFailed(object sender, System.Windows.Media.ExceptionEventArgs e)
         {
             // Fix the bitmap image cache to have default package icon, if some other failure didn't already do that.
-            if (!(sender is BitmapImage bitmapImage)) return;
+            if (!(sender is BitmapImage bitmapImage))
+            {
+                return;
+            }
 
             var cachedBitmapImage = BitmapImageCache.Get(bitmapImage.UriSource.ToString()) as BitmapSource;
             if (cachedBitmapImage != Images.DefaultPackageIcon)

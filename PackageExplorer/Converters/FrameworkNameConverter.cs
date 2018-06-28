@@ -2,10 +2,8 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Windows.Data;
 using NuGet.Frameworks;
-using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -17,11 +15,11 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var path = (string) value;
+            var path = (string)value;
             var name = Path.GetFileName(path);
 
             var parts = path.Split('\\');
-            if (parts.Length == 2 && 
+            if (parts.Length == 2 &&
                 WellknownPackageFolders.Any(s => s.Equals(parts[0], StringComparison.OrdinalIgnoreCase)))
             {
                 NuGetFramework frameworkName;

@@ -1,8 +1,8 @@
-﻿using NuGet.Packaging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using NuGet.Packaging;
 
 namespace NuGetPe
 {
@@ -17,7 +17,7 @@ namespace NuGetPe
         DateTimeOffset LastUpdated { get; }
 
         DateTimeOffset? Published { get; }
-        
+
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This might be expensive")]
         IEnumerable<IPackageFile> GetFiles();

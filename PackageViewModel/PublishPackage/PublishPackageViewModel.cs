@@ -2,10 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using NuGetPackageExplorer.Types;
+using NuGet.Common;
 using NuGet.Packaging;
 using NuGet.Protocol.Core.Types;
-using NuGet.Common;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {

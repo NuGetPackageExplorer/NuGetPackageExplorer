@@ -4,10 +4,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using NuGetPe;
-using NuGetPackageExplorer.Types;
 using NuGet.Packaging;
 using NuGet.Versioning;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -55,12 +54,12 @@ namespace PackageExplorerViewModel
         public void NotifyFileAdded(IPackageMetadata package, string filepath, PackageType packageType)
         {
             var item = new MruItem
-                       {
-                           Path = filepath,
-                           Id = package.Id,
-                           Version = package.Version,
-                           PackageType = packageType
-                       };
+            {
+                Path = filepath,
+                Id = package.Id,
+                Version = package.Version,
+                PackageType = packageType
+            };
             AddFile(item);
         }
 
@@ -163,12 +162,12 @@ namespace PackageExplorerViewModel
             }
 
             return new MruItem
-                   {
-                       Id = parts[0],
-                       Version = version,
-                       Path = parts[2],
-                       PackageType = type
-                   };
+            {
+                Id = parts[0],
+                Version = version,
+                Path = parts[2],
+                PackageType = type
+            };
         }
     }
 }

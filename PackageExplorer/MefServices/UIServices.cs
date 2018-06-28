@@ -23,14 +23,14 @@ namespace PackageExplorer
                                        out string selectedFilePath, out int selectedFilterIndex)
         {
             var dialog = new SaveFileDialog
-                         {
-                             OverwritePrompt = overwritePrompt,
-                             Title = title,
-                             Filter = filter,
-                             FileName = defaultFileName,
-                             ValidateNames = true,
-                             InitialDirectory = !string.IsNullOrEmpty(initialDirectory) ? Path.GetDirectoryName(initialDirectory) : initialDirectory
-                         };
+            {
+                OverwritePrompt = overwritePrompt,
+                Title = title,
+                Filter = filter,
+                FileName = defaultFileName,
+                ValidateNames = true,
+                InitialDirectory = !string.IsNullOrEmpty(initialDirectory) ? Path.GetDirectoryName(initialDirectory) : initialDirectory
+            };
 
             var result = dialog.ShowDialog();
             if (result ?? false)
@@ -50,15 +50,15 @@ namespace PackageExplorer
         public bool OpenFileDialog(string title, string filter, out string selectedFileName)
         {
             var dialog = new OpenFileDialog
-                         {
-                             Title = title,
-                             CheckFileExists = true,
-                             CheckPathExists = true,
-                             FilterIndex = 0,
-                             Multiselect = false,
-                             ValidateNames = true,
-                             Filter = filter
-                         };
+            {
+                Title = title,
+                CheckFileExists = true,
+                CheckPathExists = true,
+                FilterIndex = 0,
+                Multiselect = false,
+                ValidateNames = true,
+                Filter = filter
+            };
 
             var result = dialog.ShowDialog();
             if (result ?? false)
@@ -76,15 +76,15 @@ namespace PackageExplorer
         public bool OpenMultipleFilesDialog(string title, string filter, out string[] selectedFileNames)
         {
             var dialog = new OpenFileDialog
-                         {
-                             Title = title,
-                             CheckFileExists = true,
-                             CheckPathExists = true,
-                             FilterIndex = 0,
-                             Multiselect = true,
-                             ValidateNames = true,
-                             Filter = filter
-                         };
+            {
+                Title = title,
+                CheckFileExists = true,
+                CheckPathExists = true,
+                FilterIndex = 0,
+                Multiselect = true,
+                ValidateNames = true,
+                Filter = filter
+            };
 
             var result = dialog.ShowDialog();
             if (result ?? false)
@@ -151,11 +151,11 @@ namespace PackageExplorer
         public bool OpenRenameDialog(string currentName, string description, out string newName)
         {
             var dialog = new RenameWindow
-                         {
-                             NewName = currentName,
-                             Description = description,
-                             Owner = Window.Value
-                         };
+            {
+                NewName = currentName,
+                Description = description,
+                Owner = Window.Value
+            };
 
             var result = dialog.ShowDialog();
             if (result ?? false)
@@ -173,10 +173,10 @@ namespace PackageExplorer
         public bool OpenPublishDialog(object viewModel)
         {
             var dialog = new PublishPackageWindow
-                         {
-                             Owner = Window.Value,
-                             DataContext = viewModel
-                         };
+            {
+                Owner = Window.Value,
+                DataContext = viewModel
+            };
 
             if (viewModel is IDisposable disposable)
             {
@@ -235,12 +235,12 @@ namespace PackageExplorer
         public bool OpenFolderDialog(string title, string initialPath, out string selectedPath)
         {
             var dialog = new VistaFolderBrowserDialog
-                         {
-                             ShowNewFolderButton = true,
-                             SelectedPath = initialPath,
-                             Description = title,
-                             UseDescriptionForTitle = true
-                         };
+            {
+                ShowNewFolderButton = true,
+                SelectedPath = initialPath,
+                Description = title,
+                UseDescriptionForTitle = true
+            };
 
             var result = dialog.ShowDialog(Window.Value);
             if (result ?? false)
@@ -310,11 +310,11 @@ namespace PackageExplorer
                 {
                     return true;
                 }
-                else if (result == noButton) 
+                else if (result == noButton)
                 {
                     return false;
                 }
-                else 
+                else
                 {
                     return null;
                 }
@@ -392,12 +392,12 @@ namespace PackageExplorer
                 targetFolder);
 
             var dialog = new TaskDialog
-                         {
-                             MainInstruction = mainInstruction,
-                             Content = content,
-                             WindowTitle = Resources.Dialog_Title,
-                             ButtonStyle = TaskDialogButtonStyle.CommandLinks
-                         };
+            {
+                MainInstruction = mainInstruction,
+                Content = content,
+                WindowTitle = Resources.Dialog_Title,
+                ButtonStyle = TaskDialogButtonStyle.CommandLinks
+            };
 
             if (numberOfItemsLeft > 0)
             {
@@ -405,19 +405,19 @@ namespace PackageExplorer
             }
 
             var moveButton = new TaskDialogButton
-                             {
-                                 Text = "Yes",
-                                 CommandLinkNote =
+            {
+                Text = "Yes",
+                CommandLinkNote =
                                      "'" + fileName + "' will be added to '" + targetFolder +
                                      "' folder."
-                             };
+            };
 
             var noMoveButton = new TaskDialogButton
-                               {
-                                   Text = "No",
-                                   CommandLinkNote =
+            {
+                Text = "No",
+                CommandLinkNote =
                                        "'" + fileName + "' will be added to the package root."
-                               };
+            };
 
             dialog.Buttons.Add(moveButton);
             dialog.Buttons.Add(noMoveButton);
@@ -456,16 +456,16 @@ namespace PackageExplorer
                 dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
 
                 var yesButton = new TaskDialogButton
-                                {
-                                    Text = "Yes",
-                                    CommandLinkNote = "Return to package view and lose all your changes."
-                                };
+                {
+                    Text = "Yes",
+                    CommandLinkNote = "Return to package view and lose all your changes."
+                };
 
                 var noButton = new TaskDialogButton
-                               {
-                                   Text = "No",
-                                   CommandLinkNote = "Stay at the metadata editor and fix the error."
-                               };
+                {
+                    Text = "No",
+                    CommandLinkNote = "Stay at the metadata editor and fix the error."
+                };
 
                 dialog.Buttons.Add(yesButton);
                 dialog.Buttons.Add(noButton);

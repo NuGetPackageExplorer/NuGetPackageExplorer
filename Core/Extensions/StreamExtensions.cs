@@ -7,7 +7,7 @@ namespace NuGetPe
     {
         public static byte[] ReadAllBytes(this Stream stream)
         {
-            var length = (int) stream.Length;
+            var length = (int)stream.Length;
             var buffer = new byte[length];
             stream.Read(buffer, 0, length);
             return buffer;

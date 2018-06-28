@@ -25,7 +25,7 @@ namespace PackageExplorerViewModel
         private readonly PackageChooserViewModel _parentViewModel;
         private CancellationTokenSource _downloadCancelSource;
         private bool _hasFinishedLoading;
-        private Func<Task<IEnumerable<VersionInfo>>> _versionInfos = () => Task.FromResult(Enumerable.Empty<VersionInfo>());
+        private readonly Func<Task<IEnumerable<VersionInfo>>> _versionInfos = () => Task.FromResult(Enumerable.Empty<VersionInfo>());
 
         public PackageInfoViewModel(
             PackageInfo info,

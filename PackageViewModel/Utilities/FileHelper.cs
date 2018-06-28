@@ -14,7 +14,7 @@ namespace PackageExplorerViewModel
                                                                             ".BAS", ".BAT", ".CHM", ".COM", ".EXE",
                                                                             ".HTA", ".INF", ".JS", ".LNK", ".MSI",
                                                                             ".OCX", ".PPT", ".REG", ".SCT", ".SHS",
-                                                                            ".SYS", ".URL", ".VB", ".VBS", ".WSH", 
+                                                                            ".SYS", ".URL", ".VB", ".VBS", ".WSH",
                                                                             ".WSF"
                                                                         };
 
@@ -83,12 +83,12 @@ namespace PackageExplorerViewModel
             if (File.Exists(tempFileName))
             {
                 var info = new ProcessStartInfo("rundll32.exe")
-                           {
-                               ErrorDialog = true,
-                               UseShellExecute = false,
-                               Arguments =
+                {
+                    ErrorDialog = true,
+                    UseShellExecute = false,
+                    Arguments =
                                    "shell32.dll,OpenAs_RunDLL " + tempFileName
-                           };
+                };
 
                 Process.Start(info);
             }
