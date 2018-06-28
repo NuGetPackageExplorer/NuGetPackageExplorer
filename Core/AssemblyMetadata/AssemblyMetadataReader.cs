@@ -9,16 +9,19 @@ namespace NuGetPe.AssemblyMetadata
     {
         public static AssemblyMetaData ReadMetaData(string assemblyPath)
         {
-            if (assemblyPath == null) return null;
-            
+            if (assemblyPath == null)
+            {
+                return null;
+            }
+
             var result = new AssemblyMetaData();
-            
+
             var assemblyName = AssemblyName.GetAssemblyName(assemblyPath);
             if (assemblyName == null)
             {
                 return result;
             }
-            
+
             result.SetFullName(assemblyName);
 
             // For WinRT component, we can only read Full Name. 
@@ -26,7 +29,7 @@ namespace NuGetPe.AssemblyMetadata
             {
                 return result;
             }
-            
+
             try
             {
                 using (var metadataParser = new AssemblyMetadataParser(assemblyPath))
@@ -46,7 +49,7 @@ namespace NuGetPe.AssemblyMetadata
         private static void AddAssemblyAttributes(AssemblyMetadataParser parser, AssemblyMetaData result)
         {
             try
-            {  
+            {
                 foreach (var attribute in parser.GetAssemblyAttributes())
                 {
                     var value = TryReadAttributeValue(attribute);
@@ -64,7 +67,7 @@ namespace NuGetPe.AssemblyMetadata
                 // Silently abort the process if unable to fetch all the attributes.
             }
         }
-        
+
         private static string TryReadAttributeValue(AssemblyMetadataParser.AttributeInfo attribute)
         {
             // Skip InternalsVisibleToAttribute
@@ -95,7 +98,7 @@ namespace NuGetPe.AssemblyMetadata
             var shortName = attribute.FullTypeName.Split(".+".ToCharArray()).Last();
 
             const string attributeSuffix = "Attribute";
-            
+
             return shortName.EndsWith(attributeSuffix, StringComparison.Ordinal)
                 ? shortName.Substring(0, shortName.Length - attributeSuffix.Length)
                 : shortName;

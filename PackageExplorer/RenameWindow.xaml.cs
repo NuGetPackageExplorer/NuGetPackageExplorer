@@ -21,10 +21,10 @@ namespace PackageExplorer
             InitializeComponent();
 
             var binding = new Binding("NewName")
-                          {
-                              Source = this,
-                              NotifyOnValidationError = true
-                          };
+            {
+                Source = this,
+                NotifyOnValidationError = true
+            };
             binding.ValidationRules.Add(NameValidationRule.Instance);
 
             NameBox.SetBinding(TextBox.TextProperty, binding);
@@ -32,7 +32,7 @@ namespace PackageExplorer
 
         public string NewName
         {
-            get { return (string) GetValue(NewNameProperty); }
+            get { return (string)GetValue(NewNameProperty); }
             set { SetValue(NewNameProperty, value); }
         }
 
@@ -75,7 +75,7 @@ namespace PackageExplorer
 
             public override ValidationResult Validate(object value, CultureInfo cultureInfo)
             {
-                var stringValue = (string) value;
+                var stringValue = (string)value;
                 if (stringValue != null)
                 {
                     var invalidChars = Path.GetInvalidFileNameChars();

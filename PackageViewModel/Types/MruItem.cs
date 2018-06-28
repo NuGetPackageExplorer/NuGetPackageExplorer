@@ -24,8 +24,8 @@ namespace NuGetPackageExplorer.Types
             {
                 return false;
             }
-            return string.Equals(Path, other.Path, StringComparison.OrdinalIgnoreCase) && 
-                string.Equals(Id, other.Id, StringComparison.OrdinalIgnoreCase) && 
+            return string.Equals(Path, other.Path, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(Id, other.Id, StringComparison.OrdinalIgnoreCase) &&
                 Version == other.Version;
         }
 

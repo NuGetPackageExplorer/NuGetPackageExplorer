@@ -1,5 +1,4 @@
-﻿using NuGet.Packaging;
-using System;
+﻿using System;
 using System.IO;
 
 namespace NuGetPe

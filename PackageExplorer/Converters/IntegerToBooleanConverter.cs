@@ -10,7 +10,7 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var intValue = (int) value;
+            var intValue = (int)value;
             if (intValue != 12 && intValue != 14 && intValue != 16 && intValue != 18)
             {
                 intValue = 12;

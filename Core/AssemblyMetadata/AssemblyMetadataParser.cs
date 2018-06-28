@@ -8,19 +8,22 @@ using System.Reflection.PortableExecutable;
 
 namespace NuGetPe.AssemblyMetadata
 {
-    internal class AssemblyMetadataParser: IDisposable
+    internal class AssemblyMetadataParser : IDisposable
     {
         private readonly PEReader _peReader;
         private readonly MetadataReader _metadataReader;
 
         public AssemblyMetadataParser(string fileName)
         {
-            if (fileName == null) throw new ArgumentNullException(nameof(fileName));
+            if (fileName == null)
+            {
+                throw new ArgumentNullException(nameof(fileName));
+            }
 
             _peReader = new PEReader(File.OpenRead(fileName));
             _metadataReader = _peReader.GetMetadataReader();
         }
-        
+
         public IEnumerable<AssemblyName> GetReferencedAssemblyNames()
         {
             foreach (var referenceHandle in _metadataReader.AssemblyReferences)
@@ -52,17 +55,20 @@ namespace NuGetPe.AssemblyMetadata
                 yield return assemblyName;
             }
         }
-        
+
         public IEnumerable<AttributeInfo> GetAssemblyAttributes()
         {
             foreach (var attributeHandle in _metadataReader.CustomAttributes)
             {
                 var customAttribute = _metadataReader.GetCustomAttribute(attributeHandle);
-                if (customAttribute.Parent.Kind != HandleKind.AssemblyDefinition) continue;
+                if (customAttribute.Parent.Kind != HandleKind.AssemblyDefinition)
+                {
+                    continue;
+                }
 
-                var constructorRef = _metadataReader.GetMemberReference((MemberReferenceHandle) customAttribute.Constructor);
-                var attributeTypeRefHandle = (TypeReferenceHandle) constructorRef.Parent;
-                
+                var constructorRef = _metadataReader.GetMemberReference((MemberReferenceHandle)customAttribute.Constructor);
+                var attributeTypeRefHandle = (TypeReferenceHandle)constructorRef.Parent;
+
                 var typeProvider = new AttributeTypeProvider();
 
                 var attributeTypeName = typeProvider.GetTypeFromReference(_metadataReader, attributeTypeRefHandle, 0);
@@ -97,8 +103,8 @@ namespace NuGetPe.AssemblyMetadata
             public CustomAttributeNamedArgument<string>[] NamedArguments { get; }
 
             public AttributeInfo(
-                string fullTypeName, 
-                CustomAttributeTypedArgument<string>[] fixedArguments, 
+                string fullTypeName,
+                CustomAttributeTypedArgument<string>[] fixedArguments,
                 CustomAttributeNamedArgument<string>[] namedArguments)
             {
                 FullTypeName = fullTypeName;
@@ -106,7 +112,7 @@ namespace NuGetPe.AssemblyMetadata
                 NamedArguments = namedArguments;
             }
         }
-        
+
         private class AttributeTypeProvider : ICustomAttributeTypeProvider<string>
         {
             private static Dictionary<PrimitiveTypeCode, Type> PrimitiveTypeMappings =
@@ -131,14 +137,14 @@ namespace NuGetPe.AssemblyMetadata
                     { PrimitiveTypeCode.Int64, typeof(long) },
                     { PrimitiveTypeCode.UInt64, typeof(ulong) }
                 };
-            
+
             public string GetPrimitiveType(PrimitiveTypeCode typeCode)
             {
                 if (PrimitiveTypeMappings.TryGetValue(typeCode, out var type))
                 {
                     return type.FullName;
                 }
-                
+
                 throw new ArgumentOutOfRangeException(nameof(typeCode), typeCode, @"Unexpected type code.");
             }
 
@@ -158,8 +164,8 @@ namespace NuGetPe.AssemblyMetadata
 
                 return name;
             }
-            
-            
+
+
             private static bool IsNested(TypeAttributes flags)
             {
                 const TypeAttributes nestedMask = TypeAttributes.NestedFamily | TypeAttributes.NestedPublic;
@@ -179,7 +185,7 @@ namespace NuGetPe.AssemblyMetadata
                 switch (scope.Kind)
                 {
                     case HandleKind.TypeReference:
-                        return GetTypeFromReference(reader, (TypeReferenceHandle) scope, 0) + "+" + name;
+                        return GetTypeFromReference(reader, (TypeReferenceHandle)scope, 0) + "+" + name;
 
                     // If type refers other module or assembly, don't append them to result.
                     // Usually we don't have those assemblies, so we'll be unable to resolve the exact type.
@@ -236,7 +242,7 @@ namespace NuGetPe.AssemblyMetadata
 
         private class UnknownTypeException : InvalidOperationException
         {
-            
+
         }
     }
 }

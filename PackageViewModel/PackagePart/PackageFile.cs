@@ -4,8 +4,8 @@ using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
 using System.Windows.Input;
-using NuGetPackageExplorer.Types;
 using NuGet.Packaging;
+using NuGetPackageExplorer.Types;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
@@ -98,10 +98,10 @@ namespace PackageExplorerViewModel
             var fileName = System.IO.Path.GetFileName(physicalFile.OriginalPath);
 
             _watcher = new FileSystemWatcher(folderPath, fileName)
-                       {
-                           IncludeSubdirectories = false,
-                           EnableRaisingEvents = true
-                       };
+            {
+                IncludeSubdirectories = false,
+                EnableRaisingEvents = true
+            };
 
             _watcher.Changed += OnFileChanged;
             _watcher.Deleted += OnFileDeleted;

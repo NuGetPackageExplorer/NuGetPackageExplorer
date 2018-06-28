@@ -7,8 +7,6 @@ namespace NuGetPackageExplorer.Types
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Property | AttributeTargets.Field)]
     public sealed class PackageCommandMetadataAttribute : ExportAttribute
     {
-        private readonly string _text;
-
         public PackageCommandMetadataAttribute(string text) : base(typeof(IPackageCommand))
         {
             if (string.IsNullOrEmpty("text"))
@@ -16,12 +14,9 @@ namespace NuGetPackageExplorer.Types
                 throw new ArgumentNullException("text");
             }
 
-            _text = text;
+            Text = text;
         }
 
-        public string Text
-        {
-            get { return _text; }
-        }
+        public string Text { get; }
     }
 }

@@ -53,7 +53,7 @@ namespace PackageExplorer
 
             var window = Container.GetExportedValue<MainWindow>();
             window.Show();
-            
+
             if (e.Args.Length > 0)
             {
                 var file = e.Args[0];
@@ -114,7 +114,7 @@ namespace PackageExplorer
             {
                 Settings.Default.Save();
             }
-            catch 
+            catch
             {
             }
         }

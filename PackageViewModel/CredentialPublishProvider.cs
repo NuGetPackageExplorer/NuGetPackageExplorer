@@ -1,10 +1,10 @@
-﻿using NuGet.Configuration;
-using NuGet.Credentials;
-using System;
+﻿using System;
 using System.ComponentModel.Composition;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using NuGet.Configuration;
+using NuGet.Credentials;
 
 namespace PackageExplorerViewModel
 {

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
-using NuGet.Protocol.Core.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Documents;
 using StringResources = PackageExplorer.Resources;
@@ -15,10 +13,10 @@ namespace PackageExplorer
         public AboutWindow()
         {
             InitializeComponent();
-            
+
             ProductTitle.Text = $"{StringResources.Dialog_Title} ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion})";
         }
-        
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
@@ -27,7 +25,7 @@ namespace PackageExplorer
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            var link = (Hyperlink) sender;
+            var link = (Hyperlink)sender;
             UriHelper.OpenExternalLink(link.NavigateUri);
         }
     }

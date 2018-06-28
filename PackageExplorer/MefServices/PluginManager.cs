@@ -9,8 +9,8 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using NuGet.Versioning;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -93,7 +93,7 @@ namespace PackageExplorer
                         File.Delete(deleteMePath);
 
                         // copy assemblies
-                        var numberOfFilesCopied = 
+                        var numberOfFilesCopied =
                             FrameworkFolderForAssemblies.Sum(folder => plugin.UnpackPackage(folder, targetPath));
 
                         if (numberOfFilesCopied == 0)

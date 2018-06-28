@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Data;
 using NuGet.Frameworks;
@@ -11,11 +10,11 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var framework = (NuGetFramework)value;
-            if (framework == null) 
+            if (framework == null)
             {
                 return null;
             }
-            
+
             return framework.GetShortFolderName();
         }
 

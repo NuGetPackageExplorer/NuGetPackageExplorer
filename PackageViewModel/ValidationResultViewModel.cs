@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using NuGet.Common;
-using NuGet.Packaging;
 using NuGet.Packaging.Signing;
 
 
@@ -37,7 +35,7 @@ namespace PackageExplorerViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        
+
         private void RaisePropertyChange(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));

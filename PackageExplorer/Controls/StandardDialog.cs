@@ -35,8 +35,8 @@ namespace PackageExplorer
 
             if (!Debugger.IsAttached)
             {
-                NativeMethods.SendMessage(hwnd, NativeMethods.WM_SETICON, 0, (IntPtr) 0);
-                NativeMethods.SendMessage(hwnd, NativeMethods.WM_SETICON, 1, (IntPtr) 0);
+                NativeMethods.SendMessage(hwnd, NativeMethods.WM_SETICON, 0, (IntPtr)0);
+                NativeMethods.SendMessage(hwnd, NativeMethods.WM_SETICON, 1, (IntPtr)0);
             }
         }
     }

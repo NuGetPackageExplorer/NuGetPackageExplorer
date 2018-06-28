@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics.CodeAnalysis;
-using NuGetPe;
-using NuGetPackageExplorer.Types;
 using System.Threading.Tasks;
+using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -44,7 +44,7 @@ namespace PackageExplorerViewModel
         [Import(typeof(INuGetPackageDownloader))]
         public INuGetPackageDownloader PackageDownloader { get; set; }
 
-		[SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"),
+        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"),
          SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly"),
          SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         [ImportMany(AllowRecomposition = true)]

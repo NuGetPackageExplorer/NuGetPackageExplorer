@@ -71,7 +71,10 @@ namespace PackageExplorer
 
         public static IEnumerable<(string FilePath, Stream Stream)> GetFileGroupDescriptorW(WindowsIDataObject windowsDataObject)
         {
-            if (!(windowsDataObject is ComIDataObject)) yield break;
+            if (!(windowsDataObject is ComIDataObject))
+            {
+                yield break;
+            }
 
             var fileNames = GetFileGroupDescriptorWFileNames(windowsDataObject);
 

@@ -7,10 +7,10 @@ using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Windows.Input;
-using NuGetPe;
-using NuGetPackageExplorer.Types;
-using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using NuGet.Packaging;
+using NuGetPackageExplorer.Types;
+using NuGetPe;
+using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 
 namespace PackageExplorerViewModel
 {
@@ -229,7 +229,7 @@ namespace PackageExplorerViewModel
                 {
                     _selectedItem = value;
                     OnPropertyChanged("SelectedItem");
-                    ((ViewContentCommand) ViewContentCommand).RaiseCanExecuteChanged();
+                    ((ViewContentCommand)ViewContentCommand).RaiseCanExecuteChanged();
                     CommandManager.InvalidateRequerySuggested();
                 }
             }
@@ -895,8 +895,8 @@ namespace PackageExplorerViewModel
 
         private bool CanEditFileCommandExecute(PackagePart file)
         {
-            return !IsSigned && 
-                   (file is PackageFile) && 
+            return !IsSigned &&
+                   (file is PackageFile) &&
                    !IsInEditFileMode &&
                    !FileHelper.IsBinaryFile(file.Path);
         }
@@ -966,7 +966,7 @@ namespace PackageExplorerViewModel
         {
             var packageName = PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension;
             var filePath = Path.GetTempFileName();
-            
+
             ExportManifest(filePath, askForConfirmation: false, includeFilesSection: false);
 
             return new PackageMetadataFile(packageName, filePath, this);
@@ -1154,7 +1154,7 @@ namespace PackageExplorerViewModel
             {
                 UIServices.Show(e.Message, MessageLevel.Error);
             }
-            
+
             if (File.Exists(tempFile))
             {
                 return tempFile;
@@ -1248,7 +1248,7 @@ namespace PackageExplorerViewModel
                 if (includeFilesSection)
                 {
                     var tempPath = Path.GetTempPath();
-                    
+
                     manifest.Files.AddRange(RootFolder.GetFiles().Select(
                         f => new ManifestFile
                         {
@@ -1263,7 +1263,7 @@ namespace PackageExplorerViewModel
                     ms.Position = 0;
                     ManifestUtility.SaveToStream(ms, fileStream);
                 }
-                    
+
             }
         }
 
@@ -1323,7 +1323,7 @@ namespace PackageExplorerViewModel
                                 break;
                             }
 
-                            movingFile = (bool) answer.Item1;
+                            movingFile = (bool)answer.Item1;
                             if (answer.Item2)
                             {
                                 rememberedAnswer = answer.Item1;
@@ -1331,14 +1331,14 @@ namespace PackageExplorerViewModel
                         }
                         else
                         {
-                            movingFile = (bool) rememberedAnswer;
+                            movingFile = (bool)rememberedAnswer;
                         }
 
                         if (movingFile)
                         {
                             if (RootFolder.ContainsFolder(guessFolderName))
                             {
-                                targetFolder = (PackageFolder) RootFolder[guessFolderName];
+                                targetFolder = (PackageFolder)RootFolder[guessFolderName];
                             }
                             else
                             {
@@ -1403,7 +1403,9 @@ namespace PackageExplorerViewModel
         private bool IsPackageTokenized()
         {
             if (PackageMetadata.Version.IsTokenized())
+            {
                 return true;
+            }
 
             // any deps
             return PackageMetadata.DependencySets
@@ -1443,13 +1445,13 @@ namespace PackageExplorerViewModel
 
                         return true;
                     }
-                        
+
                 }
                 catch (Exception exception)
                 {
                     var confirmExit = UIServices.ConfirmCloseEditor(
-                        "There is an error in the metadata source.", 
-                        exception.GetBaseException().Message + 
+                        "There is an error in the metadata source.",
+                        exception.GetBaseException().Message +
                         Environment.NewLine +
                         Environment.NewLine +
                         "Do you want to cancel your changes and return?");

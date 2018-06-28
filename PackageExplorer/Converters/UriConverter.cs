@@ -11,13 +11,13 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var uri = (Uri) value;
+            var uri = (Uri)value;
             return uri?.ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stringValue = (string) value;
+            var stringValue = (string)value;
             if (string.IsNullOrEmpty(stringValue))
             {
                 return null;

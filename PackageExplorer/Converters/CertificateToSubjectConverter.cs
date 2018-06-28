@@ -12,10 +12,11 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var cert = (X509Certificate2) value;
+            var cert = (X509Certificate2)value;
             if (cert == null)
+            {
                 return null;
-
+            }
 
             var dict = DistinguishedNameParser.Parse(cert.Subject);
             string cn = null;

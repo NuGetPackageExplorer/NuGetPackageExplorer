@@ -17,7 +17,7 @@ namespace PackageExplorerViewModel
         [ImportingConstructor]
         public CredentialDialogProvider(IUIServices uiServices)
         {
-            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices)); 
+            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
         }
 
         public string Id => "NPECredentialDialog";
@@ -29,7 +29,7 @@ namespace PackageExplorerViewModel
                 return new CredentialResponse(CredentialStatus.ProviderNotApplicable);
             }
 
-            bool success = false;
+            var success = false;
             NetworkCredential credential = null;
 
             await _uiServices.BeginInvoke(() =>

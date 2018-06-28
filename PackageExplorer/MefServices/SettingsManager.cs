@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.Composition;
 using System.Linq;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorer.Properties;
 
 namespace PackageExplorer
@@ -85,7 +85,7 @@ namespace PackageExplorer
             if (string.IsNullOrEmpty(key))
             {
                 if (IsFirstTimeAfterUpdate && (
-                    source.Equals(NuGetConstants.V2FeedUrl, StringComparison.OrdinalIgnoreCase) || 
+                    source.Equals(NuGetConstants.V2FeedUrl, StringComparison.OrdinalIgnoreCase) ||
                     source.Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase)
                 ))
                 {

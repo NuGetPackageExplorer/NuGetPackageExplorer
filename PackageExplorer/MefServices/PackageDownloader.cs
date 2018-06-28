@@ -1,13 +1,4 @@
-﻿using NuGet.Common;
-using NuGet.Configuration;
-using NuGet.Packaging.Core;
-using NuGet.Protocol;
-using NuGet.Protocol.Core.Types;
-using NuGetPackageExplorer.Types;
-using NuGetPe;
-using Ookii.Dialogs.Wpf;
-using PackageExplorerViewModel;
-using System;
+﻿using System;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.IO;
@@ -16,6 +7,15 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using NuGet.Common;
+using NuGet.Configuration;
+using NuGet.Packaging.Core;
+using NuGet.Protocol;
+using NuGet.Protocol.Core.Types;
+using NuGetPackageExplorer.Types;
+using NuGetPe;
+using Ookii.Dialogs.Wpf;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
@@ -53,7 +53,7 @@ namespace PackageExplorer
                 UIServices.Show(e.Message, MessageLevel.Error);
                 return null;
             }
-            
+
         }
 
         private async Task<string> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity)
