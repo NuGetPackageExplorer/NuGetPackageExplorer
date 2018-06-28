@@ -65,37 +65,50 @@ dotnet_style_require_accessibility_modifiers = always:suggestion
 
 
 # Naming Rules
+
+# Interfaces start with an I and are PascalCased
 dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.symbols                        = interface_symbols
 dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.style                          = pascal_case_and_prefix_with_I_style
 dotnet_naming_rule.interfaces_must_be_pascal_cased_and_prefixed_with_I.severity                       = warning
 
+# External members are PascalCased
 dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.symbols                            = externally_visible_symbols
 dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.style                              = pascal_case_style
 dotnet_naming_rule.externally_visible_members_must_be_pascal_cased.severity                           = warning
 
+# Parameters are camelCased
 dotnet_naming_rule.parameters_must_be_camel_cased.symbols                                             = parameter_symbols
 dotnet_naming_rule.parameters_must_be_camel_cased.style                                               = camel_case_style
 dotnet_naming_rule.parameters_must_be_camel_cased.severity                                            = warning
 
+# Constants are PascalCased
 dotnet_naming_rule.constants_must_be_pascal_cased.symbols                                             = constant_symbols
 dotnet_naming_rule.constants_must_be_pascal_cased.style                                               = pascal_case_style
 dotnet_naming_rule.constants_must_be_pascal_cased.severity                                            = warning
 
+# Uncomment this group and comment out the next group if you prefer s_ prefixes for static fields
+
+# Private static fields are prefixed with s_ and are camelCased like s_myStatic
 #dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.symbols   = private_static_field_symbols
 #dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.style     = camel_case_and_prefix_with_s_underscore_style
 #dotnet_naming_rule.private_static_fields_must_be_camel_cased_and_prefixed_with_s_underscore.severity  = warning
 
+# Static readonly fields are PascalCased
 dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.symbols                               = private_static_readonly_field_symbols
 dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.style                                 = pascal_case_style
 dotnet_naming_rule.static_readonly_fields_should_be_pascal_case.severity                              = warning
 
-#dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.symbols   = private_field_symbols
-#dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.style     = camel_case_and_prefix_with_underscore_style
-#dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.severity  = warning
+# Comment this group and uncomment out the next group if you don't want _ prefixed fields.
 
-dotnet_naming_rule.private_instance_fields_must_be_camel_cased.symbols                                = private_field_symbols
-dotnet_naming_rule.private_instance_fields_must_be_camel_cased.style                                  = camel_case_style
-dotnet_naming_rule.private_instance_fields_must_be_camel_cased.severity                               = warning
+# Private instance fields are camelCased with an _ like _myField
+dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.symbols   = private_field_symbols
+dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.style     = camel_case_and_prefix_with_underscore_style
+dotnet_naming_rule.private_instance_fields_must_be_camel_cased_and_prefixed_with_underscore.severity  = warning
+
+# Private instance fields are camelCased
+#dotnet_naming_rule.private_instance_fields_must_be_camel_cased.symbols                                = private_field_symbols
+#dotnet_naming_rule.private_instance_fields_must_be_camel_cased.style                                  = camel_case_style
+#dotnet_naming_rule.private_instance_fields_must_be_camel_cased.severity                               = warning
 
 # Symbols
 dotnet_naming_symbols.externally_visible_symbols.applicable_kinds                                     = class,struct,interface,enum,property,method,field,event,delegate
