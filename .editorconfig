@@ -23,9 +23,20 @@ indent_size = 2
 [*.{props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct}]
 indent_size = 2
 
+# Yml/Yaml files
+[*.{yaml,yml}]
+indent_size = 2
+
 # JSON files
 [*.json]
 indent_size = 2
+
+# Shell scripts
+[*.sh]
+end_of_line = lf
+
+[*.{cmd,bat}]
+end_of_line = crlf
 
 # Dotnet code style settings:
 [*.{cs,vb}]
