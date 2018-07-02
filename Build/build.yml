@@ -36,20 +36,20 @@ steps:
 
     # Update appxmanifests. These must be done before build.
     $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"    
-    $doc | % { $_.Replace("3.25.0", "$($ver.SimpleVersion)") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
+    $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
     
     $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
-    $doc | % { $_.Replace("3.25.0", "$($ver.SimpleVersion)") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+    $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
     
     $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"    
-    $doc | % { $_.Replace("3.25.0", "$($ver.SimpleVersion)") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
+    $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
 
     # Update badges
     $doc = Get-Content ".\Build\ci_badge.svg"    
-    $doc | % { $_.Replace("ver_number", "$($ver.SimpleVersion).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\version_badge.svg"
+    $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\version_badge.svg"
     
     $doc = Get-Content ".\Build\store_badge.svg"    
-    $doc | % { $_.Replace("ver_number", "$($ver.SimpleVersion).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
+    $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
 
   displayName: Update manifest and badge versions
 
