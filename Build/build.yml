@@ -53,35 +53,35 @@ steps:
 
   displayName: Update manifest and badge versions
 
-- task: VSBuild@1
+- task: MSBuild@1
   displayName: Build NuGet Package Explorer 
   inputs:
     solution: PackageExplorer/NuGetPackageExplorer.csproj
-    msbuildArgs: /restore    
+    msbuildArguments: /restore    
     configuration: $(BuildConfiguration)
     maximumCpuCount: true
 
-- task: VSBuild@1
+- task: MSBuild@1
   displayName: Build Nightly Package
   inputs:
     solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
-    msbuildArgs: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" 
+    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" 
     configuration: $(BuildConfiguration)
     maximumCpuCount: true
 
-- task: VSBuild@1
+- task: MSBuild@1
   displayName: Build Store Package
   inputs:
     solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-    msbuildArgs: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload
+    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload
     configuration: $(BuildConfiguration)
     maximumCpuCount: true
 
-- task: VSBuild@1
+- task: MSBuild@1
   displayName: Pack Types Package
   inputs:
     solution: Types/Types.csproj
-    msbuildArgs: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
+    msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
     configuration: $(BuildConfiguration)
     maximumCpuCount: true
 
