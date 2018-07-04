@@ -83,7 +83,7 @@ namespace PackageExplorerViewModel
                     throw new InvalidOperationException(
                         "Cannot set active package source when fixed package source is used.");
                 }
-                _packageSourceManager.ActivePackageSource = value;
+                _packageSourceManager.ActivePackageSource = value.Trim();
                 OnPropertyChanged();
             }
         }
