@@ -61,6 +61,10 @@ steps:
     configuration: $(BuildConfiguration)
     maximumCpuCount: true
 
+- powershell: |
+    msbuild PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj /p:Configuration=$(BuildConfiguration) /m /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" /v:diag
+  displayName: Build Nightly Package (script)
+
 - task: MSBuild@1
   displayName: Build Nightly Package
   inputs:
