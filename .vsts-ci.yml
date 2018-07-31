@@ -9,6 +9,13 @@ steps:
 - template: Build/build.yml
   parameters:
     signSteps:
+    - task: DotNetCoreCLI@2  
+      inputs:
+        command: custom
+        custom: tool
+        arguments: install --tool-path Build SignClient
+      displayName: Install SignTool tool        
+      
     - task: PowerShell@2
       displayName: Authenticode Sign Nightly artifacts
       inputs:
