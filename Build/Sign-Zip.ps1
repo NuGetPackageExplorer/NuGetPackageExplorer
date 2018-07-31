@@ -15,7 +15,7 @@ $zips = gci $Env:ArtifactDirectory\*.zip | Select -ExpandProperty FullName
 foreach ($zip in $zips){
 	Write-Host "Submitting $zip for signing"
 
-	.\SignClient 'sign' -c $appSettings -i $zip -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
+	& $currentDirectory\SignClient 'sign' -c $appSettings -i $zip -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
 
 	Write-Host "Finished signing $zip"
 }
