@@ -25,7 +25,7 @@ $insts = gci $Env:ArtifactDirectory\*.appinstaller -recurse | Select -ExpandProp
 foreach ($inst in $insts){
 	Write-Host "Submitting $inst for signing"
 
-	.\SignClient 'sign' -c $appSettings -i $inst -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
+	& $currentDirectory\SignClient 'sign' -c $appSettings -i $inst -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
 
 	Write-Host "Finished signing $inst"
 }
@@ -35,7 +35,7 @@ $nupkgs = gci $Env:ArtifactDirectory\*.nupkg -recurse | Select -ExpandProperty F
 foreach ($nupkg in $nupkgs){
 	Write-Host "Submitting $nupkg for signing"
 
-	.\SignClient 'sign' -c $appSettings -i $nupkg -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
+	& $currentDirectory\SignClient 'sign' -c $appSettings -i $nupkg -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
 
 	Write-Host "Finished signing $nupkg"
 }
