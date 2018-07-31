@@ -2,71 +2,83 @@ parameters:
   signSteps: []
   
 steps:
-- task: BatchScript@1
+- task: DotNetCoreCLI@2  
   inputs:
-    filename: "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Enterprise\\Common7\\Tools\\VsDevCmd.bat"
-    arguments: -no_logo
-    modifyEnvironment: true
-  displayName: Setup Environment Variables
+    command: custom
+    custom: tool
+    arguments: install --tool-path . nbgv
+  displayName: Install NBGV tool
+  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
-- task: NuGetToolInstaller@0
-  displayName: Use NuGet 4.7.0
-  inputs:
-    versionSpec: 4.7.0
-
-- task: DotNetCoreCLI@2
-  inputs:
-    command: build
-    projects: Build/setversion.csproj
-    arguments: -c $(BuildConfiguration)   
+- script: nbgv cloud
   displayName: Set Version
-  condition: eq(variables['system.pullrequest.isfork'], false)
+  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
-- powershell: |   
+- powershell: |
     mkdir $(Build.ArtifactStagingDirectory)\Nightly
-        
-    # version    
-    nuget install NerdBank.GitVersioning -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion
+    mkdir $(Build.ArtifactStagingDirectory)\Store
     
-    $vers = & $(Build.SourcesDirectory)\packages\nerdbank.gitversioning\tools\Get-Version.ps1
-    $ver = $vers.SimpleVersion
-        
+    # Set versions
+    $ver = .\nbgv get-version -f json | ConvertFrom-Json
+
     # Update appxmanifests. These must be done before build.
     $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"    
-    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
+    $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
     
     $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
-    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+    $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
     
     $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"    
-    $doc | % { $_.Replace("3.25.0", "$ver") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
-    
-    # Build PackageExplorer
-    msbuild .\PackageExplorer\NuGetPackageExplorer.csproj /restore /m /p:Configuration=$(BuildConfiguration) 
-    msbuild .\PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\" 
-    msbuild .\PackageExplorer.Package\PackageExplorer.Package.wapproj /m /p:Configuration=$(BuildConfiguration) /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload 
-    
-    # Update versions
+    $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
+
+    # Update badges
     $doc = Get-Content ".\Build\ci_badge.svg"    
-    $doc | % { $_.Replace("ver_number", "$ver.0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\version_badge.svg"
+    $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\version_badge.svg"
     
     $doc = Get-Content ".\Build\store_badge.svg"    
-    $doc | % { $_.Replace("ver_number", "$ver.0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
-    
-    # Choco and NuGet 
-    # Get choco
+    $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
 
-    $nugetVer = $vers.NuGetPackageVersion
+  displayName: Update manifest and badge versions
 
-    nuget install chocolatey -SolutionDir $(Build.SourcesDirectory) -Verbosity quiet -ExcludeVersion 
-    $choco = "$(Build.SourcesDirectory)\packages\chocolatey\tools\chocolateyInstall\choco.exe"
-    
+- task: MSBuild@1
+  displayName: Build NuGet Package Explorer 
+  inputs:
+    solution: PackageExplorer/NuGetPackageExplorer.csproj
+    msbuildArguments: /restore    
+    configuration: $(BuildConfiguration)
+    maximumCpuCount: true
+
+- task: MSBuild@1
+  displayName: Build Nightly Package
+  inputs:
+    solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
+    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\\" 
+    configuration: $(BuildConfiguration)
+    maximumCpuCount: true
+
+- task: MSBuild@1
+  displayName: Build Store Package
+  inputs:
+    solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
+    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\\" /p:UapAppxPackageBuildMode=StoreUpload
+    configuration: $(BuildConfiguration)
+    maximumCpuCount: true
+
+- task: MSBuild@1
+  displayName: Pack Types Package
+  inputs:
+    solution: Types/Types.csproj
+    msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
+    configuration: $(BuildConfiguration)
+    maximumCpuCount: true
+
+- powershell: |
+    # Chocolatey        
     mkdir $(Build.ArtifactStagingDirectory)\Nightly\Choco
+    $ver = .\nbgv get-version -f json | ConvertFrom-Json
 
-    & $choco pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $nugetVer --OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly\Choco
-    msbuild /t:pack .\Types\Types.csproj /p:Configuration=$(BuildConfiguration) /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
-        
-  displayName: Build Nightly
+    & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $($ver.NuGetPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly\Choco
+  displayName: Create Choco package
     
 - task: ArchiveFiles@1
   displayName: Zip PackageExplorer files
@@ -84,7 +96,7 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Nightly
     artifactType: container
     artifactName: Nightly
-  condition: eq(variables['system.pullrequest.isfork'], false)
+  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Zip Artifact
@@ -92,7 +104,7 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
     artifactType: container
     artifactName: Zip
-  condition: eq(variables['system.pullrequest.isfork'], false)
+  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Store Artifacts
@@ -100,4 +112,4 @@ steps:
     pathToPublish: $(Build.ArtifactStagingDirectory)\Store
     artifactType: container
     artifactName: Store
-  condition: eq(variables['system.pullrequest.isfork'], false)
+  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))

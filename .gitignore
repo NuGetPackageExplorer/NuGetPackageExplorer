@@ -20,6 +20,8 @@ src/Server/Server.Publish.xml
 DebugConstants.cs
 *.log
 *.binlog
+/.store
+*.exe
 packages/*
 publish/
 /PackageExplorer.Package/bld/*
