@@ -15,7 +15,7 @@ $appxs = gci $Env:ArtifactDirectory\*.appxbundle -recurse | Select -ExpandProper
 foreach ($appx in $appxs){
 	Write-Host "Submitting $appx for signing"
 
-	.\SignClient 'sign' -c $appSettings -i $appx -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
+	& $currentDirectory\SignClient 'sign' -c $appSettings -i $appx -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer' 
 
 	Write-Host "Finished signing $appx"
 }
