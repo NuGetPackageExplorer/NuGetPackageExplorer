@@ -73,7 +73,7 @@ steps:
   displayName: Build Store Package
   inputs:
     solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\" /p:UapAppxPackageBuildMode=StoreUpload
+    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\\" /p:UapAppxPackageBuildMode=StoreUpload
     configuration: $(BuildConfiguration)
     maximumCpuCount: true
 
