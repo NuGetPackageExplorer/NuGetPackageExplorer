@@ -65,7 +65,7 @@ steps:
   displayName: Build Nightly Package
   inputs:
     solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
-    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\\" /v:diag
+    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\\" 
     configuration: $(BuildConfiguration)
     maximumCpuCount: true
 
