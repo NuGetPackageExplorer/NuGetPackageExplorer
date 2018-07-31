@@ -13,7 +13,7 @@ steps:
       inputs:
         command: custom
         custom: tool
-        arguments: install --tool-path Build SignClient
+        arguments: install --tool-path .\Build SignClient
       displayName: Install SignTool tool        
       
     - task: PowerShell@2
