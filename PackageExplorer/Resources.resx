@@ -320,8 +320,8 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="String1" xml:space="preserve">
     <value />
   </data>
-  <data name="Validation_Illegal" xml:space="preserve">
-    <value>Illegal</value>
+  <data name="Validation_Disallowed" xml:space="preserve">
+    <value>Disallowed</value>
   </data>
   <data name="Validation_Pending" xml:space="preserve">
     <value>Pending</value>
@@ -331,9 +331,6 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="Validation_Unknown" xml:space="preserve">
     <value>Unknown</value>
-  </data>
-  <data name="Validation_Untrusted" xml:space="preserve">
-    <value>Untrusted</value>
   </data>
   <data name="Validation_Valid" xml:space="preserve">
     <value>Valid</value>

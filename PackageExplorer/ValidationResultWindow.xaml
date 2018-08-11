@@ -6,6 +6,7 @@
     xmlns:viewModel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"
     xmlns:settings="clr-namespace:PackageExplorer.Properties" 
     xmlns:NuGetCommon="clr-namespace:NuGet.Common;assembly=NuGet.Common"
+    xmlns:NuGetSigning="clr-namespace:NuGet.Packaging.Signing;assembly=NuGet.Packaging"
     FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" 
     Title="{x:Static self:Resources.Dialog_ValidationResultTitle}" 
     ResizeMode="NoResize" 
@@ -25,13 +26,9 @@
                     <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
                     <Setter TargetName="icon" Property="Source" Value="Images/Validate.png" />
                 </DataTrigger>
-                <DataTrigger Binding="{Binding Trust}" Value="Illegal">
-                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Illegal}" />
+                <DataTrigger Binding="{Binding Trust}" Value="Disallowed">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Disallowed}" />
                     <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding Trust}" Value="Untrusted">
-                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Untrusted}" />
-                    <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding Trust}" Value="Suspect">
                     <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Suspect}" />
@@ -44,16 +41,14 @@
             </DataTemplate.Triggers>
         </DataTemplate>
 
-        
-        
-        <DataTemplate DataType="{x:Type NuGetCommon:ILogMessage}">
+        <DataTemplate DataType="{x:Type NuGetSigning:SignatureLog}">
             <StackPanel>
                 <TextBlock Text="{Binding Code, Mode=OneWay}" />
-                
+
                 <TextBlock Text="{Binding Level, Mode=OneWay}" />
                 <TextBlock Text="{Binding Message, Mode=OneWay}" />
             </StackPanel>
-            
+
         </DataTemplate>
 
     </self:StandardDialog.Resources>

@@ -65,15 +65,9 @@
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Illegal">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Illegal}" />
+                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Disallowed">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Disallowed}" />
                         <Setter TargetName="icon" Property="Source" Value="Images/error.png" />
-                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
-                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Untrusted">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Untrusted}" />
-                        <Setter TargetName="icon" Property="Source" Value="Images/Warning.png" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>

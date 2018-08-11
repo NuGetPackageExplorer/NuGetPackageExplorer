@@ -20,7 +20,10 @@ namespace PackageExplorerViewModel
 
             ErrorIssues = verifySignaturesResult.Results.SelectMany(prv => prv.GetErrorIssues()).ToList();
             WarningIssues = verifySignaturesResult.Results.SelectMany(prv => prv.GetWarningIssues()).ToList();
-            InformationIssues = verifySignaturesResult.Results.SelectMany(prv => prv.Issues).Where(sl => sl.Level == LogLevel.Information).Select(sl => sl.ToLogMessage()).ToList();
+            InformationIssues = verifySignaturesResult.Results
+                                                      .SelectMany(prv => prv.Issues)
+                                                      .Where(sl => sl.Level == LogLevel.Information)
+                                                      .ToList();
         }
 
 
