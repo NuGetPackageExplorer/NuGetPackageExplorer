@@ -1259,9 +1259,16 @@ namespace PackageExplorerViewModel
                 }
                 using (var ms = new MemoryStream())
                 {
-                    manifest.Save(ms);
-                    ms.Position = 0;
-                    ManifestUtility.SaveToStream(ms, fileStream);
+                    try
+                    {
+                        manifest.Save(ms);
+                        ms.Position = 0;
+                        ManifestUtility.SaveToStream(ms, fileStream);
+                    }
+                    catch (Exception e)
+                    {
+                        UIServices.Show(e.Message, MessageLevel.Error);
+                    }
                 }
 
             }
