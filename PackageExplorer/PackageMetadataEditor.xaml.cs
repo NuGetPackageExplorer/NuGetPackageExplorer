@@ -102,8 +102,13 @@ namespace PackageExplorer
         // return null = no pending asesmbly
         private bool? AddPendingFrameworkAssembly()
         {
-            if (string.IsNullOrEmpty(NewAssemblyName.Text) &&
-                string.IsNullOrEmpty(NewSupportedFramework.Text))
+            if (string.IsNullOrWhiteSpace(NewAssemblyName.Text))
+            {
+                return false;
+            }
+            
+            if (string.IsNullOrWhiteSpace(NewAssemblyName.Text) &&
+                string.IsNullOrWhiteSpace(NewSupportedFramework.Text))
             {
                 return null;
             }
