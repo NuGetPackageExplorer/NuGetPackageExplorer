@@ -39,6 +39,7 @@
             <self:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
             <self:NuGetVersionConverter x:Key="NuGetVersionConverter" />
             <self:NuGetVersionPreReleaseConverter x:Key="NuGetVersionPreReleaseConverter" />
+            <self:ListToStringConverter x:Key="ListToStringConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
@@ -105,6 +106,39 @@
                         <Run Text="by"/>
                         <Hyperlink Command="GoToPage" CommandParameter="{Binding TimestampSignerInfo.Certificate, Mode=OneWay}">
                             <Run Text="{Binding TimestampSignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                        </Hyperlink>
+                    </TextBlock>
+                </StackPanel>
+            </DataTemplate>
+
+
+            <DataTemplate DataType="{x:Type nugetpe:RepositorySignatureInfo}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}" >
+                        <Hyperlink Command="GoToPage" CommandParameter="{Binding SignerInfo.Certificate, Mode=OneWay}">
+                            <Run Text="{Binding SignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}"
+                               Visibility="{Binding Timestamp, Converter={StaticResource NullToVisibilityConverter}}"
+                    >
+                        <Run Text="@"/>
+                        <Run Text="{Binding Timestamp, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F, Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}"
+                               Visibility="{Binding TimestampSignerInfo, Converter={StaticResource NullToVisibilityConverter}}"
+                    >
+                        <Run Text="by"/>
+                        <Hyperlink Command="GoToPage" CommandParameter="{Binding TimestampSignerInfo.Certificate, Mode=OneWay}">
+                            <Run Text="{Binding TimestampSignerInfo.Certificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                        </Hyperlink>
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}">
+                        <Run Text="Owners: " /><Run Text="{Binding PackageOwners, Converter={StaticResource ListToStringConverter}, ConverterParameter=', ', Mode=OneWay}" />
+                    </TextBlock>
+                    <TextBlock Style="{StaticResource DetailMetadataValueStyle}">
+                        <Run Text="Service Index: " /><Hyperlink Command="GoToPage" CommandParameter="{Binding V3ServiceIndexUrl, Mode=OneWay}">
+                            <Run Text="{Binding V3ServiceIndexUrl, Mode=OneWay}" />
                         </Hyperlink>
                     </TextBlock>
                 </StackPanel>
