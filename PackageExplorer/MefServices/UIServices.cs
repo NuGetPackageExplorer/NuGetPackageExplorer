@@ -504,12 +504,19 @@ namespace PackageExplorer
                 dialog.Content = "Enter Personal Access Tokens in the username field.";
                 dialog.Target = target;
 
-                if (dialog.ShowDialog())
+                try
                 {
-                    networkCredential = dialog.Credentials;
-                    return true;
+                    if (dialog.ShowDialog())
+                    {
+                        networkCredential = dialog.Credentials;
+                        return true;
+                    }
                 }
-
+                catch (Exception e)
+                {
+                    Show(e.Message, MessageLevel.Error);
+                }
+            
                 networkCredential = null;
                 return false;
             }
