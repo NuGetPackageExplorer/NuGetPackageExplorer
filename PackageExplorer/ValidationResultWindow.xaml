@@ -42,13 +42,7 @@
         </DataTemplate>
 
         <DataTemplate DataType="{x:Type NuGetSigning:SignatureLog}">
-            <StackPanel>
-                <TextBlock Text="{Binding Code, Mode=OneWay}" />
-
-                <TextBlock Text="{Binding Level, Mode=OneWay}" />
-                <TextBlock Text="{Binding Message, Mode=OneWay}" />
-            </StackPanel>
-
+            <TextBlock Text="{Binding Message, Mode=OneWay}" />
         </DataTemplate>
 
     </self:StandardDialog.Resources>
@@ -58,45 +52,43 @@
         <Border DockPanel.Dock="Bottom" Margin="0,30,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
             <Button Content="OK" Padding="20,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,10,15,10" IsDefault="True" IsCancel="True" Click="Button_Click" />
         </Border>
-        
-        
 
-        
-
-        <StackPanel Orientation="Vertical" Grid.Column="1" Margin="15,20,15,0">
-            <ContentPresenter DockPanel.Dock="Top" Content="{Binding}" ContentTemplate="{StaticResource Results}" />
-            <StackPanel>
-                <Expander IsExpanded="True"
-                          Visibility="{Binding ErrorIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
-                    <Expander.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="Images/error.png"/>
-                            <TextBlock Text="{x:Static self:Resources.Dialog_Errors}" Margin="3,0,0,0" />
-                        </StackPanel>
-                    </Expander.Header>
-                    <ItemsControl ItemsSource="{Binding ErrorIssues, Mode=OneWay}" />
-                </Expander>
-                <Expander IsExpanded="True"
-                          Visibility="{Binding WarningIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
-                    <Expander.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="Images/Warning.png"/>
-                            <TextBlock Text="{x:Static self:Resources.Dialog_Warnings}" Margin="3,0,0,0" />
-                        </StackPanel>
-                    </Expander.Header>
-                    <ItemsControl ItemsSource="{Binding WarningIssues, Mode=OneWay}" />
-                </Expander>
-                <Expander IsExpanded="True"
-                          Visibility="{Binding InformationIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
-                    <Expander.Header>
-                        <StackPanel Orientation="Horizontal">
-                            <Image Source="Images/information.png"/>
-                            <TextBlock Text="{x:Static self:Resources.Dialog_Information}" Margin="3,0,0,0" />
-                        </StackPanel>
-                    </Expander.Header>
-                    <ItemsControl ItemsSource="{Binding InformationIssues, Mode=OneWay}" />
-                </Expander>
-            </StackPanel>
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Margin="15,20,15,0">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource Results}" />
+            <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Expander IsExpanded="True"
+                              Visibility="{Binding ErrorIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Images/error.png"/>
+                                <TextBlock Text="{x:Static self:Resources.Dialog_Errors}" Margin="3,0,0,0" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <ItemsControl ItemsSource="{Binding ErrorIssues, Mode=OneWay}" />
+                    </Expander>
+                    <Expander IsExpanded="True"
+                              Visibility="{Binding WarningIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Images/Warning.png"/>
+                                <TextBlock Text="{x:Static self:Resources.Dialog_Warnings}" Margin="3,0,0,0" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <ItemsControl ItemsSource="{Binding WarningIssues, Mode=OneWay}" />
+                    </Expander>
+                    <Expander IsExpanded="True"
+                              Visibility="{Binding InformationIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Images/information.png"/>
+                                <TextBlock Text="{x:Static self:Resources.Dialog_Information}" Margin="3,0,0,0" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <ItemsControl ItemsSource="{Binding InformationIssues, Mode=OneWay}" />
+                    </Expander>
+                </StackPanel>
+            </ScrollViewer>
         </StackPanel>
     </DockPanel>
 </self:StandardDialog>
