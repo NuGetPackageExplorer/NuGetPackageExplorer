@@ -728,6 +728,7 @@ namespace PackageExplorerViewModel
                 var publishPackageViewModel = new PublishPackageViewModel(
                     mruSourceManager,
                     _settingsManager,
+                    _uiServices,
                     _credentialPublishProvider,
                     this);
                 _uiServices.OpenPublishDialog(publishPackageViewModel);
