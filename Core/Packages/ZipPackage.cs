@@ -258,7 +258,7 @@ namespace NuGetPe
 
         public SignatureInfo PublisherSignature { get; private set; }
 
-        public SignatureInfo RepositorySignature { get; private set; }
+        public RepositorySignatureInfo RepositorySignature { get; private set; }
 
         public VerifySignaturesResult VerificationResult { get; private set; }
 
@@ -297,15 +297,22 @@ namespace NuGetPe
                     try
                     {
                         var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None);
-
-                        // There will only be one primary
+            
+                        // Author signatures must be the primary, but they can contain
+                        // a repository counter signature
                         if (sig.Type == SignatureType.Author)
                         {
                             PublisherSignature = new SignatureInfo(sig);
+
+                            var counter = RepositoryCountersignature.GetRepositoryCountersignature(sig);
+                            if (counter != null)
+                            {
+                                RepositorySignature = new RepositorySignatureInfo(counter);
+                            }
                         }
                         else if (sig.Type == SignatureType.Repository)
                         {
-                            RepositorySignature = new SignatureInfo(sig);
+                            RepositorySignature = new RepositorySignatureInfo(sig);
                         }
                     }
                     catch (SignatureException)

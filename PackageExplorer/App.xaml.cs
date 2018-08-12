@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
@@ -6,6 +7,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Credentials;
 using NuGet.Protocol;
@@ -67,11 +69,22 @@ namespace PackageExplorer
 
         private void InitCredentialService()
         {
-            HttpHandlerResourceV3.CredentialService = new Lazy<ICredentialService>(() => new CredentialService(new ICredentialProvider[] {
-                Container.GetExportedValue<CredentialManagerProvider>(),
-                Container.GetExportedValue<CredentialPublishProvider>(),
-                Container.GetExportedValue<CredentialDialogProvider>(),
-            }, nonInteractive: false));
+            Task<IEnumerable<ICredentialProvider>> getProviders()
+            {
+                return Task.FromResult<IEnumerable<ICredentialProvider>>(new ICredentialProvider[]
+                {
+                    Container.GetExportedValue<CredentialManagerProvider>(),
+                    Container.GetExportedValue<CredentialPublishProvider>(),
+                    Container.GetExportedValue<CredentialDialogProvider>()
+                });
+            };
+
+            HttpHandlerResourceV3.CredentialService =
+                new Lazy<ICredentialService>(() => new CredentialService(
+                                                      new AsyncLazy<IEnumerable<ICredentialProvider>>(() => getProviders()), 
+                                                      nonInteractive: false, 
+                                                      handlesDefaultCredentials: false));
+            
         }
 
         private static void MigrateSettings()
