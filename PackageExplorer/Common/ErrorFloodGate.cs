@@ -14,7 +14,7 @@ namespace PackageExplorer
         private readonly Queue<int> _failures = new Queue<int>();
 
         private DateTimeOffset _lastEvaluate = DateTimeOffset.Now;
-        
+
         private bool _isOpen;
         public bool IsOpen
         {
@@ -52,7 +52,7 @@ namespace PackageExplorer
 
         public void ReportError()
         {
-            int ticks = GetTicks(_origin);
+            var ticks = GetTicks(_origin);
             _failures.Enqueue(ticks);
         }
 

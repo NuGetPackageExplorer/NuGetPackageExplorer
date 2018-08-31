@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 using NuGet.Versioning;
 
@@ -73,7 +69,9 @@ namespace NuGetPe
             // see if it's a token
 
             if (value == null)
+            {
                 return value;
+            }
 
             var matches = tokenRegex.Matches(value);
             foreach (Match match in matches)
@@ -93,7 +91,9 @@ namespace NuGetPe
         public static string ReplaceMetadataWithToken(string value)
         {
             if (value == null)
+            {
                 return value;
+            }
 
             // see if it's a token
             var matches = metadataRegEx.Matches(value);

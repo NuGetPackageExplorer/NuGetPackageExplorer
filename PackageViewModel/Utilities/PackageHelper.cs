@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using NuGetPe;
-using NuGetPackageExplorer.Types;
 using NuGet.Packaging;
+using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -103,7 +103,7 @@ namespace PackageExplorerViewModel
             {
                 return Enumerable.Empty<string>();
             }
-            return tags.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+            return tags.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

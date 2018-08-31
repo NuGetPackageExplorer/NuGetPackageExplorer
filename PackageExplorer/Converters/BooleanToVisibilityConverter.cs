@@ -20,13 +20,13 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var boolValue = (bool) value;
+            var boolValue = (bool)value;
             if (Inverted)
             {
                 boolValue = !boolValue;
             }
 
-            if ((string) parameter == "hidden")
+            if ((string)parameter == "hidden")
             {
                 return boolValue ? Visibility.Visible : Visibility.Hidden;
             }

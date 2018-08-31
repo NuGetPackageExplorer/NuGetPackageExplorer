@@ -17,16 +17,16 @@
         <releaseNotes>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/releases</releaseNotes>
         <tags>nuget admin nupkg nuspec</tags>
         <dependencies>
-            <dependency id="DotNet4.6.1" version="4.6.01055.20170308" />
+            <dependency id="DotNet4.6.2" version="4.6.01590.20170129" />
         </dependencies>
     </metadata>
     <files>
         <file src="ChocolateyInstall.ps1"  />
         <file src="NuGetPackageExplorer.exe.gui"  />
-        <file src="bin\Release\net461\*.dll"  />
+        <file src="bin\Release\net462\*.dll"  />
         <file src="..\LICENSE.txt" target="legal\LICENSE.txt" />
         <file src="..\Build\Verification.txt" target="legal\Verification.txt" />
-        <file src="bin\Release\net461\NuGetPackageExplorer.exe" target="NuGetPackageExplorer.exe" />
-        <file src="bin\Release\net461\NuGetPackageExplorer.exe.config" target="NuGetPackageExplorer.exe.config" />
+        <file src="bin\Release\net462\NuGetPackageExplorer.exe" target="NuGetPackageExplorer.exe" />
+        <file src="bin\Release\net462\NuGetPackageExplorer.exe.config" target="NuGetPackageExplorer.exe.config" />
     </files>
 </package>

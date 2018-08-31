@@ -1,9 +1,8 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
-using NuGetPe;
-using NuGetPackageExplorer.Types;
 using NuGet.Packaging;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {

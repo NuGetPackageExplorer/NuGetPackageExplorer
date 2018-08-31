@@ -1,6 +1,5 @@
 ﻿using System;
 using NuGet.Versioning;
-using NuGetPe;
 
 namespace NuGetPackageExplorer.Types
 {
@@ -36,7 +35,7 @@ namespace NuGetPackageExplorer.Types
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode()*3137 + Version.GetHashCode();
+            return Id.GetHashCode() * 3137 + Version.GetHashCode();
         }
     }
 }

@@ -666,11 +666,11 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Illegal.
+        ///   Looks up a localized string similar to Disallowed.
         /// </summary>
-        public static string Validation_Illegal {
+        public static string Validation_Disallowed {
             get {
-                return ResourceManager.GetString("Validation_Illegal", resourceCulture);
+                return ResourceManager.GetString("Validation_Disallowed", resourceCulture);
             }
         }
         
@@ -698,15 +698,6 @@ namespace PackageExplorer {
         public static string Validation_Unknown {
             get {
                 return ResourceManager.GetString("Validation_Unknown", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Untrusted.
-        /// </summary>
-        public static string Validation_Untrusted {
-            get {
-                return ResourceManager.GetString("Validation_Untrusted", resourceCulture);
             }
         }
         

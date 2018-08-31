@@ -2,10 +2,10 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
-using NuGetPackageExplorer.Types;
+using NuGet.Common;
 using NuGet.Packaging;
 using NuGet.Protocol.Core.Types;
-using NuGet.Common;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -15,6 +15,7 @@ namespace PackageExplorerViewModel
         private readonly IPackageMetadata _package;
         private readonly string _packageFilePath;
         private readonly ISettingsManager _settingsManager;
+        private readonly IUIServices _uiServices;
         private readonly CredentialPublishProvider _credentialPublishProvider;
         private bool _canPublish = true;
         private bool _hasError;
@@ -29,11 +30,13 @@ namespace PackageExplorerViewModel
         public PublishPackageViewModel(
             MruPackageSourceManager mruSourceManager,
             ISettingsManager settingsManager,
+            IUIServices uiServices,
             CredentialPublishProvider credentialPublishProvider,
             PackageViewModel viewModel)
         {
             _mruSourceManager = mruSourceManager;
             _settingsManager = settingsManager;
+            _uiServices = uiServices;
             _credentialPublishProvider = credentialPublishProvider;
             _package = viewModel.PackageMetadata;
             _packageFilePath = viewModel.GetCurrentPackageTempFile();
@@ -86,10 +89,18 @@ namespace PackageExplorerViewModel
                         if (!_suppressReadingApiKey)
                         {
                             // when the selection change, we retrieve the API key for that source
-                            var key = _settingsManager.ReadApiKey(value);
-                            if (!string.IsNullOrEmpty(key))
+                            try
                             {
-                                PublishKeyOrPAT = key;
+                                var key = _settingsManager.ReadApiKey(value);
+                                if (!string.IsNullOrEmpty(key))
+                                {
+                                    PublishKeyOrPAT = key;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                _uiServices.Show("Cannot read API key:\n" + e.Message, MessageLevel.Error);
+                                PublishKeyOrPAT = null;
                             }
                         }
                     }

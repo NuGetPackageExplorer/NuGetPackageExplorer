@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.Versioning;
 using NuGet.Frameworks;
 using NuGet.Packaging;
-using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -71,7 +68,7 @@ namespace PackageExplorerViewModel
                 {
                     if (string.IsNullOrEmpty(AssemblyName))
                     {
-                        return _supportedFrameworks == null ? (string)null : "Assembly name must not be empty.";
+                        return _supportedFrameworks == null ? null : "Assembly name must not be empty.";
                     }
                 }
 

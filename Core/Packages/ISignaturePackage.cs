@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using NuGet.Packaging.Signing;
 
 namespace NuGetPe
@@ -9,7 +8,7 @@ namespace NuGetPe
         bool IsSigned { get; }
         bool IsVerified { get; }
         SignatureInfo PublisherSignature { get; }
-        SignatureInfo RepositorySignature { get; }
+        RepositorySignatureInfo RepositorySignature { get; }
         VerifySignaturesResult VerificationResult { get; }
         string Source { get; }
         Task LoadSignatureDataAsync();

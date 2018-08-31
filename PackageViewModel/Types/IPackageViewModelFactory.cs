@@ -1,6 +1,6 @@
-﻿using NuGetPe;
+﻿using System.Threading.Tasks;
+using NuGetPe;
 using PackageExplorerViewModel;
-using System.Threading.Tasks;
 
 namespace NuGetPackageExplorer.Types
 {

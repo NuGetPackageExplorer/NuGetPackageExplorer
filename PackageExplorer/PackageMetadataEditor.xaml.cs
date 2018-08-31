@@ -7,8 +7,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using NuGet.Packaging;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -45,7 +45,7 @@ namespace PackageExplorer
 
         private void PrepareBindings()
         {
-            var viewModel = (PackageViewModel) DataContext;
+            var viewModel = (PackageViewModel)DataContext;
 
             _dependencySets = viewModel.PackageMetadata.DependencySets;
             _referenceSets = viewModel.PackageMetadata.PackageAssemblyReferences;
@@ -86,8 +86,8 @@ namespace PackageExplorer
 
         private void RemoveFrameworkAssemblyButtonClicked(object sender, RoutedEventArgs e)
         {
-            var button = (Button) sender;
-            var item = (FrameworkAssemblyReference) button.DataContext;
+            var button = (Button)sender;
+            var item = (FrameworkAssemblyReference)button.DataContext;
 
             _frameworkAssemblies.Remove(item);
         }
@@ -102,12 +102,18 @@ namespace PackageExplorer
         // return null = no pending asesmbly
         private bool? AddPendingFrameworkAssembly()
         {
-            if (string.IsNullOrEmpty(NewAssemblyName.Text) &&
-                string.IsNullOrEmpty(NewSupportedFramework.Text))
+            // Blank assembly name but content in the supported framework textbox is an error
+            if (string.IsNullOrWhiteSpace(NewAssemblyName.Text) && !string.IsNullOrWhiteSpace(NewSupportedFramework.Text))
+            {
+                return false;
+            }
+
+            // blank in both is ok, nothing to add
+            if (string.IsNullOrWhiteSpace(NewAssemblyName.Text))
             {
                 return null;
             }
-            
+
             if (!NewFrameworkAssembly.UpdateSources())
             {
                 return false;
@@ -171,14 +177,14 @@ namespace PackageExplorer
             var valid = PackageMetadataGroup.CommitEdit();
             if (valid)
             {
-                var viewModel = (PackageViewModel) DataContext;
+                var viewModel = (PackageViewModel)DataContext;
                 viewModel.PackageMetadata.DependencySets = _dependencySets;
                 viewModel.PackageMetadata.PackageAssemblyReferences = _referenceSets;
                 _frameworkAssemblies.CopyTo(viewModel.PackageMetadata.FrameworkAssemblies);
             }
 
             return valid;
-        }        
+        }
 
         #endregion
     }

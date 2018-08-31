@@ -39,16 +39,16 @@ namespace PackageExplorerViewModel
         private ICollection<PackageReferenceSet> _packageAssemblyReferences;
         private Version _minClientVersion;
 
-        private RelayCommand _showValidationResultsCommand;
+        private readonly RelayCommand _showValidationResultsCommand;
 
         public ICommand ShowValidationResultsCommand => _showValidationResultsCommand;
 
         private EditablePackageMetadata()
         {
-            _showValidationResultsCommand = new RelayCommand(OnShowValidationResult, () => ValidationResult != null );
-        }   
+            _showValidationResultsCommand = new RelayCommand(OnShowValidationResult, () => ValidationResult != null);
+        }
 
-        public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices) 
+        public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices)
             : this()
         {
             CopyFrom(source);
@@ -61,7 +61,10 @@ namespace PackageExplorerViewModel
             CopyFrom(source);
             // Zip Packages may be signed, we need to load that data async
             if (source is ISignaturePackage zip)
+            {
                 LoadSignatureData(zip);
+            }
+
             this.uiServices = uiServices;
         }
 
@@ -170,7 +173,7 @@ namespace PackageExplorerViewModel
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<PackageReferenceSet> PackageAssemblyReferences 
+        public ICollection<PackageReferenceSet> PackageAssemblyReferences
         {
             get
             {
@@ -187,7 +190,7 @@ namespace PackageExplorerViewModel
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<PackageDependencyGroup> DependencySets 
+        public ICollection<PackageDependencyGroup> DependencySets
         {
             get
             {
@@ -541,7 +544,7 @@ namespace PackageExplorerViewModel
             ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
             PackageTypes = new ObservableCollection<PackageType>(source.PackageTypes);
             Repository = source.Repository;
-            
+
             if (source.PackageAssemblyReferences != null)
             {
                 PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
@@ -563,11 +566,11 @@ namespace PackageExplorerViewModel
             }
 
             var builder = new UriBuilder
-                          {
-                              Scheme = "http",
-                              Host = "www.nuget.org",
-                              Path = path
-                          };
+            {
+                Scheme = "http",
+                Host = "www.nuget.org",
+                Path = path
+            };
 
             return builder.Uri;
         }

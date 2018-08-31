@@ -39,12 +39,12 @@ namespace PackageExplorer
 
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var info = (FileContentInfo) DataContext;
+            var info = (FileContentInfo)DataContext;
             if (info != null && info.IsTextFile)
             {
                 LanguageBox.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(info.File.Name);
                 contentBox.ScrollToHome();
-                contentBox.Load(StreamUtility.ToStream((string) info.Content));
+                contentBox.Load(StreamUtility.ToStream((string)info.Content));
             }
             else
             {

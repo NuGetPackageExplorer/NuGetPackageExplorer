@@ -14,15 +14,18 @@ namespace NuGetPe.AssemblyMetadata
         private string FullName { get; set; }
         private string StrongName { get; set; }
         private IEnumerable<AssemblyName> ReferencedAsseblies { get; set; }
-        
+
         /// <summary>
         /// Set Fullname of the assembly and determine strong name.
         /// </summary>
         /// <remarks>Helper</remarks>
         public void SetFullName(AssemblyName assemblyName)
         {
-            if (assemblyName == null) throw new ArgumentNullException(nameof(assemblyName));
-            
+            if (assemblyName == null)
+            {
+                throw new ArgumentNullException(nameof(assemblyName));
+            }
+
             FullName = assemblyName.FullName;
 
             try
@@ -53,7 +56,10 @@ namespace NuGetPe.AssemblyMetadata
         /// </summary>
         public void AddMetadata(string displayName, string value)
         {
-            if (string.IsNullOrEmpty(displayName)) throw new ArgumentNullException(nameof(displayName));
+            if (string.IsNullOrEmpty(displayName))
+            {
+                throw new ArgumentNullException(nameof(displayName));
+            }
 
             MetadataEntries[displayName] = value;
         }
@@ -71,7 +77,7 @@ namespace NuGetPe.AssemblyMetadata
             {
                 yield return MakePair("Strong Name", StrongName);
             }
-            
+
             foreach (var entry in MetadataEntries.OrderBy(kv => kv.Key))
             {
                 yield return entry;

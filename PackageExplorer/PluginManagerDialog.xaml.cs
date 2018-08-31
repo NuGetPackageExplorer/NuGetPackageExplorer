@@ -26,7 +26,7 @@ namespace PackageExplorer
             var uri = e.Parameter as Uri;
             if (uri == null)
             {
-                var url = (string) e.Parameter;
+                var url = (string)e.Parameter;
                 Uri.TryCreate(url, UriKind.Absolute, out uri);
             }
 

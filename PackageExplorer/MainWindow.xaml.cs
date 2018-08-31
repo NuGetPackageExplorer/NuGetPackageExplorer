@@ -15,16 +15,15 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using NuGet.Packaging;
 using NuGet.Versioning;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources;
-using NuGet.Packaging;
-using PackageExplorerViewModel.Types;
 
 namespace PackageExplorer
 {
@@ -269,7 +268,7 @@ namespace PackageExplorer
             var parameter = (string)e.Parameter;
             if (!string.IsNullOrEmpty(parameter))
             {
-                parameter = "packageId:" + parameter;
+                parameter = "id:" + parameter;
             }
             await OpenPackageFromRepository(parameter);
         }

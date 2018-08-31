@@ -16,7 +16,7 @@ namespace PackageExplorerViewModel
     public sealed class PackageChooserViewModel : ViewModelBase, IDisposable
     {
         private const int PackageListPageSize = 15;
-        
+
         private IQueryContext<IPackageSearchMetadata> _currentQuery;
         private string _currentSearch;
         private FeedType _feedType;
@@ -72,7 +72,7 @@ namespace PackageExplorerViewModel
                 }
             }
         }
-        
+
         public string PackageSource
         {
             get { return _defaultPackageSourceUrl ?? _packageSourceManager.ActivePackageSource; }
@@ -83,11 +83,11 @@ namespace PackageExplorerViewModel
                     throw new InvalidOperationException(
                         "Cannot set active package source when fixed package source is used.");
                 }
-                _packageSourceManager.ActivePackageSource = value;
+                _packageSourceManager.ActivePackageSource = value.Trim();
                 OnPropertyChanged();
             }
         }
-        
+
         public bool AllowsChangingPackageSource
         {
             get { return _defaultPackageSourceUrl == null; }
@@ -112,9 +112,9 @@ namespace PackageExplorerViewModel
                 }
             }
         }
-        
+
         public ObservableCollection<PackageInfoViewModel> Packages { get; private set; }
-        
+
         private PackageInfoViewModel _selectedPackageViewModel;
         public PackageInfoViewModel SelectedPackageViewModel
         {
@@ -133,7 +133,7 @@ namespace PackageExplorerViewModel
                 }
             }
         }
-        
+
         private int _beginPackage;
         public int BeginPackage
         {
@@ -189,7 +189,7 @@ namespace PackageExplorerViewModel
                 }
             }
         }
-        
+
         #endregion
 
         public SourceRepository ActiveRepository { get; private set; }
@@ -201,7 +201,7 @@ namespace PackageExplorerViewModel
                 return _selectedPackageViewModel?.SelectedPackage;
             }
         }
-        
+
         private CancellationTokenSource _currentCancellationTokenSource;
         private CancellationTokenSource CurrentCancellationTokenSource
         {
@@ -212,7 +212,7 @@ namespace PackageExplorerViewModel
                 CancelCommand.RaiseCanExecuteChanged();
             }
         }
-        
+
         #region Commands
         public RelayCommand<string> NavigationCommand { get; private set; }
         public ICommand SearchCommand { get; private set; }
@@ -228,7 +228,7 @@ namespace PackageExplorerViewModel
         public event EventHandler PackageDownloadRequested = delegate { };
         #endregion
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"), 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"),
          System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private async Task LoadPackages()
         {
@@ -327,7 +327,7 @@ namespace PackageExplorerViewModel
             AutoSelectFirstAvailablePackage();
             RestoreUI();
         }
-        
+
         private async Task<IList<IPackageSearchMetadata>> QueryPackages(CancellationToken token)
         {
             var result = await _currentQuery.GetItemsForCurrentPage(token);
@@ -344,13 +344,13 @@ namespace PackageExplorerViewModel
             }
             UpdatePageNumber(beginPackage, endPackage);
         }
-        
+
         private void UpdatePageNumber(int beginPackage, int endPackage)
         {
             BeginPackage = beginPackage;
             EndPackage = endPackage;
         }
-        
+
         private void AutoSelectFirstAvailablePackage()
         {
             SelectedPackageViewModel = Packages?.FirstOrDefault();
@@ -362,7 +362,7 @@ namespace PackageExplorerViewModel
             CurrentCancellationTokenSource = null;
             LoadPackagesCompleted(this, EventArgs.Empty);
         }
-        
+
         #region Search
         private async void Search(string searchTerm)
         {
@@ -409,7 +409,7 @@ namespace PackageExplorerViewModel
                 await LoadPackages();
             }
         }
-        
+
         private void ResetPackageRepository()
         {
             ActiveRepository = null;

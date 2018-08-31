@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
-using NuGetPe;
+using System.Linq;
+using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
-using NuGet.Packaging;
 
 namespace PackageExplorerViewModel
 {
@@ -14,7 +13,7 @@ namespace PackageExplorerViewModel
         private string _id;
         private string _exclude;
         private VersionRange _versionSpec;
-        private Func<EditablePackageDependencySet> _getActiveDependencySet;
+        private readonly Func<EditablePackageDependencySet> _getActiveDependencySet;
 
         public EditablePackageDependency(Func<EditablePackageDependencySet> getActiveDependencySet)
         {
@@ -92,7 +91,7 @@ namespace PackageExplorerViewModel
             {
                 if (string.IsNullOrEmpty(Id))
                 {
-                    return VersionSpec != null ? "Package id must not be empty." : (string)null;
+                    return VersionSpec != null ? "Package id must not be empty." : null;
                 }
 
                 if (!PackageIdValidator.IsValidPackageId(Id))

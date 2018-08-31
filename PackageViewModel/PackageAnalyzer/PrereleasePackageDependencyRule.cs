@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Globalization;
-using NuGetPe;
-using NuGetPackageExplorer.Types;
+using System.Linq;
 using NuGet.Packaging.Core;
+using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
@@ -37,7 +36,7 @@ namespace PackageExplorerViewModel.Rules
 
             return pd.VersionRange.MinVersion?.IsPrerelease == true || pd.VersionRange.MaxVersion?.IsPrerelease == true;
         }
-        
+
         private static PackageIssue CreatePackageIssue(PackageDependency target)
         {
             return new PackageIssue(

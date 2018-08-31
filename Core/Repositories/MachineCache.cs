@@ -1,15 +1,15 @@
-﻿using NuGet.Versioning;
-using System;
+﻿using System;
 using System.IO;
-using System.Linq;
 using System.Security;
+using Windows.Storage;
+using NuGet.Versioning;
 
 namespace NuGetPe
 {
     /// <summary>
     /// The machine cache represents a location on the machine where packages are cached. It is a specific implementation of a local repository and can be used as such.
     /// </summary>
-    public class MachineCache 
+    public class MachineCache
     {
         // Maximum number of packages that can live in this cache.
         private const int MaxNumberOfPackages = 100;
@@ -130,6 +130,18 @@ namespace NuGetPe
         /// </summary>
         private static string GetCachePath()
         {
+            // Try getting it from the app model first
+            try
+            {
+                // Get the localized special folder for local app data
+                var local = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)).Name;
+                return GetCachePath(Environment.GetEnvironmentVariable, _ => Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, local));
+            }
+            catch
+            { 
+                // Don't care here, not on Win7 or running in an app model context
+            }
+
             return GetCachePath(Environment.GetEnvironmentVariable, Environment.GetFolderPath);
         }
 

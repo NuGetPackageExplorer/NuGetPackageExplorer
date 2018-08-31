@@ -4,12 +4,12 @@
     <TargetFramework>net461</TargetFramework>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
-    <EmbeddedResourceGeneratorVisibilityIsInternal>false</EmbeddedResourceGeneratorVisibilityIsInternal>
+    <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Credentials" Version="4.7.0" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.7.0" />
+    <PackageReference Include="NuGet.Credentials" Version="4.8.0-rtm.5385" />
+    <PackageReference Include="NuGet.PackageManagement" Version="4.8.0-rtm.5385" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>

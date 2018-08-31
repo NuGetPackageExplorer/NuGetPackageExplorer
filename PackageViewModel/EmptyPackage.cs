@@ -175,7 +175,7 @@ namespace PackageExplorerViewModel
         public IEnumerable<PackageType> PackageTypes => Enumerable.Empty<PackageType>();
 
         public RepositoryMetadata Repository => null;
-        
+
         #endregion
 
         public void Dispose()

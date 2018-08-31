@@ -1,10 +1,10 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using NuGetPe;
-using NuGetPackageExplorer.Types;
-using PackageExplorerViewModel;
-using NuGet.Protocol.Core.Types;
 using System.Windows;
+using NuGet.Protocol.Core.Types;
+using NuGetPackageExplorer.Types;
+using NuGetPe;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
@@ -78,7 +78,7 @@ namespace PackageExplorer
                         selectedFilePath += NuGetPe.Constants.PackageExtension;
                     }
 
-                    await PackageDownloader.Download(selectedFilePath, repository, packageInfo.Identity);                    
+                    await PackageDownloader.Download(selectedFilePath, repository, packageInfo.Identity);
                 }
             }
         }
@@ -101,7 +101,11 @@ namespace PackageExplorer
 
         private void ReCenterPackageChooserDialog(StandardDialog dialog)
         {
-            if (dialog.Owner == null) return;
+            if (dialog.Owner == null)
+            {
+                return;
+            }
+
             var ownerCenterX = dialog.Owner.Left + dialog.Owner.Width / 2;
             var ownerCenterY = dialog.Owner.Top + dialog.Owner.Height / 2;
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -18,10 +17,10 @@ namespace NuGetPe
     {
         private const string AssemblyReferencesDir = "lib";
         private const string ResourceAssemblyExtension = ".resources.dll";
-        private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe", ".winmd"};
+        private static readonly string[] AssemblyReferencesExtensions = new[] { ".dll", ".exe", ".winmd" };
 
         // paths to exclude
-        private static readonly string[] ExcludePaths = new[] {"_rels", "package","[Content_Types]", ".signature"};
+        private static readonly string[] ExcludePaths = new[] { "_rels", "package", "[Content_Types]", ".signature" };
 
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
@@ -259,7 +258,7 @@ namespace NuGetPe
 
         public SignatureInfo PublisherSignature { get; private set; }
 
-        public SignatureInfo RepositorySignature { get; private set; }
+        public RepositorySignatureInfo RepositorySignature { get; private set; }
 
         public VerifySignaturesResult VerificationResult { get; private set; }
 
@@ -271,7 +270,7 @@ namespace NuGetPe
         {
             var stream = _streamFactory();
             var reader = new MyPackageArchiveReader(stream, false); // should not close
-           
+
             _danglingStreams.Add(reader);           // clean up on dispose
 
 
@@ -298,21 +297,28 @@ namespace NuGetPe
                     try
                     {
                         var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None);
-                    
-                        // There will only be one primary
+            
+                        // Author signatures must be the primary, but they can contain
+                        // a repository counter signature
                         if (sig.Type == SignatureType.Author)
                         {
                             PublisherSignature = new SignatureInfo(sig);
+
+                            var counter = RepositoryCountersignature.GetRepositoryCountersignature(sig);
+                            if (counter != null)
+                            {
+                                RepositorySignature = new RepositorySignatureInfo(counter);
+                            }
                         }
                         else if (sig.Type == SignatureType.Repository)
                         {
-                            RepositorySignature = new SignatureInfo(sig);
+                            RepositorySignature = new RepositorySignatureInfo(sig);
                         }
                     }
                     catch (SignatureException)
                     {
                     }
-                    
+
                 }
             }
         }
@@ -347,7 +353,7 @@ namespace NuGetPe
         {
             // We exclude any opc files and the manifest file (.nuspec)
             var path = entry.FullName;
-            
+
             return !path.EndsWith("/") && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
         }
@@ -367,7 +373,7 @@ namespace NuGetPe
         {
             private ZipArchive zipArchive;
 
-           /// <summary>Nupkg package reader</summary>
+            /// <summary>Nupkg package reader</summary>
             /// <param name="stream">Nupkg data stream.</param>
             /// <param name="leaveStreamOpen">If true the nupkg stream will not be closed by the zip reader.</param>
             public MyPackageArchiveReader(Stream stream, bool leaveStreamOpen) : base(stream, leaveStreamOpen)

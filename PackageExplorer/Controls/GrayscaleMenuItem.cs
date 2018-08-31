@@ -19,7 +19,7 @@ namespace PackageExplorer
 
         private static void OnIconPropertyChanged(object sender, DependencyPropertyChangedEventArgs args)
         {
-            ((GrayscaleMenuItem) sender).UpdateImageContent();
+            ((GrayscaleMenuItem)sender).UpdateImageContent();
         }
 
         private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)

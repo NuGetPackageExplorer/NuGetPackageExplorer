@@ -8,278 +8,347 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PackageExplorer.Properties {
-    
-    
+namespace PackageExplorer.Properties
+{
+
+
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.3.0.0")]
-    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
-        
+    public sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase
+    {
+
         private static Settings defaultInstance = ((Settings)(global::System.Configuration.ApplicationSettingsBase.Synchronized(new Settings())));
-        
-        public static Settings Default {
-            get {
+
+        public static Settings Default
+        {
+            get
+            {
                 return defaultInstance;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("12")]
-        public int FontSize {
-            get {
+        public int FontSize
+        {
+            get
+            {
                 return ((int)(this["FontSize"]));
             }
-            set {
+            set
+            {
                 this["FontSize"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("400")]
-        public double ContentViewerHeight {
-            get {
+        public double ContentViewerHeight
+        {
+            get
+            {
                 return ((double)(this["ContentViewerHeight"]));
             }
-            set {
+            set
+            {
                 this["ContentViewerHeight"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://nuget.org/api/v2/")]
-        public string PackageSource {
-            get {
+        public string PackageSource
+        {
+            get
+            {
                 return ((string)(this["PackageSource"]));
             }
-            set {
+            set
+            {
                 this["PackageSource"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string WindowPlacement {
-            get {
+        public string WindowPlacement
+        {
+            get
+            {
                 return ((string)(this["WindowPlacement"]));
             }
-            set {
+            set
+            {
                 this["WindowPlacement"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PublishPrivateKey {
-            get {
+        public string PublishPrivateKey
+        {
+            get
+            {
                 return ((string)(this["PublishPrivateKey"]));
             }
-            set {
+            set
+            {
                 this["PublishPrivateKey"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection MruFiles {
-            get {
+        public global::System.Collections.Specialized.StringCollection MruFiles
+        {
+            get
+            {
                 return ((global::System.Collections.Specialized.StringCollection)(this["MruFiles"]));
             }
-            set {
+            set
+            {
                 this["MruFiles"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection MruPackageSources {
-            get {
+        public global::System.Collections.Specialized.StringCollection MruPackageSources
+        {
+            get
+            {
                 return ((global::System.Collections.Specialized.StringCollection)(this["MruPackageSources"]));
             }
-            set {
+            set
+            {
                 this["MruPackageSources"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("https://nuget.org")]
-        public string PublishPackageLocation {
-            get {
+        public string PublishPackageLocation
+        {
+            get
+            {
                 return ((string)(this["PublishPackageLocation"]));
             }
-            set {
+            set
+            {
                 this["PublishPackageLocation"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("630")]
-        public double PackageChooserDialogWidth {
-            get {
+        public double PackageChooserDialogWidth
+        {
+            get
+            {
                 return ((double)(this["PackageChooserDialogWidth"]));
             }
-            set {
+            set
+            {
                 this["PackageChooserDialogWidth"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("450")]
-        public double PackageChooserDialogHeight {
-            get {
+        public double PackageChooserDialogHeight
+        {
+            get
+            {
                 return ((double)(this["PackageChooserDialogHeight"]));
             }
-            set {
+            set
+            {
                 this["PackageChooserDialogHeight"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool IsFirstTime {
-            get {
+        public bool IsFirstTime
+        {
+            get
+            {
                 return ((bool)(this["IsFirstTime"]));
             }
-            set {
+            set
+            {
                 this["IsFirstTime"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        public global::System.Collections.Specialized.StringCollection PublishPackageSources {
-            get {
+        public global::System.Collections.Specialized.StringCollection PublishPackageSources
+        {
+            get
+            {
                 return ((global::System.Collections.Specialized.StringCollection)(this["PublishPackageSources"]));
             }
-            set {
+            set
+            {
                 this["PublishPackageSources"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("400")]
-        public double PackageContentHeight {
-            get {
+        public double PackageContentHeight
+        {
+            get
+            {
                 return ((double)(this["PackageContentHeight"]));
             }
-            set {
+            set
+            {
                 this["PackageContentHeight"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowTaskShortcuts {
-            get {
+        public bool ShowTaskShortcuts
+        {
+            get
+            {
                 return ((bool)(this["ShowTaskShortcuts"]));
             }
-            set {
+            set
+            {
                 this["ShowTaskShortcuts"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool WordWrap {
-            get {
+        public bool WordWrap
+        {
+            get
+            {
                 return ((bool)(this["WordWrap"]));
             }
-            set {
+            set
+            {
                 this["WordWrap"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ShowLineNumbers {
-            get {
+        public bool ShowLineNumbers
+        {
+            get
+            {
                 return ((bool)(this["ShowLineNumbers"]));
             }
-            set {
+            set
+            {
                 this["ShowLineNumbers"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool PublishAsUnlisted {
-            get {
+        public bool PublishAsUnlisted
+        {
+            get
+            {
                 return ((bool)(this["PublishAsUnlisted"]));
             }
-            set {
+            set
+            {
                 this["PublishAsUnlisted"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool ShowPrereleasePackages {
-            get {
+        public bool ShowPrereleasePackages
+        {
+            get
+            {
                 return ((bool)(this["ShowPrereleasePackages"]));
             }
-            set {
+            set
+            {
                 this["ShowPrereleasePackages"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool SolicitInstallNpeForWin8 {
-            get {
+        public bool SolicitInstallNpeForWin8
+        {
+            get
+            {
                 return ((bool)(this["SolicitInstallNpeForWin8"]));
             }
-            set {
+            set
+            {
                 this["SolicitInstallNpeForWin8"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool IsFirstTimeAfterMigrate {
-            get {
+        public bool IsFirstTimeAfterMigrate
+        {
+            get
+            {
                 return ((bool)(this["IsFirstTimeAfterMigrate"]));
             }
-            set {
+            set
+            {
                 this["IsFirstTimeAfterMigrate"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
-        public bool AutoLoadPackages {
-            get {
+        public bool AutoLoadPackages
+        {
+            get
+            {
                 return ((bool)(this["AutoLoadPackages"]));
             }
-            set {
+            set
+            {
                 this["AutoLoadPackages"] = value;
             }
         }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         public string SigningCertificate
         {
-            get {
+            get
+            {
                 return ((string)(this["SigningCertificate"]));
             }
-            set {
+            set
+            {
                 this["SigningCertificate"] = value;
             }
         }

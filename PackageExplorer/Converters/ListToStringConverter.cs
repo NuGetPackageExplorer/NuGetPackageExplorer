@@ -1,23 +1,20 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
-using Humanizer;
-using NuGet.ProjectManagement;
 
 namespace PackageExplorer
 {
-    public class DateTimeOffsetHumanizeConverter : IValueConverter
+    public class ListToStringConverter : IValueConverter
     {
-        #region IValueConverter Members
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is DateTimeOffset dateTimeOffset)
+            var sep = parameter as string;
+            if (value is IEnumerable<string> enu)
             {
-                if (dateTimeOffset != Constants.Unpublished)
-                {
-                    return dateTimeOffset.LocalDateTime.Humanize(false, null, culture);
-                }
+                return string.Join(sep, enu);
             }
             return null;
         }
@@ -26,7 +23,5 @@ namespace PackageExplorer
         {
             throw new NotImplementedException();
         }
-
-        #endregion
     }
 }

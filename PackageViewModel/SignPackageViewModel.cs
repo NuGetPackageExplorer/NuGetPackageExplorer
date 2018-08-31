@@ -1,13 +1,13 @@
-﻿using NuGet.Common;
-using NuGet.Packaging.Signing;
-using NuGetPackageExplorer.Types;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using NuGet.Common;
+using NuGet.Packaging.Signing;
+using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {
@@ -259,13 +259,12 @@ namespace PackageExplorerViewModel
             }
         }
 
-        static bool IsCertificateValidForNuGet(X509Certificate2 certificate) => CertificateUtility.IsValidForPurposeFast(certificate, Oids.CodeSigningEku) &&
-                                                                                CertificateUtility.IsCertificatePublicKeyValid(certificate) &&
-                                                                                CertificateUtility.IsSignatureAlgorithmSupported(certificate) &&
-                                                                                !CertificateUtility.HasExtendedKeyUsage(certificate, Oids.LifetimeSigningEku) &&
-                                                                                !CertificateUtility.IsCertificateValidityPeriodInTheFuture(certificate);
-
-
+        private static bool IsCertificateValidForNuGet(X509Certificate2 certificate) =>
+            CertificateUtility.IsValidForPurposeFast(certificate, Oids.CodeSigningEku) &&
+            CertificateUtility.IsCertificatePublicKeyValid(certificate) &&
+            CertificateUtility.IsSignatureAlgorithmSupported(certificate) &&
+            !CertificateUtility.HasExtendedKeyUsage(certificate, Oids.LifetimeSigningEku) &&
+            !CertificateUtility.IsCertificateValidityPeriodInTheFuture(certificate);
 
         private void ShowCertificateCommandExecute()
         {

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Data;
 using NuGet.Packaging.Core;
 using NuGetPe;
@@ -12,10 +10,12 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
+            {
                 return string.Empty;
+            }
 
             var dependency = (PackageDependency)value;
-            
+
             return $"{dependency.Id} {ManifestUtility.ReplaceMetadataWithToken(dependency.VersionRange.PrettyPrint())}";
         }
 

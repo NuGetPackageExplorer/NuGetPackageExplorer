@@ -6,7 +6,7 @@ namespace PackageExplorer
     {
         public GrayscaleImage()
         {
-            Effect = new GrayscaleEffect.GrayscaleEffect {DesaturationFactor = 1};
+            Effect = new GrayscaleEffect.GrayscaleEffect { DesaturationFactor = 1 };
         }
     }
 }

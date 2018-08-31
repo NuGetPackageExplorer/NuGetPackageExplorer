@@ -5,6 +5,9 @@
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
+
+    <TargetPlatformMinVersion>10.0.10563.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,6 +18,12 @@
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />
     <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />
+
+    <Reference Include="Windows">
+      <HintPath Condition="Exists('$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformMinVersion)\Windows.winmd')">$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformMinVersion)\Windows.winmd</HintPath>
+      <HintPath Condition="Exists('$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd')">$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd</HintPath>
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   
 </Project>

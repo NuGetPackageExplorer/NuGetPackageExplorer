@@ -6,11 +6,10 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using NuGet.Packaging;
-using NuGetPe;
-using NuGetPackageExplorer.Types;
-using PackageExplorerViewModel;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
+using NuGetPackageExplorer.Types;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {

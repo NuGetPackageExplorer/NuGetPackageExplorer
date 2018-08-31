@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -54,22 +53,13 @@ namespace PackageExplorer
 
         #endregion
 
-        private async void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is FileEditorViewModel viewModel && viewModel.FileInEdit != null)
             {
                 SyntaxDefinitions.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(viewModel.FileInEdit.Path);
                 var stream = viewModel.FileInEdit.GetStream();
-                if (!stream.CanSeek)
-                {
-                    var memoryStream = new MemoryStream();
-                    using (stream)
-                    {
-                        await stream.CopyToAsync(memoryStream);
-                    }
-                    memoryStream.Position = 0;
-                    stream = memoryStream;
-                }
+                stream = StreamUtility.MakeSeekable(stream);
                 Editor.Load(stream);
             }
         }

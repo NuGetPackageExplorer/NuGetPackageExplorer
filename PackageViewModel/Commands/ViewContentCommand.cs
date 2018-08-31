@@ -55,7 +55,7 @@ namespace PackageExplorerViewModel
                     {
                         ViewModel.UIServices.Show(e.Message, MessageLevel.Error);
                     }
-                    
+
                 }
             }
         }
@@ -116,7 +116,7 @@ namespace PackageExplorerViewModel
                 isBinary = FileHelper.IsBinaryFile(file.Name);
                 if (isBinary)
                 {
-                   content = Resources.UnsupportedFormatMessage;
+                    content = Resources.UnsupportedFormatMessage;
                 }
                 else
                 {
@@ -125,7 +125,7 @@ namespace PackageExplorerViewModel
             }
 
             if (size == -1)
-            { 
+            {
                 // This is inefficient but cn be cleaned up later
                 using (var str = file.GetStream())
                 using (var ms = new MemoryStream())
@@ -148,7 +148,7 @@ namespace PackageExplorerViewModel
         private IEnumerable<IPackageContentViewer> FindContentViewer(PackageFile file)
         {
             var extension = Path.GetExtension(file.Name);
-            
+
             return from p in ViewModel.ContentViewerMetadata
                    where AppCompat.IsWindows10S ? p.Metadata.SupportsWindows10S : true // Filter out incompatible addins on 10s
                    where p.Metadata.SupportedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase)
@@ -160,7 +160,7 @@ namespace PackageExplorerViewModel
         private static string ReadFileContent(PackageFile file, out long size)
         {
             using (var stream = file.GetStream())
-            using(var ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             using (var reader = new StreamReader(ms))
             {
                 stream.CopyTo(ms);

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Documents;
-using StringResources = PackageExplorer.Resources;
+﻿using System.Windows;
 
 namespace PackageExplorer
 {
@@ -15,14 +10,14 @@ namespace PackageExplorer
         public ValidationResultWindow()
         {
             InitializeComponent();
-            
+
         }
-        
+
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
         }
-        
+
     }
 }

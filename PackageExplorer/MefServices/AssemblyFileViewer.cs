@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using NuGetPackageExplorer.Types;
@@ -56,7 +52,7 @@ namespace PackageExplorer
                         Grid.SetRow(value, grid.RowDefinitions.Count);
                         Grid.SetColumn(value, 1);
 
-                        grid.RowDefinitions.Add(new RowDefinition {Height = new GridLength(1, GridUnitType.Auto)});
+                        grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
                         grid.Children.Add(label);
                         grid.Children.Add(value);
                     }

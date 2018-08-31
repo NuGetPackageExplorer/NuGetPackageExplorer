@@ -8,7 +8,7 @@ namespace PackageExplorer
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            var stringValue = (string) value;
+            var stringValue = (string)value;
             if (Uri.TryCreate(stringValue, UriKind.Absolute, out var url))
             {
                 if (url.Scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) ||

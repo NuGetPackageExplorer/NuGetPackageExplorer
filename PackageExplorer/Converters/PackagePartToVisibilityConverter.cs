@@ -17,7 +17,7 @@ namespace PackageExplorer
                 return null;
             }
 
-            var type = (string) parameter;
+            var type = (string)parameter;
             if (type == "file")
             {
                 return BoolToVisibility(value is PackageFile);

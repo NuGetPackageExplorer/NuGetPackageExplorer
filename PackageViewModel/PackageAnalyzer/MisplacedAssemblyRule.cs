@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
 using System.Linq;
-using NuGetPe;
 using NuGetPackageExplorer.Types;
-using NuGet.Packaging;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
     [Export(typeof(IPackageRule))]
     internal class MisplacedAssemblyRule : IPackageRule
     {
-        private static readonly HashSet<string> assemblyFolders = new HashSet<string>(new[]{"lib", "analyzers", "build", "ref", "tools" }, StringComparer.OrdinalIgnoreCase);
+        private static readonly HashSet<string> assemblyFolders = new HashSet<string>(new[] { "lib", "analyzers", "build", "ref", "tools" }, StringComparer.OrdinalIgnoreCase);
 
         #region IPackageRule Members
 
@@ -23,17 +21,17 @@ namespace PackageExplorerViewModel.Rules
                 var path = file.Path;
                 var segments = path.Split('\\');
                 var directory = segments.First();
-                
+
                 // if under 'folder' directly
-                if(assemblyFolders.Contains(directory))
+                if (assemblyFolders.Contains(directory))
                 {
                     // file under the directory. Tools can do anything
-                    if (segments.Length == 2 && FileHelper.IsAssembly(path) && !"tools".Equals(directory, StringComparison.OrdinalIgnoreCase)) 
+                    if (segments.Length == 2 && FileHelper.IsAssembly(path) && !"tools".Equals(directory, StringComparison.OrdinalIgnoreCase))
                     {
                         yield return CreatePackageIssueForAssembliesUnderLib(path, directory);
                     }
                 }
-                else 
+                else
                 {
                     // when checking for assemblies outside known folders, only check .dll files.
                     // .exe files are often legitimate outside 'lib'.
@@ -43,7 +41,7 @@ namespace PackageExplorerViewModel.Rules
                         yield return CreatePackageIssueForAssembliesOutsideLib(path, directory);
                     }
                 }
-                
+
             }
         }
 
