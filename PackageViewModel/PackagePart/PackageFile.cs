@@ -34,6 +34,20 @@ namespace PackageExplorerViewModel
 
         #region IPackageFile members
 
+        public override string Path
+        {
+            get => base.Path;
+            set
+            {
+                base.Path = value;
+
+                if (_file is PackageFileBase packageFile)
+                {
+                    packageFile.Path = value;
+                }
+            }
+        }
+
         /// <summary>
         /// Returns the path on disk if this file is a PhysicalPackageFile. Otherwise, returns null;
         /// </summary>
