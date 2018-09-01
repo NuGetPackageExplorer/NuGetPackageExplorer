@@ -184,7 +184,11 @@ namespace PackageExplorer
             {
                 if (package == null && File.Exists(tempFile))
                 {
-                    File.Delete(tempFile);
+                    try
+                    {
+                        File.Delete(tempFile);
+                    }
+                    catch { /* ignore */ }
                 }
             }
 
@@ -263,7 +267,11 @@ namespace PackageExplorer
             {
                 if (File.Exists(_tempFile))
                 {
-                    File.Delete(_tempFile);
+                    try
+                    {
+                        File.Delete(_tempFile);
+                    }
+                    catch { /* ignore */ }
                 }
                 _tempFile = null;
             }
