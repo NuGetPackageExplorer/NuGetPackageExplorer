@@ -23,7 +23,7 @@ namespace NuGetPe
         public string Path
         {
             get;
-            private set;
+            set;
         }
 
         public virtual string OriginalPath

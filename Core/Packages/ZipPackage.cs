@@ -268,8 +268,7 @@ namespace NuGetPe
 
         public IEnumerable<IPackageFile> GetFiles()
         {
-            var stream = _streamFactory();
-            var reader = new MyPackageArchiveReader(stream, false); // should not close
+            var reader = new MyPackageArchiveReader(_streamFactory(), false); // should not close
 
             _danglingStreams.Add(reader);           // clean up on dispose
 
@@ -277,7 +276,25 @@ namespace NuGetPe
             var entries = reader.GetZipEntries();
             return (from entry in entries
                     where IsPackageFile(entry)
-                    select new ZipPackageFile(reader, entry)).ToList();
+                    select new ZipPackageFile(entry.FullName, entry.LastWriteTime, EntryStreamFactory)).ToList();
+
+            Stream EntryStreamFactory(string entryName)
+            {
+                try
+                {
+                    return reader.GetStream(entryName);
+                }
+                catch (InvalidDataException) // catch "File header is corrupt" exception and read file again
+                {
+                    reader.Dispose();
+                    _danglingStreams.Remove(reader);
+                    reader = new MyPackageArchiveReader(_streamFactory(), false); // should not close
+
+                    _danglingStreams.Add(reader);           // clean up on dispose
+
+                    return reader.GetStream(entryName);
+                }
+            }
         }
 
         public Stream GetStream()
@@ -297,7 +314,7 @@ namespace NuGetPe
                     try
                     {
                         var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None);
-            
+
                         // Author signatures must be the primary, but they can contain
                         // a repository counter signature
                         if (sig.Type == SignatureType.Author)
