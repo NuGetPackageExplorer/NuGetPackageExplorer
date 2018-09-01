@@ -82,7 +82,7 @@ namespace PackageExplorerViewModel
 
             if (action == SaveAction || action == ForceSaveAction)
             {
-                if (CanSaveTo(ViewModel.PackageSource))
+                if (CanSaveTo(ViewModel.PackageSource) && !ViewModel.HasFileChangedExternally)
                 {
                     Save();
                 }
