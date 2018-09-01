@@ -89,7 +89,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public virtual string Path
+        public string Path
         {
             get { return _path; }
             set

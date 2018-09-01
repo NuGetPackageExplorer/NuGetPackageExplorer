@@ -90,6 +90,8 @@ namespace PackageExplorer
         [Export]
         public IPackageEditorService EditorService { get; set; }
 
+        private string _tempFile;
+
         private bool HasUnsavedChanges
         {
             get
@@ -146,18 +148,21 @@ namespace PackageExplorer
         {
             IPackage package = null;
 
+            var tempFile = Path.GetTempFileName();
             try
             {
+                File.Copy(packagePath, tempFile, overwrite: true);
+
                 var extension = Path.GetExtension(packagePath);
                 if (extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                 {
-                    package = new ZipPackage(packagePath);
+                    package = new ZipPackage(tempFile);
                 }
                 else if (extension.Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase))
                 {
-                    using (var str = ManifestUtility.ReadManifest(packagePath))
+                    using (var str = ManifestUtility.ReadManifest(tempFile))
                     {
-                        var builder = new PackageBuilder(str, Path.GetDirectoryName(packagePath));
+                        var builder = new PackageBuilder(str, Path.GetDirectoryName(tempFile));
                         package = builder.Build();
                     }
                 }
@@ -165,13 +170,26 @@ namespace PackageExplorer
                 if (package != null)
                 {
                     LoadPackage(package, packagePath, PackageType.LocalPackage);
+                    _tempFile = tempFile;
                     return true;
                 }
             }
             catch (Exception ex)
             {
+                package = null;
                 UIServices.Show(ex.Message, MessageLevel.Error);
                 return false;
+            }
+            finally
+            {
+                if (package == null && File.Exists(tempFile))
+                {
+                    try
+                    {
+                        File.Delete(tempFile);
+                    }
+                    catch { /* ignore */ }
+                }
             }
 
             return false;
@@ -244,6 +262,18 @@ namespace PackageExplorer
             {
                 currentViewModel.PropertyChanged -= OnPackageViewModelPropertyChanged;
                 currentViewModel.Dispose();
+            }
+            if (_tempFile != null)
+            {
+                if (File.Exists(_tempFile))
+                {
+                    try
+                    {
+                        File.Delete(_tempFile);
+                    }
+                    catch { /* ignore */ }
+                }
+                _tempFile = null;
             }
         }
 
@@ -461,7 +491,7 @@ namespace PackageExplorer
                 return;
             }
 
-            (DataContext as PackageViewModel)?.Dispose();
+            DisposeViewModel();
             DataContext = null;
         }
 
