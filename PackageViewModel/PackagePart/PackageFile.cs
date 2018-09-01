@@ -170,8 +170,9 @@ namespace PackageExplorerViewModel
             }
 
             using (var stream = File.Create(fullPath))
+            using (var packageStream = GetStream())
             {
-                GetStream().CopyTo(stream);
+                packageStream.CopyTo(stream);
             }
         }
 

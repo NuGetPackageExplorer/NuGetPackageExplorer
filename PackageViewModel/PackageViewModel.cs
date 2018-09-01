@@ -658,8 +658,9 @@ namespace PackageExplorerViewModel
                                               out var selectedFileName, out var filterIndex))
             {
                 using (var fileStream = File.OpenWrite(selectedFileName))
+                using (var packageStream = file.GetStream())
                 {
-                    file.GetStream().CopyTo(fileStream);
+                    packageStream.CopyTo(fileStream);
                 }
             }
         }

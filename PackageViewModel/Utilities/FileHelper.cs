@@ -52,8 +52,9 @@ namespace PackageExplorerViewModel
             // override existing file with a 0-byte file.
             var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
             using (Stream tempFileStream = File.Create(tempFileName))
+            using (var packageStream = file.GetStream())
             {
-                file.GetStream().CopyTo(tempFileStream);
+                packageStream.CopyTo(tempFileStream);
             }
 
             if (File.Exists(tempFileName))
@@ -76,8 +77,9 @@ namespace PackageExplorerViewModel
             var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
 
             using (Stream tempFileStream = File.Create(tempFileName))
+            using (var packageStream = file.GetStream())
             {
-                file.GetStream().CopyTo(tempFileStream);
+                packageStream.CopyTo(tempFileStream);
             }
 
             if (File.Exists(tempFileName))
