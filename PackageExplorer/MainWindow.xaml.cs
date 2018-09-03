@@ -162,7 +162,7 @@ namespace PackageExplorer
                 {
                     using (var str = ManifestUtility.ReadManifest(tempFile))
                     {
-                        var builder = new PackageBuilder(str, Path.GetDirectoryName(tempFile));
+                        var builder = new PackageBuilder(str, Path.GetDirectoryName(packagePath));
                         package = builder.Build();
                     }
                 }
