@@ -103,7 +103,7 @@
                       SelectionChanged="PackageSourceBox_OnSelectionChanged"
                       IsTextSearchEnabled="False"
                       VerticalContentAlignment="Center" 
-                      Text="{Binding PackageSource, Mode=OneWay}" 
+                      SelectedItem="{Binding PackageSource, Mode=OneWay}" 
                       Margin="5,0,0,0">
                 <ComboBox.IsEnabled>
                     <MultiBinding Converter="{StaticResource andConverter}">
