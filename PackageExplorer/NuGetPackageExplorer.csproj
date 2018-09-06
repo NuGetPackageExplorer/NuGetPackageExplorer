@@ -22,7 +22,7 @@
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.WindowsRuntime" />
     <Reference Include="Windows">
-      <HintPath>$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\10.0.16299.0\Windows.winmd</HintPath>
+      <HintPath>$(WindowsWinmdFile)</HintPath>
       <Private>false</Private>
     </Reference>
 
