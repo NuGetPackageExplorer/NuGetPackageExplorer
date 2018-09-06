@@ -25,7 +25,7 @@ namespace PackageExplorer
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private T GetValue<T>(string name)
+        private T GetValue<T>([CallerMemberName] string name = null)
         {
             object value;
 
@@ -55,8 +55,10 @@ namespace PackageExplorer
             return default(T);
         }
 
-        private void SetValue(string name, object value)
+        private void SetValue(object value, string name = null, [CallerMemberName] string propertyName = null)
         {
+            name = name ?? propertyName;
+
             if (NativeMethods.IsRunningAsUwp)
             {
                 if (value is List<string> list)
@@ -75,7 +77,7 @@ namespace PackageExplorer
                 }
                 Settings.Default[name] = value;
             }
-            OnPropertyChanged(name);
+            OnPropertyChanged(propertyName);
         }
 
         #region ISettingsManager Members
@@ -87,7 +89,7 @@ namespace PackageExplorer
 
         public void SetMruFiles(IEnumerable<string> files)
         {
-            SetValue("MruFiles", files.ToList());
+            SetValue(files.ToList(), "MruFiles");
         }
 
         public IList<string> GetPackageSources()
@@ -97,13 +99,13 @@ namespace PackageExplorer
 
         public void SetPackageSources(IEnumerable<string> sources)
         {
-            SetValue("MruPackageSources", sources.ToList());
+            SetValue(sources.ToList(), "MruPackageSources");
         }
 
         public string ActivePackageSource
         {
-            get => GetValue<string>("PackageSource") ?? "https://api.nuget.org/v3/index.json";
-            set => SetValue("PackageSource", value);
+            get => GetValue<string>("PackageSource") ?? NuGetConstants.DefaultFeedUrl;
+            set => SetValue(value, "PackageSource");
         }
 
         public IList<string> GetPublishSources()
@@ -113,13 +115,13 @@ namespace PackageExplorer
 
         public void SetPublishSources(IEnumerable<string> sources)
         {
-            SetValue("PublishPackageSources", sources.ToList());
+            SetValue(sources.ToList(), "PublishPackageSources");
         }
 
         public string ActivePublishSource
         {
-            get => GetValue<string>("PublishPackageLocation") ?? "https://nuget.org";
-            set => SetValue("PublishPackageLocation", value);
+            get => GetValue<string>("PublishPackageLocation") ?? NuGetConstants.NuGetPublishFeed;
+            set => SetValue(value, "PublishPackageLocation");
         }
 
         public string ReadApiKey(string source)
@@ -138,92 +140,92 @@ namespace PackageExplorer
 
         public bool ShowPrereleasePackages
         {
-            get => GetValue<bool?>("ShowPrereleasePackages") ?? true;
-            set => SetValue("ShowPrereleasePackages", value);
+            get => GetValue<bool?>() ?? true;
+            set => SetValue(value);
         }
 
         public bool AutoLoadPackages
         {
-            get => GetValue<bool?>("AutoLoadPackages") ?? true;
-            set => SetValue("AutoLoadPackages", value);
+            get => GetValue<bool?>() ?? true;
+            set => SetValue(value);
         }
 
         public bool PublishAsUnlisted
         {
-            get => GetValue<bool?>("PublishAsUnlisted") ?? false;
-            set => SetValue("PublishAsUnlisted", value);
+            get => GetValue<bool?>() ?? false;
+            set => SetValue(value);
         }
 
         public string SigningCertificate
         {
-            get => GetValue<string>("SigningCertificate");
-            set => SetValue("SigningCertificate", value);
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public string TimestampServer
         {
-            get => GetValue<string>("TimestampServer");
-            set => SetValue("TimestampServer", value);
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public string SigningHashAlgorithmName
         {
-            get => GetValue<string>("SigningHashAlgorithmName");
-            set => SetValue("SigningHashAlgorithmName", value);
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public int FontSize
         {
-            get => GetValue<int?>("FontSize") ?? 12;
-            set => SetValue("FontSize", value);
+            get => GetValue<int?>() ?? 12;
+            set => SetValue(value);
         }
 
         public bool ShowTaskShortcuts
         {
-            get => GetValue<bool?>("ShowTaskShortcuts") ?? true;
-            set => SetValue("ShowTaskShortcuts", value);
+            get => GetValue<bool?>() ?? true;
+            set => SetValue(value);
         }
 
         public string WindowPlacement
         {
-            get => GetValue<string>("WindowPlacement");
-            set => SetValue("WindowPlacement", value);
+            get => GetValue<string>();
+            set => SetValue(value);
         }
 
         public double PackageChooserDialogWidth
         {
-            get => GetValue<double?>("PackageChooserDialogWidth") ?? 630;
-            set => SetValue("PackageChooserDialogWidth", value);
+            get => GetValue<double?>() ?? 630;
+            set => SetValue(value);
         }
 
         public double PackageChooserDialogHeight
         {
-            get => GetValue<double?>("PackageChooserDialogHeight") ?? 450;
-            set => SetValue("PackageChooserDialogHeight", value);
+            get => GetValue<double?>() ?? 450;
+            set => SetValue(value);
         }
 
         public double PackageContentHeight
         {
-            get => GetValue<double?>("PackageContentHeight") ?? 400;
-            set => SetValue("PackageContentHeight", value);
+            get => GetValue<double?>() ?? 400;
+            set => SetValue(value);
         }
 
         public double ContentViewerHeight
         {
-            get => GetValue<double?>("ContentViewerHeight") ?? 400;
-            set => SetValue("ContentViewerHeight", value);
+            get => GetValue<double?>() ?? 400;
+            set => SetValue(value);
         }
 
         public bool WordWrap
         {
-            get => GetValue<bool?>("WordWrap") ?? false;
-            set => SetValue("WordWrap", value);
+            get => GetValue<bool?>() ?? false;
+            set => SetValue(value);
         }
 
         public bool ShowLineNumbers
         {
-            get => GetValue<bool?>("ShowLineNumbers") ?? false;
-            set => SetValue("ShowLineNumbers", value);
+            get => GetValue<bool?>() ?? false;
+            set => SetValue(value);
         }
 
         #endregion
