@@ -31,8 +31,8 @@ namespace PackageExplorer
 
             try
             {
-                value = ApplicationData.Current.LocalSettings.Values[name];
-
+                var settings = ApplicationData.Current.LocalSettings;
+                value = settings.Values[name];
                 if (typeof(T) == typeof(List<string>) && value is string str)
                 {
                     value = JsonConvert.DeserializeObject<List<string>>(str);
@@ -41,7 +41,6 @@ namespace PackageExplorer
             catch
             {
                 value = Settings.Default[name];
-
                 if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
                 {
                     value = sc.Cast<string>().ToArray();
@@ -61,11 +60,12 @@ namespace PackageExplorer
 
             try
             {
+                var settings = ApplicationData.Current.LocalSettings;
                 if (value is List<string> list)
                 {
                     value = JsonConvert.SerializeObject(list);
                 }
-                ApplicationData.Current.LocalSettings.Values[name] = value;
+                settings.Values[name] = value;
             }
             catch
             {
