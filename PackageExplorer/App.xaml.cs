@@ -11,6 +11,7 @@ using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Credentials;
 using NuGet.Protocol;
+using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
 using Settings = PackageExplorer.Properties.Settings;
@@ -44,14 +45,14 @@ namespace PackageExplorer
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
+            Resources.Add("Settings", Container.GetExportedValue<ISettingsManager>());
+
             InitCredentialService();
             HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>
             {
                 Container.GetExportedValue<ICredentialManager>().Add(credentials, uri);
                 InitCredentialService();
             };
-
-            MigrateSettings();
 
             var window = Container.GetExportedValue<MainWindow>();
             window.Show();
@@ -87,17 +88,6 @@ namespace PackageExplorer
             
         }
 
-        private static void MigrateSettings()
-        {
-            var settings = Settings.Default;
-            if (settings.IsFirstTime)
-            {
-                settings.Upgrade();
-                settings.IsFirstTime = false;
-                settings.Save();
-            }
-        }
-
         private static async Task<bool> LoadFile(MainWindow window, string file)
         {
             if (FileUtility.IsSupportedFile(file) && File.Exists(file))
@@ -118,14 +108,13 @@ namespace PackageExplorer
                 _container.Dispose();
             }
 
-            // IMPORTANT: Call this after calling _container.Dispose(). Some exports relies on Dispose()
-            // being called to save settings values.
-            Settings.Default.IsFirstTimeAfterMigrate = false;
-
             // Try to save, if there's an IO error, just ignore it here, nothing we can do
             try
             {
-                Settings.Default.Save();
+                if (!NativeMethods.IsRunningAsUwp)
+                {
+                    Settings.Default.Save();
+                }
             }
             catch
             {

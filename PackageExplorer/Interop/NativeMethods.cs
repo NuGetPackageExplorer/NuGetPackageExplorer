@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace PackageExplorer
 {
@@ -15,6 +16,47 @@ namespace PackageExplorer
             {
                 return Environment.OSVersion.Platform == PlatformID.Win32NT &&
                        Environment.OSVersion.Version >= new Version(6, 2, 9200);
+            }
+        }
+
+        public static bool IsWindows7OrLower
+        {
+            get
+            {
+                var versionMajor = Environment.OSVersion.Version.Major;
+                var versionMinor = Environment.OSVersion.Version.Minor;
+                var version = versionMajor + (double)versionMinor / 10;
+                return version <= 6.1;
+            }
+        }
+
+        public const long APPMODEL_ERROR_NO_PACKAGE = 15700L;
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int GetCurrentPackageFullName(ref int packageFullNameLength, StringBuilder packageFullName);
+
+        private static bool? _isRunningAsUwp;
+        public static bool IsRunningAsUwp
+        {
+            get
+            {
+                if (!_isRunningAsUwp.HasValue)
+                {
+                    if (IsWindows7OrLower)
+                    {
+                        _isRunningAsUwp = false;
+                    }
+                    else
+                    {
+                        var length = 0;
+                        GetCurrentPackageFullName(ref length, null);
+
+                        var result = GetCurrentPackageFullName(ref length, new StringBuilder(length));
+
+                        _isRunningAsUwp = result != APPMODEL_ERROR_NO_PACKAGE;
+                    }
+                }
+                return _isRunningAsUwp.Value;
             }
         }
 

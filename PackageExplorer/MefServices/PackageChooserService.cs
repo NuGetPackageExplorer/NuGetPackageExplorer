@@ -23,6 +23,9 @@ namespace PackageExplorer
         public IPackageViewModelFactory ViewModelFactory { get; set; }
 
         [Import]
+        public ISettingsManager SettingsManager { get; set; }
+
+        [Import]
         public IUIServices UIServices { get; set; }
 
         [Import]
@@ -41,7 +44,7 @@ namespace PackageExplorer
             {
                 _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
                 _viewModel.PackageDownloadRequested += OnPackageDownloadRequested;
-                _dialog = new PackageChooserDialog(_viewModel);
+                _dialog = new PackageChooserDialog(SettingsManager, _viewModel);
             }
 
             _dialog.Owner = Window.Value;
@@ -90,7 +93,7 @@ namespace PackageExplorer
             if (_pluginDialog == null)
             {
                 _pluginViewModel = ViewModelFactory.CreatePackageChooserViewModel(NuGetConstants.PluginFeedUrl);
-                _pluginDialog = new PackageChooserDialog(_pluginViewModel);
+                _pluginDialog = new PackageChooserDialog(SettingsManager, _pluginViewModel);
             }
 
             _pluginDialog.Owner = Window.Value;

@@ -16,9 +16,13 @@ namespace PackageExplorer
     {
         private static readonly FontFamily ConsolasFont = new FontFamily("Consolas");
 
-        public FileEditor()
+        private readonly ISettingsManager _settings;
+
+        public FileEditor(ISettingsManager settings)
         {
             InitializeComponent();
+
+            _settings = settings;
 
             SyntaxHighlightingHelper.RegisterHightingExtensions();
 
@@ -68,7 +72,7 @@ namespace PackageExplorer
         {
             var item = (MenuItem)sender;
             var size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
-            Settings.Default.FontSize = size;
+            _settings.FontSize = size;
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
