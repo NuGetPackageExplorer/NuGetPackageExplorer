@@ -29,7 +29,7 @@ namespace PackageExplorer
         {
             object value;
 
-            if (NativeMethods.IsRunningAsUwp)
+            try
             {
                 value = ApplicationData.Current.LocalSettings.Values[name];
 
@@ -38,7 +38,7 @@ namespace PackageExplorer
                     value = JsonConvert.DeserializeObject<List<string>>(str);
                 }
             }
-            else
+            catch
             {
                 value = Settings.Default[name];
 
@@ -59,7 +59,7 @@ namespace PackageExplorer
         {
             name = name ?? propertyName;
 
-            if (NativeMethods.IsRunningAsUwp)
+            try
             {
                 if (value is List<string> list)
                 {
@@ -67,7 +67,7 @@ namespace PackageExplorer
                 }
                 ApplicationData.Current.LocalSettings.Values[name] = value;
             }
-            else
+            catch
             {
                 if (value is List<string> list)
                 {

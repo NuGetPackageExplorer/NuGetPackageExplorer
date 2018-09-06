@@ -84,15 +84,15 @@ namespace PackageExplorer
 
             HttpHandlerResourceV3.CredentialService =
                 new Lazy<ICredentialService>(() => new CredentialService(
-                                                      new AsyncLazy<IEnumerable<ICredentialProvider>>(() => getProviders()), 
-                                                      nonInteractive: false, 
+                                                      new AsyncLazy<IEnumerable<ICredentialProvider>>(() => getProviders()),
+                                                      nonInteractive: false,
                                                       handlesDefaultCredentials: false));
-            
+
         }
 
         private static void MigrateSettings()
         {
-            if (!NativeMethods.IsRunningAsUwp)
+            try
             {
                 var settings = Settings.Default;
                 if (settings.IsFirstTime)
@@ -102,6 +102,7 @@ namespace PackageExplorer
                     settings.Save();
                 }
             }
+            catch { }
         }
 
         private static async Task<bool> LoadFile(MainWindow window, string file)
@@ -127,10 +128,7 @@ namespace PackageExplorer
             // Try to save, if there's an IO error, just ignore it here, nothing we can do
             try
             {
-                if (!NativeMethods.IsRunningAsUwp)
-                {
-                    Settings.Default.Save();
-                }
+                Settings.Default.Save();
             }
             catch
             {
