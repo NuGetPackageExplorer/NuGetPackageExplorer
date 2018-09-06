@@ -54,6 +54,8 @@ namespace PackageExplorer
                 InitCredentialService();
             };
 
+            MigrateSettings();
+
             var window = Container.GetExportedValue<MainWindow>();
             window.Show();
 
@@ -86,6 +88,20 @@ namespace PackageExplorer
                                                       nonInteractive: false, 
                                                       handlesDefaultCredentials: false));
             
+        }
+
+        private static void MigrateSettings()
+        {
+            if (!NativeMethods.IsRunningAsUwp)
+            {
+                var settings = Settings.Default;
+                if (settings.IsFirstTime)
+                {
+                    settings.Upgrade();
+                    settings.IsFirstTime = false;
+                    settings.Save();
+                }
+            }
         }
 
         private static async Task<bool> LoadFile(MainWindow window, string file)
