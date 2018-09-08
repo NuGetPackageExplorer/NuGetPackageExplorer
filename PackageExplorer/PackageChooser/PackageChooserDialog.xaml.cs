@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
-using PackageExplorer.Properties;
+using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -15,12 +15,15 @@ namespace PackageExplorer
     /// </summary>
     public partial class PackageChooserDialog : StandardDialog
     {
+        private readonly ISettingsManager _settings;
         private readonly PackageChooserViewModel _viewModel;
         private string _pendingSearch;
 
-        public PackageChooserDialog(PackageChooserViewModel viewModel)
+        public PackageChooserDialog(ISettingsManager settings, PackageChooserViewModel viewModel)
         {
             InitializeComponent();
+
+            _settings = settings;
 
             Debug.Assert(viewModel != null);
 
@@ -114,9 +117,8 @@ namespace PackageExplorer
         {
             if (!e.NewSize.IsEmpty)
             {
-                var settings = Settings.Default;
-                settings.PackageChooserDialogHeight = e.NewSize.Height;
-                settings.PackageChooserDialogWidth = e.NewSize.Width;
+                _settings.PackageChooserDialogHeight = e.NewSize.Height;
+                _settings.PackageChooserDialogWidth = e.NewSize.Width;
             }
         }
 

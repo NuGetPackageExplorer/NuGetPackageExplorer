@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="PackageExplorer.FileEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit" xmlns:self="clr-namespace:PackageExplorer" xmlns:settings="clr-namespace:PackageExplorer.Properties" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" DataContextChanged="UserControl_DataContextChanged" Loaded="UserControl_Loaded">
+﻿<UserControl x:Class="PackageExplorer.FileEditor" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit" xmlns:self="clr-namespace:PackageExplorer" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300" DataContextChanged="UserControl_DataContextChanged" Loaded="UserControl_Loaded">
 
     <UserControl.InputBindings>
         <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}" />
@@ -57,14 +57,14 @@
                     <MenuItem.Icon>
                         <Image Source="Images/FontDialogHS.png" />
                     </MenuItem.Icon>
-                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=12, Mode=OneWay}" />
-                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=14, Mode=OneWay}" />
-                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=16, Mode=OneWay}" />
-                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=18, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=12, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=14, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=16, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=18, Mode=OneWay}" />
                 </MenuItem>
 
-                <MenuItem Header="_Word Wrap" IsCheckable="True" IsChecked="{Binding WordWrap, Source={x:Static settings:Settings.Default}, Mode=TwoWay}" />
-                <MenuItem Header="Show _Line Numbers" IsCheckable="True" IsChecked="{Binding ShowLineNumbers, Source={x:Static settings:Settings.Default}, Mode=TwoWay}" />
+                <MenuItem Header="_Word Wrap" IsCheckable="True" IsChecked="{Binding WordWrap, Source={StaticResource Settings}, Mode=TwoWay}" />
+                <MenuItem Header="Show _Line Numbers" IsCheckable="True" IsChecked="{Binding ShowLineNumbers, Source={StaticResource Settings}, Mode=TwoWay}" />
             </MenuItem>
 
             <MenuItem Header="_HELP" Margin="3,0">
@@ -163,8 +163,8 @@
             Padding="5,2,5,5" 
             HorizontalScrollBarVisibility="Auto" 
             IsModified="{Binding HasEdit, Mode=TwoWay}" 
-            WordWrap="{Binding WordWrap, Source={x:Static settings:Settings.Default}, Mode=OneWay}" 
-            ShowLineNumbers="{Binding ShowLineNumbers, Source={x:Static settings:Settings.Default}, Mode=OneWay}" 
+            WordWrap="{Binding WordWrap, Source={StaticResource Settings}, Mode=OneWay}" 
+            ShowLineNumbers="{Binding ShowLineNumbers, Source={StaticResource Settings}, Mode=OneWay}" 
             SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}" 
             FontFamily="{Binding SelectedItem, ElementName=FontChoice}"
             />

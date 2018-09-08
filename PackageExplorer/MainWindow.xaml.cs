@@ -203,7 +203,7 @@ namespace PackageExplorer
             {
                 if (!HasLoadedContent<PackageViewer>())
                 {
-                    var packageViewer = new PackageViewer(UIServices, PackageChooser);
+                    var packageViewer = new PackageViewer(SettingsManager, UIServices, PackageChooser);
                     var binding = new Binding
                     {
                         Converter = new NullToVisibilityConverter(),
@@ -242,7 +242,7 @@ namespace PackageExplorer
             {
                 if (viewModel.IsInEditFileMode)
                 {
-                    var fileEditor = new FileEditor
+                    var fileEditor = new FileEditor(SettingsManager)
                     {
                         DataContext = viewModel.FileEditorViewModel
                     };
@@ -440,19 +440,17 @@ namespace PackageExplorer
         {
             var item = (MenuItem)sender;
             var size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
-            Settings.Default.FontSize = size;
+            SettingsManager.FontSize = size;
         }
 
         private void LoadSettings()
         {
-            var settings = Settings.Default;
-            this.LoadWindowPlacementFromSettings(settings.WindowPlacement);
+            this.LoadWindowPlacementFromSettings(SettingsManager.WindowPlacement);
         }
 
         private void SaveSettings()
         {
-            var settings = Settings.Default;
-            settings.WindowPlacement = this.SaveWindowPlacementToSettings();
+            SettingsManager.WindowPlacement = this.SaveWindowPlacementToSettings();
         }
 
         private void OpenExternalLink(object sender, ExecutedRoutedEventArgs e)
@@ -593,10 +591,10 @@ namespace PackageExplorer
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
                 var fontSizeDelta = e.Delta > 0 ? 2 : -2;
-                var newFontSize = Settings.Default.FontSize + fontSizeDelta;
+                var newFontSize = SettingsManager.FontSize + fontSizeDelta;
                 newFontSize = Math.Max(newFontSize, 12);
                 newFontSize = Math.Min(newFontSize, 18);
-                Settings.Default.FontSize = newFontSize;
+                SettingsManager.FontSize = newFontSize;
 
                 e.Handled = true;
             }
