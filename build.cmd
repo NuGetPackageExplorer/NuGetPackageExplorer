@@ -30,3 +30,4 @@ exit /b 1
 :build
 "%MSBUILD_EXE%" NuGetPackageExplorer.sln /t:Restore
 "%MSBUILD_EXE%" NuGetPackageExplorer.sln /m /bl /verbosity:minimal /p:Configuration=Release
+ 
