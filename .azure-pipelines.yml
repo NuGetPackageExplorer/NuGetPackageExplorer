@@ -1,6 +1,11 @@
-parameters: 
-  signSteps: []
-  
+trigger:
+- master
+- rel/*
+ 
+queue: Hosted VS2017
+
+variables: 
+  BuildConfiguration: Release
 steps:
 - task: DotNetCoreCLI@2  
   inputs:
@@ -86,8 +91,34 @@ steps:
     rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net462
     archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.$(Build.BuildNumber).zip
     includeRootFolder: false
+
+- task: DotNetCoreCLI@2  
+  inputs:
+    command: custom
+    custom: tool
+    arguments: install --tool-path $(System.DefaultWorkingDirectory)\Build SignClient
+  displayName: Install SignTool tool        
+  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+
+- task: PowerShell@2
+  displayName: Authenticode Sign Nightly artifacts
+  inputs:
+    filePath: Build/Sign-Package.ps1
+  env:
+    SignClientUser: $(SignClientUser)
+    SignClientSecret: $(SignClientSecret)
+    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Nightly
+  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
     
-- ${{ parameters.signSteps }}
+- task: PowerShell@2
+  displayName: Authenticode Sign Zip artifacts
+  inputs:
+    filePath: Build/Sign-Zip.ps1
+  env:
+    SignClientUser: $(SignClientUser)
+    SignClientSecret: $(SignClientSecret)
+    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Zip 
+  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
 - task: PublishBuildArtifacts@1
   displayName: Publish Nightly Artifact
