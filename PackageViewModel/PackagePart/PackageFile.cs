@@ -3,7 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
+using System.Windows;
 using System.Windows.Input;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
@@ -30,6 +34,24 @@ namespace PackageExplorerViewModel
                 WatchPhysicalFile(physicalFile);
             }
             ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsSigned && !viewModel.IsInEditFileMode);
+        }
+
+        private ImageSource _fileIcon;
+
+        public ImageSource FileIcon
+        {
+            get
+            {
+                if (_fileIcon == null)
+                {
+                    using (var icon = FileHelper.GetFileIcon(Path))
+                    {
+                        _fileIcon = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                    }
+                }
+
+                return _fileIcon;
+            }
         }
 
         #region IPackageFile members

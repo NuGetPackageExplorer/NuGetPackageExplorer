@@ -472,7 +472,7 @@
 
             <DataTemplate DataType="{x:Type viewmodel:PackageFile}">
                 <StackPanel Background="Transparent" Orientation="Horizontal" ContextMenu="{StaticResource SharedContextMenu}">
-                    <Image x:Name="ItemIcon" Visibility="Collapsed" Margin="0,0,2,0" />
+                    <Image x:Name="ItemIcon" Source="{Binding FileIcon, Mode=OneTime}" Margin="0,0,2,0" />
                     <TextBlock x:Name="Header" Text="{Binding Name}"></TextBlock>
                 </StackPanel>
 
