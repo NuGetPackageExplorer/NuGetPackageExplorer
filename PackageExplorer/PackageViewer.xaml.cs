@@ -184,18 +184,23 @@ namespace PackageExplorer
                         "v4.6.2", "net462",
                         "v4.7", "net47",
                         "v4.7.1", "net471",
+                        "v4.7.2", "net472",
                     }
                 }
             };
+
+        private readonly ISettingsManager _settings;
 
         private double _analysisPaneWidth = 250; // default width for package analysis pane
         private TreeViewItem _dragItem;
         private System.Windows.Point _dragPoint;
         private bool _isDragging, _isPressing;
 
-        public PackageViewer(IUIServices messageBoxServices, IPackageChooser packageChooser)
+        public PackageViewer(ISettingsManager settings, IUIServices messageBoxServices, IPackageChooser packageChooser)
         {
             InitializeComponent();
+
+            _settings = settings;
 
             PackageMetadataEditor.UIServices = messageBoxServices;
             PackageMetadataEditor.PackageChooser = packageChooser;
@@ -210,12 +215,10 @@ namespace PackageExplorer
 
         private void FileContentContainer_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var settings = Settings.Default;
-
             if ((bool)e.NewValue)
             {
-                ContentGrid.RowDefinitions[0].Height = new GridLength(settings.PackageContentHeight, GridUnitType.Star);
-                ContentGrid.RowDefinitions[2].Height = new GridLength(settings.ContentViewerHeight, GridUnitType.Star);
+                ContentGrid.RowDefinitions[0].Height = new GridLength(_settings.PackageContentHeight, GridUnitType.Star);
+                ContentGrid.RowDefinitions[2].Height = new GridLength(_settings.ContentViewerHeight, GridUnitType.Star);
                 ContentGrid.RowDefinitions[2].MinHeight = 150;
 
                 if (FileContentContainer.Content == null)
@@ -225,8 +228,8 @@ namespace PackageExplorer
             }
             else
             {
-                settings.PackageContentHeight = ContentGrid.RowDefinitions[0].Height.Value;
-                settings.ContentViewerHeight = ContentGrid.RowDefinitions[2].Height.Value;
+                _settings.PackageContentHeight = ContentGrid.RowDefinitions[0].Height.Value;
+                _settings.ContentViewerHeight = ContentGrid.RowDefinitions[2].Height.Value;
 
                 ContentGrid.RowDefinitions[2].Height = new GridLength(0, GridUnitType.Star);
                 ContentGrid.RowDefinitions[2].MinHeight = 0;

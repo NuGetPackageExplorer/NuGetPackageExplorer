@@ -1,4 +1,4 @@
-﻿<Window x:Class="PackageExplorer.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:PackageExplorer" xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" xmlns:settings="clr-namespace:PackageExplorer.Properties" xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" Title="{Binding WindowTitle, FallbackValue={x:Static self:Resources.Dialog_Title}, Mode=OneWay, Converter={StaticResource StringShortenerConverter}, ConverterParameter=50}" Height="650" Width="750" MinWidth="600" MinHeight="300" Icon="Images/packageicon.png" FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" AllowDrop="True" DragOver="Window_DragOver" Drop="Window_Drop" PreviewMouseWheel="Window_PreviewMouseWheel" Closing="Window_Closing" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+﻿<Window x:Class="PackageExplorer.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:PackageExplorer" xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" Title="{Binding WindowTitle, FallbackValue={x:Static self:Resources.Dialog_Title}, Mode=OneWay, Converter={StaticResource StringShortenerConverter}, ConverterParameter=50}" Height="650" Width="750" MinWidth="600" MinHeight="300" Icon="Images/packageicon.png" FontSize="{Binding FontSize, Source={StaticResource Settings}}" AllowDrop="True" DragOver="Window_DragOver" Drop="Window_Drop" PreviewMouseWheel="Window_PreviewMouseWheel" Closing="Window_Closing" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
     <Window.Background>
         <ImageBrush PresentationOptions:Freeze="true" ImageSource="Images/background.png" Stretch="None" TileMode="Tile" Viewport="0,0,24,24" ViewportUnits="Absolute" />
     </Window.Background>
@@ -152,12 +152,12 @@
                     <MenuItem.Icon>
                         <Image Source="Images/FontDialogHS.png" />
                     </MenuItem.Icon>
-                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=12, Mode=OneWay}" />
-                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=14, Mode=OneWay}" />
-                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=16, Mode=OneWay}" />
-                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={x:Static settings:Settings.Default}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=18, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=12, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=14, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=16, Mode=OneWay}" />
+                    <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=18, Mode=OneWay}" />
                 </MenuItem>
-                <MenuItem Header="Show Common Tas_ks" IsChecked="{Binding ShowTaskShortcuts, Source={x:Static settings:Settings.Default}}" IsCheckable="true" />
+                <MenuItem Header="Show Common Tas_ks" IsChecked="{Binding ShowTaskShortcuts, Source={StaticResource Settings}}" IsCheckable="true" />
                 <MenuItem Header="Show Status _Bar" x:Name="ShowStatusBarMenuItem" IsCheckable="True" IsChecked="True" />
             </MenuItem>
 
@@ -261,7 +261,7 @@
                 <self:TaskShortcut.Visibility>
                     <MultiBinding Converter="{StaticResource TaskShortcutConverter}">
                         <Binding Mode="OneWay" FallbackValue="{x:Null}" />
-                        <Binding Path="ShowTaskShortcuts" Source="{x:Static settings:Settings.Default}" Mode="OneWay" />
+                        <Binding Path="ShowTaskShortcuts" Source="{StaticResource Settings}" Mode="OneWay" />
                     </MultiBinding>
                 </self:TaskShortcut.Visibility>
             </self:TaskShortcut>

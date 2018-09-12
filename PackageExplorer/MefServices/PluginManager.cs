@@ -30,6 +30,7 @@ namespace PackageExplorer
             "lib\\net462",
             "lib\\net47",
             "lib\\net471",
+            "lib\\net472",
         };
 
         // %localappdata%/NuGet/PackageExplorerPlugins

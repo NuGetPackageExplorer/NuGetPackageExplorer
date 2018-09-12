@@ -61,6 +61,7 @@ namespace PackageExplorerViewModel
         private ICommand _viewContentCommand;
         private ICommand _viewPackageAnalysisCommand;
         private ICommand _removeSignatureCommand;
+        private FileSystemWatcher _watcher;
 
         #endregion
 
@@ -244,6 +245,20 @@ namespace PackageExplorerViewModel
                 {
                     _packageSource = value;
                     OnPropertyChanged("PackageSource");
+
+                    if (File.Exists(PackageSource))
+                    {
+                        if (_watcher == null)
+                        {
+                            _watcher = new FileSystemWatcher();
+                            _watcher.Changed += OnFileChange;
+                            _watcher.Deleted += OnFileChange;
+                            _watcher.Renamed += OnFileChange;
+                        }
+                        _watcher.Path = Path.GetDirectoryName(PackageSource);
+                        _watcher.Filter = Path.GetFileName(PackageSource);
+                        _watcher.EnableRaisingEvents = true;
+                    }
                 }
             }
         }
@@ -261,6 +276,8 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public bool HasFileChangedExternally { get; private set; }
+
         public ObservableCollection<PackageIssue> PackageIssues
         {
             get { return _packageIssues; }
@@ -277,6 +294,14 @@ namespace PackageExplorerViewModel
         {
             RootFolder.Dispose();
             _package.Dispose();
+
+            if (_watcher != null)
+            {
+                _watcher.Changed -= OnFileChange;
+                _watcher.Deleted -= OnFileChange;
+                _watcher.Renamed -= OnFileChange;
+                _watcher.Dispose();
+            }
         }
 
         #endregion
@@ -658,8 +683,9 @@ namespace PackageExplorerViewModel
                                               out var selectedFileName, out var filterIndex))
             {
                 using (var fileStream = File.OpenWrite(selectedFileName))
+                using (var packageStream = file.GetStream())
                 {
-                    file.GetStream().CopyTo(fileStream);
+                    packageStream.CopyTo(fileStream);
                 }
             }
         }
@@ -1117,6 +1143,11 @@ namespace PackageExplorerViewModel
 
         #endregion
 
+        private void OnFileChange(object sender, FileSystemEventArgs e)
+        {
+            HasFileChangedExternally = true;
+        }
+
         private void SetPackageIssues(IEnumerable<PackageIssue> issues)
         {
             _packageIssues.Clear();
@@ -1194,6 +1225,7 @@ namespace PackageExplorerViewModel
         internal void OnSaved(string fileName)
         {
             HasEdit = false;
+            HasFileChangedExternally = false;
             _mruManager.NotifyFileAdded(PackageMetadata, fileName, PackageType.LocalPackage);
         }
 

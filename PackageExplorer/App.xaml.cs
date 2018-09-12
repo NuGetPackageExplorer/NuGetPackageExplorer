@@ -11,6 +11,7 @@ using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Credentials;
 using NuGet.Protocol;
+using NuGetPackageExplorer.Types;
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
 using Settings = PackageExplorer.Properties.Settings;
@@ -44,6 +45,8 @@ namespace PackageExplorer
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
+            Resources.Add("Settings", Container.GetExportedValue<ISettingsManager>());
+
             InitCredentialService();
             HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>
             {
@@ -81,21 +84,25 @@ namespace PackageExplorer
 
             HttpHandlerResourceV3.CredentialService =
                 new Lazy<ICredentialService>(() => new CredentialService(
-                                                      new AsyncLazy<IEnumerable<ICredentialProvider>>(() => getProviders()), 
-                                                      nonInteractive: false, 
+                                                      new AsyncLazy<IEnumerable<ICredentialProvider>>(() => getProviders()),
+                                                      nonInteractive: false,
                                                       handlesDefaultCredentials: false));
-            
+
         }
 
         private static void MigrateSettings()
         {
-            var settings = Settings.Default;
-            if (settings.IsFirstTime)
+            try
             {
-                settings.Upgrade();
-                settings.IsFirstTime = false;
-                settings.Save();
+                var settings = Settings.Default;
+                if (settings.IsFirstTime)
+                {
+                    settings.Upgrade();
+                    settings.IsFirstTime = false;
+                    settings.Save();
+                }
             }
+            catch { }
         }
 
         private static async Task<bool> LoadFile(MainWindow window, string file)
@@ -117,10 +124,6 @@ namespace PackageExplorer
             {
                 _container.Dispose();
             }
-
-            // IMPORTANT: Call this after calling _container.Dispose(). Some exports relies on Dispose()
-            // being called to save settings values.
-            Settings.Default.IsFirstTimeAfterMigrate = false;
 
             // Try to save, if there's an IO error, just ignore it here, nothing we can do
             try
