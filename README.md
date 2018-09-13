@@ -1,6 +1,6 @@
 ![Logo](images/npe-logo.png)
 
-[![Build status](https://orennovotny.visualstudio.com/_apis/public/build/definitions/96789f1c-e804-4671-be78-d063a4eced9b/16/badge)](https://orennovotny.visualstudio.com/96789f1c-e804-4671-be78-d063a4eced9b/_build/index?definitionId=16)
+[![Build Status](https://dev.azure.com/onovotny/GitBuilds/_apis/build/status/NuGet%20Package%20Explorer/NuGet%20Package%20Explorer%20CI?branchName=master)](https://dev.azure.com/onovotny/GitBuilds/_build/latest?definitionId=16)
 [![Twitter Follow](https://img.shields.io/twitter/follow/NuGetPE.svg?style=social?maxAge=2592000)](https://twitter.com/NuGetPE)
 [![Join the chat at https://gitter.im/NuGetPackageExplorer/NuGetPackageExplorer](https://badges.gitter.im/NuGetPackageExplorer/NuGetPackageExplorer.svg)](https://gitter.im/NuGetPackageExplorer/NuGetPackageExplorer?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
