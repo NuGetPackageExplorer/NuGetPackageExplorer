@@ -41,7 +41,7 @@
 
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml" />
-    <Page Include="**/*.xaml" />
+    <Page Include="**/*.xaml" Exclude="App.xaml" />
   </ItemGroup>
 
 
