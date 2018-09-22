@@ -28,7 +28,6 @@
     <PackageReference Include="System.Memory" Version="4.5.1" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
     <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
-    <PackageReference Include="System.Security.Permissions" Version="4.5.0" />
 
     <Reference Include="Windows">
       <HintPath>$(WindowsWinmdFile)</HintPath>
