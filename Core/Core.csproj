@@ -1,7 +1,7 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk.Wpf">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
@@ -10,6 +10,10 @@
   <ItemGroup>
     <EmbeddedResource Update="NuGetResources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="NuGetResources.Designer.cs" CustomToolNamespace="NuGetPe.Resources" />
     <Compile Update="NuGetResources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="NuGetResources.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.DesktopUI"/>
   </ItemGroup>
 
   <ItemGroup>

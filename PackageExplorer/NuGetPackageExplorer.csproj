@@ -1,7 +1,7 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk.Wpf">
 
   <PropertyGroup>
-    <TargetFramework>net462</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <OutputType>WinExe</OutputType>
     <AssemblyName>NuGetPackageExplorer</AssemblyName>
     <ApplicationIcon>nupack.ico</ApplicationIcon>
@@ -13,28 +13,37 @@
     <Platforms>x86</Platforms>
     <NgenR2R>true</NgenR2R>
   </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.DesktopUI"/>
+  </ItemGroup>
+
   <ItemGroup>
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL" SpecificVersion="false" HintPath="..\lib\Ookii.Dialogs.Wpf.dll" />
 
-    <Reference Include="PresentationFramework.Aero" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Runtime.Caching" />
-    <Reference Include="System.Runtime.WindowsRuntime" />
-    <Reference Include="Windows">
-      <HintPath>$(WindowsWinmdFile)</HintPath>
-      <Private>false</Private>
-    </Reference>
 
     <PackageReference Include="AvalonEdit" Version="5.0.4" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
     <PackageReference Include="Humanizer" Version="2.4.2" />
     <PackageReference Include="System.Memory" Version="4.5.1" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
-    <PackageReference Include="Microsoft.DotNet.Framework.NativeImageCompiler" Version="0.0.1-prerelease-00002" PrivateAssets="All" />
+    <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
+
+    <Reference Include="Windows">
+      <HintPath>$(WindowsWinmdFile)</HintPath>
+      <Private>False</Private>
+    </Reference>
+
+    <!--<PackageReference Include="Microsoft.DotNet.Framework.NativeImageCompiler" Version="0.0.1-prerelease-00002" PrivateAssets="All" />-->
 
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml" />
+    <Page Include="**/*.xaml" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <Resource Include="Images\*.*" />

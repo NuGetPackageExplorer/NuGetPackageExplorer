@@ -464,7 +464,9 @@ namespace PackageExplorer
             if (e.Parameter is X509Certificate2 cert)
             {
                 var hwnd = new WindowInteropHelper(this).Handle;
-                X509Certificate2UI.DisplayCertificate(cert, hwnd);
+                
+                // TODO: Replace when fixed
+                //X509Certificate2UI.DisplayCertificate(cert, hwnd);
                 return;
             }
 

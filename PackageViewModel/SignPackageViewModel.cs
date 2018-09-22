@@ -239,18 +239,20 @@ namespace PackageExplorerViewModel
                         }
                     }
 
-                    var certificates = X509Certificate2UI.SelectFromCollection(
-                        collection,
-                        Resources.ChooseCertificate_Title,
-                        Resources.ChooseCertificate_Description,
-                        X509SelectionFlag.SingleSelection);
+                    // TODO: Replace once fixed
 
-                    if (certificates.Count > 0)
-                    {
-                        Certificate = certificates[0];
-                        CertificateFileName = null;
-                        ShowPassword = false;
-                    }
+                    //var certificates = X509Certificate2UI.SelectFromCollection(
+                    //    collection,
+                    //    Resources.ChooseCertificate_Title,
+                    //    Resources.ChooseCertificate_Description,
+                    //    X509SelectionFlag.SingleSelection);
+
+                    //if (certificates.Count > 0)
+                    //{
+                    //    Certificate = certificates[0];
+                    //    CertificateFileName = null;
+                    //    ShowPassword = false;
+                    //}
                 }
             }
             catch (Exception ex)
@@ -273,7 +275,8 @@ namespace PackageExplorerViewModel
             {
                 try
                 {
-                    X509Certificate2UI.DisplayCertificate(certificate);
+                    // TODO: Replace once avialable
+                    //X509Certificate2UI.DisplayCertificate(certificate);
                 }
                 catch { }
             }
