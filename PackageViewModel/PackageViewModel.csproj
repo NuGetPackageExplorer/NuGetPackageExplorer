@@ -15,7 +15,6 @@
     <PackageReference Include="NuGet.Credentials" Version="5.0.0-xprivate001.13074" />
     <PackageReference Include="NuGet.PackageManagement" Version="5.0.0-xprivate001.13074" />
     <ProjectReference Include="..\Core\Core.csproj" />
-    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
 
 </Project>
