@@ -465,8 +465,7 @@ namespace PackageExplorer
             {
                 var hwnd = new WindowInteropHelper(this).Handle;
                 
-                // TODO: Replace when fixed
-                //X509Certificate2UI.DisplayCertificate(cert, hwnd);
+                X509Certificate2UI.DisplayCertificate(cert, hwnd);
                 return;
             }
 
