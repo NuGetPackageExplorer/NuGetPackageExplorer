@@ -16,6 +16,19 @@ namespace PackageExplorer
     [Export(typeof(ISettingsManager))]
     internal class SettingsManager : ISettingsManager, INotifyPropertyChanged
     {
+        private static readonly bool IsInAppContainer;
+        static SettingsManager()
+        {
+            try
+            {
+                var container = ApplicationData.Current.LocalSettings;
+                IsInAppContainer = true;
+            }
+            catch
+            { 
+            }
+        }
+
         public const string ApiKeysSectionName = "apikeys";
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -29,7 +42,7 @@ namespace PackageExplorer
         {
             object value;
 
-            try
+            if (IsInAppContainer)
             {
                 var settings = ApplicationData.Current.LocalSettings;
                 value = settings.Values[name];
@@ -38,7 +51,7 @@ namespace PackageExplorer
                     value = JsonConvert.DeserializeObject<List<string>>(str);
                 }
             }
-            catch
+            else
             {
                 value = Settings.Default[name];
                 if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
@@ -58,7 +71,7 @@ namespace PackageExplorer
         {
             name = name ?? propertyName;
 
-            try
+            if (IsInAppContainer)
             {
                 var settings = ApplicationData.Current.LocalSettings;
                 if (value is List<string> list)
@@ -67,7 +80,7 @@ namespace PackageExplorer
                 }
                 settings.Values[name] = value;
             }
-            catch
+            else
             {
                 if (value is List<string> list)
                 {
