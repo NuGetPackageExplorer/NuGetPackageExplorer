@@ -23,7 +23,7 @@
     <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>PackageExplorer.Package_StoreKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>5FA376198F170FD651A63451A0098E524A29B9EF</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>520E65EB4C066EAB2601FA5D6AB2FB6E1271CB6B</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
@@ -33,10 +33,10 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="PackageExplorer.Package_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\*.png" />
+    <None Include="PackageExplorer.Package_StoreKey.pfx" />
     <None Include="Package.xml" />
   </ItemGroup>
   <ItemGroup>
