@@ -22,8 +22,8 @@
     <TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <PackageCertificateKeyFile>PackageExplorer.Package_StoreKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>5FA376198F170FD651A63451A0098E524A29B9EF</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>PackageExplorer.Package.Nightly_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>A2D4C58B1602A29C0D823F1A664EF7EA9579F2E8</PackageCertificateThumbprint>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
@@ -36,10 +36,10 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="PackageExplorer.Package_StoreKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\*.png" />
+    <None Include="PackageExplorer.Package.Nightly_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
