@@ -39,7 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\*.png" />
-    <None Include="PackageExplorer.Package_StoreKey.pfx" />
+    <None Include="PackageExplorer.Package.Nightly_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
