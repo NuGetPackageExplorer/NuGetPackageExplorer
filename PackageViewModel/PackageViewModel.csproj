@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Credentials" Version="5.0.0-xprivate001.13074" />
-    <PackageReference Include="NuGet.PackageManagement" Version="5.0.0-xprivate001.13074" />
+    <PackageReference Include="NuGet.Credentials" Version="5.0.0-xprivate02.36848" />
+    <PackageReference Include="NuGet.PackageManagement" Version="5.0.0-xprivate02.36848" />
     <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview1-26922-03" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
