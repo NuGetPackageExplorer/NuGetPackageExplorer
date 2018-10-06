@@ -10,6 +10,9 @@
     <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
     <RootNamespace>PackageExplorer</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <SelfContained>true</SelfContained>
+    <_IsPortable>false</_IsPortable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,7 +29,8 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
     <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="4.6.0-preview1-27003-02" />
-    <PackageReference Include="System.Security.Permissions" Version="4.6.0-preview1-26923-01" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="4.6.0-preview1-27003-02" />
+    <PackageReference Include="System.Security.Permissions" Version="4.6.0-preview1-27003-02" />
 
     <Reference Include="Windows">
       <HintPath>$(WindowsWinmdFile)</HintPath>

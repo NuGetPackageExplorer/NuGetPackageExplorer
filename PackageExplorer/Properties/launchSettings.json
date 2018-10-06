@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "NuGetPackageExplorer": {
-      "commandName": "Project",
-      "nativeDebugging": false
-    }
-  }
-}
