@@ -11,7 +11,7 @@
     <RootNamespace>PackageExplorer</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x86</Platforms>
-    <NgenR2R>true</NgenR2R>
+    <NgenR2R Condition="'$(Configuration)' == 'Release'">true</NgenR2R>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL" SpecificVersion="false" HintPath="..\lib\Ookii.Dialogs.Wpf.dll" />
