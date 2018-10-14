@@ -23,10 +23,7 @@
 
   <PropertyGroup>
     <TargetPlatformMinVersion>10.0.10563.0</TargetPlatformMinVersion>
-    <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
-
-    <WindowsWinmdFile Condition="Exists('$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformMinVersion)\Windows.winmd')">$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformMinVersion)\Windows.winmd</WindowsWinmdFile>
-    <WindowsWinmdFile Condition="Exists('$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd')">$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd</WindowsWinmdFile>
+    <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>

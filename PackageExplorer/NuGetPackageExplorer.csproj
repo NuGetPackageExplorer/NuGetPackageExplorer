@@ -21,10 +21,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.WindowsRuntime" />
-    <Reference Include="Windows">
-      <HintPath>$(WindowsWinmdFile)</HintPath>
-      <Private>false</Private>
-    </Reference>
+    <Reference Include="Windows" />
 
     <PackageReference Include="AvalonEdit" Version="5.0.4" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
