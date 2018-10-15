@@ -4,8 +4,11 @@ using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+using AuthenticodeExaminer;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+using PackageExplorerViewModel.Utilities;
+using AuthenticodeSignature = AuthenticodeExaminer.AuthenticodeSignature;
 
 namespace PackageExplorerViewModel
 {
@@ -135,12 +138,26 @@ namespace PackageExplorerViewModel
                 }
             }
 
+
+            List<NuGetPackageExplorer.Types.AuthenticodeSignature> sigs;
+            using (var str = file.GetStream())
+            using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Name)))
+            {
+                var extractor = new SignatureExtractor();
+                sigs = extractor.Extract(tempFile.FileName)
+                                          .Select(s => new NuGetPackageExplorer.Types.AuthenticodeSignature(s))
+                                          .ToList();
+            }
+
+
+
             var fileInfo = new FileContentInfo(
                 file,
                 file.Path,
                 content,
                 !isBinary,
-                size);
+                size,
+                sigs);
 
             ViewModel.ShowFile(fileInfo);
         }
