@@ -27,10 +27,10 @@
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
-    <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
     <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
     <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
+    <EntryPointProjectUniqueName>..\TempApp\TempApp.csproj</EntryPointProjectUniqueName>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -39,10 +39,14 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\*.png" />
+    <Content Include="NuGetPackageExplorer\*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="PackageExplorer.Package.Nightly_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\TempApp\TempApp.csproj" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
+  <Target Name="_ValidateAppReferenceItems" />
 </Project>

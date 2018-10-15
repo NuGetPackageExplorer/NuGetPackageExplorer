@@ -27,6 +27,8 @@ Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "PackageExplorer.Package.Nig
 EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "PackageExplorer.Package", "PackageExplorer.Package\PackageExplorer.Package.wapproj", "{452579BF-FF89-46FD-953D-E9D02D71EFDD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TempApp", "TempApp\TempApp.csproj", "{D1377C6E-3DC3-483F-A7EA-0B5980DE1CE9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -61,6 +63,10 @@ Global
 		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Release|Any CPU.ActiveCfg = Release|x86
 		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Release|Any CPU.Build.0 = Release|x86
 		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Release|Any CPU.Deploy.0 = Release|x86
+		{D1377C6E-3DC3-483F-A7EA-0B5980DE1CE9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1377C6E-3DC3-483F-A7EA-0B5980DE1CE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1377C6E-3DC3-483F-A7EA-0B5980DE1CE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1377C6E-3DC3-483F-A7EA-0B5980DE1CE9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
