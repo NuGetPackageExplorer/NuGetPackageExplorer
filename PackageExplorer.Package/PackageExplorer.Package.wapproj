@@ -43,10 +43,15 @@
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj"
                       SkipGetTargetFrameworkProperties="true"
                       Targets="Publish"
-                      Properties="RuntimeIdentifier=win-x86;SelfContained=true"
+                      Properties="SelfContained=true"
                       
                       />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
   <Target Name="_ValidateAppReferenceItems" />
+  <Target Name="_FixEntryPoint" AfterTargets="_ConvertItems">
+    <PropertyGroup>
+      <EntryPointExe>NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
+    </PropertyGroup>
+  </Target>
 </Project>

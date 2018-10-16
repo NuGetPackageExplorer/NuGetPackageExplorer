@@ -52,14 +52,12 @@
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 
   <PropertyGroup>
-    <!--<PackageOutputGroups>
-      DesktopBridgeCopyLocalOutputGroup;
-      DesktopBridgeComFilesOutputGroup;
-      __GetPublishItems
-    </PackageOutputGroups>-->
-
-    <PackageOutputGroups>@(PackageOutputGroups);__GetPublishItems</PackageOutputGroups>
-    <EntryPointExe>NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
+    <PackageOutputGroups>@(PackageOutputGroups);__GetPublishItems</PackageOutputGroups>    
   </PropertyGroup>
   <Target Name="_ValidateAppReferenceItems" />
+  <Target Name="_FixEntryPoint" AfterTargets="_ConvertItems">
+    <PropertyGroup>
+      <EntryPointExe>NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>  
+    </PropertyGroup>
+  </Target>
 </Project>

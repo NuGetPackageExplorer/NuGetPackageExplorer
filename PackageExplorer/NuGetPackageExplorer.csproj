@@ -62,7 +62,9 @@
           Returns="@(_PublishItem)">
 
     <ItemGroup>
-      <_PublishItem Include="@(ResolvedFileToPublish)" TargetPath="%(ResolvedFileToPublish.RelativePath)" OutputGroup="__GetPublishItems" />
+      <_PublishItem Include="@(ResolvedFileToPublish->'%(FullPath)')" TargetPath="%(ResolvedFileToPublish.RelativePath)" OutputGroup="__GetPublishItems" />
+      <_PublishItem Include="$(ProjectDepsFilePath)" TargetPath="$(ProjectDepsFileName)" />
+      <_PublishItem Include="$(ProjectRuntimeConfigFilePath)" TargetPath="$(ProjectRuntimeConfigFileName)" />
     </ItemGroup>
   </Target>
 </Project>
