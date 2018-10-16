@@ -43,7 +43,7 @@
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj"
                       SkipGetTargetFrameworkProperties="true"
                       Targets="Publish"
-                      Properties="SelfContained=true"
+                      Properties="RuntimeIdentifier=win-x86;SelfContained=true"
                       
                       />
   </ItemGroup>

@@ -10,7 +10,7 @@
     <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
     <RootNamespace>PackageExplorer</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
     <!--<SelfContained>true</SelfContained>-->
     <!--<_IsPortable>false</_IsPortable>-->
   </PropertyGroup>
