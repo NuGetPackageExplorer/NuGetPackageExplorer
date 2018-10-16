@@ -40,7 +40,13 @@
     <None Include="Package.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj"
+                      SkipGetTargetFrameworkProperties="true"
+                      Targets="Publish"
+                      Properties="RuntimeIdentifier=win-x86;SelfContained=true"
+                      
+                      />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
+  <Target Name="_ValidateAppReferenceItems" />
 </Project>

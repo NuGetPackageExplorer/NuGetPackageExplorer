@@ -42,7 +42,24 @@
     <None Include="PackageExplorer.Package.Nightly_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" SkipGetTargetFrameworkProperties="true" />
+    <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj"
+                  SkipGetTargetFrameworkProperties="true"
+                  Targets="Publish"
+                  Properties="SelfContained=true"
+                      
+                      />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
+
+  <PropertyGroup>
+    <!--<PackageOutputGroups>
+      DesktopBridgeCopyLocalOutputGroup;
+      DesktopBridgeComFilesOutputGroup;
+      __GetPublishItems
+    </PackageOutputGroups>-->
+
+    <PackageOutputGroups>@(PackageOutputGroups);__GetPublishItems</PackageOutputGroups>
+    <EntryPointExe>NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
+  </PropertyGroup>
+  <Target Name="_ValidateAppReferenceItems" />
 </Project>

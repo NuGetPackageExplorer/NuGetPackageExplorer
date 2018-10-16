@@ -10,7 +10,7 @@
     <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
     <RootNamespace>PackageExplorer</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <!--<RuntimeIdentifier>win-x86</RuntimeIdentifier>-->
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <!--<SelfContained>true</SelfContained>-->
     <!--<_IsPortable>false</_IsPortable>-->
   </PropertyGroup>
@@ -57,5 +57,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-  
+
+  <Target Name="__GetPublishItems" DependsOnTargets="ComputeFilesToPublish" 
+          Returns="@(_PublishItem)">
+
+    <ItemGroup>
+      <_PublishItem Include="@(ResolvedFileToPublish)" TargetPath="%(ResolvedFileToPublish.RelativePath)" OutputGroup="__GetPublishItems" />
+    </ItemGroup>
+  </Target>
 </Project>
