@@ -43,11 +43,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj"
-                  SkipGetTargetFrameworkProperties="true"
-                  Targets="Publish"
-                  Properties="RuntimeIdentifier=win-x86;SelfContained=true"
-                      
-                      />
+                  SkipGetTargetFrameworkProperties="true"                  
+                  Properties="RuntimeIdentifier=win-x86;SelfContained=true" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 
@@ -59,5 +56,12 @@
     <PropertyGroup>
       <EntryPointExe>NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>  
     </PropertyGroup>
+  </Target>
+
+  <Target Name="PublishReferences" BeforeTargets="ExpandProjectReferences">
+    <MSBuild Projects="@(ProjectReference->'%(FullPath)')"
+         BuildInParallel="$(BuildInParallel)"
+         Targets="Publish"              
+    />
   </Target>
 </Project>
