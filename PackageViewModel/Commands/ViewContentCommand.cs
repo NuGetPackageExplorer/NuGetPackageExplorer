@@ -139,18 +139,14 @@ namespace PackageExplorerViewModel
             }
 
 
-            List<NuGetPackageExplorer.Types.AuthenticodeSignature> sigs;
+            IReadOnlyList<NuGetPackageExplorer.Types.AuthenticodeSignature> sigs;
             using (var str = file.GetStream())
             using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Name)))
             {
                 var extractor = new SignatureExtractor();
-                sigs = extractor.Extract(tempFile.FileName)
-                                          .Select(s => new NuGetPackageExplorer.Types.AuthenticodeSignature(s))
-                                          .ToList();
+                sigs = NuGetPackageExplorer.Types.AuthenticodeSignature.FromSignatures(extractor.Extract(tempFile.FileName));
             }
-
-
-
+            
             var fileInfo = new FileContentInfo(
                 file,
                 file.Path,
