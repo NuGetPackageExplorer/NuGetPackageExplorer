@@ -140,11 +140,16 @@ namespace PackageExplorerViewModel
 
 
             IReadOnlyList<NuGetPackageExplorer.Types.AuthenticodeSignature> sigs;
+            bool? isValidSig = null;
             using (var str = file.GetStream())
             using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Name)))
             {
                 var extractor = new SignatureExtractor();
                 sigs = NuGetPackageExplorer.Types.AuthenticodeSignature.FromSignatures(extractor.Extract(tempFile.FileName));
+                if (sigs.Count > 0)
+                {
+                    isValidSig = FileSignatureVerifier.IsFileSignatureValid(tempFile.FileName, out var result);
+                }
             }
             
             var fileInfo = new FileContentInfo(
@@ -153,7 +158,8 @@ namespace PackageExplorerViewModel
                 content,
                 !isBinary,
                 size,
-                sigs);
+                sigs,
+                isValidSig);
 
             ViewModel.ShowFile(fileInfo);
         }

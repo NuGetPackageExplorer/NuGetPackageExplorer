@@ -68,14 +68,15 @@ namespace NuGetPackageExplorer.Types
 
             if (tsSig != null)
             {
+                TimestampCertificate = tsSig.Certificate;
+                TimestampDigestAlgorithm = tsSig.DigestAlgorithm;
+                TimestampHashEncryptionAlgorithm = tsSig.HashEncryptionAlgorithm;
+
                 foreach (var attribute in tsSig.SignedAttributes)
                 {
                     if (attribute.Oid.Value == KnownOids.SigningTime)
                     {
-                        Timestamp = new SigningTime(attribute.Values[0]);
-                        TimestampCertificate = tsSig.Certificate;
-                        TimestampDigestAlgorithm = tsSig.DigestAlgorithm;
-                        TimestampHashEncryptionAlgorithm = tsSig.HashEncryptionAlgorithm;
+                       // Timestamp = new SigningTime(attribute.Values[0]);
                         break;
                     }
                 }

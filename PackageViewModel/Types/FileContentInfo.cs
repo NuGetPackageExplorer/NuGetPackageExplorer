@@ -5,13 +5,14 @@ namespace NuGetPackageExplorer.Types
 {
     public sealed class FileContentInfo
     {
-        public FileContentInfo(PackageFile file, string name, object content, bool isTextFile, long size, IReadOnlyList<AuthenticodeSignature> signatures)
+        public FileContentInfo(PackageFile file, string name, object content, bool isTextFile, long size, IReadOnlyList<AuthenticodeSignature> signatures, bool? hasValidSignature)
         {
             File = file;
             Name = name;
             Content = content;
             IsTextFile = isTextFile;
             Size = size;
+            HasValidSignature = hasValidSignature;
             Signatures = signatures;
         }
 
@@ -20,6 +21,7 @@ namespace NuGetPackageExplorer.Types
         public object Content { get; private set; }
         public bool IsTextFile { get; private set; }
         public long Size { get; private set; }
+        public bool? HasValidSignature { get; }
         public IReadOnlyList<AuthenticodeSignature> Signatures { get; }
     }
 }
