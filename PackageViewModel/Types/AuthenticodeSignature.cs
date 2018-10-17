@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using AuthenticodeExaminer;
@@ -40,6 +42,10 @@ namespace NuGetPackageExplorer.Types
             
             PopulatePublisherInfo();
             PopulateTimestamp();
+
+            SignerCertificate = signature.Certificate;
+            SignatureDigestAlgorithm = signature.DigestAlgorithm;
+            SignatureHashEncryptionAlgorithm = SignatureHashEncryptionAlgorithm;
         }
 
         private void PopulatePublisherInfo()
@@ -67,14 +73,29 @@ namespace NuGetPackageExplorer.Types
                     if (attribute.Oid.Value == KnownOids.SigningTime)
                     {
                         Timestamp = new SigningTime(attribute.Values[0]);
+                        TimestampCertificate = tsSig.Certificate;
+                        TimestampDigestAlgorithm = tsSig.DigestAlgorithm;
+                        TimestampHashEncryptionAlgorithm = tsSig.HashEncryptionAlgorithm;
                         break;
                     }
                 }
             }
         }
+        
+        public X509Certificate2 SignerCertificate { get; private set; }
+        public X509Certificate2 TimestampCertificate { get; private set; }
 
         public PublisherInformation PublisherInformation { get; private set; }
 
         public SigningTime Timestamp { get; private set; }
+
+        public Oid SignatureDigestAlgorithm { get; private set; }
+
+        public Oid TimestampDigestAlgorithm { get; private set; }
+
+        public Oid TimestampHashEncryptionAlgorithm { get; private set; }
+        public Oid SignatureHashEncryptionAlgorithm { get; private set; }
     }
+
+    
 }
