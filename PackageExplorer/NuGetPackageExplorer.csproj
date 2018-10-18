@@ -25,9 +25,9 @@
 
     <PackageReference Include="AvalonEdit" Version="5.0.4" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
-    <PackageReference Include="Humanizer" Version="2.4.2" />
+    <PackageReference Include="Humanizer" Version="2.5.1" />
     <PackageReference Include="System.Memory" Version="4.5.1" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
     <PackageReference Include="Microsoft.DotNet.Framework.NativeImageCompiler" Version="0.0.1-prerelease-00002" PrivateAssets="All" />
 
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />

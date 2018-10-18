@@ -5,11 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
              xmlns:self="clr-namespace:PackageExplorer"
-             xmlns:types="clr-namespace:NuGetPackageExplorer.Types;assembly=PackageViewModel"
+             xmlns:authenticode="clr-namespace:AuthenticodeExaminer;assembly=AuthenticodeExaminer"
              mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="500" Loaded="UserControl_Loaded">
-    <UserControl.Resources>
-        
-    </UserControl.Resources>
     <Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -52,15 +49,41 @@
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                     <TextBlock Text="Valid:" Margin="0,0,2,0" VerticalAlignment="Center"/>
-                    <Image x:Name="icon" Source="Images/Validate.png" VerticalAlignment="Center" Visibility="{Binding HasValidSignature, Converter={StaticResource boolToVis}}"/>
-                    <Image x:Name="iconInvalid" Source="Images/error.png" VerticalAlignment="Center" Visibility="{Binding HasValidSignature, Converter={StaticResource invertedBoolToVis}}" />
+                    <Image x:Name="icon" VerticalAlignment="Center">
+                        <Image.Style>
+                            <Style TargetType="Image">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="Valid">
+                                        <Setter Property="Source" Value="Images/Validate.png" />
+                                        <Setter Property="ToolTip" Value="The signature is valid and trusted."/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="BadDigest">
+                                        <Setter Property="Source" Value="Images/error.png" />
+                                        <Setter Property="ToolTip" Value="The file is signed, however the signed hash does not match the computed hash."/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="ExplicitDistrust">
+                                        <Setter Property="Source" Value="Images/error.png" />
+                                        <Setter Property="ToolTip" Value="The file is signed, however is explicitly distrusted on this system."/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="UntrustedRoot">
+                                        <Setter Property="Source" Value="Images/Warning.png" />
+                                        <Setter Property="ToolTip" Value="The file is signed with an untrusted certificate."/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="UnknownProvider">
+                                        <Setter Property="Source" Value="Images/Warning.png" />
+                                        <Setter Property="ToolTip" Value="The file has a signature, but a provider could not be found to verify its authenticity."/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
                 </StackPanel>
-                
+
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom"
-                            Visibility="{Binding Signatures[0].PublisherInformation, Converter={StaticResource NullToVisibilityConverter}}">
+                            Visibility="{Binding Signatures[0].PublisherInformation.IsEmpty, Converter={StaticResource invertedBoolToVis}}">
                     <TextBlock Text="Publisher Info:" FontWeight="Bold"/>
                     <TextBlock Margin="2,0,0,0">
-                        <Run Text="Url: " /><Hyperlink Command="GoToPage" CommandParameter="{Binding PublisherInformation.UrlLink, Mode=OneWay}">
+                        <Run Text="Url: " /><Hyperlink Command="GoToPage" CommandParameter="{Binding Signatures[0].PublisherInformation.UrlLink, Mode=OneWay}">
                             <Run Text="{Binding Signatures[0].PublisherInformation.UrlLink, Mode=OneWay}" />
                         </Hyperlink>
                     </TextBlock>
@@ -70,26 +93,26 @@
                 </StackPanel>
                 <ItemsControl ItemsSource="{Binding Signatures}" Margin="2,0,0,0">
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate DataType="types:AuthenticodeSignature">
+                        <DataTemplate DataType="authenticode:AuthenticodeSignature">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock>
-                                    <Run Text="{Binding SignatureDigestAlgorithm.FriendlyName}" /><Run Text=":"/>
+                                    <Run Text="{Binding DigestAlgorithmName.Name, Mode=OneWay}" /><Run Text=":"/>
                                 </TextBlock>
                                 <TextBlock Margin="5,0,0,0">
-                                    <Hyperlink Command="GoToPage" CommandParameter="{Binding SignerCertificate, Mode=OneWay}">
-                                        <Run Text="{Binding SignerCertificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                                    <Hyperlink Command="GoToPage" CommandParameter="{Binding SigningCertificate, Mode=OneWay}">
+                                        <Run Text="{Binding SigningCertificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
                                     </Hyperlink>
                                 </TextBlock>
                                 <TextBlock Margin="5,0,0,0"
-                                           Visibility="{Binding Timestamp, Converter={StaticResource NullToVisibilityConverter}}">
+                                           Visibility="{Binding TimestampSignatures.Count, Converter={StaticResource countConverter}}">
                                     <Run Text="@"/>
-                                    <Run Text="{Binding Timestamp.Time, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F, Mode=OneWay}" />
+                                    <Run Text="{Binding TimestampSignatures[0].TimestampDateTime, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=ddd\, MMM dd\, yyyy h:mm:ss tt, Mode=OneWay}" />
                                 </TextBlock>
                                 <TextBlock Margin="5,0,0,0"
-                                           Visibility="{Binding TimestampSignerInfo, Converter={StaticResource NullToVisibilityConverter}}">
+                                           Visibility="{Binding TimestampSignatures.Count, Converter={StaticResource countConverter}}">
                                     <Run Text="by"/>
-                                    <Hyperlink Command="GoToPage" CommandParameter="{Binding TimestampCertificate, Mode=OneWay}">
-                                        <Run Text="{Binding TimestampCertificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                                    <Hyperlink Command="GoToPage" CommandParameter="{Binding TimestampSignatures[0].SigningCertificate, Mode=OneWay}">
+                                        <Run Text="{Binding TimestampSignatures[0].SigningCertificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
                                     </Hyperlink>
                                 </TextBlock>
                             </StackPanel>
