@@ -20,7 +20,7 @@
   <PropertyGroup>
     <ProjectGuid>73402d91-1490-4196-823b-4bf1cfdaa9fe</ProjectGuid>
     <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <PackageCertificateKeyFile>PackageExplorer.Package.Nightly_TemporaryKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>A2D4C58B1602A29C0D823F1A664EF7EA9579F2E8</PackageCertificateThumbprint>
