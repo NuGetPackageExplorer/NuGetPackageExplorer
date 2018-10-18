@@ -124,6 +124,11 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public bool IsSignedOrInEditMetadataMode
+        {
+            get { return IsInEditMetadataMode || IsSigned; }
+        }
+
         public bool IsInEditFileMode
         {
             get { return FileEditorViewModel != null; }
@@ -469,7 +474,7 @@ namespace PackageExplorerViewModel
 
         private bool EditPackageCanExecute()
         {
-            return !IsInEditMetadataMode && !IsInEditFileMode;
+            return !IsSigned && !IsInEditMetadataMode && !IsInEditFileMode;
         }
 
         private void EditPackageExecute()
@@ -516,7 +521,7 @@ namespace PackageExplorerViewModel
             {
                 if (_cancelEditCommand == null)
                 {
-                    _cancelEditCommand = new RelayCommand(CancelEditExecute, () => !IsInEditFileMode);
+                    _cancelEditCommand = new RelayCommand(CancelEditExecute, () => !IsSigned && !IsInEditFileMode);
                 }
 
                 return _cancelEditCommand;
