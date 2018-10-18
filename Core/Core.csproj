@@ -20,10 +20,8 @@
     <ProjectReference Include="..\Types\Types.csproj" />
     <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />
 
-    <Reference Include="Windows">
-      <HintPath>$(WindowsWinmdFile)</HintPath>
-      <Private>False</Private>
-    </Reference>
+    <Reference Include="Windows" />
+    <Reference Include="System.Runtime.WindowsRuntime" />
   </ItemGroup>
   
 </Project>
