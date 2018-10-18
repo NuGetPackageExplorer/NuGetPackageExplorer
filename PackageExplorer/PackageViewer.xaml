@@ -568,16 +568,14 @@
                 </Grid.RowDefinitions>
 
                 <!-- Toolbar for package metadata pane --> 
-                <Border Grid.Row="0" Background="#BCC7D8" Padding="3" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0"
-                        Visibility="{Binding IsSigned, Converter={StaticResource invertedBoolToVis}}"
-                        >
+                <Border Grid.Row="0" Background="#BCC7D8" Padding="3" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
                     <StackPanel Orientation="Horizontal">
                         <Button 
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 
                             Command="{Binding EditCommand, Mode=OneWay}" 
                             Margin="2,0,0,0" 
                             Padding="1,0,0,0"
-                            Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}}"
+                            Visibility="{Binding IsSignedOrInEditMetadataMode, Converter={StaticResource invertedBoolToVis}}"
                             ToolTipService.ToolTip="Edit Metadata (Ctrl+K)">
                             <Image Source="Images/EditHS.png" />
                         </Button>

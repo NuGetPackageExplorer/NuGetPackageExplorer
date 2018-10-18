@@ -124,6 +124,11 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public bool IsSignedOrInEditMetadataMode
+        {
+            get { return IsInEditMetadataMode || IsSigned; }
+        }
+
         public bool IsInEditFileMode
         {
             get { return FileEditorViewModel != null; }
@@ -986,7 +991,7 @@ namespace PackageExplorerViewModel
 
         private bool CanEditMetadataSourceCommandExecute()
         {
-            return !IsSigned && !IsInEditFileMode && !IsInEditMetadataMode;
+            return !IsInEditFileMode && !IsInEditMetadataMode;
         }
 
         private IEditablePackageFile CreatePackageMetadataFile()
