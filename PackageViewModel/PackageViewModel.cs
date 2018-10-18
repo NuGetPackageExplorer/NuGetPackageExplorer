@@ -469,7 +469,7 @@ namespace PackageExplorerViewModel
 
         private bool EditPackageCanExecute()
         {
-            return !IsSigned && !IsInEditMetadataMode && !IsInEditFileMode;
+            return !IsInEditMetadataMode && !IsInEditFileMode;
         }
 
         private void EditPackageExecute()
@@ -516,7 +516,7 @@ namespace PackageExplorerViewModel
             {
                 if (_cancelEditCommand == null)
                 {
-                    _cancelEditCommand = new RelayCommand(CancelEditExecute, () => !IsSigned && !IsInEditFileMode);
+                    _cancelEditCommand = new RelayCommand(CancelEditExecute, () => !IsInEditFileMode);
                 }
 
                 return _cancelEditCommand;
@@ -986,7 +986,7 @@ namespace PackageExplorerViewModel
 
         private bool CanEditMetadataSourceCommandExecute()
         {
-            return !IsSigned && !IsInEditFileMode && !IsInEditMetadataMode;
+            return !IsInEditFileMode && !IsInEditMetadataMode;
         }
 
         private IEditablePackageFile CreatePackageMetadataFile()

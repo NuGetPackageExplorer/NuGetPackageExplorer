@@ -568,9 +568,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- Toolbar for package metadata pane --> 
-                <Border Grid.Row="0" Background="#BCC7D8" Padding="3" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0"
-                        Visibility="{Binding IsSigned, Converter={StaticResource invertedBoolToVis}}"
-                        >
+                <Border Grid.Row="0" Background="#BCC7D8" Padding="3" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
                     <StackPanel Orientation="Horizontal">
                         <Button 
                             Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" 

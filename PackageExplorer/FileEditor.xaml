@@ -82,9 +82,9 @@
                 </Button>
             
                 <!-- Save -->
-                <Button ToolTip="Save (Ctrl+S)" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
-                    <Image Source="Images/SaveHS.png" />
-                </Button>
+                <self:GrayscaleButton ToolTip="Save (Ctrl+S)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
+                    <self:GrayscaleImage Source="Images/SaveHS.png" />
+                </self:GrayscaleButton>
 
                 <Separator />
 
@@ -167,6 +167,7 @@
             ShowLineNumbers="{Binding ShowLineNumbers, Source={StaticResource Settings}, Mode=OneWay}" 
             SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}" 
             FontFamily="{Binding SelectedItem, ElementName=FontChoice}"
+            IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
             />
     </DockPanel>
 </UserControl>

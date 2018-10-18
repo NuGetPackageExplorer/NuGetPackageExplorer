@@ -28,7 +28,7 @@ namespace PackageExplorerViewModel
             _filePath = fileInEdit.OriginalPath ?? Path.Combine(FileHelper.GetTempFilePath(), fileInEdit.Name);
 
             _closeCommand = new RelayCommand<IFileEditorService>(CloseExecute);
-            _saveCommand = new RelayCommand<IFileEditorService>(SaveExecute);
+            _saveCommand = new RelayCommand<IFileEditorService>(SaveExecute, CanSaveExecute);
         }
 
         public IPackageFile FileInEdit
@@ -47,6 +47,11 @@ namespace PackageExplorerViewModel
                     OnPropertyChanged("HasEdit");
                 }
             }
+        }
+
+        public bool IsReadOnly
+        {
+            get { return _packageViewModel.IsSigned; }
         }
 
         #region CloseCommand
@@ -89,6 +94,11 @@ namespace PackageExplorerViewModel
         public ICommand SaveCommand
         {
             get { return _saveCommand; }
+        }
+
+        private bool CanSaveExecute(IFileEditorService obj)
+        {
+            return !IsReadOnly;
         }
 
         private void SaveExecute(IFileEditorService editorService)
