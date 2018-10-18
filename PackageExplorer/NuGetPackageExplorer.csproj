@@ -11,7 +11,7 @@
     <RootNamespace>PackageExplorer</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Platforms>x86</Platforms>
-    <NgenR2R>true</NgenR2R>
+    <NgenR2R Condition="'$(Configuration)' == 'Release'">true</NgenR2R>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL" SpecificVersion="false" HintPath="..\lib\Ookii.Dialogs.Wpf.dll" />
@@ -21,16 +21,13 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.WindowsRuntime" />
-    <Reference Include="Windows">
-      <HintPath>$(WindowsWinmdFile)</HintPath>
-      <Private>false</Private>
-    </Reference>
+    <Reference Include="Windows" />
 
     <PackageReference Include="AvalonEdit" Version="5.0.4" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
-    <PackageReference Include="Humanizer" Version="2.4.2" />
+    <PackageReference Include="Humanizer" Version="2.5.1" />
     <PackageReference Include="System.Memory" Version="4.5.1" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.1" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
     <PackageReference Include="Microsoft.DotNet.Framework.NativeImageCompiler" Version="0.0.1-prerelease-00002" PrivateAssets="All" />
 
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
