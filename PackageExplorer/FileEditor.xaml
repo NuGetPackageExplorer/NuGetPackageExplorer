@@ -7,7 +7,7 @@
 
     <DockPanel>
         <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
-            <MenuItem Header="_FILE" Margin="3,0">
+            <MenuItem Header="_File" Margin="3,0">
                 <self:GrayscaleMenuItem Header="_Save" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
                     <self:GrayscaleMenuItem.Icon>
                         <self:GrayscaleImage Source="Images/saveHS.png" />
@@ -17,7 +17,7 @@
                 <MenuItem Header="_Return to Package" Command="{Binding CloseCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}" />
             </MenuItem>
 
-            <self:GrayscaleMenuItem Margin="3,0" Header="_EDIT" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
+            <self:GrayscaleMenuItem Margin="3,0" Header="_Edit" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
                 <self:GrayscaleMenuItem Command="Undo">
                     <self:GrayscaleMenuItem.Icon>
                         <self:GrayscaleImage Source="Images/Edit_UndoHS.png" />
@@ -52,7 +52,7 @@
                 </self:GrayscaleMenuItem>
             </self:GrayscaleMenuItem>
 
-            <MenuItem Header="_VIEW" Margin="3,0">
+            <MenuItem Header="_View" Margin="3,0">
                 <MenuItem Header="Text _Size" x:Name="FontSizeMenuItem">
                     <MenuItem.Icon>
                         <Image Source="Images/FontDialogHS.png" />
@@ -67,7 +67,7 @@
                 <MenuItem Header="Show _Line Numbers" IsCheckable="True" IsChecked="{Binding ShowLineNumbers, Source={StaticResource Settings}, Mode=TwoWay}" />
             </MenuItem>
 
-            <MenuItem Header="_HELP" Margin="3,0">
+            <MenuItem Header="_Help" Margin="3,0">
                 <MenuItem Header="Open B_ug..." Command="GoToPage" CommandParameter="http://npe.codeplex.com/WorkItem/Create" />
                 <MenuItem Header="A_bout..." Command="Help" />
             </MenuItem>
@@ -82,9 +82,9 @@
                 </Button>
             
                 <!-- Save -->
-                <Button ToolTip="Save (Ctrl+S)" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
-                    <Image Source="Images/SaveHS.png" />
-                </Button>
+                <self:GrayscaleButton ToolTip="Save (Ctrl+S)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
+                    <self:GrayscaleImage Source="Images/SaveHS.png" />
+                </self:GrayscaleButton>
 
                 <Separator />
 
@@ -167,6 +167,7 @@
             ShowLineNumbers="{Binding ShowLineNumbers, Source={StaticResource Settings}, Mode=OneWay}" 
             SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}" 
             FontFamily="{Binding SelectedItem, ElementName=FontChoice}"
+            IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
             />
     </DockPanel>
 </UserControl>
