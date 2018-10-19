@@ -48,4 +48,11 @@
                        />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
+
+  <Target Name="PublishReferences" BeforeTargets="ExpandProjectReferences">
+    <MSBuild Projects="@(ProjectReference->'%(FullPath)')"
+         BuildInParallel="$(BuildInParallel)"
+         Targets="Build"
+    />
+  </Target>
 </Project>
