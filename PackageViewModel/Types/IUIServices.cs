@@ -40,9 +40,7 @@ namespace NuGetPackageExplorer.Types
         bool TrySelectPortableFramework(out string portableFramework);
 
         bool ConfirmCloseEditor(string title, string message);
-
-        bool? AskToInstallNpeOnWindows8();
-
+        
         DispatcherOperation BeginInvoke(Action action);
     }
 }

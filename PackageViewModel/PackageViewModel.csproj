@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="AuthenticodeExaminer" Version="0.2.0" />
+    <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
     <PackageReference Include="NuGet.Credentials" Version="5.0.0-xprivate02.36848" />
     <PackageReference Include="NuGet.PackageManagement" Version="5.0.0-xprivate02.36848" />
     <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview1-27018-01" />
