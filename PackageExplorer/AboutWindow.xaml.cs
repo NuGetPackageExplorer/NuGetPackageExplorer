@@ -10,22 +10,11 @@ namespace PackageExplorer
     /// </summary>
     public partial class AboutWindow : StandardDialog
     {
-    
-#if   STORE
-      const string Channel = "Store";
-#elif NIGHTLY
-      const string Channel = "Nightly";
-#elif CHOCO
-      const string Channel = "Chocolatey";
-#else
-      const string Channel = "Zip";
-#endif
-
         public AboutWindow()
         {
             InitializeComponent();
 
-            ProductTitle.Text = $"{StringResources.Dialog_Title} - {Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion})";
+            ProductTitle.Text = $"{StringResources.Dialog_Title} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion})";
         }
 
 

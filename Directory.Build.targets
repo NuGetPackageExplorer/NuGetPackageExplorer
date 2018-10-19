@@ -9,13 +9,5 @@
     <Reference Update="Windows" Private="false" HintPath="$(WindowsWinmdFile)" />
     <Reference Update="System.Runtime.WindowsRuntime" Private="false" HintPath="$(WINDIR)\Microsoft.NET\Framework\v4.0.30319\System.Runtime.WindowsRuntime.dll" />
   </ItemGroup>
-  
-  <PropertyGroup>
-    <Product Condition="'$(IsTypesProject)' != 'true'">$(Product) ($(DistChannel))</Product>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="bin/**" />
-  </ItemGroup>
 
 </Project>
