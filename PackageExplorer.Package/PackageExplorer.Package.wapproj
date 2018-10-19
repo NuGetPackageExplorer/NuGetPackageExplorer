@@ -8,8 +8,16 @@
       <Configuration>Debug</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Nightly|x86">
+      <Configuration>Nightly</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x86">
       <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Store|x86">
+      <Configuration>Store</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -43,7 +51,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj"
                       SkipGetTargetFrameworkProperties="true"                      
-                      Properties="RuntimeIdentifier=win-x86;SelfContained=true;DistChannel=Store" />
+                      Properties="RuntimeIdentifier=win-x86;SelfContained=true;Configuration=$(Configuration)" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
   <Target Name="_ValidateAppReferenceItems" />

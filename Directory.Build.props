@@ -32,21 +32,11 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <DistChannel Condition="'$(DistChannel)' == '' ">Zip</DistChannel>        
-    <DefineConstants Condition="'$(DistChannel)' == 'Store' ">$(DefineConstants);STORE</DefineConstants>
-    <DefineConstants Condition="'$(DistChannel)' == 'Nightly' ">$(DefineConstants);NIGHTLY</DefineConstants>
-    <DefineConstants Condition="'$(DistChannel)' == 'Choco' ">$(DefineConstants);CHOCO</DefineConstants>        
-    <DefineConstants Condition="'$(DistChannel)' == 'Zip' ">$(DefineConstants);ZIP</DefineConstants>    
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <IsPackageProject>$(MSBuildProjectName.Contains('PackageExplorer.Package'))</IsPackageProject>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(IsPackageProject)' != 'true' ">
-    <!-- Make sure we don't step on each other for the different channels -->
-    <IntermediateOutputPath>obj\$(DistChannel)\$(Configuration)\</IntermediateOutputPath>
-    <BaseOutputPath>bin\$(DistChannel)\</BaseOutputPath>    
+    <DefineConstants Condition="'$(Configuration)' == 'Store' ">$(DefineConstants);STORE</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)' == 'Nightly' ">$(DefineConstants);NIGHTLY</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)' == 'Choco' ">$(DefineConstants);CHOCO</DefineConstants>        
+    <DefineConstants Condition="'$(Configuration)' == 'Release' ">$(DefineConstants);ZIP</DefineConstants>    
+    <DefineConstants Condition="'$(Configuration)' == 'Debug' ">$(DefineConstants);ZIP</DefineConstants>    
   </PropertyGroup>
 
 
