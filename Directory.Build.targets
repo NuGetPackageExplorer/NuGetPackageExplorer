@@ -11,7 +11,7 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <Product>$(Product) ($(DistChannel))</Product>
+    <Product Condition="'$(IsTypesProject)' != 'true'">$(Product) ($(DistChannel))</Product>
   </PropertyGroup>
 
   <ItemGroup>
