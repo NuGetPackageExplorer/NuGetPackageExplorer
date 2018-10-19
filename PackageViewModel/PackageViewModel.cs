@@ -251,18 +251,22 @@ namespace PackageExplorerViewModel
                     _packageSource = value;
                     OnPropertyChanged("PackageSource");
 
-                    if (File.Exists(PackageSource))
+                    // This may be a URI or a file
+                    if (Uri.TryCreate(value, UriKind.Absolute, out var result))
                     {
-                        if (_watcher == null)
+                        if (result.IsFile && File.Exists(value))
                         {
-                            _watcher = new FileSystemWatcher();
-                            _watcher.Changed += OnFileChange;
-                            _watcher.Deleted += OnFileChange;
-                            _watcher.Renamed += OnFileChange;
+                            if (_watcher == null)
+                            {
+                                _watcher = new FileSystemWatcher();
+                                _watcher.Changed += OnFileChange;
+                                _watcher.Deleted += OnFileChange;
+                                _watcher.Renamed += OnFileChange;
+                            }
+                            _watcher.Path = Path.GetDirectoryName(PackageSource);
+                            _watcher.Filter = Path.GetFileName(PackageSource);
+                            _watcher.EnableRaisingEvents = true;
                         }
-                        _watcher.Path = Path.GetDirectoryName(PackageSource);
-                        _watcher.Filter = Path.GetFileName(PackageSource);
-                        _watcher.EnableRaisingEvents = true;
                     }
                 }
             }
@@ -306,6 +310,7 @@ namespace PackageExplorerViewModel
                 _watcher.Deleted -= OnFileChange;
                 _watcher.Renamed -= OnFileChange;
                 _watcher.Dispose();
+                _watcher = null;
             }
         }
 
