@@ -39,10 +39,6 @@
     <DefineConstants Condition="'$(DistChannel)' == 'Zip' ">$(DefineConstants);ZIP</DefineConstants>    
   </PropertyGroup>
   
-  <PropertyGroup>
-    <IsPackageProject>$(MSBuildProjectName.Contains('PackageExplorer.Package'))</IsPackageProject>
-  </PropertyGroup>
-  
   <PropertyGroup Condition="'$(IsPackageProject)' != 'true' ">
     <!-- Make sure we don't step on each other for the different channels -->
     <IntermediateOutputPath>obj\$(DistChannel)\$(Configuration)\</IntermediateOutputPath>
