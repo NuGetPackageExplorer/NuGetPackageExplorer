@@ -46,10 +46,18 @@ steps:
   displayName: Update manifest and badge versions
 
 - task: MSBuild@1
-  displayName: Build NuGet Package Explorer 
+  displayName: Build NuGet Package Explorer for Zip
   inputs:
     solution: PackageExplorer/NuGetPackageExplorer.csproj
     msbuildArguments: /restore    
+    configuration: $(BuildConfiguration)
+    maximumCpuCount: true
+
+- task: MSBuild@1
+  displayName: Build NuGet Package Explorer for Choco
+  inputs:
+    solution: PackageExplorer/NuGetPackageExplorer.csproj
+    msbuildArguments: /p:DistChannel=Choco
     configuration: $(BuildConfiguration)
     maximumCpuCount: true
 
@@ -89,7 +97,7 @@ steps:
   displayName: Zip PackageExplorer files
   inputs:
     archiveType: zip
-    rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net462
+    rootFolder: PackageExplorer/bin/Zip/$(BuildConfiguration)/net462
     archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.$(Build.BuildNumber).zip
     includeRootFolder: false
 
