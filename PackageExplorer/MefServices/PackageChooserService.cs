@@ -44,10 +44,12 @@ namespace PackageExplorer
             {
                 _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
                 _viewModel.PackageDownloadRequested += OnPackageDownloadRequested;
-                _dialog = new PackageChooserDialog(SettingsManager, _viewModel);
+                _dialog = new PackageChooserDialog(SettingsManager, _viewModel)
+                {
+                    Owner = Window.Value
+                };
             }
-
-            _dialog.Owner = Window.Value;
+            
             ReCenterPackageChooserDialog(_dialog);
             _dialog.ShowDialog(searchTerm);
             return _viewModel.SelectedPackage;
