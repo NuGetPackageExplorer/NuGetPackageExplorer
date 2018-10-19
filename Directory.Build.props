@@ -7,7 +7,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/images/nuget.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/LICENSE</PackageLicenseUrl>
-    <Copyright></Copyright>
+    <Copyright>© 2018 .NET Foundation and Contributors</Copyright>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)NuGetPackageExplorer.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisDictionary>$(MSBuildThisFileDirectory)CodeAnalysisDictionary.xml</CodeAnalysisDictionary>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -27,8 +27,27 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.1.65" PrivateAssets="all" />
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.2.13" PrivateAssets="all" />
     <Compile Include="$(MSBuildThisFileDirectory)Common\CommonAssemblyInfo.cs" LinkBase="Properties" />
   </ItemGroup>
+  
+  <PropertyGroup>
+    <DistChannel Condition="'$(DistChannel)' == '' ">Zip</DistChannel>        
+    <DefineConstants Condition="'$(DistChannel)' == 'Store' ">$(DefineConstants);STORE</DefineConstants>
+    <DefineConstants Condition="'$(DistChannel)' == 'Nightly' ">$(DefineConstants);NIGHTLY</DefineConstants>
+    <DefineConstants Condition="'$(DistChannel)' == 'Choco' ">$(DefineConstants);CHOCO</DefineConstants>        
+    <DefineConstants Condition="'$(DistChannel)' == 'Zip' ">$(DefineConstants);ZIP</DefineConstants>    
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <IsPackageProject>$(MSBuildProjectName.Contains('PackageExplorer.Package'))</IsPackageProject>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(IsPackageProject)' != 'true' ">
+    <!-- Make sure we don't step on each other for the different channels -->
+    <IntermediateOutputPath>obj\$(DistChannel)\$(Configuration)\</IntermediateOutputPath>
+    <BaseOutputPath>bin\$(DistChannel)\</BaseOutputPath>    
+  </PropertyGroup>
+
 
 </Project>
