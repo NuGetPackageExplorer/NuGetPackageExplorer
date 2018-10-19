@@ -15,8 +15,6 @@
     <Configurations>Debug;Release;Choco;Nightly;Store</Configurations>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL" SpecificVersion="false" HintPath="..\lib\Ookii.Dialogs.Wpf.dll" />
-
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Net.Http" />
@@ -28,6 +26,7 @@
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
     <PackageReference Include="Humanizer" Version="2.5.1" />
     <PackageReference Include="Microsoft.WindowsAPICodePack-Shell" Version="1.1.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="1.0.0" />
     <PackageReference Include="System.Memory" Version="4.5.1" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
     <PackageReference Include="Microsoft.DotNet.Framework.NativeImageCompiler" Version="0.0.1-prerelease-00002" PrivateAssets="All" />

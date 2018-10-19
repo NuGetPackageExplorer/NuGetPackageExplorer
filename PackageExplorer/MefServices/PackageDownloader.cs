@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.IO;
@@ -6,7 +7,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
@@ -56,7 +56,7 @@ namespace PackageExplorer
 
         }
 
-        private async Task<string> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity)
+        private Task<string> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity)
         {
             var progressDialogText = Resources.Dialog_DownloadingPackage;
             if (packageIdentity.HasVersion)
@@ -70,7 +70,7 @@ namespace PackageExplorer
 
             string description = null;
             int? percent = null;
-            var updated = false;
+            var updated = 0;
 
             var progressDialogLock = new object();
             var progressDialog = new ProgressDialog
@@ -81,14 +81,12 @@ namespace PackageExplorer
                 CancellationText = "Canceling download..."
             };
 
+            
             // polling for Cancel button being clicked
             var cts = new CancellationTokenSource();
-            var timer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromMilliseconds(200)
-            };
-
-            timer.Tick += (o, e) =>
+            var timer = new System.Timers.Timer(100);
+            
+            timer.Elapsed += (o, e) =>
                           {
                               lock (progressDialogLock)
                               {
@@ -97,76 +95,80 @@ namespace PackageExplorer
                                       timer.Stop();
                                       cts.Cancel();
                                   }
-                                  else if (updated)
+                                  else if (Interlocked.CompareExchange(ref updated, 0, 1) == 1)
                                   {
-                                      if (!progressDialog.IsOpen)
-                                      {
-                                          progressDialog.ProgressBarStyle = percent.HasValue ? ProgressBarStyle.ProgressBar : ProgressBarStyle.MarqueeProgressBar;
-                                          progressDialog.ShowDialog(MainWindow.Value);
-                                      }
                                       progressDialog.ReportProgress(percent.GetValueOrDefault(), null, description);
-                                      updated = false;
                                   }
                               }
                           };
+
+            
+            var tcs = new TaskCompletionSource<string>();
+            progressDialog.DoWork += (object sender, DoWorkEventArgs args) =>
+            {
+                var t = DoWorkAsync();
+                t.Wait(cts.Token);
+                tcs.TrySetResult(t.Result);
+            };
+
+            progressDialog.ShowDialog(MainWindow.Value);
             timer.Start();
 
-            try
+            MainWindow.Value.Activate();
+
+            async Task<string> DoWorkAsync()
             {
-                var httpProgressProvider = new ProgressHttpHandlerResourceV3Provider(OnProgress);
-                var additionalProviders = new[] { new Lazy<INuGetResourceProvider>(() => httpProgressProvider) };
-
-                var repository = PackageRepositoryFactory.CreateRepository(sourceRepository.PackageSource, additionalProviders);
-                var downloadResource = await repository.GetResourceAsync<DownloadResource>(cts.Token);
-
-                using (var sourceCacheContext = new SourceCacheContext() { NoCache = true })
+                try
                 {
-                    var context = new PackageDownloadContext(sourceCacheContext, Path.GetTempPath(), true);
+                    var httpProgressProvider = new ProgressHttpHandlerResourceV3Provider(OnProgress);
+                    var repository = PackageRepositoryFactory.CreateRepository(sourceRepository.PackageSource, new[] { new Lazy<INuGetResourceProvider>(() => httpProgressProvider) });
+                    var downloadResource = await repository.GetResourceAsync<DownloadResource>(cts.Token).ConfigureAwait(false);
 
-                    using (var result = await downloadResource.GetDownloadResourceResultAsync(packageIdentity, context, string.Empty, NullLogger.Instance, cts.Token))
+                    using (var sourceCacheContext = new SourceCacheContext() { NoCache = true })
                     {
-                        if (result.Status == DownloadResourceResultStatus.Cancelled)
-                        {
-                            throw new OperationCanceledException();
-                        }
-                        if (result.Status == DownloadResourceResultStatus.NotFound)
-                        {
-                            throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
-                        }
+                        var context = new PackageDownloadContext(sourceCacheContext, Path.GetTempPath(), true);
 
-                        var tempFilePath = Path.GetTempFileName();
-
-                        using (var fileStream = File.OpenWrite(tempFilePath))
+                        using (var result = await downloadResource.GetDownloadResourceResultAsync(packageIdentity, context, string.Empty, NullLogger.Instance, cts.Token).ConfigureAwait(false))
                         {
-                            await result.PackageStream.CopyToAsync(fileStream);
-                        }
+                            if (result.Status == DownloadResourceResultStatus.Cancelled)
+                                throw new OperationCanceledException();
 
-                        return tempFilePath;
+                            if (result.Status == DownloadResourceResultStatus.NotFound)
+                                throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
+
+                            var tempFilePath = Path.GetTempFileName();
+                            using (var fileStream = File.OpenWrite(tempFilePath))
+                            {
+                                await result.PackageStream.CopyToAsync(fileStream).ConfigureAwait(false);
+                            }
+
+                            return tempFilePath;
+                        }
                     }
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                return null;
-            }
-            catch (Exception exception)
-            {
-                OnError(exception);
-                return null;
-            }
-            finally
-            {
-                timer.Stop();
-
-                // close progress dialog when done
-                lock (progressDialogLock)
+                catch (OperationCanceledException)
                 {
-                    progressDialog.Close();
-                    progressDialog = null;
+                    return null;
                 }
+                catch (Exception exception)
+                {
+                    OnError(exception);
+                    return null;
+                }
+                finally
+                {
+                    timer.Stop();
 
-                MainWindow.Value.Activate();
+                    // close progress dialog when done
+                    lock (progressDialogLock)
+                    {
+                        progressDialog.Dispose();
+                        progressDialog = null;
+                    }
+
+                }
             }
+            
 
             void OnProgress(long bytesReceived, long? totalBytes)
             {
@@ -187,8 +189,10 @@ namespace PackageExplorer
                         "Downloaded {0}...",
                         FileSizeConverter.Convert(bytesReceived, typeof(string), null, CultureInfo.CurrentCulture));
                 }
-                updated = true;
+                Interlocked.Exchange(ref updated, 1);
             }
+
+            return tcs.Task;
         }
 
         #endregion
