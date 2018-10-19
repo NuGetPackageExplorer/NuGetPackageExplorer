@@ -8,8 +8,16 @@
       <Configuration>Debug</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Nightly|x86">
+      <Configuration>Nightly</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x86">
       <Configuration>Release</Configuration>
+      <Platform>x86</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Store|x86">
+      <Configuration>Store</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -42,17 +50,9 @@
     <None Include="PackageExplorer.Package.Nightly_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj" 
+    <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj"
                       SkipGetTargetFrameworkProperties="true"
-                      Properties="DistChannel=Nightly"
-                       />
+                      Properties="Configuration=$(Configuration)" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
-
-  <Target Name="PublishReferences" BeforeTargets="ExpandProjectReferences">
-    <MSBuild Projects="@(ProjectReference->'%(FullPath)')"
-         BuildInParallel="$(BuildInParallel)"
-         Targets="Build"
-    />
-  </Target>
 </Project>

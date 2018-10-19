@@ -11,11 +11,7 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <Product Condition="'$(IsTypesProject)' != 'true'">$(Product) ($(DistChannel))</Product>
+    <Product Condition="'$(IsTypesProject)' != 'true'">$(Product) ($(Configuration))</Product>
   </PropertyGroup>
-
-  <ItemGroup>
-    <None Remove="bin/**" />
-  </ItemGroup>
 
 </Project>

@@ -58,7 +58,7 @@ steps:
   inputs:
     solution: PackageExplorer/NuGetPackageExplorer.csproj
     msbuildArguments: /p:DistChannel=Choco
-    configuration: $(BuildConfiguration)
+    configuration: Choco
     maximumCpuCount: true
 
 - task: MSBuild@1
@@ -66,7 +66,7 @@ steps:
   inputs:
     solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
     msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\\" 
-    configuration: $(BuildConfiguration)
+    configuration: Nightly
     maximumCpuCount: true
 
 - task: MSBuild@1
@@ -74,7 +74,7 @@ steps:
   inputs:
     solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
     msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\\" /p:UapAppxPackageBuildMode=StoreUpload
-    configuration: $(BuildConfiguration)
+    configuration: Store
     maximumCpuCount: true
 
 - task: MSBuild@1
@@ -97,7 +97,7 @@ steps:
   displayName: Zip PackageExplorer files
   inputs:
     archiveType: zip
-    rootFolder: PackageExplorer/bin/Zip/$(BuildConfiguration)/net462
+    rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net462
     archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.$(Build.BuildNumber).zip
     includeRootFolder: false
 
