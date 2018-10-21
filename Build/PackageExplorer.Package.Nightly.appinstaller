@@ -4,6 +4,5 @@
   <UpdateSettings>
     <OnLaunch HoursBetweenUpdateChecks="4" />
     <AutomaticBackgroundTask/>
-    <ForceUpdateFromAnyVersion>true</ForceUpdateFromAnyVersion>
   </UpdateSettings>
 </AppInstaller>
