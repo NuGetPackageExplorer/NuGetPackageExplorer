@@ -39,5 +39,4 @@
     <DefineConstants Condition="'$(Configuration)' == 'Debug' ">$(DefineConstants);ZIP</DefineConstants>    
   </PropertyGroup>
 
-
 </Project>
