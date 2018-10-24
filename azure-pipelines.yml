@@ -63,8 +63,21 @@ steps:
   displayName: Build NuGet Package Explorer for Choco
   inputs:
     solution: PackageExplorer/NuGetPackageExplorer.csproj
-    msbuildArguments: /p:DistChannel=Choco
     configuration: Choco
+    maximumCpuCount: true
+    
+- task: MSBuild@1
+  displayName: Build NuGet Package Explorer for Nightly
+  inputs:
+    solution: PackageExplorer/NuGetPackageExplorer.csproj
+    configuration: Nightly
+    maximumCpuCount: true    
+
+- task: MSBuild@1
+  displayName: Build NuGet Package Explorer for Store
+  inputs:
+    solution: PackageExplorer/NuGetPackageExplorer.csproj
+    configuration: Store
     maximumCpuCount: true
 
 - task: MSBuild@1
