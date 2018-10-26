@@ -20,7 +20,7 @@ namespace NuGetPe
         private static readonly string[] AssemblyReferencesExtensions = new[] { ".dll", ".exe", ".winmd" };
 
         // paths to exclude
-        private static readonly string[] ExcludePaths = new[] { "_rels", "package", "[Content_Types]", ".signature" };
+        private static readonly string[] ExcludePaths = new[] { "_rels/", "package/", "[Content_Types].xml", ".signature.p7s" };
 
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
