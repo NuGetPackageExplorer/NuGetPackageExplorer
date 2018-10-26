@@ -142,7 +142,7 @@ jobs:
       pathToPublish: $(Build.ArtifactStagingDirectory)\Nightly
       artifactType: container
       artifactName: Nightly
-    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false), eq(variables['BuildConfiguration'], 'Nightly'))
+    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false), or(eq(variables['BuildConfiguration'], 'Nightly'), eq(variables['BuildConfiguration'], 'Choco')))
 
   - task: PublishBuildArtifacts@1
     displayName: Publish Zip Artifact
