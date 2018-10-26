@@ -61,7 +61,7 @@ jobs:
   - task: MSBuild@1
     displayName: Build NuGet Package Explorer for $(BuildConfiguration)
     inputs:
-      solution: PackageExplorer/NuGetPackageExplorer.csproj
+      solution: '**/*.csproj'
       msbuildArguments: /restore    
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
