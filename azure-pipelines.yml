@@ -7,161 +7,159 @@ pool:
 
 variables: 
   BuildConfiguration: Release
-steps:
-- task: DotNetCoreCLI@2  
-  inputs:
-    command: custom
-    custom: tool
-    arguments: install --tool-path . nbgv
-  displayName: Install NBGV tool
-  
-- script: nbgv cloud
-  displayName: Set Version
-  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
-- powershell: |
-    mkdir $(Build.ArtifactStagingDirectory)\Nightly
-    mkdir $(Build.ArtifactStagingDirectory)\Store
+jobs:
+- job: Build
+  strategy:    
+    matrix:
+      Config_Release:
+        BuildConfiguration: Release
+      Config_Store:
+        BuildConfiguration: Store
+      Config_Nightly:
+        BuildConfiguration: Nightly
+      Config_Choco:
+        BuildConfiguration: Choco
+
+  steps:
+  - task: DotNetCoreCLI@2  
+    inputs:
+      command: custom
+      custom: tool
+      arguments: install --tool-path . nbgv
+    displayName: Install NBGV tool
     
-    # Set versions
-    $ver = .\nbgv get-version -f json | ConvertFrom-Json
+  - script: nbgv cloud
+    displayName: Set Version
+    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
-    # Update appxmanifests. These must be done before build.
-    $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"    
-    $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
-    
-    $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
-    $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
-    
-    $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"    
-    $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
+  - powershell: |
+      mkdir $(Build.ArtifactStagingDirectory)\Nightly
+      mkdir $(Build.ArtifactStagingDirectory)\Store
+      
+      # Set versions
+      $ver = .\nbgv get-version -f json | ConvertFrom-Json
 
-    # Update badges
-    $doc = Get-Content ".\Build\ci_badge.svg"    
-    $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\version_badge.svg"
-    
-    $doc = Get-Content ".\Build\store_badge.svg"    
-    $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
+      # Update appxmanifests. These must be done before build.
+      $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"    
+      $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
+      
+      $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
+      $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+      
+      $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"    
+      $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
 
-  displayName: Update manifest and badge versions
+      # Update badges
+      $doc = Get-Content ".\Build\ci_badge.svg"    
+      $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\version_badge.svg"
+      
+      $doc = Get-Content ".\Build\store_badge.svg"    
+      $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\Store\version_badge.svg"
 
-- task: MSBuild@1
-  displayName: Build NuGet Package Explorer for Zip
-  inputs:
-    solution: PackageExplorer/NuGetPackageExplorer.csproj
-    msbuildArguments: /restore    
-    configuration: $(BuildConfiguration)
-    maximumCpuCount: true
+    displayName: Update manifest and badge versions
 
-- task: MSBuild@1
-  displayName: Build NuGet Package Explorer for Choco
-  inputs:
-    solution: PackageExplorer/NuGetPackageExplorer.csproj
-    configuration: Choco
-    maximumCpuCount: true
-    
-- task: MSBuild@1
-  displayName: Build NuGet Package Explorer for Nightly
-  inputs:
-    solution: PackageExplorer/NuGetPackageExplorer.csproj
-    configuration: Nightly
-    maximumCpuCount: true    
+  - task: MSBuild@1
+    displayName: Build NuGet Package Explorer for $(BuildConfiguration)
+    inputs:
+      solution: PackageExplorer/NuGetPackageExplorer.csproj
+      msbuildArguments: /restore    
+      configuration: $(BuildConfiguration)
+      maximumCpuCount: true
 
-- task: MSBuild@1
-  displayName: Build NuGet Package Explorer for Store
-  inputs:
-    solution: PackageExplorer/NuGetPackageExplorer.csproj
-    configuration: Store
-    maximumCpuCount: true
+  - task: MSBuild@1
+    displayName: Build Nightly Package
+    inputs:
+      solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\\" 
+      configuration: Nightly
+      maximumCpuCount: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
 
-- task: MSBuild@1
-  displayName: Build Nightly Package
-  inputs:
-    solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
-    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Nightly\\" 
-    configuration: Nightly
-    maximumCpuCount: true
+  - task: MSBuild@1
+    displayName: Build Store Package
+    inputs:
+      solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\\" /p:UapAppxPackageBuildMode=StoreUpload
+      configuration: Store
+      maximumCpuCount: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
 
-- task: MSBuild@1
-  displayName: Build Store Package
-  inputs:
-    solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-    msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\Store\\" /p:UapAppxPackageBuildMode=StoreUpload
-    configuration: Store
-    maximumCpuCount: true
+  - task: MSBuild@1
+    displayName: Pack Types Package
+    inputs:
+      solution: Types/Types.csproj
+      msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
+      configuration: $(BuildConfiguration)
+      maximumCpuCount: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
-- task: MSBuild@1
-  displayName: Pack Types Package
-  inputs:
-    solution: Types/Types.csproj
-    msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\Nightly\NuGet
-    configuration: $(BuildConfiguration)
-    maximumCpuCount: true
+  - powershell: |
+      # Chocolatey        
+      mkdir $(Build.ArtifactStagingDirectory)\Nightly\Choco
+      $ver = .\nbgv get-version -f json | ConvertFrom-Json
 
-- powershell: |
-    # Chocolatey        
-    mkdir $(Build.ArtifactStagingDirectory)\Nightly\Choco
-    $ver = .\nbgv get-version -f json | ConvertFrom-Json
+      & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $($ver.NuGetPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly\Choco
+    displayName: Create Choco package
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Choco'))
 
-    & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $($ver.NuGetPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\Nightly\Choco
-  displayName: Create Choco package
-    
-- task: ArchiveFiles@1
-  displayName: Zip PackageExplorer files
-  inputs:
-    archiveType: zip
-    rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net462
-    archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.$(Build.BuildNumber).zip
-    includeRootFolder: false
+  - task: ArchiveFiles@1
+    displayName: Zip PackageExplorer files
+    inputs:
+      archiveType: zip
+      rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net462
+      archiveFile: $(Build.ArtifactStagingDirectory)\Zip\PackageExplorer.$(Build.BuildNumber).zip
+      includeRootFolder: false
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
-- task: DotNetCoreCLI@2  
-  inputs:
-    command: custom
-    custom: tool
-    arguments: install --tool-path $(System.DefaultWorkingDirectory)\Build SignClient
-  displayName: Install SignTool tool        
-  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+  - task: DotNetCoreCLI@2  
+    inputs:
+      command: custom
+      custom: tool
+      arguments: install --tool-path $(System.DefaultWorkingDirectory)\Build SignClient
+    displayName: Install SignTool tool        
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
-- task: PowerShell@2
-  displayName: Authenticode Sign Nightly artifacts
-  inputs:
-    filePath: Build/Sign-Package.ps1
-  env:
-    SignClientUser: $(SignClientUser)
-    SignClientSecret: $(SignClientSecret)
-    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Nightly
-  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
-    
-- task: PowerShell@2
-  displayName: Authenticode Sign Zip artifacts
-  inputs:
-    filePath: Build/Sign-Zip.ps1
-  env:
-    SignClientUser: $(SignClientUser)
-    SignClientSecret: $(SignClientSecret)
-    ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Zip 
-  condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+  - task: PowerShell@2
+    displayName: Authenticode Sign $(BuildConfiguration) artifacts
+    inputs:
+      filePath: Build/Sign-Package.ps1
+    env:
+      SignClientUser: $(SignClientUser)
+      SignClientSecret: $(SignClientSecret)
+      ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Nightly
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), or(eq(variables['BuildConfiguration'], 'Nightly'), eq(variables['BuildConfiguration'], 'Choco')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+      
+  - task: PowerShell@2
+    displayName: Authenticode Sign Zip artifacts
+    inputs:
+      filePath: Build/Sign-Zip.ps1
+    env:
+      SignClientUser: $(SignClientUser)
+      SignClientSecret: $(SignClientSecret)
+      ArtifactDirectory: $(Build.ArtifactStagingDirectory)\Zip 
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), eq(variables['BuildConfiguration'], 'Release'), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
-- task: PublishBuildArtifacts@1
-  displayName: Publish Nightly Artifact
-  inputs:
-    pathToPublish: $(Build.ArtifactStagingDirectory)\Nightly
-    artifactType: container
-    artifactName: Nightly
-  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Nightly Artifact
+    inputs:
+      pathToPublish: $(Build.ArtifactStagingDirectory)\Nightly
+      artifactType: container
+      artifactName: Nightly
+    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false), eq(variables['BuildConfiguration'], 'Nightly'))
 
-- task: PublishBuildArtifacts@1
-  displayName: Publish Zip Artifact
-  inputs:
-    pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
-    artifactType: container
-    artifactName: Zip
-  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Zip Artifact
+    inputs:
+      pathToPublish: $(Build.ArtifactStagingDirectory)\Zip
+      artifactType: container
+      artifactName: Zip
+    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false), eq(variables['BuildConfiguration'], 'Release'))
 
-- task: PublishBuildArtifacts@1
-  displayName: Publish Store Artifacts
-  inputs:
-    pathToPublish: $(Build.ArtifactStagingDirectory)\Store
-    artifactType: container
-    artifactName: Store
-  condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
+  - task: PublishBuildArtifacts@1
+    displayName: Publish Store Artifacts
+    inputs:
+      pathToPublish: $(Build.ArtifactStagingDirectory)\Store
+      artifactType: container
+      artifactName: Store
+    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false), eq(variables['BuildConfiguration'], 'Store'))
