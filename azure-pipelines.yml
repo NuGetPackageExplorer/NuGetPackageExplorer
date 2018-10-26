@@ -2,14 +2,10 @@ trigger:
 - master
 - rel/*
  
-pool:
-  vmImage: vs2017-win2016
-
-variables: 
-  BuildConfiguration: Release
-
 jobs:
 - job: Build
+  pool:
+    vmImage: vs2017-win2016
   strategy:    
     matrix:
       Config_Release:
