@@ -59,10 +59,17 @@ jobs:
     displayName: Update manifest and badge versions
 
   - task: MSBuild@1
+    displayName: Restore NuGet packages
+    inputs:
+      solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
+      msbuildArguments: /t:Restore    
+      configuration: $(BuildConfiguration)
+      maximumCpuCount: true
+
+  - task: MSBuild@1
     displayName: Build NuGet Package Explorer for $(BuildConfiguration)
     inputs:
       solution: '**/*.csproj'
-      msbuildArguments: /restore    
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
 
