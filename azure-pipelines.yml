@@ -113,6 +113,9 @@ jobs:
       includeRootFolder: false
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
+  - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@18
+    displayName: 'WhiteSource Bolt'
+
   - task: DotNetCoreCLI@2  
     inputs:
       command: custom
