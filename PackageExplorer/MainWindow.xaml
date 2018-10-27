@@ -38,8 +38,7 @@
         <KeyBinding Modifiers="Control" Key="K" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Modifiers="Control" Key="G" Command="Print" />
         <KeyBinding Modifiers="Control" Key="S" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="Save" />
-        <!-- TODO: Fix once keybinding/parse works -->
-        <!--<KeyBinding Modifiers="Control+Shift" Key="S" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveAs"/>-->
+        <KeyBinding Modifiers="Control+Shift" Key="S" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveAs"/>
         <KeyBinding Modifiers="Control" Key="P" Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Modifiers="Control" Key="Q" Command="{Binding ViewPackageAnalysisCommand, FallbackValue={StaticResource DisabledCommand}}" />
         <KeyBinding Key="Escape" Command="{Binding CancelEditCommand}" />
