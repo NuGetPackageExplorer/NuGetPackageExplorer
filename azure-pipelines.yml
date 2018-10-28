@@ -101,6 +101,15 @@ jobs:
       configuration: Store
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
+  
+    - task: MSBuild@1
+    displayName: Build Zip Package
+    inputs:
+      solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
+      msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true
+      configuration: $(BuildConfiguration)
+      maximumCpuCount: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - task: MSBuild@1
     displayName: Pack Types Package
@@ -123,7 +132,7 @@ jobs:
     displayName: Zip PackageExplorer files
     inputs:
       archiveType: zip
-      rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net462
+      rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.0/win-x86/publish
       archiveFile: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\PackageExplorer.$(Build.BuildNumber).zip
       includeRootFolder: false
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
