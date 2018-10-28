@@ -102,14 +102,14 @@ jobs:
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
   
-    - task: MSBuild@1
-    displayName: Build Zip Package
+  - task: MSBuild@1
+    displayName: Publish $(BuildConfiguration)
     inputs:
       solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
       msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+    condition: and(succeeded(), or(eq(variables['BuildConfiguration'], 'Release'), eq(variables['BuildConfiguration'], 'Choco')))
 
   - task: MSBuild@1
     displayName: Pack Types Package
