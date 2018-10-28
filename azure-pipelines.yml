@@ -37,6 +37,17 @@ jobs:
     displayName: Set Version
     condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
+
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: '4.8.1'
+    displayName: CAS workaround, pt 1
+
+  - powershell: |
+      nuget install -excludeversion System.Security.Permissions -pre -outputdirectory packages
+      copy .\packages\System.Security.Permissions\lib\net461\System.Security.Permissions.dll "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin"
+    displayName: CAS workaround, pt 2
+
   - powershell: |
       mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
       
