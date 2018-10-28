@@ -16,9 +16,6 @@
         <summary>Makes creating and examining nuget packages very easy.</summary>
         <releaseNotes>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/releases</releaseNotes>
         <tags>nuget admin nupkg nuspec</tags>
-        <dependencies>
-            <dependency id="DotNet4.6.2" version="4.6.01590.20170129" />
-        </dependencies>
     </metadata>
     <files>
         <file src="ChocolateyInstall.ps1"  />
