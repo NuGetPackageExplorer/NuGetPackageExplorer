@@ -44,7 +44,7 @@ jobs:
     displayName: CAS workaround, pt 1
 
   - powershell: |
-      nuget install -excludeversion System.Security.Permissions -pre -outputdirectory packages
+      nuget install -excludeversion System.Security.Permissions -version 4.6.0-preview1-27018-01 -pre -outputdirectory packages -source https://dotnet.myget.org/F/dotnet-core/api/v3/index.json
       copy .\packages\System.Security.Permissions\lib\net461\System.Security.Permissions.dll "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin"
     displayName: CAS workaround, pt 2
 
