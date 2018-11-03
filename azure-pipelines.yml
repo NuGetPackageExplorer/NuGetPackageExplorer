@@ -24,7 +24,7 @@ jobs:
   steps:
   - task: DotNetCoreInstaller@0
     inputs:
-      version: '3.0.100-alpha1-009706'
+      version: '3.0.100-preview-009726'
 
   - task: DotNetCoreCLI@2
     inputs:
