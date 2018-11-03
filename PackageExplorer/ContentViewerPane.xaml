@@ -79,18 +79,25 @@
                     </Image>
                 </StackPanel>
 
-                <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom"
-                            Visibility="{Binding Signatures[0].PublisherInformation.IsEmpty, Converter={StaticResource invertedBoolToVis}}">
-                    <TextBlock Text="Publisher Info:" FontWeight="Bold"/>
-                    <TextBlock Margin="2,0,0,0">
-                        <Run Text="Url: " /><Hyperlink Command="GoToPage" CommandParameter="{Binding Signatures[0].PublisherInformation.UrlLink, Mode=OneWay}">
-                            <Run Text="{Binding Signatures[0].PublisherInformation.UrlLink, Mode=OneWay}" />
-                        </Hyperlink>
-                    </TextBlock>
-                    <TextBlock Margin="5,0,0,0">
-                        <Run Text="Description: " /><Run Text="{Binding Signatures[0].PublisherInformation.Description, Mode=OneWay}"/>
-                    </TextBlock>
-                </StackPanel>
+                <ItemsControl DockPanel.Dock="Bottom" x:Name="publisher"
+                              ItemsSource="{Binding Signatures}"
+                            Visibility="{Binding ElementName=publisher, Path=HasItems, Converter={StaticResource boolToVis}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="authenticode:AuthenticodeSignature">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Publisher Info:" FontWeight="Bold"/>
+                                <TextBlock Margin="2,0,0,0">
+                                    <Run Text="Url: " /><Hyperlink Command="GoToPage" CommandParameter="{Binding PublisherInformation.UrlLink, Mode=OneWay}">
+                                        <Run Text="{Binding PublisherInformation.UrlLink, Mode=OneWay}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                                <TextBlock Margin="5,0,0,0">
+                                    <Run Text="Description: " /><Run Text="{Binding PublisherInformation.Description, Mode=OneWay}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
                 <ItemsControl ItemsSource="{Binding Signatures}" Margin="2,0,0,0">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="authenticode:AuthenticodeSignature">
