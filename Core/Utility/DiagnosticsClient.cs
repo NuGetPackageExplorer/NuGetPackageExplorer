@@ -34,7 +34,9 @@ namespace NuGetPe
                 AutoCaptureSessions = true,
                 AutoNotify = true,
                 NotifyReleaseStages = new[] { "development", "store", "nightly", "chocolatey", "zip" },
-                ReleaseStage = Channel
+                ProjectNamespaces = new [] {"NuGetPe", "PackageExplorer", "PackageExplorerViewModel", "NuGetPackageExplorer.Types" },
+                ReleaseStage = Channel,
+                AppVersion = ThisAssembly.AssemblyInformationalVersion
             };
 
 
