@@ -61,6 +61,15 @@ jobs:
 
     displayName: Update manifest and badge versions
 
+  - powershell: |
+      # Update BugsnagApiKey
+      $doc = Get-Content ".\PackageExplorer\app.config"    
+      $doc | % { $_.Replace("__BugsnagApiKey__", "$(BugsnagApiKey)") } | Set-Content ".\PackageExplorer\app.config"
+      
+    displayName: Set Bugsnag key
+    env:
+      BugsnagApiKey: $(BugsnagApiKey)
+
   - task: MSBuild@1
     displayName: Build NuGet Package Explorer for $(BuildConfiguration)
     inputs:
