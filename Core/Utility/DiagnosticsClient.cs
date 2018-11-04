@@ -50,7 +50,7 @@ namespace NuGetPe
             _client = new Client(config);
         }
 
-        public static void Notify(Exception exception)
+        public static void Notify(Exception exception, Severity severity = Severity.Error)
         {
             if (!_initialized) return;
 

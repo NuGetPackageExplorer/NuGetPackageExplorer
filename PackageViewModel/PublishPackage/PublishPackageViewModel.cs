@@ -6,6 +6,7 @@ using NuGet.Common;
 using NuGet.Packaging;
 using NuGet.Protocol.Core.Types;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -214,6 +215,7 @@ namespace PackageExplorerViewModel
 
         public void OnError(Exception error)
         {
+            DiagnosticsClient.Notify(error);
             ShowProgress = false;
             HasError = true;
             Status = error.Message;
