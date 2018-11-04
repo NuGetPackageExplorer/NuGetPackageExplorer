@@ -52,8 +52,7 @@ namespace NuGetPe.AssemblyMetadata
 
         public static AssemblyDebugData ReadDebugData(Stream debugStream)
         {
-
-            using (var reader = new AssemblyDebugParser(MetadataReaderProvider.FromPortablePdbStream(debugStream)))
+            using (var reader = new AssemblyDebugParser(MetadataReaderProvider.FromPortablePdbStream(debugStream), PdbType.Portable))
             {
                 return reader.GetDebugData();
             }

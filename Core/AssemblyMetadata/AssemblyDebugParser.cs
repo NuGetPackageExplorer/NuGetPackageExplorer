@@ -10,12 +10,23 @@ namespace NuGetPe.AssemblyMetadata
     internal sealed class AssemblyDebugParser : IDisposable
     {
 
-        public AssemblyDebugParser(MetadataReaderProvider readerProvider)
+        public AssemblyDebugParser(MetadataReaderProvider readerProvider, PdbType pdbType)
         {
             _readerProvider = readerProvider;
-            _reader = _readerProvider.GetMetadataReader();
+            _pdbType = pdbType;
+
+            try
+            {
+                _reader = _readerProvider.GetMetadataReader();
+            }
+            catch (BadImageFormatException) // A Full PDB
+            {
+                _pdbType = PdbType.Full;
+            }
+            
         }
 
+        private readonly PdbType _pdbType;
         private bool _disposedValue = false;
         private readonly MetadataReaderProvider _readerProvider;
         private readonly MetadataReader _reader;
@@ -25,10 +36,13 @@ namespace NuGetPe.AssemblyMetadata
 
         public AssemblyDebugData GetDebugData()
         {
-            var debugData = new AssemblyDebugData();
+            var debugData = new AssemblyDebugData { PdbType = _pdbType};
 
+            if (_pdbType == PdbType.Full)
+            {
+                return debugData; // Not supported here
+            }
             
-
             debugData.Sources = GetSourceDocuments();
             debugData.SourceLink = GetSourceLinkInformation(); 
 

@@ -8,8 +8,17 @@ namespace NuGetPe.AssemblyMetadata
 {
     public class AssemblyDebugData
     {
-        public IReadOnlyList<SourceLinkMap> SourceLink { get; set; }
+        public PdbType PdbType { get; internal set; }
+
+        public IReadOnlyList<SourceLinkMap> SourceLink { get; internal set; }
 
         public IReadOnlyList<AssemblyDebugSourceDocument> Sources { get; internal set; }
+    }
+
+    public enum PdbType
+    {
+        Portable,
+        Embedded,
+        Full
     }
 }
