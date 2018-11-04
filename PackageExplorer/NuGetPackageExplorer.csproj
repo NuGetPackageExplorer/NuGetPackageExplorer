@@ -17,6 +17,7 @@
   <ItemGroup>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Runtime.WindowsRuntime" />

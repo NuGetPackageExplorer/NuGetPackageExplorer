@@ -118,6 +118,7 @@ namespace PackageExplorer
             }
             catch (Exception exception)
             {
+                DiagnosticsClient.Notify(exception);
                 UIServices.Value.Show(exception.Message, MessageLevel.Error);
             }
 

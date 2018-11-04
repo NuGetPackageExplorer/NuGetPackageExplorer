@@ -75,6 +75,7 @@ namespace NuGetPe
             }
             catch (Exception e)
             {
+                DiagnosticsClient.Notify(e);
                 throw new InvalidOperationException(NuGetResources.UserSettings_UnableToParseConfigFile, e);
             }
         }

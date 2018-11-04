@@ -807,6 +807,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex)
                 {
+                    DiagnosticsClient.Notify(ex);
                     UIServices.Show(ex.Message, MessageLevel.Error);
                 }
 
@@ -849,6 +850,7 @@ namespace PackageExplorerViewModel
             }
             catch (Exception ex)
             {
+                DiagnosticsClient.Notify(ex);
                 UIServices.Show("The command failed with this error message:" +
                                 Environment.NewLine +
                                 Environment.NewLine +
@@ -1194,6 +1196,7 @@ namespace PackageExplorerViewModel
             }
             catch (Exception e)
             {
+                DiagnosticsClient.Notify(e);
                 UIServices.Show(e.Message, MessageLevel.Error);
             }
 
@@ -1310,6 +1313,7 @@ namespace PackageExplorerViewModel
                     }
                     catch (Exception e)
                     {
+                        DiagnosticsClient.Notify(e);
                         UIServices.Show(e.Message, MessageLevel.Error);
                     }
                 }
@@ -1499,6 +1503,8 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception exception)
                 {
+                    DiagnosticsClient.Notify(exception);
+
                     var confirmExit = UIServices.ConfirmCloseEditor(
                         "There is an error in the metadata source.",
                         exception.GetBaseException().Message +
