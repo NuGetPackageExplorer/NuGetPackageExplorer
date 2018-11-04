@@ -39,6 +39,7 @@ namespace NuGetPe.AssemblyMetadata
                 {
                     AddAssemblyAttributes(metadataParser, result);
                     AddReferencedAssemblyInfo(metadataParser, result);
+                    result.DebugData = metadataParser.GetDebugData();
                 }
             }
             catch
