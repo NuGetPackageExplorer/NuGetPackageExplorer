@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 
 namespace NuGetPe.AssemblyMetadata
@@ -44,6 +47,15 @@ namespace NuGetPe.AssemblyMetadata
             }
 
             return result;
+        }
+
+        public static IReadOnlyList<AssemblyDebugData> ReadDebugData(Stream debugStream)
+        {
+
+            using (var reader = new AssemblyDebugParser(MetadataReaderProvider.FromPortablePdbStream(debugStream)))
+            {
+                return reader.GetDebugData();
+            }
         }
 
         private static void AddAssemblyAttributes(AssemblyMetadataParser parser, AssemblyMetaData result)
