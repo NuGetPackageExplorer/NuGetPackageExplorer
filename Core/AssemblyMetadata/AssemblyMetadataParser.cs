@@ -24,12 +24,12 @@ namespace NuGetPe.AssemblyMetadata
             _metadataReader = _peReader.GetMetadataReader();
         }
 
-        public IReadOnlyList<AssemblyDebugData> GetDebugData()
+        public AssemblyDebugData GetDebugData()
         {
             var entry = _peReader.ReadDebugDirectory().Where(de => de.Type == DebugDirectoryEntryType.EmbeddedPortablePdb).ToList();
             if (entry.Count == 0) // no embedded ppdb
             {
-                return new List<AssemblyDebugData>();
+                return null;
             }
             
             using (var reader = new AssemblyDebugParser(_peReader.ReadEmbeddedPortablePdbDebugDirectoryData(entry[0])))

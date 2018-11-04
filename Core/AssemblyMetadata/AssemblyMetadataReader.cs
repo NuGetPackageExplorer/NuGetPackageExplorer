@@ -50,7 +50,7 @@ namespace NuGetPe.AssemblyMetadata
             return result;
         }
 
-        public static IReadOnlyList<AssemblyDebugData> ReadDebugData(Stream debugStream)
+        public static AssemblyDebugData ReadDebugData(Stream debugStream)
         {
 
             using (var reader = new AssemblyDebugParser(MetadataReaderProvider.FromPortablePdbStream(debugStream)))
