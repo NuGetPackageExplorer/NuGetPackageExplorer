@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />
+    <PackageReference Include="Bugsnag" Version="2.2.0" />
     <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />
 
     <Reference Include="Windows" />
