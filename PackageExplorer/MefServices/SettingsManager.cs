@@ -16,19 +16,6 @@ namespace PackageExplorer
     [Export(typeof(ISettingsManager))]
     internal class SettingsManager : ISettingsManager, INotifyPropertyChanged
     {
-        private static readonly bool IsInAppContainer;
-        static SettingsManager()
-        {
-            try
-            {
-                var container = ApplicationData.Current.LocalSettings;
-                IsInAppContainer = true;
-            }
-            catch
-            { 
-            }
-        }
-
         public const string ApiKeysSectionName = "apikeys";
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -42,14 +29,9 @@ namespace PackageExplorer
         {
             object value;
 
-            if (IsInAppContainer)
+            if (AppContainerUtility.IsInAppContainer)
             {
-                var settings = ApplicationData.Current.LocalSettings;
-                value = settings.Values[name];
-                if (typeof(T) == typeof(List<string>) && value is string str)
-                {
-                    value = JsonConvert.DeserializeObject<List<string>>(str);
-                }
+                value = GetValueFromLocalSettings<T>(name);
             }
             else
             {
@@ -67,18 +49,28 @@ namespace PackageExplorer
             return default(T);
         }
 
+        // Don't load these types inline
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static object GetValueFromLocalSettings<T>(string name)
+        {
+            object value;
+            var settings = ApplicationData.Current.LocalSettings;
+            value = settings.Values[name];
+            if (typeof(T) == typeof(List<string>) && value is string str)
+            {
+                value = JsonConvert.DeserializeObject<List<string>>(str);
+            }
+
+            return value;
+        }
+
         private void SetValue(object value, string name = null, [CallerMemberName] string propertyName = null)
         {
             name = name ?? propertyName;
 
-            if (IsInAppContainer)
+            if (AppContainerUtility.IsInAppContainer)
             {
-                var settings = ApplicationData.Current.LocalSettings;
-                if (value is List<string> list)
-                {
-                    value = JsonConvert.SerializeObject(list);
-                }
-                settings.Values[name] = value;
+                value = SetValueInLocalSettings(value, name);
             }
             else
             {
@@ -92,6 +84,22 @@ namespace PackageExplorer
             }
             OnPropertyChanged(propertyName);
         }
+
+        // Don't load these types inline
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static object SetValueInLocalSettings(object value, string name)
+        {
+            var settings = ApplicationData.Current.LocalSettings;
+            if (value is List<string> list)
+            {
+                value = JsonConvert.SerializeObject(list);
+            }
+            settings.Values[name] = value;
+            return value;
+        }
+
+
+
 
         #region ISettingsManager Members
 
