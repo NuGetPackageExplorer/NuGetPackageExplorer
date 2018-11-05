@@ -125,6 +125,7 @@ jobs:
 
   - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@18
     displayName: 'WhiteSource Bolt'
+    enabled: false
 
   - task: DotNetCoreCLI@2  
     inputs:
