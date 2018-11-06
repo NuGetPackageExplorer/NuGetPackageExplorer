@@ -179,7 +179,6 @@ namespace PackageExplorer
             catch (Exception ex)
             {
                 package = null;
-                DiagnosticsClient.Notify(ex);
                 UIServices.Show(ex.Message, MessageLevel.Error);
                 return false;
             }
