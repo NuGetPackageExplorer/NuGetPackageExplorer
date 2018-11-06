@@ -318,7 +318,6 @@ namespace PackageExplorerViewModel
                     return;
                 }
 
-                DiagnosticsClient.Notify(exception);
                 var errorMessage = exception.Message;
 
                 ShowMessage(errorMessage, true);

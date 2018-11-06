@@ -215,7 +215,6 @@ namespace PackageExplorerViewModel
 
         public void OnError(Exception error)
         {
-            DiagnosticsClient.Notify(error);
             ShowProgress = false;
             HasError = true;
             Status = error.Message;
