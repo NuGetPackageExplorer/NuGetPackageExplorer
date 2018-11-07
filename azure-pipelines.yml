@@ -1,6 +1,10 @@
 trigger:
 - master
 - rel/*
+
+pr:
+- master
+- rel/*
  
 jobs:
 - job: Build
@@ -31,7 +35,6 @@ jobs:
     
   - script: nbgv cloud
     displayName: Set Version
-    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
   - powershell: |
       mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
@@ -161,4 +164,4 @@ jobs:
       pathToPublish: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
       artifactType: container
       artifactName: $(BuildOutputDirectory)
-    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
+      
