@@ -113,7 +113,15 @@ namespace PackageExplorerViewModel
 
             if (result)
             {
-                AddSelectedPluginPackage(new ZipPackage(selectedFile));
+                try
+                {
+                    AddSelectedPluginPackage(new ZipPackage(selectedFile));
+                }
+                catch (Exception e)
+                {
+                    _uiServices.Show(e.Message, MessageLevel.Error);
+                }
+                
             }
         }
 
