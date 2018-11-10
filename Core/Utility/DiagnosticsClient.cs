@@ -48,6 +48,8 @@ namespace NuGetPe
 
 
             _client = new Client(config);
+
+            _client.SessionTracking.CreateSession();
         }
 
         public static void Notify(Exception exception, Severity severity = Severity.Error)
