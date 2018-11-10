@@ -118,6 +118,7 @@ namespace PackageExplorer
             }
             catch (Exception exception)
             {
+                DiagnosticsClient.Notify(exception);
                 UIServices.Value.Show(exception.Message, MessageLevel.Error);
             }
 
@@ -212,11 +213,12 @@ namespace PackageExplorer
                 }
                 return true;
             }
-            catch (ReflectionTypeLoadException exception)
+            catch (Exception exception) when (exception is ReflectionTypeLoadException || exception is FileNotFoundException)
             {
                 _pluginToCatalog.Remove(pluginInfo);
 
-                var errorMessage = BuildErrorMessage(exception);
+
+                var errorMessage = exception is ReflectionTypeLoadException re ? BuildErrorMessage(re) : exception.Message;
                 if (quietMode)
                 {
                     Trace.WriteLine(errorMessage, "Plugins Loader");

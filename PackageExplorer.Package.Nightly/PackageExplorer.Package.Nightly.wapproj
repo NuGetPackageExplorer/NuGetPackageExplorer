@@ -36,10 +36,8 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
     <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
-    <GenerateAppInstallerFile>false</GenerateAppInstallerFile>
-    <AppInstallerUpdateFrequency>1</AppInstallerUpdateFrequency>
-    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
-    <DebuggerType>CoreClr</DebuggerType>
+    <AppxPackageIncludePrivateSymbols>true</AppxPackageIncludePrivateSymbols>
+	<DebuggerType>CoreClr</DebuggerType>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

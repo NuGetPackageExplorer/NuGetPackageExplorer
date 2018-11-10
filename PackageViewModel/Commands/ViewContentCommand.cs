@@ -55,6 +55,7 @@ namespace PackageExplorerViewModel
                     }
                     catch (Exception e)
                     {
+                        DiagnosticsClient.Notify(e);
                         ViewModel.UIServices.Show(e.Message, MessageLevel.Error);
                     }
 
@@ -101,6 +102,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex)
                 {
+                    DiagnosticsClient.Notify(ex);
                     // don't let plugin crash the app
                     content = Resources.PluginFailToReadContent + Environment.NewLine + ex.ToString();
                 }

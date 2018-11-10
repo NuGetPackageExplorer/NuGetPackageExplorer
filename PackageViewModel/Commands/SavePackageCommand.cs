@@ -199,6 +199,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex)
                 {
+                    DiagnosticsClient.Notify(ex);
                     ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
                 }
             }
@@ -251,6 +252,7 @@ namespace PackageExplorerViewModel
                     }
                     catch (Exception ex)
                     {
+                        DiagnosticsClient.Notify(ex);
                         ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
                     }
                 }

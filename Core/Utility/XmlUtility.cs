@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Xml.Linq;
 
 namespace NuGetPe
@@ -16,8 +16,9 @@ namespace NuGetPe
                         return XDocument.Load(configSream);
                     }
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    DiagnosticsClient.Notify(e);
                     return CreateDocument(rootName, fileSystem, path);
                 }
             }

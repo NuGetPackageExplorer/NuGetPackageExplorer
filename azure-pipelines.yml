@@ -1,6 +1,10 @@
 trigger:
 - master
 - rel/*
+
+pr:
+- master
+- rel/*
  
 jobs:
 - job: Build
@@ -35,7 +39,6 @@ jobs:
     
   - script: nbgv cloud
     displayName: Set Version
-    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
 
 
   - task: NuGetToolInstaller@0
@@ -75,6 +78,16 @@ jobs:
       $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\stable_badge.svg"
 
     displayName: Update manifest and badge versions
+
+  - powershell: |
+      # Update BugsnagApiKey
+      $doc = Get-Content ".\PackageExplorer\app.config"    
+      $doc | % { $_.Replace("__BugsnagApiKey__", "$(BugsnagApiKey)") } | Set-Content ".\PackageExplorer\app.config"
+      
+    displayName: Set Bugsnag key
+    env:
+      BugsnagApiKey: $(BugsnagApiKey)
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['BugsnagApiKey'], '')))
 
   - task: MSBuild@1
     displayName: Build NuGet Package Explorer for $(BuildConfiguration)
@@ -139,6 +152,7 @@ jobs:
 
   - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@18
     displayName: 'WhiteSource Bolt'
+    enabled: false
 
   - task: DotNetCoreCLI@2  
     inputs:
@@ -174,4 +188,4 @@ jobs:
       pathToPublish: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
       artifactType: container
       artifactName: $(BuildOutputDirectory)
-    condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))
+      

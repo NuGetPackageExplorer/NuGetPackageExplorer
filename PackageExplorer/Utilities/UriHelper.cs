@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,10 +10,17 @@ namespace PackageExplorer
     {
         public static void OpenExternalLink(Uri licenseUrl)
         {
-            if (IsRemoteUri(licenseUrl))
+            try
             {
-                Process.Start(licenseUrl.AbsoluteUri);
+                if (IsRemoteUri(licenseUrl))
+                {
+                    Process.Start(licenseUrl.AbsoluteUri);
+                }
             }
+            catch // Possible Win32 exception: operation was canceled by the user. Nothing we can do.
+            {
+            }
+            
         }
 
         public static bool IsRemoteUri(this Uri url)

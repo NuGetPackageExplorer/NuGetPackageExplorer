@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
@@ -12,6 +13,7 @@ using NuGet.Configuration;
 using NuGet.Credentials;
 using NuGet.Protocol;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
 using Settings = PackageExplorer.Properties.Settings;
@@ -20,6 +22,18 @@ namespace PackageExplorer
 {
     public partial class App : Application
     {
+        public App()
+        {
+            const string invalidKey = "__BugsnagApiKey__";
+            // Initialize Bugsnag if we have a valid key
+            var apiKey = ConfigurationManager.AppSettings["bugsnag:apiKey"];
+
+            if (!string.Equals(apiKey, invalidKey, StringComparison.OrdinalIgnoreCase))
+            {
+                DiagnosticsClient.Initialize(apiKey);
+            }
+        }
+
         private CompositionContainer _container;
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]

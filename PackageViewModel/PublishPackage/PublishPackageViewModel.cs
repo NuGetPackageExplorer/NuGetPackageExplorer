@@ -6,6 +6,7 @@ using NuGet.Common;
 using NuGet.Packaging;
 using NuGet.Protocol.Core.Types;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {

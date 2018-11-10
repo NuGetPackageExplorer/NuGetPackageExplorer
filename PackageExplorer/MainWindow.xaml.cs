@@ -15,6 +15,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using Bugsnag;
 using NuGet.Packaging;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
@@ -118,8 +119,9 @@ namespace PackageExplorer
             {
                 LoadSettings();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                DiagnosticsClient.Notify(ex);
             }
         }
 
@@ -230,6 +232,7 @@ namespace PackageExplorer
                 }
                 catch (Exception e)
                 {
+                    DiagnosticsClient.Notify(e);
                     UIServices.Show($"Error loading package\n{e.Message}", MessageLevel.Error);
                 }
             }
@@ -396,8 +399,9 @@ namespace PackageExplorer
                     SaveSettings();
                     DisposeViewModel();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    DiagnosticsClient.Notify(ex);
                 }
             }
         }

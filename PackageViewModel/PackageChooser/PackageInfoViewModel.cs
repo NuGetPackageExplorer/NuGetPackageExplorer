@@ -209,6 +209,7 @@ namespace PackageExplorerViewModel
             }
             catch (Exception exception)
             {
+                DiagnosticsClient.Notify(exception);
                 ErrorMessage = exception.GetBaseException().Message;
             }
             finally

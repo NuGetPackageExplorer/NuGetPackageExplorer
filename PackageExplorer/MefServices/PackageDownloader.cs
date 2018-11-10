@@ -50,6 +50,7 @@ namespace PackageExplorer
             }
             catch (Exception e)
             {
+                DiagnosticsClient.Notify(e);
                 UIServices.Show(e.Message, MessageLevel.Error);
                 return null;
             }
