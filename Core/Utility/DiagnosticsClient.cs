@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Bugsnag;
@@ -36,7 +37,10 @@ namespace NuGetPe
                 NotifyReleaseStages = new[] { "development", "store", "nightly", "chocolatey", "zip" },
                 ProjectNamespaces = new [] {"NuGetPe", "PackageExplorer", "PackageExplorerViewModel", "NuGetPackageExplorer.Types" },
                 ReleaseStage = Channel,
-                AppVersion = ThisAssembly.AssemblyInformationalVersion
+                AppVersion = typeof(DiagnosticsClient).Assembly
+                                                      .GetCustomAttributes<AssemblyMetadataAttribute>()
+                                                      .FirstOrDefault(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
+                                                      ?.Value
             };
 
 
