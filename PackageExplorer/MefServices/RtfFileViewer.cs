@@ -20,7 +20,9 @@ namespace PackageExplorer
             var rtf = new RichTextBox
             {
                 IsReadOnly = true,
-                BorderThickness = new System.Windows.Thickness(0)
+                BorderThickness = new System.Windows.Thickness(0),
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
             };
             rtf.Document.MinPageWidth = 800;
 

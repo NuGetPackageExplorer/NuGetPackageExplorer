@@ -34,7 +34,14 @@ namespace PackageExplorer
                 {
                     var orderedAssemblyDataEntries = assemblyMetadata.GetMetadataEntriesOrderedByImportance();
 
-                    return CreateAssemblyMetadataGrid(orderedAssemblyDataEntries);
+                    var grid = CreateAssemblyMetadataGrid(orderedAssemblyDataEntries);
+
+                    return new ScrollViewer
+                    {
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        Content = grid,
+                    };
                 }
                 else if (assemblyMetadata != null && debugDataViewModel != null)
                 {
@@ -48,14 +55,24 @@ namespace PackageExplorer
                             new TabItem
                             {
                                 Header = "Assembly Attributes",
-                                Content = CreateAssemblyMetadataGrid(orderedAssemblyDataEntries)
+                                Content = new ScrollViewer()
+                                {
+                                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    Content = CreateAssemblyMetadataGrid(orderedAssemblyDataEntries)
+                                }
                             },
                             new TabItem
                             {
                                 Header = "Embedded PDB Data",
-                                Content = new Controls.PdbFileViewer
+                                Content = new ScrollViewer
                                 {
-                                    DataContext = debugDataViewModel
+                                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    Content = new Controls.PdbFileViewer
+                                    {
+                                        DataContext = debugDataViewModel
+                                    }
                                 }
                             }
                         }

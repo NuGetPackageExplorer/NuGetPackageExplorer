@@ -22,9 +22,15 @@ namespace PackageExplorer
                 data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(str));
             }
 
-            return new Controls.PdbFileViewer
+
+            return new ScrollViewer
             {
-                DataContext = data
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                Content = new Controls.PdbFileViewer
+                {
+                    DataContext = data
+                }
             };
         }
     }

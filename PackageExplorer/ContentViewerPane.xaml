@@ -15,7 +15,13 @@
 		</Grid.RowDefinitions>
 
 		<!-- for binary file -->
-		<ScrollViewer Grid.Row="2" Visibility="{Binding IsTextFile, Converter={StaticResource invertedBoolToVis}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Padding="4,5,4,2" Content="{Binding Content}"></ScrollViewer>
+        <ContentControl Grid.Row="2"
+                        Visibility="{Binding IsTextFile, Converter={StaticResource invertedBoolToVis}}"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Padding="4,5,4,2"
+                        Content="{Binding Content}"
+                        />
 
 		<!-- for built-in text file -->
 		
