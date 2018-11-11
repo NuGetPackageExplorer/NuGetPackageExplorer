@@ -76,6 +76,12 @@ namespace NuGetPe.AssemblyMetadata
                 return null;
             }
 
+            // Handle the metadata attrib
+            if (attribute.FullTypeName.Equals(typeof(AssemblyMetadataAttribute).FullName, StringComparison.Ordinal))
+            {
+                return $"Key = {attribute.FixedArguments[0].Value}, Value = {attribute.FixedArguments[1].Value}";
+            }
+
             if (attribute.FixedArguments.Length != 1 || attribute.NamedArguments.Length > 0)
             {
                 return null;
