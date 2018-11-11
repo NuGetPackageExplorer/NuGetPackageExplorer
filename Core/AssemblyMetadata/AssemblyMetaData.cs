@@ -14,6 +14,7 @@ namespace NuGetPe.AssemblyMetadata
         private string FullName { get; set; }
         private string StrongName { get; set; }
         private IEnumerable<AssemblyName> ReferencedAsseblies { get; set; }
+        public AssemblyDebugData DebugData { get; internal set; }
 
         /// <summary>
         /// Set Fullname of the assembly and determine strong name.

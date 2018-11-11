@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
 
 namespace NuGetPe.AssemblyMetadata
@@ -36,6 +39,7 @@ namespace NuGetPe.AssemblyMetadata
                 {
                     AddAssemblyAttributes(metadataParser, result);
                     AddReferencedAssemblyInfo(metadataParser, result);
+                    result.DebugData = metadataParser.GetDebugData();
                 }
             }
             catch
@@ -44,6 +48,14 @@ namespace NuGetPe.AssemblyMetadata
             }
 
             return result;
+        }
+
+        public static AssemblyDebugData ReadDebugData(Stream debugStream)
+        {
+            using (var reader = new AssemblyDebugParser(MetadataReaderProvider.FromPortablePdbStream(debugStream), PdbType.Portable))
+            {
+                return reader.GetDebugData();
+            }
         }
 
         private static void AddAssemblyAttributes(AssemblyMetadataParser parser, AssemblyMetaData result)

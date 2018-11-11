@@ -20,11 +20,19 @@ namespace PackageExplorer
             source.StreamSource = stream;
             source.EndInit();
 
-            return new Image
+            var image = new Image
             {
                 Source = source,
                 Width = source.Width,
-                Height = source.Height
+                Height = source.Height,
+                
+            };
+
+            return new ScrollViewer
+            {
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                Content = image
             };
         }
 
