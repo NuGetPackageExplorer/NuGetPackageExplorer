@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using NuGetPackageExplorer.Types;
 using NuGetPe.AssemblyMetadata;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
@@ -15,12 +16,16 @@ namespace PackageExplorer
     {
         public object GetView(string extension, Stream stream)
         {
+            AssemblyDebugDataViewModel data = null;
             using (var str = StreamUtility.MakeSeekable(stream))
             {
-                var doc = AssemblyMetadataReader.ReadDebugData(str);
+                data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(str));
             }
 
-            return new TextBlock() { Text = "PdbViewer" };
+            return new Controls.PdbFileViewer
+            {
+                DataContext = data
+            };
         }
     }
 }

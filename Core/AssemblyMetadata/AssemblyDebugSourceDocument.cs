@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Cryptography;
 
@@ -48,8 +49,11 @@ namespace NuGetPe.AssemblyMetadata
 
     public enum SymbolLanguage
     {
+        [Description("C#")]
         CSharp,
+        [Description("VB")]
         VisualBasic,
+        [Description("F#")]
         FSharp
     }
 }
