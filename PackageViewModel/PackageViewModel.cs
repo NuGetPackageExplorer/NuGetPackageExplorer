@@ -1502,8 +1502,6 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception exception)
                 {
-                    DiagnosticsClient.Notify(exception);
-
                     var confirmExit = UIServices.ConfirmCloseEditor(
                         "There is an error in the metadata source.",
                         exception.GetBaseException().Message +
