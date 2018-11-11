@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using NuGetPackageExplorer.Types;
 using NuGetPe.AssemblyMetadata;
@@ -17,21 +18,33 @@ namespace PackageExplorer
         public object GetView(string extension, Stream stream)
         {
             AssemblyDebugDataViewModel data = null;
-            using (var str = StreamUtility.MakeSeekable(stream))
-            {
-                data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(str));
-            }
 
-
-            return new ScrollViewer
+            try
             {
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                Content = new Controls.PdbFileViewer
+                using (var str = StreamUtility.MakeSeekable(stream))
                 {
-                    DataContext = data
+                    data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(str));
                 }
-            };
+
+                return new ScrollViewer
+                {
+                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    Content = new Controls.PdbFileViewer
+                    {
+                        DataContext = data
+                    }
+                };
+            }
+            catch 
+            {
+                return new TextBlock()
+                {
+                    Text = "Full PDB's are not supported yet. Portable and Embedded are currently supported.",
+                    Margin = new Thickness(3)
+                };
+            }
+            
         }
     }
 }
