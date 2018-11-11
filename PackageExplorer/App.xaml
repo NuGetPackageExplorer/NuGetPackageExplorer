@@ -18,6 +18,7 @@
             <self:BooleanToVisibilityConverter x:Key="boolToVis" />
             <self:CountToVisibilityConverter x:Key="countConverter" />
             <self:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <self:NullToVisibilityConverter x:Key="InvertedNullToVisibilityConverter" Inverted="True" />
             <self:NullToBoolConverter x:Key="nullToBoolConverter" />
             <self:AndLogicConverter x:Key="andConverter" />
             <self:SubtracterConverter x:Key="SubtracterConverter" />
@@ -28,6 +29,7 @@
             <self:CertificateToSubjectConverter x:Key="CertificateToSubjectConverter" />
             <self:IconUrlToImageCacheConverter x:Key="IconUrlToImageCacheConverter" />
             <self:NumberToStringConverter x:Key="NumberToStringConverter" />
+            <self:EnumConverter x:Key="EnumConverter" />
 
             <ContextMenu x:Key="TextBoxContextMenu">
                 <self:GrayscaleMenuItem Command="Cut">
