@@ -15,13 +15,11 @@ namespace PackageExplorerViewModel.Utilities
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
-            if (!string.IsNullOrWhiteSpace(extension) || extension[0] != '.')
+            if (string.IsNullOrWhiteSpace(extension) || extension[0] != '.')
             {
                 extension = string.Empty;
             }
             
-            
-
             FileName = Path.GetTempFileName() + extension;
 
             stream.CopyToFile(FileName);
