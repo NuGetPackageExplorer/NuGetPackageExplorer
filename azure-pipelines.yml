@@ -28,7 +28,7 @@ jobs:
   steps:
   - task: DotNetCoreInstaller@0
     inputs:
-      version: '3.0.100-preview-009744'
+      version: '3.0.100-preview-009750'
 
   - task: DotNetCoreCLI@2
     inputs:
@@ -39,17 +39,6 @@ jobs:
     
   - script: nbgv cloud
     displayName: Set Version
-
-
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: '4.8.1'
-    displayName: CAS workaround, pt 1
-
-  - powershell: |
-      nuget install -excludeversion System.Security.Permissions -version 4.6.0-preview1-27018-01 -pre -outputdirectory packages -source https://dotnet.myget.org/F/dotnet-core/api/v3/index.json
-      copy .\packages\System.Security.Permissions\lib\net461\System.Security.Permissions.dll "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin"
-    displayName: CAS workaround, pt 2
 
   - powershell: |
       mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
