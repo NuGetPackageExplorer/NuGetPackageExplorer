@@ -89,5 +89,9 @@ Please check the [FAQ](https://github.com/NuGetPackageExplorer/NuGetPackageExplo
 
 Requirements to build the project:
 
-- VS2017 15.5 or later
-- [Windows 10 SDK](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk)
+- VS2017 15.8 or later
+- [Windows 10 SDK 17134](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk)
+
+## Diagnostics
+
+Thank you to [Bugsnag](https://www.bugsnag.com/) for their generous [license for Open Source projects](https://www.bugsnag.com/open-source/)!
