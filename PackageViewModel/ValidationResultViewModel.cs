@@ -27,7 +27,8 @@ namespace PackageExplorerViewModel
         }
 
 
-        public bool Valid => verifySignaturesResult.Valid;
+        public bool Valid => verifySignaturesResult.IsValid;
+        public bool Signed => verifySignaturesResult.IsSigned;
 
 
         public IReadOnlyList<ILogMessage> ErrorIssues { get; }

@@ -176,6 +176,8 @@ namespace PackageExplorerViewModel
 
         public RepositoryMetadata Repository => null;
 
+        public LicenseMetadata LicenseMetadata => null;
+
         #endregion
 
         public void Dispose()

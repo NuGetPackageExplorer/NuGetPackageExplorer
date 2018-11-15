@@ -205,6 +205,12 @@ namespace NuGetPe
             set { metadata.Repository = value; }
         }
 
+        public LicenseMetadata LicenseMetadata
+        {
+            get { return metadata.LicenseMetadata; }
+            set { metadata.LicenseMetadata = value; }
+        }
+
         public DateTimeOffset? Published
         {
             get;
@@ -330,8 +336,13 @@ namespace NuGetPe
                 var signed = await reader.IsSignedAsync(CancellationToken.None);
                 if (signed)
                 {
-                    // Check verification 
-                    var trustProviders = SignatureVerificationProviderFactory.GetSignatureVerificationProviders();
+                    // Check verification
+
+                    var trustProviders = new ISignatureVerificationProvider[]
+                    {
+                        new IntegrityVerificationProvider(),
+                        new SignatureTrustAndValidityVerificationProvider()
+                    };
                     var verifier = new PackageSignatureVerifier(trustProviders);
 
                     VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None);
