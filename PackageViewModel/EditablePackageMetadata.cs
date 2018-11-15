@@ -227,6 +227,7 @@ namespace PackageExplorerViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         private bool _developmentDependency;
         private RepositoryMetadata repository;
+        private LicenseMetadata licenseMetadata;
         private SignatureInfo publisherCertificate;
         private ValidationResultViewModel validationResult;
         private SignatureInfo repositoryCertificate;
@@ -514,6 +515,16 @@ namespace PackageExplorerViewModel
             {
                 repository = value;
                 RaisePropertyChange(nameof(Repository));
+            }
+        }
+
+        public LicenseMetadata LicenseMetadata
+        {
+            get { return licenseMetadata; }
+            set
+            {
+                licenseMetadata = value;
+                RaisePropertyChange(nameof(LicenseMetadata));
             }
         }
 
