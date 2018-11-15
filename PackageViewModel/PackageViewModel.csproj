@@ -10,8 +10,8 @@
 
   <ItemGroup>
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
-    <PackageReference Include="NuGet.Credentials" Version="4.8.0" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.8.0" />
+    <PackageReference Include="NuGet.Credentials" Version="4.9.0-rtm.5658" />
+    <PackageReference Include="NuGet.PackageManagement" Version="4.9.0-rtm.5658" />
     <ProjectReference Include="..\Core\Core.csproj" />
     <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>

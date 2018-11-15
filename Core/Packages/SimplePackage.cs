@@ -44,6 +44,7 @@ namespace NuGetPe
             ContentFiles = packageBuilder.ContentFiles;
             PackageTypes = packageBuilder.PackageTypes;
             MinClientVersion = packageBuilder.MinClientVersion;
+            LicenseMetadata = packageBuilder.LicenseMetadata;
 
             _packageBuilder = packageBuilder;
         }
@@ -152,6 +153,10 @@ namespace NuGetPe
         public IEnumerable<PackageType> PackageTypes { get; private set; }
 
         public RepositoryMetadata Repository { get; private set; }
+
+        public LicenseMetadata LicenseMetadata { get; private set; }
+
+
 
         #endregion
 
