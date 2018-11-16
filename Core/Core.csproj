@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Wpf">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -11,10 +11,6 @@
   <ItemGroup>
     <EmbeddedResource Update="NuGetResources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="NuGetResources.Designer.cs" CustomToolNamespace="NuGetPe.Resources" />
     <Compile Update="NuGetResources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="NuGetResources.resx" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.DesktopUI"/>
   </ItemGroup>
 
   <ItemGroup>

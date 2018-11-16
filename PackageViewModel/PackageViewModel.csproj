@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Wpf">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
@@ -7,11 +7,7 @@
     <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
     <Configurations>Debug;Release;Choco;Nightly;Store</Configurations>
   </PropertyGroup>
-
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.DesktopUI" />
-  </ItemGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
     <PackageReference Include="NuGet.Credentials" Version="5.0.0-xprivate.48840" />
