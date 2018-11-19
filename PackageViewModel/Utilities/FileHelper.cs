@@ -23,7 +23,7 @@ namespace PackageExplorerViewModel
                                                                     ".DLL", ".EXE", ".WINMD", ".CHM", ".PDF",
                                                                     ".DOCX", ".DOC", ".JPG", ".PNG", ".GIF",
                                                                     ".RTF", ".PDB", ".ZIP", ".RAR", ".XAP",
-                                                                    ".VSIX", ".NUPKG", ".SNK", ".PFX", ".ICO"
+                                                                    ".VSIX", ".NUPKG", ".SNUPKG", ".SNK", ".PFX", ".ICO"
                                                                 };
 
         public static bool IsBinaryFile(string path)

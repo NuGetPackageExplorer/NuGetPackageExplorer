@@ -81,6 +81,10 @@ namespace PackageExplorer
                         !selectedFilePath.EndsWith(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                     {
                         selectedFilePath += NuGetPe.Constants.PackageExtension;
+                    } else if (selectedIndex == 2 &&
+                               !selectedFilePath.EndsWith(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        selectedFilePath += NuGetPe.Constants.SymbolPackageExtension;
                     }
 
                     await PackageDownloader.Download(selectedFilePath, repository, packageInfo.Identity);

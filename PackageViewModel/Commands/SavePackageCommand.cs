@@ -110,17 +110,19 @@ namespace PackageExplorerViewModel
         private static bool CanSaveTo(string packageSource)
         {
             return !string.IsNullOrEmpty(packageSource) &&
-                   Path.IsPathRooted(packageSource) &&
-                   Path.GetExtension(packageSource).Equals(NuGetPe.Constants.PackageExtension,
-                                                           StringComparison.OrdinalIgnoreCase);
+                   Path.IsPathRooted(packageSource) && (
+                   Path.GetExtension(packageSource).Equals(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase) ||
+                   Path.GetExtension(packageSource).Equals(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase));
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.Confirm(System.String,System.String,System.Boolean)")]
         private void Save()
         {
             var expectedPackageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.PackageExtension;
+            var expectedSymbolPackageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.SymbolPackageExtension;
             var packageName = Path.GetFileName(ViewModel.PackageSource);
-            if (!expectedPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase))
+            if (!(expectedPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase) ||
+                  expectedPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase)))
             {
                 var confirmed = ViewModel.UIServices.Confirm(
                     "File name mismatch",
@@ -142,7 +144,7 @@ namespace PackageExplorerViewModel
 
         private void SaveAs()
         {
-            var packageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.PackageExtension;
+            var packageName = ViewModel.PackageMetadata.FileName;
             var title = "Save " + packageName;
             const string filter = "NuGet package file (*.nupkg)|*.nupkg|NuGet Symbols package file (*.snupkg)|*.snupkg|All files (*.*)|*.*";
             var initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;
@@ -153,6 +155,10 @@ namespace PackageExplorerViewModel
                     !selectedPackagePath.EndsWith(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     selectedPackagePath += NuGetPe.Constants.PackageExtension;
+                } else if (filterIndex == 2 &&
+                           !selectedPackagePath.EndsWith(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
+                {
+                    selectedPackagePath += NuGetPe.Constants.SymbolPackageExtension;
                 }
 
                 // prompt if the file already exists on disk
@@ -211,7 +217,7 @@ namespace PackageExplorerViewModel
 
             if (ViewModel.UIServices.OpenSignPackageDialog(signViewModel, out var signedPackagePath))
             {
-                var packageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.PackageExtension;
+                var packageName = ViewModel.PackageMetadata.FileName;
                 var title = "Save " + packageName;
                 const string filter = "NuGet package file (*.nupkg)|*.nupkg|NuGet Symbols package file (*.snupkg)|*.snupkg|All files (*.*)|*.*";
                 var initialDirectory = Path.IsPathRooted(ViewModel.PackageSource) ? ViewModel.PackageSource : null;
@@ -222,6 +228,10 @@ namespace PackageExplorerViewModel
                         !selectedPackagePath.EndsWith(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                     {
                         selectedPackagePath += NuGetPe.Constants.PackageExtension;
+                    } else if (filterIndex == 2 &&
+                               !selectedPackagePath.EndsWith(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
+                    {
+                        selectedPackagePath += NuGetPe.Constants.SymbolPackageExtension;
                     }
 
                     // prompt if the file already exists on disk

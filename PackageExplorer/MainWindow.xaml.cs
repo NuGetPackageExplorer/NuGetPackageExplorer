@@ -156,7 +156,8 @@ namespace PackageExplorer
                 File.Copy(packagePath, tempFile, overwrite: true);
 
                 var extension = Path.GetExtension(packagePath);
-                if (extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
+                if (extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase) ||
+                    extension.Equals(Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     package = new ZipPackage(tempFile);
                 }
