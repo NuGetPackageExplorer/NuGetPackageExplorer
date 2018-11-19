@@ -100,7 +100,7 @@ namespace PackageExplorerViewModel
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (!(ex is FileNotFoundException))
                 {
                     DiagnosticsClient.Notify(ex);
                     // don't let plugin crash the app

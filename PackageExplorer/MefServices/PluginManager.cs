@@ -164,10 +164,18 @@ namespace PackageExplorer
             var pluginDirectoryInfo = new DirectoryInfo(PluginsDirectory);
             if (!pluginDirectoryInfo.Exists)
             {
-                // creates the plugins directory if it doesn't exist
-                var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                var nugetDirectory = CreateChildDirectory(new DirectoryInfo(localAppData), NuGetDirectoryName);
-                CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
+                try
+                {
+                    // creates the plugins directory if it doesn't exist
+                    var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                    var nugetDirectory = CreateChildDirectory(new DirectoryInfo(localAppData), NuGetDirectoryName);
+                    CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
+                }
+                catch(UnauthorizedAccessException) // Some systems are throwing with this, not sure why but nothing we can do
+                {
+                    return;
+                }
+                
             }
 
             _plugins = new List<PluginInfo>(GetAllPlugins());

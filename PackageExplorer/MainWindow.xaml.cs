@@ -156,7 +156,8 @@ namespace PackageExplorer
                 File.Copy(packagePath, tempFile, overwrite: true);
 
                 var extension = Path.GetExtension(packagePath);
-                if (extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
+                if (extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase) ||
+                    extension.Equals(Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     package = new ZipPackage(tempFile);
                 }
@@ -232,7 +233,10 @@ namespace PackageExplorer
                 }
                 catch (Exception e)
                 {
-                    DiagnosticsClient.Notify(e);
+                    if (!(e is ArgumentException))
+                    {
+                        DiagnosticsClient.Notify(e);
+                    }
                     UIServices.Show($"Error loading package\n{e.Message}", MessageLevel.Error);
                 }
             }
@@ -609,7 +613,13 @@ namespace PackageExplorer
             var cacheSource = MachineCache.Default.Source;
             if (Directory.Exists(cacheSource))
             {
-                Process.Start(cacheSource);
+                try
+                {
+                    Process.Start(cacheSource);
+                }
+                catch // Possible Win32 exception, nothing we can do
+                {
+                }
             }
             else
             {

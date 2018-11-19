@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security;
 using Windows.Storage;
@@ -82,8 +83,12 @@ namespace NuGetPe
         {
             // If we exceed the package count then clear the cache
             var packageFiles = cacheDirectory.GetFiles("*" + Constants.PackageExtension,
-                                                              SearchOption.TopDirectoryOnly);
-            var totalFileCount = packageFiles.Length;
+                                                              SearchOption.TopDirectoryOnly)
+                                             .Concat(cacheDirectory.GetFiles("*" + Constants.SymbolPackageExtension,
+                                                                            SearchOption.TopDirectoryOnly))
+                                             .ToList();
+
+            var totalFileCount = packageFiles.Count;
             if (totalFileCount >= threshold)
             {
                 foreach (var packageFile in packageFiles)

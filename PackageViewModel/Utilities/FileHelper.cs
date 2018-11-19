@@ -23,7 +23,7 @@ namespace PackageExplorerViewModel
                                                                     ".DLL", ".EXE", ".WINMD", ".CHM", ".PDF",
                                                                     ".DOCX", ".DOC", ".JPG", ".PNG", ".GIF",
                                                                     ".RTF", ".PDB", ".ZIP", ".RAR", ".XAP",
-                                                                    ".VSIX", ".NUPKG", ".SNK", ".PFX", ".ICO"
+                                                                    ".VSIX", ".NUPKG", ".SNUPKG", ".SNK", ".PFX", ".ICO"
                                                                 };
 
         public static bool IsBinaryFile(string path)
@@ -59,7 +59,13 @@ namespace PackageExplorerViewModel
 
             if (File.Exists(tempFileName))
             {
-                Process.Start("explorer.exe", tempFileName);
+                try
+                {
+                    Process.Start("explorer.exe", tempFileName);
+                }
+                catch // Possible Win32 exception, nothing we can do
+                {
+                }
             }
         }
 
@@ -92,7 +98,13 @@ namespace PackageExplorerViewModel
                                    "shell32.dll,OpenAs_RunDLL " + tempFileName
                 };
 
-                Process.Start(info);
+                try
+                {
+                    Process.Start(info);
+                }
+                catch // Possible Win32 exception, nothing we can do
+                {
+                }
             }
         }
 

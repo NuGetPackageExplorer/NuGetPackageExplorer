@@ -54,6 +54,7 @@ namespace PackageExplorer
                         "v2.0","netcoreapp2.0",
                         "v2.1","netcoreapp2.1",
                         "v2.2","netcoreapp2.2",
+                        "v3.0","netcoreapp3.0",
                     }
                 }
                 ,
@@ -152,26 +153,25 @@ namespace PackageExplorer
                     ".NET Platform Standard",
                     new []
                     {
-                        ".NET Platform Standard 1.0","netstandard1.0",
-                        ".NET Platform Standard 1.1","netstandard1.1",
-                        ".NET Platform Standard 1.2","netstandard1.2",
-                        ".NET Platform Standard 1.3","netstandard1.3",
-                        ".NET Platform Standard 1.4","netstandard1.4",
-                        ".NET Platform Standard 1.5","netstandard1.5",
-                        ".NET Platform Standard 1.6","netstandard1.6",
-                        ".NET Platform Standard 2.0","netstandard2.0",
+                        ".NET Standard 1.0","netstandard1.0",
+                        ".NET Standard 1.1","netstandard1.1",
+                        ".NET Standard 1.2","netstandard1.2",
+                        ".NET Standard 1.3","netstandard1.3",
+                        ".NET Standard 1.4","netstandard1.4",
+                        ".NET Standard 1.5","netstandard1.5",
+                        ".NET Standard 1.6","netstandard1.6",
+                        ".NET Standard 2.0","netstandard2.0",
+                        ".NET Standard 2.1","netstandard2.1",
                     }
 
                 }
                 ,
-
-
+                
                 {
                     ".NET",
                     new[]
                     {
                         "(no version)", "net",
-                        "dotnet", "dotnet",
                         "v1.0", "net10",
                         "v1.1", "net11",
                         "v2.0", "net20",
@@ -187,6 +187,7 @@ namespace PackageExplorer
                         "v4.7", "net47",
                         "v4.7.1", "net471",
                         "v4.7.2", "net472",
+                        "v4.8", "net48",
                     }
                 }
             };
