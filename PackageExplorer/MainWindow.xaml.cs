@@ -610,7 +610,13 @@ namespace PackageExplorer
             var cacheSource = MachineCache.Default.Source;
             if (Directory.Exists(cacheSource))
             {
-                Process.Start(cacheSource);
+                try
+                {
+                    Process.Start(cacheSource);
+                }
+                catch // Possible Win32 exception, nothing we can do
+                {
+                }
             }
             else
             {
