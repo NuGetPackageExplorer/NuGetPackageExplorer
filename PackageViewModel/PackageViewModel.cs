@@ -1196,7 +1196,10 @@ namespace PackageExplorerViewModel
             }
             catch (Exception e)
             {
-                DiagnosticsClient.Notify(e);
+                if (!(e is ArgumentException))
+                {
+                    DiagnosticsClient.Notify(e);
+                }
                 UIServices.Show(e.Message, MessageLevel.Error);
             }
 
