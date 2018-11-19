@@ -29,6 +29,7 @@ namespace PackageExplorer
                 Filter = filter,
                 FileName = defaultFileName,
                 ValidateNames = true,
+                AddExtension = true,
                 InitialDirectory = !string.IsNullOrEmpty(initialDirectory) ? Path.GetDirectoryName(initialDirectory) : initialDirectory
             };
 

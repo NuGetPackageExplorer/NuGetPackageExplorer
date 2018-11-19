@@ -8,6 +8,7 @@ namespace NuGetPe
 
         internal const string PackageRelationshipNamespace = "http://schemas.microsoft.com/packaging/2010/07/";
         public static readonly string PackageExtension = ".nupkg";
+        public static readonly string SymbolPackageExtension = ".snupkg";
         public static readonly string ManifestExtension = ".nuspec";
         public static readonly string ContentDirectory = "content";
         public static readonly string LibDirectory = "lib";
