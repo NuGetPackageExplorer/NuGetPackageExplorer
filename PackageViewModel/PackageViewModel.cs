@@ -687,17 +687,25 @@ namespace PackageExplorerViewModel
 
         private void SaveContentExecute(PackageFile file)
         {
-            var title = "Save " + file.Name;
-            const string filter = "All files (*.*)|*.*";
-            if (UIServices.OpenSaveFileDialog(title, file.Name, /* initial directory */ null, filter, /* overwritePrompt */ true,
-                                              out var selectedFileName, out var filterIndex))
+            try
             {
-                using (var fileStream = File.Open(selectedFileName, FileMode.Create, FileAccess.Write, FileShare.Read))
-                using (var packageStream = file.GetStream())
+                var title = "Save " + file.Name;
+                const string filter = "All files (*.*)|*.*";
+                if (UIServices.OpenSaveFileDialog(title, file.Name, /* initial directory */ null, filter, /* overwritePrompt */ true,
+                                                  out var selectedFileName, out var filterIndex))
                 {
-                    packageStream.CopyTo(fileStream);
+                    using (var fileStream = File.Open(selectedFileName, FileMode.Create, FileAccess.Write, FileShare.Read))
+                    using (var packageStream = file.GetStream())
+                    {
+                        packageStream.CopyTo(fileStream);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+            }
+            
         }
 
         private bool SaveContentCanExecute(PackageFile file)
