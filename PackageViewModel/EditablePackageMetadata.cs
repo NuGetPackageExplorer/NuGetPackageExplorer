@@ -610,11 +610,11 @@ namespace PackageExplorerViewModel
 
         private string IsValid(string propertyName)
         {
-            if (propertyName == "LicenseUrl")
+            if (propertyName == nameof(LicenseUrl) || propertyName == nameof(LicenseMetadata))
             {
-                if (RequireLicenseAcceptance && LicenseUrl == null)
+                if (RequireLicenseAcceptance && LicenseUrl == null && LicenseMetadata == null)
                 {
-                    return "Enabling license acceptance requires a license url.";
+                    return "Enabling license acceptance requires a license url, expression, or file.";
                 }
             }
 
