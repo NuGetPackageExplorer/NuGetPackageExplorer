@@ -815,7 +815,10 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex)
                 {
-                    DiagnosticsClient.Notify(ex);
+                    if (!(ex is IOException))
+                    {
+                        DiagnosticsClient.Notify(ex);
+                    }
                     UIServices.Show(ex.Message, MessageLevel.Error);
                 }
 
