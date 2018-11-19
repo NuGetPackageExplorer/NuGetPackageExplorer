@@ -173,6 +173,36 @@
                 </StackPanel>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type packaging:LicenseMetadata}">
+                <StackPanel>
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryType}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Type}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding License, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.PackageChooser_DetailLicense}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding License}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+
+                    <TextBlock Visibility="{Binding LicenseUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Hyperlink Command="GoToPage" CommandParameter="{Binding LicenseUrl}" ToolTip="{Binding LicenseUrl}">
+                            <Run Text="{x:Static self:Resources.Dialog_ViewLicense}" />
+                        </Hyperlink>
+                    </TextBlock>
+
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding LicenseExpression, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_LicenseExpressionVersion}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Version}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding LicenseExpression, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Static self:Resources.Dialog_LicenseExpression}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding LicenseExpression}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+                </StackPanel>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type pack:PackageDependencyGroup}">
                 <Grid Margin="0,0,0,8">
                     <Grid.RowDefinitions>
@@ -393,6 +423,14 @@
                                 <Run Text="{x:Static self:Resources.Dialog_ViewLicense}" />
                             </Hyperlink>
                         </TextBlock>
+
+                        <!-- License Metadata -->
+                        <StackPanel
+                            Visibility="{Binding LicenseMetadata, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock Text="{x:Static self:Resources.Dialog_LicenceMeta}" Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                            <ContentPresenter Margin="14,0,0,0" Content="{Binding LicenseMetadata, Mode=OneWay}" />
+                        </StackPanel>
 
                         <!-- Project Url -->
                         <TextBlock Visibility="{Binding ProjectUrl, Converter={StaticResource NullToVisibilityConverter}}">

@@ -150,6 +150,15 @@
   <data name="Dialog_LanguageLabel" xml:space="preserve">
     <value>Language:</value>
   </data>
+  <data name="Dialog_LicenceMeta" xml:space="preserve">
+    <value>License Meta:</value>
+  </data>
+  <data name="Dialog_LicenseExpression" xml:space="preserve">
+    <value>Expression:</value>
+  </data>
+  <data name="Dialog_LicenseExpressionVersion" xml:space="preserve">
+    <value>Expression Version:</value>
+  </data>
   <data name="Dialog_MinVersionLabel" xml:space="preserve">
     <value>Min client version:</value>
   </data>
@@ -316,9 +325,6 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="ProxyConnectToMessage" xml:space="preserve">
     <value>Connect to {0}</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value />
   </data>
   <data name="Validation_Disallowed" xml:space="preserve">
     <value>Disallowed</value>
