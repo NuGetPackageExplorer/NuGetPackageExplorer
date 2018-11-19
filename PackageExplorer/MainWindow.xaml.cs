@@ -233,7 +233,10 @@ namespace PackageExplorer
                 }
                 catch (Exception e)
                 {
-                    DiagnosticsClient.Notify(e);
+                    if (!(e is ArgumentException))
+                    {
+                        DiagnosticsClient.Notify(e);
+                    }
                     UIServices.Show($"Error loading package\n{e.Message}", MessageLevel.Error);
                 }
             }
