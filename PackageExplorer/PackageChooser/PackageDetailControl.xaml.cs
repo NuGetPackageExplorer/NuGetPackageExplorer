@@ -16,7 +16,14 @@ namespace PackageExplorer
 
         private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            try
+            {
+                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            }
+            catch // Possible Win32 exceptions
+            {
+            }
+
             e.Handled = true;
         }
     }
