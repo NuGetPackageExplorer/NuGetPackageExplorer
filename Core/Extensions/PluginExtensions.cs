@@ -30,7 +30,7 @@ namespace NuGetPe
                     var suffixPath = file.Path.Substring(sourceDirectory.Length);
                     var targetPath = Path.Combine(targetRootDirectory, suffixPath);
 
-                    using (var stream = File.OpenWrite(targetPath))
+                    using (var stream = File.Open(targetPath, FileMode.Create, FileAccess.Write, FileShare.Read))
                     {
                         using (var packageStream = file.GetStream())
                         {

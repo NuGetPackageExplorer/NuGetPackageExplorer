@@ -16,7 +16,6 @@ namespace PackageExplorer
         {
             var tempFile = Path.GetTempFileName();
 
-
             try
             {
                 using (var fileStream = File.OpenWrite(tempFile))

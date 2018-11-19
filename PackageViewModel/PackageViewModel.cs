@@ -692,7 +692,7 @@ namespace PackageExplorerViewModel
             if (UIServices.OpenSaveFileDialog(title, file.Name, /* initial directory */ null, filter, /* overwritePrompt */ true,
                                               out var selectedFileName, out var filterIndex))
             {
-                using (var fileStream = File.OpenWrite(selectedFileName))
+                using (var fileStream = File.Open(selectedFileName, FileMode.Create, FileAccess.Write, FileShare.Read))
                 using (var packageStream = file.GetStream())
                 {
                     packageStream.CopyTo(fileStream);
