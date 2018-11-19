@@ -538,7 +538,7 @@ namespace PackageExplorerViewModel
             Authors = ConvertToString(source.Authors);
             Owners = ConvertToString(source.Owners);
             IconUrl = FixIconUrl(source.IconUrl);
-            LicenseUrl = source.LicenseUrl;
+            
             ProjectUrl = source.ProjectUrl;
             RequireLicenseAcceptance = source.RequireLicenseAcceptance;
             DevelopmentDependency = source.DevelopmentDependency;
@@ -555,6 +555,8 @@ namespace PackageExplorerViewModel
             ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
             PackageTypes = new ObservableCollection<PackageType>(source.PackageTypes);
             Repository = source.Repository;
+            LicenseMetadata = source.LicenseMetadata;
+            LicenseUrl = LicenseMetadata != null ? null : source.LicenseUrl; // This will be set for back compat, but should show up as null here
 
             if (source.PackageAssemblyReferences != null)
             {
@@ -608,11 +610,11 @@ namespace PackageExplorerViewModel
 
         private string IsValid(string propertyName)
         {
-            if (propertyName == "LicenseUrl")
+            if (propertyName == nameof(LicenseUrl) || propertyName == nameof(LicenseMetadata))
             {
-                if (RequireLicenseAcceptance && LicenseUrl == null)
+                if (RequireLicenseAcceptance && LicenseUrl == null && LicenseMetadata == null)
                 {
-                    return "Enabling license acceptance requires a license url.";
+                    return "Enabling license acceptance requires a license url, expression, or file.";
                 }
             }
 

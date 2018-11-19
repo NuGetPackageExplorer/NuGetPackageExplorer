@@ -160,6 +160,33 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to License Meta:.
+        /// </summary>
+        public static string Dialog_LicenceMeta {
+            get {
+                return ResourceManager.GetString("Dialog_LicenceMeta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expression:.
+        /// </summary>
+        public static string Dialog_LicenseExpression {
+            get {
+                return ResourceManager.GetString("Dialog_LicenseExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expression Version:.
+        /// </summary>
+        public static string Dialog_LicenseExpressionVersion {
+            get {
+                return ResourceManager.GetString("Dialog_LicenseExpressionVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Min client version:.
         /// </summary>
         public static string Dialog_MinVersionLabel {
@@ -653,15 +680,6 @@ namespace PackageExplorer {
         public static string ProxyConnectToMessage {
             get {
                 return ResourceManager.GetString("ProxyConnectToMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

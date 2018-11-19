@@ -132,6 +132,18 @@ namespace NuGetPe
                 }
             }
 
+            // The manifest utility exports licenseUrl for back compat, but it's not intended
+            // for round-tripping
+            // If license exists, strip licenseUrl
+
+
+            if (xdoc.Root.Descendants(ns + "license")
+                    .Any())
+            {
+                // Remove licenseUrl
+                xdoc.Descendants(ns + "licenseUrl").Remove();
+            }
+
             xdoc.Save(destinationStream);
         }
     }
