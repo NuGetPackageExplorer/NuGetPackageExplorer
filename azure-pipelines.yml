@@ -68,8 +68,12 @@ jobs:
       # Update BugsnagApiKey
       $doc = Get-Content ".\PackageExplorer\app.config"    
       $doc | % { $_.Replace("__BugsnagApiKey__", "$(BugsnagApiKey)") } | Set-Content ".\PackageExplorer\app.config"
+
+      # Set source root
+      $doc = Get-Content ".\PackageExplorer\app.config"    
+      $doc | % { $_.Replace("__BugsnagSourceRoots__", "$(Build.SourcesDirectory)") } | Set-Content ".\PackageExplorer\app.config"
       
-    displayName: Set Bugsnag key
+    displayName: Set Bugsnag Config
     env:
       BugsnagApiKey: $(BugsnagApiKey)
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['BugsnagApiKey'], '')))

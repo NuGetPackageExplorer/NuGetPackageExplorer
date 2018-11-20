@@ -26,7 +26,7 @@ namespace NuGetPe
 #endif
 
 
-        public static void Initialize(string apiKey)
+        public static void Initialize(string apiKey, string sourceRoots)
         {
             _initialized = true;
 
@@ -35,8 +35,9 @@ namespace NuGetPe
                 AutoCaptureSessions = true,
                 AutoNotify = true,
                 NotifyReleaseStages = new[] { "development", "store", "nightly", "chocolatey", "zip" },
-                ProjectNamespaces = new [] {"NuGetPe", "PackageExplorer", "PackageExplorerViewModel", "NuGetPackageExplorer.Types" },
+                ProjectNamespaces = new[] { "NuGetPe", "PackageExplorer", "PackageExplorerViewModel", "NuGetPackageExplorer.Types" },
                 ReleaseStage = Channel,
+                ProjectRoots = sourceRoots.Split(';'),
                 AppVersion = typeof(DiagnosticsClient).Assembly
                                                       .GetCustomAttributes<AssemblyMetadataAttribute>()
                                                       .FirstOrDefault(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
