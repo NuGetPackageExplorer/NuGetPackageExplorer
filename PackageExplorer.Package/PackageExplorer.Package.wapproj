@@ -51,7 +51,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj"
                       SkipGetTargetFrameworkProperties="true"
-                      Properties="Configuration=$(Configuration)" />
+                      Properties="Configuration=$(Configuration);DebugType=embedded" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>
