@@ -90,7 +90,7 @@ jobs:
     displayName: Build Nightly Package
     inputs:
       solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" 
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:DebugType=embedded
       configuration: Nightly
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
@@ -99,7 +99,7 @@ jobs:
     displayName: Build Store Package
     inputs:
       solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:UapAppxPackageBuildMode=StoreUpload
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:DebugType=embedded /p:UapAppxPackageBuildMode=StoreUpload
       configuration: Store
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
