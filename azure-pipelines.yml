@@ -15,15 +15,19 @@ jobs:
       Config_Release:
         BuildConfiguration: Release
         BuildOutputDirectory: Zip
+        DebugType: Full
       Config_Store:
         BuildConfiguration: Store
         BuildOutputDirectory: Store
+        DebugType: embedded
       Config_Nightly:
         BuildConfiguration: Nightly
         BuildOutputDirectory: Nightly
+        DebugType: embedded
       Config_Choco:
         BuildConfiguration: Choco
         BuildOutputDirectory: Choco
+        DebugType: Full
 
   steps:
   - task: DotNetCoreCLI@2  
@@ -82,7 +86,7 @@ jobs:
     displayName: Build NuGet Package Explorer for $(BuildConfiguration)
     inputs:
       solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-      msbuildArguments: /restore    
+      msbuildArguments: /restore /p:DebugType=$(DebugType)
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
 
@@ -90,7 +94,7 @@ jobs:
     displayName: Build Nightly Package
     inputs:
       solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:NgenR2R=false /p:DebugType=embedded
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:DebugType=$(DebugType)
       configuration: Nightly
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
@@ -99,7 +103,7 @@ jobs:
     displayName: Build Store Package
     inputs:
       solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:NgenR2R=false /p:DebugType=embedded /p:UapAppxPackageBuildMode=StoreUpload
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:DebugType=$(DebugType) /p:UapAppxPackageBuildMode=StoreUpload
       configuration: Store
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
