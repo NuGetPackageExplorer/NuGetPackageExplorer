@@ -19,7 +19,6 @@
     <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />
 
     <Reference Include="Windows" />
-    <Reference Include="System.Runtime.WindowsRuntime" />
   </ItemGroup>
   
 </Project>

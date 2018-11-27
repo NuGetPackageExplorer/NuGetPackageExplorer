@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Reference Update="Windows" Private="false" HintPath="$(WindowsWinmdFile)" />
-    <Reference Update="System.Runtime.WindowsRuntime" Private="false" HintPath="$(WINDIR)\Microsoft.NET\Framework\v4.0.30319\System.Runtime.WindowsRuntime.dll" />
   </ItemGroup>
   
   <PropertyGroup>
