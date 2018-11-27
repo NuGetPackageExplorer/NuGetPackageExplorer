@@ -27,10 +27,11 @@ namespace PackageExplorer
             const string invalidKey = "__BugsnagApiKey__";
             // Initialize Bugsnag if we have a valid key
             var apiKey = ConfigurationManager.AppSettings["bugsnag:apiKey"];
+            var sourceRoots = ConfigurationManager.AppSettings["bugsnag:sourceRoots"];
 
             if (!string.Equals(apiKey, invalidKey, StringComparison.OrdinalIgnoreCase))
             {
-                DiagnosticsClient.Initialize(apiKey);
+                DiagnosticsClient.Initialize(apiKey, sourceRoots);
             }
         }
 
