@@ -15,22 +15,22 @@ jobs:
       Config_Release:
         BuildConfiguration: Release
         BuildOutputDirectory: Zip
-        DebugType: Full
       Config_Store:
         BuildConfiguration: Store
         BuildOutputDirectory: Store
-        DebugType: embedded
       Config_Nightly:
         BuildConfiguration: Nightly
         BuildOutputDirectory: Nightly
-        DebugType: embedded
       Config_Choco:
         BuildConfiguration: Choco
         BuildOutputDirectory: Choco
-        DebugType: Full
 
   steps:
-  - task: DotNetCoreCLI@2  
+  - task: DotNetCoreInstaller@0
+    inputs:
+      version: '3.0.100-preview-009784'
+
+  - task: DotNetCoreCLI@2
     inputs:
       command: custom
       custom: tool
@@ -86,7 +86,7 @@ jobs:
     displayName: Build NuGet Package Explorer for $(BuildConfiguration)
     inputs:
       solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-      msbuildArguments: /restore /p:DebugType=$(DebugType)
+      msbuildArguments: /restore
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
 
@@ -94,7 +94,7 @@ jobs:
     displayName: Build Nightly Package
     inputs:
       solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:DebugType=$(DebugType)
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\"
       configuration: Nightly
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
@@ -103,10 +103,19 @@ jobs:
     displayName: Build Store Package
     inputs:
       solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:DebugType=$(DebugType) /p:UapAppxPackageBuildMode=StoreUpload
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:UapAppxPackageBuildMode=StoreUpload
       configuration: Store
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
+  
+  - task: MSBuild@1
+    displayName: Publish $(BuildConfiguration)
+    inputs:
+      solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
+      msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true
+      configuration: $(BuildConfiguration)
+      maximumCpuCount: true
+    condition: and(succeeded(), or(eq(variables['BuildConfiguration'], 'Release'), eq(variables['BuildConfiguration'], 'Choco')))
 
   - task: MSBuild@1
     displayName: Pack Types Package
@@ -129,7 +138,7 @@ jobs:
     displayName: Zip PackageExplorer files
     inputs:
       archiveType: zip
-      rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net462
+      rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.0/win-x86/publish
       archiveFile: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\PackageExplorer.$(Build.BuildNumber).zip
       includeRootFolder: false
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))

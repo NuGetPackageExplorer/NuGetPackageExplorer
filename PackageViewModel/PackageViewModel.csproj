@@ -1,19 +1,19 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
     <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
     <Configurations>Debug;Release;Choco;Nightly;Store</Configurations>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
-    <PackageReference Include="NuGet.Credentials" Version="4.9.0-rtm.5658" />
-    <PackageReference Include="NuGet.PackageManagement" Version="4.9.0-rtm.5658" />
+    <PackageReference Include="NuGet.Credentials" Version="5.0.0-xprivate.48840" />
+    <PackageReference Include="NuGet.PackageManagement" Version="5.0.0-xprivate.48840" />
+    <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview.18571.3" />
     <ProjectReference Include="..\Core\Core.csproj" />
-    <Reference Include="System.ComponentModel.Composition" />
   </ItemGroup>
 
 </Project>

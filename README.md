@@ -89,8 +89,9 @@ Please check the [FAQ](https://github.com/NuGetPackageExplorer/NuGetPackageExplo
 
 Requirements to build the project:
 
-- VS2017 15.8 or later
+- VS2017 15.9 or later. If using the stable release, make sure to enable support for Preview .NET Core SDK's
 - [Windows 10 SDK 17134](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk)
+- [.NET Core 3 SDK](https://github.com/dotnet/core-sdk)
 
 ## Diagnostics
 

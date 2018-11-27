@@ -8,13 +8,18 @@ namespace PackageExplorer
 {
     internal static class UriHelper
     {
-        public static void OpenExternalLink(Uri licenseUrl)
+        public static void OpenExternalLink(Uri link)
         {
             try
             {
-                if (IsRemoteUri(licenseUrl))
+                if (IsRemoteUri(link))
                 {
-                    Process.Start(licenseUrl.AbsoluteUri);
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = link.AbsoluteUri,
+                        UseShellExecute = true
+                    };
+                    Process.Start(psi);
                 }
             }
             catch // Possible Win32 exception: operation was canceled by the user. Nothing we can do.

@@ -340,10 +340,11 @@ namespace PackageExplorer
             {
                 var innerHandler = messageHandler;
 
-                messageHandler = new StsAuthenticationHandler(packageSource, TokenStore.Instance)
-                {
-                    InnerHandler = innerHandler
-                };
+                // TODO: Investigate what changed in this type
+            //    messageHandler = new StsAuthenticationHandler(packageSource, TokenStore.Instance)
+            //    {
+            //        InnerHandler = innerHandler
+            //    };
             }
             {
                 var innerHandler = messageHandler;

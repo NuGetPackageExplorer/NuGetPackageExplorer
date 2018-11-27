@@ -37,6 +37,7 @@
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
     <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
     <AppxPackageIncludePrivateSymbols>true</AppxPackageIncludePrivateSymbols>
+    <DebuggerType>CoreClr</DebuggerType>
   </PropertyGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -50,8 +51,20 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj"
-                      SkipGetTargetFrameworkProperties="true"
-                      Properties="Configuration=$(Configuration);DebugType=embedded" />
+                      SkipGetTargetFrameworkProperties="true"                      
+                      Properties="RuntimeIdentifier=win-x86;SelfContained=true;Configuration=$(Configuration)" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
+  <Target Name="_ValidateAppReferenceItems" />
+  <Target Name="_FixEntryPoint" AfterTargets="_ConvertItems">
+    <PropertyGroup>
+      <EntryPointExe>NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
+    </PropertyGroup>
+  </Target>
+  <Target Name="PublishReferences" BeforeTargets="ExpandProjectReferences">
+    <MSBuild Projects="@(ProjectReference->'%(FullPath)')"
+         BuildInParallel="$(BuildInParallel)"
+         Targets="Publish"
+    />
+  </Target>
 </Project>

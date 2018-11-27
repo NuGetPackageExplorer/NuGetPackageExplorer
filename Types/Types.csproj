@@ -1,7 +1,7 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net461</TargetFramework>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
     <Description>Contains types to enable the plugin architecture in NuGet Package Explorer.</Description>
     <Product>NuGet Package Explorer</Product>
     <SignAssembly>true</SignAssembly>
@@ -12,8 +12,8 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.2" />
-    <PackageReference Include="NuGet.Packaging" Version="4.9.0-rtm.5658" />
-    <Reference Include="System.ComponentModel.Composition" />
+    <PackageReference Include="NuGet.Packaging" Version="5.0.0-xprivate.48840" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="4.5.0" />
   </ItemGroup>
   
 </Project>

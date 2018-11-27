@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 
@@ -16,13 +17,7 @@ namespace PackageExplorer
 
         private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            try
-            {
-                Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-            }
-            catch // Possible Win32 exceptions
-            {
-            }
+            UriHelper.OpenExternalLink(e.Uri);
 
             e.Handled = true;
         }
