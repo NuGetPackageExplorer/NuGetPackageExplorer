@@ -1,7 +1,6 @@
 <Project>
 
   <PropertyGroup>
-    <WindowsWinmdFile Condition="Exists('$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformMinVersion)\Windows.winmd')">$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformMinVersion)\Windows.winmd</WindowsWinmdFile>
     <WindowsWinmdFile Condition="Exists('$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd')">$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd</WindowsWinmdFile>
   </PropertyGroup>
 
