@@ -99,7 +99,7 @@ namespace PackageExplorer
             ref var fileGroupDescriptorPtr = ref MemoryMarshal.GetReference(fileGroupDescriptorBytes);
             var fileGroupDescriptor = Unsafe.As<byte, FILEGROUPDESCRIPTORW>(ref fileGroupDescriptorPtr);
 
-            var fileNames = new(string, bool)[fileGroupDescriptor.cItems];
+            var fileNames = new (string, bool)[fileGroupDescriptor.cItems];
             unsafe
             {
                 fixed (byte* pStart = &Unsafe.Add(ref fileGroupDescriptorPtr, Marshal.SizeOf<FILEGROUPDESCRIPTORW>()))
@@ -217,8 +217,8 @@ namespace PackageExplorer
 
             public override long Position
             {
-                get => throw new NotImplementedException();
-                set => throw new NotImplementedException();
+                get;
+                set;
             }
 
             public override void Flush()
@@ -238,6 +238,8 @@ namespace PackageExplorer
 
                 _inner.Read(buffer, count, (IntPtr)p);
 
+                Position += count;
+
                 return (int)lng;
             }
 
@@ -247,6 +249,8 @@ namespace PackageExplorer
                 var p = &lng;
 
                 _inner.Seek(offset, (int)origin, (IntPtr)p);
+
+                Position = offset + (int)origin;
 
                 return lng;
             }
@@ -269,10 +273,14 @@ namespace PackageExplorer
                 _inner.Write(buffer, count, (IntPtr)p);
 
                 var written = (int)result;
+
+                Position += written;
+
                 if (written != count)
                 {
                     Write(buffer, written, count - written);
                 }
+
             }
 
             protected override void Dispose(bool disposing)
