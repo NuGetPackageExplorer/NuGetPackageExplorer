@@ -615,7 +615,7 @@ namespace PackageExplorer
             {
                 try
                 {
-                    Process.Start(cacheSource);
+                    Process.Start("explorer.exe", cacheSource);
                 }
                 catch // Possible Win32 exception, nothing we can do
                 {
