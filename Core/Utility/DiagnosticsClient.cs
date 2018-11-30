@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Bugsnag;
+using Bugsnag.Payload;
+using Exception = System.Exception;
 
 namespace NuGetPe
 {
@@ -41,9 +43,10 @@ namespace NuGetPe
                 AppVersion = typeof(DiagnosticsClient).Assembly
                                                       .GetCustomAttributes<AssemblyMetadataAttribute>()
                                                       .FirstOrDefault(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
-                                                      ?.Value
-            };
+                                                      ?.Value,
+                
 
+            };
 
             // Always default to development if we're in the debugger
             if (Debugger.IsAttached)
@@ -51,10 +54,19 @@ namespace NuGetPe
                 config.ReleaseStage = "development";
             }
 
-
             _client = new Client(config);
 
             _client.SessionTracking.CreateSession();
+
+            // Force it to send right away, don't wait 60 seconds as that will lose a lot of data
+            try
+            {
+                var sendSessions = typeof(SessionsStore).GetMethod("SendSessions", BindingFlags.Instance | BindingFlags.NonPublic);
+                sendSessions.Invoke(SessionsStore.Instance, new object[] { null });
+            }
+            catch
+            {
+            }
         }
 
         public static void Notify(Exception exception, Severity severity = Severity.Error)
