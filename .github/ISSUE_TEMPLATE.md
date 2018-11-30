@@ -8,9 +8,9 @@ Please keep / fill in the relevant info from this template so that we can help y
 - Feature request
 - Question
 
-**NPE version**: (e.g. 3.12) (see Help -> about)
+**NPE version**: (e.g. 5.x) (see Help -> about)
 
-**Installed from**: ClickOnce / chocolatey.org / Zip on CodePlex / Windows Store
+**Installed from**: Microsoft Store / Chocolatey.org / Zip on GitHub / CI channel
 
 In case of a BUG:
 
