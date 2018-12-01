@@ -12,15 +12,16 @@ namespace PackageExplorer
     internal class AssemblyFileViewer : IPackageContentViewer
     {
         
-        public object GetView(string extension, Stream stream)
+        public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
             var tempFile = Path.GetTempFileName();
 
             try
             {
+                using (var str = selectedFile.GetStream())
                 using (var fileStream = File.OpenWrite(tempFile))
                 {
-                    stream.CopyTo(fileStream);
+                    str.CopyTo(fileStream);
                 }
 
                 var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile);

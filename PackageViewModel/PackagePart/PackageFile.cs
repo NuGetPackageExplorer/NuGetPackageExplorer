@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
@@ -10,7 +11,8 @@ using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    public class PackageFile : PackagePart, IPackageFile, IEditablePackageFile
+    [DebuggerDisplay("{Path}")]
+    public class PackageFile : PackagePart, IPackageFile, IEditablePackageFile, IPackageContent
     {
         private readonly IPackageFile _file;
         private FileSystemWatcher _watcher;

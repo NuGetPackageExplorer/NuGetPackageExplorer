@@ -89,14 +89,16 @@ namespace PackageExplorerViewModel
                     // iterate over all plugins, looking for the first one that return non-null content
                     foreach (var viewer in contentViewers)
                     {
-                        using (var stream = file.GetStream())
+                        // Get peer files
+                        var peerFiles = file.Parent.GetFiles()
+                                            .Select(pf => new PackageFile(pf, Path.GetFileName(pf.Path), file.Parent))
+                                            .ToList();
+
+                        content = viewer.GetView(file, peerFiles);
+                        if (content != null)
                         {
-                            content = viewer.GetView(Path.GetExtension(file.Name), stream);
-                            if (content != null)
-                            {
-                                // found a plugin that can read this file, stop
-                                break;
-                            }
+                            // found a plugin that can read this file, stop
+                            break;
                         }
                     }
                 }
