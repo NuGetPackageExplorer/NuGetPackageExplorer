@@ -24,7 +24,11 @@
         <Image Style="{x:Null}" Margin="15,20,0,0" DockPanel.Dock="Left" Stretch="None" VerticalAlignment="Top" Source="Images/packageicon.png" />
 
         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="15,20,15,0">
-            <TextBlock x:Name="ProductTitle" Text="NuGet Package Explorer" FontWeight="Bold" />
+            <TextBox x:Name="ProductTitle"
+                     Text="NuGet Package Explorer"
+                     FontWeight="Bold"
+                     Style="{StaticResource SelectableTextBlockLikeStyle}"
+                     />
 
         
             <TextBlock Margin="0,5,0,0">
