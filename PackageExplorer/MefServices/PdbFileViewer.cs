@@ -23,7 +23,7 @@ namespace PackageExplorer
             {
                 using (var str = StreamUtility.MakeSeekable(stream))
                 {
-                    data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(str));
+                    //data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(str));
                 }
 
                 return new ScrollViewer
