@@ -1,6 +1,9 @@
 ﻿using System.Reflection;
 using System.Windows;
 using System.Windows.Documents;
+using System.Windows.Input;
+using PackageExplorerViewModel;
+using Clipboard = System.Windows.Forms.Clipboard;
 using StringResources = PackageExplorer.Resources;
 
 namespace PackageExplorer
@@ -23,6 +26,8 @@ namespace PackageExplorer
 
         public AboutWindow()
         {
+            CopyVersionCommand = new RelayCommand(CopyVersion);
+
             InitializeComponent();
 
             ProductTitle.Text = $"{StringResources.Dialog_Title} - {Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion})";
@@ -39,5 +44,14 @@ namespace PackageExplorer
             var link = (Hyperlink)sender;
             UriHelper.OpenExternalLink(link.NavigateUri);
         }
+
+        private void CopyVersion()
+        {
+            var version = $"{Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion})";
+
+            Clipboard.SetText(version);
+        }
+
+        public ICommand CopyVersionCommand { get; }
     }
 }

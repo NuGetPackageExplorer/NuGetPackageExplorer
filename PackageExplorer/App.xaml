@@ -51,6 +51,44 @@
 
             <SolidColorBrush Color="#003399" x:Key="TaskDialogMainInstructionBrush" PresentationOptions:Freeze="True" />
 
+            <!-- from https://stackoverflow.com/questions/136435/any-way-to-make-a-wpf-textblock-selectable -->
+            <Style x:Key="SelectableTextBlockLikeStyle" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="IsReadOnly" Value="True"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Padding" Value="-2,0,0,0"/>
+                <!-- The Padding -2,0,0,0 is required because the TextBox
+        seems to have an inherent "Padding" of about 2 pixels.
+        Without the Padding property,
+        the text seems to be 2 pixels to the left
+        compared to a TextBlock
+    -->
+                <Style.Triggers>
+                    <MultiTrigger>
+                        <MultiTrigger.Conditions>
+                            <Condition Property="IsMouseOver" Value="False" />
+                            <Condition Property="IsFocused" Value="False" />
+                        </MultiTrigger.Conditions>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TextBox}">
+                                    <TextBlock Text="{TemplateBinding Text}" 
+                                               FontSize="{TemplateBinding FontSize}"
+                                               FontStyle="{TemplateBinding FontStyle}"
+                                               FontFamily="{TemplateBinding FontFamily}"
+                                               FontWeight="{TemplateBinding FontWeight}"
+                                               TextWrapping="{TemplateBinding TextWrapping}"
+                                               Foreground="{DynamicResource NormalText}"
+                                               Padding="0,0,0,0"
+                                    />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </MultiTrigger>
+                </Style.Triggers>
+            </Style>
+
             <Style TargetType="{x:Type Image}" x:Key="ImageStyleBase">
                 <Setter Property="Width" Value="16" />
                 <Setter Property="Height" Value="16" />
