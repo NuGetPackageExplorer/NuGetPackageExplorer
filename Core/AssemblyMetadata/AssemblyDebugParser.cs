@@ -16,6 +16,8 @@ namespace NuGetPe.AssemblyMetadata
             Stream inputStream;
             if (!PdbConverter.IsPortable(pdbStream))
             {
+                if (peStream == null)
+                    throw new ArgumentNullException(nameof(peStream), "Full PDB's require the PE file to be next to the PDB");
                 // Full PDB. convert to ppdb in memory
                 _temporaryPdbStream = new MemoryStream();
                 PdbConverter.Default.ConvertWindowsToPortable(peStream, pdbStream, _temporaryPdbStream);

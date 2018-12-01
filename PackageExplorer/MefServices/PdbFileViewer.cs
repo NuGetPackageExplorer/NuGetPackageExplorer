@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using NuGetPackageExplorer.Types;
 using NuGetPe.AssemblyMetadata;
@@ -13,38 +10,47 @@ using PackageExplorerViewModel;
 namespace PackageExplorer
 {
     [PackageContentViewerMetadata(100, ".pdb", SupportsWindows10S = false)]
-    class PdbFileViewer : IPackageContentViewer
+    internal class PdbFileViewer : IPackageContentViewer
     {
-        public object GetView(string extension, Stream stream)
+        public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
             AssemblyDebugDataViewModel data = null;
 
+            // Get the PE file, exe or dll that matches
+            var filename = Path.GetFileNameWithoutExtension(selectedFile.Name);
+            var pe = peerFiles.FirstOrDefault(pc => pc.Path != selectedFile.Path &&
+                                                    Path.GetFileNameWithoutExtension(pc.Name).Equals(filename, StringComparison.OrdinalIgnoreCase) &&
+                                                    (".dll".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) ||
+                                                     ".exe".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase)));
+
+            Stream peStream = null;
             try
             {
-                using (var str = StreamUtility.MakeSeekable(stream))
+                if (pe != null)
                 {
-                    //data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(str));
+                    peStream = StreamUtility.MakeSeekable(pe.GetStream(), true);
                 }
 
-                return new ScrollViewer
+                using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
                 {
-                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Content = new Controls.PdbFileViewer
-                    {
-                        DataContext = data
-                    }
-                };
+                    data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));
+                }
             }
-            catch 
+            finally
             {
-                return new TextBlock()
-                {
-                    Text = "Full PDB's are not supported yet. Portable and Embedded are currently supported.",
-                    Margin = new Thickness(3)
-                };
+                peStream?.Dispose();
             }
             
+            return new ScrollViewer
+            {
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                Content = new Controls.PdbFileViewer
+                {
+                    DataContext = data
+                }
+            };
+
         }
     }
 }
