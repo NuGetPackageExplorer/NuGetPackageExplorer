@@ -256,13 +256,22 @@ namespace PackageExplorerViewModel
                     {
                         if (result.IsFile && File.Exists(value))
                         {
-                            if (_watcher == null)
+                            // Clean up the old one since we can't reliably change the Filter without a race
+                            if (_watcher != null)
                             {
-                                _watcher = new FileSystemWatcher();
-                                _watcher.Changed += OnFileChange;
-                                _watcher.Deleted += OnFileChange;
-                                _watcher.Renamed += OnFileChange;
+                                _watcher.EnableRaisingEvents = false;
+                                _watcher.Changed -= OnFileChange;
+                                _watcher.Deleted -= OnFileChange;
+                                _watcher.Renamed -= OnFileChange;
+                                _watcher.Dispose();
+                                _watcher = null;
                             }
+
+                            _watcher = new FileSystemWatcher();
+                            _watcher.Changed += OnFileChange;
+                            _watcher.Deleted += OnFileChange;
+                            _watcher.Renamed += OnFileChange;
+
                             _watcher.Path = Path.GetDirectoryName(PackageSource);
                             _watcher.Filter = Path.GetFileName(PackageSource);
                             _watcher.EnableRaisingEvents = true;
