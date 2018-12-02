@@ -144,7 +144,9 @@ namespace PackageExplorer
                 }
                 catch (IOException ex)
                 {
-                    UIServices.Value.Show(ex.Message, MessageLevel.Error);
+
+                    // When called via the ctor, this isn't available yet
+                    UIServices?.Value.Show(ex.Message, MessageLevel.Error);
                     return false;
                 }
             }
