@@ -10,7 +10,7 @@ Please keep / fill in the relevant info from this template so that we can help y
 
 **NPE version**: (e.g. 5.x) (see Help -> about)
 
-**OS version**: (Windows 7, 10 1803/17143, etc)
+**OS version**: (Windows 7, 10 - 1803/17143, etc)
 
 **Installed from**: Microsoft Store / Chocolatey.org / Zip on GitHub / CI channel
 
