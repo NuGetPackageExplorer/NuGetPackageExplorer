@@ -177,7 +177,7 @@ namespace PackageExplorerViewModel
         private enum SHGFI
         {
             /// <summary>
-            /// get icon
+            /// Get icon
             /// </summary>
             Icon = 0x000000100,
 
@@ -187,62 +187,62 @@ namespace PackageExplorerViewModel
             DisplayName = 0x000000200,
 
             /// <summary>
-            /// get type name
+            /// Get type name
             /// </summary>
             TypeName = 0x000000400,
 
             /// <summary>
-            /// get attributes
+            /// Get attributes
             /// </summary>
             Attributes = 0x000000800,
 
             /// <summary>
-            /// get icon location
+            /// Get icon location
             /// </summary>
             IconLocatin = 0x000001000,
 
             /// <summary>
-            /// return exe type
+            /// Return exe type
             /// </summary>
             ExeType = 0x000002000,
 
             /// <summary>
-            /// get system icon index
+            /// Get system icon index
             /// </summary>
             SysIconIndex = 0x000004000,
 
             /// <summary>
-            /// put a link overlay on icon
+            /// Put a link overlay on icon
             /// </summary>
             LinkOverlay = 0x000008000,
 
             /// <summary>
-            /// show icon in selected state
+            /// Show icon in selected state
             /// </summary>
             Selected = 0x000010000,
 
             /// <summary>
-            /// get only specified attributes
+            /// Get only specified attributes
             /// </summary>
             Attr_Specified = 0x000020000,
 
             /// <summary>
-            /// get large icon
+            /// Get large icon
             /// </summary>
             LargeIcon = 0x000000000,
 
             /// <summary>
-            /// get small icon
+            /// Get small icon
             /// </summary>
             SmallIcon = 0x000000001,
 
             /// <summary>
-            /// get open icon
+            /// Get open icon
             /// </summary>
             OpenIcon = 0x000000002,
 
             /// <summary>
-            /// get shell size icon
+            /// Get shell size icon
             /// </summary>
             ShellIconize = 0x000000004,
 
@@ -252,12 +252,12 @@ namespace PackageExplorerViewModel
             PIDL = 0x000000008,
 
             /// <summary>
-            /// use passed dwFileAttribute
+            /// Use passed dwFileAttribute
             /// </summary>
             UseFileAttributes = 0x000000010,
 
             /// <summary>
-            /// apply the appropriate overlays
+            /// Apply the appropriate overlays
             /// </summary>
             AddOverlays = 0x000000020,
 
@@ -284,6 +284,7 @@ namespace PackageExplorerViewModel
 
         private const int FILE_ATTRIBUTE_NORMAL = 0x80;
 
+
         [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         private static extern int SHGetFileInfo(string pszPath, int dwFileAttributes, out SHFILEINFO psfi, uint cbfileInfo, SHGFI uFlags);
 
@@ -306,7 +307,7 @@ namespace PackageExplorerViewModel
             public string szTypeName;
         }
 
-        public static Icon GetFileIcon(string fileName)
+        public static Icon ExtractAssociatedIcon(string fileName)
         {
             var info = new SHFILEINFO();
 

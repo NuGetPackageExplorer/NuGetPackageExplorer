@@ -38,24 +38,6 @@ namespace PackageExplorerViewModel
             ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsSigned && !viewModel.IsInEditFileMode);
         }
 
-        private ImageSource _fileIcon;
-
-        public ImageSource FileIcon
-        {
-            get
-            {
-                if (_fileIcon == null)
-                {
-                    using (var icon = FileHelper.GetFileIcon(Path))
-                    {
-                        _fileIcon = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                    }
-                }
-
-                return _fileIcon;
-            }
-        }
-
         #region IPackageFile members
 
         /// <summary>
@@ -115,6 +97,24 @@ namespace PackageExplorerViewModel
         }
 
         public DateTimeOffset LastWriteTime => _file.LastWriteTime;
+
+        private ImageSource _fileIcon;
+
+        public ImageSource FileIcon
+        {
+            get
+            {
+                if (_fileIcon == null)
+                {
+                    using (var icon = FileHelper.ExtractAssociatedIcon(Path))
+                    {
+                        _fileIcon = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                    }
+                }
+
+                return _fileIcon;
+            }
+        }
 
         private void WatchPhysicalFile(DiskPackageFile physicalFile)
         {
