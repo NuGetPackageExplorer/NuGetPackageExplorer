@@ -9,7 +9,7 @@ namespace PackageExplorer
     {
         private static bool _hasRegistered;
         private static readonly object _lock = new object();
-        private static string[] _nugetExtensions = new[] { ".nuspec", ".props", ".targets", ".xdt" };
+        private static readonly string[] _nugetExtensions = new[] { ".nuspec", ".props", ".targets", ".xdt" };
 
         public static void RegisterHightingExtensions()
         {

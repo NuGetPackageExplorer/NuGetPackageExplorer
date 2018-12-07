@@ -25,7 +25,7 @@ namespace NuGetPe
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
         private readonly Func<Stream> _streamFactory;
-        private ManifestMetadata metadata;
+        private ManifestMetadata _metadata;
 
         public ZipPackage(string filePath)
         {
@@ -62,153 +62,153 @@ namespace NuGetPe
 
         public string Id
         {
-            get { return metadata.Id; }
-            set { metadata.Id = value; }
+            get { return _metadata.Id; }
+            set { _metadata.Id = value; }
         }
 
         public NuGetVersion Version
         {
-            get { return metadata.Version; }
-            set { metadata.Version = value; }
+            get { return _metadata.Version; }
+            set { _metadata.Version = value; }
         }
 
         public string Title
         {
-            get { return metadata.Title; }
-            set { metadata.Title = value; }
+            get { return _metadata.Title; }
+            set { _metadata.Title = value; }
         }
 
         public IEnumerable<string> Authors
         {
-            get { return metadata.Authors; }
-            set { metadata.Authors = value; }
+            get { return _metadata.Authors; }
+            set { _metadata.Authors = value; }
         }
 
         public IEnumerable<string> Owners
         {
-            get { return metadata.Owners; }
-            set { metadata.Owners = value; }
+            get { return _metadata.Owners; }
+            set { _metadata.Owners = value; }
         }
 
         public Uri IconUrl
         {
-            get { return metadata.IconUrl; }
-            set { metadata.SetIconUrl(value?.ToString()); }
+            get { return _metadata.IconUrl; }
+            set { _metadata.SetIconUrl(value?.ToString()); }
         }
 
         public Uri LicenseUrl
         {
-            get { return metadata.LicenseUrl; }
-            set { metadata.SetLicenseUrl(value?.ToString()); }
+            get { return _metadata.LicenseUrl; }
+            set { _metadata.SetLicenseUrl(value?.ToString()); }
         }
 
         public Uri ProjectUrl
         {
-            get { return metadata.ProjectUrl; }
-            set { metadata.SetProjectUrl(value?.ToString()); }
+            get { return _metadata.ProjectUrl; }
+            set { _metadata.SetProjectUrl(value?.ToString()); }
         }
 
         public bool RequireLicenseAcceptance
         {
-            get { return metadata.RequireLicenseAcceptance; }
-            set { metadata.RequireLicenseAcceptance = value; }
+            get { return _metadata.RequireLicenseAcceptance; }
+            set { _metadata.RequireLicenseAcceptance = value; }
         }
 
         public bool DevelopmentDependency
         {
-            get { return metadata.DevelopmentDependency; }
-            set { metadata.DevelopmentDependency = value; }
+            get { return _metadata.DevelopmentDependency; }
+            set { _metadata.DevelopmentDependency = value; }
         }
 
         public string Description
         {
-            get { return metadata.Description; }
-            set { metadata.Description = value; }
+            get { return _metadata.Description; }
+            set { _metadata.Description = value; }
         }
 
         public string Summary
         {
-            get { return metadata.Summary; }
-            set { metadata.Summary = value; }
+            get { return _metadata.Summary; }
+            set { _metadata.Summary = value; }
         }
 
         public string ReleaseNotes
         {
-            get { return metadata.ReleaseNotes; }
-            set { metadata.ReleaseNotes = value; }
+            get { return _metadata.ReleaseNotes; }
+            set { _metadata.ReleaseNotes = value; }
         }
 
         public string Language
         {
-            get { return metadata.Language; }
-            set { metadata.Language = value; }
+            get { return _metadata.Language; }
+            set { _metadata.Language = value; }
         }
 
         public string Tags
         {
             // Ensure tags start and end with an empty " " so we can do contains filtering reliably
-            get { return !string.IsNullOrWhiteSpace(metadata.Tags) ? $" {metadata.Tags} " : metadata.Tags; }
-            set { metadata.Tags = value?.Trim(); }
+            get { return !string.IsNullOrWhiteSpace(_metadata.Tags) ? $" {_metadata.Tags} " : _metadata.Tags; }
+            set { _metadata.Tags = value?.Trim(); }
         }
 
         public bool Serviceable
         {
-            get { return metadata.Serviceable; }
-            set { metadata.Serviceable = value; }
+            get { return _metadata.Serviceable; }
+            set { _metadata.Serviceable = value; }
         }
 
         public string Copyright
         {
-            get { return metadata.Copyright; }
-            set { metadata.Copyright = value; }
+            get { return _metadata.Copyright; }
+            set { _metadata.Copyright = value; }
         }
 
         public Version MinClientVersion
         {
-            get { return metadata.MinClientVersion; }
-            set { metadata.MinClientVersionString = value?.ToString(); }
+            get { return _metadata.MinClientVersion; }
+            set { _metadata.MinClientVersionString = value?.ToString(); }
         }
 
         public IEnumerable<PackageDependencyGroup> DependencyGroups
         {
-            get { return metadata.DependencyGroups; }
-            set { metadata.DependencyGroups = value; }
+            get { return _metadata.DependencyGroups; }
+            set { _metadata.DependencyGroups = value; }
         }
 
         public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
         {
-            get { return metadata.PackageAssemblyReferences; }
-            set { metadata.PackageAssemblyReferences = value; }
+            get { return _metadata.PackageAssemblyReferences; }
+            set { _metadata.PackageAssemblyReferences = value; }
         }
 
         public IEnumerable<FrameworkAssemblyReference> FrameworkReferences
         {
-            get { return metadata.FrameworkReferences; }
-            set { metadata.FrameworkReferences = value; }
+            get { return _metadata.FrameworkReferences; }
+            set { _metadata.FrameworkReferences = value; }
         }
 
         public IEnumerable<ManifestContentFiles> ContentFiles
         {
-            get { return metadata.ContentFiles; }
-            set { metadata.ContentFiles = value; }
+            get { return _metadata.ContentFiles; }
+            set { _metadata.ContentFiles = value; }
         }
 
         public IEnumerable<PackageType> PackageTypes
         {
-            get { return metadata.PackageTypes; }
-            set { metadata.PackageTypes = value; }
+            get { return _metadata.PackageTypes; }
+            set { _metadata.PackageTypes = value; }
         }
 
         public RepositoryMetadata Repository
         {
-            get { return metadata.Repository; }
-            set { metadata.Repository = value; }
+            get { return _metadata.Repository; }
+            set { _metadata.Repository = value; }
         }
 
         public LicenseMetadata LicenseMetadata
         {
-            get { return metadata.LicenseMetadata; }
-            set { metadata.LicenseMetadata = value; }
+            get { return _metadata.LicenseMetadata; }
+            set { _metadata.LicenseMetadata = value; }
         }
 
         public DateTimeOffset? Published
@@ -270,7 +270,7 @@ namespace NuGetPe
 
 
         // Keep a list of open stream here, and close on dispose.
-        private List<IDisposable> _danglingStreams = new List<IDisposable>();
+        private readonly List<IDisposable> _danglingStreams = new List<IDisposable>();
 
         public IEnumerable<IPackageFile> GetFiles()
         {
@@ -356,7 +356,7 @@ namespace NuGetPe
             using (var reader = new PackageArchiveReader(stream))
             {
                 var manifest = Manifest.ReadFrom(ManifestUtility.ReadManifest(reader.GetNuspec()), false);
-                metadata = manifest.Metadata;
+                _metadata = manifest.Metadata;
             }
         }
 
@@ -382,16 +382,16 @@ namespace NuGetPe
 
         private class MyPackageArchiveReader : PackageArchiveReader
         {
-            private ZipArchive zipArchive;
+            private readonly ZipArchive _zipArchive;
 
             /// <summary>Nupkg package reader</summary>
             /// <param name="stream">Nupkg data stream.</param>
             /// <param name="leaveStreamOpen">If true the nupkg stream will not be closed by the zip reader.</param>
             public MyPackageArchiveReader(Stream stream, bool leaveStreamOpen) : base(stream, leaveStreamOpen)
             {
-                zipArchive = new ZipArchive(stream, ZipArchiveMode.Read);
+                _zipArchive = new ZipArchive(stream, ZipArchiveMode.Read);
             }
-            public ReadOnlyCollection<ZipArchiveEntry> GetZipEntries() => zipArchive.Entries;
+            public ReadOnlyCollection<ZipArchiveEntry> GetZipEntries() => _zipArchive.Entries;
         }
     }
 }

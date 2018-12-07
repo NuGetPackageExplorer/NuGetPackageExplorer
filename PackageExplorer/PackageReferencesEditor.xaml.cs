@@ -13,7 +13,7 @@ namespace PackageExplorer
 {
     public partial class PackageReferencesEditor : StandardDialog
     {
-        private ObservableCollection<EditablePackageReferenceSet> _referenceSets = new ObservableCollection<EditablePackageReferenceSet>();
+        private readonly ObservableCollection<EditablePackageReferenceSet> _referenceSets = new ObservableCollection<EditablePackageReferenceSet>();
 
         public PackageReferencesEditor()
         {

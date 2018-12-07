@@ -18,7 +18,7 @@ namespace PackageExplorer
     /// </summary>
     public partial class PackageDependencyEditor : StandardDialog
     {
-        private ObservableCollection<EditablePackageDependencySet> _dependencySets = new ObservableCollection<EditablePackageDependencySet>();
+        private readonly ObservableCollection<EditablePackageDependencySet> _dependencySets = new ObservableCollection<EditablePackageDependencySet>();
 
         private EditablePackageDependency _newPackageDependency;
 
