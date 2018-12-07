@@ -609,9 +609,15 @@ namespace PackageExplorer
             if (packagePart is PackageFile packageFile)
             {
                 long? fileSize = null;
-                if (packageFile.OriginalPath != null)
+                if (packageFile.OriginalPath != null && File.Exists(packageFile.OriginalPath))
                 {
-                    fileSize = new FileInfo(packageFile.OriginalPath).Length;
+                    // Try to get the length, it may not really exist
+                    try
+                    {
+                        fileSize = new FileInfo(packageFile.OriginalPath).Length;
+                    }
+                    catch(FileNotFoundException)
+                    { }
                 }
 
                 data.SetData(NativeDragDrop.FileGroupDescriptorW, NativeDragDrop.CreateFileGroupDescriptorW(packageFile.Name, packageFile.LastWriteTime, fileSize));

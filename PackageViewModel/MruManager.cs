@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using NuGet.Packaging;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
@@ -23,24 +24,37 @@ namespace PackageExplorerViewModel
         [ImportingConstructor]
         public MruManager(ISettingsManager settingsManager)
         {
-            var savedFiles = settingsManager.GetMruFiles();
-
             Files = new ObservableCollection<MruItem>();
-            for (var i = savedFiles.Count - 1; i >= 0; --i)
-            {
-                var s = savedFiles[i];
-                var item = ConvertStringToMruItem(s);
-                if (item != null)
-                {
-                    AddFile(item);
-                }
-            }
 
             _settingsManager = settingsManager;
+
+            try
+            {
+                var savedFiles = settingsManager.GetMruFiles();                
+                for (var i = savedFiles.Count - 1; i >= 0; --i)
+                {
+                    var s = savedFiles[i];
+                    var item = ConvertStringToMruItem(s);
+                    if (item != null)
+                    {
+                        AddFile(item);
+                    }
+                }
+            }
+            catch // Corrupt setting
+            {
+                try
+                {
+                    // try to clear
+                    settingsManager.SetMruFiles(Enumerable.Empty<string>());
+                }
+                catch 
+                {
+                    // something else happened, not much we can do
+                }                
+            }            
         }
-
-        #region IMruManager Members
-
+        
         public ObservableCollection<MruItem> Files { get; }
 
         [SuppressMessage(
@@ -67,9 +81,7 @@ namespace PackageExplorerViewModel
         public void Dispose()
         {
             OnApplicationExit();
-        }
-
-        #endregion
+        }        
 
         private void OnApplicationExit()
         {

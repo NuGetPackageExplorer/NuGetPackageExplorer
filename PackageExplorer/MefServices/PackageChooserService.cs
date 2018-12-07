@@ -87,7 +87,15 @@ namespace PackageExplorer
                         selectedFilePath += NuGetPe.Constants.SymbolPackageExtension;
                     }
 
-                    await PackageDownloader.Download(selectedFilePath, repository, packageInfo.Identity);
+                    try
+                    {
+                        await PackageDownloader.Download(selectedFilePath, repository, packageInfo.Identity);
+                    }
+                    catch(Exception ex)
+                    {
+                        UIServices.Show(ex.Message, MessageLevel.Error);
+                    }
+                    
                 }
             }
         }
