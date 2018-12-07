@@ -213,7 +213,7 @@ namespace NuGetPe
             set;
         }
 
-        public Uri ReportAbuseUrl
+        public Uri? ReportAbuseUrl
         {
             get { return null; }
         }
