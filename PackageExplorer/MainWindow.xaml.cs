@@ -610,19 +610,12 @@ namespace PackageExplorer
         private void ViewDownloadCache_Click(object sender, EventArgs args)
         {
             var cacheSource = MachineCache.Default.Source;
-            if (Directory.Exists(cacheSource))
+            try
             {
-                try
-                {
-                    Process.Start("explorer.exe", cacheSource);
-                }
-                catch // Possible Win32 exception, nothing we can do
-                {
-                }
+                Process.Start("explorer.exe", cacheSource.FullName);
             }
-            else
+            catch // Possible Win32 exception, nothing we can do
             {
-                UIServices.Show("The NuGet download cache does not exist.", MessageLevel.Information);
             }
         }
 
