@@ -8,7 +8,6 @@ namespace PackageExplorerViewModel
     {
         private const int MaxItem = 5;
         private readonly ISourceSettings _sourceSettings;
-        private readonly ObservableCollection<string> _sources = new ObservableCollection<string>();
 
         public MruPackageSourceManager(ISourceSettings sourceSettings)
         {
@@ -18,16 +17,13 @@ namespace PackageExplorerViewModel
 
         public string ActivePackageSource { get; set; }
 
-        public ObservableCollection<string> PackageSources
-        {
-            get { return _sources; }
-        }
+        public ObservableCollection<string> PackageSources { get; } = new ObservableCollection<string>();
 
         #region IDisposable Members
 
         public void Dispose()
         {
-            _sourceSettings.SetSources(_sources);
+            _sourceSettings.SetSources(PackageSources);
             _sourceSettings.ActiveSource = ActivePackageSource;
         }
 
@@ -52,15 +48,15 @@ namespace PackageExplorerViewModel
             }
 
             // if there is no source (this happens after upgrading), add the default source to it
-            if (_sources.Count == 0 || !_sources.Contains(_sourceSettings.DefaultSource))
+            if (PackageSources.Count == 0 || !PackageSources.Contains(_sourceSettings.DefaultSource))
             {
-                _sources.Insert(0, _sourceSettings.DefaultSource);
+                PackageSources.Insert(0, _sourceSettings.DefaultSource);
             }
 
             if (string.IsNullOrEmpty(ActivePackageSource))
             {
                 // assign the active package source to the first one if it's not already assigned
-                ActivePackageSource = _sources[0];
+                ActivePackageSource = PackageSources[0];
             }
         }
 
@@ -83,26 +79,26 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            _sources.Remove(defaultFeed);
+            PackageSources.Remove(defaultFeed);
 
             SmartRemove(newSource);
-            _sources.Insert(0, newSource);
+            PackageSources.Insert(0, newSource);
 
-            if (_sources.Count > MaxItem)
+            if (PackageSources.Count > MaxItem)
             {
-                _sources.RemoveAt(_sources.Count - 1);
+                PackageSources.RemoveAt(PackageSources.Count - 1);
             }
 
-            _sources.Insert(0, defaultFeed);
+            PackageSources.Insert(0, defaultFeed);
         }
 
         private void SmartRemove(string item)
         {
-            for (var i = 0; i < _sources.Count; i++)
+            for (var i = 0; i < PackageSources.Count; i++)
             {
-                if (_sources[i].Equals(item, StringComparison.OrdinalIgnoreCase))
+                if (PackageSources[i].Equals(item, StringComparison.OrdinalIgnoreCase))
                 {
-                    _sources.RemoveAt(i);
+                    PackageSources.RemoveAt(i);
                     return;
                 }
             }

@@ -93,17 +93,5 @@ namespace PackageExplorerViewModel
                 }
             }
         }
-
-        /// <summary>
-        /// Tags come in this format. tag1 tag2 tag3 etc..
-        /// </summary>
-        private static IEnumerable<string> ParseTags(string tags)
-        {
-            if (tags == null)
-            {
-                return Enumerable.Empty<string>();
-            }
-            return tags.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-        }
     }
 }

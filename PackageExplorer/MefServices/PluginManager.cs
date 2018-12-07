@@ -20,7 +20,7 @@ namespace PackageExplorer
         private const string NuGetDirectoryName = "NuGet";
         private const string PluginsDirectoryName = "PackageExplorerPlugins";
         private const string DeleteMeExtension = ".deleteme";
-        private static string[] FrameworkFolderForAssemblies = new string[] {
+        private static readonly string[] _frameworkFolderForAssemblies = new string[] {
             "lib\\net40",
             "lib\\net45",
             "lib\\net451",
@@ -95,7 +95,7 @@ namespace PackageExplorer
 
                         // copy assemblies
                         var numberOfFilesCopied =
-                            FrameworkFolderForAssemblies.Sum(folder => plugin.UnpackPackage(folder, targetPath));
+                            _frameworkFolderForAssemblies.Sum(folder => plugin.UnpackPackage(folder, targetPath));
 
                         if (numberOfFilesCopied == 0)
                         {

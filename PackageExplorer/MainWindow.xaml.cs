@@ -516,12 +516,7 @@ namespace PackageExplorer
             }
 
             var menuItem = (MenuItem)sender;
-            var mruItem = menuItem.DataContext as MruItem;
-            if (mruItem == null)
-            {
-                _mruManager.Clear();
-            }
-            else
+            if (menuItem.DataContext is MruItem mruItem)
             {
                 if (mruItem.PackageType == PackageType.LocalPackage)
                 {
@@ -531,6 +526,10 @@ namespace PackageExplorer
                 {
                     await DownloadAndOpenDataServicePackage(mruItem);
                 }
+            }
+            else
+            {
+                _mruManager.Clear();
             }
         }
 

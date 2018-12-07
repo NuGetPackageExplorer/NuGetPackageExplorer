@@ -9,7 +9,7 @@ namespace xamlSpinnersWPF
     {
         public ucSpinnerDotCircle()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
     }
 }

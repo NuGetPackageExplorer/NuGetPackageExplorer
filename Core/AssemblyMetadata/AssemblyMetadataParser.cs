@@ -129,7 +129,7 @@ namespace NuGetPe.AssemblyMetadata
 
         private class AttributeTypeProvider : ICustomAttributeTypeProvider<string>
         {
-            private static Dictionary<PrimitiveTypeCode, Type> PrimitiveTypeMappings =
+            private static readonly Dictionary<PrimitiveTypeCode, Type> _primitiveTypeMappings =
                 new Dictionary<PrimitiveTypeCode, Type>
                 {
                     { PrimitiveTypeCode.Void, typeof(void) },
@@ -154,7 +154,7 @@ namespace NuGetPe.AssemblyMetadata
 
             public string GetPrimitiveType(PrimitiveTypeCode typeCode)
             {
-                if (PrimitiveTypeMappings.TryGetValue(typeCode, out var type))
+                if (_primitiveTypeMappings.TryGetValue(typeCode, out var type))
                 {
                     return type.FullName;
                 }
@@ -236,7 +236,7 @@ namespace NuGetPe.AssemblyMetadata
                 {
                     var underlyingType = runtimeType.GetEnumUnderlyingType();
 
-                    foreach (var primitiveTypeMapping in PrimitiveTypeMappings)
+                    foreach (var primitiveTypeMapping in _primitiveTypeMappings)
                     {
                         if (primitiveTypeMapping.Value == underlyingType)
                         {

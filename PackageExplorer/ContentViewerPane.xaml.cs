@@ -13,7 +13,7 @@ namespace PackageExplorer
     /// </summary>
     public partial class ContentViewerPane : UserControl
     {
-        private CommandBinding _findCommand;
+        private readonly CommandBinding _findCommand;
 
         public ContentViewerPane()
         {

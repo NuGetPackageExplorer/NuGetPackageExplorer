@@ -9,14 +9,12 @@ namespace NuGetPe
 {
     public abstract class PackageFileBase : IPackageFile
     {
-        private readonly FrameworkName _targetFramework;
-
         protected PackageFileBase(string path)
         {
             Path = path;
 
             FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out var effectivePath);
-            _targetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
+            TargetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
             EffectivePath = effectivePath;
         }
 
@@ -42,13 +40,7 @@ namespace NuGetPe
             private set;
         }
 
-        public FrameworkName TargetFramework
-        {
-            get
-            {
-                return _targetFramework;
-            }
-        }
+        public FrameworkName TargetFramework { get; }
 
         public IEnumerable<FrameworkName> SupportedFrameworks
         {

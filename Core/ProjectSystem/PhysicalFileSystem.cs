@@ -7,23 +7,18 @@ namespace NuGetPe
 {
     public class PhysicalFileSystem : IFileSystem
     {
-        private readonly string _root;
-
         public PhysicalFileSystem(string root)
         {
             if (string.IsNullOrEmpty(root))
             {
                 throw new ArgumentException("Argument cannot be null or empty.", "root");
             }
-            _root = root;
+            Root = root;
         }
 
         #region IFileSystem Members
 
-        public string Root
-        {
-            get { return _root; }
-        }
+        public string Root { get; }
 
         public virtual string GetFullPath(string path)
         {
