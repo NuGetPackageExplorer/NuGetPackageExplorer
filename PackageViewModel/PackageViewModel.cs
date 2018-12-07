@@ -804,7 +804,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex)
                 {
-                    if (!(ex is IOException))
+                    if (!(ex is IOException) && !(ex is ArgumentException))
                     {
                         DiagnosticsClient.Notify(ex);
                     }
