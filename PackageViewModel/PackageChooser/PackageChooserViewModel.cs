@@ -213,20 +213,17 @@ namespace PackageExplorerViewModel
             }
         }
 
-        #region Commands
         public RelayCommand<string> NavigationCommand { get; private set; }
         public ICommand SearchCommand { get; private set; }
         public ICommand ClearSearchCommand { get; private set; }
         public ICommand LoadedCommand { get; private set; }
         public ICommand ChangePackageSourceCommand { get; private set; }
         public RelayCommand CancelCommand { get; private set; }
-        #endregion
 
-        #region EventHandler
         public event EventHandler LoadPackagesCompleted = delegate { };
         public event EventHandler OpenPackageRequested = delegate { };
         public event EventHandler PackageDownloadRequested = delegate { };
-        #endregion
+
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"),
          System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]

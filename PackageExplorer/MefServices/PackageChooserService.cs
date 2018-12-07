@@ -11,8 +11,6 @@ namespace PackageExplorer
     [Export(typeof(IPackageChooser))]
     internal class PackageChooserService : IPackageChooser
     {
-        // for select package dialog
-        private PackageChooserDialog _dialog;
         private PackageChooserViewModel _viewModel;
 
         // for select plugin dialog
@@ -34,31 +32,33 @@ namespace PackageExplorer
         [Import]
         public Lazy<MainWindow> Window { get; set; }
 
-        #region IPackageChooser Members
 
         public SourceRepository Repository => _viewModel.ActiveRepository;
 
         public PackageInfo SelectPackage(string searchTerm)
         {
-            if (_dialog == null)
+            if(_viewModel == null)
             {
                 _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
                 _viewModel.PackageDownloadRequested += OnPackageDownloadRequested;
-                _dialog = new PackageChooserDialog(SettingsManager, _viewModel)
-                {
-                    Owner = Window.Value
-                };
             }
             
-            ReCenterPackageChooserDialog(_dialog);
-            _dialog.ShowDialog(searchTerm);
+            var dialog = new PackageChooserDialog(SettingsManager, _viewModel)
+            {
+                Owner = Window.Value
+            };
+            
+            ReCenterPackageChooserDialog(dialog);
+            dialog.ShowDialog(searchTerm);
+
             return _viewModel.SelectedPackage;
         }
 
         private async void OnPackageDownloadRequested(object sender, EventArgs e)
         {
-            var repository = _viewModel.ActiveRepository;
-            var packageInfo = _viewModel.SelectedPackage;
+            var vm = (PackageChooserViewModel)sender;
+            var repository = vm.ActiveRepository;
+            var packageInfo = vm.SelectedPackage;
             if (packageInfo != null)
             {
 
@@ -139,13 +139,7 @@ namespace PackageExplorer
 
         public void Dispose()
         {
-            if (_dialog != null)
-            {
-                _dialog.ForceClose();
-                _viewModel.Dispose();
-            }
+           _viewModel.Dispose();           
         }
-
-        #endregion
     }
 }
