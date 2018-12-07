@@ -83,19 +83,24 @@ namespace NuGetPe.AssemblyMetadata
                        select Encoding.UTF8.GetString(bl))
                 .FirstOrDefault();
 
-            var jobj = JObject.Parse(sl);
-            var docs = (JObject)jobj["documents"];
+            if(sl != null)
+            {
+                var jobj = JObject.Parse(sl);
+                var docs = (JObject)jobj["documents"];
 
 
-            var slis = (from prop in docs.Properties()
-                       select new SourceLinkMap
-                       {
-                           Base = prop.Name,
-                           Location = prop.Value.Value<string>()
-                       })
-                .ToList();
+                var slis = (from prop in docs.Properties()
+                            select new SourceLinkMap
+                            {
+                                Base = prop.Name,
+                                Location = prop.Value.Value<string>()
+                            })
+                    .ToList();
 
-            return slis;
+                return slis;
+            }
+
+            return Array.Empty<SourceLinkMap>();
         }
 
 
