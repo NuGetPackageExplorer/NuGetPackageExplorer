@@ -13,18 +13,17 @@ namespace NuGetPe
 {
     public static class DiagnosticsClient
     {
-        static bool _initialized;
-
-        static Client _client;
+        private static bool _initialized;
+        private static Client _client;
 
 #if STORE
-      const string Channel = "store";
+        private const string Channel = "store";
 #elif NIGHTLY
-      const string Channel = "nightly";
+        private const string Channel = "nightly";
 #elif CHOCO
-      const string Channel = "chocolatey";
+        private const string Channel = "chocolatey";
 #else
-        const string Channel = "zip";
+        private const string Channel = "zip";
 #endif
 
 

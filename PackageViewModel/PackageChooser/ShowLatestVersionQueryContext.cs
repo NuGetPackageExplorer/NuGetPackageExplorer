@@ -17,7 +17,6 @@ namespace PackageExplorerViewModel
         private readonly int _pageSize;
         private PackageSearchResource _packageSearchResouce;
         private RawSearchResourceV3 _rawPackageSearchResouce;
-        private int _pageIndex;
         private int? _lastPageIndex;
         private int? _lastPageCount;
 
@@ -31,13 +30,13 @@ namespace PackageExplorerViewModel
 
         #region IQueryContext<T> Members
 
-        public int CurrentPage => _pageIndex;
+        public int CurrentPage { get; private set; }
 
-        public int BeginPackage => _pageIndex * _pageSize + (_lastPageIndex == 0 && _lastPageCount == 0 ? 0 : 1);
+        public int BeginPackage => CurrentPage * _pageSize + (_lastPageIndex == 0 && _lastPageCount == 0 ? 0 : 1);
 
-        public int EndPackage => _pageIndex * _pageSize + (IsLastPage ? _lastPageCount.Value : _pageSize);
+        public int EndPackage => CurrentPage * _pageSize + (IsLastPage ? _lastPageCount.Value : _pageSize);
 
-        public bool IsLastPage => _pageIndex == _lastPageIndex;
+        public bool IsLastPage => CurrentPage == _lastPageIndex;
 
         public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
         {
@@ -67,7 +66,7 @@ namespace PackageExplorerViewModel
                 }
                 if (_rawPackageSearchResouce != null)
                 {
-                    var json = await _rawPackageSearchResouce.Search(_searchText, _searchFilter, _pageIndex * _pageSize, _pageSize, NullLogger.Instance, token);
+                    var json = await _rawPackageSearchResouce.Search(_searchText, _searchFilter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
 
                     result = json.Select(s => s.FromJToken<PackageSearchMetadata>());
                 }
@@ -79,7 +78,7 @@ namespace PackageExplorerViewModel
                         _packageSearchResouce = await _sourceRepository.GetResourceAsync<PackageSearchResource>(token);
                     }
 
-                    result = await _packageSearchResouce.SearchAsync(_searchText, _searchFilter, _pageIndex * _pageSize, _pageSize, NullLogger.Instance, token);
+                    result = await _packageSearchResouce.SearchAsync(_searchText, _searchFilter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
                 }
             }
 
@@ -89,7 +88,7 @@ namespace PackageExplorerViewModel
 
             if (list.Count < _pageSize)
             {
-                _lastPageIndex = _pageIndex;
+                _lastPageIndex = CurrentPage;
                 _lastPageCount = list.Count;
             }
 
@@ -98,15 +97,15 @@ namespace PackageExplorerViewModel
 
         public bool MoveFirst()
         {
-            _pageIndex = 0;
+            CurrentPage = 0;
             return true;
         }
 
         public bool MoveNext()
         {
-            if (!_lastPageIndex.HasValue || _pageIndex < _lastPageIndex)
+            if (!_lastPageIndex.HasValue || CurrentPage < _lastPageIndex)
             {
-                _pageIndex++;
+                CurrentPage++;
                 return true;
             }
             return false;
@@ -114,9 +113,9 @@ namespace PackageExplorerViewModel
 
         public bool MovePrevious()
         {
-            if (_pageIndex > 0)
+            if (CurrentPage > 0)
             {
-                _pageIndex--;
+                CurrentPage--;
                 return true;
             }
             return false;

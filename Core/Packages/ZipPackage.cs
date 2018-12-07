@@ -15,10 +15,6 @@ namespace NuGetPe
 {
     public class ZipPackage : IDisposable, ISignaturePackage
     {
-        private const string AssemblyReferencesDir = "lib";
-        private const string ResourceAssemblyExtension = ".resources.dll";
-        private static readonly string[] AssemblyReferencesExtensions = new[] { ".dll", ".exe", ".winmd" };
-
         // paths to exclude
         private static readonly string[] ExcludePaths = new[] { "_rels/", "package/", "[Content_Types].xml", ".signature.p7s" };
 

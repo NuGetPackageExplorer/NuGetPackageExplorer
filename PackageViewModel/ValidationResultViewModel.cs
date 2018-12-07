@@ -10,11 +10,11 @@ namespace PackageExplorerViewModel
 {
     public sealed class ValidationResultViewModel : INotifyPropertyChanged
     {
-        private readonly VerifySignaturesResult verifySignaturesResult;
+        private readonly VerifySignaturesResult _verifySignaturesResult;
 
         public ValidationResultViewModel(VerifySignaturesResult verifySignaturesResult)
         {
-            this.verifySignaturesResult = verifySignaturesResult ?? throw new ArgumentNullException(nameof(verifySignaturesResult));
+            _verifySignaturesResult = verifySignaturesResult ?? throw new ArgumentNullException(nameof(verifySignaturesResult));
 
             Trust = verifySignaturesResult.Results.Select(r => r.Trust).Min();
 
@@ -27,8 +27,8 @@ namespace PackageExplorerViewModel
         }
 
 
-        public bool Valid => verifySignaturesResult.IsValid;
-        public bool Signed => verifySignaturesResult.IsSigned;
+        public bool Valid => _verifySignaturesResult.IsValid;
+        public bool Signed => _verifySignaturesResult.IsSigned;
 
 
         public IReadOnlyList<ILogMessage> ErrorIssues { get; }

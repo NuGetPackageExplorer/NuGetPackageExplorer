@@ -16,24 +16,16 @@ namespace NuGetPe
         // Maximum number of packages that can live in this cache.
         private const int MaxNumberOfPackages = 100;
         private const string NuGetCachePathEnvironmentVariable = "NuGetCachePath";
-        private static readonly MachineCache _default = new MachineCache();
-        private readonly string _cacheRoot;
 
         // Disable caching since we don't want to cache packages in memory
         private MachineCache()
         {
-            _cacheRoot = GetCachePath();
+            Source = GetCachePath();
         }
 
-        public static MachineCache Default
-        {
-            get { return _default; }
-        }
+        public static MachineCache Default { get; } = new MachineCache();
 
-        public string Source
-        {
-            get { return _cacheRoot; }
-        }
+        public string Source { get; }
 
         public ISignaturePackage FindPackage(string packageId, NuGetVersion version)
         {
@@ -115,7 +107,7 @@ namespace NuGetPe
 
         public bool Clear()
         {
-            var dirInfo = new DirectoryInfo(_cacheRoot);
+            var dirInfo = new DirectoryInfo(Source);
             if (dirInfo.Exists)
             {
                 ClearCache(dirInfo, threshold: 0);

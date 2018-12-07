@@ -13,15 +13,15 @@ namespace PackageExplorer
     /// </summary>
     public partial class AboutWindow : StandardDialog
     {
-    
+
 #if   STORE
-      const string Channel = "Store";
+        private const string Channel = "Store";
 #elif NIGHTLY
-      const string Channel = "Nightly";
+        private const string Channel = "Nightly";
 #elif CHOCO
-      const string Channel = "Chocolatey";
+        private const string Channel = "Chocolatey";
 #else
-      const string Channel = "Zip";
+        private const string Channel = "Zip";
 #endif
 
         public AboutWindow()

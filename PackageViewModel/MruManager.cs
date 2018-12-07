@@ -14,7 +14,6 @@ namespace PackageExplorerViewModel
     internal class MruManager : IMruManager
     {
         private const int MaxFile = 10;
-        private readonly ObservableCollection<MruItem> _files;
         private readonly ISettingsManager _settingsManager;
 
         [SuppressMessage(
@@ -26,7 +25,7 @@ namespace PackageExplorerViewModel
         {
             var savedFiles = settingsManager.GetMruFiles();
 
-            _files = new ObservableCollection<MruItem>();
+            Files = new ObservableCollection<MruItem>();
             for (var i = savedFiles.Count - 1; i >= 0; --i)
             {
                 var s = savedFiles[i];
@@ -42,10 +41,7 @@ namespace PackageExplorerViewModel
 
         #region IMruManager Members
 
-        public ObservableCollection<MruItem> Files
-        {
-            get { return _files; }
-        }
+        public ObservableCollection<MruItem> Files { get; }
 
         [SuppressMessage(
             "Microsoft.Globalization",
@@ -65,7 +61,7 @@ namespace PackageExplorerViewModel
 
         public void Clear()
         {
-            _files.Clear();
+            Files.Clear();
         }
 
         public void Dispose()
@@ -78,7 +74,7 @@ namespace PackageExplorerViewModel
         private void OnApplicationExit()
         {
             var sc = new List<string>();
-            foreach (var item in _files)
+            foreach (var item in Files)
             {
                 if (item != null)
                 {
@@ -96,12 +92,12 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException("mruItem");
             }
 
-            _files.Remove(mruItem);
-            _files.Insert(0, mruItem);
+            Files.Remove(mruItem);
+            Files.Insert(0, mruItem);
 
-            if (_files.Count > MaxFile)
+            if (Files.Count > MaxFile)
             {
-                _files.RemoveAt(_files.Count - 1);
+                Files.RemoveAt(Files.Count - 1);
             }
         }
 
