@@ -139,7 +139,12 @@ namespace PackageExplorer
 
         public void Dispose()
         {
-           _viewModel.Dispose();           
+            if(_viewModel != null)
+            {
+                _viewModel.PackageDownloadRequested -= OnPackageDownloadRequested;
+                _viewModel.Dispose();
+                _viewModel = null;
+            }           
         }
     }
 }
