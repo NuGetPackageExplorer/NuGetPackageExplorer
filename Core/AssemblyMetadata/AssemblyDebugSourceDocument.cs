@@ -12,6 +12,7 @@ namespace NuGetPe.AssemblyMetadata
         private static readonly Guid VisualBasic = new Guid("3a12d0b8-c26c-11d0-b442-00a0244a1dd2");
         private static readonly Guid FSharp = new Guid("ab4f38c9-b6e6-43ba-be3b-58080b2ccce3");
 
+        private static readonly Guid Md5 = new Guid("406ea660-64cf-4c82-b6f0-42d48172a799");
         private static readonly Guid Sha1 = new Guid("ff1816ec-aa5e-4d10-87f7-6f4963833460");
         private static readonly Guid Sha256 = new Guid("8829d00f-11b8-4213-878b-770e8597ac16");
 
@@ -40,6 +41,7 @@ namespace NuGetPe.AssemblyMetadata
 
         public HashAlgorithmName HashAlgorithmNameFromGuid(Guid guid)
         {
+            if (guid == Md5) return HashAlgorithmName.MD5;
             if (guid == Sha1) return HashAlgorithmName.SHA1;
             if (guid == Sha256) return HashAlgorithmName.SHA256;
 
