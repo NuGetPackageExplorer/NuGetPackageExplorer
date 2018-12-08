@@ -23,8 +23,6 @@ namespace NuGetPe
             _config = XmlUtility.GetOrCreateDocument("configuration", _fileSystem, _configLocation);
         }
 
-        #region ISettings Members
-
         public string GetValue(string section, string key)
         {
             if (string.IsNullOrEmpty(section))
@@ -158,8 +156,6 @@ namespace NuGetPe
             elementToDelete.Remove();
             Save(_config);
         }
-
-        #endregion
 
         private void Save(XDocument document)
         {

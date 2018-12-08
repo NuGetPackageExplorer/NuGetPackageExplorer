@@ -16,9 +16,8 @@ namespace NuGetPe
                         return XDocument.Load(configSream);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    DiagnosticsClient.Notify(e);
                     return CreateDocument(rootName, fileSystem, path);
                 }
             }
