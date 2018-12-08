@@ -50,7 +50,12 @@ namespace PackageExplorer
             }
             catch (Exception e)
             {
-                DiagnosticsClient.Notify(e);
+                // Don't send telemetry error for bad package
+                if(!(e is InvalidDataException))
+                {
+                    DiagnosticsClient.Notify(e);
+                }
+                
                 UIServices.Show(e.Message, MessageLevel.Error);
                 return null;
             }
