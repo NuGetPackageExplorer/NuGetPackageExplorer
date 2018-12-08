@@ -209,7 +209,10 @@ namespace PackageExplorerViewModel
             }
             catch (Exception exception)
             {
-                DiagnosticsClient.Notify(exception);
+                if (!(exception is FatalProtocolException))
+                {
+                    DiagnosticsClient.Notify(exception);
+                }
                 ErrorMessage = exception.GetBaseException().Message;
             }
             finally
