@@ -261,7 +261,7 @@ namespace PackageExplorer
                 }
                 return true;
             }
-            catch (Exception exception) when (exception is ReflectionTypeLoadException || exception is FileNotFoundException)
+            catch (Exception exception) when (exception is ReflectionTypeLoadException || exception is FileNotFoundException || exception is TypeLoadException)
             {
                 _pluginToCatalog.Remove(pluginInfo);
 
