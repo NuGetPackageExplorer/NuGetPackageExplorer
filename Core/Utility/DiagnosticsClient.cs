@@ -53,6 +53,9 @@ namespace NuGetPe
                 config.ReleaseStage = "development";
             }
 
+            var infoVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            var corelibinfoVersion = typeof(string).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+
             _client = new Client(config);
 
             _client.SessionTracking.CreateSession();
@@ -66,6 +69,13 @@ namespace NuGetPe
             catch
             {
             }
+
+            _client.BeforeNotify(cb =>
+            {
+                cb.Event.Device.Remove("hostname");
+                cb.Event.Device.AddToPayload("presentationFramework", infoVersion);
+                cb.Event.Device.AddToPayload("coreClr", corelibinfoVersion);                
+            });
         }
 
         public static void Notify(Exception exception, Severity severity = Severity.Error)
