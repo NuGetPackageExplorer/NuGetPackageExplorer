@@ -27,6 +27,8 @@ namespace PackageExplorerViewModel.Utilities
 
         public string FileName { get; }
 
+        public long Length => new FileInfo(FileName).Length;
+
         private bool _disposed;
 
         public void Dispose()

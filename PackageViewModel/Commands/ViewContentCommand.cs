@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Input;
 using AuthenticodeExaminer;
 using NuGetPackageExplorer.Types;
@@ -120,7 +121,7 @@ namespace PackageExplorerViewModel
             }
 
             // if plugins fail to read this file, fall back to the default viewer
-            long size = -1;
+            var truncated = false;
             if (content == null)
             {
                 isBinary = FileHelper.IsBinaryFile(file.Name);
@@ -130,31 +131,22 @@ namespace PackageExplorerViewModel
                 }
                 else
                 {
-                    content = ReadFileContent(file, out size);
+                    content = ReadFileContent(file, out truncated);
                 }
             }
 
-            if (size == -1)
-            {
-                // This is inefficient but cn be cleaned up later
-                using (var str = file.GetStream())
-                using (var ms = new MemoryStream())
-                {
-                    str.CopyTo(ms);
-                    size = ms.Length;
-                }
-            }
-
-
+            long size = -1;
             IReadOnlyList<AuthenticodeSignature> sigs;
             SignatureCheckResult isValidSig;
             using (var str = file.GetStream())
             using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Name)))
-            {
+            {                
                 var extractor = new FileInspector(tempFile.FileName);
 
                 sigs = extractor.GetSignatures().ToList();
                 isValidSig = extractor.Validate();
+
+                size = tempFile.Length;
             }
             
             var fileInfo = new FileContentInfo(
@@ -163,6 +155,7 @@ namespace PackageExplorerViewModel
                 content,
                 !isBinary,
                 size,
+                truncated,
                 sigs,
                 isValidSig);
 
@@ -181,17 +174,30 @@ namespace PackageExplorerViewModel
         }
 
 
-        private static string ReadFileContent(PackageFile file, out long size)
+        private static string ReadFileContent(PackageFile file, out bool truncated)
         {
+            var buffer = new char[1024 * 32];
+            truncated = false;
             using (var stream = file.GetStream())
-            using (var ms = new MemoryStream())
-            using (var reader = new StreamReader(ms))
+            using (var reader = new StreamReader(stream))
             {
-                stream.CopyTo(ms);
-                size = ms.Length;
-                ms.Position = 0;
+                // Read 500 kb
+                const int maxBytes = 500 * 1024;
+                var sb = new StringBuilder();
 
-                return reader.ReadToEnd();
+                int bytesRead;
+
+                while((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    sb.Append(buffer, 0, bytesRead);
+                    if (sb.Length >= maxBytes)
+                    {
+                        truncated = true;
+                        break;
+                    }
+                }
+
+                return sb.ToString();
             }
         }
     }
