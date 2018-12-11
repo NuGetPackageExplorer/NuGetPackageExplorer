@@ -8,8 +8,6 @@ namespace PackageExplorerViewModel
 {
     internal class PackageMetadataFile : IEditablePackageFile
     {
-        private readonly string _filePath;
-        private readonly string _name;
         private readonly PackageViewModel _packageViewModel;
 
         public PackageMetadataFile(string name, string filePath, PackageViewModel packageViewModel)
@@ -18,29 +16,26 @@ namespace PackageExplorerViewModel
             Debug.Assert(filePath != null);
             Debug.Assert(packageViewModel != null);
 
-            _filePath = filePath;
-            _name = name;
+            OriginalPath = filePath;
+            EffectivePath = name;
             _packageViewModel = packageViewModel;
         }
 
-        public string OriginalPath
-        {
-            get { return _filePath; }
-        }
+        public string OriginalPath { get; }
 
         public string Name
         {
-            get { return _name; }
+            get { return EffectivePath; }
         }
 
         public string Path
         {
-            get { return _name; }
+            get { return EffectivePath; }
         }
 
         public Stream GetStream()
         {
-            return File.OpenRead(_filePath);
+            return File.OpenRead(OriginalPath);
         }
 
         public bool Save(string editedFilePath)
@@ -48,10 +43,7 @@ namespace PackageExplorerViewModel
             return _packageViewModel.SaveMetadataAfterEditSource(editedFilePath);
         }
 
-        public string EffectivePath
-        {
-            get { return _name; }
-        }
+        public string EffectivePath { get; }
 
         public FrameworkName TargetFramework
         {

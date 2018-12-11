@@ -12,7 +12,6 @@ namespace PackageExplorerViewModel
     [SuppressMessage("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")]
     public abstract class PackagePart : IComparable<PackagePart>, INotifyPropertyChanged, IDisposable
     {
-        private readonly PackageViewModel _viewModel;
         private int _hashCode;
         private bool _isSelected;
         private string _name;
@@ -27,17 +26,14 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException("name");
             }
 
-            _viewModel = viewModel ?? throw new ArgumentNullException("viewModel");
+            PackageViewModel = viewModel ?? throw new ArgumentNullException("viewModel");
             _parent = parent;
 
             OnNameChange(name);
             RecalculatePath();
         }
 
-        public PackageViewModel PackageViewModel
-        {
-            get { return _viewModel; }
-        }
+        public PackageViewModel PackageViewModel { get; }
 
         public PackageFolder Parent
         {

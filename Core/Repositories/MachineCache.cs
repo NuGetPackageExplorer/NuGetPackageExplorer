@@ -16,24 +16,20 @@ namespace NuGetPe
         // Maximum number of packages that can live in this cache.
         private const int MaxNumberOfPackages = 100;
         private const string NuGetCachePathEnvironmentVariable = "NuGetCachePath";
-        private static readonly MachineCache _default = new MachineCache();
-        private readonly string _cacheRoot;
 
         // Disable caching since we don't want to cache packages in memory
         private MachineCache()
         {
-            _cacheRoot = GetCachePath();
+            Source = new DirectoryInfo(GetCachePath());
+            if(!Source.Exists)
+            {
+                Source.Create();
+            }
         }
 
-        public static MachineCache Default
-        {
-            get { return _default; }
-        }
+        public static MachineCache Default { get; } = new MachineCache();
 
-        public string Source
-        {
-            get { return _cacheRoot; }
-        }
+        public DirectoryInfo Source { get; }
 
         public ISignaturePackage FindPackage(string packageId, NuGetVersion version)
         {
@@ -57,15 +53,8 @@ namespace NuGetPe
                 return;
             }
 
-            // create the cache directory if it doesn't exist
-            var cacheDirectory = new DirectoryInfo(Source);
-            if (!cacheDirectory.Exists)
-            {
-                cacheDirectory.Create();
-            }
-
             // don't want to blow up user's hard drive with too many packages
-            ClearCache(cacheDirectory, MaxNumberOfPackages);
+            ClearCache(MaxNumberOfPackages);
 
             // now copy the package to the cache
             var filePath = GetPackageFilePath(package.Id, package.Version);
@@ -79,12 +68,12 @@ namespace NuGetPe
             }
         }
 
-        private static void ClearCache(DirectoryInfo cacheDirectory, int threshold)
+        private void ClearCache(int threshold)
         {
             // If we exceed the package count then clear the cache
-            var packageFiles = cacheDirectory.GetFiles("*" + Constants.PackageExtension,
+            var packageFiles = Source.GetFiles("*" + Constants.PackageExtension,
                                                               SearchOption.TopDirectoryOnly)
-                                             .Concat(cacheDirectory.GetFiles("*" + Constants.SymbolPackageExtension,
+                                             .Concat(Source.GetFiles("*" + Constants.SymbolPackageExtension,
                                                                             SearchOption.TopDirectoryOnly))
                                              .ToList();
 
@@ -115,19 +104,13 @@ namespace NuGetPe
 
         public bool Clear()
         {
-            var dirInfo = new DirectoryInfo(_cacheRoot);
-            if (dirInfo.Exists)
-            {
-                ClearCache(dirInfo, threshold: 0);
-                return true;
-            }
-
-            return false;
+            ClearCache(threshold: 0);
+            return true;
         }
 
         private string GetPackageFilePath(string id, NuGetVersion version)
         {
-            return Path.Combine(Source, id + "." + version.ToNormalizedString() + Constants.PackageExtension);
+            return Path.Combine(Source.FullName, id + "." + version.ToNormalizedString() + Constants.PackageExtension);
         }
 
         /// <summary>

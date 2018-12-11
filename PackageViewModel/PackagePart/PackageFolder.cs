@@ -104,7 +104,7 @@ namespace PackageExplorerViewModel
                 if (Parent != null)
                 {
                     // only treat this folder as an empty folder if it's NOT the root folder.
-                    return new[] { new EmptyFolderFile(this.Path) };
+                    return new[] { new EmptyFolderFile(Path) };
                 }
                 else
                 {
@@ -222,7 +222,7 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            if (this.IsDescendantOf(childFolder))
+            if (IsDescendantOf(childFolder))
             {
                 return;
             }
@@ -302,7 +302,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            var newTargetPath = this.Path + "\\" + newFileName;
+            var newTargetPath = Path + "\\" + newFileName;
             var physicalFile = new DiskPackageFile(newTargetPath, filePath);
             var newFile = new PackageFile(physicalFile, newFileName, this);
 
@@ -341,7 +341,7 @@ namespace PackageExplorerViewModel
                     fileCopyPath = FileHelper.CreateTempFile(file.Name, originalFileStream);
                 }
 
-                var newTargetPath = this.Path + "\\" + file.Name;
+                var newTargetPath = Path + "\\" + file.Name;
                 var physicalFile = new DiskPackageFile(newTargetPath, fileCopyPath);
 
                 newFile = new PackageFile(physicalFile, file.Name, this);

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Linq;
 using NuGet.Packaging;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
@@ -14,7 +15,6 @@ namespace PackageExplorerViewModel
     internal class MruManager : IMruManager
     {
         private const int MaxFile = 10;
-        private readonly ObservableCollection<MruItem> _files;
         private readonly ISettingsManager _settingsManager;
 
         [SuppressMessage(
@@ -24,28 +24,38 @@ namespace PackageExplorerViewModel
         [ImportingConstructor]
         public MruManager(ISettingsManager settingsManager)
         {
-            var savedFiles = settingsManager.GetMruFiles();
-
-            _files = new ObservableCollection<MruItem>();
-            for (var i = savedFiles.Count - 1; i >= 0; --i)
-            {
-                var s = savedFiles[i];
-                var item = ConvertStringToMruItem(s);
-                if (item != null)
-                {
-                    AddFile(item);
-                }
-            }
+            Files = new ObservableCollection<MruItem>();
 
             _settingsManager = settingsManager;
-        }
 
-        #region IMruManager Members
-
-        public ObservableCollection<MruItem> Files
-        {
-            get { return _files; }
+            try
+            {
+                var savedFiles = settingsManager.GetMruFiles();                
+                for (var i = savedFiles.Count - 1; i >= 0; --i)
+                {
+                    var s = savedFiles[i];
+                    var item = ConvertStringToMruItem(s);
+                    if (item != null)
+                    {
+                        AddFile(item);
+                    }
+                }
+            }
+            catch // Corrupt setting
+            {
+                try
+                {
+                    // try to clear
+                    settingsManager.SetMruFiles(Enumerable.Empty<string>());
+                }
+                catch 
+                {
+                    // something else happened, not much we can do
+                }                
+            }            
         }
+        
+        public ObservableCollection<MruItem> Files { get; }
 
         [SuppressMessage(
             "Microsoft.Globalization",
@@ -65,20 +75,18 @@ namespace PackageExplorerViewModel
 
         public void Clear()
         {
-            _files.Clear();
+            Files.Clear();
         }
 
         public void Dispose()
         {
             OnApplicationExit();
-        }
-
-        #endregion
+        }        
 
         private void OnApplicationExit()
         {
             var sc = new List<string>();
-            foreach (var item in _files)
+            foreach (var item in Files)
             {
                 if (item != null)
                 {
@@ -96,12 +104,12 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException("mruItem");
             }
 
-            _files.Remove(mruItem);
-            _files.Insert(0, mruItem);
+            Files.Remove(mruItem);
+            Files.Insert(0, mruItem);
 
-            if (_files.Count > MaxFile)
+            if (Files.Count > MaxFile)
             {
-                _files.RemoveAt(_files.Count - 1);
+                Files.RemoveAt(Files.Count - 1);
             }
         }
 

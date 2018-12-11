@@ -6,11 +6,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+using Windows.Storage;
 
 namespace PackageExplorer
 {
@@ -20,7 +22,7 @@ namespace PackageExplorer
         private const string NuGetDirectoryName = "NuGet";
         private const string PluginsDirectoryName = "PackageExplorerPlugins";
         private const string DeleteMeExtension = ".deleteme";
-        private static string[] FrameworkFolderForAssemblies = new string[] {
+        private static readonly string[] _frameworkFolderForAssemblies = new string[] {
             "lib\\net40",
             "lib\\net45",
             "lib\\net451",
@@ -34,11 +36,47 @@ namespace PackageExplorer
         };
 
         // %localappdata%/NuGet/PackageExplorerPlugins
-        private static readonly string PluginsDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            NuGetDirectoryName,
-            PluginsDirectoryName
-            );
+        private static readonly string PluginsDirectory = GetPluginDirectory();
+
+
+
+        private static string GetPluginDirectory()
+        {
+            // Try getting it from the app model first
+            if (AppContainerUtility.IsInAppContainer)
+            {
+                try
+                {
+                    return GetCachePathFromLocalCache();
+                }
+                catch
+                {
+                    // Don't care here, not on Win7 or running in an app model context
+                }
+            }
+
+            return GetCachePath(Environment.GetFolderPath);
+        }
+
+        // Don't load these types inline
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        private static string GetCachePathFromLocalCache()
+        {
+            // Get the localized special folder for local app data
+            var local = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)).Name;
+            return GetCachePath(_ => Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, local));
+        }
+
+        private static string GetCachePath(Func<Environment.SpecialFolder, string> getFolderPath)
+        {
+            var localAppDataPath = getFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            if (string.IsNullOrEmpty(localAppDataPath))
+            {
+                return null;
+            }
+            return Path.Combine(localAppDataPath, "NuGet", PluginsDirectoryName);
+        }
+
 
         private AggregateCatalog _pluginCatalog;
         private Dictionary<PluginInfo, DirectoryCatalog> _pluginToCatalog;
@@ -95,7 +133,7 @@ namespace PackageExplorer
 
                         // copy assemblies
                         var numberOfFilesCopied =
-                            FrameworkFolderForAssemblies.Sum(folder => plugin.UnpackPackage(folder, targetPath));
+                            _frameworkFolderForAssemblies.Sum(folder => plugin.UnpackPackage(folder, targetPath));
 
                         if (numberOfFilesCopied == 0)
                         {
@@ -173,11 +211,11 @@ namespace PackageExplorer
                     var nugetDirectory = CreateChildDirectory(new DirectoryInfo(localAppData), NuGetDirectoryName);
                     CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
                 }
-                catch(UnauthorizedAccessException) // Some systems are throwing with this, not sure why but nothing we can do
+                catch (UnauthorizedAccessException) // Some systems are throwing with this, not sure why but nothing we can do
                 {
                     return;
                 }
-                
+
             }
 
             _plugins = new List<PluginInfo>(GetAllPlugins());
@@ -223,7 +261,7 @@ namespace PackageExplorer
                 }
                 return true;
             }
-            catch (Exception exception) when (exception is ReflectionTypeLoadException || exception is FileNotFoundException)
+            catch (Exception exception) when (exception is ReflectionTypeLoadException || exception is FileNotFoundException || exception is TypeLoadException)
             {
                 _pluginToCatalog.Remove(pluginInfo);
 

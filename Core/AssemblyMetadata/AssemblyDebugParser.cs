@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Text.Json;
 using Microsoft.DiaSymReader.Tools;
 using Newtonsoft.Json.Linq;
 
@@ -83,19 +84,32 @@ namespace NuGetPe.AssemblyMetadata
                        select Encoding.UTF8.GetString(bl))
                 .FirstOrDefault();
 
-            var jobj = JObject.Parse(sl);
-            var docs = (JObject)jobj["documents"];
+            if(sl != null)
+            {
+                try
+                {
+                    var jobj = JObject.Parse(sl);
+                    var docs = (JObject)jobj["documents"];
 
 
-            var slis = (from prop in docs.Properties()
-                       select new SourceLinkMap
-                       {
-                           Base = prop.Name,
-                           Location = prop.Value.Value<string>()
-                       })
-                .ToList();
+                    var slis = (from prop in docs.Properties()
+                                select new SourceLinkMap
+                                {
+                                    Base = prop.Name,
+                                    Location = prop.Value.Value<string>()
+                                })
+                        .ToList();
 
-            return slis;
+                    return slis;
+                }
+                catch(JsonReaderException jse)
+                {
+                    throw new InvalidDataException("SourceLink data could not be parsed", jse);
+                }
+                
+            }
+
+            return Array.Empty<SourceLinkMap>();
         }
 
 

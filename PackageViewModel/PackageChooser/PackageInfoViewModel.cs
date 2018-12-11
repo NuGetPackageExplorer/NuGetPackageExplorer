@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -209,7 +210,10 @@ namespace PackageExplorerViewModel
             }
             catch (Exception exception)
             {
-                DiagnosticsClient.Notify(exception);
+                if (!(exception is FatalProtocolException) && !(exception is IOException))
+                {
+                    DiagnosticsClient.Notify(exception);
+                }
                 ErrorMessage = exception.GetBaseException().Message;
             }
             finally

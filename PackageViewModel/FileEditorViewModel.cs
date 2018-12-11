@@ -8,11 +8,9 @@ namespace PackageExplorerViewModel
 {
     public class FileEditorViewModel : ViewModelBase
     {
-        private readonly ICommand _closeCommand;
         private readonly IEditablePackageFile _fileInEdit;
         private readonly string _filePath;
         private readonly PackageViewModel _packageViewModel;
-        private readonly ICommand _saveCommand;
         private bool _hasEdit;
         private bool _hasSaved;
 
@@ -27,8 +25,8 @@ namespace PackageExplorerViewModel
             // Note: has to preserve the file name here so that the new file "appears" to be the same as old file
             _filePath = fileInEdit.OriginalPath ?? Path.Combine(FileHelper.GetTempFilePath(), fileInEdit.Name);
 
-            _closeCommand = new RelayCommand<IFileEditorService>(CloseExecute);
-            _saveCommand = new RelayCommand<IFileEditorService>(SaveExecute, CanSaveExecute);
+            CloseCommand = new RelayCommand<IFileEditorService>(CloseExecute);
+            SaveCommand = new RelayCommand<IFileEditorService>(SaveExecute, CanSaveExecute);
         }
 
         public IPackageFile FileInEdit
@@ -56,10 +54,7 @@ namespace PackageExplorerViewModel
 
         #region CloseCommand
 
-        public ICommand CloseCommand
-        {
-            get { return _closeCommand; }
-        }
+        public ICommand CloseCommand { get; }
 
         private void CloseExecute(IFileEditorService editorService)
         {
@@ -91,10 +86,7 @@ namespace PackageExplorerViewModel
 
         #region SaveCommand
 
-        public ICommand SaveCommand
-        {
-            get { return _saveCommand; }
-        }
+        public ICommand SaveCommand { get; }
 
         private bool CanSaveExecute(IFileEditorService obj)
         {

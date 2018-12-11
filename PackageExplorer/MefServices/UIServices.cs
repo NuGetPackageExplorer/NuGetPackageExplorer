@@ -141,12 +141,24 @@ namespace PackageExplorer
                     throw new ArgumentOutOfRangeException("messageLevel");
             }
 
-            MessageBox.Show(
+            void ShowDialog()
+            {
+                MessageBox.Show(
                 Window.Value,
                 message,
                 Resources.Dialog_Title,
                 MessageBoxButton.OK,
                 image);
+            }
+
+            if (!Window.Value.Dispatcher.CheckAccess())
+            {
+                Window.Value.Dispatcher.Invoke(ShowDialog);
+            }
+            else
+            {
+                ShowDialog();
+            }
         }
 
         public bool OpenRenameDialog(string currentName, string description, out string newName)
@@ -472,7 +484,7 @@ namespace PackageExplorer
                 {
                     Show(e.Message, MessageLevel.Error);
                 }
-            
+
                 networkCredential = null;
                 return false;
             }

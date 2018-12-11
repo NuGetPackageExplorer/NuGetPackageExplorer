@@ -16,18 +16,13 @@ namespace PackageExplorerViewModel
 {
     public sealed class PackageViewModel : ViewModelBase, IDisposable
     {
-        #region private fields
 
-        private readonly IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> _contentViewerMetadata;
+        #region private fields
         private readonly IPackageEditorService _editorService;
         private readonly IMruManager _mruManager;
         private readonly IPackage _package;
-        private readonly ObservableCollection<PackageIssue> _packageIssues = new ObservableCollection<PackageIssue>();
         private EditablePackageMetadata _packageMetadata;
-        private readonly PackageFolder _packageRoot;
         private readonly IList<Lazy<IPackageRule>> _packageRules;
-        private readonly ISettingsManager _settingsManager;
-        private readonly IUIServices _uiServices;
         private readonly CredentialPublishProvider _credentialPublishProvider;
 
         private ICommand _addContentFileCommand;
@@ -76,40 +71,31 @@ namespace PackageExplorerViewModel
             IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata,
             IList<Lazy<IPackageRule>> packageRules)
         {
-            _settingsManager = settingsManager ?? throw new ArgumentNullException(nameof(settingsManager));
+            SettingsManager = settingsManager ?? throw new ArgumentNullException(nameof(settingsManager));
             _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
-            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
+            UIServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
             _mruManager = mruManager ?? throw new ArgumentNullException(nameof(mruManager));
             _credentialPublishProvider = credentialPublishProvider ?? throw new ArgumentNullException(nameof(credentialPublishProvider));
             _package = package ?? throw new ArgumentNullException(nameof(package));
-            _contentViewerMetadata = contentViewerMetadata;
+            ContentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
-            _packageMetadata = new EditablePackageMetadata(_package, _uiServices);
+            _packageMetadata = new EditablePackageMetadata(_package, UIServices);
 
             PackageSource = source;
 
             _isSigned = _packageMetadata.IsSigned;
 
-            _packageRoot = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
+            RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
         }
 
 
 
-        internal IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata
-        {
-            get { return _contentViewerMetadata; }
-        }
+        internal IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata { get; }
 
-        internal IUIServices UIServices
-        {
-            get { return _uiServices; }
-        }
+        internal IUIServices UIServices { get; }
 
-        internal ISettingsManager SettingsManager
-        {
-            get { return _settingsManager; }
-        }
+        internal ISettingsManager SettingsManager { get; }
 
         public bool IsInEditMetadataMode
         {
@@ -223,7 +209,7 @@ namespace PackageExplorerViewModel
 
         public ICollection<PackagePart> PackageParts
         {
-            get { return _packageRoot.Children; }
+            get { return RootFolder.Children; }
         }
 
         public object SelectedItem
@@ -296,15 +282,9 @@ namespace PackageExplorerViewModel
 
         public bool HasFileChangedExternally { get; private set; }
 
-        public ObservableCollection<PackageIssue> PackageIssues
-        {
-            get { return _packageIssues; }
-        }
+        public ObservableCollection<PackageIssue> PackageIssues { get; } = new ObservableCollection<PackageIssue>();
 
-        public PackageFolder RootFolder
-        {
-            get { return _packageRoot; }
-        }
+        public PackageFolder RootFolder { get; }
 
         #region IDisposable Members
 
@@ -776,15 +756,15 @@ namespace PackageExplorerViewModel
             }
 
             using (var mruSourceManager = new MruPackageSourceManager(
-                new PublishSourceSettings(_settingsManager)))
+                new PublishSourceSettings(SettingsManager)))
             {
                 var publishPackageViewModel = new PublishPackageViewModel(
                     mruSourceManager,
-                    _settingsManager,
-                    _uiServices,
+                    SettingsManager,
+                    UIServices,
                     _credentialPublishProvider,
                     this);
-                _uiServices.OpenPublishDialog(publishPackageViewModel);
+                UIServices.OpenPublishDialog(publishPackageViewModel);
             }
         }
 
@@ -815,7 +795,7 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void ExportExecute()
         {
-            if (_uiServices.OpenFolderDialog("Choose a folder to export package to:", _folderPath, out var rootPath))
+            if (UIServices.OpenFolderDialog("Choose a folder to export package to:", _folderPath, out var rootPath))
             {
                 try
                 {
@@ -824,7 +804,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex)
                 {
-                    if (!(ex is IOException))
+                    if (!(ex is IOException) && !(ex is ArgumentException) && !(ex is UnauthorizedAccessException))
                     {
                         DiagnosticsClient.Notify(ex);
                     }
@@ -1182,8 +1162,8 @@ namespace PackageExplorerViewModel
 
         private void SetPackageIssues(IEnumerable<PackageIssue> issues)
         {
-            _packageIssues.Clear();
-            _packageIssues.AddRange(issues);
+            PackageIssues.Clear();
+            PackageIssues.AddRange(issues);
         }
 
         public void ShowFile(FileContentInfo fileInfo)
@@ -1195,7 +1175,7 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         internal IEnumerable<IPackageFile> GetFiles()
         {
-            return _packageRoot.GetFiles();
+            return RootFolder.GetFiles();
         }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
@@ -1516,7 +1496,7 @@ namespace PackageExplorerViewModel
                     using (var str = ManifestUtility.ReadManifest(metadataFileStream))
                     {
                         var manifest = Manifest.ReadFrom(str, true);
-                        var newMetadata = new EditablePackageMetadata(manifest.Metadata, _uiServices);
+                        var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices);
                         PackageMetadata = newMetadata;
 
                         return true;

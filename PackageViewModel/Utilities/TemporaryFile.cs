@@ -26,14 +26,16 @@ namespace PackageExplorerViewModel.Utilities
         }
 
         public string FileName { get; }
-        
-        bool disposed;
+
+        public long Length => new FileInfo(FileName).Length;
+
+        private bool _disposed;
 
         public void Dispose()
         {
-            if (!disposed)
+            if (!_disposed)
             {
-                disposed = true;
+                _disposed = true;
                 try
                 {
                     File.Delete(FileName);

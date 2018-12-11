@@ -26,29 +26,44 @@ namespace PackageExplorer
             Stream peStream = null;
             try
             {
-                if (pe != null)
+                if (pe != null) // we have a matching file
                 {
                     peStream = StreamUtility.MakeSeekable(pe.GetStream(), true);
                 }
 
-                using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
+
+                // This might throw an exception because we don't know if it's a full PDB or portable
+                // Try anyway in case it succeeds as a ppdb
+                try
                 {
-                    data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));
+                    using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
+                    {
+                        data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));
+                    }
+
+                    return new ScrollViewer
+                    {
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        Content = new Controls.PdbFileViewer
+                        {
+                            DataContext = data
+                        }
+                    };
+                }
+                catch (ArgumentNullException)
+                {
+
                 }
             }
             finally
             {
                 peStream?.Dispose();
             }
-            
-            return new ScrollViewer
+                       
+            return new TextBlock()
             {
-                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                Content = new Controls.PdbFileViewer
-                {
-                    DataContext = data
-                }
+                Text = "Full PDB files rquired the EXE or DLL to be alongside."
             };
 
         }
