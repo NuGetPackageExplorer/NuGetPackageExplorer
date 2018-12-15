@@ -130,7 +130,7 @@ jobs:
       # Chocolatey              
       $ver = .\nbgv get-version -f json | ConvertFrom-Json
 
-      & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $($ver.SemVer1) --OutputDirectory $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
+      & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $($ver.ChocolateyPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
     displayName: Create Choco package
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Choco'))
 
