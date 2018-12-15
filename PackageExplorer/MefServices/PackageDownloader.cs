@@ -116,11 +116,13 @@ namespace PackageExplorer
                 t.Wait(cts.Token);
                 tcs.TrySetResult(t.Result);
             };
+            progressDialog.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs args) =>
+            {
+                MainWindow.Value.Activate();
+            };
 
             progressDialog.ShowDialog(MainWindow.Value);
             timer.Start();
-
-            MainWindow.Value.Activate();
 
             async Task<string> DoWorkAsync()
             {
@@ -171,7 +173,6 @@ namespace PackageExplorer
                         progressDialog.Dispose();
                         progressDialog = null;
                     }
-
                 }
             }
             
