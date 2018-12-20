@@ -150,9 +150,10 @@ namespace PackageExplorer
         {
             IPackage package = null;
 
-            var tempFile = Path.GetTempFileName();
+            string tempFile = null;
             try
             {
+                tempFile = Path.GetTempFileName();
                 File.Copy(packagePath, tempFile, overwrite: true);
 
                 var extension = Path.GetExtension(packagePath);
@@ -185,7 +186,7 @@ namespace PackageExplorer
             }
             finally
             {
-                if (package == null && File.Exists(tempFile))
+                if (package == null && tempFile != null && File.Exists(tempFile))
                 {
                     try
                     {
