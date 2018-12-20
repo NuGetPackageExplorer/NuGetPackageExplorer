@@ -4,8 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
-using System.Text.Json;
 using Microsoft.DiaSymReader.Tools;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace NuGetPe.AssemblyMetadata
@@ -88,10 +88,29 @@ namespace NuGetPe.AssemblyMetadata
             {
                 try
                 {
-                    var jobj = JObject.Parse(sl);
+                    /* Some tools, like GitLink generate incorrectly escaped JSON:
+
+                    {
+                    "documents": {
+                        "C:\projects\cefsharp\*": "https://raw.github.com/CefSharp/CefSharp/4f88ad11416e93dde4b52216800efd42ba3b9c8a/*"
+                      }
+                    }
+
+                    Catch the exception and try to fix the key
+                    */
+                    JObject jobj = null;
+                    try
+                    {
+                        jobj = JObject.Parse(sl);
+                    }
+                    catch(JsonReaderException e) when (e.Path == "documents")
+                    {
+                        sl = sl.Replace(@"\", @"\\");
+                        jobj = JObject.Parse(sl);
+                    }
+
                     var docs = (JObject)jobj["documents"];
-
-
+                                       
                     var slis = (from prop in docs.Properties()
                                 select new SourceLinkMap
                                 {
