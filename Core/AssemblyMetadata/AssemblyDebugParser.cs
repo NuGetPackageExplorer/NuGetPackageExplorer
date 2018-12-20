@@ -114,7 +114,7 @@ namespace NuGetPe.AssemblyMetadata
                     var slis = (from prop in docs.Properties()
                                 select new SourceLinkMap
                                 {
-                                    Base = prop.Name,
+                                    Base = prop.Name.Replace(@"\", @"/"), // use forward slashes for the url,
                                     Location = prop.Value.Value<string>()
                                 })
                         .ToList();
@@ -138,7 +138,7 @@ namespace NuGetPe.AssemblyMetadata
                         let document = _reader.GetDocument(docHandle)
                         select new AssemblyDebugSourceDocument
                         (
-                            _reader.GetString(document.Name),
+                            _reader.GetString(document.Name).Replace(@"\", @"/"), // use forward slashes for the url
                             _reader.GetBlobBytes(document.Hash),
                             _reader.GetGuid(document.Language),
                             _reader.GetGuid(document.HashAlgorithm)
