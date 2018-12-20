@@ -111,6 +111,11 @@ namespace PackageExplorer
                 throw new ArgumentNullException("plugin");
             }
 
+            if(PluginsDirectory == null)
+            {
+                return null;
+            }
+
             try
             {
                 var pluginInfo = new PluginInfo(plugin.Id, plugin.Version);
@@ -170,6 +175,11 @@ namespace PackageExplorer
                 throw new ArgumentNullException("plugin");
             }
 
+            if(PluginsDirectory == null)
+            {
+                return false;
+            }
+
             var targetPath = GetTargetPath(plugin);
             if (Directory.Exists(targetPath))
             {
@@ -196,7 +206,7 @@ namespace PackageExplorer
 
         private void EnsurePluginCatalog(AggregateCatalog mainCatalog)
         {
-            if (_pluginCatalog != null)
+            if (_pluginCatalog != null || PluginsDirectory == null)
             {
                 return;
             }
@@ -337,6 +347,11 @@ namespace PackageExplorer
         {
             try
             {
+                if(PluginsDirectory == null)
+                {
+                    return;
+                }
+
                 var pluginDirectoryInfo = new DirectoryInfo(PluginsDirectory);
                 if (pluginDirectoryInfo.Exists)
                 {

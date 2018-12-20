@@ -14,8 +14,16 @@ namespace NuGetPe
             Path = path;
 
             FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out var effectivePath);
-            TargetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
             EffectivePath = effectivePath;
+
+            try
+            {
+                TargetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
+            }
+            catch(ArgumentException) // could be an invalid framework/version
+            {
+
+            }
         }
 
         public string Path
