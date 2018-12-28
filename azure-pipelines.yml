@@ -8,8 +8,7 @@ pr:
 
 jobs:
 - job: Build
-  pool:
-    vmImage: vs2019-private
+  pool: vs2019-private
   strategy:    
     matrix:
       Config_Release:
