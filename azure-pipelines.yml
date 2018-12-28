@@ -5,11 +5,11 @@ trigger:
 pr:
 - master
 - rel/*
- 
+
 jobs:
 - job: Build
   pool:
-    vmImage: vs2017-win2016
+    vmImage: vs2019-private
   strategy:    
     matrix:
       Config_Release:
@@ -24,6 +24,8 @@ jobs:
       Config_Choco:
         BuildConfiguration: Choco
         BuildOutputDirectory: Choco
+  workspace:
+    clean: all
 
   steps:
   - task: DotNetCoreInstaller@0
