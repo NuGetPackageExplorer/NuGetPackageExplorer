@@ -90,6 +90,7 @@ jobs:
       msbuildArguments: /restore
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
+      msbuildVersion: 16.0
 
   - task: MSBuild@1
     displayName: Build Nightly Package
@@ -98,6 +99,7 @@ jobs:
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\"
       configuration: Nightly
       maximumCpuCount: true
+      msbuildVersion: 16.0
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
 
   - task: MSBuild@1
@@ -107,6 +109,7 @@ jobs:
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:UapAppxPackageBuildMode=StoreUpload
       configuration: Store
       maximumCpuCount: true
+      msbuildVersion: 16.0
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
   
   - task: MSBuild@1
@@ -116,6 +119,7 @@ jobs:
       msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
+      msbuildVersion: 16.0
     condition: and(succeeded(), or(eq(variables['BuildConfiguration'], 'Release'), eq(variables['BuildConfiguration'], 'Choco')))
 
   - task: MSBuild@1
@@ -125,6 +129,7 @@ jobs:
       msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\NuGet
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
+      msbuildVersion: 16.0
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - powershell: |
