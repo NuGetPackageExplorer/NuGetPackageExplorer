@@ -8,6 +8,7 @@ using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+using OSVersionHelper;
 using PackageExplorer.Properties;
 using Windows.Storage;
 
@@ -29,7 +30,7 @@ namespace PackageExplorer
         {
             object value;
 
-            if (AppContainerUtility.IsInAppContainer)
+            if (WindowsVersionHelper.IsRunningInAppContainer)
             {
                 value = GetValueFromLocalSettings<T>(name);
             }
@@ -68,7 +69,7 @@ namespace PackageExplorer
         {
             name = name ?? propertyName;
 
-            if (AppContainerUtility.IsInAppContainer)
+            if (WindowsVersionHelper.IsRunningInAppContainer)
             {
                 value = SetValueInLocalSettings(value, name);
             }

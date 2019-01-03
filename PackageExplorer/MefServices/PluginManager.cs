@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+using OSVersionHelper;
 using Windows.Storage;
 
 namespace PackageExplorer
@@ -43,7 +44,7 @@ namespace PackageExplorer
         private static string GetPluginDirectory()
         {
             // Try getting it from the app model first
-            if (AppContainerUtility.IsInAppContainer)
+            if (WindowsVersionHelper.IsRunningInAppContainer)
             {
                 try
                 {

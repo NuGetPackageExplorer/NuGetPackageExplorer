@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using Windows.Storage;
 using NuGet.Versioning;
+using OSVersionHelper;
 
 namespace NuGetPe
 {
@@ -120,7 +121,7 @@ namespace NuGetPe
         private static string GetCachePath()
         {
             // Try getting it from the app model first
-            if (AppContainerUtility.IsInAppContainer)
+            if (WindowsVersionHelper.IsRunningInAppContainer)
             {
                 try
                 {
