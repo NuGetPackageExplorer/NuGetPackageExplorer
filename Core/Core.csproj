@@ -16,7 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />
     <PackageReference Include="Bugsnag" Version="2.2.0" />
-    <PackageReference Include="OSVersionHelper" Version="1.0.6" />
+    <PackageReference Include="OSVersionHelper" Version="1.0.8" />
     <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />
     <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta1-63314-01" />
     <Reference Include="Windows" />

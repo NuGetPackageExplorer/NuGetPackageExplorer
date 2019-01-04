@@ -30,7 +30,7 @@ namespace PackageExplorer
         {
             object value;
 
-            if (WindowsVersionHelper.IsRunningInAppContainer)
+            if (WindowsVersionHelper.HasPackageIdentity)
             {
                 value = GetValueFromLocalSettings<T>(name);
             }
@@ -69,7 +69,7 @@ namespace PackageExplorer
         {
             name = name ?? propertyName;
 
-            if (WindowsVersionHelper.IsRunningInAppContainer)
+            if (WindowsVersionHelper.HasPackageIdentity)
             {
                 value = SetValueInLocalSettings(value, name);
             }

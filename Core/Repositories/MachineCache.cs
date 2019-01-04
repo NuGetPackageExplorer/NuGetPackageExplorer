@@ -121,7 +121,7 @@ namespace NuGetPe
         private static string GetCachePath()
         {
             // Try getting it from the app model first
-            if (WindowsVersionHelper.IsRunningInAppContainer)
+            if (WindowsVersionHelper.HasPackageIdentity)
             {
                 try
                 {

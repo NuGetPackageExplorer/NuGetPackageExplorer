@@ -44,7 +44,7 @@ namespace PackageExplorer
         private static string GetPluginDirectory()
         {
             // Try getting it from the app model first
-            if (WindowsVersionHelper.IsRunningInAppContainer)
+            if (WindowsVersionHelper.HasPackageIdentity)
             {
                 try
                 {
