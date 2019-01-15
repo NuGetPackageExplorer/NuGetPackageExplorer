@@ -41,6 +41,11 @@
                             <Setter Property="VerticalAlignment" Value="Top" />
                             <Setter Property="TextWrapping" Value="Wrap" />
                         </Style>
+                        <Style TargetType="{x:Type TextBox}" BasedOn="{StaticResource SelectableTextBlockLikeStyle}">
+                            <Setter Property="Margin" Value="5" />
+                            <Setter Property="VerticalAlignment" Value="Top" />
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                        </Style>
                     </Grid.Resources>
                     <Grid.RowDefinitions>
                         <RowDefinition/>
@@ -58,7 +63,7 @@
 
                     <!-- Version -->
                     <Label Grid.Row="0" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailVersion}" />
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding SelectedPackage.Version}" />
+                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedPackage.Version, Mode=OneWay}" />
 
                     <!-- Authors -->
                     <Label Grid.Row="1" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailAuthors}" />
