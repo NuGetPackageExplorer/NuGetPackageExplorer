@@ -71,36 +71,43 @@ namespace NuGetPe
 
         private void ClearCache(int threshold)
         {
-            // If we exceed the package count then clear the cache
-            var packageFiles = Source.GetFiles("*" + Constants.PackageExtension,
-                                                              SearchOption.TopDirectoryOnly)
-                                             .Concat(Source.GetFiles("*" + Constants.SymbolPackageExtension,
-                                                                            SearchOption.TopDirectoryOnly))
-                                             .ToList();
-
-            var totalFileCount = packageFiles.Count;
-            if (totalFileCount >= threshold)
+            try
             {
-                foreach (var packageFile in packageFiles)
+                // If we exceed the package count then clear the cache
+                var packageFiles = Source.GetFiles("*" + Constants.PackageExtension,
+                                                   SearchOption.TopDirectoryOnly)
+                                         .Concat(Source.GetFiles("*" + Constants.SymbolPackageExtension,
+                                                                 SearchOption.TopDirectoryOnly))
+                                         .ToList();
+
+                var totalFileCount = packageFiles.Count;
+                if (totalFileCount >= threshold)
                 {
-                    try
+                    foreach (var packageFile in packageFiles)
                     {
-                        if (packageFile.Exists)
+                        try
                         {
-                            packageFile.Delete();
+                            if (packageFile.Exists)
+                            {
+                                packageFile.Delete();
+                            }
                         }
-                    }
-                    catch (IOException)
-                    {
-                    }
-                    catch (SecurityException)
-                    {
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
+                        catch (IOException)
+                        {
+                        }
+                        catch (SecurityException)
+                        {
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                        }
                     }
                 }
             }
+            catch (IOException)
+            {
+            }
+            
         }
 
         public bool Clear()
