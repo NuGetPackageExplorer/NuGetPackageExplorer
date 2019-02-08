@@ -1,4 +1,4 @@
-﻿VMusing System.Collections.Generic;
+using System.Collections.Generic;
 using AuthenticodeExaminer;
 using PackageExplorerViewModel;
 
