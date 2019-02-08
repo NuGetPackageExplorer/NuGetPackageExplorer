@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <AssetTargetFallback>net472</AssetTargetFallback>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
     <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
@@ -10,8 +11,8 @@
   
   <ItemGroup>
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
-    <PackageReference Include="NuGet.Credentials" Version="5.0.0-xprivate.52646" />
-    <PackageReference Include="NuGet.PackageManagement" Version="5.0.0-xprivate.52646" />
+    <PackageReference Include="NuGet.Credentials" Version="5.0.0-xprivate.60002" />
+    <PackageReference Include="NuGet.PackageManagement" Version="5.0.0-xprivate.60002" />
     <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview.19073.11" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
