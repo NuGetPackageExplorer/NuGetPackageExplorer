@@ -60,7 +60,7 @@
                          Margin="0,0,0,0" 
                          KeyDown="SearchBox_KeyDown" 
                          IsEnabled="{Binding IsEditable}" 
-                         Text="{Binding CurrentTypingSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                         Text="{Binding CurrentTypingSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=800}" 
                          VerticalAlignment="Center"/>
 
                 <!-- Search Button -->
