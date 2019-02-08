@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Input;
 using NuGet.Packaging;
@@ -9,18 +10,20 @@ namespace PackageExplorerViewModel
     public class FileEditorViewModel : ViewModelBase
     {
         private readonly IEditablePackageFile _fileInEdit;
+        private readonly IUIServices _uiServices;
         private readonly string _filePath;
         private readonly PackageViewModel _packageViewModel;
         private bool _hasEdit;
         private bool _hasSaved;
 
-        internal FileEditorViewModel(PackageViewModel packageViewModel, IEditablePackageFile fileInEdit)
+        internal FileEditorViewModel(PackageViewModel packageViewModel, IEditablePackageFile fileInEdit, IUIServices uiServices)
         {
             Debug.Assert(packageViewModel != null);
             Debug.Assert(fileInEdit != null);
 
             _packageViewModel = packageViewModel;
             _fileInEdit = fileInEdit;
+            _uiServices = uiServices;
 
             // Note: has to preserve the file name here so that the new file "appears" to be the same as old file
             _filePath = fileInEdit.OriginalPath ?? Path.Combine(FileHelper.GetTempFilePath(), fileInEdit.Name);
@@ -52,7 +55,6 @@ namespace PackageExplorerViewModel
             get { return _packageViewModel.IsSigned; }
         }
 
-        #region CloseCommand
 
         public ICommand CloseCommand { get; }
 
@@ -81,11 +83,7 @@ namespace PackageExplorerViewModel
                 _packageViewModel.CloseEditFileMode();
             }
         }
-
-        #endregion
-
-        #region SaveCommand
-
+        
         public ICommand SaveCommand { get; }
 
         private bool CanSaveExecute(IFileEditorService obj)
@@ -105,12 +103,18 @@ namespace PackageExplorerViewModel
             _hasSaved = true;
         }
 
-        #endregion
-
         public void SaveOnExit(IFileEditorService editorService)
         {
-            SaveExecute(editorService);
-            PersitChanges();
+            try
+            {
+                SaveExecute(editorService);
+                PersitChanges();
+            }
+            catch (Exception e)
+            {
+                _uiServices.Show(e.Message, MessageLevel.Error);
+            }
+            
         }
 
         private bool PersitChanges()
