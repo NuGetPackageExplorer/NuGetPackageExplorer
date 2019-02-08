@@ -193,6 +193,7 @@ namespace PackageExplorer
             };
 
         private readonly ISettingsManager _settings;
+        private readonly IUIServices _messageBoxServices;
 
         private double _analysisPaneWidth = 250; // default width for package analysis pane
         private TreeViewItem _dragItem;
@@ -204,6 +205,7 @@ namespace PackageExplorer
             InitializeComponent();
 
             _settings = settings;
+            _messageBoxServices = messageBoxServices;
 
             PackageMetadataEditor.UIServices = messageBoxServices;
             PackageMetadataEditor.PackageChooser = packageChooser;
@@ -494,10 +496,19 @@ namespace PackageExplorer
                 folder = treeView.SelectedItem as PackageFolder;
             }
 
-            if (HandleDataObject(folder, Clipboard.GetDataObject(), true))
+            try
             {
-                e.Handled = true;
+                if (HandleDataObject(folder, Clipboard.GetDataObject(), true))
+                {
+                    e.Handled = true;
+                }
             }
+            catch(Exception ex)
+            {
+                // Suppress any COM errors coming from the paste
+                _messageBoxServices.Show(ex.Message, MessageLevel.Error);
+            }
+            
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
