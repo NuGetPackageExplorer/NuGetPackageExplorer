@@ -193,6 +193,7 @@ namespace PackageExplorer
             };
 
         private readonly ISettingsManager _settings;
+        private readonly IUIServices _messageBoxServices;
 
         private double _analysisPaneWidth = 250; // default width for package analysis pane
         private TreeViewItem _dragItem;
@@ -204,6 +205,7 @@ namespace PackageExplorer
             InitializeComponent();
 
             _settings = settings;
+            _messageBoxServices = messageBoxServices;
 
             PackageMetadataEditor.UIServices = messageBoxServices;
             PackageMetadataEditor.PackageChooser = packageChooser;
@@ -419,25 +421,32 @@ namespace PackageExplorer
                 return;
             }
 
-            var item = sender as TreeViewItem;
-            if (item == _dragItem)
+            try
             {
-                var newPoint = e.GetPosition(item);
-                if (Math.Abs(newPoint.X - _dragPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
-                    Math.Abs(newPoint.Y - _dragPoint.Y) >= SystemParameters.MinimumVerticalDragDistance)
+                var item = sender as TreeViewItem;
+                if (item == _dragItem)
                 {
-                    // initiate a dragging
-                    if (item.DataContext is PackagePart packagePart)
+                    var newPoint = e.GetPosition(item);
+                    if (Math.Abs(newPoint.X - _dragPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
+                        Math.Abs(newPoint.Y - _dragPoint.Y) >= SystemParameters.MinimumVerticalDragDistance)
                     {
-                        _isPressing = false;
-                        _isDragging = true;
+                        // initiate a dragging
+                        if (item.DataContext is PackagePart packagePart)
+                        {
+                            _isPressing = false;
+                            _isDragging = true;
 
-                        var data = CreateDataObject(packagePart);
-                        DragDrop.DoDragDrop(item, data, DragDropEffects.Copy | DragDropEffects.Move);
-                        ResetDraggingState();
+                            var data = CreateDataObject(packagePart);
+                            DragDrop.DoDragDrop(item, data, DragDropEffects.Copy | DragDropEffects.Move);
+                            ResetDraggingState();
+                        }
                     }
                 }
             }
+            catch // Possible COM exception if already in progress, ignore
+            {
+            }
+            
         }
 
         private void PackagesTreeViewItem_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -494,10 +503,19 @@ namespace PackageExplorer
                 folder = treeView.SelectedItem as PackageFolder;
             }
 
-            if (HandleDataObject(folder, Clipboard.GetDataObject(), true))
+            try
             {
-                e.Handled = true;
+                if (HandleDataObject(folder, Clipboard.GetDataObject(), true))
+                {
+                    e.Handled = true;
+                }
             }
+            catch(Exception ex)
+            {
+                // Suppress any COM errors coming from the paste
+                _messageBoxServices.Show(ex.Message, MessageLevel.Error);
+            }
+            
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)

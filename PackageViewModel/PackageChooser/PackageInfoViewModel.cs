@@ -210,7 +210,7 @@ namespace PackageExplorerViewModel
             }
             catch (Exception exception)
             {
-                if (!(exception is FatalProtocolException) && !(exception is IOException))
+                if (!(exception is FatalProtocolException) && !(exception is IOException) && !(exception is NullReferenceException))
                 {
                     DiagnosticsClient.Notify(exception);
                 }

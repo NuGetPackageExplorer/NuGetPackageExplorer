@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Input;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
@@ -634,11 +635,19 @@ namespace PackageExplorerViewModel
 
         private void OpenContentFileExecute(object parameter)
         {
-            parameter = parameter ?? SelectedItem;
-            if (parameter is PackageFile file)
+            try
             {
-                FileHelper.OpenFileInShell(file, UIServices);
+                parameter = parameter ?? SelectedItem;
+                if (parameter is PackageFile file)
+                {
+                    FileHelper.OpenFileInShell(file, UIServices);
+                }
             }
+            catch (Exception e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+            }
+            
         }
 
         #endregion
@@ -929,7 +938,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            FileEditorViewModel = new FileEditorViewModel(this, file as PackageFile);
+            FileEditorViewModel = new FileEditorViewModel(this, file as PackageFile, UIServices);
         }
 
         private bool CanEditFileCommandExecute(PackagePart file)
@@ -993,7 +1002,7 @@ namespace PackageExplorerViewModel
 
         private void EditMetadataSourceCommandExecute()
         {
-            FileEditorViewModel = new FileEditorViewModel(this, CreatePackageMetadataFile());
+            FileEditorViewModel = new FileEditorViewModel(this, CreatePackageMetadataFile(), UIServices);
         }
 
         private bool CanEditMetadataSourceCommandExecute()

@@ -34,6 +34,8 @@ namespace PackageExplorer
             "lib\\net47",
             "lib\\net471",
             "lib\\net472",
+            "lib\\net48",
+            "lib\\netcoreapp3.0"
         };
 
         // %localappdata%/NuGet/PackageExplorerPlugins
@@ -272,7 +274,7 @@ namespace PackageExplorer
                 }
                 return true;
             }
-            catch (Exception exception) when (exception is ReflectionTypeLoadException || exception is FileNotFoundException || exception is TypeLoadException)
+            catch (Exception exception) when (exception is ReflectionTypeLoadException || exception is IOException || exception is TypeLoadException)
             {
                 _pluginToCatalog.Remove(pluginInfo);
 
