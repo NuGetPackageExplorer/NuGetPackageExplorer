@@ -61,17 +61,27 @@ namespace PackageExplorer
                 Filter = filter
             };
 
-            var result = dialog.ShowDialog();
-            if (result ?? false)
+            try
             {
-                selectedFileName = dialog.FileName;
-                return true;
+                var result = dialog.ShowDialog();
+                if (result ?? false)
+                {
+                    selectedFileName = dialog.FileName;
+                    return true;
+                }
+                else
+                {
+                    selectedFileName = null;
+                    return false;
+                }
             }
-            else
+            catch (Exception e)
             {
+                Show(e.Message, MessageLevel.Error);
                 selectedFileName = null;
                 return false;
             }
+           
         }
 
         public bool OpenMultipleFilesDialog(string title, string filter, out string[] selectedFileNames)
