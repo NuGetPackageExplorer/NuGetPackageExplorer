@@ -26,13 +26,21 @@ namespace PackageExplorer
                 return null;
             }
 
-            var framework = NuGetFramework.Parse(stringValue);
-            if (framework.IsUnsupported)
+            try
+            {
+                var framework = NuGetFramework.Parse(stringValue);
+                if (framework.IsUnsupported)
+                {
+                    return DependencyProperty.UnsetValue;
+                }
+
+                return framework;
+            }
+            catch (Exception) // could be an invalid value
             {
                 return DependencyProperty.UnsetValue;
             }
-
-            return framework;
+            
         }
     }
 }
