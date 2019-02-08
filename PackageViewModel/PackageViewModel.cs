@@ -334,8 +334,16 @@ namespace PackageExplorerViewModel
 
         private void AddContentFileExecute(object parameter)
         {
-            var folder = (parameter ?? SelectedItem) as PackageFolder;
-            AddExistingFileToFolder(folder ?? RootFolder);
+            try
+            {
+                var folder = (parameter ?? SelectedItem) as PackageFolder;
+                AddExistingFileToFolder(folder ?? RootFolder);
+            }
+            catch (Exception e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+            }
+            
         }
 
         private void AddExistingFileToFolder(PackageFolder folder)
@@ -764,17 +772,25 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            using (var mruSourceManager = new MruPackageSourceManager(
-                new PublishSourceSettings(SettingsManager)))
+            try
             {
-                var publishPackageViewModel = new PublishPackageViewModel(
-                    mruSourceManager,
-                    SettingsManager,
-                    UIServices,
-                    _credentialPublishProvider,
-                    this);
-                UIServices.OpenPublishDialog(publishPackageViewModel);
+                using (var mruSourceManager = new MruPackageSourceManager(
+                    new PublishSourceSettings(SettingsManager)))
+                {
+                    var publishPackageViewModel = new PublishPackageViewModel(
+                        mruSourceManager,
+                        SettingsManager,
+                        UIServices,
+                        _credentialPublishProvider,
+                        this);
+                    UIServices.OpenPublishDialog(publishPackageViewModel);
+                }
             }
+            catch (Exception e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+            }
+
         }
 
         private bool PublishCanExecute()

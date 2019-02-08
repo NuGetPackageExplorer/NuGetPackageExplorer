@@ -224,6 +224,10 @@ namespace PackageExplorer
                     var nugetDirectory = CreateChildDirectory(new DirectoryInfo(localAppData), NuGetDirectoryName);
                     CreateChildDirectory(nugetDirectory, PluginsDirectoryName);
                 }
+                catch (IOException)
+                {
+                    return;
+                }
                 catch (UnauthorizedAccessException) // Some systems are throwing with this, not sure why but nothing we can do
                 {
                     return;
