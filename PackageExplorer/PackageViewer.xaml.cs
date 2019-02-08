@@ -421,25 +421,32 @@ namespace PackageExplorer
                 return;
             }
 
-            var item = sender as TreeViewItem;
-            if (item == _dragItem)
+            try
             {
-                var newPoint = e.GetPosition(item);
-                if (Math.Abs(newPoint.X - _dragPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
-                    Math.Abs(newPoint.Y - _dragPoint.Y) >= SystemParameters.MinimumVerticalDragDistance)
+                var item = sender as TreeViewItem;
+                if (item == _dragItem)
                 {
-                    // initiate a dragging
-                    if (item.DataContext is PackagePart packagePart)
+                    var newPoint = e.GetPosition(item);
+                    if (Math.Abs(newPoint.X - _dragPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
+                        Math.Abs(newPoint.Y - _dragPoint.Y) >= SystemParameters.MinimumVerticalDragDistance)
                     {
-                        _isPressing = false;
-                        _isDragging = true;
+                        // initiate a dragging
+                        if (item.DataContext is PackagePart packagePart)
+                        {
+                            _isPressing = false;
+                            _isDragging = true;
 
-                        var data = CreateDataObject(packagePart);
-                        DragDrop.DoDragDrop(item, data, DragDropEffects.Copy | DragDropEffects.Move);
-                        ResetDraggingState();
+                            var data = CreateDataObject(packagePart);
+                            DragDrop.DoDragDrop(item, data, DragDropEffects.Copy | DragDropEffects.Move);
+                            ResetDraggingState();
+                        }
                     }
                 }
             }
+            catch // Possible COM exception if already in progress, ignore
+            {
+            }
+            
         }
 
         private void PackagesTreeViewItem_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
