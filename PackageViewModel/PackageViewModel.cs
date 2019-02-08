@@ -635,11 +635,19 @@ namespace PackageExplorerViewModel
 
         private void OpenContentFileExecute(object parameter)
         {
-            parameter = parameter ?? SelectedItem;
-            if (parameter is PackageFile file)
+            try
             {
-                FileHelper.OpenFileInShell(file, UIServices);
+                parameter = parameter ?? SelectedItem;
+                if (parameter is PackageFile file)
+                {
+                    FileHelper.OpenFileInShell(file, UIServices);
+                }
             }
+            catch (Exception e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+            }
+            
         }
 
         #endregion
