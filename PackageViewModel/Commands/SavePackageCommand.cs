@@ -60,49 +60,57 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            var action = parameter as string;
-
-            // if the action is Save Metadata, we don't care if the package is valid
-            if (action != SaveMetadataAction)
+            try
             {
-                // validate the package to see if there is any error before actually creating the package.
-                var firstIssue =
-                    ViewModel.Validate().FirstOrDefault(p => p.Level == PackageIssueLevel.Error);
-                if (firstIssue != null)
-                {
-                    ViewModel.UIServices.Show(
-                        Resources.PackageCreationFailed
-                        + Environment.NewLine
-                        + Environment.NewLine
-                        + firstIssue.Description,
-                        MessageLevel.Warning);
-                    return;
-                }
-            }
+                var action = parameter as string;
 
-            if (action == SaveAction || action == ForceSaveAction)
-            {
-                if (CanSaveTo(ViewModel.PackageSource) && !ViewModel.HasFileChangedExternally)
+                // if the action is Save Metadata, we don't care if the package is valid
+                if (action != SaveMetadataAction)
                 {
-                    Save();
+                    // validate the package to see if there is any error before actually creating the package.
+                    var firstIssue =
+                        ViewModel.Validate().FirstOrDefault(p => p.Level == PackageIssueLevel.Error);
+                    if (firstIssue != null)
+                    {
+                        ViewModel.UIServices.Show(
+                            Resources.PackageCreationFailed
+                            + Environment.NewLine
+                            + Environment.NewLine
+                            + firstIssue.Description,
+                            MessageLevel.Warning);
+                        return;
+                    }
                 }
-                else
+
+                if (action == SaveAction || action == ForceSaveAction)
+                {
+                    if (CanSaveTo(ViewModel.PackageSource) && !ViewModel.HasFileChangedExternally)
+                    {
+                        Save();
+                    }
+                    else
+                    {
+                        SaveAs();
+                    }
+                }
+                else if (action == SaveAsAction)
                 {
                     SaveAs();
                 }
+                else if (action == SaveMetadataAction)
+                {
+                    SaveMetadataAs();
+                }
+                else if (action == SignAndSaveAsAction)
+                {
+                    SignAndSaveAs();
+                }
             }
-            else if (action == SaveAsAction)
+            catch (Exception e)
             {
-                SaveAs();
+                ViewModel.UIServices.Show(e.Message, MessageLevel.Error);
             }
-            else if (action == SaveMetadataAction)
-            {
-                SaveMetadataAs();
-            }
-            else if (action == SignAndSaveAsAction)
-            {
-                SignAndSaveAs();
-            }
+           
         }
 
         #endregion
