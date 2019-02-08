@@ -334,8 +334,16 @@ namespace PackageExplorerViewModel
 
         private void AddContentFileExecute(object parameter)
         {
-            var folder = (parameter ?? SelectedItem) as PackageFolder;
-            AddExistingFileToFolder(folder ?? RootFolder);
+            try
+            {
+                var folder = (parameter ?? SelectedItem) as PackageFolder;
+                AddExistingFileToFolder(folder ?? RootFolder);
+            }
+            catch (Exception e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+            }
+            
         }
 
         private void AddExistingFileToFolder(PackageFolder folder)
