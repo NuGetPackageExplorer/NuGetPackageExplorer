@@ -1125,6 +1125,11 @@ namespace PackageExplorerViewModel
 
         private bool AddScriptCommandCanExecute(string scriptName)
         {
+            if (IsSigned || IsInEditFileMode)
+            {
+                return false;
+            }
+
             if (scriptName != "install.ps1" && scriptName != "init.ps1" && scriptName != "uninstall.ps1")
             {
                 return false;
@@ -1152,6 +1157,10 @@ namespace PackageExplorerViewModel
 
         private bool AddBuildFileCommandCanExecute(string extension)
         {
+            if (IsSigned || IsInEditFileMode)
+            {
+                return false;
+            }
 
             if (SelectedItem is PackageFolder selectedFolder)
             {
@@ -1210,9 +1219,9 @@ namespace PackageExplorerViewModel
             try
             {
                 // handle signed packages since they cannot be resaved without losing the signature
-                if (IsSigned && _package is ISignaturePackage zip)
+                if (IsSigned)
                 {
-                    File.Copy(zip.Source, tempFile, overwrite: true);
+                    File.Copy(PackageSource, tempFile, overwrite: true);
                 }
                 else
                 {
