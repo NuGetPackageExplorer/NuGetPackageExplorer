@@ -91,7 +91,7 @@ namespace PackageExplorerViewModel
             get { return _authors; }
             set
             {
-                if (string.IsNullOrWhiteSpace(value))
+                if (string.IsNullOrWhiteSpace(value) && !PackageTypes.Any(pt => string.Equals(pt.Name, "SymbolsPackage", StringComparison.OrdinalIgnoreCase)))
                 {
                     const string message = "Authors is required.";
                     SetError("Authors", message);
@@ -534,6 +534,7 @@ namespace PackageExplorerViewModel
         {
             Id = source.Id;
             Version = source.Version;
+            PackageTypes = new ObservableCollection<PackageType>(source.PackageTypes);
             Title = source.Title;
             Authors = ConvertToString(source.Authors);
             Owners = ConvertToString(source.Owners);
@@ -553,7 +554,7 @@ namespace PackageExplorerViewModel
             FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkReferences);
             PackageAssemblyReferences = new ObservableCollection<PackageReferenceSet>();
             ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
-            PackageTypes = new ObservableCollection<PackageType>(source.PackageTypes);
+            
             Repository = source.Repository;
             LicenseMetadata = source.LicenseMetadata;
             LicenseUrl = LicenseMetadata != null ? null : source.LicenseUrl; // This will be set for back compat, but should show up as null here
