@@ -42,22 +42,16 @@ namespace NuGetPe.AssemblyMetadata
             _readerProvider = readerProvider;
             _pdbType = pdbType;
 
-            try
-            {
-                _reader = _readerProvider.GetMetadataReader();
-            }
-            catch (BadImageFormatException) // A Full PDB
-            {
-                _pdbType = PdbType.Full;
-            }
-            
+            // Possible BadImageFormatException if a full PDB is passed
+            // in. We'll let the throw bubble up to something that can handle it
+            _reader = _readerProvider.GetMetadataReader();
         }
 
         private readonly PdbType _pdbType;
         private bool _disposedValue = false;
         private readonly MetadataReaderProvider _readerProvider;
         private readonly MetadataReader _reader;
-        private readonly Stream _temporaryPdbStream;
+        private readonly Stream? _temporaryPdbStream;
 
         private static readonly Guid SourceLinkGuid = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
 
@@ -98,7 +92,7 @@ namespace NuGetPe.AssemblyMetadata
 
                     Catch the exception and try to fix the key
                     */
-                    JObject jobj = null;
+                    JObject? jobj = null;
                     try
                     {
                         jobj = JObject.Parse(sl);

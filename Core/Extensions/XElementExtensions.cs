@@ -12,7 +12,7 @@ namespace NuGetPe
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters",
             Justification = "We don't care about base types")]
         public static string GetOptionalAttributeValue(this XElement element, string localName,
-                                                       string namespaceName = null)
+                                                       string? namespaceName = null)
         {
             XAttribute attr;
             if (string.IsNullOrEmpty(namespaceName))
@@ -29,7 +29,7 @@ namespace NuGetPe
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters",
             Justification = "We don't care about base types")]
         public static string GetOptionalElementValue(this XElement element, string localName,
-                                                     string namespaceName = null)
+                                                     string? namespaceName = null)
         {
             XElement child;
             if (string.IsNullOrEmpty(namespaceName))
@@ -96,8 +96,8 @@ namespace NuGetPe
 
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "No reason to create a new type")]
-        public static XElement MergeWith(this XElement source, XElement target,
-                                         IDictionary<XName, Action<XElement, XElement>> nodeActions)
+        public static XElement MergeWith(this XElement source, XElement? target,
+                                         IDictionary<XName, Action<XElement, XElement>>? nodeActions)
         {
             if (target == null)
             {

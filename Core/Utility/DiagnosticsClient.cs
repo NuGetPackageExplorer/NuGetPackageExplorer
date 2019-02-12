@@ -64,7 +64,7 @@ namespace NuGetPe
             try
             {
                 var sendSessions = typeof(SessionsStore).GetMethod("SendSessions", BindingFlags.Instance | BindingFlags.NonPublic);
-                sendSessions.Invoke(SessionsStore.Instance, new object[] { null });
+                sendSessions.Invoke(SessionsStore.Instance, new object?[] { null });
             }
             catch
             {
@@ -99,7 +99,7 @@ namespace NuGetPe
             _client.Breadcrumbs.Leave(message);
         }
 
-        public static void Breadcrumb(string message, BreadcrumbType type, IDictionary<string, string> metadata = null)
+        public static void Breadcrumb(string message, BreadcrumbType type, IDictionary<string, string>? metadata = null)
         {
             if (!_initialized) return;
 

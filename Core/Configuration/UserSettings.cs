@@ -23,7 +23,7 @@ namespace NuGetPe
             _config = XmlUtility.GetOrCreateDocument("configuration", _fileSystem, _configLocation);
         }
 
-        public string GetValue(string section, string key)
+        public string? GetValue(string section, string key)
         {
             if (string.IsNullOrEmpty(section))
             {
@@ -43,7 +43,7 @@ namespace NuGetPe
             return value;
         }
 
-        public IDictionary<string, string> GetValues(string section)
+        public IDictionary<string, string>? GetValues(string section)
         {
             if (string.IsNullOrEmpty(section))
             {
@@ -138,7 +138,7 @@ namespace NuGetPe
                                                                   section));
             }
 
-            XElement elementToDelete = null;
+            XElement? elementToDelete = null;
             foreach (var e in sectionElement.Elements("add"))
             {
                 if (e.GetOptionalAttributeValue("key") == key)
