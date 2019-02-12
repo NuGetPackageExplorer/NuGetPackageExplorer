@@ -20,11 +20,11 @@ namespace PackageExplorerViewModel
         private readonly SourceRepository _repository;
         private readonly FeedType _feedType;
         private bool _isLoading;
-        private string _errorMessage;
+        private string? _errorMessage;
         private bool _showingAllVersions;
-        private PackageInfo _selectedPackage;
+        private PackageInfo? _selectedPackage;
         private readonly PackageChooserViewModel _parentViewModel;
-        private CancellationTokenSource _downloadCancelSource;
+        private CancellationTokenSource? _downloadCancelSource;
         private bool _hasFinishedLoading;
         private readonly Func<Task<IEnumerable<VersionInfo>>> _versionInfos = () => Task.FromResult(Enumerable.Empty<VersionInfo>());
 
@@ -65,7 +65,7 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<PackageInfo> AllPackages { get; private set; }
 
-        public PackageInfo SelectedPackage
+        public PackageInfo? SelectedPackage
         {
             get
             {
@@ -158,7 +158,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string ErrorMessage
+        public string? ErrorMessage
         {
             get
             {
@@ -294,7 +294,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, FeedType feedType, IEnumerable<VersionInfo> versionInfos)
+        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, FeedType feedType, IEnumerable<VersionInfo>? versionInfos)
         {
             var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
 

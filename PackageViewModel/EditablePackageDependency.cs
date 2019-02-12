@@ -10,9 +10,9 @@ namespace PackageExplorerViewModel
 {
     public class EditablePackageDependency : INotifyPropertyChanged, IDataErrorInfo
     {
-        private string _id;
-        private string _exclude;
-        private VersionRange _versionSpec;
+        private string? _id;
+        private string? _exclude;
+        private VersionRange? _versionSpec;
         private readonly Func<EditablePackageDependencySet> _getActiveDependencySet;
 
         public EditablePackageDependency(Func<EditablePackageDependencySet> getActiveDependencySet)
@@ -21,7 +21,7 @@ namespace PackageExplorerViewModel
             _getActiveDependencySet = getActiveDependencySet;
         }
 
-        public string Id
+        public string? Id
         {
             get { return _id; }
             set
@@ -34,7 +34,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public VersionRange VersionSpec
+        public VersionRange? VersionSpec
         {
             get { return _versionSpec; }
             set
@@ -47,7 +47,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Exclude
+        public string? Exclude
         {
             get { return _exclude; }
             set
@@ -62,12 +62,12 @@ namespace PackageExplorerViewModel
 
         #region IDataErrorInfo Members
 
-        public string Error
+        public string? Error
         {
             get { return null; }
         }
 
-        public string this[string columnName]
+        public string? this[string columnName]
         {
             get { return IsValid(columnName); }
         }
@@ -85,7 +85,7 @@ namespace PackageExplorerViewModel
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string IsValid(string columnName)
+        private string? IsValid(string columnName)
         {
             if (columnName == "Id")
             {

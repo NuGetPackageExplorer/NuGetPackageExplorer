@@ -9,7 +9,7 @@ namespace NuGetPe
         bool IsVerified { get; }
         SignatureInfo? PublisherSignature { get; }
         RepositorySignatureInfo? RepositorySignature { get; }
-        VerifySignaturesResult? VerificationResult { get; }
+        VerifySignaturesResult VerificationResult { get; }
         string Source { get; }
         Task LoadSignatureDataAsync();
         Task VerifySignatureAsync();

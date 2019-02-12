@@ -30,7 +30,7 @@ namespace PackageExplorerViewModel
             }
 
             var success = false;
-            NetworkCredential credential = null;
+            NetworkCredential? credential = null;
 
             await _uiServices.BeginInvoke(() =>
             {

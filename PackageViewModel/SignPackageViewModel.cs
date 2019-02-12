@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading;
@@ -19,19 +20,19 @@ namespace PackageExplorerViewModel
         private readonly PackageViewModel _packageViewModel;
         private readonly IUIServices _uiServices;
         private readonly ISettingsManager _settingsManager;
-        private string _certificateFileName;
-        private X509Certificate2 _certificate;
-        private string _password;
+        private string? _certificateFileName;
+        private X509Certificate2? _certificate;
+        private string? _password;
         private bool _showPassword;
         private HashAlgorithmName _hashAlgorithmName = HashAlgorithmName.SHA256;
-        private string _timestampServer;
-        private string _status;
+        private string? _timestampServer;
+        private string? _status;
         private bool _hasError;
         private bool _showProgress;
         private bool _canSign;
-        private CancellationTokenSource _cts;
-        private Timer _certificateValidationTimer;
-        private SemaphoreSlim _certificateValidationSemaphore;
+        private CancellationTokenSource? _cts;
+        private Timer? _certificateValidationTimer;
+        private SemaphoreSlim? _certificateValidationSemaphore;
 
         public SignPackageViewModel(PackageViewModel viewModel, IUIServices uiServices, ISettingsManager settingsManager)
         {
@@ -82,7 +83,7 @@ namespace PackageExplorerViewModel
 
         public string Version => _packageViewModel.PackageMetadata.Version.ToFullString();
 
-        public string CertificateFileName
+        public string? CertificateFileName
         {
             get => _certificateFileName;
             set
@@ -93,7 +94,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public X509Certificate2 Certificate
+        public X509Certificate2? Certificate
         {
             get => _certificate;
             set
@@ -108,7 +109,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Password
+        public string? Password
         {
             get => _password;
             set
@@ -150,7 +151,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string TimestampServer
+        public string? TimestampServer
         {
             get => _timestampServer;
             set
@@ -179,7 +180,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Status
+        public string? Status
         {
             get => _status;
             set
@@ -280,7 +281,7 @@ namespace PackageExplorerViewModel
         }
 
         // https://github.com/NuGet/NuGet.Client/blob/4c0c9658445573845ddbeff5656e4b3129f727a2/src/NuGet.Core/NuGet.Commands/SignCommand/SignCommandRunner.cs
-        public async Task<string> SignPackage()
+        public async Task<string?> SignPackage()
         {
             ShowProgress = true;
             CanSign = false;
@@ -298,7 +299,7 @@ namespace PackageExplorerViewModel
                     var packagePath = _packageViewModel.GetCurrentPackageTempFile();
                     var originalPackageCopyPath = Path.GetTempFileName();
 
-                    ITimestampProvider timestampProvider = null;
+                    ITimestampProvider? timestampProvider = null;
                     if (!string.IsNullOrEmpty(TimestampServer))
                     {
                         timestampProvider = new Rfc3161TimestampProvider(new Uri(TimestampServer));
@@ -347,13 +348,15 @@ namespace PackageExplorerViewModel
 
         private void ValidateCertificateCallback(object state)
         {
+            Debug.Assert(_certificateValidationSemaphore != null, nameof(_certificateValidationSemaphore) + " != null");
+
             _certificateValidationSemaphore.Wait();
 
             try
             {
                 Clear();
 
-                X509Certificate2 certificate;
+                X509Certificate2? certificate;
 
                 var certificateFileName = CertificateFileName;
                 if (string.IsNullOrEmpty(certificateFileName))

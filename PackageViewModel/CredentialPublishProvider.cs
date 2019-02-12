@@ -13,7 +13,7 @@ namespace PackageExplorerViewModel
     {
         public string Id => "NPECredentialPublish";
 
-        public string PersonalAccessToken { get; set; }
+        public string? PersonalAccessToken { get; set; }
 
         public Task<CredentialResponse> GetAsync(Uri uri, IWebProxy proxy, CredentialRequestType type, string message, bool isRetry, bool nonInteractive, CancellationToken cancellationToken)
         {

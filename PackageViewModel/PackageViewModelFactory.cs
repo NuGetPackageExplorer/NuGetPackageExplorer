@@ -14,7 +14,9 @@ namespace PackageExplorerViewModel
     {
         private readonly Lazy<PluginManagerViewModel> _pluginManagerViewModel;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public PackageViewModelFactory()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             _pluginManagerViewModel = new Lazy<PluginManagerViewModel>(
                 () => new PluginManagerViewModel(PluginManager, UIServices, PackageChooser, PackageDownloader));

@@ -26,38 +26,38 @@ namespace PackageExplorerViewModel
         private readonly IList<Lazy<IPackageRule>> _packageRules;
         private readonly CredentialPublishProvider _credentialPublishProvider;
 
-        private ICommand _addContentFileCommand;
-        private ICommand _addContentFolderCommand;
-        private ICommand _addNewFileCommand;
-        private ICommand _addNewFolderCommand;
-        private ICommand _addScriptCommand;
-        private ICommand _addBuildFileCommand;
-        private ICommand _applyEditCommand;
-        private ICommand _cancelEditCommand;
-        private FileContentInfo _currentFileInfo;
-        private RelayCommand<object> _deleteContentCommand;
-        private ICommand _editCommand;
-        private ICommand _editFileCommand;
-        private ICommand _editMetadataSourceCommand;
-        private ICommand _executePackageCommand;
-        private RelayCommand _exportCommand;
-        private FileEditorViewModel _fileEditorViewModel;
+        private ICommand? _addContentFileCommand;
+        private ICommand? _addContentFolderCommand;
+        private ICommand? _addNewFileCommand;
+        private ICommand? _addNewFolderCommand;
+        private ICommand? _addScriptCommand;
+        private ICommand? _addBuildFileCommand;
+        private ICommand? _applyEditCommand;
+        private ICommand? _cancelEditCommand;
+        private FileContentInfo? _currentFileInfo;
+        private RelayCommand<object>? _deleteContentCommand;
+        private ICommand? _editCommand;
+        private ICommand? _editFileCommand;
+        private ICommand? _editMetadataSourceCommand;
+        private ICommand? _executePackageCommand;
+        private RelayCommand? _exportCommand;
+        private FileEditorViewModel? _fileEditorViewModel;
         private bool _hasEdit;
         private bool _isInEditMode;
-        private RelayCommand<object> _openContentFileCommand;
-        private ICommand _openWithContentFileCommand;
+        private RelayCommand<object>? _openContentFileCommand;
+        private ICommand? _openWithContentFileCommand;
         private string _packageSource;
-        private RelayCommand _publishCommand;
-        private RelayCommand<object> _renameContentCommand;
-        private SavePackageCommand _saveCommand;
-        private ICommand _saveContentCommand;
-        private object _selectedItem;
+        private RelayCommand? _publishCommand;
+        private RelayCommand<object>? _renameContentCommand;
+        private SavePackageCommand? _saveCommand;
+        private ICommand? _saveContentCommand;
+        private object? _selectedItem;
         private bool _showContentViewer;
         private bool _showPackageAnalysis;
-        private ICommand _viewContentCommand;
-        private ICommand _viewPackageAnalysisCommand;
-        private ICommand _removeSignatureCommand;
-        private FileSystemWatcher _watcher;
+        private ICommand? _viewContentCommand;
+        private ICommand? _viewPackageAnalysisCommand;
+        private ICommand? _removeSignatureCommand;
+        private FileSystemWatcher? _watcher;
 
         #endregion
 
@@ -83,7 +83,7 @@ namespace PackageExplorerViewModel
 
             _packageMetadata = new EditablePackageMetadata(_package, UIServices);
 
-            PackageSource = source;
+            _packageSource = source;
 
             _isSigned = _packageMetadata.IsSigned;
 
@@ -130,13 +130,13 @@ namespace PackageExplorerViewModel
                 {
                     _isSigned = value;
                     OnPropertyChanged(nameof(IsSigned));
-                    _saveCommand.RaiseCanExecuteChangedEvent();
+                    _saveCommand?.RaiseCanExecuteChangedEvent();
                 }
             }
         }
 
 
-        public FileEditorViewModel FileEditorViewModel
+        public FileEditorViewModel? FileEditorViewModel
         {
             get { return _fileEditorViewModel; }
             set
@@ -195,7 +195,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public FileContentInfo CurrentFileInfo
+        public FileContentInfo? CurrentFileInfo
         {
             get { return _currentFileInfo; }
             set
@@ -213,7 +213,7 @@ namespace PackageExplorerViewModel
             get { return RootFolder.Children; }
         }
 
-        public object SelectedItem
+        public object? SelectedItem
         {
             get { return _selectedItem; }
             set
@@ -430,16 +430,14 @@ namespace PackageExplorerViewModel
 
         private void AddNewFolderExecute(object parameter)
         {
-            parameter = parameter ?? SelectedItem ?? RootFolder;
+            parameter ??= SelectedItem ?? RootFolder;
             var folder = parameter as PackageFolder;
             var folderName = "NewFolder";
-            var result = UIServices.OpenRenameDialog(
-                folderName,
-                "Provide name for the new folder.",
-                out folderName);
+            var result = UIServices.OpenRenameDialog(folderName, "Provide name for the new folder.", out folderName);
+
             if (result)
             {
-                folder.AddFolder(folderName);
+                folder?.AddFolder(folderName);
             }
         }
 
@@ -954,7 +952,15 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            FileEditorViewModel = new FileEditorViewModel(this, file as PackageFile, UIServices);
+            var f = file as PackageFile;
+            if (f != null)
+            {
+                FileEditorViewModel = new FileEditorViewModel(this, f, UIServices);
+            }
+            else
+            {
+                FileEditorViewModel = null;
+            }
         }
 
         private bool CanEditFileCommandExecute(PackagePart file)
@@ -1213,7 +1219,7 @@ namespace PackageExplorerViewModel
         }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
-        public string GetCurrentPackageTempFile()
+        public string? GetCurrentPackageTempFile()
         {
             var tempFile = Path.GetTempFileName();
             try
@@ -1268,8 +1274,8 @@ namespace PackageExplorerViewModel
             OnPropertyChanged(nameof(IsTokenized));
             OnPropertyChanged(nameof(WindowTitle));
 
-            _saveCommand.RaiseCanExecuteChangedEvent();
-            _publishCommand.RaiseCanExecuteChanged();
+            _saveCommand?.RaiseCanExecuteChangedEvent();
+            _publishCommand?.RaiseCanExecuteChanged();
         }
 
         internal void OnSaved(string fileName)
@@ -1287,7 +1293,7 @@ namespace PackageExplorerViewModel
         public IEnumerable<PackageIssue> Validate()
         {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-            var packageFileName = Path.IsPathRooted(PackageSource) ? Path.GetFileName(PackageSource) : null;
+            var packageFileName = Path.IsPathRooted(PackageSource) ? Path.GetFileName(PackageSource) : string.Empty;
             return package.Validate(_packageRules.Select(r => r.Value), packageFileName);
         }
 
@@ -1335,7 +1341,9 @@ namespace PackageExplorerViewModel
                     manifest.Files.AddRange(RootFolder.GetFiles().Select(
                         f => new ManifestFile
                         {
-                            Source = string.IsNullOrEmpty(f.OriginalPath()) || f.OriginalPath().StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()),
+#pragma warning disable CS8604 // Possible null reference argument.
+                            Source = string.IsNullOrEmpty(f.OriginalPath()) || f?.OriginalPath()?.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) == true ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()),
+#pragma warning restore CS8604 // Possible null reference argument.
                             Target = f.Path
                         })
                     );
@@ -1432,7 +1440,9 @@ namespace PackageExplorerViewModel
                             }
                             else
                             {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                                 targetFolder = RootFolder.AddFolder(guessFolderName);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
                             }
                         }
                         else
@@ -1440,7 +1450,7 @@ namespace PackageExplorerViewModel
                             targetFolder = RootFolder;
                         }
 
-                        targetFolder.AddFile(file);
+                        targetFolder?.AddFile(file);
                     }
                     else if (Directory.Exists(file))
                     {
@@ -1505,9 +1515,9 @@ namespace PackageExplorerViewModel
 
         public bool IsTokenized => IsPackageTokenized();
 
-        internal bool IsShowingFileContent(PackageFile file)
+        internal bool IsShowingFileContent(PackageFile? file)
         {
-            return ShowContentViewer && CurrentFileInfo.File == file;
+            return ShowContentViewer && CurrentFileInfo?.File == file;
         }
 
         internal void ShowFileContent(PackageFile file)

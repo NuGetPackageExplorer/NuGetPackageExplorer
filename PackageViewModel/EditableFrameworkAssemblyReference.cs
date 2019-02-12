@@ -8,11 +8,11 @@ namespace PackageExplorerViewModel
 {
     public class EditableFrameworkAssemblyReference : INotifyPropertyChanged, IDataErrorInfo
     {
-        private string _assemblyName;
+        private string? _assemblyName;
 
-        private IEnumerable<NuGetFramework> _supportedFrameworks;
+        private IEnumerable<NuGetFramework>? _supportedFrameworks;
 
-        public string AssemblyName
+        public string? AssemblyName
         {
             get { return _assemblyName; }
             set
@@ -55,12 +55,12 @@ namespace PackageExplorerViewModel
             return new FrameworkAssemblyReference(AssemblyName, SupportedFrameworks);
         }
 
-        public string Error
+        public string? Error
         {
             get { return null; }
         }
 
-        public string this[string columnName]
+        public string? this[string columnName]
         {
             get
             {

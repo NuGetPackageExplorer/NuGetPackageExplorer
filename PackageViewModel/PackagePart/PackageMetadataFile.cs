@@ -21,7 +21,7 @@ namespace PackageExplorerViewModel
             _packageViewModel = packageViewModel;
         }
 
-        public string OriginalPath { get; }
+        public string? OriginalPath { get; }
 
         public string Name
         {
@@ -45,7 +45,7 @@ namespace PackageExplorerViewModel
 
         public string EffectivePath { get; }
 
-        public FrameworkName TargetFramework
+        public FrameworkName? TargetFramework
         {
             get { return null; }
         }

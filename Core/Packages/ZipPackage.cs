@@ -264,7 +264,7 @@ namespace NuGetPe
 
         public RepositorySignatureInfo? RepositorySignature { get; private set; }
 
-        public VerifySignaturesResult? VerificationResult { get; private set; }
+        public VerifySignaturesResult VerificationResult { get; private set; }
 
 
         // Keep a list of open stream here, and close on dispose.

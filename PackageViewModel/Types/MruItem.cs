@@ -11,9 +11,9 @@ namespace NuGetPackageExplorer.Types
 
     public sealed class MruItem : IEquatable<MruItem>
     {
-        public string Id { get; set; }
-        public NuGetVersion Version { get; set; }
-        public string Path { get; set; }
+        public string? Id { get; set; }
+        public NuGetVersion? Version { get; set; }
+        public string? Path { get; set; }
         public PackageType PackageType { get; set; }
 
         #region IEquatable<MruItem> Members
@@ -33,7 +33,7 @@ namespace NuGetPackageExplorer.Types
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as MruItem);
+            return obj is MruItem item && Equals(item);
         }
 
         public override int GetHashCode()
@@ -47,7 +47,7 @@ namespace NuGetPackageExplorer.Types
             {
                 return string.Format("{0} {1}", Id, Version);
             }
-            return Path;
+            return Path ?? "MruItem";
         }
     }
 }

@@ -9,7 +9,9 @@ namespace PackageExplorerViewModel
         private const int MaxItem = 5;
         private readonly ISourceSettings _sourceSettings;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public MruPackageSourceManager(ISourceSettings sourceSettings)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             _sourceSettings = sourceSettings;
             LoadDataFromSettings();
@@ -24,7 +26,10 @@ namespace PackageExplorerViewModel
         public void Dispose()
         {
             _sourceSettings.SetSources(PackageSources);
+
+#pragma warning disable CS8601 // Possible null reference assignment.
             _sourceSettings.ActiveSource = ActivePackageSource;
+#pragma warning restore CS8601 // Possible null reference assignment.
         }
 
         #endregion

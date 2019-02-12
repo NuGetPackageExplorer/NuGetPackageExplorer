@@ -14,7 +14,6 @@ namespace PackageExplorerViewModel
         private readonly INuGetPackageDownloader _packageDownloader;
         private readonly IPluginManager _pluginManager;
         private readonly IUIServices _uiServices;
-        private SortedCollection<PluginInfo> _plugins;
 
         public PluginManagerViewModel(
             IPluginManager pluginManager,
@@ -29,18 +28,13 @@ namespace PackageExplorerViewModel
 
             DeleteCommand = new RelayCommand<PluginInfo>(DeleteCommandExecute, DeleteCommandCanExecute);
             AddCommand = new RelayCommand<string>(AddCommandExecute);
+
+            Plugins = new SortedCollection<PluginInfo>(_pluginManager.Plugins, this);
         }
 
         public ICollection<PluginInfo> Plugins
         {
-            get
-            {
-                if (_plugins == null)
-                {
-                    _plugins = new SortedCollection<PluginInfo>(_pluginManager.Plugins, this);
-                }
-                return _plugins;
-            }
+            get;
         }
 
         public RelayCommand<PluginInfo> DeleteCommand { get; private set; }
