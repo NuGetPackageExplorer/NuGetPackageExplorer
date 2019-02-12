@@ -9,7 +9,7 @@ namespace PackageExplorerViewModel
 {
     public static class PackageRepositoryFactory
     {
-        public static SourceRepository CreateRepository(PackageSource packageSource, IEnumerable<Lazy<INuGetResourceProvider>> additionalProviders)
+        public static SourceRepository CreateRepository(PackageSource packageSource, IEnumerable<Lazy<INuGetResourceProvider>>? additionalProviders)
         {
             var providers = Repository.Provider.GetCoreV3();
 
@@ -36,7 +36,7 @@ namespace PackageExplorerViewModel
             }
             catch (UriFormatException)
             {
-                return null;
+                throw new ArgumentException("Invalid URL", nameof(source));
             }
 
             return CreateRepository(new PackageSource(source));

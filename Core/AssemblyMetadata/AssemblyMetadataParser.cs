@@ -24,7 +24,7 @@ namespace NuGetPe.AssemblyMetadata
             _metadataReader = _peReader.GetMetadataReader();
         }
 
-        public AssemblyDebugData GetDebugData()
+        public AssemblyDebugData? GetDebugData()
         {
             var entry = _peReader.ReadDebugDirectory().Where(de => de.Type == DebugDirectoryEntryType.EmbeddedPortablePdb).ToList();
             if (entry.Count == 0) // no embedded ppdb
@@ -87,7 +87,7 @@ namespace NuGetPe.AssemblyMetadata
 
                 var attributeTypeName = typeProvider.GetTypeFromReference(_metadataReader, attributeTypeRefHandle, 0);
 
-                AttributeInfo attrInfo = null;
+                AttributeInfo? attrInfo = null;
                 try
                 {
                     var customAttributeValues = customAttribute.DecodeValue(typeProvider);

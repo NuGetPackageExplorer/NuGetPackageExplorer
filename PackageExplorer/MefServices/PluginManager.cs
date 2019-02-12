@@ -43,7 +43,7 @@ namespace PackageExplorer
 
 
 
-        private static string GetPluginDirectory()
+        private static string? GetPluginDirectory()
         {
             // Try getting it from the app model first
             if (WindowsVersionHelper.HasPackageIdentity)
@@ -63,14 +63,14 @@ namespace PackageExplorer
 
         // Don't load these types inline
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static string GetCachePathFromLocalCache()
+        private static string? GetCachePathFromLocalCache()
         {
             // Get the localized special folder for local app data
             var local = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)).Name;
             return GetCachePath(_ => Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, local));
         }
 
-        private static string GetCachePath(Func<Environment.SpecialFolder, string> getFolderPath)
+        private static string? GetCachePath(Func<Environment.SpecialFolder, string> getFolderPath)
         {
             var localAppDataPath = getFolderPath(Environment.SpecialFolder.LocalApplicationData);
             if (string.IsNullOrEmpty(localAppDataPath))
@@ -85,7 +85,9 @@ namespace PackageExplorer
         private Dictionary<PluginInfo, DirectoryCatalog> _pluginToCatalog;
         private List<PluginInfo> _plugins;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public PluginManager(AggregateCatalog catalog)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             if (catalog == null)
             {
@@ -107,7 +109,7 @@ namespace PackageExplorer
             get { return _plugins; }
         }
 
-        public PluginInfo AddPlugin(IPackage plugin)
+        public PluginInfo? AddPlugin(IPackage plugin)
         {
             if (plugin == null)
             {
@@ -313,7 +315,7 @@ namespace PackageExplorer
             return child;
         }
 
-        private PluginInfo ConvertFromDirectoryToPluginInfo(DirectoryInfo directory)
+        private PluginInfo? ConvertFromDirectoryToPluginInfo(DirectoryInfo directory)
         {
             var name = directory.Name;
             const string regex = @"^(.+)\[(.+?)\]$";

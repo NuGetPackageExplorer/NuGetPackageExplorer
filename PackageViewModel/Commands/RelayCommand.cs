@@ -14,8 +14,6 @@ namespace PackageExplorerViewModel
     /// </summary>
     public class RelayCommand<T> : ICommand
     {
-        #region Constructors
-
         public RelayCommand(Action<T> execute)
             : this(execute, null)
         {
@@ -26,7 +24,7 @@ namespace PackageExplorerViewModel
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>
-        public RelayCommand(Action<T> execute, Predicate<T> canExecute)
+        public RelayCommand(Action<T> execute, Predicate<T>? canExecute)
         {
             _execute = execute ?? throw new ArgumentNullException("execute");
             _canExecute = canExecute;
@@ -37,11 +35,7 @@ namespace PackageExplorerViewModel
         {
             CommandManager.InvalidateRequerySuggested();
         }
-
-        #endregion // Constructors
-
-        #region ICommand Members
-
+        
         [DebuggerStepThrough]
         public bool CanExecute(object parameter)
         {
@@ -70,15 +64,9 @@ namespace PackageExplorerViewModel
         {
             _execute((T)parameter);
         }
-
-        #endregion
-
-        #region Fields
-
-        private readonly Predicate<T> _canExecute;
+        
+        private readonly Predicate<T>? _canExecute;
         private readonly Action<T> _execute;
-
-        #endregion // Fields
     }
 
     /// <summary>
@@ -106,7 +94,7 @@ namespace PackageExplorerViewModel
         /// </summary>
         /// <param name="execute">The execution logic.</param>
         /// <param name="canExecute">The execution status logic.</param>
-        public RelayCommand(Action execute, Func<bool> canExecute)
+        public RelayCommand(Action execute, Func<bool>? canExecute)
         {
             _execute = execute ?? throw new ArgumentNullException("execute");
             _canExecute = canExecute;
@@ -117,7 +105,7 @@ namespace PackageExplorerViewModel
         #region ICommand Members
 
         [DebuggerStepThrough]
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             return _canExecute == null || _canExecute();
         }
@@ -140,7 +128,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             _execute();
         }
@@ -149,7 +137,7 @@ namespace PackageExplorerViewModel
 
         #region Fields
 
-        private readonly Func<bool> _canExecute;
+        private readonly Func<bool>? _canExecute;
         private readonly Action _execute;
 
         #endregion // Fields

@@ -16,8 +16,8 @@ namespace PackageExplorerViewModel
             _settingsManager = settingsManager;
 
             // migrate active package source
-            if (ActiveSource.Equals(NuGetConstants.V2FeedUrl, StringComparison.OrdinalIgnoreCase) ||
-                ActiveSource.Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
+            if (NuGetConstants.V2FeedUrl.Equals(ActiveSource, StringComparison.OrdinalIgnoreCase) ||
+                NuGetConstants.V2LegacyFeedUrl.Equals(ActiveSource, StringComparison.OrdinalIgnoreCase))
             {
                 ActiveSource = NuGetConstants.DefaultFeedUrl;
             }

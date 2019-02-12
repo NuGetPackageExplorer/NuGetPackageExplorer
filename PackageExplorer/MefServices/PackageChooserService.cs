@@ -9,13 +9,15 @@ using PackageExplorerViewModel;
 namespace PackageExplorer
 {
     [Export(typeof(IPackageChooser))]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     internal class PackageChooserService : IPackageChooser
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
-        private PackageChooserViewModel _viewModel;
+        private PackageChooserViewModel? _viewModel;
 
         // for select plugin dialog
-        private PackageChooserDialog _pluginDialog;
-        private PackageChooserViewModel _pluginViewModel;
+        private PackageChooserDialog? _pluginDialog;
+        private PackageChooserViewModel? _pluginViewModel;
 
         [Import]
         public IPackageViewModelFactory ViewModelFactory { get; set; }
@@ -33,9 +35,9 @@ namespace PackageExplorer
         public Lazy<MainWindow> Window { get; set; }
 
 
-        public SourceRepository Repository => _viewModel.ActiveRepository;
+        public SourceRepository? Repository => _viewModel?.ActiveRepository;
 
-        public PackageInfo SelectPackage(string searchTerm)
+        public PackageInfo? SelectPackage(string? searchTerm)
         {
             if(_viewModel == null)
             {
@@ -59,7 +61,7 @@ namespace PackageExplorer
             var vm = (PackageChooserViewModel)sender;
             var repository = vm.ActiveRepository;
             var packageInfo = vm.SelectedPackage;
-            if (packageInfo != null)
+            if (packageInfo != null && repository != null)
             {
 
                 var packageName = packageInfo.Id + "." + packageInfo.Version + NuGetPe.Constants.PackageExtension;
@@ -100,9 +102,9 @@ namespace PackageExplorer
             }
         }
 
-        public SourceRepository PluginRepository => _pluginViewModel.ActiveRepository;
+        public SourceRepository? PluginRepository => _pluginViewModel?.ActiveRepository;
 
-        public PackageInfo SelectPluginPackage()
+        public PackageInfo? SelectPluginPackage()
         {
             if (_pluginDialog == null)
             {
@@ -113,7 +115,7 @@ namespace PackageExplorer
             _pluginDialog.Owner = Window.Value;
             ReCenterPackageChooserDialog(_pluginDialog);
             _pluginDialog.ShowDialog();
-            return _pluginViewModel.SelectedPackage;
+            return _pluginViewModel?.SelectedPackage;
         }
 
         private void ReCenterPackageChooserDialog(StandardDialog dialog)

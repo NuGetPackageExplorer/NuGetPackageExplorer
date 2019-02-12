@@ -11,7 +11,7 @@ namespace PackageExplorerViewModel
     {
         private readonly AssemblyDebugSourceDocument _sourceDocument;
 
-        public AssemblyDebugSourceDocumentViewModel(AssemblyDebugSourceDocument sourceDocument, string path, string location)
+        public AssemblyDebugSourceDocumentViewModel(AssemblyDebugSourceDocument sourceDocument, string path, string? location)
         {
             _sourceDocument = sourceDocument ?? throw new ArgumentNullException(nameof(sourceDocument));
             Path = path;
@@ -19,7 +19,7 @@ namespace PackageExplorerViewModel
         }
 
         public string Path { get; }
-        public string Location { get; }
+        public string? Location { get; }
 
         public string HashAlgorithm => _sourceDocument.HashAlgorithm.Name;
 

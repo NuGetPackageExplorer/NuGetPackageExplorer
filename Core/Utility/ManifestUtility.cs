@@ -100,7 +100,7 @@ namespace NuGetPe
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string ReplaceMetadataWithToken(string value)
+        public static string? ReplaceMetadataWithToken(string? value)
         {
             if (value == null)
             {

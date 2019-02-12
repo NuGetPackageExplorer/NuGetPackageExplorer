@@ -23,7 +23,9 @@ namespace NuGetPe
         private readonly Func<Stream> _streamFactory;
         private ManifestMetadata _metadata;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public ZipPackage(string filePath)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             if (string.IsNullOrEmpty(filePath))
             {
@@ -68,7 +70,7 @@ namespace NuGetPe
             set { _metadata.Version = value; }
         }
 
-        public string Title
+        public string? Title
         {
             get { return _metadata.Title; }
             set { _metadata.Title = value; }
@@ -86,19 +88,19 @@ namespace NuGetPe
             set { _metadata.Owners = value; }
         }
 
-        public Uri IconUrl
+        public Uri? IconUrl
         {
             get { return _metadata.IconUrl; }
             set { _metadata.SetIconUrl(value?.ToString()); }
         }
 
-        public Uri LicenseUrl
+        public Uri? LicenseUrl
         {
             get { return _metadata.LicenseUrl; }
             set { _metadata.SetLicenseUrl(value?.ToString()); }
         }
 
-        public Uri ProjectUrl
+        public Uri? ProjectUrl
         {
             get { return _metadata.ProjectUrl; }
             set { _metadata.SetProjectUrl(value?.ToString()); }
@@ -116,31 +118,31 @@ namespace NuGetPe
             set { _metadata.DevelopmentDependency = value; }
         }
 
-        public string Description
+        public string? Description
         {
             get { return _metadata.Description; }
             set { _metadata.Description = value; }
         }
 
-        public string Summary
+        public string? Summary
         {
             get { return _metadata.Summary; }
             set { _metadata.Summary = value; }
         }
 
-        public string ReleaseNotes
+        public string? ReleaseNotes
         {
             get { return _metadata.ReleaseNotes; }
             set { _metadata.ReleaseNotes = value; }
         }
 
-        public string Language
+        public string? Language
         {
             get { return _metadata.Language; }
             set { _metadata.Language = value; }
         }
 
-        public string Tags
+        public string? Tags
         {
             // Ensure tags start and end with an empty " " so we can do contains filtering reliably
             get { return !string.IsNullOrWhiteSpace(_metadata.Tags) ? $" {_metadata.Tags} " : _metadata.Tags; }
@@ -153,7 +155,7 @@ namespace NuGetPe
             set { _metadata.Serviceable = value; }
         }
 
-        public string Copyright
+        public string? Copyright
         {
             get { return _metadata.Copyright; }
             set { _metadata.Copyright = value; }
@@ -195,13 +197,13 @@ namespace NuGetPe
             set { _metadata.PackageTypes = value; }
         }
 
-        public RepositoryMetadata Repository
+        public RepositoryMetadata? Repository
         {
             get { return _metadata.Repository; }
             set { _metadata.Repository = value; }
         }
 
-        public LicenseMetadata LicenseMetadata
+        public LicenseMetadata? LicenseMetadata
         {
             get { return _metadata.LicenseMetadata; }
             set { _metadata.LicenseMetadata = value; }
@@ -213,7 +215,7 @@ namespace NuGetPe
             set;
         }
 
-        public Uri ReportAbuseUrl
+        public Uri? ReportAbuseUrl
         {
             get { return null; }
         }
@@ -258,9 +260,9 @@ namespace NuGetPe
 
         public bool IsVerified => false;
 
-        public SignatureInfo PublisherSignature { get; private set; }
+        public SignatureInfo? PublisherSignature { get; private set; }
 
-        public RepositorySignatureInfo RepositorySignature { get; private set; }
+        public RepositorySignatureInfo? RepositorySignature { get; private set; }
 
         public VerifySignaturesResult VerificationResult { get; private set; }
 

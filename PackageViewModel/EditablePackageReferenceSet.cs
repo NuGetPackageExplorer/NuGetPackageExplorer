@@ -7,7 +7,7 @@ namespace PackageExplorerViewModel
 {
     public class EditablePackageReferenceSet : INotifyPropertyChanged
     {
-        private NuGetFramework _targetFramework;
+        private NuGetFramework? _targetFramework;
 
         public EditablePackageReferenceSet()
         {
@@ -22,7 +22,7 @@ namespace PackageExplorerViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public NuGetFramework TargetFramework
+        public NuGetFramework? TargetFramework
         {
             get
             {

@@ -13,7 +13,7 @@ namespace PackageExplorerViewModel
 {
     public class PackageFolder : PackagePart
     {
-        private ICommand _addContentFolderCommand;
+        private ICommand? _addContentFolderCommand;
         private bool _isExpanded;
 
         public PackageFolder(string name, PackageFolder parent)
@@ -197,7 +197,7 @@ namespace PackageExplorerViewModel
             return Children.Any(p => p == child);
         }
 
-        public PackageFolder AddFolder(string folderName)
+        public PackageFolder? AddFolder(string folderName)
         {
             if (!AddContentFolderCanExecute(folderName))
             {
@@ -266,7 +266,7 @@ namespace PackageExplorerViewModel
             PackageViewModel.NotifyChanges();
         }
 
-        public PackageFile AddFile(string filePath)
+        public PackageFile? AddFile(string filePath)
         {
             if (!File.Exists(filePath))
             {
@@ -423,11 +423,11 @@ namespace PackageExplorerViewModel
             var childPackgeFolder = AddFolder(dirInfo.Name);
             foreach (var file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly))
             {
-                childPackgeFolder.AddFile(file.FullName);
+                childPackgeFolder?.AddFile(file.FullName);
             }
             foreach (var subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly))
             {
-                childPackgeFolder.AddPhysicalFolderCore(subFolder);
+                childPackgeFolder?.AddPhysicalFolderCore(subFolder);
             }
         }
 

@@ -10,9 +10,7 @@ namespace PackageExplorer
     public class FrameworkNameConverter : IValueConverter
     {
         private static readonly string[] _wellknownPackageFolders = new string[] { "content", "lib", "tools", "build", "ref" };
-
-        #region IValueConverter Members
-
+        
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var path = (string)value;
@@ -57,7 +55,6 @@ namespace PackageExplorer
         {
             throw new NotImplementedException();
         }
-
-        #endregion
+       
     }
 }

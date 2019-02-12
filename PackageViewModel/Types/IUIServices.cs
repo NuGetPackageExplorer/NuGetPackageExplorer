@@ -14,7 +14,7 @@ namespace NuGetPackageExplorer.Types
 
     public interface IUIServices
     {
-        bool OpenSaveFileDialog(string title, string defaultFileName, string initialDirectory, string filter, bool overwritePrompt,
+        bool OpenSaveFileDialog(string title, string defaultFileName, string? initialDirectory, string filter, bool overwritePrompt,
                                 out string selectedFilePath, out int selectedFilterIndex);
 
         bool OpenFileDialog(string title, string filter, out string selectedFileName);
@@ -22,7 +22,7 @@ namespace NuGetPackageExplorer.Types
 
         bool OpenRenameDialog(string currentName, string description, out string newName);
 
-        bool OpenCredentialsDialog(string target, out NetworkCredential networkCredential);
+        bool OpenCredentialsDialog(string target, out NetworkCredential? networkCredential);
 
         bool OpenPublishDialog(object viewModel);
         bool OpenSignatureValidationDialog(object viewModel);

@@ -24,7 +24,9 @@ namespace PackageExplorer
         private const string Channel = "Zip";
 #endif
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public AboutWindow()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             CopyVersionCommand = new RelayCommand(CopyVersion);
 

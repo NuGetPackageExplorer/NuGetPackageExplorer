@@ -124,7 +124,7 @@ namespace PackageExplorerViewModel
             "Microsoft.Performance",
             "CA1811:AvoidUncalledPrivateCode",
             Justification = "Called by MEF.")]
-        private static MruItem ConvertStringToMruItem(string s)
+        private static MruItem? ConvertStringToMruItem(string s)
         {
             if (string.IsNullOrEmpty(s))
             {
@@ -156,7 +156,7 @@ namespace PackageExplorerViewModel
             "Microsoft.Performance",
             "CA1811:AvoidUncalledPrivateCode",
             Justification = "Called by MEF.")]
-        private static MruItem ParseMruItem(string[] parts)
+        private static MruItem? ParseMruItem(string[] parts)
         {
             // v1.1 onwards
             if (!Enum.TryParse(parts[3], out PackageType type))

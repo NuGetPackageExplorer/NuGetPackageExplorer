@@ -10,7 +10,9 @@ namespace PackageExplorer
     /// </summary>
     public partial class PackageDetailActionsControl : UserControl
     {
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public PackageDetailActionsControl()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
         }

@@ -118,7 +118,7 @@ namespace NuGetPe
             }
         }
 
-        public Uri ReportAbuseUrl
+        public Uri? ReportAbuseUrl
         {
             get { return null; }
         }

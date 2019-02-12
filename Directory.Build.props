@@ -24,6 +24,9 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     
     <UseWPF>true</UseWPF>
+
+    <LangVersion>8.0</LangVersion>
+    <NullableContextOptions>enable</NullableContextOptions>
   </PropertyGroup>
 
   <PropertyGroup>

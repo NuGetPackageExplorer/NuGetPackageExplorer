@@ -8,7 +8,7 @@ namespace NuGetPe
     {
         private const string Entropy = "NuGet";
 
-        public static string GetDecryptedValue(this ISettings settings, string section, string key)
+        public static string? GetDecryptedValue(this ISettings settings, string section, string key)
         {
             if (string.IsNullOrEmpty(section))
             {

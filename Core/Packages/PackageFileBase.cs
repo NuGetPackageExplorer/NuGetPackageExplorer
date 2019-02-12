@@ -32,7 +32,7 @@ namespace NuGetPe
             private set;
         }
 
-        public virtual string OriginalPath
+        public virtual string? OriginalPath
         {
             get
             {
@@ -48,7 +48,7 @@ namespace NuGetPe
             private set;
         }
 
-        public FrameworkName TargetFramework { get; }
+        public FrameworkName? TargetFramework { get; }
 
         public IEnumerable<FrameworkName> SupportedFrameworks
         {

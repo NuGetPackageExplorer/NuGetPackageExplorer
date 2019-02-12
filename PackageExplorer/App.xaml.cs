@@ -22,7 +22,9 @@ namespace PackageExplorer
 {
     public partial class App : Application
     {
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public App()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             const string invalidKey = "__BugsnagApiKey__";
             // Initialize Bugsnag if we have a valid key
@@ -153,7 +155,10 @@ namespace PackageExplorer
         private void PackageIconImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
             var image = sender as Image;
-            image.Source = Images.DefaultPackageIcon;
+            if (image != null)
+            {
+                image.Source = Images.DefaultPackageIcon;
+            }
         }
     }
 }

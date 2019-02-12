@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -16,56 +17,80 @@ namespace PackageExplorerViewModel
 {
     public sealed class EditablePackageMetadata : IPackageMetadata, IDataErrorInfo, INotifyPropertyChanged
     {
-        private readonly Dictionary<string, string> _propertyErrors = new Dictionary<string, string>();
-        private readonly IUIServices uiServices;
-        private string _authors;
-        private string _copyright;
-        private string _description;
-        private Uri _iconUrl;
+        private readonly Dictionary<string, string?> _propertyErrors = new Dictionary<string, string?>();
+        private readonly IUIServices _uiServices;
+        private string? _authors;
+        private string? _copyright;
+        private string? _description;
+        private Uri? _iconUrl;
         private string _id;
-        private string _language;
-        private Uri _licenseUrl;
-        private string _owners;
-        private Uri _projectUrl;
-        private string _releaseNotes;
+        private string? _language;
+        private Uri? _licenseUrl;
+        private string? _owners;
+        private Uri? _projectUrl;
+        private string? _releaseNotes;
         private bool _requireLicenseAcceptance;
-        private string _summary;
-        private string _tags;
+        private string? _summary;
+        private string? _tags;
         private bool _serviceable;
-        private string _title;
+        private string? _title;
         private NuGetVersion _version;
         private bool _isSigned;
         private ICollection<PackageDependencyGroup> _dependencySets;
         private ICollection<PackageReferenceSet> _packageAssemblyReferences;
-        private Version _minClientVersion;
+        private Version? _minClientVersion;
 
         private readonly RelayCommand _showValidationResultsCommand;
 
         public ICommand ShowValidationResultsCommand => _showValidationResultsCommand;
-
-        private EditablePackageMetadata()
-        {
-            _showValidationResultsCommand = new RelayCommand(OnShowValidationResult, () => ValidationResult != null);
-        }
-
+        
         public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices)
-            : this()
         {
-            CopyFrom(source);
-            this.uiServices = uiServices;
+            _uiServices = uiServices;
+            _showValidationResultsCommand = new RelayCommand(OnShowValidationResult, () => ValidationResult != null);
+
+            _id = source.Id;
+            _version = source.Version;
+            PackageTypes = new ObservableCollection<PackageType>(source.PackageTypes);
+            Title = source.Title;
+            Authors = ConvertToString(source.Authors);
+            Owners = ConvertToString(source.Owners);
+            IconUrl = FixIconUrl(source.IconUrl);
+            
+            ProjectUrl = source.ProjectUrl;
+            RequireLicenseAcceptance = source.RequireLicenseAcceptance;
+            DevelopmentDependency = source.DevelopmentDependency;
+            Description = source.Description;
+            Summary = source.Summary;
+            ReleaseNotes = source.ReleaseNotes;
+            Copyright = source.Copyright;
+            Language = source.Language;
+            Tags = source.Tags;
+            Serviceable = source.Serviceable;
+            _dependencySets = new ObservableCollection<PackageDependencyGroup>(source.DependencyGroups);
+            FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkReferences);
+            _packageAssemblyReferences = new ObservableCollection<PackageReferenceSet>();
+            ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
+            
+            Repository = source.Repository;
+            LicenseMetadata = source.LicenseMetadata;
+            LicenseUrl = LicenseMetadata != null ? null : source.LicenseUrl; // This will be set for back compat, but should show up as null here
+
+            if (source.PackageAssemblyReferences != null)
+            {
+                PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
+            }
+            MinClientVersion = source.MinClientVersion;
         }
 
         public EditablePackageMetadata(IPackage source, IUIServices uiServices)
-            : this()
+            : this((IPackageMetadata)source, uiServices)
         {
-            CopyFrom(source);
             // Zip Packages may be signed, we need to load that data async
             if (source is ISignaturePackage zip)
             {
                 LoadSignatureData(zip);
             }
-
-            this.uiServices = uiServices;
         }
 
         public async void LoadSignatureData(ISignaturePackage package)
@@ -83,10 +108,11 @@ namespace PackageExplorerViewModel
 
         private void OnShowValidationResult()
         {
-            uiServices.OpenSignatureValidationDialog(ValidationResult);
+            Debug.Assert(ValidationResult != null, nameof(ValidationResult) + " != null");
+            _uiServices.OpenSignatureValidationDialog(ValidationResult);
         }
 
-        public string Authors
+        public string? Authors
         {
             get { return _authors; }
             set
@@ -107,14 +133,14 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public SignatureInfo PublisherSignature
+        public SignatureInfo? PublisherSignature
         {
-            get { return publisherCertificate; }
+            get { return _publisherCertificate; }
             set
             {
-                if (publisherCertificate != value)
+                if (_publisherCertificate != value)
                 {
-                    publisherCertificate = value;
+                    _publisherCertificate = value;
                     RaisePropertyChange(nameof(PublisherSignature));
                 }
             }
@@ -133,33 +159,33 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public ValidationResultViewModel ValidationResult
+        public ValidationResultViewModel? ValidationResult
         {
-            get { return validationResult; }
+            get { return _validationResult; }
             set
             {
-                if (validationResult != value)
+                if (_validationResult != value)
                 {
-                    validationResult = value;
+                    _validationResult = value;
                     RaisePropertyChange(nameof(ValidationResult));
                 }
             }
         }
 
-        public SignatureInfo RepositorySignature
+        public SignatureInfo? RepositorySignature
         {
-            get { return repositoryCertificate; }
+            get { return _repositoryCertificate; }
             set
             {
-                if (repositoryCertificate != value)
+                if (_repositoryCertificate != value)
                 {
-                    repositoryCertificate = value;
+                    _repositoryCertificate = value;
                     RaisePropertyChange(nameof(RepositorySignature));
                 }
             }
         }
 
-        public string Owners
+        public string? Owners
         {
             get { return _owners; }
             set
@@ -210,12 +236,12 @@ namespace PackageExplorerViewModel
 
         #region IDataErrorInfo Members
 
-        public string Error
+        public string? Error
         {
             get { return null; }
         }
 
-        public string this[string columnName]
+        public string? this[string columnName]
         {
             get { return IsValid(columnName); }
         }
@@ -226,11 +252,11 @@ namespace PackageExplorerViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
         private bool _developmentDependency;
-        private RepositoryMetadata repository;
-        private LicenseMetadata licenseMetadata;
-        private SignatureInfo publisherCertificate;
-        private ValidationResultViewModel validationResult;
-        private SignatureInfo repositoryCertificate;
+        private RepositoryMetadata? _repository;
+        private LicenseMetadata? _licenseMetadata;
+        private SignatureInfo? _publisherCertificate;
+        private ValidationResultViewModel? _validationResult;
+        private SignatureInfo? _repositoryCertificate;
 
         #endregion
 
@@ -284,7 +310,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Title
+        public string? Title
         {
             get { return _title; }
             set
@@ -297,7 +323,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public Uri IconUrl
+        public Uri? IconUrl
         {
             get { return _iconUrl; }
             set
@@ -310,7 +336,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public Uri LicenseUrl
+        public Uri? LicenseUrl
         {
             get { return _licenseUrl; }
             set
@@ -323,7 +349,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public Uri ProjectUrl
+        public Uri? ProjectUrl
         {
             get { return _projectUrl; }
             set
@@ -363,7 +389,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Description
+        public string? Description
         {
             get { return _description; }
             set
@@ -385,7 +411,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Summary
+        public string? Summary
         {
             get { return _summary; }
             set
@@ -398,7 +424,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string ReleaseNotes
+        public string? ReleaseNotes
         {
             get { return _releaseNotes; }
             set
@@ -411,7 +437,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Copyright
+        public string? Copyright
         {
             get { return _copyright; }
             set
@@ -424,7 +450,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Language
+        public string? Language
         {
             get { return _language; }
             set
@@ -437,7 +463,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Tags
+        public string? Tags
         {
             get { return _tags; }
             set
@@ -463,7 +489,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public Version MinClientVersion
+        public Version? MinClientVersion
         {
             get { return _minClientVersion; }
             set
@@ -508,63 +534,29 @@ namespace PackageExplorerViewModel
         IEnumerable<PackageType> IPackageMetadata.PackageTypes => PackageTypes;
         public ICollection<PackageType> PackageTypes { get; set; }
 
-        public RepositoryMetadata Repository
+        public RepositoryMetadata? Repository
         {
-            get { return repository; }
+            get { return _repository; }
             set
             {
-                repository = value;
+                _repository = value;
                 RaisePropertyChange(nameof(Repository));
             }
         }
 
-        public LicenseMetadata LicenseMetadata
+        public LicenseMetadata? LicenseMetadata
         {
-            get { return licenseMetadata; }
+            get { return _licenseMetadata; }
             set
             {
-                licenseMetadata = value;
+                _licenseMetadata = value;
                 RaisePropertyChange(nameof(LicenseMetadata));
             }
         }
 
         #endregion
 
-        public void CopyFrom(IPackageMetadata source)
-        {
-            Id = source.Id;
-            Version = source.Version;
-            PackageTypes = new ObservableCollection<PackageType>(source.PackageTypes);
-            Title = source.Title;
-            Authors = ConvertToString(source.Authors);
-            Owners = ConvertToString(source.Owners);
-            IconUrl = FixIconUrl(source.IconUrl);
-            
-            ProjectUrl = source.ProjectUrl;
-            RequireLicenseAcceptance = source.RequireLicenseAcceptance;
-            DevelopmentDependency = source.DevelopmentDependency;
-            Description = source.Description;
-            Summary = source.Summary;
-            ReleaseNotes = source.ReleaseNotes;
-            Copyright = source.Copyright;
-            Language = source.Language;
-            Tags = source.Tags;
-            Serviceable = source.Serviceable;
-            DependencySets = new ObservableCollection<PackageDependencyGroup>(source.DependencyGroups);
-            FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkReferences);
-            PackageAssemblyReferences = new ObservableCollection<PackageReferenceSet>();
-            ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
-            
-            Repository = source.Repository;
-            LicenseMetadata = source.LicenseMetadata;
-            LicenseUrl = LicenseMetadata != null ? null : source.LicenseUrl; // This will be set for back compat, but should show up as null here
-
-            if (source.PackageAssemblyReferences != null)
-            {
-                PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
-            }
-            MinClientVersion = source.MinClientVersion;
-        }
+     
 
         private static Uri FixIconUrl(Uri uri)
         {
@@ -589,7 +581,7 @@ namespace PackageExplorerViewModel
             return builder.Uri;
         }
 
-        private static IEnumerable<string> SplitString(string text)
+        private static IEnumerable<string> SplitString(string? text)
         {
             return text == null ? Enumerable.Empty<string>() : text.Split(',').Select(a => a.Trim());
         }
@@ -609,7 +601,7 @@ namespace PackageExplorerViewModel
         /// </summary>
         public string FileName => Id + "." + ManifestUtility.ReplaceMetadataWithToken(Version.ToFullString());
 
-        private string IsValid(string propertyName)
+        private string? IsValid(string propertyName)
         {
             if (propertyName == nameof(LicenseUrl) || propertyName == nameof(LicenseMetadata))
             {
@@ -623,7 +615,7 @@ namespace PackageExplorerViewModel
             return error;
         }
 
-        private void SetError(string property, string error)
+        private void SetError(string property, string? error)
         {
             if (string.IsNullOrEmpty(error))
             {

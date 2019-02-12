@@ -19,7 +19,7 @@ namespace PackageExplorerViewModel
     public class PackageFile : PackagePart, IPackageFile, IEditablePackageFile, IPackageContent
     {
         private readonly IPackageFile _file;
-        private FileSystemWatcher _watcher;
+        private FileSystemWatcher? _watcher;
 
         public PackageFile(IPackageFile file, string name, PackageFolder parent)
             : this(file, name, parent, parent.PackageViewModel)
@@ -43,7 +43,7 @@ namespace PackageExplorerViewModel
         /// <summary>
         /// Returns the path on disk if this file is a PhysicalPackageFile. Otherwise, returns null;
         /// </summary>
-        public string OriginalPath
+        public string? OriginalPath
         {
             get { return _file.OriginalPath(); }
         }
@@ -98,7 +98,7 @@ namespace PackageExplorerViewModel
 
         public DateTimeOffset LastWriteTime => _file.LastWriteTime;
 
-        private ImageSource _fileIcon;
+        private ImageSource? _fileIcon;
 
         public ImageSource FileIcon
         {

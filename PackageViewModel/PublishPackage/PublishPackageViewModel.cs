@@ -14,18 +14,18 @@ namespace PackageExplorerViewModel
     {
         private readonly MruPackageSourceManager _mruSourceManager;
         private readonly IPackageMetadata _package;
-        private readonly string _packageFilePath;
+        private readonly string? _packageFilePath;
         private readonly ISettingsManager _settingsManager;
         private readonly IUIServices _uiServices;
         private readonly CredentialPublishProvider _credentialPublishProvider;
         private bool _canPublish = true;
         private bool _hasError;
-        private string _publishKeyOrPAT;
+        private string? _publishKeyOrPAT;
         private bool? _publishAsUnlisted = true;
         private bool? _appendV2ApiToUrl = true;
-        private string _selectedPublishItem;
+        private string? _selectedPublishItem;
         private bool _showProgress;
-        private string _status;
+        private string? _status;
         private bool _suppressReadingApiKey;
 
         public PublishPackageViewModel(
@@ -45,7 +45,7 @@ namespace PackageExplorerViewModel
             PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
         }
 
-        public string PublishKeyOrPAT
+        public string? PublishKeyOrPAT
         {
             get { return _publishKeyOrPAT; }
             set
@@ -72,7 +72,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string SelectedPublishItem
+        public string? SelectedPublishItem
         {
             get { return _selectedPublishItem; }
             set
@@ -189,7 +189,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string Status
+        public string? Status
         {
             get { return _status; }
             set
@@ -209,7 +209,11 @@ namespace PackageExplorerViewModel
             ShowProgress = false;
             HasError = false;
             Status = (PublishAsUnlisted == true) ? "Package published and unlisted successfully." : "Package published successfully.";
-            _settingsManager.WriteApiKey(PublishUrl, PublishKeyOrPAT);
+            if (PublishKeyOrPAT != null)
+            {
+                _settingsManager.WriteApiKey(PublishUrl, PublishKeyOrPAT);
+            }
+
             CanPublish = true;
         }
 
@@ -276,7 +280,7 @@ namespace PackageExplorerViewModel
 
         public void Dispose()
         {
-            _settingsManager.PublishAsUnlisted = (bool)PublishAsUnlisted;
+            _settingsManager.PublishAsUnlisted = PublishAsUnlisted.GetValueOrDefault();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Input;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
@@ -15,11 +16,13 @@ namespace PackageExplorerViewModel
         private int _hashCode;
         private bool _isSelected;
         private string _name;
-        private PackageFolder _parent;
+        private PackageFolder? _parent;
         private string _path;
-        private string _extension;
+        private string? _extension;
 
-        protected PackagePart(string name, PackageFolder parent, PackageViewModel viewModel)
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
+        protected PackagePart(string name, PackageFolder? parent, PackageViewModel viewModel)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             if (name == null)
             {
@@ -35,7 +38,7 @@ namespace PackageExplorerViewModel
 
         public PackageViewModel PackageViewModel { get; }
 
-        public PackageFolder Parent
+        public PackageFolder? Parent
         {
             get { return _parent; }
             internal set
@@ -53,6 +56,9 @@ namespace PackageExplorerViewModel
             get { return _name; }
             set
             {
+                if (value == null)
+                    throw new ArgumentNullException(nameof(value));
+
                 if (_name != value)
                 {
                     OnNameChange(value);
@@ -72,7 +78,7 @@ namespace PackageExplorerViewModel
             Extension = newName == null ? null : System.IO.Path.GetExtension(newName);
         }
 
-        public string Extension
+        public string? Extension
         {
             get { return _extension; }
             set
@@ -231,7 +237,7 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            for (var cursor = this; cursor != null; cursor = cursor.Parent)
+            for (PackagePart? cursor = this; cursor != null; cursor = cursor.Parent)
             {
                 if (cursor == container)
                 {

@@ -13,20 +13,27 @@ namespace NuGetPe.AssemblyMetadata
         private Dictionary<string, string> MetadataEntries { get; } = new Dictionary<string, string>();
         private string FullName { get; set; }
         private string StrongName { get; set; }
-        private IEnumerable<AssemblyName> ReferencedAsseblies { get; set; }
-        public AssemblyDebugData DebugData { get; internal set; }
+        private IEnumerable<AssemblyName> ReferencedAsseblies { get; set; } = Enumerable.Empty<AssemblyName>();
+        public AssemblyDebugData? DebugData { get; internal set; }
 
-        /// <summary>
-        /// Set Fullname of the assembly and determine strong name.
-        /// </summary>
-        /// <remarks>Helper</remarks>
-        public void SetFullName(AssemblyName assemblyName)
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
+        public AssemblyMetaData(AssemblyName assemblyName)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             if (assemblyName == null)
             {
                 throw new ArgumentNullException(nameof(assemblyName));
             }
 
+            SetFullName(assemblyName);
+        }
+
+        /// <summary>
+        /// Set Fullname of the assembly and determine strong name.
+        /// </summary>
+        /// <remarks>Helper</remarks>
+        private void SetFullName(AssemblyName assemblyName)
+        {
             FullName = assemblyName.FullName;
 
             try
@@ -38,9 +45,9 @@ namespace NuGetPe.AssemblyMetadata
                     ? $"Yes, version {assemblyName.Version}"
                     : "No";
             }
-            catch (Exception)
+            catch
             {
-                //ignore
+                StrongName = "No"; // Default if we can't read it
             }
         }
 

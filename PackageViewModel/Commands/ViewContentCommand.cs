@@ -81,7 +81,7 @@ namespace PackageExplorerViewModel
             Justification = "We don't want plugin to crash the app.")]
         private void ShowFile(PackageFile file)
         {
-            object content = null;
+            object? content = null;
             var isBinary = false;
 
             // find all plugins which can handle this file's extension
@@ -94,10 +94,16 @@ namespace PackageExplorerViewModel
                     // iterate over all plugins, looking for the first one that return non-null content
                     foreach (var viewer in contentViewers)
                     {
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8602 // Possible dereference of a null reference.
+
                         // Get peer files
                         var peerFiles = file.Parent.GetFiles()
                                             .Select(pf => new PackageFile(pf, Path.GetFileName(pf.Path), file.Parent))
                                             .ToList();
+
+#pragma warning restore CS8602 // Possible dereference of a null reference.
+#pragma warning restore CS8604 // Possible null reference argument.
 
                         content = viewer.GetView(file, peerFiles);
                         if (content != null)

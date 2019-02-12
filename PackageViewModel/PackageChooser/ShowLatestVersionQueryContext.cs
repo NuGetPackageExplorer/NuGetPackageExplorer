@@ -12,15 +12,15 @@ namespace PackageExplorerViewModel
     internal class ShowLatestVersionQueryContext<T> : IQueryContext<T> where T : IPackageSearchMetadata
     {
         private readonly SourceRepository _sourceRepository;
-        private readonly string _searchText;
+        private readonly string? _searchText;
         private readonly SearchFilter _searchFilter;
         private readonly int _pageSize;
-        private PackageSearchResource _packageSearchResouce;
-        private RawSearchResourceV3 _rawPackageSearchResouce;
+        private PackageSearchResource? _packageSearchResouce;
+        private RawSearchResourceV3? _rawPackageSearchResouce;
         private int? _lastPageIndex;
-        private int? _lastPageCount;
+        private int _lastPageCount;
 
-        public ShowLatestVersionQueryContext(SourceRepository sourceRepository, string search, bool showPreReleasePackages, int pageSize)
+        public ShowLatestVersionQueryContext(SourceRepository sourceRepository, string? search, bool showPreReleasePackages, int pageSize)
         {
             _sourceRepository = sourceRepository;
             _searchText = search;
@@ -34,17 +34,17 @@ namespace PackageExplorerViewModel
 
         public int BeginPackage => CurrentPage * _pageSize + (_lastPageIndex == 0 && _lastPageCount == 0 ? 0 : 1);
 
-        public int EndPackage => CurrentPage * _pageSize + (IsLastPage ? _lastPageCount.Value : _pageSize);
+        public int EndPackage => CurrentPage * _pageSize + (IsLastPage ? _lastPageCount : _pageSize);
 
         public bool IsLastPage => CurrentPage == _lastPageIndex;
 
         public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
         {
-            IEnumerable<IPackageSearchMetadata> result = null;
+            IEnumerable<IPackageSearchMetadata>? result = null;
 
             if (_searchText?.StartsWith("id:", StringComparison.OrdinalIgnoreCase) == true)
             {
-                var id = _searchText.Substring(3).Trim();
+                var id = _searchText?.Substring(3).Trim();
                 if (!string.IsNullOrEmpty(id))
                 {
                     var findPackageByIdResource = await _sourceRepository.GetResourceAsync<PackageMetadataResource>();

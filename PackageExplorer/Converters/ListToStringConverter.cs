@@ -9,7 +9,7 @@ namespace PackageExplorer
 {
     public class ListToStringConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var sep = parameter as string;
             if (value is IEnumerable<string> enu)

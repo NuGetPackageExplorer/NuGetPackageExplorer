@@ -109,7 +109,7 @@ namespace PackageExplorerViewModel
             var index = 0;
             foreach (var t in _items)
             {
-                if (t.Equals(item))
+                if (t != null && t.Equals(item))
                 {
                     return index;
                 }

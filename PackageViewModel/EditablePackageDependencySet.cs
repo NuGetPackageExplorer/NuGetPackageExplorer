@@ -8,7 +8,7 @@ namespace PackageExplorerViewModel
 {
     public class EditablePackageDependencySet : INotifyPropertyChanged
     {
-        private NuGetFramework _targetFramework;
+        private NuGetFramework? _targetFramework;
 
         public EditablePackageDependencySet()
         {
@@ -21,7 +21,7 @@ namespace PackageExplorerViewModel
             Dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Packages);
         }
 
-        public NuGetFramework TargetFramework
+        public NuGetFramework? TargetFramework
         {
             get
             {

@@ -75,7 +75,7 @@ namespace PackageExplorerViewModel
             {
                 if (rule != null)
                 {
-                    PackageIssue[] issues = null;
+                    PackageIssue[]? issues = null;
                     try
                     {
                         issues = rule.Validate(package, packageSource).ToArray();

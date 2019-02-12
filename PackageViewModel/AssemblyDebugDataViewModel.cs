@@ -30,7 +30,7 @@ namespace PackageExplorerViewModel
             foreach (var doc in debugData.Sources)
             {
                 var path = doc.Name;
-                string location = null;
+                string? location = null;
                 // see if any keys match the base
                 foreach (var key in lookup.Keys)
                 {

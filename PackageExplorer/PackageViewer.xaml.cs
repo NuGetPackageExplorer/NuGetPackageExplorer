@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -196,11 +197,13 @@ namespace PackageExplorer
         private readonly IUIServices _messageBoxServices;
 
         private double _analysisPaneWidth = 250; // default width for package analysis pane
-        private TreeViewItem _dragItem;
+        private TreeViewItem? _dragItem;
         private System.Windows.Point _dragPoint;
         private bool _isDragging, _isPressing;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public PackageViewer(ISettingsManager settings, IUIServices messageBoxServices, IPackageChooser packageChooser)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 
@@ -215,7 +218,7 @@ namespace PackageExplorer
 
         private PackageFolder RootFolder
         {
-            get { return (DataContext as PackageViewModel).RootFolder; }
+            get { return ((PackageViewModel)DataContext).RootFolder; }
         }
 
         private void FileContentContainer_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -347,7 +350,7 @@ namespace PackageExplorer
 
         private void OnTreeViewItemDragOver(object sender, DragEventArgs e)
         {
-            PackageFolder folder;
+            PackageFolder? folder;
 
             if (sender is TreeViewItem item)
             {
@@ -381,7 +384,7 @@ namespace PackageExplorer
 
         private void OnTreeViewItemDrop(object sender, DragEventArgs e)
         {
-            PackageFolder folder = null;
+            PackageFolder? folder = null;
 
             if (sender is TreeViewItem item)
             {
@@ -424,7 +427,7 @@ namespace PackageExplorer
             try
             {
                 var item = sender as TreeViewItem;
-                if (item == _dragItem)
+                if (item == _dragItem && item != null)
                 {
                     var newPoint = e.GetPosition(item);
                     if (Math.Abs(newPoint.X - _dragPoint.X) >= SystemParameters.MinimumHorizontalDragDistance ||
@@ -484,7 +487,7 @@ namespace PackageExplorer
 
         private void OnTreeViewItemCanPaste(object sender, CanExecuteRoutedEventArgs e)
         {
-            PackageFolder folder = null;
+            PackageFolder? folder = null;
 
             if (sender is TreeView treeView)
             {
@@ -496,7 +499,7 @@ namespace PackageExplorer
 
         private void OnTreeViewItemPaste(object sender, ExecutedRoutedEventArgs e)
         {
-            PackageFolder folder = null;
+            PackageFolder? folder = null;
 
             if (sender is TreeView treeView)
             {
@@ -526,7 +529,7 @@ namespace PackageExplorer
             }
         }
 
-        private bool CanHandleDataObject(PackageFolder folder, IDataObject data)
+        private bool CanHandleDataObject(PackageFolder? folder, IDataObject data)
         {
             if (DataContext is PackageViewModel model)
             {
@@ -566,7 +569,7 @@ namespace PackageExplorer
             return false;
         }
 
-        private bool HandleDataObject(PackageFolder folder, IDataObject data, bool copy)
+        private bool HandleDataObject(PackageFolder? folder, IDataObject data, bool copy)
         {
             if (!CanHandleDataObject(folder, data))
             {
@@ -602,7 +605,7 @@ namespace PackageExplorer
             {
                 folder = folder ?? RootFolder;
 
-                var viewModel = DataContext as PackageViewModel;
+                var viewModel = (PackageViewModel)DataContext;
                 viewModel.AddDraggedAndDroppedFileDescriptors(folder, NativeDragDrop.GetFileGroupDescriptorW(data));
                 return true;
             }
@@ -611,7 +614,7 @@ namespace PackageExplorer
                 var value = data.GetData(DataFormats.FileDrop);
                 if (value is string[] filenames && filenames.Length > 0)
                 {
-                    var viewModel = DataContext as PackageViewModel;
+                    var viewModel = (PackageViewModel)DataContext;
                     viewModel.AddDraggedAndDroppedFiles(folder, filenames);
                     return true;
                 }
@@ -705,7 +708,7 @@ namespace PackageExplorer
         private class LazyPackageFileStream : Stream
         {
             private readonly PackageFile _packageFile;
-            private Stream _inner;
+            private Stream? _inner;
 
             public LazyPackageFileStream(PackageFile packageFile)
             {
@@ -731,9 +734,31 @@ namespace PackageExplorer
 
             public override bool CanWrite => false;
 
-            public override long Length { get { InitStream(); return _inner.Length; } }
+            public override long Length
+            {
+                get
+                {
+                    InitStream();
+                    Debug.Assert(_inner != null, nameof(_inner) + " != null");
+                    return _inner.Length;
+                }
+            }
 
-            public override long Position { get { InitStream(); return _inner.Position; } set { InitStream(); _inner.Position = value; } }
+            public override long Position
+            {
+                get
+                {
+                    InitStream();
+                    Debug.Assert(_inner != null, nameof(_inner) + " != null");
+                    return _inner.Position;
+                }
+                set
+                {
+                    InitStream();
+                    Debug.Assert(_inner != null, nameof(_inner) + " != null");
+                    _inner.Position = value;
+                }
+            }
 
             public override void Flush() => throw new NotImplementedException();
 
@@ -741,12 +766,16 @@ namespace PackageExplorer
             {
                 InitStream();
 
+                Debug.Assert(_inner != null, nameof(_inner) + " != null");
+
                 return _inner.Read(buffer, offset, count);
             }
 
             public override long Seek(long offset, SeekOrigin origin)
             {
                 InitStream();
+
+                Debug.Assert(_inner != null, nameof(_inner) + " != null");
 
                 return _inner.Seek(offset, origin);
             }

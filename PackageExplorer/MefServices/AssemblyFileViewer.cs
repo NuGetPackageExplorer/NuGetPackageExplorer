@@ -25,8 +25,8 @@ namespace PackageExplorer
                 }
 
                 var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile);
-                AssemblyDebugDataViewModel debugDataViewModel = null;
-                if (assemblyMetadata.DebugData != null)
+                AssemblyDebugDataViewModel? debugDataViewModel = null;
+                if (assemblyMetadata?.DebugData != null)
                     debugDataViewModel = new AssemblyDebugDataViewModel(assemblyMetadata.DebugData);
 
                 // No debug data to display

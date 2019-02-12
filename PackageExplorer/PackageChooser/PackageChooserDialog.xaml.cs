@@ -17,9 +17,11 @@ namespace PackageExplorer
     {
         private readonly ISettingsManager _settings;
         private readonly PackageChooserViewModel _viewModel;
-        private string _pendingSearch;
+        private string? _pendingSearch;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public PackageChooserDialog(ISettingsManager settings, PackageChooserViewModel viewModel)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 
@@ -78,7 +80,7 @@ namespace PackageExplorer
             }
         }
 
-        private void InvokeSearch(string searchTerm)
+        private void InvokeSearch(string? searchTerm)
         {
             SearchButton.Command.Execute(searchTerm);
         }
@@ -163,7 +165,7 @@ namespace PackageExplorer
             }
         }
 
-        internal void ShowDialog(string searchTerm)
+        internal void ShowDialog(string? searchTerm)
         {
             _pendingSearch = searchTerm;
             ShowDialog();

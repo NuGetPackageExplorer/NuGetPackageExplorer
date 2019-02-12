@@ -17,15 +17,16 @@ namespace PackageExplorerViewModel
     {
         private const int PackageListPageSize = 15;
 
-        private IQueryContext<IPackageSearchMetadata> _currentQuery;
-        private string _currentSearch;
+        private IQueryContext<IPackageSearchMetadata>? _currentQuery;
+        private string? _currentSearch;
         private FeedType _feedType;
-        private MruPackageSourceManager _packageSourceManager;
-        private readonly string _defaultPackageSourceUrl;
+        private MruPackageSourceManager? _packageSourceManager;
+        private readonly string? _defaultPackageSourceUrl;
+        private bool _disposed;
 
         public PackageChooserViewModel(MruPackageSourceManager packageSourceManager,
                                        bool showPrereleasePackages,
-                                       string defaultPackageSourceUrl)
+                                       string? defaultPackageSourceUrl)
         {
             _showPrereleasePackages = showPrereleasePackages;
             _defaultPackageSourceUrl = defaultPackageSourceUrl;
@@ -43,8 +44,8 @@ namespace PackageExplorerViewModel
 
         #region Bound Properties
 
-        private string _currentTypingSearch;
-        public string CurrentTypingSearch
+        private string? _currentTypingSearch;
+        public string? CurrentTypingSearch
         {
             get { return _currentTypingSearch; }
             set
@@ -78,7 +79,13 @@ namespace PackageExplorerViewModel
 
         public string PackageSource
         {
-            get { return _defaultPackageSourceUrl ?? _packageSourceManager.ActivePackageSource; }
+            get
+            {
+                CheckDisposed();
+#pragma warning disable CS8602 // Possible dereference of a null reference.
+                return _defaultPackageSourceUrl ?? _packageSourceManager.ActivePackageSource;
+#pragma warning restore CS8602 // Possible dereference of a null reference.
+            }
             private set
             {
                 if (_defaultPackageSourceUrl != null)
@@ -86,7 +93,10 @@ namespace PackageExplorerViewModel
                     throw new InvalidOperationException(
                         "Cannot set active package source when fixed package source is used.");
                 }
+                CheckDisposed();
+#pragma warning disable CS8602 // Possible dereference of a null reference.
                 _packageSourceManager.ActivePackageSource = value.Trim();
+#pragma warning restore CS8602 // Possible dereference of a null reference.
                 OnPropertyChanged();
             }
         }
@@ -98,7 +108,13 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<string> PackageSources
         {
-            get { return _packageSourceManager.PackageSources; }
+            get
+            {
+                CheckDisposed();
+#pragma warning disable CS8602 // Possible dereference of a null reference.
+                return _packageSourceManager.PackageSources;
+#pragma warning restore CS8602 // Possible dereference of a null reference.
+            }
         }
 
         private bool _isEditable = true;
@@ -118,8 +134,8 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<PackageInfoViewModel> Packages { get; private set; }
 
-        private PackageInfoViewModel _selectedPackageViewModel;
-        public PackageInfoViewModel SelectedPackageViewModel
+        private PackageInfoViewModel? _selectedPackageViewModel;
+        public PackageInfoViewModel? SelectedPackageViewModel
         {
             get { return _selectedPackageViewModel; }
             set
@@ -165,8 +181,8 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private string _statusContent;
-        public string StatusContent
+        private string? _statusContent;
+        public string? StatusContent
         {
             get { return _statusContent; }
             set
@@ -195,9 +211,9 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-        public SourceRepository ActiveRepository { get; private set; }
+        public SourceRepository? ActiveRepository { get; private set; }
 
-        public PackageInfo SelectedPackage
+        public PackageInfo? SelectedPackage
         {
             get
             {
@@ -205,8 +221,8 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private CancellationTokenSource _currentCancellationTokenSource;
-        private CancellationTokenSource CurrentCancellationTokenSource
+        private CancellationTokenSource? _currentCancellationTokenSource;
+        private CancellationTokenSource? CurrentCancellationTokenSource
         {
             get { return _currentCancellationTokenSource; }
             set
@@ -330,9 +346,13 @@ namespace PackageExplorerViewModel
 
         private async Task<IList<IPackageSearchMetadata>> QueryPackages(CancellationToken token)
         {
-            var result = await _currentQuery.GetItemsForCurrentPage(token);
-            token.ThrowIfCancellationRequested();
-            return result;
+            if (_currentQuery != null)
+            {
+                var result = await _currentQuery.GetItemsForCurrentPage(token);
+                token.ThrowIfCancellationRequested();
+                return result;
+            }
+            return new List<IPackageSearchMetadata>();
         }
 
         private void ShowPackages(IEnumerable<IPackageSearchMetadata> packages, int beginPackage, int endPackage)
@@ -340,7 +360,8 @@ namespace PackageExplorerViewModel
             Packages.Clear();
             if (ActiveRepository != null)
             {
-                Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, ActiveRepository, _feedType, this)));
+                var ar = ActiveRepository;
+                Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, ar, _feedType, this)));
             }
             UpdatePageNumber(beginPackage, endPackage);
         }
@@ -397,8 +418,12 @@ namespace PackageExplorerViewModel
         {
             if (PackageSource != source)
             {
+                CheckDisposed();
+
                 // add the new source to MRU list
+#pragma warning disable CS8602 // Possible dereference of a null reference.
                 _packageSourceManager.NotifyPackageSourceAdded(source);
+#pragma warning restore CS8602 // Possible dereference of a null reference.
                 PackageSource = source;
 
                 ResetPackageRepository();
@@ -512,8 +537,8 @@ namespace PackageExplorerViewModel
 
         private Task MoveNext()
         {
-            var canMoveNext = _currentQuery.MoveNext();
-            if (canMoveNext)
+            var canMoveNext = _currentQuery?.MoveNext();
+            if (canMoveNext == true)
             {
                 return LoadPage(CancellationToken.None);
             }
@@ -523,8 +548,8 @@ namespace PackageExplorerViewModel
 
         private Task MovePrevious()
         {
-            var canMovePrevious = _currentQuery.MovePrevious();
-            if (canMovePrevious)
+            var canMovePrevious = _currentQuery?.MovePrevious();
+            if (canMovePrevious == true)
             {
                 return LoadPage(CancellationToken.None);
             }
@@ -534,7 +559,7 @@ namespace PackageExplorerViewModel
 
         private Task MoveFirst()
         {
-            _currentQuery.MoveFirst();
+            _currentQuery?.MoveFirst();
             return LoadPage(CancellationToken.None);
         }
 
@@ -563,7 +588,13 @@ namespace PackageExplorerViewModel
                 _packageSourceManager = null;
             }
 
+            _disposed = true;
             CurrentCancellationTokenSource?.Dispose();
+        }
+
+        private void CheckDisposed()
+        {
+            if (_disposed) throw new ObjectDisposedException(nameof(PackageChooserViewModel));
         }
     }
 }

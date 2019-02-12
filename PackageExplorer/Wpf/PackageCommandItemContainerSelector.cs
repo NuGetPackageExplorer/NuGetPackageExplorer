@@ -7,9 +7,9 @@ namespace PackageExplorer
 {
     public class PackageCommandItemContainerSelector : StyleSelector
     {
-        public Style PackageCommandStyle { get; set; }
+        public Style? PackageCommandStyle { get; set; }
 
-        public override Style SelectStyle(object item, DependencyObject container)
+        public override Style? SelectStyle(object item, DependencyObject container)
         {
             return (item is LazyPackageCommand || container is Separator) ? PackageCommandStyle : null;
         }

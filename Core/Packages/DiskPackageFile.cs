@@ -18,7 +18,7 @@ namespace NuGetPe
             return File.OpenRead(OriginalPath);
         }
 
-        public override string OriginalPath { get; }
+        public override string? OriginalPath { get; }
 
         public override DateTimeOffset LastWriteTime
         {

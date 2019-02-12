@@ -45,19 +45,5 @@ namespace PackageExplorer
             return (scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) ||
                     scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase));
         }
-
-        public static Dictionary<string, string> GetRequestParameters(this Uri uri)
-        {
-            if (uri == null)
-            {
-                return null;
-            }
-
-            var matches = Regex.Matches(uri.Query, @"[\?&](([^&=]+)=([^&=#]*))");
-            return matches.Cast<Match>().ToDictionary(
-                m => Uri.UnescapeDataString(m.Groups[2].Value),
-                m => Uri.UnescapeDataString(m.Groups[3].Value),
-                StringComparer.OrdinalIgnoreCase);
-        }
     }
 }

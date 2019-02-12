@@ -9,7 +9,9 @@ namespace NuGetPackageExplorer.Types
         RemotePackage
     }
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     public sealed class MruItem : IEquatable<MruItem>
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
         public string Id { get; set; }
         public NuGetVersion Version { get; set; }
@@ -33,7 +35,7 @@ namespace NuGetPackageExplorer.Types
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as MruItem);
+            return obj is MruItem item && Equals(item);
         }
 
         public override int GetHashCode()
@@ -47,7 +49,7 @@ namespace NuGetPackageExplorer.Types
             {
                 return string.Format("{0} {1}", Id, Version);
             }
-            return Path;
+            return Path ?? "MruItem";
         }
     }
 }

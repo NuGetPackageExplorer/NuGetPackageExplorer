@@ -12,14 +12,16 @@ using Ookii.Dialogs.Wpf;
 namespace PackageExplorer
 {
     [Export(typeof(IUIServices))]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     internal class UIServices : IUIServices
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
         [Import]
         public Lazy<MainWindow> Window { get; set; }
 
         #region IUIServices Members
 
-        public bool OpenSaveFileDialog(string title, string defaultFileName, string initialDirectory, string filter, bool overwritePrompt,
+        public bool OpenSaveFileDialog(string title, string defaultFileName, string? initialDirectory, string filter, bool overwritePrompt,
                                        out string selectedFilePath, out int selectedFilterIndex)
         {
             var dialog = new SaveFileDialog
@@ -42,7 +44,7 @@ namespace PackageExplorer
             }
             else
             {
-                selectedFilePath = null;
+                selectedFilePath = string.Empty;
                 selectedFilterIndex = -1;
                 return false;
             }
@@ -71,14 +73,14 @@ namespace PackageExplorer
                 }
                 else
                 {
-                    selectedFileName = null;
+                    selectedFileName = string.Empty;
                     return false;
                 }
             }
             catch (Exception e)
             {
                 Show(e.Message, MessageLevel.Error);
-                selectedFileName = null;
+                selectedFileName = string.Empty;
                 return false;
             }
            
@@ -105,7 +107,7 @@ namespace PackageExplorer
             }
             else
             {
-                selectedFileNames = null;
+                selectedFileNames = new string[0];
                 return false;
             }
         }
@@ -188,7 +190,7 @@ namespace PackageExplorer
             }
             else
             {
-                newName = null;
+                newName = string.Empty;
                 return false;
             }
         }
@@ -273,7 +275,7 @@ namespace PackageExplorer
             }
             else
             {
-                selectedPath = null;
+                selectedPath = string.Empty;
                 return false;
             }
         }
@@ -468,12 +470,12 @@ namespace PackageExplorer
             }
             else
             {
-                portableFramework = null;
+                portableFramework = string.Empty;
                 return false;
             }
         }
 
-        public bool OpenCredentialsDialog(string target, out NetworkCredential networkCredential)
+        public bool OpenCredentialsDialog(string target, out NetworkCredential? networkCredential)
         {
             using (var dialog = new CredentialDialog())
             {
