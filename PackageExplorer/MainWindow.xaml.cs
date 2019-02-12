@@ -15,12 +15,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
-using Bugsnag;
 using NuGet.Packaging;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
-using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
@@ -37,7 +35,9 @@ namespace PackageExplorer
         private readonly IMruManager _mruManager;
 
         [ImportingConstructor]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public MainWindow(IMruManager mruManager)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 
@@ -75,9 +75,11 @@ namespace PackageExplorer
         {
             get
             {
+#pragma warning disable CS8603 // Possible null reference return.
                 return PackageCommandsContainer != null
                            ? (ObservableCollection<LazyPackageCommand>)PackageCommandsContainer.Collection
                            : null;
+#pragma warning restore CS8603 // Possible null reference return.
             }
             set
             {
@@ -91,7 +93,7 @@ namespace PackageExplorer
         [Export]
         public IPackageEditorService EditorService { get; set; }
 
-        private string _tempFile;
+        private string? _tempFile;
 
         private bool HasUnsavedChanges
         {
@@ -148,9 +150,9 @@ namespace PackageExplorer
 
         private bool OpenLocalPackageCore(string packagePath)
         {
-            IPackage package = null;
+            IPackage? package = null;
 
-            string tempFile = null;
+            string? tempFile = null;
             try
             {
                 tempFile = Path.GetTempFileName();
@@ -347,6 +349,10 @@ namespace PackageExplorer
             }
 
             var repository = PackageChooser.Repository;
+            if (repository == null)
+            {
+                return;
+            }
 
             var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, selectedPackageInfo.SemanticVersion);
 
@@ -418,7 +424,7 @@ namespace PackageExplorer
         private bool AskToSaveCurrentFile()
         {
             var viewModel = (PackageViewModel)DataContext;
-            if (HasUnsavedChanges || (IsInEditFileMode && viewModel.FileEditorViewModel.HasEdit))
+            if (HasUnsavedChanges || (IsInEditFileMode && viewModel.FileEditorViewModel?.HasEdit == true))
             {
                 // if there is unsaved changes, ask user for confirmation
                 var result = UIServices.ConfirmWithCancel("You have unsaved changes in the current package.", StringResources.Dialog_SaveQuestion);
@@ -433,7 +439,7 @@ namespace PackageExplorer
                     {
                         // force a Save from outside the file editor.
                         // In this case, Content is the FileEditor user control
-                        viewModel.FileEditorViewModel.SaveOnExit((IFileEditorService)Content);
+                        viewModel.FileEditorViewModel?.SaveOnExit((IFileEditorService)Content);
                     }
 
                     var saveCommand = viewModel.SaveCommand;
@@ -539,7 +545,7 @@ namespace PackageExplorer
             return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
         }
 
-        internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string id = null, NuGetVersion version = null)
+        internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string? id = null, NuGetVersion? version = null)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {

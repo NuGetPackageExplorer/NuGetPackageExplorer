@@ -1392,7 +1392,7 @@ namespace PackageExplorerViewModel
             CurrentFileInfo = null;
         }
 
-        public void AddDraggedAndDroppedFiles(PackageFolder folder, string[] fileNames)
+        public void AddDraggedAndDroppedFiles(PackageFolder? folder, string[] fileNames)
         {
             if (folder == null)
             {
@@ -1474,7 +1474,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<(string FilePath, Stream Stream)> fileDescriptors)
+        public void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<(string FilePath, Stream? Stream)> fileDescriptors)
         {
             foreach (var fileDescription in fileDescriptors)
             {

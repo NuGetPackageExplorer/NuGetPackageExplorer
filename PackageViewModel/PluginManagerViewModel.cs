@@ -86,15 +86,17 @@ namespace PackageExplorerViewModel
             if (selectedPackageInfo != null)
             {
                 var repository = _packageChooser.PluginRepository;
-
-                IPackage package = await _packageDownloader.Download(
+                if(repository != null)
+                {
+                    var package = await _packageDownloader.Download(
                     repository,
                     selectedPackageInfo.Identity);
 
-                if (package != null)
-                {
-                    AddSelectedPluginPackage(package);
-                }
+                    if (package != null)
+                    {
+                        AddSelectedPluginPackage(package);
+                    }
+                }                
             }
         }
 

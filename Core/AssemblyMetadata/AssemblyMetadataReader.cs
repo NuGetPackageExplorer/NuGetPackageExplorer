@@ -48,7 +48,7 @@ namespace NuGetPe.AssemblyMetadata
             return result;
         }
 
-        public static AssemblyDebugData ReadDebugData(Stream peStream, Stream pdbStream)
+        public static AssemblyDebugData ReadDebugData(Stream? peStream, Stream pdbStream)
         {
             using (var reader = new AssemblyDebugParser(peStream, pdbStream))
             {

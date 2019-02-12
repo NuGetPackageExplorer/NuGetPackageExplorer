@@ -6,9 +6,9 @@ namespace NuGetPackageExplorer.Types
 {
     public interface IPackageChooser : IDisposable
     {
-        SourceRepository Repository { get; }
-        PackageInfo SelectPackage(string searchTerm);
-        SourceRepository PluginRepository { get; }
-        PackageInfo SelectPluginPackage();
+        SourceRepository? Repository { get; }
+        PackageInfo? SelectPackage(string? searchTerm);
+        SourceRepository? PluginRepository { get; }
+        PackageInfo? SelectPluginPackage();
     }
 }

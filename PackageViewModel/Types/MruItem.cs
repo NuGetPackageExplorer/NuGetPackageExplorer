@@ -9,11 +9,13 @@ namespace NuGetPackageExplorer.Types
         RemotePackage
     }
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     public sealed class MruItem : IEquatable<MruItem>
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
-        public string? Id { get; set; }
-        public NuGetVersion? Version { get; set; }
-        public string? Path { get; set; }
+        public string Id { get; set; }
+        public NuGetVersion Version { get; set; }
+        public string Path { get; set; }
         public PackageType PackageType { get; set; }
 
         #region IEquatable<MruItem> Members

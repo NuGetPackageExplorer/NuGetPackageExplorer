@@ -14,12 +14,12 @@ namespace PackageExplorer
         {
         }
 
-        public HighlightingColor GetNamedColor(string name)
+        public HighlightingColor? GetNamedColor(string name)
         {
             return null;
         }
 
-        public HighlightingRuleSet GetNamedRuleSet(string name)
+        public HighlightingRuleSet? GetNamedRuleSet(string name)
         {
             return null;
         }

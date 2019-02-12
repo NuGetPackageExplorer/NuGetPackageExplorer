@@ -105,7 +105,7 @@ namespace PackageExplorerViewModel
         #region ICommand Members
 
         [DebuggerStepThrough]
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             return _canExecute == null || _canExecute();
         }
@@ -128,7 +128,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             _execute();
         }

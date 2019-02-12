@@ -69,7 +69,7 @@ namespace PackageExplorer
             return bytes;
         }
 
-        public static IEnumerable<(string FilePath, Stream Stream)> GetFileGroupDescriptorW(WindowsIDataObject windowsDataObject)
+        public static IEnumerable<(string FilePath, Stream? Stream)> GetFileGroupDescriptorW(WindowsIDataObject windowsDataObject)
         {
             if (!(windowsDataObject is ComIDataObject))
             {
@@ -80,7 +80,7 @@ namespace PackageExplorer
 
             for (var i = 0; i < fileNames.Length; i++)
             {
-                Stream stream = null;
+                Stream? stream = null;
                 if (!fileNames[i].IsDirectory)
                 {
                     stream = GetStream(windowsDataObject, i);
@@ -128,7 +128,7 @@ namespace PackageExplorer
         }
 
         // https://stackoverflow.com/questions/8709076/drag-and-drop-multiple-attached-file-from-outlook-to-c-sharp-window-form
-        private static Stream GetStream(WindowsIDataObject windowsObjectData, int index)
+        private static Stream? GetStream(WindowsIDataObject windowsObjectData, int index)
         {
             //create a FORMATETC struct to request the data with
             var formatetc = new FORMATETC

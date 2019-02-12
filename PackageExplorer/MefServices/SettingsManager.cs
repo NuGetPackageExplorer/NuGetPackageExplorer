@@ -21,7 +21,7 @@ namespace PackageExplorer
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
@@ -32,7 +32,9 @@ namespace PackageExplorer
 
             if (WindowsVersionHelper.HasPackageIdentity)
             {
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
                 value = GetValueFromLocalSettings<T>(name);
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
             }
             else
             {
@@ -47,12 +49,14 @@ namespace PackageExplorer
             {
                 return t;
             }
-            return default(T);
+#pragma warning disable CS8603 // Possible null reference return.
+            return default;
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         // Don't load these types inline
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static object GetValueFromLocalSettings<T>(string name)
+        private static object? GetValueFromLocalSettings<T>(string name)
         {
             object value;
             var settings = ApplicationData.Current.LocalSettings;
@@ -65,7 +69,7 @@ namespace PackageExplorer
             return value;
         }
 
-        private void SetValue(object value, string name = null, [CallerMemberName] string propertyName = null)
+        private void SetValue(object? value, string? name = null, [CallerMemberName] string propertyName = null)
         {
             name = name ?? propertyName;
 
@@ -88,7 +92,7 @@ namespace PackageExplorer
 
         // Don't load these types inline
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static object SetValueInLocalSettings(object value, string name)
+        private static object? SetValueInLocalSettings(object? value, string name)
         {
             var settings = ApplicationData.Current.LocalSettings;
             if (value is List<string> list)
@@ -146,7 +150,7 @@ namespace PackageExplorer
             set => SetValue(value, "PublishPackageLocation");
         }
 
-        public string ReadApiKey(string source)
+        public string? ReadApiKey(string source)
         {
             var settings = new UserSettings(new PhysicalFileSystem(Environment.CurrentDirectory));
             var key = settings.GetDecryptedValue(ApiKeysSectionName, source);
@@ -184,7 +188,7 @@ namespace PackageExplorer
             set => SetValue(value);
         }
 
-        public string TimestampServer
+        public string? TimestampServer
         {
             get => GetValue<string>();
             set => SetValue(value);

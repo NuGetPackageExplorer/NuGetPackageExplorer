@@ -15,7 +15,7 @@ namespace PackageExplorer
             return uri?.ToString();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = (string)value;
             if (string.IsNullOrEmpty(stringValue))

@@ -18,7 +18,9 @@ namespace PackageExplorer
 
         private readonly ISettingsManager _settings;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public FileEditor(ISettingsManager settings)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 

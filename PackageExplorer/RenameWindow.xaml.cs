@@ -16,7 +16,9 @@ namespace PackageExplorer
         public static readonly DependencyProperty NewNameProperty =
             DependencyProperty.Register("NewName", typeof(string), typeof(RenameWindow));
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public RenameWindow()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 

@@ -15,7 +15,9 @@ namespace PackageExplorer
     {
         private readonly ObservableCollection<EditablePackageReferenceSet> _referenceSets = new ObservableCollection<EditablePackageReferenceSet>();
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public PackageReferencesEditor()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 

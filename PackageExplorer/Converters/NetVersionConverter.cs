@@ -16,7 +16,7 @@ namespace PackageExplorer
             return version == null ? string.Empty : version.ToString();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = (string)value;
             if (string.IsNullOrWhiteSpace(stringValue))

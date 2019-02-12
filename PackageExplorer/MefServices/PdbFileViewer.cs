@@ -14,7 +14,7 @@ namespace PackageExplorer
     {
         public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
-            AssemblyDebugDataViewModel data = null;
+            AssemblyDebugDataViewModel? data = null;
 
             // Get the PE file, exe or dll that matches
             var filename = Path.GetFileNameWithoutExtension(selectedFile.Name);
@@ -23,7 +23,7 @@ namespace PackageExplorer
                                                     (".dll".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) ||
                                                      ".exe".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase)));
 
-            Stream peStream = null;
+            Stream? peStream = null;
             try
             {
                 if (pe != null) // we have a matching file
@@ -38,7 +38,7 @@ namespace PackageExplorer
                 {
                     using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
                     {
-                        data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));
+                        data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));                        
                     }
 
                     return new ScrollViewer

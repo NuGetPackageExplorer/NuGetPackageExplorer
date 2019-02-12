@@ -10,7 +10,7 @@ namespace PackageExplorer
     {
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var cert = (X509Certificate2)value;
             if (cert == null)
@@ -19,7 +19,7 @@ namespace PackageExplorer
             }
 
             var dict = DistinguishedNameParser.Parse(cert.Subject);
-            string cn = null;
+            string? cn = null;
             if (dict.TryGetValue("CN", out var cns))
             {
                 // get the CN. it may be quoted

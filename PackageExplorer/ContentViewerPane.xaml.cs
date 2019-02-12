@@ -15,7 +15,9 @@ namespace PackageExplorer
     {
         private readonly CommandBinding _findCommand;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public ContentViewerPane()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 

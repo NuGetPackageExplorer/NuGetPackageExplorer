@@ -80,7 +80,7 @@ namespace PackageExplorerViewModel
                 PackageRules);
         }
 
-        public PackageChooserViewModel CreatePackageChooserViewModel(string fixedPackageSource)
+        public PackageChooserViewModel CreatePackageChooserViewModel(string? fixedPackageSource)
         {
             var packageSourceSettings = new PackageSourceSettings(SettingsManager);
             var packageSourceManager = new MruPackageSourceManager(packageSourceSettings);

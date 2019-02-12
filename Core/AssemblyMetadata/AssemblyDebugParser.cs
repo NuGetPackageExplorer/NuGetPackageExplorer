@@ -12,7 +12,7 @@ namespace NuGetPe.AssemblyMetadata
 {
     internal sealed class AssemblyDebugParser : IDisposable
     {
-        public AssemblyDebugParser(Stream peStream, Stream pdbStream)
+        public AssemblyDebugParser(Stream? peStream, Stream pdbStream)
         {
             Stream inputStream;
             if (!PdbConverter.IsPortable(pdbStream))

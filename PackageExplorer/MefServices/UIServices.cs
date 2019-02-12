@@ -12,7 +12,9 @@ using Ookii.Dialogs.Wpf;
 namespace PackageExplorer
 {
     [Export(typeof(IUIServices))]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     internal class UIServices : IUIServices
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
         [Import]
         public Lazy<MainWindow> Window { get; set; }
@@ -78,7 +80,7 @@ namespace PackageExplorer
             catch (Exception e)
             {
                 Show(e.Message, MessageLevel.Error);
-                selectedFileName = null;
+                selectedFileName = string.Empty;
                 return false;
             }
            

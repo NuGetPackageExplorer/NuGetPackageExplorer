@@ -11,13 +11,13 @@ namespace PackageExplorer
     {
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var versionSpec = (VersionRange)value;
             return versionSpec == null ? null : ManifestUtility.ReplaceMetadataWithToken(versionSpec.ToShortString());
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var stringValue = (string)value;
             if (string.IsNullOrEmpty(stringValue))

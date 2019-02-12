@@ -21,12 +21,12 @@ namespace PackageExplorerViewModel
         private string? _currentSearch;
         private FeedType _feedType;
         private MruPackageSourceManager? _packageSourceManager;
-        private readonly string _defaultPackageSourceUrl;
+        private readonly string? _defaultPackageSourceUrl;
         private bool _disposed;
 
         public PackageChooserViewModel(MruPackageSourceManager packageSourceManager,
                                        bool showPrereleasePackages,
-                                       string defaultPackageSourceUrl)
+                                       string? defaultPackageSourceUrl)
         {
             _showPrereleasePackages = showPrereleasePackages;
             _defaultPackageSourceUrl = defaultPackageSourceUrl;

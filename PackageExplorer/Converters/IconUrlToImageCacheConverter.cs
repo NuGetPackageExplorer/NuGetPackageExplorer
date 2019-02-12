@@ -26,7 +26,7 @@ namespace PackageExplorer
 
         private static readonly ErrorFloodGate ErrorFloodGate = new ErrorFloodGate();
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var iconUrl = value as string;
             var defaultPackageIcon = parameter as BitmapSource;
@@ -47,7 +47,7 @@ namespace PackageExplorer
                 return defaultPackageIcon;
             }
 
-            var iconBitmapImage = new BitmapImage();
+            BitmapImage? iconBitmapImage = new BitmapImage();
             iconBitmapImage.BeginInit();
             iconBitmapImage.UriSource = new Uri(iconUrl);
 
@@ -91,7 +91,7 @@ namespace PackageExplorer
             throw new NotSupportedException();
         }
 
-        private static void AddToCache(string iconUrl, BitmapSource iconBitmapImage)
+        private static void AddToCache(string iconUrl, BitmapSource? iconBitmapImage)
         {
             var policy = new CacheItemPolicy
             {

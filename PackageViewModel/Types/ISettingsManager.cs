@@ -22,7 +22,7 @@ namespace NuGetPackageExplorer.Types
         IList<string> GetPublishSources();
         void SetPublishSources(IEnumerable<string> sources);
 
-        string ReadApiKey(string source);
+        string? ReadApiKey(string source);
         void WriteApiKey(string source, string apiKey);
         bool PublishAsUnlisted { get; set; }
 

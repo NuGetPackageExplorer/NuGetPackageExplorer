@@ -20,7 +20,9 @@ using PackageExplorerViewModel;
 namespace PackageExplorer
 {
     [Export(typeof(INuGetPackageDownloader))]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     internal class PackageDownloader : INuGetPackageDownloader
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
         private static readonly FileSizeConverter FileSizeConverter = new FileSizeConverter();
 
@@ -41,7 +43,7 @@ namespace PackageExplorer
             }
         }
 
-        public async Task<ISignaturePackage> Download(SourceRepository sourceRepository, PackageIdentity packageIdentity)
+        public async Task<ISignaturePackage?> Download(SourceRepository sourceRepository, PackageIdentity packageIdentity)
         {
             var tempFilePath = await DownloadWithProgress(sourceRepository, packageIdentity);
             try
@@ -62,7 +64,7 @@ namespace PackageExplorer
 
         }
 
-        private Task<string> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity)
+        private Task<string?> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity)
         {
             var progressDialogText = Resources.Dialog_DownloadingPackage;
             if (packageIdentity.HasVersion)
@@ -74,12 +76,12 @@ namespace PackageExplorer
                 progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, packageIdentity.Id, string.Empty);
             }
 
-            string description = null;
+            string? description = null;
             int? percent = null;
             var updated = 0;
 
             var progressDialogLock = new object();
-            var progressDialog = new ProgressDialog
+            ProgressDialog? progressDialog = new ProgressDialog
             {
                 Text = progressDialogText,
                 WindowTitle = Resources.Dialog_Title,
@@ -109,7 +111,7 @@ namespace PackageExplorer
                           };
 
             
-            var tcs = new TaskCompletionSource<string>();
+            var tcs = new TaskCompletionSource<string?>();
             progressDialog.DoWork += (object sender, DoWorkEventArgs args) =>
             {
                 var t = DoWorkAsync();
@@ -124,7 +126,7 @@ namespace PackageExplorer
             progressDialog.ShowDialog(MainWindow.Value);
             timer.Start();
 
-            async Task<string> DoWorkAsync()
+            async Task<string?> DoWorkAsync()
             {
                 try
                 {
@@ -311,16 +313,16 @@ namespace PackageExplorer
             _progressAction = progressAction;
         }
 
-        public override Task<Tuple<bool, INuGetResource>> TryCreate(SourceRepository source, CancellationToken token)
+        public override Task<Tuple<bool, INuGetResource?>> TryCreate(SourceRepository source, CancellationToken token)
         {
-            HttpHandlerResourceV3 curResource = null;
+            HttpHandlerResourceV3? curResource = null;
 
             if (source.PackageSource.IsHttp)
             {
                 curResource = CreateResource(source.PackageSource);
             }
 
-            return Task.FromResult(new Tuple<bool, INuGetResource>(curResource != null, curResource));
+            return Task.FromResult(new Tuple<bool, INuGetResource?>(curResource != null, curResource));
         }
 
         private HttpHandlerResourceV3 CreateResource(PackageSource packageSource)
