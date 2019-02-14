@@ -75,11 +75,9 @@ namespace PackageExplorer
         {
             get
             {
-#pragma warning disable CS8603 // Possible null reference return.
                 return PackageCommandsContainer != null
                            ? (ObservableCollection<LazyPackageCommand>)PackageCommandsContainer.Collection
-                           : null;
-#pragma warning restore CS8603 // Possible null reference return.
+                           : null!;
             }
             set
             {

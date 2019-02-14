@@ -26,10 +26,7 @@ namespace PackageExplorerViewModel
         public void Dispose()
         {
             _sourceSettings.SetSources(PackageSources);
-
-#pragma warning disable CS8601 // Possible null reference assignment.
             _sourceSettings.ActiveSource = ActivePackageSource;
-#pragma warning restore CS8601 // Possible null reference assignment.
         }
 
         #endregion

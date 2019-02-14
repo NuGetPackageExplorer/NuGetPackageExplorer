@@ -1341,9 +1341,8 @@ namespace PackageExplorerViewModel
                     manifest.Files.AddRange(RootFolder.GetFiles().Select(
                         f => new ManifestFile
                         {
-#pragma warning disable CS8604 // Possible null reference argument.
-                            Source = string.IsNullOrEmpty(f.OriginalPath()) || f?.OriginalPath()?.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) == true ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()),
-#pragma warning restore CS8604 // Possible null reference argument.
+
+                            Source = string.IsNullOrEmpty(f.OriginalPath()) || f?.OriginalPath()?.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) == true ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()!),
                             Target = f.Path
                         })
                     );
@@ -1440,9 +1439,7 @@ namespace PackageExplorerViewModel
                             }
                             else
                             {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                                targetFolder = RootFolder.AddFolder(guessFolderName);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+                                targetFolder = RootFolder.AddFolder(guessFolderName)!;
                             }
                         }
                         else

@@ -26,15 +26,13 @@ namespace PackageExplorer
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private T GetValue<T>([CallerMemberName] string name = null)
+        private T GetValue<T>([CallerMemberName] string? name = null)
         {
             object value;
 
             if (WindowsVersionHelper.HasPackageIdentity)
             {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-                value = GetValueFromLocalSettings<T>(name);
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+                value = GetValueFromLocalSettings<T>(name!)!;
             }
             else
             {
@@ -49,9 +47,7 @@ namespace PackageExplorer
             {
                 return t;
             }
-#pragma warning disable CS8603 // Possible null reference return.
-            return default;
-#pragma warning restore CS8603 // Possible null reference return.
+            return default!;
         }
 
         // Don't load these types inline

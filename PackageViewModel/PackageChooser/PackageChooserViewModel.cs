@@ -82,9 +82,7 @@ namespace PackageExplorerViewModel
             get
             {
                 CheckDisposed();
-#pragma warning disable CS8602 // Possible dereference of a null reference.
-                return _defaultPackageSourceUrl ?? _packageSourceManager.ActivePackageSource;
-#pragma warning restore CS8602 // Possible dereference of a null reference.
+                return _defaultPackageSourceUrl ?? _packageSourceManager!.ActivePackageSource;
             }
             private set
             {
@@ -94,9 +92,7 @@ namespace PackageExplorerViewModel
                         "Cannot set active package source when fixed package source is used.");
                 }
                 CheckDisposed();
-#pragma warning disable CS8602 // Possible dereference of a null reference.
-                _packageSourceManager.ActivePackageSource = value.Trim();
-#pragma warning restore CS8602 // Possible dereference of a null reference.
+                _packageSourceManager!.ActivePackageSource = value.Trim();
                 OnPropertyChanged();
             }
         }
@@ -111,9 +107,7 @@ namespace PackageExplorerViewModel
             get
             {
                 CheckDisposed();
-#pragma warning disable CS8602 // Possible dereference of a null reference.
-                return _packageSourceManager.PackageSources;
-#pragma warning restore CS8602 // Possible dereference of a null reference.
+                return _packageSourceManager!.PackageSources;
             }
         }
 
@@ -421,9 +415,7 @@ namespace PackageExplorerViewModel
                 CheckDisposed();
 
                 // add the new source to MRU list
-#pragma warning disable CS8602 // Possible dereference of a null reference.
-                _packageSourceManager.NotifyPackageSourceAdded(source);
-#pragma warning restore CS8602 // Possible dereference of a null reference.
+                _packageSourceManager!.NotifyPackageSourceAdded(source);
                 PackageSource = source;
 
                 ResetPackageRepository();
