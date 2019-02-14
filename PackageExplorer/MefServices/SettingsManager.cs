@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
@@ -29,24 +30,31 @@ namespace PackageExplorer
         private T GetValue<T>([CallerMemberName] string? name = null)
         {
             object value;
-
-            if (WindowsVersionHelper.HasPackageIdentity)
+            try
             {
-                value = GetValueFromLocalSettings<T>(name!)!;
-            }
-            else
-            {
-                value = Settings.Default[name];
-                if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
+                if (WindowsVersionHelper.HasPackageIdentity)
                 {
-                    value = sc.Cast<string>().ToArray();
+                    value = GetValueFromLocalSettings<T>(name!)!;
+                }
+                else
+                {
+                    value = Settings.Default[name];
+                    if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
+                    {
+                        value = sc.Cast<string>().ToArray();
+                    }
+                }
+
+                if (value is T t)
+                {
+                    return t;
                 }
             }
-
-            if (value is T t)
+            catch(IOException)
             {
-                return t;
+                // not much we can do if we can't read/write the settings file
             }
+            
             return default!;
         }
 
@@ -65,45 +73,47 @@ namespace PackageExplorer
             return value;
         }
 
-        private void SetValue(object? value, string? name = null, [CallerMemberName] string propertyName = null)
+        private void SetValue(object? value, string? name = null, [CallerMemberName] string? propertyName = null)
         {
-            name = name ?? propertyName;
+            name ??= propertyName;
 
-            if (WindowsVersionHelper.HasPackageIdentity)
+            try
             {
-                value = SetValueInLocalSettings(value, name);
-            }
-            else
-            {
-                if (value is List<string> list)
+                if (WindowsVersionHelper.HasPackageIdentity)
                 {
-                    var sc = new StringCollection();
-                    sc.AddRange(list.ToArray());
-                    value = sc;
+                    SetValueInLocalSettings(value, name!);
                 }
-                Settings.Default[name] = value;
+                else
+                {
+                    if (value is List<string> list)
+                    {
+                        var sc = new StringCollection();
+                        sc.AddRange(list.ToArray());
+                        value = sc;
+                    }
+                    Settings.Default[name] = value;
+                }
             }
+            catch(IOException)
+            {
+                // not much we can do if we can't read/write the settings file
+            }
+
             OnPropertyChanged(propertyName);
         }
 
         // Don't load these types inline
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static object? SetValueInLocalSettings(object? value, string name)
+        private static void SetValueInLocalSettings(object? value, string name)
         {
             var settings = ApplicationData.Current.LocalSettings;
             if (value is List<string> list)
             {
                 value = JsonConvert.SerializeObject(list);
             }
-            settings.Values[name] = value;
-            return value;
+            settings.Values[name] = value;            
         }
-
-
-
-
-        #region ISettingsManager Members
-
+        
         public IList<string> GetMruFiles()
         {
             return GetValue<List<string>>("MruFiles") ?? new List<string>();
@@ -249,7 +259,5 @@ namespace PackageExplorer
             get => GetValue<bool?>() ?? false;
             set => SetValue(value);
         }
-
-        #endregion
     }
 }

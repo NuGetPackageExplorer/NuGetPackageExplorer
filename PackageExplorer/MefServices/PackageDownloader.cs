@@ -183,7 +183,8 @@ namespace PackageExplorer
             {
                 if (totalBytes.HasValue)
                 {
-                    percent = (int)((bytesReceived * 100L) / totalBytes);
+                    // TODO: remove ! once https://github.com/dotnet/roslyn/issues/33330 is fixed
+                    percent = (int)((bytesReceived * 100L) / totalBytes)!;
                     description = string.Format(
                        CultureInfo.CurrentCulture,
                        "Downloaded {0} of {1}...",

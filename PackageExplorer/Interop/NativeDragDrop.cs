@@ -38,8 +38,9 @@ namespace PackageExplorer
             if (fileSize.HasValue)
             {
                 fileDescriptor.dwFlags |= FD_FILESIZE;
-                fileDescriptor.nFileSizeLow = (uint)(fileSize & 0xffffffff);
-                fileDescriptor.nFileSizeHigh = (uint)(fileSize >> 32);
+                // TODO: remove ! once https://github.com/dotnet/roslyn/issues/33330 is fixed
+                fileDescriptor.nFileSizeLow = (uint)(fileSize & 0xffffffff)!;
+                fileDescriptor.nFileSizeHigh = (uint)(fileSize >> 32)!;
             }
 
             var fileGroupDescriptorBytes = StructureBytes(fileGroupDescriptor);
