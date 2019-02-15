@@ -50,7 +50,9 @@ namespace PackageExplorer
                     return t;
                 }
             }
-            catch(IOException)
+            catch (UnauthorizedAccessException)
+            { }
+            catch (IOException)
             {
                 // not much we can do if we can't read/write the settings file
             }
@@ -94,7 +96,9 @@ namespace PackageExplorer
                     Settings.Default[name] = value;
                 }
             }
-            catch(IOException)
+            catch (UnauthorizedAccessException)
+            { }
+            catch (IOException)
             {
                 // not much we can do if we can't read/write the settings file
             }
