@@ -9,6 +9,7 @@ using System.Windows.Input;
 using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+using NuGetPackageExplorer.Types;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
@@ -21,10 +22,12 @@ namespace PackageExplorerViewModel
         private string? _currentSearch;
         private FeedType _feedType;
         private MruPackageSourceManager? _packageSourceManager;
+        private readonly IUIServices _uIServices;
         private readonly string? _defaultPackageSourceUrl;
         private bool _disposed;
 
         public PackageChooserViewModel(MruPackageSourceManager packageSourceManager,
+                                       IUIServices uIServices,
                                        bool showPrereleasePackages,
                                        string? defaultPackageSourceUrl)
         {
@@ -40,6 +43,7 @@ namespace PackageExplorerViewModel
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
 
             _packageSourceManager = packageSourceManager ?? throw new ArgumentNullException(nameof(packageSourceManager));
+            _uIServices = uIServices;
         }
 
         #region Bound Properties
@@ -411,16 +415,32 @@ namespace PackageExplorerViewModel
             {
                 CheckDisposed();
 
-                // add the new source to MRU list
-                _packageSourceManager!.NotifyPackageSourceAdded(source);
+                
                 PackageSource = source;
 
                 ResetPackageRepository();
-                await LoadPackages();
+                try
+                {
+                    await LoadPackages();
+
+                    // add the new source to MRU list, after the load succeeds, in case there's an error with the source
+                    _packageSourceManager!.NotifyPackageSourceAdded(source);
+                }
+                catch(Exception e)
+                {
+                    _uIServices.Show(e.Message, MessageLevel.Error);
+                }
             }
             else
             {
-                await LoadPackages();
+                try
+                {
+                    await LoadPackages();
+                }
+                catch (Exception e)
+                {
+                    _uIServices.Show(e.Message, MessageLevel.Error);
+                }
             }
         }
 

@@ -85,6 +85,7 @@ namespace PackageExplorerViewModel
             var packageSourceSettings = new PackageSourceSettings(SettingsManager);
             var packageSourceManager = new MruPackageSourceManager(packageSourceSettings);
             var model = new PackageChooserViewModel(packageSourceManager,
+                                                    UIServices,
                                                     SettingsManager.ShowPrereleasePackages,
                                                     fixedPackageSource);
             model.PropertyChanged += OnPackageChooserViewModelPropertyChanged;
