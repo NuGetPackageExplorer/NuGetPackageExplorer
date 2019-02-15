@@ -560,6 +560,15 @@
                         <Setter TargetName="ItemIcon" Property="Source" Value="Images/Lib.png" />
                     </DataTrigger>
 
+                    <!-- TODO: Icons for Ref and Runtimes folders -->
+                    <!--<DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="RUNTIMES">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Lib.png" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="REF">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Lib.png" />
+                    </DataTrigger>-->
+
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="CONTENT">
                         <Setter TargetName="ItemIcon" Property="Source" Value="Images/NoteHS.png" />
                     </DataTrigger>
@@ -569,6 +578,19 @@
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILD">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/build.png" />
+                    </DataTrigger>
+
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILDMULTITARGETING">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/build.png" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILDCROSSTARGETING">
+                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/build.png" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILDTRANSITIVE">
                         <Setter TargetName="ItemIcon" Property="Source" Value="Images/build.png" />
                     </DataTrigger>
 
