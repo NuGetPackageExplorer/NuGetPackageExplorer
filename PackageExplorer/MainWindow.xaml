@@ -1,4 +1,19 @@
-﻿<Window x:Class="PackageExplorer.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:PackageExplorer" xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel" xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options" Title="{Binding WindowTitle, FallbackValue={x:Static self:Resources.Dialog_Title}, Mode=OneWay, Converter={StaticResource StringShortenerConverter}, ConverterParameter=50}" Height="650" Width="750" MinWidth="600" MinHeight="300" Icon="Images/packageicon.png" FontSize="{Binding FontSize, Source={StaticResource Settings}}" AllowDrop="True" DragOver="Window_DragOver" Drop="Window_Drop" PreviewMouseWheel="Window_PreviewMouseWheel" Closing="Window_Closing" UseLayoutRounding="True" TextOptions.TextFormattingMode="Display">
+﻿<Window x:Class="PackageExplorer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:PackageExplorer"
+        xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"
+        xmlns:PresentationOptions="http://schemas.microsoft.com/winfx/2006/xaml/presentation/options"
+        Title="{Binding WindowTitle, FallbackValue={x:Static self:Resources.Dialog_Title}, Mode=OneWay, Converter={StaticResource StringShortenerConverter}, ConverterParameter=100}"
+        Height="650" Width="750" MinWidth="600" MinHeight="300"
+        Icon="Images/packageicon.png"
+        FontSize="{Binding FontSize, Source={StaticResource Settings}}"
+        AllowDrop="True" DragOver="Window_DragOver"
+        Drop="Window_Drop"
+        PreviewMouseWheel="Window_PreviewMouseWheel"
+        Closing="Window_Closing"
+        UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display">
     <Window.Background>
         <ImageBrush PresentationOptions:Freeze="true" ImageSource="Images/background.png" Stretch="None" TileMode="Tile" Viewport="0,0,24,24" ViewportUnits="Absolute" />
     </Window.Background>
@@ -51,33 +66,29 @@
         <!-- Menu bar -->
         <Menu DockPanel.Dock="Top" Background="{StaticResource MenuBackgroundBrush}">
             <self:GrayscaleMenuItem Header="_File" Margin="3,0">
-                <MenuItem Command="New" Header="_New">
-                    <MenuItem.Icon>
-                        <Image Source="Images/NewDocumentHS.png"></Image>
-                    </MenuItem.Icon>
-                </MenuItem>
-                <self:GrayscaleMenuItem Command="Open" Header="_Open...">
-                    <self:GrayscaleMenuItem.Icon>
-                        <Image Source="Images/openHS.png"></Image>
-                    </self:GrayscaleMenuItem.Icon>
-                </self:GrayscaleMenuItem>
-                <MenuItem Header="Open from F_eed..." Command="Print" InputGestureText="Ctrl+G"></MenuItem>
+                <MenuItem Command="New" Header="_New" Icon="{StaticResource NewItemIcon}" />
+                <self:GrayscaleMenuItem Command="Open" Header="_Open..." Icon="{StaticResource OpenFolderIcon}" />
+                <MenuItem Header="Open from F_eed..." Command="Print" InputGestureText="Ctrl+G" />
                 <Separator />
                 <MenuItem Command="Close" Header="_Close" />
                 <Separator />
                 <self:GrayscaleMenuItem x:Name="SaveMenuItem" Header="_Save" Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="Save" InputGestureText="Ctrl+S">
-                    <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/saveHS.png" />
+                    <self:GrayscaleMenuItem.Icon>                        
+                        <self:GrayscaleContentPresenter Content="{StaticResource SaveIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
-                <MenuItem Header="Save _As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveAs" InputGestureText="Ctrl+Shift+S"/>
+                <self:GrayscaleMenuItem Header="Save _As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveAs" InputGestureText="Ctrl+Shift+S">
+                    <self:GrayscaleMenuItem.Icon>
+                        <self:GrayscaleContentPresenter Content="{StaticResource SaveAsIcon}" />
+                    </self:GrayscaleMenuItem.Icon>
+                </self:GrayscaleMenuItem>
                 <MenuItem Header="Save _Metadata As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SaveMetadataAs" />
                 <MenuItem Header="Sign and Save As..." Command="{Binding SaveCommand, FallbackValue={StaticResource DisabledCommand}}" CommandParameter="SignAndSaveAs" />
                 <Separator />
                 <MenuItem Header="Expor_t..." Command="{Binding ExportCommand, FallbackValue={StaticResource DisabledCommand}}" />
                 <self:GrayscaleMenuItem Command="{Binding PublishCommand, FallbackValue={StaticResource DisabledCommand}}" Header="_Publish..." InputGestureText="Ctrl+P">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/PublishToWebHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource ReleaseIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <Separator />
@@ -87,7 +98,7 @@
                             <CollectionContainer x:Name="RecentFilesContainer" />
                             <MenuItem Header="Clear Recen_t File List">
                                 <MenuItem.Icon>
-                                    <Image Source="Images/Delete.png" />
+                                    <ContentPresenter Content="{StaticResource CloseIcon}" />
                                 </MenuItem.Icon>
                             </MenuItem>
                         </CompositeCollection>
@@ -107,13 +118,13 @@
             <self:GrayscaleMenuItem Header="_Edit" Margin="3,0" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
                 <self:GrayscaleMenuItem Header="Edit _Metadata" InputGestureText="Ctrl+K" Command="{Binding EditCommand, FallbackValue={StaticResource DisabledCommand}}">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/EditHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource EditManifestIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
 
                 <self:GrayscaleMenuItem Header="Edit Metadata _Source" Command="{Binding EditMetadataSourceCommand, FallbackValue={StaticResource DisabledCommand}}">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/EditSource.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource MarkupTagIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
 
@@ -132,26 +143,24 @@
                 <Separator />
                 <self:GrayscaleMenuItem Command="Cut">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/CutHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource CutIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <self:GrayscaleMenuItem Command="Copy">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/CopyHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource CopyIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <self:GrayscaleMenuItem Command="Paste">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/PasteHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource PasteIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
             </self:GrayscaleMenuItem>
 
             <MenuItem Header="_View" Margin="3,0">
-                <MenuItem Header="Text _Size" x:Name="FontSizeMenuItem">
-                    <MenuItem.Icon>
-                        <Image Source="Images/FontDialogHS.png" />
-                    </MenuItem.Icon>
+                <MenuItem Header="Text _Size" x:Name="FontSizeMenuItem" Icon="{StaticResource FontSizeIcon}">
+                    
                     <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=12, Mode=OneWay}" />
                     <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=14, Mode=OneWay}" />
                     <self:GrayscaleMenuItem Header="L_arge" Tag="16" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=16, Mode=OneWay}" />
@@ -167,10 +176,10 @@
                 <Separator />
                 <MenuItem Header="_Add">
                     <MenuItem.Icon>
-                        <Image Source="Images/Add.png" />
+                        <ContentPresenter Content="{StaticResource AddIcon}" />
                     </MenuItem.Icon>
-                    <MenuItem Header="New F_ile..." Command="{Binding AddNewFileCommand}" />
-                    <MenuItem Header="_Existing File..." Command="{Binding AddContentFileCommand}" />
+                    <MenuItem Header="New F_ile..." Command="{Binding AddNewFileCommand}" Icon="{StaticResource NewItemIcon}"/>
+                    <MenuItem Header="_Existing File..." Command="{Binding AddContentFileCommand}" Icon="{StaticResource AddItemIcon}" />
                     <self:GrayscaleMenuItem Header="_New Folder" Command="{Binding AddNewFolderCommand}">
                         <self:GrayscaleMenuItem.Icon>
                             <self:GrayscaleContentPresenter Content="{StaticResource AddFolderIcon}" />
@@ -203,10 +212,10 @@
                         </self:GrayscaleMenuItem.Icon>
                     </self:GrayscaleMenuItem>
                 </MenuItem>
-                <MenuItem Header="_Rename..." Command="{Binding RenameContentCommand}" InputGestureText="F2" />
+                <MenuItem Header="_Rename..." Command="{Binding RenameContentCommand}" InputGestureText="F2" Icon="{StaticResource RenameIcon}" />
                 <self:GrayscaleMenuItem Header="_Delete..." Command="{Binding DeleteContentCommand}" InputGestureText="Delete">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/Delete.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource RemoveIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
             </MenuItem>
@@ -220,7 +229,7 @@
                         <Separator Visibility="{Binding Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}" />
                         <MenuItem Header="_Plugin Manager..." Click="AddPluginFromAssembly_Click" x:Name="pluginMenuItem">
                             <MenuItem.Icon>
-                                <Image Source="images/cog.png" />
+                                <ContentPresenter Content="{StaticResource ExtensionIcon}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator x:Name="mnuPluginSep" />
@@ -234,7 +243,7 @@
             <MenuItem Header="_Help" Margin="3,0">
                 <MenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="http://docs.nuget.org/">
                     <MenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/Book_angleHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource F1HelpIcon}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="How to _Create Package" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package" />

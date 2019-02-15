@@ -1,13 +1,10 @@
 ﻿<UserControl x:Class="PackageExplorer.PackageAnalyzerPane" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:self="clr-namespace:PackageExplorer" mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="300">
 	<UserControl.Resources>
-		<BitmapImage x:Key="errorIcon" UriSource="Images/error.png" />
-		<BitmapImage x:Key="warningIcon" UriSource="Images/warning.png" />
-
 		<DataTemplate x:Key="PackageIssueTemplate" DataType="types:PackageIssue">
 			<Expander Margin="0,5,0,0">
 				<Expander.Header>
 					<DockPanel>
-						<Image x:Name="icon" Margin="0,0,3,0" DockPanel.Dock="Left" />
+						<ContentControl x:Name="icon" Margin="0,0,3,0" DockPanel.Dock="Left" />
 						<TextBlock Text="{Binding Title, Mode=OneTime}" FontWeight="Bold" TextTrimming="CharacterEllipsis" />
 					</DockPanel>
 				</Expander.Header>
@@ -26,11 +23,11 @@
 
 			<DataTemplate.Triggers>
 				<DataTrigger Binding="{Binding Level, Mode=OneWay}" Value="Warning">
-					<Setter TargetName="icon" Property="Source" Value="{StaticResource warningIcon}" />
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusWarningIcon}" />
 				</DataTrigger>
 				<DataTrigger Binding="{Binding Level, Mode=OneWay}" Value="Error">
-					<Setter TargetName="icon" Property="Source" Value="{StaticResource errorIcon}" />
-				</DataTrigger>
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusCriticalErrorIcon}" />
+                </DataTrigger>
 			</DataTemplate.Triggers>
 		</DataTemplate>
 	</UserControl.Resources>
@@ -38,8 +35,8 @@
 	<DockPanel>
 		<Border Padding="3" DockPanel.Dock="Top" Grid.Row="0" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}">
 			<self:GrayscaleButton HorizontalAlignment="Left" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding ViewPackageAnalysisCommand, Mode=OneWay}" ToolTip="Rerun package analysis">
-				<self:GrayscaleImage Source="Images/RepeatHS.png" />
-			</self:GrayscaleButton>
+                <self:GrayscaleContentPresenter Content="{StaticResource RefreshIcon}" />
+            </self:GrayscaleButton>
 		</Border>
 
 		<TextBlock Margin="8,10,5,3" DockPanel.Dock="Top" Text="{Binding PackageIssues.Count, Mode=OneWay, StringFormat='{}{0} issue(s) found.'}"></TextBlock>
