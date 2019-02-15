@@ -54,9 +54,6 @@ namespace PackageExplorerViewModel
                 {
                     _currentTypingSearch = value;
                     OnPropertyChanged();
-
-                    if (SearchCommand.CanExecute(value))
-                        SearchCommand.Execute(value);
                 }
             }
         }
