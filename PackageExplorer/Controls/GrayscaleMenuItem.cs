@@ -36,6 +36,14 @@ namespace PackageExplorer
                     effect.DesaturationFactor = IsEnabled ? 1 : 0;
                 }
             }
-        }
+
+            if(Icon is ContentPresenter cp)
+            {
+                if (cp.Effect is GrayscaleEffect.GrayscaleEffect effect)
+                {
+                    effect.DesaturationFactor = IsEnabled ? 1 : 0;
+                }
+            }
+        }        
     }
 }

@@ -21,9 +21,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Xaml/TemplateStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <BitmapImage x:Key="FolderImageSource" UriSource="Images/Folder.png" />
-            <BitmapImage x:Key="ScriptImageSource" UriSource="Images/Script.png" />
             <self:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
             <self:CountToVisibilityConverter Inverted="True" x:Key="invertedCountConverter" />
             <self:StringCollectionsToStringConverter x:Key="authorNamesConverter" />
@@ -267,26 +264,6 @@
 
             <ContextMenu x:Key="FolderSharedContextMenu" Opened="PackageFolderContextMenu_Opened" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
 
-                <self:GrayscaleMenuItem Header="Add init.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="init.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools}">
-                    <MenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/script.png" />
-                    </MenuItem.Icon>
-                </self:GrayscaleMenuItem>
-
-                <self:GrayscaleMenuItem Header="Add install.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="install.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}">
-                    <MenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/script.png" />
-                    </MenuItem.Icon>
-                </self:GrayscaleMenuItem>
-
-                <self:GrayscaleMenuItem Header="Add uninstall.ps1" Command="{Binding AddScriptCommand, Mode=OneWay}" CommandParameter="uninstall.ps1" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}">
-                    <MenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/script.png" />
-                    </MenuItem.Icon>
-                </self:GrayscaleMenuItem>
-                
-                <Separator Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=tools;tools\\*}" />
-
                 <self:GrayscaleMenuItem Header="Add .props file" Command="{Binding AddBuildFileCommand, Mode=OneWay}" CommandParameter=".props" Visibility="{Binding Path, Converter={StaticResource StringToVisibilityConverter}, ConverterParameter=build;build\\*}">
                     <MenuItem.Icon>
                         <self:GrayscaleImage Source="Images/props.png" />
@@ -305,7 +282,7 @@
                 <MenuItem Header="_Add Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Add Ne_w Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding}">
                     <MenuItem.Icon>
-                        <Image Source="Images/NewFolderHS.png" />
+                        <ContentPresenter Content="{StaticResource AddFolderIcon}" />
                     </MenuItem.Icon>
                 </MenuItem>
                 <MenuItem Header="Paste" Command="Paste" />
@@ -513,7 +490,7 @@
                     <TextBlock x:Name="Header" Text="{Binding Name}"></TextBlock>
                 </StackPanel>
 
-                <DataTemplate.Triggers>
+                <!--<DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS\INSTALL.PS1">
                         <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
                         <Setter TargetName="ItemIcon" Property="Source" Value="{StaticResource ScriptImageSource}" />
@@ -543,60 +520,64 @@
                         <Setter TargetName="ItemIcon" Property="Visibility" Value="Visible" />
                         <Setter TargetName="ItemIcon" Property="Source" Value="Images/props.png" />
                     </DataTrigger>
-                </DataTemplate.Triggers>
+                </DataTemplate.Triggers>-->
             </DataTemplate>
 
             <HierarchicalDataTemplate DataType="{x:Type viewmodel:PackageFolder}" ItemsSource="{Binding Children}">
                 <StackPanel Background="Transparent" Orientation="Horizontal" ContextMenu="{StaticResource FolderSharedContextMenu}">
-                    <Image x:Name="ItemIcon" Margin="0,0,2,0" Source="{StaticResource FolderImageSource}" />
+                    <ContentPresenter x:Name="FolderIcon" Margin="0,0,2,0" Content="{StaticResource FolderIcon}" />
                     <TextBlock x:Name="Header" FontWeight="SemiBold">
                         <Run Text="{Binding Name}" />
                         <Run Text="{Binding Path, Converter={StaticResource frameworkConverter}}" Foreground="Salmon" />
                     </TextBlock>
                 </StackPanel>
 
-                <HierarchicalDataTemplate.Triggers>
+                <HierarchicalDataTemplate.Triggers>                    
+
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="LIB">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Lib.png" />
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource LibFolderIcon}" />
                     </DataTrigger>
 
-                    <!-- TODO: Icons for Ref and Runtimes folders -->
-                    <!--<DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="RUNTIMES">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Lib.png" />
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="RUNTIMES">
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource RuntimesFolderIcon}" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="REF">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Lib.png" />
-                    </DataTrigger>-->
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource RefFolderIcon}" />
+                    </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="CONTENT">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/NoteHS.png" />
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource ContentFolderIcon}" />
+                    </DataTrigger>
+
+                    <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="CONTENTFILES">
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource ContentFolderIcon}" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="TOOLS">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/Tools.png" />
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource ToolsFolderIcon}" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILD">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/build.png" />
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource BuildFolderIcon}" />
                     </DataTrigger>
 
-
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILDMULTITARGETING">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/build.png" />
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource BuildFolderIcon}" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILDCROSSTARGETING">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/build.png" />
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource BuildFolderIcon}" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="BUILDTRANSITIVE">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/build.png" />
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource BuildFolderIcon}" />
                     </DataTrigger>
 
                     <DataTrigger Binding="{Binding Path, Converter={StaticResource upperCaseConverter}}" Value="SRC">
-                        <Setter TargetName="ItemIcon" Property="Source" Value="Images/source.png" />
+                        <Setter TargetName="FolderIcon" Property="Content" Value="{StaticResource SourceFolderIcon}" />
                     </DataTrigger>
+
                 </HierarchicalDataTemplate.Triggers>
             </HierarchicalDataTemplate>
         </ResourceDictionary>
@@ -699,33 +680,33 @@
                         <MenuItem Header="_Add Existing File..." Command="{Binding AddContentFileCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}" />
                         <MenuItem Header="Add Ne_w Folder" Command="{Binding AddNewFolderCommand}" CommandParameter="{Binding RootFolder, Mode=OneWay}">
                             <MenuItem.Icon>
-                                <Image Source="Images/NewFolderHS.png" />
+                                <ContentPresenter Content="{StaticResource AddFolderIcon}" />
                             </MenuItem.Icon>
                         </MenuItem>
                         <Separator />
                         <self:GrayscaleMenuItem Header="Add _Content Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="content">
                             <self:GrayscaleMenuItem.Icon>
-                                <self:GrayscaleImage Source="Images/NoteHS.png" />
+                                <self:GrayscaleContentPresenter Content="{StaticResource ContentFolderIcon}" />
                             </self:GrayscaleMenuItem.Icon>
                         </self:GrayscaleMenuItem>
                         <self:GrayscaleMenuItem Header="Add _Lib Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="lib">
                             <self:GrayscaleMenuItem.Icon>
-                                <self:GrayscaleImage Source="Images/Lib.png" />
+                                <self:GrayscaleContentPresenter Content="{StaticResource LibFolderIcon}" />
                             </self:GrayscaleMenuItem.Icon>
                         </self:GrayscaleMenuItem>
                         <self:GrayscaleMenuItem Header="Add _Tools Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="tools">
                             <self:GrayscaleMenuItem.Icon>
-                                <self:GrayscaleImage Source="Images/Tools.png" />
+                                <self:GrayscaleContentPresenter Content="{StaticResource ToolsFolderIcon}" />
                             </self:GrayscaleMenuItem.Icon>
                         </self:GrayscaleMenuItem>
                         <self:GrayscaleMenuItem Header="Add _Build Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="build">
                             <self:GrayscaleMenuItem.Icon>
-                                <self:GrayscaleImage Source="Images/build.png" />
+                                <self:GrayscaleContentPresenter Content="{StaticResource BuildFolderIcon}" />
                             </self:GrayscaleMenuItem.Icon>
                         </self:GrayscaleMenuItem>
                         <self:GrayscaleMenuItem Header="Add _Src Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="src">
                             <self:GrayscaleMenuItem.Icon>
-                                <self:GrayscaleImage Source="Images/Source.png" />
+                                <self:GrayscaleContentPresenter Content="{StaticResource SourceFolderIcon}" />
                             </self:GrayscaleMenuItem.Icon>
                         </self:GrayscaleMenuItem>
                     </ContextMenu>

@@ -173,33 +173,33 @@
                     <MenuItem Header="_Existing File..." Command="{Binding AddContentFileCommand}" />
                     <self:GrayscaleMenuItem Header="_New Folder" Command="{Binding AddNewFolderCommand}">
                         <self:GrayscaleMenuItem.Icon>
-                            <self:GrayscaleImage Source="Images/NewFolderHS.png" />
+                            <self:GrayscaleContentPresenter Content="{StaticResource AddFolderIcon}" />
                         </self:GrayscaleMenuItem.Icon>
                     </self:GrayscaleMenuItem>
                     <Separator />
                     <self:GrayscaleMenuItem Header="_Content Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="content">
                         <self:GrayscaleMenuItem.Icon>
-                            <self:GrayscaleImage Source="Images/NoteHS.png" />
+                            <self:GrayscaleContentPresenter Content="{StaticResource ContentFolderIcon}" />
                         </self:GrayscaleMenuItem.Icon>
                     </self:GrayscaleMenuItem>
                     <self:GrayscaleMenuItem Header="_Lib Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="lib">
                         <self:GrayscaleMenuItem.Icon>
-                            <self:GrayscaleImage Source="Images/Lib.png" />
+                            <self:GrayscaleContentPresenter Content="{StaticResource LibFolderIcon}" />
                         </self:GrayscaleMenuItem.Icon>
                     </self:GrayscaleMenuItem>
                     <self:GrayscaleMenuItem Header="_Tools Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="tools">
                         <self:GrayscaleMenuItem.Icon>
-                            <self:GrayscaleImage Source="Images/Tools.png" />
+                            <self:GrayscaleContentPresenter Content="{StaticResource ToolsFolderIcon}" />
                         </self:GrayscaleMenuItem.Icon>
                     </self:GrayscaleMenuItem>
                     <self:GrayscaleMenuItem Header="_Build Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="build">
                         <self:GrayscaleMenuItem.Icon>
-                            <self:GrayscaleImage Source="Images/build.png" />
+                            <self:GrayscaleContentPresenter Content="{StaticResource BuildFolderIcon}" />
                         </self:GrayscaleMenuItem.Icon>
                     </self:GrayscaleMenuItem>
                     <self:GrayscaleMenuItem Header="_Src Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="src">
                         <self:GrayscaleMenuItem.Icon>
-                            <self:GrayscaleImage Source="Images/source.png" />
+                            <self:GrayscaleContentPresenter Content="{StaticResource SourceFolderIcon}" />
                         </self:GrayscaleMenuItem.Icon>
                     </self:GrayscaleMenuItem>
                 </MenuItem>
