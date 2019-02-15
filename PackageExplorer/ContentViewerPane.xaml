@@ -55,34 +55,34 @@
             <DockPanel>
                 <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
                     <TextBlock Text="Valid:" Margin="0,0,2,0" VerticalAlignment="Center"/>
-                    <Image x:Name="icon" VerticalAlignment="Center">
-                        <Image.Style>
-                            <Style TargetType="Image">
+                    <ContentControl x:Name="icon" Height="16" Width="16" VerticalAlignment="Center">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding SignatureStatus}" Value="Valid">
-                                        <Setter Property="Source" Value="Images/Validate.png" />
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
                                         <Setter Property="ToolTip" Value="The signature is valid and trusted."/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding SignatureStatus}" Value="BadDigest">
-                                        <Setter Property="Source" Value="Images/error.png" />
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
                                         <Setter Property="ToolTip" Value="The file is signed, however the signed hash does not match the computed hash."/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding SignatureStatus}" Value="ExplicitDistrust">
-                                        <Setter Property="Source" Value="Images/error.png" />
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
                                         <Setter Property="ToolTip" Value="The file is signed, however is explicitly distrusted on this system."/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding SignatureStatus}" Value="UntrustedRoot">
-                                        <Setter Property="Source" Value="Images/Warning.png" />
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
                                         <Setter Property="ToolTip" Value="The file is signed with an untrusted certificate."/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding SignatureStatus}" Value="UnknownProvider">
-                                        <Setter Property="Source" Value="Images/Warning.png" />
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
                                         <Setter Property="ToolTip" Value="The file has a signature, but a provider could not be found to verify its authenticity."/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
-                        </Image.Style>
-                    </Image>
+                        </ContentControl.Style>
+                    </ContentControl>
                 </StackPanel>
 
                 <ItemsControl DockPanel.Dock="Bottom" x:Name="publisher"

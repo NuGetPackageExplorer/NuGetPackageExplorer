@@ -17,12 +17,6 @@
         <self:FrameworkAssemblyReferenceConverter x:Key="FrameworkNameConverter" />
         <self:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
 
-        <Style x:Key="ImageStyle" TargetType="{x:Type Image}">
-            <Setter Property="Width" Value="16" />
-            <Setter Property="Height" Value="16" />
-            <Setter Property="Stretch" Value="Uniform" />
-        </Style>
-
         <Style TargetType="{x:Type Label}" x:Key="LabelStyle">
             <Setter Property="Margin" Value="0, 2, 0, 0" />
         </Style>
@@ -49,9 +43,7 @@
 
                 <TextBlock Grid.Column="0" Text="{Binding AssemblyName, Mode=OneWay}" TextTrimming="CharacterEllipsis" ToolTipService.ToolTip="{Binding Text, RelativeSource={RelativeSource Self}}" />
                 <TextBlock Grid.Column="1" Margin="4,0,4,0" Text="{Binding Converter={StaticResource FrameworkAssemblyReferenceDisplayConverter}}" TextTrimming="CharacterEllipsis" />
-                <Button Grid.Column="2" ToolTipService.ToolTip="Remove this framework assembly" Click="RemoveFrameworkAssemblyButtonClicked">
-                    <Image Style="{StaticResource ImageStyle}" Source="Images/delete.png" />
-                </Button>
+                <Button Grid.Column="2" ToolTipService.ToolTip="Remove this framework assembly" Click="RemoveFrameworkAssemblyButtonClicked" Content="{StaticResource RemoveIcon}" />
             </Grid>
         </DataTemplate>
     </UserControl.Resources>
@@ -230,8 +222,8 @@
 
                     <TextBox x:Name="NewSupportedFramework" Text="{Binding SupportedFrameworks, UpdateSourceTrigger=Default, BindingGroupName=NewFrameworkAssembly, Converter={StaticResource FrameworkNameConverter}, NotifyOnValidationError=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
 
-                    <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="2" Grid.Row="2" ToolTipService.ToolTip="Add new framework assembly" Click="AddFrameworkAssemblyButtonClicked">
-                        <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
+                    <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="2" Grid.Row="2" ToolTipService.ToolTip="Add new framework assembly" Click="AddFrameworkAssemblyButtonClicked">                        
+                        <self:GrayscaleContentPresenter Content="{StaticResource AddIcon}" />
                         <Button.IsEnabled>
                             <Binding ElementName="NewAssemblyName" Path="Text" Converter="{StaticResource nullToBoolConverter}" />
                         </Button.IsEnabled>
