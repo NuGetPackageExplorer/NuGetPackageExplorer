@@ -879,7 +879,7 @@
             </Rectangle.Fill>
         </Rectangle>
     </Viewbox>
-    
+
     <Viewbox x:Key="ExpandChevronRightIcon" x:Shared="false" Width="16" Height="16">
         <Rectangle Width="16" Height="16">
             <Rectangle.Fill>
@@ -896,5 +896,11 @@
                 </DrawingBrush>
             </Rectangle.Fill>
         </Rectangle>
+    </Viewbox>
+
+    <Viewbox x:Key="BlueArrowIcon" x:Shared="false" Width="16" Height="16" Margin="0,3,0,0">
+        <Canvas Width="35.011" Height="34.682">
+            <Path StrokeThickness="0.8" Stroke="#ff204e8e" StrokeMiterLimit="1.0" Fill="#ff204e8e" Data="F1 M 15.396,0.877 L 34.400,17.384 L 15.396,33.807 L 15.396,25.937 L 0.400,25.937 L 0.400,8.881 L 15.396,8.881 L 15.396,0.877 Z"/>
+        </Canvas>
     </Viewbox>
 </ResourceDictionary>

@@ -5,7 +5,6 @@
 			<Setter Property="Margin" Value="6,4" />
 			<Setter Property="FontSize" Value="{Binding FontSize, Mode=OneWay, Source={StaticResource Settings}, Converter={StaticResource SubtracterConverter}, ConverterParameter=-3}" />
 		</Style>
-		<BitmapImage x:Key="arrowImage" UriSource="Images/arrow.png" />
 	</UserControl.Resources>
 
 	<theme:SystemDropShadowChrome>
@@ -17,29 +16,29 @@
 			<UniformGrid Columns="1" Rows="4">
 				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Open">
 					<StackPanel Orientation="Horizontal">
-						<Image Source="{StaticResource arrowImage}" />
-						<TextBlock Text="Open a local package (Ctrl+O)" />
+                        <ContentControl Content="{StaticResource BlueArrowIcon}" />
+                        <TextBlock Text="Open a local package (Ctrl+O)" />
 					</StackPanel>
 				</Button>
 
 				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="Print">
 					<StackPanel Orientation="Horizontal">
-						<Image Source="{StaticResource arrowImage}" />
-						<TextBlock Text="Open a package from online feed (Ctrl+G)" />
+                        <ContentControl Content="{StaticResource BlueArrowIcon}" />
+                        <TextBlock Text="Open a package from online feed (Ctrl+G)" />
 					</StackPanel>
 				</Button>
 
 				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="New">
 					<StackPanel Orientation="Horizontal">
-						<Image Source="{StaticResource arrowImage}" />
-						<TextBlock Text="Create a new package (Ctrl+N)" />
+                        <ContentControl Content="{StaticResource BlueArrowIcon}" />
+                        <TextBlock Text="Create a new package (Ctrl+N)" />
 					</StackPanel>
 				</Button>
 
 				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="GoToPage" CommandParameter="http://docs.nuget.org">
 					<StackPanel Orientation="Horizontal">
-						<Image Source="{StaticResource arrowImage}" />
-						<TextBlock Text="Read NuGet documentation" />
+                        <ContentControl Content="{StaticResource BlueArrowIcon}" />
+                        <TextBlock Text="Read NuGet documentation" />
 					</StackPanel>
 				</Button>
 			</UniformGrid>
