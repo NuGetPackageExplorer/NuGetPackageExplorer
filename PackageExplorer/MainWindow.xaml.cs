@@ -173,7 +173,7 @@ namespace PackageExplorer
 
                 if (package != null)
                 {
-                    LoadPackage(package, packagePath, PackageType.LocalPackage);
+                    LoadPackage(package, packagePath, packagePath, PackageType.LocalPackage);
                     _tempFile = tempFile;
                     return true;
                 }
@@ -199,7 +199,7 @@ namespace PackageExplorer
             return false;
         }
 
-        private async void LoadPackage(IPackage package, string packagePath, PackageType packageType)
+        private async void LoadPackage(IPackage package, string packagePath, string packageSource, PackageType packageType)
         {
             DisposeViewModel();
 
@@ -227,9 +227,9 @@ namespace PackageExplorer
                     packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
 
                     DataContext = packageViewModel;
-                    if (!string.IsNullOrEmpty(packagePath))
+                    if (!string.IsNullOrEmpty(packageSource))
                     {
-                        _mruManager.NotifyFileAdded(package, packagePath, packageType);
+                        _mruManager.NotifyFileAdded(package, packageSource, packageType);
                     }
                 }
                 catch (Exception e)
@@ -293,7 +293,7 @@ namespace PackageExplorer
                 return;
             }
 
-            LoadPackage(new EmptyPackage(), string.Empty, PackageType.LocalPackage);
+            LoadPackage(new EmptyPackage(), string.Empty, string.Empty, PackageType.LocalPackage);
         }
 
         private void OpenMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
@@ -357,6 +357,7 @@ namespace PackageExplorer
             DispatcherOperation processPackageAction(ISignaturePackage package)
             {
                 LoadPackage(package,
+                            package.Source,
                             repository.PackageSource.Source,
                             PackageType.RemotePackage);
 
@@ -561,7 +562,7 @@ namespace PackageExplorer
                 var downloadedPackage = await PackageDownloader.Download(repository, packageIdentity);
                 if (downloadedPackage != null)
                 {
-                    LoadPackage(downloadedPackage, packageUrl, PackageType.RemotePackage);
+                    LoadPackage(downloadedPackage, downloadedPackage.Source, packageUrl, PackageType.RemotePackage);
                 }
             }
             else
