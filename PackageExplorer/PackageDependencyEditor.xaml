@@ -18,12 +18,6 @@
         <self:TargetFrameworkConverter x:Key="TargetFrameworkConverter" />
         <self:StringCollectionsToStringConverter x:Key="StringCollectionsToStringConverter" />
 
-            <Style x:Key="ImageStyle" TargetType="{x:Type Image}">
-            <Setter Property="Width" Value="16" />
-            <Setter Property="Height" Value="16" />
-            <Setter Property="Stretch" Value="Uniform" />
-        </Style>
-
         <DataTemplate DataType="{x:Type pack:PackageDependencyGroup}" x:Key="PackageDependencySetTemplate">
             <TextBlock Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, TargetNullValue='[no target framework]'}" />
         </DataTemplate>
@@ -53,12 +47,9 @@
 
         <!-- buttons to add/remove group -->
         <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
-            <Button ToolTip="Add a new group" Click="OnAddGroupClicked" Margin="0,0,4,0">
-                <Image Source="Images/Add.png" />
-            </Button>
-
+            <Button ToolTip="Add a new group" Click="OnAddGroupClicked" Margin="0,0,4,0" Content="{StaticResource AddIcon}" />
             <self:GrayscaleButton ToolTip="Delete the selected group" Click="OnRemoveGroupClicked" IsEnabled="{Binding SelectedItem, ElementName=DependencyGroupList, Converter={StaticResource nullToBoolConverter}}">
-                <self:GrayscaleImage Source="Images/delete.png" />
+                <self:GrayscaleContentPresenter Content="{StaticResource RemoveIcon}" />
             </self:GrayscaleButton>
         </StackPanel>
 
@@ -148,14 +139,14 @@
             </ListView>
 
             <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="0" Grid.Row="2" ToolTipService.ToolTip="Select dependency from NuGet feed" Click="SelectDependencyButtonClicked">
-                <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/properties.png" />
+                <self:GrayscaleContentPresenter Content="{StaticResource PropertyIcon}" />
             </self:GrayscaleButton>
 
             <TextBox x:Name="NewDependencyId" Text="{Binding Id, BindingGroupName=NewPackageDependency, ValidatesOnDataErrors=True}" Margin="2" Grid.Column="1" Grid.Row="2" />
             <TextBox x:Name="NewDependencyVersion" Text="{Binding VersionSpec, BindingGroupName=NewPackageDependency, Converter={StaticResource VersionSpecConverter}}" Margin="2" Grid.Column="2" Grid.Row="2" />
 
             <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new dependency" Click="AddDependencyButtonClicked">
-                <self:GrayscaleImage Style="{StaticResource ImageStyle}" Source="Images/add.png" />
+                <self:GrayscaleContentPresenter Content="{StaticResource AddIcon}" />
                 <self:GrayscaleButton.IsEnabled>
                     <Binding Path="Text" ElementName="NewDependencyId" Converter="{StaticResource nullToBoolConverter}" Mode="OneWay" />
                 </self:GrayscaleButton.IsEnabled>

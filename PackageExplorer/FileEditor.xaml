@@ -10,7 +10,7 @@
             <MenuItem Header="_File" Margin="3,0">
                 <self:GrayscaleMenuItem Header="_Save" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/saveHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource SaveIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <Separator />
@@ -20,34 +20,34 @@
             <self:GrayscaleMenuItem Margin="3,0" Header="_Edit" Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}}">
                 <self:GrayscaleMenuItem Command="Undo">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/Edit_UndoHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource UndoIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <self:GrayscaleMenuItem Command="Redo">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/Edit_RedoHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource RedoIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <Separator />
                 <self:GrayscaleMenuItem Command="Cut">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/CutHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource CutIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <self:GrayscaleMenuItem Command="Copy">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/CopyHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource CopyIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <self:GrayscaleMenuItem Command="Paste">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/PasteHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource PasteIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <Separator/>
                 <self:GrayscaleMenuItem Command="Find">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/FindHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource QuickFindIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
             </self:GrayscaleMenuItem>
@@ -55,7 +55,7 @@
             <MenuItem Header="_View" Margin="3,0">
                 <MenuItem Header="Text _Size" x:Name="FontSizeMenuItem">
                     <MenuItem.Icon>
-                        <Image Source="Images/FontDialogHS.png" />
+                        <ContentPresenter Content="{StaticResource FontSizeIcon}" />
                     </MenuItem.Icon>
                     <self:GrayscaleMenuItem Header="_Normal" Tag="12" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=12, Mode=OneWay}" />
                     <self:GrayscaleMenuItem Header="_Medium" Tag="14" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=14, Mode=OneWay}" />
@@ -77,42 +77,44 @@
         <Border Background="{StaticResource ToolBarTrayBackground}" DockPanel.Dock="Top">
             <ToolBar ToolBarTray.IsLocked="True" Margin="1">            
                 <!-- Return to Package -->
-                <Button ToolTip="Return to Package (Ctrl+F4)" Command="{Binding CloseCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
-                    <Image Source="Images/GoToPrevious.png" />
-                </Button>
-            
+                <Button ToolTip="Return to Package (Ctrl+F4)"
+                        Command="{Binding CloseCommand, Mode=OneWay}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}"
+                        Content="{StaticResource BackwardIcon}"
+                        />
+
                 <!-- Save -->
                 <self:GrayscaleButton ToolTip="Save (Ctrl+S)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding SaveCommand, Mode=OneWay}" CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:FileEditor}}}">
-                    <self:GrayscaleImage Source="Images/SaveHS.png" />
+                    <self:GrayscaleContentPresenter Content="{StaticResource SaveIcon}" />
                 </self:GrayscaleButton>
 
                 <Separator />
 
                 <!-- Cut -->
                 <self:GrayscaleButton ToolTip="Cut (Ctrl+X)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Cut">
-                    <self:GrayscaleImage Source="Images/CutHS.png" />
+                    <self:GrayscaleContentPresenter Content="{StaticResource CutIcon}" />
                 </self:GrayscaleButton>
 
                 <!-- Copy -->
                 <self:GrayscaleButton ToolTip="Copy (Ctrl+C)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Copy">
-                    <self:GrayscaleImage Source="Images/CopyHS.png" />
+                    <self:GrayscaleContentPresenter Content="{StaticResource CopyIcon}" />
                 </self:GrayscaleButton>
 
                 <!-- Paste -->
                 <self:GrayscaleButton ToolTip="Paste (Ctrl+V)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Paste">
-                    <self:GrayscaleImage Source="Images/PasteHS.png" />
+                    <self:GrayscaleContentPresenter Content="{StaticResource PasteIcon}" />
                 </self:GrayscaleButton>
 
                 <Separator />
 
                 <!-- Undo -->
                 <self:GrayscaleButton ToolTip="Undo (Ctrl+Z)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Undo">
-                    <self:GrayscaleImage Source="Images/Edit_UndoHS.png" />
+                    <self:GrayscaleContentPresenter Content="{StaticResource UndoIcon}" />
                 </self:GrayscaleButton>
 
                 <!-- Redo -->
                 <self:GrayscaleButton ToolTip="Redo (Ctrl+Y)" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="Redo">
-                    <self:GrayscaleImage Source="Images/Edit_RedoHS.png" />
+                    <self:GrayscaleContentPresenter Content="{StaticResource RedoIcon}" />
                 </self:GrayscaleButton>
 
                 <Separator />

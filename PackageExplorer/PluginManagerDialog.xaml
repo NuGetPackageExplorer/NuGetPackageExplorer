@@ -20,15 +20,13 @@
 
 		<StackPanel Margin="10,10,10,0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
 			<Button DockPanel.Dock="Left" Margin="0,0,10,0" ToolTip="Add Local Plugin..." Command="{Binding AddCommand}" CommandParameter="Local">
-				<Image Source="Images/Add.png" />
-			</Button>
-			<Button DockPanel.Dock="Left" Margin="0,0,10,0" ToolTip="Add Feed Plugin..." Command="{Binding AddCommand}" CommandParameter="Remote">
-				<Image Source="Images/Properties.png" />
-			</Button>
-			<self:GrayscaleButton ToolTip="Delete the selected plugin" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=PluginFiles}">
+                <ContentPresenter Content="{StaticResource AddIcon}" />
+            </Button>
+            <Button DockPanel.Dock="Left" Margin="0,0,10,0" ToolTip="Add Feed Plugin..." Command="{Binding AddCommand}" CommandParameter="Remote" Content="{StaticResource PropertyIcon}" />
+            <self:GrayscaleButton ToolTip="Delete the selected plugin" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=PluginFiles}">
 				<self:GrayscaleButton.Content>
-					<self:GrayscaleImage Source="Images/Delete.png" />
-				</self:GrayscaleButton.Content>
+                    <self:GrayscaleContentPresenter Content="{StaticResource RemoveIcon}" />
+                </self:GrayscaleButton.Content>
 			</self:GrayscaleButton>
 		</StackPanel>
 

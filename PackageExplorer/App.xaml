@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Xaml/MenuItems.xaml" />
                 <ResourceDictionary Source="Xaml/Toolbar.xaml" />
                 <ResourceDictionary Source="Xaml/PrefixReservedIndicator.xaml" />
+                <ResourceDictionary Source="Xaml/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <self:IntegerToBooleanConverter x:Key="FontSizeToBoolConverter" />
@@ -34,17 +35,17 @@
             <ContextMenu x:Key="TextBoxContextMenu">
                 <self:GrayscaleMenuItem Command="Cut">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/CutHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource CutIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <self:GrayscaleMenuItem Command="Copy">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/CopyHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource CopyIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
                 <self:GrayscaleMenuItem Command="Paste">
                     <self:GrayscaleMenuItem.Icon>
-                        <self:GrayscaleImage Source="Images/PasteHS.png" />
+                        <self:GrayscaleContentPresenter Content="{StaticResource PasteIcon}" />
                     </self:GrayscaleMenuItem.Icon>
                 </self:GrayscaleMenuItem>
             </ContextMenu>

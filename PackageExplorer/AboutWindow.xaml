@@ -21,7 +21,7 @@
             <Button Content="OK" Padding="20,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,10,15,10" IsDefault="True" IsCancel="True" Click="Button_Click" />
         </Border>
 
-        <Image Style="{x:Null}" Margin="15,20,0,0" DockPanel.Dock="Left" Stretch="None" VerticalAlignment="Top" Source="Images/packageicon.png" />
+        <ContentPresenter Height="32" Width="32" Margin="15,20,0,0" DockPanel.Dock="Left" VerticalAlignment="Top" Content="{StaticResource NuGetPackageIcon}" />
 
         <StackPanel Orientation="Vertical" Grid.Column="1" Margin="15,20,15,0">
             <TextBox x:Name="ProductTitle"
