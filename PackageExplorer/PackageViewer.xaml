@@ -667,6 +667,16 @@
                                 <self:GrayscaleContentPresenter Content="{StaticResource BuildFolderIcon}" />
                             </self:GrayscaleMenuItem.Icon>
                         </self:GrayscaleMenuItem>
+                        <self:GrayscaleMenuItem Header="Add Build_MultiTargeting Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="buildMultiTargeting">
+                            <self:GrayscaleMenuItem.Icon>
+                                <self:GrayscaleContentPresenter Content="{StaticResource BuildFolderIcon}" />
+                            </self:GrayscaleMenuItem.Icon>
+                        </self:GrayscaleMenuItem>
+                        <self:GrayscaleMenuItem Header="Add BuildT_ransitive Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="buildTransitive">
+                            <self:GrayscaleMenuItem.Icon>
+                                <self:GrayscaleContentPresenter Content="{StaticResource BuildFolderIcon}" />
+                            </self:GrayscaleMenuItem.Icon>
+                        </self:GrayscaleMenuItem>
                         <self:GrayscaleMenuItem Header="Add _Src Folder" Command="{Binding AddContentFolderCommand}" CommandParameter="src">
                             <self:GrayscaleMenuItem.Icon>
                                 <self:GrayscaleContentPresenter Content="{StaticResource SourceFolderIcon}" />
