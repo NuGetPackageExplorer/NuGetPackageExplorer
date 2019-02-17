@@ -46,6 +46,7 @@ namespace PackageExplorerViewModel
         private bool _isInEditMode;
         private RelayCommand<object>? _openContentFileCommand;
         private ICommand? _openWithContentFileCommand;
+        private string _packagePath;
         private string _packageSource;
         private RelayCommand? _publishCommand;
         private RelayCommand<object>? _renameContentCommand;
@@ -61,8 +62,11 @@ namespace PackageExplorerViewModel
 
         #endregion
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         internal PackageViewModel(
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
             IPackage package,
+            string path,
             string source,
             IMruManager mruManager,
             IUIServices uiServices,
@@ -83,7 +87,8 @@ namespace PackageExplorerViewModel
 
             _packageMetadata = new EditablePackageMetadata(_package, UIServices);
 
-            _packageSource = source;
+            PackagePath = path;
+            PackageSource = source;
 
             _isSigned = _packageMetadata.IsSigned;
 
@@ -228,14 +233,14 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string PackageSource
+        public string PackagePath
         {
-            get { return _packageSource; }
+            get { return _packagePath; }
             set
             {
-                if (_packageSource != value)
+                if (_packagePath != value)
                 {
-                    _packageSource = value;
+                    _packagePath = value;
                     OnPropertyChanged("PackageSource");
 
                     // This may be a URI or a file
@@ -259,11 +264,24 @@ namespace PackageExplorerViewModel
                             _watcher.Deleted += OnFileChange;
                             _watcher.Renamed += OnFileChange;
 
-                            _watcher.Path = Path.GetDirectoryName(PackageSource);
-                            _watcher.Filter = Path.GetFileName(PackageSource);
+                            _watcher.Path = Path.GetDirectoryName(PackagePath);
+                            _watcher.Filter = Path.GetFileName(PackagePath);
                             _watcher.EnableRaisingEvents = true;
                         }
                     }
+                }
+            }
+        }
+
+        public string PackageSource
+        {
+            get { return _packageSource; }
+            set
+            {
+                if (_packageSource != value)
+                {
+                    _packageSource = value;
+                    OnPropertyChanged();
                 }
             }
         }
@@ -343,7 +361,7 @@ namespace PackageExplorerViewModel
             {
                 UIServices.Show(e.Message, MessageLevel.Error);
             }
-            
+
         }
 
         private void AddExistingFileToFolder(PackageFolder folder)
@@ -653,7 +671,7 @@ namespace PackageExplorerViewModel
             {
                 UIServices.Show(e.Message, MessageLevel.Error);
             }
-            
+
         }
 
         #endregion
@@ -709,7 +727,7 @@ namespace PackageExplorerViewModel
             {
                 UIServices.Show(e.Message, MessageLevel.Error);
             }
-            
+
         }
 
         private bool SaveContentCanExecute(PackageFile file)
@@ -869,7 +887,7 @@ namespace PackageExplorerViewModel
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
             try
             {
-                packageCommand.Value.Execute(package, PackageSource);
+                packageCommand.Value.Execute(package, PackagePath);
             }
             catch (Exception ex)
             {
@@ -1227,7 +1245,7 @@ namespace PackageExplorerViewModel
                 // handle signed packages since they cannot be resaved without losing the signature
                 if (IsSigned)
                 {
-                    File.Copy(PackageSource, tempFile, overwrite: true);
+                    File.Copy(PackagePath, tempFile, overwrite: true);
                 }
                 else
                 {
@@ -1293,7 +1311,7 @@ namespace PackageExplorerViewModel
         public IEnumerable<PackageIssue> Validate()
         {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-            var packageFileName = Path.IsPathRooted(PackageSource) ? Path.GetFileName(PackageSource) : string.Empty;
+            var packageFileName = Path.IsPathRooted(PackagePath) ? Path.GetFileName(PackagePath) : string.Empty;
             return package.Validate(_packageRules.Select(r => r.Value), packageFileName);
         }
 

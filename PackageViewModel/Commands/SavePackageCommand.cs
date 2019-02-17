@@ -143,7 +143,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            var succeeded = SavePackage(ViewModel.PackageSource);
+            var succeeded = SavePackage(ViewModel.PackagePath);
             if (succeeded)
             {
                 RaiseCanExecuteChangedEvent();
@@ -184,6 +184,7 @@ namespace PackageExplorerViewModel
                 var succeeded = SavePackage(selectedPackagePath);
                 if (succeeded)
                 {
+                    ViewModel.PackagePath = selectedPackagePath;
                     ViewModel.PackageSource = selectedPackagePath;
                 }
             }
@@ -258,6 +259,7 @@ namespace PackageExplorerViewModel
                     {
                         File.Copy(signedPackagePath, selectedPackagePath, overwrite: true);
                         ViewModel.OnSaved(selectedPackagePath);
+                        ViewModel.PackagePath = selectedPackagePath;
                         ViewModel.PackageSource = selectedPackagePath;
                         ViewModel.PackageMetadata.ClearSignatures();
                         using (var package = new ZipPackage(selectedPackagePath))
