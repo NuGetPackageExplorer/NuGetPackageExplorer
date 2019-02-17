@@ -223,7 +223,7 @@ namespace PackageExplorer
 
                 try
                 {
-                    var packageViewModel = await PackageViewModelFactory.CreateViewModel(package, packagePath);
+                    var packageViewModel = await PackageViewModelFactory.CreateViewModel(package, packagePath, packageSource);
                     packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
 
                     DataContext = packageViewModel;

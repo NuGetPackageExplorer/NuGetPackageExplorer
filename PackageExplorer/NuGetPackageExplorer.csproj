@@ -43,9 +43,4 @@
     </Resource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Page Update="Xaml\Icons.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
 </Project>

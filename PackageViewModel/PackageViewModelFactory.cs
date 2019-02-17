@@ -60,7 +60,7 @@ namespace PackageExplorerViewModel
 
         #region IPackageViewModelFactory Members
 
-        public async Task<PackageViewModel> CreateViewModel(IPackage package, string packageSource)
+        public async Task<PackageViewModel> CreateViewModel(IPackage package, string packagePath, string packageSource)
         {
             // If it's a zip package, we need to load the verification data so it's ready for later
             if (package is ISignaturePackage zip)
@@ -70,6 +70,7 @@ namespace PackageExplorerViewModel
 
             return new PackageViewModel(
                 package,
+                packagePath,
                 packageSource,
                 MruManager,
                 UIServices,
