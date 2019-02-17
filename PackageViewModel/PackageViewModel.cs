@@ -62,7 +62,9 @@ namespace PackageExplorerViewModel
 
         #endregion
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         internal PackageViewModel(
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
             IPackage package,
             string path,
             string source,
