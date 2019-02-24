@@ -8,7 +8,7 @@ pr:
 
 jobs:
 - job: Build
-  pool: vs2019-private
+  pool: windows-2019
   strategy:    
     matrix:
       Config_Release:
@@ -90,8 +90,6 @@ jobs:
       msbuildArguments: /restore
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-      msbuildLocationMethod: location
-      msbuildLocation: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe'
 
   - task: MSBuild@1
     displayName: Build Nightly Package
@@ -100,8 +98,6 @@ jobs:
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\"
       configuration: Nightly
       maximumCpuCount: true
-      msbuildLocationMethod: location
-      msbuildLocation: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
 
   - task: MSBuild@1
@@ -111,8 +107,6 @@ jobs:
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:UapAppxPackageBuildMode=StoreUpload
       configuration: Store
       maximumCpuCount: true
-      msbuildLocationMethod: location
-      msbuildLocation: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
   
   - task: MSBuild@1
@@ -122,8 +116,6 @@ jobs:
       msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-      msbuildLocationMethod: location
-      msbuildLocation: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe'
     condition: and(succeeded(), or(eq(variables['BuildConfiguration'], 'Release'), eq(variables['BuildConfiguration'], 'Choco')))
 
   - task: MSBuild@1
@@ -133,8 +125,6 @@ jobs:
       msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\NuGet
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-      msbuildLocationMethod: location
-      msbuildLocation: 'C:\Program Files (x86)\Microsoft Visual Studio\2019\Preview\MSBuild\Current\Bin\MSBuild.exe'
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - powershell: |
@@ -192,4 +182,3 @@ jobs:
       pathToPublish: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
       artifactType: container
       artifactName: $(BuildOutputDirectory)
-      
