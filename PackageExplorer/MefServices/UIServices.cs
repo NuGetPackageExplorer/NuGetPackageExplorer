@@ -19,8 +19,8 @@ namespace PackageExplorer
         [Import]
         public Lazy<MainWindow> Window { get; set; }
 
-        #region IUIServices Members
-
+        public object Initialize() => Window.Value;
+                
         public bool OpenSaveFileDialog(string title, string defaultFileName, string? initialDirectory, string filter, bool overwritePrompt,
                                        out string selectedFilePath, out int selectedFilterIndex)
         {
@@ -300,8 +300,6 @@ namespace PackageExplorer
 
             return ConfirmMoveFileUsingTaskDialog(fileName, targetFolder, numberOfItemsLeft, mainInstruction);
         }
-
-        #endregion
 
         private static bool ConfirmUsingTaskDialog(string message, string title, bool isWarning)
         {

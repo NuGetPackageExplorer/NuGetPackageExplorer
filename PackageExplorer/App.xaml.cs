@@ -74,6 +74,9 @@ namespace PackageExplorer
             MigrateSettings();
 
             var window = Container.GetExportedValue<MainWindow>();
+            var uiServices = Container.GetExportedValue<IUIServices>();
+            uiServices.Initialize();
+
             window.Show();
 
             if (e.Args.Length > 0)
