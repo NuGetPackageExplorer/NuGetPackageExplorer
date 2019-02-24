@@ -8,7 +8,8 @@ pr:
 
 jobs:
 - job: Build
-  pool: windows-2019
+  pool:
+    vmImage: windows-2019
   strategy:    
     matrix:
       Config_Release:
