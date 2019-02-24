@@ -157,8 +157,7 @@ namespace PackageExplorer
 
         private void PackageIconImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            var image = sender as Image;
-            if (image != null)
+            if (sender is Image image)
             {
                 image.Source = Images.DefaultPackageIcon;
             }

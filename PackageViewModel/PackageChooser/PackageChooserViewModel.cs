@@ -393,7 +393,7 @@ namespace PackageExplorerViewModel
         #region Search
         private async void Search(string searchTerm)
         {
-            searchTerm = searchTerm ?? CurrentTypingSearch ?? string.Empty;
+            searchTerm ??= CurrentTypingSearch ?? string.Empty;
             searchTerm = searchTerm.Trim();
             if (_currentSearch != searchTerm)
             {

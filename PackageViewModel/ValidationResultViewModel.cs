@@ -8,7 +8,7 @@ using NuGet.Packaging.Signing;
 
 namespace PackageExplorerViewModel
 {
-    public sealed class ValidationResultViewModel : INotifyPropertyChanged
+    public sealed class ValidationResultViewModel 
     {
         private readonly VerifySignaturesResult _verifySignaturesResult;
 
@@ -35,14 +35,6 @@ namespace PackageExplorerViewModel
         public IReadOnlyList<ILogMessage> WarningIssues { get; }
         public IReadOnlyList<ILogMessage> InformationIssues { get; }
 
-        public SignatureVerificationStatus Trust { get; }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-
-        private void RaisePropertyChange(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public SignatureVerificationStatus Trust { get; }       
     }
 }

@@ -124,6 +124,24 @@ namespace PackageExplorer
             }
         }
 
+        private async void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // The first time this event handler is invoked, IsLoaded = false
+            // We only do work from the second time.
+            if (IsVisible && IsLoaded)
+            {
+                if (string.IsNullOrEmpty(_pendingSearch))
+                {
+                    // there is no pending search operation, just set focus on the search box
+                    await Dispatcher.InvokeAsync(new Action(OnAfterShow), DispatcherPriority.Background);
+                }
+                else
+                {
+                    InvokeSearch(_pendingSearch);
+                }
+            }
+        }
+
         private void StandardDialog_Closing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
@@ -170,24 +188,6 @@ namespace PackageExplorer
             _pendingSearch = searchTerm;
             ShowDialog();
             _pendingSearch = null;
-        }
-
-        private async void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            // The first time this event handler is invoked, IsLoaded = false
-            // We only do work from the second time.
-            if (IsVisible && IsLoaded)
-            {
-                if (string.IsNullOrEmpty(_pendingSearch))
-                {
-                    // there is no pending search operation, just set focus on the search box
-                    await Dispatcher.InvokeAsync(new Action(OnAfterShow), DispatcherPriority.Background);
-                }
-                else
-                {
-                    InvokeSearch(_pendingSearch);
-                }
-            }
         }
 
         private void OnPackageDoubleClick(object sender, RoutedEventArgs e)

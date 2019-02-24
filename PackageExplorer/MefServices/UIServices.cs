@@ -202,8 +202,7 @@ namespace PackageExplorer
                 Owner = Window.Value,
                 DataContext = viewModel
             };
-
-            if (viewModel is IDisposable disposable)
+            if (viewModel is IDisposable)
             {
                 dialog.Closed += OnDialogClosed;
             }
@@ -219,8 +218,7 @@ namespace PackageExplorer
                 Owner = Window.Value,
                 DataContext = viewModel
             };
-
-            if (viewModel is IDisposable disposable)
+            if (viewModel is IDisposable)
             {
                 dialog.Closed += OnDialogClosed;
             }
@@ -236,8 +234,7 @@ namespace PackageExplorer
                 Owner = Window.Value,
                 DataContext = viewModel
             };
-
-            if (viewModel is IDisposable disposable)
+            if (viewModel is IDisposable)
             {
                 dialog.Closed += OnDialogClosed;
             }

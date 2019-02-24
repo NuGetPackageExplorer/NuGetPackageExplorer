@@ -408,7 +408,7 @@ namespace PackageExplorer
             if (sender is TreeViewItem item)
             {
                 // allow dragging file and folder
-                if (item.DataContext is PackagePart packagePart)
+                if (item.DataContext is PackagePart)
                 {
                     _dragItem = item;
                     _dragPoint = e.GetPosition(item);
@@ -584,7 +584,7 @@ namespace PackageExplorer
 
                     if (packagePart != null)
                     {
-                        folder = folder ?? RootFolder;
+                        folder ??= RootFolder;
 
                         if (packagePart is PackageFile file)
                         {
@@ -603,7 +603,7 @@ namespace PackageExplorer
             }
             if (data.GetDataPresent(NativeDragDrop.FileGroupDescriptorW))
             {
-                folder = folder ?? RootFolder;
+                folder ??= RootFolder;
 
                 var viewModel = (PackageViewModel)DataContext;
                 viewModel.AddDraggedAndDroppedFileDescriptors(folder, NativeDragDrop.GetFileGroupDescriptorW(data));

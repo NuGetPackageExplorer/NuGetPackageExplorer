@@ -12,8 +12,8 @@ namespace NuGetPe
         private const string TokenEnd = "TOKENEND";
         private const string TokenMetadataStart = "0.0.0-" + TokenStart + ".";
         private const string TokenMetadataEnd = "." + TokenEnd;
-        private static readonly Regex tokenRegex = new Regex(@"([$])(?:(?=(\\?))\2.)*?\1", RegexOptions.Compiled);
-        private static readonly Regex metadataRegEx = new Regex($@"0\.0\.0\-{TokenStart}\.([^.]+)\.{TokenEnd}", RegexOptions.Compiled);
+        private static readonly Regex TokenRegex = new Regex(@"([$])(?:(?=(\\?))\2.)*?\1", RegexOptions.Compiled);
+        private static readonly Regex MetadataRegEx = new Regex($@"0\.0\.0\-{TokenStart}\.([^.]+)\.{TokenEnd}", RegexOptions.Compiled);
 
         public static Stream ReadManifest(string file)
         {
@@ -85,7 +85,7 @@ namespace NuGetPe
                 return value;
             }
 
-            var matches = tokenRegex.Matches(value);
+            var matches = TokenRegex.Matches(value);
             foreach (Match match in matches)
             {
                 var token = match.Value.Substring(1, match.Value.Length - 2);
@@ -108,7 +108,7 @@ namespace NuGetPe
             }
 
             // see if it's a token
-            var matches = metadataRegEx.Matches(value);
+            var matches = MetadataRegEx.Matches(value);
 
             foreach (Match match in matches)
             {

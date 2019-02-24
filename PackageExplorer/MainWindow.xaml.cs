@@ -554,7 +554,7 @@ namespace PackageExplorer
                 return;
             }
 
-            if (id != null && version != null && Uri.TryCreate(packageUrl, UriKind.Absolute, out var downloadUrl))
+            if (id != null && version != null && Uri.TryCreate(packageUrl, UriKind.Absolute, out _))
             {
                 var repository = PackageRepositoryFactory.CreateRepository(packageUrl);
                 var packageIdentity = new NuGet.Packaging.Core.PackageIdentity(id, version);

@@ -347,7 +347,7 @@ namespace PackageExplorer
             }
 
             {
-                var innerHandler = messageHandler;
+                //var innerHandler = messageHandler;
 
                 // TODO: Investigate what changed in this type
             //    messageHandler = new StsAuthenticationHandler(packageSource, TokenStore.Instance)
