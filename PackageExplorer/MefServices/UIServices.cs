@@ -259,18 +259,17 @@ namespace PackageExplorer
 
         public bool OpenFolderDialog(string title, string initialPath, out string selectedPath)
         {
-            var dialog = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog
+            var dialog = new System.Windows.Forms.FolderBrowserDialog()
             {
-                IsFolderPicker = true,
-                DefaultDirectory = initialPath,
-                Title = title,
-                ShowPlacesList = true
+                SelectedPath = initialPath,
+                Description = title,
+                UseDescriptionForTitle = true                
             };
 
-            var result = dialog.ShowDialog(Window.Value);
-            if (result == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Ok)
+            var result = dialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
             {
-                selectedPath = dialog.FileName;
+                selectedPath = dialog.SelectedPath;
                 return true;
             }
             else
