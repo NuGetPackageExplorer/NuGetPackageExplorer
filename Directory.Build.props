@@ -31,7 +31,7 @@
 
   <PropertyGroup>
     <TargetPlatformMinVersion>10.0.10563.0</TargetPlatformMinVersion>
-    <TargetPlatformVersion>10.0.17134.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
