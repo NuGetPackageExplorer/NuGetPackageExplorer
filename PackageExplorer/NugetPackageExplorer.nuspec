@@ -19,7 +19,7 @@
     <releaseNotes>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/releases</releaseNotes>
     <tags>nuget admin nupkg nuspec</tags>
     <dependencies>
-      <dependency id="vcredist140" version="14.15.26706" />
+      <dependency id="vcredist140" version="14.16.27027.1" />
     </dependencies>
   </metadata>
   <files>

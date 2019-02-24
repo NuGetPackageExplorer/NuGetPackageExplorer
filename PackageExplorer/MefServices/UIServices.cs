@@ -19,8 +19,8 @@ namespace PackageExplorer
         [Import]
         public Lazy<MainWindow> Window { get; set; }
 
-        #region IUIServices Members
-
+        public object Initialize() => Window.Value;
+                
         public bool OpenSaveFileDialog(string title, string defaultFileName, string? initialDirectory, string filter, bool overwritePrompt,
                                        out string selectedFilePath, out int selectedFilterIndex)
         {
@@ -202,8 +202,7 @@ namespace PackageExplorer
                 Owner = Window.Value,
                 DataContext = viewModel
             };
-
-            if (viewModel is IDisposable disposable)
+            if (viewModel is IDisposable)
             {
                 dialog.Closed += OnDialogClosed;
             }
@@ -219,8 +218,7 @@ namespace PackageExplorer
                 Owner = Window.Value,
                 DataContext = viewModel
             };
-
-            if (viewModel is IDisposable disposable)
+            if (viewModel is IDisposable)
             {
                 dialog.Closed += OnDialogClosed;
             }
@@ -236,8 +234,7 @@ namespace PackageExplorer
                 Owner = Window.Value,
                 DataContext = viewModel
             };
-
-            if (viewModel is IDisposable disposable)
+            if (viewModel is IDisposable)
             {
                 dialog.Closed += OnDialogClosed;
             }
@@ -259,18 +256,17 @@ namespace PackageExplorer
 
         public bool OpenFolderDialog(string title, string initialPath, out string selectedPath)
         {
-            var dialog = new Microsoft.WindowsAPICodePack.Dialogs.CommonOpenFileDialog
+            var dialog = new System.Windows.Forms.FolderBrowserDialog()
             {
-                IsFolderPicker = true,
-                DefaultDirectory = initialPath,
-                Title = title,
-                ShowPlacesList = true
+                SelectedPath = initialPath,
+                Description = title,
+                UseDescriptionForTitle = true                
             };
 
-            var result = dialog.ShowDialog(Window.Value);
-            if (result == Microsoft.WindowsAPICodePack.Dialogs.CommonFileDialogResult.Ok)
+            var result = dialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
             {
-                selectedPath = dialog.FileName;
+                selectedPath = dialog.SelectedPath;
                 return true;
             }
             else
@@ -300,8 +296,6 @@ namespace PackageExplorer
 
             return ConfirmMoveFileUsingTaskDialog(fileName, targetFolder, numberOfItemsLeft, mainInstruction);
         }
-
-        #endregion
 
         private static bool ConfirmUsingTaskDialog(string message, string title, bool isWarning)
         {

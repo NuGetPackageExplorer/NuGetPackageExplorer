@@ -51,7 +51,15 @@ namespace PackageExplorer
             };
             
             ReCenterPackageChooserDialog(dialog);
-            dialog.ShowDialog(searchTerm);
+
+            try
+            {
+                dialog.ShowDialog(searchTerm);
+            }
+            catch(ArgumentException e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+            }            
 
             return _viewModel.SelectedPackage;
         }

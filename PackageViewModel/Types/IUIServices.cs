@@ -14,6 +14,8 @@ namespace NuGetPackageExplorer.Types
 
     public interface IUIServices
     {
+        object Initialize();
+
         bool OpenSaveFileDialog(string title, string defaultFileName, string? initialDirectory, string filter, bool overwritePrompt,
                                 out string selectedFilePath, out int selectedFilterIndex);
 

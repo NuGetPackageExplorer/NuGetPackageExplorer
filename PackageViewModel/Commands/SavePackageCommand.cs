@@ -130,7 +130,7 @@ namespace PackageExplorerViewModel
             var expectedSymbolPackageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.SymbolPackageExtension;
             var packageName = Path.GetFileName(ViewModel.PackageSource);
             if (!(expectedPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase) ||
-                  expectedPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase)))
+                  expectedSymbolPackageName.Equals(packageName, StringComparison.OrdinalIgnoreCase)))
             {
                 var confirmed = ViewModel.UIServices.Confirm(
                     "File name mismatch",

@@ -339,14 +339,14 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private bool AddContentFileCanExecute(object parameter)
+        private bool AddContentFileCanExecute(object? parameter)
         {
             if (IsSigned || IsInEditFileMode)
             {
                 return false;
             }
 
-            parameter = parameter ?? SelectedItem;
+            parameter ??= SelectedItem;
             return parameter == null || parameter is PackageFolder;
         }
 
@@ -435,14 +435,14 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private bool AddNewFolderCanExecute(object parameter)
+        private bool AddNewFolderCanExecute(object? parameter)
         {
             if (IsSigned || IsInEditFileMode)
             {
                 return false;
             }
 
-            parameter = parameter ?? SelectedItem;
+            parameter ??= SelectedItem;
             return parameter == null || parameter is PackageFolder;
         }
 
@@ -646,22 +646,22 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private bool OpenContentFileCanExecute(object parameter)
+        private bool OpenContentFileCanExecute(object? parameter)
         {
             if (IsInEditFileMode)
             {
                 return false;
             }
 
-            parameter = parameter ?? SelectedItem;
+            parameter ??= SelectedItem;
             return parameter is PackageFile;
         }
 
-        private void OpenContentFileExecute(object parameter)
+        private void OpenContentFileExecute(object? parameter)
         {
             try
             {
-                parameter = parameter ?? SelectedItem;
+                parameter ??= SelectedItem;
                 if (parameter is PackageFile file)
                 {
                     FileHelper.OpenFileInShell(file, UIServices);
@@ -970,8 +970,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            var f = file as PackageFile;
-            if (f != null)
+            if (file is PackageFile f)
             {
                 FileEditorViewModel = new FileEditorViewModel(this, f, UIServices);
             }
@@ -1077,14 +1076,14 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private bool AddNewFileCanExecute(object parameter)
+        private bool AddNewFileCanExecute(object? parameter)
         {
             if (IsSigned || IsInEditFileMode)
             {
                 return false;
             }
 
-            parameter = parameter ?? SelectedItem;
+            parameter ??= SelectedItem;
             return parameter == null || parameter is PackageFolder;
         }
 

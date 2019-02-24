@@ -74,6 +74,9 @@ namespace PackageExplorer
             MigrateSettings();
 
             var window = Container.GetExportedValue<MainWindow>();
+            var uiServices = Container.GetExportedValue<IUIServices>();
+            uiServices.Initialize();
+
             window.Show();
 
             if (e.Args.Length > 0)
@@ -154,8 +157,7 @@ namespace PackageExplorer
 
         private void PackageIconImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
         {
-            var image = sender as Image;
-            if (image != null)
+            if (sender is Image image)
             {
                 image.Source = Images.DefaultPackageIcon;
             }

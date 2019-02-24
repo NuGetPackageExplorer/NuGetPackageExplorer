@@ -291,6 +291,7 @@ namespace PackageExplorerViewModel
         [DllImport("user32.dll")]
         private static extern int DestroyIcon(IntPtr hIcon);
 
+#pragma warning disable IDE1006 // Naming Styles
         [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
         private struct SHFILEINFO
         {
@@ -306,7 +307,7 @@ namespace PackageExplorerViewModel
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_TYPE)]
             public string szTypeName;
         }
-
+#pragma warning restore IDE1006 // Naming Styles
         public static Icon ExtractAssociatedIcon(string fileName)
         {
             var info = new SHFILEINFO();

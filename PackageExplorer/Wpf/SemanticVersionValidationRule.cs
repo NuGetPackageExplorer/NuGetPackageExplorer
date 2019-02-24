@@ -19,7 +19,7 @@ namespace PackageExplorer
                 return ValidationResult.ValidResult;
             }
 
-            if (NuGetVersion.TryParse(stringValue, out var version))
+            if (NuGetVersion.TryParse(stringValue, out _))
             {
                 return ValidationResult.ValidResult;
             }

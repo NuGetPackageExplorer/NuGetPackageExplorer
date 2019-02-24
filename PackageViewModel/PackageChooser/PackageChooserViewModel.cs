@@ -276,7 +276,18 @@ namespace PackageExplorerViewModel
             if (ActiveRepository == null)
             {
                 _feedType = FeedType.Undefined;
-                ActiveRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+                try
+                {
+                    ActiveRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+                }
+                catch(ArgumentException)
+                {
+                    var origSource = PackageSource;
+                    PackageSource = _defaultPackageSourceUrl ?? NuGetConstants.DefaultFeedUrl;
+                    ActiveRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+
+                    _uIServices.Show($"Package Source '{origSource}' is not valid. Defaulting to '{NuGetConstants.DefaultFeedUrl}", MessageLevel.Error);
+                }                
             }
 
             return ActiveRepository;
@@ -382,7 +393,7 @@ namespace PackageExplorerViewModel
         #region Search
         private async void Search(string searchTerm)
         {
-            searchTerm = searchTerm ?? CurrentTypingSearch ?? string.Empty;
+            searchTerm ??= CurrentTypingSearch ?? string.Empty;
             searchTerm = searchTerm.Trim();
             if (_currentSearch != searchTerm)
             {

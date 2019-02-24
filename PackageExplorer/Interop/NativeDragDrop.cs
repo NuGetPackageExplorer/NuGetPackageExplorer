@@ -22,7 +22,7 @@ namespace PackageExplorer
             var fileDescriptor = new FILEDESCRIPTORW() { cFileName = fileName };
             fileDescriptor.dwFlags |= FD_SHOWPROGRESSUI;
 
-            if (lastWriteTime != default(DateTimeOffset))
+            if (lastWriteTime != default)
             {
                 fileDescriptor.dwFlags |= FD_CREATETIME | FD_WRITESTIME;
                 var changeTime = lastWriteTime.ToFileTime();
@@ -200,8 +200,7 @@ namespace PackageExplorer
             {
                 if (_stats == null)
                 {
-                    var stats = new System.Runtime.InteropServices.ComTypes.STATSTG();
-                    _inner.Stat(out stats, 0);
+                    _inner.Stat(out var stats, 0);
 
                     _stats = stats;
                 }

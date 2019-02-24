@@ -82,7 +82,7 @@ namespace NuGetPe
         {
             if (!_initialized) return;
 
-            _client.Notify(exception);
+            _client.Notify(exception, severity);
         }
 
         public static void Notify(Exception exception, Middleware callback)
