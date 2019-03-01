@@ -37,13 +37,13 @@ namespace PackageExplorer
                 }
             }
 
-            if(Icon is ContentPresenter cp)
+            if (Icon is ContentPresenter cp)
             {
                 if (cp.Effect is GrayscaleEffect.GrayscaleEffect effect)
                 {
                     effect.DesaturationFactor = IsEnabled ? 1 : 0;
                 }
             }
-        }        
+        }
     }
 }

@@ -53,11 +53,11 @@ namespace PackageExplorer
             catch (Exception e)
             {
                 // Don't send telemetry error for bad package
-                if(!(e is InvalidDataException))
+                if (!(e is InvalidDataException))
                 {
                     DiagnosticsClient.Notify(e);
                 }
-                
+
                 UIServices.Show(e.Message, MessageLevel.Error);
                 return null;
             }
@@ -89,11 +89,11 @@ namespace PackageExplorer
                 CancellationText = "Canceling download..."
             };
 
-            
+
             // polling for Cancel button being clicked
             var cts = new CancellationTokenSource();
             var timer = new System.Timers.Timer(100);
-            
+
             timer.Elapsed += (o, e) =>
                           {
                               lock (progressDialogLock)
@@ -110,7 +110,7 @@ namespace PackageExplorer
                               }
                           };
 
-            
+
             var tcs = new TaskCompletionSource<string?>();
             progressDialog.DoWork += (object sender, DoWorkEventArgs args) =>
             {
@@ -177,7 +177,7 @@ namespace PackageExplorer
                     }
                 }
             }
-            
+
 
             void OnProgress(long bytesReceived, long? totalBytes)
             {
@@ -350,10 +350,10 @@ namespace PackageExplorer
                 //var innerHandler = messageHandler;
 
                 // TODO: Investigate what changed in this type
-            //    messageHandler = new StsAuthenticationHandler(packageSource, TokenStore.Instance)
-            //    {
-            //        InnerHandler = innerHandler
-            //    };
+                //    messageHandler = new StsAuthenticationHandler(packageSource, TokenStore.Instance)
+                //    {
+                //        InnerHandler = innerHandler
+                //    };
             }
             {
                 var innerHandler = messageHandler;

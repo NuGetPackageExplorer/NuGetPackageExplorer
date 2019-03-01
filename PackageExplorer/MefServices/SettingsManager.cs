@@ -56,7 +56,7 @@ namespace PackageExplorer
             {
                 // not much we can do if we can't read/write the settings file
             }
-            
+
             return default!;
         }
 
@@ -115,9 +115,9 @@ namespace PackageExplorer
             {
                 value = JsonConvert.SerializeObject(list);
             }
-            settings.Values[name] = value;            
+            settings.Values[name] = value;
         }
-        
+
         public IList<string> GetMruFiles()
         {
             return GetValue<List<string>>("MruFiles") ?? new List<string>();

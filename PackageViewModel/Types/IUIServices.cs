@@ -42,7 +42,7 @@ namespace NuGetPackageExplorer.Types
         bool TrySelectPortableFramework(out string portableFramework);
 
         bool ConfirmCloseEditor(string title, string message);
-        
+
         DispatcherOperation BeginInvoke(Action action);
     }
 }

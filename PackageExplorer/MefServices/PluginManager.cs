@@ -116,7 +116,7 @@ namespace PackageExplorer
                 throw new ArgumentNullException("plugin");
             }
 
-            if(PluginsDirectory == null)
+            if (PluginsDirectory == null)
             {
                 return null;
             }
@@ -180,7 +180,7 @@ namespace PackageExplorer
                 throw new ArgumentNullException("plugin");
             }
 
-            if(PluginsDirectory == null)
+            if (PluginsDirectory == null)
             {
                 return false;
             }
@@ -356,7 +356,7 @@ namespace PackageExplorer
         {
             try
             {
-                if(PluginsDirectory == null)
+                if (PluginsDirectory == null)
                 {
                     return;
                 }

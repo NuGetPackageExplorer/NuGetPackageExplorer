@@ -43,7 +43,7 @@ namespace NuGetPe
                                                       .GetCustomAttributes<AssemblyMetadataAttribute>()
                                                       .FirstOrDefault(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
                                                       ?.Value,
-                
+
 
             };
 
@@ -74,7 +74,7 @@ namespace NuGetPe
             {
                 cb.Event.Device.Remove("hostname");
                 cb.Event.Device.AddToPayload("presentationFramework", infoVersion);
-                cb.Event.Device.AddToPayload("coreClr", corelibinfoVersion);                
+                cb.Event.Device.AddToPayload("coreClr", corelibinfoVersion);
             });
         }
 

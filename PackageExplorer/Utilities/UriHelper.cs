@@ -25,7 +25,7 @@ namespace PackageExplorer
             catch // Possible Win32 exception: operation was canceled by the user. Nothing we can do.
             {
             }
-            
+
         }
 
         public static bool IsRemoteUri(this Uri url)

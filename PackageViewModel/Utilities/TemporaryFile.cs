@@ -19,7 +19,7 @@ namespace PackageExplorerViewModel.Utilities
             {
                 extension = string.Empty;
             }
-            
+
             FileName = Path.GetTempFileName() + extension;
 
             stream.CopyToFile(FileName);

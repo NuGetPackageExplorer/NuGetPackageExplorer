@@ -167,7 +167,7 @@ namespace PackageExplorer
 
                 }
                 ,
-                
+
                 {
                     ".NET",
                     new[]
@@ -449,7 +449,7 @@ namespace PackageExplorer
             catch // Possible COM exception if already in progress, ignore
             {
             }
-            
+
         }
 
         private void PackagesTreeViewItem_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -513,12 +513,12 @@ namespace PackageExplorer
                     e.Handled = true;
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // Suppress any COM errors coming from the paste
                 _messageBoxServices.Show(ex.Message, MessageLevel.Error);
             }
-            
+
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -637,7 +637,7 @@ namespace PackageExplorer
                     {
                         fileSize = new FileInfo(packageFile.OriginalPath).Length;
                     }
-                    catch(FileNotFoundException)
+                    catch (FileNotFoundException)
                     { }
                 }
 

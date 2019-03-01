@@ -20,7 +20,7 @@ namespace PackageExplorer
         public Lazy<MainWindow> Window { get; set; }
 
         public object Initialize() => Window.Value;
-                
+
         public bool OpenSaveFileDialog(string title, string defaultFileName, string? initialDirectory, string filter, bool overwritePrompt,
                                        out string selectedFilePath, out int selectedFilterIndex)
         {
@@ -83,7 +83,7 @@ namespace PackageExplorer
                 selectedFileName = string.Empty;
                 return false;
             }
-           
+
         }
 
         public bool OpenMultipleFilesDialog(string title, string filter, out string[] selectedFileNames)
@@ -260,7 +260,7 @@ namespace PackageExplorer
             {
                 SelectedPath = initialPath,
                 Description = title,
-                UseDescriptionForTitle = true                
+                UseDescriptionForTitle = true
             };
 
             var result = dialog.ShowDialog();

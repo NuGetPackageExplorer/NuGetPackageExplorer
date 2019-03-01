@@ -86,7 +86,7 @@ namespace PackageExplorerViewModel
             if (selectedPackageInfo != null)
             {
                 var repository = _packageChooser.PluginRepository;
-                if(repository != null)
+                if (repository != null)
                 {
                     var package = await _packageDownloader.Download(
                     repository,
@@ -96,7 +96,7 @@ namespace PackageExplorerViewModel
                     {
                         AddSelectedPluginPackage(package);
                     }
-                }                
+                }
             }
         }
 
@@ -117,7 +117,7 @@ namespace PackageExplorerViewModel
                 {
                     _uiServices.Show(e.Message, MessageLevel.Error);
                 }
-                
+
             }
         }
 

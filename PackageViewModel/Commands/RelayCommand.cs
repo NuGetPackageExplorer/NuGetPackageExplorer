@@ -35,7 +35,7 @@ namespace PackageExplorerViewModel
         {
             CommandManager.InvalidateRequerySuggested();
         }
-        
+
         [DebuggerStepThrough]
         public bool CanExecute(object parameter)
         {
@@ -64,7 +64,7 @@ namespace PackageExplorerViewModel
         {
             _execute((T)parameter);
         }
-        
+
         private readonly Predicate<T>? _canExecute;
         private readonly Action<T> _execute;
     }

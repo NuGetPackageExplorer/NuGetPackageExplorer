@@ -31,7 +31,7 @@ namespace NuGetPe.AssemblyMetadata
             {
                 return null;
             }
-            
+
             using (var reader = new AssemblyDebugParser(_peReader.ReadEmbeddedPortablePdbDebugDirectoryData(entry[0]), PdbType.Embedded))
             {
                 return reader.GetDebugData();

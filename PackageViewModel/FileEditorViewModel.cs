@@ -83,7 +83,7 @@ namespace PackageExplorerViewModel
                 _packageViewModel.CloseEditFileMode();
             }
         }
-        
+
         public ICommand SaveCommand { get; }
 
         private bool CanSaveExecute(IFileEditorService obj)
@@ -114,7 +114,7 @@ namespace PackageExplorerViewModel
             {
                 _uiServices.Show(e.Message, MessageLevel.Error);
             }
-            
+
         }
 
         private bool PersitChanges()

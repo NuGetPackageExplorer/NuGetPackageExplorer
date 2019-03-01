@@ -43,7 +43,7 @@ namespace PackageExplorerViewModel
         private readonly RelayCommand _showValidationResultsCommand;
 
         public ICommand ShowValidationResultsCommand => _showValidationResultsCommand;
-        
+
         public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices)
         {
             _uiServices = uiServices;
@@ -56,7 +56,7 @@ namespace PackageExplorerViewModel
             Authors = ConvertToString(source.Authors);
             Owners = ConvertToString(source.Owners);
             IconUrl = FixIconUrl(source.IconUrl);
-            
+
             ProjectUrl = source.ProjectUrl;
             RequireLicenseAcceptance = source.RequireLicenseAcceptance;
             DevelopmentDependency = source.DevelopmentDependency;
@@ -71,7 +71,7 @@ namespace PackageExplorerViewModel
             FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkReferences);
             _packageAssemblyReferences = new ObservableCollection<PackageReferenceSet>();
             ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
-            
+
             Repository = source.Repository;
             LicenseMetadata = source.LicenseMetadata;
             LicenseUrl = LicenseMetadata != null ? null : source.LicenseUrl; // This will be set for back compat, but should show up as null here
@@ -556,7 +556,7 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-     
+
 
         private static Uri FixIconUrl(Uri uri)
         {

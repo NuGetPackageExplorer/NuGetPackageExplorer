@@ -141,7 +141,7 @@ namespace PackageExplorerViewModel
             SignatureCheckResult isValidSig;
             using (var str = file.GetStream())
             using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Name)))
-            {                
+            {
                 var extractor = new FileInspector(tempFile.FileName);
 
                 sigs = extractor.GetSignatures().ToList();
@@ -149,7 +149,7 @@ namespace PackageExplorerViewModel
 
                 size = tempFile.Length;
             }
-            
+
             var fileInfo = new FileContentInfo(
                 file,
                 file.Path,
@@ -188,7 +188,7 @@ namespace PackageExplorerViewModel
 
                 int bytesRead;
 
-                while((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
+                while ((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
                 {
                     sb.Append(buffer, 0, bytesRead);
                     if (sb.Length >= maxBytes)

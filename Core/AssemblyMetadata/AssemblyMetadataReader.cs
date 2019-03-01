@@ -12,18 +12,18 @@ namespace NuGetPe.AssemblyMetadata
     {
         public static AssemblyMetaData? ReadMetaData(string assemblyPath)
         {
-            if (string.IsNullOrWhiteSpace(assemblyPath)) 
+            if (string.IsNullOrWhiteSpace(assemblyPath))
             {
                 return null;
             }
-                        
+
             var assemblyName = AssemblyName.GetAssemblyName(assemblyPath);
             if (assemblyName == null)
             {
                 return null;
             }
 
-            var result = new AssemblyMetaData(assemblyName);            
+            var result = new AssemblyMetaData(assemblyName);
 
             // For WinRT component, we can only read Full Name. 
             if (assemblyName.ContentType == AssemblyContentType.WindowsRuntime)

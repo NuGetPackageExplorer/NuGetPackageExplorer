@@ -11,7 +11,7 @@ namespace PackageExplorer
     [PackageContentViewerMetadata(100, ".dll", ".exe", ".winmd", SupportsWindows10S = false)]
     internal class AssemblyFileViewer : IPackageContentViewer
     {
-        
+
         public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
             var tempFile = Path.GetTempFileName();

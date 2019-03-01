@@ -25,7 +25,7 @@ namespace PackageExplorerViewModel
         {
             var list = new List<AssemblyDebugSourceDocumentViewModel>(debugData.Sources.Count);
 
-            var lookup = debugData.SourceLink.ToDictionary(sm => sm.Base.Substring(0, sm.Base.Length-1), sm => sm.Location.Substring(0, sm.Location.Length-1));
+            var lookup = debugData.SourceLink.ToDictionary(sm => sm.Base.Substring(0, sm.Base.Length - 1), sm => sm.Location.Substring(0, sm.Location.Length - 1));
 
             foreach (var doc in debugData.Sources)
             {

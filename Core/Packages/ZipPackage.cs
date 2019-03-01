@@ -301,7 +301,7 @@ namespace NuGetPe
                     try
                     {
                         var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None);
-            
+
                         // Author signatures must be the primary, but they can contain
                         // a repository counter signature
                         if (sig.Type == SignatureType.Author)

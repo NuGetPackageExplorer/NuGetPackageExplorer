@@ -34,7 +34,7 @@ namespace NuGetPe.AssemblyMetadata
 
             _readerProvider = MetadataReaderProvider.FromPortablePdbStream(inputStream);
             _reader = _readerProvider.GetMetadataReader();
-            
+
         }
 
         public AssemblyDebugParser(MetadataReaderProvider readerProvider, PdbType pdbType)
@@ -71,14 +71,14 @@ namespace NuGetPe.AssemblyMetadata
         private IReadOnlyList<SourceLinkMap> GetSourceLinkInformation()
         {
             var sl = (from cdi in _reader.CustomDebugInformation
-                       let cd = _reader.GetCustomDebugInformation(cdi)
-                       let kind = _reader.GetGuid(cd.Kind)
-                       where kind == SourceLinkGuid
-                       let bl =  _reader.GetBlobBytes(cd.Value)
-                       select Encoding.UTF8.GetString(bl))
+                      let cd = _reader.GetCustomDebugInformation(cdi)
+                      let kind = _reader.GetGuid(cd.Kind)
+                      where kind == SourceLinkGuid
+                      let bl = _reader.GetBlobBytes(cd.Value)
+                      select Encoding.UTF8.GetString(bl))
                 .FirstOrDefault();
 
-            if(sl != null)
+            if (sl != null)
             {
                 try
                 {
@@ -97,14 +97,14 @@ namespace NuGetPe.AssemblyMetadata
                     {
                         jobj = JObject.Parse(sl);
                     }
-                    catch(JsonReaderException e) when (e.Path == "documents")
+                    catch (JsonReaderException e) when (e.Path == "documents")
                     {
                         sl = sl.Replace(@"\", @"\\");
                         jobj = JObject.Parse(sl);
                     }
 
                     var docs = (JObject)jobj["documents"];
-                                       
+
                     var slis = (from prop in docs.Properties()
                                 select new SourceLinkMap
                                 {
@@ -115,11 +115,11 @@ namespace NuGetPe.AssemblyMetadata
 
                     return slis;
                 }
-                catch(JsonReaderException jse)
+                catch (JsonReaderException jse)
                 {
                     throw new InvalidDataException("SourceLink data could not be parsed", jse);
                 }
-                
+
             }
 
             return Array.Empty<SourceLinkMap>();

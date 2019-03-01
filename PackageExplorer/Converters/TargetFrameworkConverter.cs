@@ -40,7 +40,7 @@ namespace PackageExplorer
             {
                 return DependencyProperty.UnsetValue;
             }
-            
+
         }
     }
 }

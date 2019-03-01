@@ -20,7 +20,7 @@ namespace NuGetPe
             {
                 TargetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
             }
-            catch(ArgumentException) // could be an invalid framework/version
+            catch (ArgumentException) // could be an invalid framework/version
             {
 
             }

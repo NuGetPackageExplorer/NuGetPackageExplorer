@@ -39,27 +39,27 @@ namespace PackageExplorer
 
         public PackageInfo? SelectPackage(string? searchTerm)
         {
-            if(_viewModel == null)
+            if (_viewModel == null)
             {
                 _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
                 _viewModel.PackageDownloadRequested += OnPackageDownloadRequested;
             }
-            
+
             var dialog = new PackageChooserDialog(SettingsManager, _viewModel)
             {
                 Owner = Window.Value
             };
-            
+
             ReCenterPackageChooserDialog(dialog);
 
             try
             {
                 dialog.ShowDialog(searchTerm);
             }
-            catch(ArgumentException e)
+            catch (ArgumentException e)
             {
                 UIServices.Show(e.Message, MessageLevel.Error);
-            }            
+            }
 
             return _viewModel.SelectedPackage;
         }
@@ -91,8 +91,9 @@ namespace PackageExplorer
                         !selectedFilePath.EndsWith(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                     {
                         selectedFilePath += NuGetPe.Constants.PackageExtension;
-                    } else if (selectedIndex == 2 &&
-                               !selectedFilePath.EndsWith(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
+                    }
+                    else if (selectedIndex == 2 &&
+                             !selectedFilePath.EndsWith(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
                     {
                         selectedFilePath += NuGetPe.Constants.SymbolPackageExtension;
                     }
@@ -101,11 +102,11 @@ namespace PackageExplorer
                     {
                         await PackageDownloader.Download(selectedFilePath, repository, packageInfo.Identity);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         UIServices.Show(ex.Message, MessageLevel.Error);
                     }
-                    
+
                 }
             }
         }
@@ -149,12 +150,12 @@ namespace PackageExplorer
 
         public void Dispose()
         {
-            if(_viewModel != null)
+            if (_viewModel != null)
             {
                 _viewModel.PackageDownloadRequested -= OnPackageDownloadRequested;
                 _viewModel.Dispose();
                 _viewModel = null;
-            }           
+            }
         }
     }
 }

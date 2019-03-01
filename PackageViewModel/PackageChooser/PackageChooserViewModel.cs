@@ -280,14 +280,14 @@ namespace PackageExplorerViewModel
                 {
                     ActiveRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
                 }
-                catch(ArgumentException)
+                catch (ArgumentException)
                 {
                     var origSource = PackageSource;
                     PackageSource = _defaultPackageSourceUrl ?? NuGetConstants.DefaultFeedUrl;
                     ActiveRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
 
                     _uIServices.Show($"Package Source '{origSource}' is not valid. Defaulting to '{NuGetConstants.DefaultFeedUrl}", MessageLevel.Error);
-                }                
+                }
             }
 
             return ActiveRepository;
@@ -426,7 +426,7 @@ namespace PackageExplorerViewModel
             {
                 CheckDisposed();
 
-                
+
                 PackageSource = source;
 
                 ResetPackageRepository();
@@ -437,7 +437,7 @@ namespace PackageExplorerViewModel
                     // add the new source to MRU list, after the load succeeds, in case there's an error with the source
                     _packageSourceManager!.NotifyPackageSourceAdded(source);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     _uIServices.Show(e.Message, MessageLevel.Error);
                 }

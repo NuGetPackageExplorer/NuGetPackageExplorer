@@ -8,7 +8,7 @@ using NuGet.Packaging.Signing;
 
 namespace PackageExplorerViewModel
 {
-    public sealed class ValidationResultViewModel 
+    public sealed class ValidationResultViewModel
     {
         private readonly VerifySignaturesResult _verifySignaturesResult;
 
@@ -35,6 +35,6 @@ namespace PackageExplorerViewModel
         public IReadOnlyList<ILogMessage> WarningIssues { get; }
         public IReadOnlyList<ILogMessage> InformationIssues { get; }
 
-        public SignatureVerificationStatus Trust { get; }       
+        public SignatureVerificationStatus Trust { get; }
     }
 }

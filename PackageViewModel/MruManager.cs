@@ -30,7 +30,7 @@ namespace PackageExplorerViewModel
 
             try
             {
-                var savedFiles = settingsManager.GetMruFiles();                
+                var savedFiles = settingsManager.GetMruFiles();
                 for (var i = savedFiles.Count - 1; i >= 0; --i)
                 {
                     var s = savedFiles[i];
@@ -48,13 +48,13 @@ namespace PackageExplorerViewModel
                     // try to clear
                     settingsManager.SetMruFiles(Enumerable.Empty<string>());
                 }
-                catch 
+                catch
                 {
                     // something else happened, not much we can do
-                }                
-            }            
+                }
+            }
         }
-        
+
         public ObservableCollection<MruItem> Files { get; }
 
         [SuppressMessage(
@@ -81,7 +81,7 @@ namespace PackageExplorerViewModel
         public void Dispose()
         {
             OnApplicationExit();
-        }        
+        }
 
         private void OnApplicationExit()
         {

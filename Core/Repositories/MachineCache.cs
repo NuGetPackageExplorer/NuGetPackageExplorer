@@ -22,7 +22,7 @@ namespace NuGetPe
         private MachineCache()
         {
             Source = new DirectoryInfo(GetCachePath());
-            if(!Source.Exists)
+            if (!Source.Exists)
             {
                 Source.Create();
             }
@@ -107,7 +107,7 @@ namespace NuGetPe
             catch (IOException)
             {
             }
-            
+
         }
 
         public bool Clear()

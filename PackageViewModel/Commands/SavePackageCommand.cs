@@ -110,7 +110,7 @@ namespace PackageExplorerViewModel
             {
                 ViewModel.UIServices.Show(e.Message, MessageLevel.Error);
             }
-           
+
         }
 
         #endregion
@@ -163,8 +163,9 @@ namespace PackageExplorerViewModel
                     !selectedPackagePath.EndsWith(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     selectedPackagePath += NuGetPe.Constants.PackageExtension;
-                } else if (filterIndex == 2 &&
-                           !selectedPackagePath.EndsWith(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
+                }
+                else if (filterIndex == 2 &&
+                         !selectedPackagePath.EndsWith(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     selectedPackagePath += NuGetPe.Constants.SymbolPackageExtension;
                 }
@@ -237,8 +238,9 @@ namespace PackageExplorerViewModel
                         !selectedPackagePath.EndsWith(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
                     {
                         selectedPackagePath += NuGetPe.Constants.PackageExtension;
-                    } else if (filterIndex == 2 &&
-                               !selectedPackagePath.EndsWith(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
+                    }
+                    else if (filterIndex == 2 &&
+                             !selectedPackagePath.EndsWith(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
                     {
                         selectedPackagePath += NuGetPe.Constants.SymbolPackageExtension;
                     }

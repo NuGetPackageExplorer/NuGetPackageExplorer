@@ -38,7 +38,7 @@ namespace PackageExplorer
                 {
                     using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
                     {
-                        data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));                        
+                        data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));
                     }
 
                     return new ScrollViewer
@@ -60,7 +60,7 @@ namespace PackageExplorer
             {
                 peStream?.Dispose();
             }
-                       
+
             return new TextBlock()
             {
                 Text = "Full PDB files rquired the EXE or DLL to be alongside."
