@@ -7,7 +7,6 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Search;
 using NuGetPackageExplorer.Types;
-using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -55,7 +54,16 @@ namespace PackageExplorer
             {
                 throw new ArgumentNullException("filePath");
             }
-            Editor.Save(filePath);
+
+            try
+            {
+                Editor.Save(filePath);
+            }
+            catch (Exception ex)
+            {
+                _uIServices.Show(ex.Message, MessageLevel.Error);
+            }
+
         }
 
         #endregion
@@ -71,11 +79,11 @@ namespace PackageExplorer
                     stream = StreamUtility.MakeSeekable(stream);
                     Editor.Load(stream);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     _uIServices.Show(ex.Message, MessageLevel.Error);
                 }
-                
+
             }
         }
 
