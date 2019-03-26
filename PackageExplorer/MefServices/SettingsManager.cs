@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -43,6 +44,23 @@ namespace PackageExplorer
                     {
                         value = sc.Cast<string>().ToArray();
                     }
+                }
+
+                if (value is T t)
+                {
+                    return t;
+                }
+            }
+            catch (ConfigurationErrorsException)
+            {
+                // Corrupt settings file
+                Settings.Default.Reset();
+
+                // Try getting it again
+                value = Settings.Default[name];
+                if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
+                {
+                    value = sc.Cast<string>().ToArray();
                 }
 
                 if (value is T t)
