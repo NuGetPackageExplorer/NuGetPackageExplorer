@@ -263,17 +263,27 @@ namespace PackageExplorer
                 UseDescriptionForTitle = true
             };
 
-            var result = dialog.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
+            try
             {
-                selectedPath = dialog.SelectedPath;
-                return true;
+                var result = dialog.ShowDialog();
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {
+                    selectedPath = dialog.SelectedPath;
+                    return true;
+                }
+                else
+                {
+                    selectedPath = string.Empty;
+                    return false;
+                }
             }
-            else
+            catch(Exception e)
             {
+                Show(e.Message, MessageLevel.Error);
                 selectedPath = string.Empty;
                 return false;
             }
+            
         }
 
         public DispatcherOperation BeginInvoke(Action action)
