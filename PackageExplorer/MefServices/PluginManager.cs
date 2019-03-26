@@ -97,6 +97,9 @@ namespace PackageExplorer
             // clean up from previous run
             DeleteAllDeleteMeFiles();
             EnsurePluginCatalog(catalog);
+
+            // Make sure it's never null
+            _plugins ??= new List<PluginInfo>();
         }
 
         [Import]
