@@ -17,15 +17,16 @@ namespace PackageExplorer
         private static readonly FontFamily ConsolasFont = new FontFamily("Consolas");
 
         private readonly ISettingsManager _settings;
+        private readonly IUIServices _uIServices;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
-        public FileEditor(ISettingsManager settings)
+        public FileEditor(ISettingsManager settings, IUIServices uIServices)
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 
             _settings = settings;
-
+            _uIServices = uIServices;
             SyntaxHighlightingHelper.RegisterHightingExtensions();
 
             // set the Syntax Highlighting definitions
@@ -64,9 +65,17 @@ namespace PackageExplorer
             if (e.NewValue is FileEditorViewModel viewModel && viewModel.FileInEdit != null)
             {
                 SyntaxDefinitions.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(viewModel.FileInEdit.Path);
-                var stream = viewModel.FileInEdit.GetStream();
-                stream = StreamUtility.MakeSeekable(stream);
-                Editor.Load(stream);
+                try
+                {
+                    var stream = viewModel.FileInEdit.GetStream();
+                    stream = StreamUtility.MakeSeekable(stream);
+                    Editor.Load(stream);
+                }
+                catch(Exception ex)
+                {
+                    _uIServices.Show(ex.Message, MessageLevel.Error);
+                }
+                
             }
         }
 

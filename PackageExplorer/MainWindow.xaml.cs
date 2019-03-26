@@ -250,7 +250,7 @@ namespace PackageExplorer
             {
                 if (viewModel.IsInEditFileMode)
                 {
-                    var fileEditor = new FileEditor(SettingsManager)
+                    var fileEditor = new FileEditor(SettingsManager, UIServices)
                     {
                         DataContext = viewModel.FileEditorViewModel
                     };
