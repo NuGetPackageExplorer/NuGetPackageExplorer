@@ -284,6 +284,34 @@ namespace PackageExplorer
             return result;
         }
 
+        public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
+        {
+            var result = await _inner.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+
+            if (result > 0)
+            {
+                _length += result;
+
+                _progress(_length);
+            }
+
+            return result;
+        }
+
+        public override async ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
+        {
+            var result = await _inner.ReadAsync(buffer, cancellationToken);
+
+            if (result > 0)
+            {
+                _length += result;
+
+                _progress(_length);
+            }
+
+            return result;
+        }
+
         public override long Seek(long offset, SeekOrigin origin) => _inner.Seek(offset, origin);
 
         public override void SetLength(long value) => _inner.SetLength(value);
