@@ -13,7 +13,7 @@
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
     <PackageReference Include="NuGet.Credentials" Version="5.1.0-xprivate.60005" />
     <PackageReference Include="NuGet.PackageManagement" Version="5.1.0-xprivate.60005" />
-    <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview.19073.11" />
+    <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview3.19128.7" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
