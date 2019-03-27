@@ -29,7 +29,10 @@ namespace PackageExplorer
             // Initialize Bugsnag if we have a valid key
             var apiKey = ConfigurationManager.AppSettings["InstrumentationKey"];
 
-            DiagnosticsClient.Initialize(apiKey);
+            if (apiKey != "__AppInsightsKey__")
+            {
+                DiagnosticsClient.Initialize(apiKey);
+            }
 
             DiagnosticsClient.TrackEvent("AppStart");
 
