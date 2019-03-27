@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.WindowsServer;
+using NuGetPe.Utility;
 
 namespace NuGetPe
 {
@@ -18,15 +20,6 @@ namespace NuGetPe
 
         static TelemetryClient  _client;
 
-#if STORE
-        private const string Channel = "store";
-#elif NIGHTLY
-        private const string Channel = "nightly";
-#elif CHOCO
-        private const string Channel = "chocolatey";
-#else
-        private const string Channel = "zip";
-#endif
 
 
         public static void Initialize(string apiKey)
@@ -34,33 +27,13 @@ namespace NuGetPe
             if (!string.IsNullOrWhiteSpace(apiKey))
             {
                 TelemetryConfiguration.Active.InstrumentationKey = apiKey;
-                TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;                
+                TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
+                TelemetryConfiguration.Active.TelemetryInitializers.Add(new VersionTelemetry());
+                TelemetryConfiguration.Active.TelemetryInitializers.Add(new SessionTelemetry());
 
                 _initialized = true;
 
                 _client = new TelemetryClient();
-                _client.Context.User.Id = Environment.UserName;
-                _client.Context.Session.Id = Guid.NewGuid().ToString();
-                _client.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
-                _client.Context.Component.Version = typeof(DiagnosticsClient).Assembly
-                                                          .GetCustomAttributes<AssemblyMetadataAttribute>()
-                                                          .FirstOrDefault(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
-                                                          ?.Value;
-                _client.Context.GlobalProperties["Environment"] = Channel;
-
-
-                var infoVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-                var corelibinfoVersion = typeof(string).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-
-                _client.Context.GlobalProperties["WpfVersion"] = infoVersion;
-                _client.Context.GlobalProperties["ClrVersion"] = corelibinfoVersion;
-
-
-                // Always default to development if we're in the debugger
-                if (Debugger.IsAttached)
-                {                    
-                    _client.Context.GlobalProperties["Environment"] = "development";         
-                }
             }
         }
 
@@ -79,6 +52,12 @@ namespace NuGetPe
             _client.TrackEvent(evt, properties, metrics);
         }
 
+        public static void TrackEvent([CallerMemberName] string? evt = null)
+        {
+            if (!_initialized) return;
+            _client.TrackEvent(evt);
+        }
+
         public static void TrackTrace(string evt)
         {
             if (!_initialized) return;
@@ -90,6 +69,13 @@ namespace NuGetPe
             if (!_initialized) return;
 
             _client.TrackException(exception);
+        }
+
+        public static void TrackPageView(string pageName)
+        {
+            if (!_initialized) return;
+
+            _client.TrackPageView(pageName);
         }
     }
 }

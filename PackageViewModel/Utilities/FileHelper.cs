@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -79,6 +80,8 @@ namespace PackageExplorerViewModel
 
         public static void OpenFileInShellWith(PackageFile file)
         {
+            DiagnosticsClient.TrackEvent();
+
             // copy to temporary file
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.

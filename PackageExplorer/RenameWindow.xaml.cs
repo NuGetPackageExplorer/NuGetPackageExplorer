@@ -5,6 +5,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -30,6 +31,8 @@ namespace PackageExplorer
             binding.ValidationRules.Add(NameValidationRule.Instance);
 
             NameBox.SetBinding(TextBox.TextProperty, binding);
+
+            DiagnosticsClient.TrackPageView(nameof(RenameWindow));
         }
 
         public string NewName

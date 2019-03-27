@@ -42,6 +42,8 @@ namespace PackageExplorerViewModel
 
         public void Execute(object parameter)
         {
+            DiagnosticsClient.TrackEvent("ViewContentCommand");
+
             if ("Hide".Equals(parameter))
             {
                 ViewModel.ShowContentViewer = false;

@@ -9,6 +9,7 @@ using System.Windows.Input;
 using NuGet.Common;
 using NuGet.Packaging.Signing;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -215,6 +216,8 @@ namespace PackageExplorerViewModel
 
         private void SelectCertificateFileCommandExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             if (_uiServices.OpenFileDialog(Resources.SelectCertificate, "Certificate (*.pfx, *.p12)|*.pfx;*.p12|All files (*.*)|*.*", out var fileName))
             {
                 CertificateFileName = fileName;
@@ -223,6 +226,8 @@ namespace PackageExplorerViewModel
 
         private void SelectCertificateStoreCommandExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             try
             {
                 using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
@@ -269,6 +274,8 @@ namespace PackageExplorerViewModel
 
         private void ShowCertificateCommandExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             var certificate = Certificate;
             if (certificate != null)
             {

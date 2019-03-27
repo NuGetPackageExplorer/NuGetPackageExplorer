@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Controls;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
 
@@ -14,6 +15,8 @@ namespace PackageExplorer
     {
         public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
+            DiagnosticsClient.TrackEvent("PdbFileViewer");
+
             AssemblyDebugDataViewModel? data = null;
 
             // Get the PE file, exe or dll that matches

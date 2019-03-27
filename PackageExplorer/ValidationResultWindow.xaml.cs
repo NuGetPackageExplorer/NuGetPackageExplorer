@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -11,6 +12,7 @@ namespace PackageExplorer
         {
             InitializeComponent();
 
+            DiagnosticsClient.TrackPageView(nameof(ValidationResultWindow));
         }
 
 

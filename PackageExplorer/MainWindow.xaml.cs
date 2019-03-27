@@ -50,6 +50,8 @@ namespace PackageExplorer
                 pluginMenuItem.IsEnabled = false;
                 mnuPluginSep.Visibility = Visibility.Collapsed;
             }
+
+            DiagnosticsClient.TrackPageView(nameof(MainWindow));
         }
 
         [Import]
@@ -127,6 +129,8 @@ namespace PackageExplorer
 
         internal async Task OpenLocalPackage(string packagePath)
         {
+            DiagnosticsClient.TrackEvent();
+
             if (!File.Exists(packagePath))
             {
                 UIServices.Show("File not found at " + packagePath, MessageLevel.Error);
@@ -287,6 +291,8 @@ namespace PackageExplorer
 
         private void NewMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent();
+
             var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
@@ -298,11 +304,14 @@ namespace PackageExplorer
 
         private void OpenMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent();
             OpenPackageFromLocal();
         }
 
         private async void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent();
+
             var parameter = (string)e.Parameter;
             if (!string.IsNullOrEmpty(parameter))
             {
@@ -334,6 +343,8 @@ namespace PackageExplorer
 
         private async Task OpenPackageFromRepository(string searchTerm)
         {
+            DiagnosticsClient.TrackEvent("OpenPackageFromRepository");
+
             var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
@@ -477,6 +488,7 @@ namespace PackageExplorer
             // We might get a certificate to display instead
             if (e.Parameter is X509Certificate2 cert)
             {
+                DiagnosticsClient.TrackEvent("DisplayCertificate");
                 var hwnd = new WindowInteropHelper(this).Handle;
                 X509Certificate2UI.DisplayCertificate(cert, hwnd);
                 return;

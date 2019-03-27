@@ -352,6 +352,8 @@ namespace PackageExplorerViewModel
 
         private void AddContentFileExecute(object parameter)
         {
+            DiagnosticsClient.TrackEvent();
+
             try
             {
                 var folder = (parameter ?? SelectedItem) as PackageFolder;
@@ -415,6 +417,8 @@ namespace PackageExplorerViewModel
 
         private void AddContentFolderExecute(string folderName)
         {
+            DiagnosticsClient.TrackEvent();
+
             RootFolder.AddFolder(folderName);
         }
 
@@ -448,6 +452,8 @@ namespace PackageExplorerViewModel
 
         private void AddNewFolderExecute(object parameter)
         {
+            DiagnosticsClient.TrackEvent();
+
             parameter ??= SelectedItem ?? RootFolder;
             var folder = parameter as PackageFolder;
             var folderName = "NewFolder";
@@ -498,6 +504,8 @@ namespace PackageExplorerViewModel
 
         private void EditPackageExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             _editorService.BeginEdit();
             BeginEdit();
         }
@@ -521,6 +529,8 @@ namespace PackageExplorerViewModel
 
         internal bool ApplyEditExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             var valid = _editorService.CommitEdit();
             if (valid)
             {
@@ -549,6 +559,8 @@ namespace PackageExplorerViewModel
 
         private void CancelEditExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             _editorService.CancelEdit();
             CancelEdit();
         }
@@ -582,6 +594,8 @@ namespace PackageExplorerViewModel
 
         private void DeleteContentExecute(object parameter)
         {
+            DiagnosticsClient.TrackEvent();
+
             if ((parameter ?? SelectedItem) is PackagePart file)
             {
                 file.Delete();
@@ -616,6 +630,8 @@ namespace PackageExplorerViewModel
 
         private void RenameContentExecuted(object parameter)
         {
+            DiagnosticsClient.TrackEvent();
+
             if ((parameter ?? SelectedItem) is PackagePart part)
             {
                 var result = UIServices.OpenRenameDialog(
@@ -659,6 +675,8 @@ namespace PackageExplorerViewModel
 
         private void OpenContentFileExecute(object? parameter)
         {
+            DiagnosticsClient.TrackEvent();
+
             try
             {
                 parameter ??= SelectedItem;
@@ -709,6 +727,8 @@ namespace PackageExplorerViewModel
 
         private void SaveContentExecute(PackageFile file)
         {
+            DiagnosticsClient.TrackEvent();
+
             try
             {
                 var title = "Save " + file.Name;
@@ -769,6 +789,8 @@ namespace PackageExplorerViewModel
 
         private void PublishExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
                 UIServices.Show(Resources.NoNetworkConnection, MessageLevel.Warning);
@@ -836,6 +858,8 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void ExportExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             if (UIServices.OpenFolderDialog("Choose a folder to export package to:", _folderPath, out var rootPath))
             {
                 try
@@ -924,6 +948,8 @@ namespace PackageExplorerViewModel
             }
             else if (_packageRules != null)
             {
+                DiagnosticsClient.TrackEvent();
+
                 IEnumerable<PackageIssue> allIssues = Validate().OrderBy(p => p.Title, StringComparer.CurrentCulture);
                 SetPackageIssues(allIssues);
                 ShowPackageAnalysis = true;
@@ -959,6 +985,8 @@ namespace PackageExplorerViewModel
 
         private void EditFileCommandExecute(PackagePart file)
         {
+            DiagnosticsClient.TrackEvent();
+
             // before editing file, try to commit metadata pending changes to avoid data loss
             if (IsInEditMetadataMode)
             {
@@ -1011,6 +1039,8 @@ namespace PackageExplorerViewModel
 
         private void RemoveSignatureCommandExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             // Set this to false, enabling save
             PackageMetadata.ClearSignatures();
             IsSigned = false;
@@ -1041,6 +1071,8 @@ namespace PackageExplorerViewModel
 
         private void EditMetadataSourceCommandExecute()
         {
+            DiagnosticsClient.TrackEvent();
+
             FileEditorViewModel = new FileEditorViewModel(this, CreatePackageMetadataFile(), UIServices);
         }
 
@@ -1089,6 +1121,8 @@ namespace PackageExplorerViewModel
 
         private void AddNewFileExecute(object parameter)
         {
+            DiagnosticsClient.TrackEvent();
+
             var folder = (parameter ?? SelectedItem) as PackageFolder;
             AddNewFileToFolder(folder ?? RootFolder);
         }
@@ -1130,6 +1164,8 @@ namespace PackageExplorerViewModel
 
         private void AddScriptCommandExecute(string scriptName)
         {
+            DiagnosticsClient.TrackEvent();
+
             var content = scriptName.Equals("init.ps1", StringComparison.OrdinalIgnoreCase)
                                  ? Constants.ContentForInit
                                  : Constants.ContentForInstall;
@@ -1196,6 +1232,8 @@ namespace PackageExplorerViewModel
 
         private void AddBuildFileCommandExecute(string extension)
         {
+            DiagnosticsClient.TrackEvent();
+
             var fileName = PackageMetadata.Id + extension;
             var sourcePath = FileHelper.CreateTempFile(fileName, Constants.ContentForBuildFile);
 

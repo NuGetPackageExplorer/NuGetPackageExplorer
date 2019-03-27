@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using NuGetPe;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -10,6 +11,8 @@ namespace PackageExplorer
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
+
+            DiagnosticsClient.TrackPageView(nameof(PublishPackageWindow));
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)

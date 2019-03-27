@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 
@@ -423,6 +424,8 @@ namespace PackageExplorer
             {
                 return;
             }
+
+            DiagnosticsClient.TrackEvent("BeginDragDrop");
 
             try
             {
