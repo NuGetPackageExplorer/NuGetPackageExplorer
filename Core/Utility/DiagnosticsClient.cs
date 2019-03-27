@@ -18,7 +18,7 @@ namespace NuGetPe
     {
         private static bool _initialized;
 
-        static TelemetryClient  _client;
+        private static TelemetryClient  _client;
 
 
 
@@ -46,17 +46,11 @@ namespace NuGetPe
             System.Threading.Thread.Sleep(1000);
         }
 
-        public static void TrackEvent(string evt, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
+        public static void TrackEvent(string eventName, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
         {
             if (!_initialized) return;
-            _client.TrackEvent(evt, properties, metrics);
-        }
-
-        public static void TrackEvent([CallerMemberName] string? evt = null)
-        {
-            if (!_initialized) return;
-            _client.TrackEvent(evt);
-        }
+            _client.TrackEvent(eventName, properties, metrics);
+        }  
 
         public static void TrackTrace(string evt)
         {

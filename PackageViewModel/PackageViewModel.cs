@@ -352,7 +352,7 @@ namespace PackageExplorerViewModel
 
         private void AddContentFileExecute(object parameter)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_AddContentFileExecute");
 
             try
             {
@@ -417,7 +417,7 @@ namespace PackageExplorerViewModel
 
         private void AddContentFolderExecute(string folderName)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_AddContentFolderExecute");
 
             RootFolder.AddFolder(folderName);
         }
@@ -452,7 +452,7 @@ namespace PackageExplorerViewModel
 
         private void AddNewFolderExecute(object parameter)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_AddNewFolderExecute");
 
             parameter ??= SelectedItem ?? RootFolder;
             var folder = parameter as PackageFolder;
@@ -504,7 +504,7 @@ namespace PackageExplorerViewModel
 
         private void EditPackageExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_EditPackageExecute");
 
             _editorService.BeginEdit();
             BeginEdit();
@@ -529,7 +529,7 @@ namespace PackageExplorerViewModel
 
         internal bool ApplyEditExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_ApplyEditExecute");
 
             var valid = _editorService.CommitEdit();
             if (valid)
@@ -559,7 +559,7 @@ namespace PackageExplorerViewModel
 
         private void CancelEditExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_CancelEditExecute");
 
             _editorService.CancelEdit();
             CancelEdit();
@@ -594,7 +594,7 @@ namespace PackageExplorerViewModel
 
         private void DeleteContentExecute(object parameter)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_DeleteContentExecute");
 
             if ((parameter ?? SelectedItem) is PackagePart file)
             {
@@ -630,7 +630,7 @@ namespace PackageExplorerViewModel
 
         private void RenameContentExecuted(object parameter)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_RenameContentExecuted");
 
             if ((parameter ?? SelectedItem) is PackagePart part)
             {
@@ -675,7 +675,7 @@ namespace PackageExplorerViewModel
 
         private void OpenContentFileExecute(object? parameter)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_OpenContentFileExecute");
 
             try
             {
@@ -727,7 +727,7 @@ namespace PackageExplorerViewModel
 
         private void SaveContentExecute(PackageFile file)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_SaveContentExecute");
 
             try
             {
@@ -789,7 +789,7 @@ namespace PackageExplorerViewModel
 
         private void PublishExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_PublishExecute");
 
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
@@ -858,7 +858,7 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void ExportExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_ExportExecute");
 
             if (UIServices.OpenFolderDialog("Choose a folder to export package to:", _folderPath, out var rootPath))
             {
@@ -948,7 +948,7 @@ namespace PackageExplorerViewModel
             }
             else if (_packageRules != null)
             {
-                DiagnosticsClient.TrackEvent();
+                DiagnosticsClient.TrackEvent("PackageViewModel_ViewPackageAnalysisExecute");
 
                 IEnumerable<PackageIssue> allIssues = Validate().OrderBy(p => p.Title, StringComparer.CurrentCulture);
                 SetPackageIssues(allIssues);
@@ -985,7 +985,7 @@ namespace PackageExplorerViewModel
 
         private void EditFileCommandExecute(PackagePart file)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_EditFileCommandExecute");
 
             // before editing file, try to commit metadata pending changes to avoid data loss
             if (IsInEditMetadataMode)
@@ -1039,7 +1039,7 @@ namespace PackageExplorerViewModel
 
         private void RemoveSignatureCommandExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_RemoveSignatureCommandExecute");
 
             // Set this to false, enabling save
             PackageMetadata.ClearSignatures();
@@ -1071,7 +1071,7 @@ namespace PackageExplorerViewModel
 
         private void EditMetadataSourceCommandExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_EditMetadataSourceCommandExecute");
 
             FileEditorViewModel = new FileEditorViewModel(this, CreatePackageMetadataFile(), UIServices);
         }
@@ -1121,7 +1121,7 @@ namespace PackageExplorerViewModel
 
         private void AddNewFileExecute(object parameter)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_AddNewFileExecute");
 
             var folder = (parameter ?? SelectedItem) as PackageFolder;
             AddNewFileToFolder(folder ?? RootFolder);
@@ -1164,7 +1164,7 @@ namespace PackageExplorerViewModel
 
         private void AddScriptCommandExecute(string scriptName)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_AddScriptCommandExecute");
 
             var content = scriptName.Equals("init.ps1", StringComparison.OrdinalIgnoreCase)
                                  ? Constants.ContentForInit
@@ -1232,7 +1232,7 @@ namespace PackageExplorerViewModel
 
         private void AddBuildFileCommandExecute(string extension)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageViewModel_AddBuildFileCommandExecute");
 
             var fileName = PackageMetadata.Id + extension;
             var sourcePath = FileHelper.CreateTempFile(fileName, Constants.ContentForBuildFile);
@@ -1384,6 +1384,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
+            DiagnosticsClient.TrackEvent("PackageViewModel_ExportManifest");
             var rootPath = Path.GetDirectoryName(fullpath);
 
             using (Stream fileStream = File.Create(fullpath))

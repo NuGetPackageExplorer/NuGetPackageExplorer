@@ -66,7 +66,7 @@ namespace PackageExplorer
 
         private async void OnPackageDownloadRequested(object sender, EventArgs e)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("PackageChooserService_OnPackageDownloadRequested");
 
             var vm = (PackageChooserViewModel)sender;
             var repository = vm.ActiveRepository;

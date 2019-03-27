@@ -147,8 +147,6 @@ namespace PackageExplorer
 
         private void Application_Exit(object sender, ExitEventArgs e)
         {
-            DiagnosticsClient.OnExit();
-
             if (_container != null)
             {
                 _container.Dispose();
@@ -162,6 +160,10 @@ namespace PackageExplorer
             catch
             {
             }
+
+            DiagnosticsClient.TrackEvent("AppExit");
+
+            DiagnosticsClient.OnExit();
         }
 
         private void PackageIconImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)

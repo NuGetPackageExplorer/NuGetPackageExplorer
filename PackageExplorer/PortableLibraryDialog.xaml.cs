@@ -48,11 +48,13 @@ namespace PackageExplorer
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PortableLibraryDialog_OkayClicked");
             DialogResult = true;
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PortableLibraryDialog_CancelClicked");
             DialogResult = false;
         }
 

@@ -27,12 +27,15 @@ namespace PackageExplorer
 
         private void OnCloseButton_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("SignPackageDialog_CloseButtonClick");
+
             DialogResult = false;
         }
 
         private async void OnSignButton_Click(object sender, RoutedEventArgs e)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("SignPackageDialog_SignButtonClick");
+
             var result = await ViewModel.SignPackage();
             if (result != null)
             {

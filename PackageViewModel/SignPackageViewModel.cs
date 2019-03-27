@@ -216,7 +216,7 @@ namespace PackageExplorerViewModel
 
         private void SelectCertificateFileCommandExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("SignPackageViewModel_SelectCertificateFileCommandExecute");
 
             if (_uiServices.OpenFileDialog(Resources.SelectCertificate, "Certificate (*.pfx, *.p12)|*.pfx;*.p12|All files (*.*)|*.*", out var fileName))
             {
@@ -226,7 +226,7 @@ namespace PackageExplorerViewModel
 
         private void SelectCertificateStoreCommandExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("SignPackageViewModel_SelectCertificateFileCommandExecute");
 
             try
             {
@@ -274,7 +274,7 @@ namespace PackageExplorerViewModel
 
         private void ShowCertificateCommandExecute()
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("SignPackageViewModel_ShowCertificateCommandExecute");
 
             var certificate = Certificate;
             if (certificate != null)

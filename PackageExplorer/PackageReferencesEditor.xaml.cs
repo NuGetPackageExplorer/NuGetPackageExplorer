@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -23,6 +24,8 @@ namespace PackageExplorer
 
             ReferenceGroupList.DataContext = _referenceSets;
             ClearDependencyTextBox();
+
+            DiagnosticsClient.TrackPageView(nameof(PackageReferencesEditor));
         }
 
         public PackageReferencesEditor(IEnumerable<PackageReferenceSet> existingReferenceSets)
@@ -58,6 +61,8 @@ namespace PackageExplorer
                 return;
             }
 
+            DiagnosticsClient.TrackEvent("PackageReferencesEditor_OkayClick");
+
             // before closing, try adding any pending reference
             AddNewReference();
 
@@ -66,11 +71,13 @@ namespace PackageExplorer
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageReferencesEditor_CancelClick");
             DialogResult = false;
         }
 
         private void DeleteReferenceButtonClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageReferencesEditor_CancelClick"); 
             var hyperlink = (Hyperlink)sender;
             var reference = (string)hyperlink.DataContext;
             if (reference != null)
@@ -81,6 +88,8 @@ namespace PackageExplorer
 
         private void OnAddGroupClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageReferencesEditor_OnAddGroupClicked");
+
             _referenceSets.Add(new EditablePackageReferenceSet());
 
             if (ReferenceGroupList.SelectedIndex == -1)
@@ -91,6 +100,8 @@ namespace PackageExplorer
 
         private void OnRemoveGroupClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageReferencesEditor_OnRemoveGroupClicked");
+
             // remember the currently selected index;
             var selectedIndex = ReferenceGroupList.SelectedIndex;
 
@@ -106,6 +117,8 @@ namespace PackageExplorer
 
         private void AddReferenceButtonClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageReferencesEditor_AddReferenceButtonClicked");
+
             AddNewReference();
         }
 

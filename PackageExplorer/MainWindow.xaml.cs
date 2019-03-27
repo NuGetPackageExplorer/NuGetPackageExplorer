@@ -129,7 +129,7 @@ namespace PackageExplorer
 
         internal async Task OpenLocalPackage(string packagePath)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("MainWindow_OpenLocalPackage");
 
             if (!File.Exists(packagePath))
             {
@@ -291,7 +291,7 @@ namespace PackageExplorer
 
         private void NewMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("MainWindow_NewMenuItemClick");
 
             var canceled = AskToSaveCurrentFile();
             if (canceled)
@@ -304,13 +304,14 @@ namespace PackageExplorer
 
         private void OpenMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("MainWindow_OpenMenuItemClick");
+
             OpenPackageFromLocal();
         }
 
         private async void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("MainWindow_OpenFeedItemClick");
 
             var parameter = (string)e.Parameter;
             if (!string.IsNullOrEmpty(parameter))
@@ -343,8 +344,6 @@ namespace PackageExplorer
 
         private async Task OpenPackageFromRepository(string searchTerm)
         {
-            DiagnosticsClient.TrackEvent("OpenPackageFromRepository");
-
             var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
@@ -398,11 +397,14 @@ namespace PackageExplorer
 
         private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_ExitMenuItemClick");
             Close();
         }
 
         private void HelpCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_HelpCommandExecuted");
+
             var dialog = new AboutWindow { Owner = this };
             dialog.ShowDialog();
             e.Handled = true;
@@ -463,6 +465,8 @@ namespace PackageExplorer
 
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_OnFontSizeItemClick");
+
             var item = (MenuItem)sender;
             var size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
             SettingsManager.FontSize = size;
@@ -515,6 +519,8 @@ namespace PackageExplorer
                 return;
             }
 
+            DiagnosticsClient.TrackEvent("MainWindow_CloseMenuItemClick");
+
             DisposeViewModel();
             DataContext = null;
         }
@@ -532,6 +538,8 @@ namespace PackageExplorer
             {
                 return;
             }
+
+            DiagnosticsClient.TrackEvent("MainWindow_RecentFileMenuItemClick");
 
             var menuItem = (MenuItem)sender;
             if (menuItem.DataContext is MruItem mruItem)
@@ -591,6 +599,8 @@ namespace PackageExplorer
 
         private void AddPluginFromAssembly_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_AddPluginFromAssemblyClick");
+
             var dialog = new PluginManagerDialog
             {
                 Owner = this,
@@ -615,6 +625,8 @@ namespace PackageExplorer
             // if the Control key (and only Control key) is pressed 
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
+                DiagnosticsClient.TrackEvent("MainWindow_MouseWheelFontSize");
+
                 var fontSizeDelta = e.Delta > 0 ? 2 : -2;
                 var newFontSize = SettingsManager.FontSize + fontSizeDelta;
                 newFontSize = Math.Max(newFontSize, 12);
@@ -627,6 +639,8 @@ namespace PackageExplorer
 
         private void ViewDownloadCache_Click(object sender, EventArgs args)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_ViewDownloadCache");
+
             var cacheSource = MachineCache.Default.Source;
             try
             {
@@ -639,6 +653,8 @@ namespace PackageExplorer
 
         private void ClearDownloadCache_Click(object sender, EventArgs args)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_ClearDownloadCache");
+
             var result = MachineCache.Default.Clear();
             if (result)
             {
@@ -662,7 +678,7 @@ namespace PackageExplorer
                 {
                     var firstFile = filenames[0];
                     if (FileUtility.IsSupportedFile(firstFile))
-                    {
+                    {                        
                         e.Effects = DragDropEffects.Copy;
                         e.Handled = true;
                         return;
@@ -690,6 +706,8 @@ namespace PackageExplorer
                         var canceled = AskToSaveCurrentFile();
                         if (!canceled)
                         {
+                            DiagnosticsClient.TrackEvent("MainWindow_Drop");
+
                             await OpenLocalPackage(firstFile);
                         }
                     }

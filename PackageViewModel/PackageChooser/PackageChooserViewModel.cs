@@ -424,6 +424,8 @@ namespace PackageExplorerViewModel
         {
             if (PackageSource != source)
             {
+                DiagnosticsClient.TrackEvent("PackageChooserViewModel_ChangePackageSource");
+
                 CheckDisposed();
 
 
@@ -475,6 +477,8 @@ namespace PackageExplorerViewModel
 
         private async void OnShowPrereleasePackagesChange()
         {
+            DiagnosticsClient.TrackEvent("PackageChooserViewModel_OnShowPrereleasePackagesChange");
+
             await LoadPackages();
         }
 
@@ -485,11 +489,13 @@ namespace PackageExplorerViewModel
 
         internal void OnOpenPackage()
         {
+            DiagnosticsClient.TrackEvent("PackageChooserViewModel_OnOpenPackage");
             OpenPackageRequested(this, EventArgs.Empty);
         }
 
         internal void OnDownloadPackage()
         {
+            DiagnosticsClient.TrackEvent("PackageChooserViewModel_OnDownloadPackage");
             PackageDownloadRequested(this, EventArgs.Empty);
         }
 
@@ -519,7 +525,7 @@ namespace PackageExplorerViewModel
             if (!IsEditable)
             {
                 return false;
-            }
+            }           
 
             switch (action)
             {
@@ -539,6 +545,8 @@ namespace PackageExplorerViewModel
 
         private async void NavigationCommandExecute(string action)
         {
+            DiagnosticsClient.TrackEvent($"NavigationCommandExecute_{action}");
+
             switch (action)
             {
                 case "First":

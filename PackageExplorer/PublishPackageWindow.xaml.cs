@@ -17,11 +17,13 @@ namespace PackageExplorer
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PublishPackageWindow_CloseButtonClick");
             DialogResult = false;
         }
 
         private async void OnPublishButtonClick(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PublishPackageWindow_OnPublishButtonClick");
             var isValid = DialogBindingGroup.UpdateSources();
             if (isValid)
             {

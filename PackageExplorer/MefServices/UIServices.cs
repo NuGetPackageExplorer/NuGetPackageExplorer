@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Microsoft.Win32;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using Ookii.Dialogs.Wpf;
 
 namespace PackageExplorer
@@ -481,6 +482,7 @@ namespace PackageExplorer
 
         public bool OpenCredentialsDialog(string target, out NetworkCredential? networkCredential)
         {
+            DiagnosticsClient.TrackEvent("UIServices_OpenCredentialsDialog");
             using (var dialog = new CredentialDialog())
             {
                 dialog.WindowTitle = Resources.Dialog_Title;

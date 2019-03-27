@@ -12,7 +12,7 @@ namespace PackageExplorerViewModel
 {
     internal static class FileHelper
     {
-        private static readonly string[] _executableScriptsExtensions = new[]
+        private static readonly string[] ExecutableScriptsExtensions = new[]
                                                                         {
                                                                             ".BAS", ".BAT", ".CHM", ".COM", ".EXE",
                                                                             ".HTA", ".INF", ".JS", ".LNK", ".MSI",
@@ -75,12 +75,12 @@ namespace PackageExplorerViewModel
         private static bool IsExecutableScript(string fileName)
         {
             var extension = Path.GetExtension(fileName).ToUpperInvariant();
-            return Array.IndexOf(_executableScriptsExtensions, extension) > -1;
+            return Array.IndexOf(ExecutableScriptsExtensions, extension) > -1;
         }
 
         public static void OpenFileInShellWith(PackageFile file)
         {
-            DiagnosticsClient.TrackEvent();
+            DiagnosticsClient.TrackEvent("FileHelper_OpenFileInShellWith");
 
             // copy to temporary file
             // create package in the temprary file first in case the operation fails which would

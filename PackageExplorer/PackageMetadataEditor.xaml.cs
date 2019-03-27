@@ -88,6 +88,7 @@ namespace PackageExplorer
 
         private void RemoveFrameworkAssemblyButtonClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageMetadataEditor_RemoveFrameworkAssemblyButtonClicked");
             var button = (Button)sender;
             var item = (FrameworkAssemblyReference)button.DataContext;
 
@@ -96,6 +97,7 @@ namespace PackageExplorer
 
         private void AddFrameworkAssemblyButtonClicked(object sender, RoutedEventArgs args)
         {
+            DiagnosticsClient.TrackEvent("PackageMetadataEditor_AddFrameworkAssemblyButtonClicked");
             AddPendingFrameworkAssembly();
         }
 
@@ -130,6 +132,8 @@ namespace PackageExplorer
 
         private void EditDependenciesButtonClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageMetadataEditor_EditDependenciesButtonClicked");
+
             var editor = new PackageDependencyEditor(_dependencySets)
             {
                 Owner = Window.GetWindow(this),
@@ -144,6 +148,8 @@ namespace PackageExplorer
 
         private void EditReferencesButtonClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageMetadataEditor_EditReferencesButtonClicked");
+
             var editor = new PackageReferencesEditor(_referenceSets)
             {
                 Owner = Window.GetWindow(this),
@@ -160,16 +166,19 @@ namespace PackageExplorer
 
         void IPackageEditorService.BeginEdit()
         {
+            DiagnosticsClient.TrackEvent("PackageMetadataEditor_BeginEdit");
             PackageMetadataGroup.BeginEdit();
         }
 
         void IPackageEditorService.CancelEdit()
         {
+            DiagnosticsClient.TrackEvent("PackageMetadataEditor_CancelEdit");
             PackageMetadataGroup.CancelEdit();
         }
 
         bool IPackageEditorService.CommitEdit()
         {
+            DiagnosticsClient.TrackEvent("PackageMetadataEditor_CommitEdit");
             var addPendingAssembly = AddPendingFrameworkAssembly();
             if (addPendingAssembly == false)
             {
