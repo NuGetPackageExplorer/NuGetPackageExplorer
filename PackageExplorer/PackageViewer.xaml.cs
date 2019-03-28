@@ -23,7 +23,7 @@ namespace PackageExplorer
     {
         private const string PackageFileDataFormat = "PackageFileContent";
 
-        private static readonly Dictionary<string, string[]> _frameworkFolders =
+        private static readonly Dictionary<string, string[]> FrameworkFolders =
             new Dictionary<string, string[]>
             {
                 {
@@ -669,7 +669,7 @@ namespace PackageExplorer
                 menu.Items.Insert(0, separator);
             }
 
-            foreach (var pair in _frameworkFolders)
+            foreach (var pair in FrameworkFolders)
             {
                 var item = new MenuItem
                 {
