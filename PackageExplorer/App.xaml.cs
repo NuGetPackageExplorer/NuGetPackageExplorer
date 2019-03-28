@@ -33,9 +33,7 @@ namespace PackageExplorer
             {
                 DiagnosticsClient.Initialize(apiKey);
             }
-
-            DiagnosticsClient.TrackEvent("AppStart");
-
+            
             DispatcherUnhandledException += App_DispatcherUnhandledException;
         }
 
@@ -69,6 +67,8 @@ namespace PackageExplorer
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", e.Args.Length > 0 ? "fileAssociation" : "shortcut" } });
+
             Resources.Add("Settings", Container.GetExportedValue<ISettingsManager>());
 
             InitCredentialService();
