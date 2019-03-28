@@ -2,20 +2,17 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Intrinsics.Arm.Arm64;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
-using Windows.System;
-
 namespace NuGetPe.Utility
 {
     class SessionTelemetry : ITelemetryInitializer
     {
         private readonly string? _userName;
-        private readonly string _operatingSystem = Environment.OSVersion.ToString();
+        private readonly string _operatingSystem = RuntimeInformation.OSDescription?.Replace("Microsoft ", ""); // Shorter description
         private readonly string _session = Guid.NewGuid().ToString();
 
 #if STORE
