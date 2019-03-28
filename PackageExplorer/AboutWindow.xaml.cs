@@ -1,7 +1,9 @@
-﻿using System.Reflection;
+﻿using System.Collections.Generic;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using NuGetPe;
 using PackageExplorerViewModel;
 using Clipboard = System.Windows.Forms.Clipboard;
 using StringResources = PackageExplorer.Resources;
@@ -33,6 +35,8 @@ namespace PackageExplorer
             InitializeComponent();
 
             ProductTitle.Text = $"{StringResources.Dialog_Title} - {Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion})";
+
+            DiagnosticsClient.TrackPageView(nameof(AboutWindow));
         }
 
 
@@ -44,6 +48,9 @@ namespace PackageExplorer
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
             var link = (Hyperlink)sender;
+
+            DiagnosticsClient.TrackEvent("AboutWindow_LinkClick", new Dictionary<string, string> { { "Uri", link.NavigateUri.ToString() } });
+
             UriHelper.OpenExternalLink(link.NavigateUri);
         }
 

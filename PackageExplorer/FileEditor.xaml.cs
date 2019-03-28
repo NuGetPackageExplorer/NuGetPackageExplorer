@@ -7,6 +7,7 @@ using System.Windows.Media;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Search;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -50,6 +51,8 @@ namespace PackageExplorer
 
         void IFileEditorService.Save(string filePath)
         {
+            DiagnosticsClient.TrackEvent("FileEditor_Save");
+
             if (filePath == null)
             {
                 throw new ArgumentNullException("filePath");
@@ -72,6 +75,8 @@ namespace PackageExplorer
         {
             if (e.NewValue is FileEditorViewModel viewModel && viewModel.FileInEdit != null)
             {
+                DiagnosticsClient.TrackEvent("FileEditor_Load");
+
                 SyntaxDefinitions.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(viewModel.FileInEdit.Path);
                 try
                 {

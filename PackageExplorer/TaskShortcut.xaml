@@ -35,7 +35,7 @@
 					</StackPanel>
 				</Button>
 
-				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="GoToPage" CommandParameter="http://docs.nuget.org">
+				<Button HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="10,6" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Foreground="Black" Command="GoToPage" CommandParameter="https://docs.nuget.org">
 					<StackPanel Orientation="Horizontal">
                         <ContentControl Content="{StaticResource BlueArrowIcon}" />
                         <TextBlock Text="Read NuGet documentation" />

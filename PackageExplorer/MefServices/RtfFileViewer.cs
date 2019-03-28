@@ -2,6 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Documents;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -10,6 +11,8 @@ namespace PackageExplorer
     {
         public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
+            DiagnosticsClient.TrackEvent("RtfFileViewer");
+
             using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
             {
                 // don't display file bigger than 1MB

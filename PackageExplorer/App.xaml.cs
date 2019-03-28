@@ -26,15 +26,22 @@ namespace PackageExplorer
         public App()
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
-            const string invalidKey = "__BugsnagApiKey__";
             // Initialize Bugsnag if we have a valid key
-            var apiKey = ConfigurationManager.AppSettings["bugsnag:apiKey"];
-            var sourceRoots = ConfigurationManager.AppSettings["bugsnag:sourceRoots"];
+            var apiKey = ConfigurationManager.AppSettings["InstrumentationKey"];
 
-            if (!string.Equals(apiKey, invalidKey, StringComparison.OrdinalIgnoreCase))
+            if (apiKey != "__AppInsightsKey__")
             {
-                DiagnosticsClient.Initialize(apiKey, sourceRoots);
+                DiagnosticsClient.Initialize(apiKey);
             }
+
+            DiagnosticsClient.TrackEvent("AppStart");
+
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+        }
+
+        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            DiagnosticsClient.Notify(e.Exception);
         }
 
         private CompositionContainer _container;
@@ -153,6 +160,10 @@ namespace PackageExplorer
             catch
             {
             }
+
+            DiagnosticsClient.TrackEvent("AppExit");
+
+            DiagnosticsClient.OnExit();
         }
 
         private void PackageIconImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)

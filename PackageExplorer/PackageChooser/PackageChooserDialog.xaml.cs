@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -34,6 +35,8 @@ namespace PackageExplorer
             _viewModel.OpenPackageRequested += OnOpenPackageRequested;
 
             DataContext = _viewModel;
+
+            DiagnosticsClient.TrackPageView(nameof(PackageChooserDialog));
         }
 
         private void OnLoadPackagesCompleted(object sender, EventArgs e)
@@ -82,6 +85,7 @@ namespace PackageExplorer
 
         private void InvokeSearch(string? searchTerm)
         {
+            DiagnosticsClient.TrackEvent("SearchForPackage");
             SearchButton.Command.Execute(searchTerm);
         }
 

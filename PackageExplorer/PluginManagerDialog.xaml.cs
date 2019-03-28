@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -11,6 +12,8 @@ namespace PackageExplorer
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
+
+            DiagnosticsClient.TrackPageView(nameof(PluginManagerDialog));
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

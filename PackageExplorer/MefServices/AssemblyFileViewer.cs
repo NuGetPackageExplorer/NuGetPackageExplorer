@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
 
@@ -14,6 +15,8 @@ namespace PackageExplorer
 
         public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
+            DiagnosticsClient.TrackEvent("AssemblyFileViewer");
+
             var tempFile = Path.GetTempFileName();
 
             try

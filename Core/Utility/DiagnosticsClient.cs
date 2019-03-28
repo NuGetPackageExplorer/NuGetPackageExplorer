@@ -1,109 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Bugsnag;
-using Bugsnag.Payload;
-using Exception = System.Exception;
+using Microsoft.ApplicationInsights;
+using Microsoft.ApplicationInsights.Extensibility;
+using Microsoft.ApplicationInsights.WindowsServer;
+using NuGetPe.Utility;
 
 namespace NuGetPe
 {
     public static class DiagnosticsClient
     {
         private static bool _initialized;
-        private static Client _client;
 
-#if STORE
-        private const string Channel = "store";
-#elif NIGHTLY
-        private const string Channel = "nightly";
-#elif CHOCO
-        private const string Channel = "chocolatey";
-#else
-        private const string Channel = "zip";
-#endif
+        private static TelemetryClient  _client;
 
 
-        public static void Initialize(string apiKey, string sourceRoots)
+
+        public static void Initialize(string apiKey)
         {
-            _initialized = true;
-
-            var config = new Configuration(apiKey)
+            if (!string.IsNullOrWhiteSpace(apiKey))
             {
-                AutoCaptureSessions = true,
-                AutoNotify = true,
-                NotifyReleaseStages = new[] { "development", "store", "nightly", "chocolatey", "zip" },
-                ProjectNamespaces = new[] { "NuGetPe", "PackageExplorer", "PackageExplorerViewModel", "NuGetPackageExplorer.Types" },
-                ReleaseStage = Channel,
-                ProjectRoots = sourceRoots.Split(';'),
-                AppVersion = typeof(DiagnosticsClient).Assembly
-                                                      .GetCustomAttributes<AssemblyMetadataAttribute>()
-                                                      .FirstOrDefault(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
-                                                      ?.Value,
+                TelemetryConfiguration.Active.InstrumentationKey = apiKey;
+                TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
+                TelemetryConfiguration.Active.TelemetryInitializers.Add(new VersionTelemetry());
+                TelemetryConfiguration.Active.TelemetryInitializers.Add(new SessionTelemetry());
 
+                _initialized = true;
 
-            };
-
-            // Always default to development if we're in the debugger
-            if (Debugger.IsAttached)
-            {
-                config.ReleaseStage = "development";
+                _client = new TelemetryClient();
             }
-
-            var infoVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-            var corelibinfoVersion = typeof(string).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-
-            _client = new Client(config);
-
-            _client.SessionTracking.CreateSession();
-
-            // Force it to send right away, don't wait 60 seconds as that will lose a lot of data
-            try
-            {
-                var sendSessions = typeof(SessionsStore).GetMethod("SendSessions", BindingFlags.Instance | BindingFlags.NonPublic);
-                sendSessions.Invoke(SessionsStore.Instance, new object?[] { null });
-            }
-            catch
-            {
-            }
-
-            _client.BeforeNotify(cb =>
-            {
-                cb.Event.Device.Remove("hostname");
-                cb.Event.Device.AddToPayload("presentationFramework", infoVersion);
-                cb.Event.Device.AddToPayload("coreClr", corelibinfoVersion);
-            });
         }
 
-        public static void Notify(Exception exception, Severity severity = Severity.Error)
+        public static void OnExit()
         {
             if (!_initialized) return;
 
-            _client.Notify(exception, severity);
+            _client.Flush();
+            // Allow time for flushing:
+            System.Threading.Thread.Sleep(1000);
         }
 
-        public static void Notify(Exception exception, Middleware callback)
+        public static void TrackEvent(string eventName, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
+        {
+            if (!_initialized) return;
+            _client.TrackEvent(eventName, properties, metrics);
+        }  
+
+        public static void TrackTrace(string evt)
+        {
+            if (!_initialized) return;
+            _client.TrackTrace(evt);
+        }
+
+        public static void Notify(Exception exception)
         {
             if (!_initialized) return;
 
-            _client.Notify(exception, callback);
+            _client.TrackException(exception);
         }
 
-        public static void Breadcrumb(string message)
+        public static void TrackPageView(string pageName)
         {
             if (!_initialized) return;
 
-            _client.Breadcrumbs.Leave(message);
-        }
-
-        public static void Breadcrumb(string message, BreadcrumbType type, IDictionary<string, string>? metadata = null)
-        {
-            if (!_initialized) return;
-
-            _client.Breadcrumbs.Leave(message, type, metadata);
+            _client.TrackPageView(pageName);
         }
     }
 }

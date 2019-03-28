@@ -63,6 +63,7 @@ namespace PackageExplorerViewModel
             try
             {
                 var action = parameter as string;
+                DiagnosticsClient.TrackEvent($"SavePackageCommand_{action}");
 
                 // if the action is Save Metadata, we don't care if the package is valid
                 if (action != SaveMetadataAction)

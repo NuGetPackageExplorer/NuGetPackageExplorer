@@ -5,6 +5,7 @@ using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Search;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -44,6 +45,7 @@ namespace PackageExplorer
             var info = (FileContentInfo)DataContext;
             if (info != null && info.IsTextFile)
             {
+                DiagnosticsClient.TrackEvent("ContentViewer_LoadTextFile");
                 LanguageBox.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(info.File.Name);
                 contentBox.ScrollToHome();
                 contentBox.Load(StreamUtility.ToStream((string)info.Content));

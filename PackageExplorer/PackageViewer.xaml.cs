@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorer.Properties;
 using PackageExplorerViewModel;
 
@@ -22,7 +23,7 @@ namespace PackageExplorer
     {
         private const string PackageFileDataFormat = "PackageFileContent";
 
-        private static readonly Dictionary<string, string[]> _frameworkFolders =
+        private static readonly Dictionary<string, string[]> FrameworkFolders =
             new Dictionary<string, string[]>
             {
                 {
@@ -424,6 +425,8 @@ namespace PackageExplorer
                 return;
             }
 
+            DiagnosticsClient.TrackEvent("BeginDragDrop");
+
             try
             {
                 var item = sender as TreeViewItem;
@@ -666,7 +669,7 @@ namespace PackageExplorer
                 menu.Items.Insert(0, separator);
             }
 
-            foreach (var pair in _frameworkFolders)
+            foreach (var pair in FrameworkFolders)
             {
                 var item = new MenuItem
                 {

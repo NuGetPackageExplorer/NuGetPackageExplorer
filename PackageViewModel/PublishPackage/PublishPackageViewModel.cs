@@ -233,6 +233,8 @@ namespace PackageExplorerViewModel
 
         public async Task PushPackage()
         {
+            DiagnosticsClient.TrackEvent("PushPackage");
+
             ShowProgress = true;
             Status = (PublishAsUnlisted == true) ? "Publishing and unlisting package..." : "Publishing package...";
             HasError = false;

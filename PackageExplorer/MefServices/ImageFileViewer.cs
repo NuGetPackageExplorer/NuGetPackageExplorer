@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -11,6 +12,8 @@ namespace PackageExplorer
     {
         public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
+            DiagnosticsClient.TrackEvent("ImageFileViewer");
+
             using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
             {
 
