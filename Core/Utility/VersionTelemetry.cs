@@ -25,8 +25,8 @@ namespace NuGetPe.Utility
 
         public void Initialize(ITelemetry telemetry)
         {
-            telemetry.Context.GlobalProperties["wpfVersion"] = _wpfVersion;
-            telemetry.Context.GlobalProperties["clrVersion"] = _clrVersion;
+            telemetry.Context.GlobalProperties["CLR version"] = _clrVersion;
+            telemetry.Context.GlobalProperties["WPF version"] = _wpfVersion;            
             telemetry.Context.Component.Version = _appVersion;
         }
     }

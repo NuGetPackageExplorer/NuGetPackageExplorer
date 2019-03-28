@@ -44,11 +44,11 @@ namespace NuGetPe.Utility
 
         public void Initialize(ITelemetry telemetry)
         {
-            telemetry.Context.GlobalProperties["environment"] = Channel;
+            telemetry.Context.GlobalProperties["Environment"] = Channel;
             // Always default to development if we're in the debugger
             if (Debugger.IsAttached)
             {
-                telemetry.Context.GlobalProperties["environment"] = "development";
+                telemetry.Context.GlobalProperties["Environment"] = "development";
             }
 
             if (_userName != null)
