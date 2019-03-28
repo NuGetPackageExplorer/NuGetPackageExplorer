@@ -251,14 +251,14 @@
             </MenuItem>
 
             <MenuItem Header="_Help" Margin="3,0">
-                <MenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="http://docs.nuget.org/">
+                <MenuItem Header="_NuGet Documentation" Command="GoToPage" CommandParameter="https://docs.nuget.org/">
                     <MenuItem.Icon>
                         <self:GrayscaleContentPresenter Content="{StaticResource F1HelpIcon}" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="How to _Create Package" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package" />
-                <MenuItem Header="_Nuspec Reference" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/nuspec-reference" />
-                <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="http://docs.nuget.org/docs/reference/version-range-specification" />
+                <MenuItem Header="How to _Create Package" Command="GoToPage" CommandParameter="https://docs.nuget.org/docs/creating-packages/creating-and-publishing-a-package" />
+                <MenuItem Header="_Nuspec Reference" Command="GoToPage" CommandParameter="https://docs.nuget.org/docs/reference/nuspec-reference" />
+                <MenuItem Header="_Version Range Specification" Command="GoToPage" CommandParameter="https://docs.nuget.org/docs/reference/version-range-specification" />
                 <Separator />
                 <MenuItem Header="_Open Bug..." Command="GoToPage" CommandParameter="https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/issues/new" />
                 <MenuItem Header="_About..." Command="Help" />

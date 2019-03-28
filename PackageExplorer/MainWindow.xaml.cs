@@ -164,10 +164,12 @@ namespace PackageExplorer
                 if (extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase) ||
                     extension.Equals(Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
                 {
+                    DiagnosticsClient.TrackPageView("View Existing Package");
                     package = new ZipPackage(tempFile);
                 }
                 else if (extension.Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase))
                 {
+                    DiagnosticsClient.TrackPageView("View Nuspec");
                     using (var str = ManifestUtility.ReadManifest(tempFile))
                     {
                         var builder = new PackageBuilder(str, Path.GetDirectoryName(packagePath));
@@ -299,6 +301,7 @@ namespace PackageExplorer
                 return;
             }
 
+            DiagnosticsClient.TrackPageView("Edit Blank Package");
             LoadPackage(new EmptyPackage(), string.Empty, string.Empty, PackageType.LocalPackage);
         }
 
@@ -520,6 +523,7 @@ namespace PackageExplorer
             }
 
             DiagnosticsClient.TrackEvent("MainWindow_CloseMenuItemClick");
+            DiagnosticsClient.TrackPageView(nameof(MainWindow));
 
             DisposeViewModel();
             DataContext = null;
@@ -582,6 +586,7 @@ namespace PackageExplorer
                 var downloadedPackage = await PackageDownloader.Download(repository, packageIdentity);
                 if (downloadedPackage != null)
                 {
+                    DiagnosticsClient.TrackPageView("View Feed Package");
                     LoadPackage(downloadedPackage, downloadedPackage.Source, packageUrl, PackageType.RemotePackage);
                 }
             }
