@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />    
-    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.10.7-preview" />
+    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.10.9-preview" />
     <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta1-63314-01" />
     <PackageReference Include="OSVersionHelper" Version="1.0.9" />
     <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />    
