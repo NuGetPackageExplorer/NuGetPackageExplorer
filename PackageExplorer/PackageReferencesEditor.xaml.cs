@@ -77,7 +77,7 @@ namespace PackageExplorer
 
         private void DeleteReferenceButtonClicked(object sender, RoutedEventArgs e)
         {
-            DiagnosticsClient.TrackEvent("PackageReferencesEditor_CancelClick"); 
+            DiagnosticsClient.TrackEvent("PackageReferencesEditor_DeleteReferenceClick"); 
             var hyperlink = (Hyperlink)sender;
             var reference = (string)hyperlink.DataContext;
             if (reference != null)
