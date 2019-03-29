@@ -425,8 +425,6 @@ namespace PackageExplorer
                 return;
             }
 
-            DiagnosticsClient.TrackEvent("BeginDragDrop");
-
             try
             {
                 var item = sender as TreeViewItem;
@@ -443,6 +441,9 @@ namespace PackageExplorer
                             _isDragging = true;
 
                             var data = CreateDataObject(packagePart);
+
+                            DiagnosticsClient.TrackEvent("PackageViewer_BeginDragDrop");
+
                             DragDrop.DoDragDrop(item, data, DragDropEffects.Copy | DragDropEffects.Move);
                             ResetDraggingState();
                         }
