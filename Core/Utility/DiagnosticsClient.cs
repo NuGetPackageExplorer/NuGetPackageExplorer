@@ -9,7 +9,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.ApplicationInsights.WindowsServer;
 using NuGetPe.Utility;
 
 namespace NuGetPe
@@ -28,8 +27,8 @@ namespace NuGetPe
             {
                 TelemetryConfiguration.Active.InstrumentationKey = apiKey;
                 TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
-                TelemetryConfiguration.Active.TelemetryInitializers.Add(new VersionTelemetry());
-                TelemetryConfiguration.Active.TelemetryInitializers.Add(new SessionTelemetry());
+                TelemetryConfiguration.Active.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
+                TelemetryConfiguration.Active.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
 
                 _initialized = true;
 
