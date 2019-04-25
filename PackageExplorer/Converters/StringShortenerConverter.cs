@@ -26,7 +26,7 @@ namespace PackageExplorer
             var prefixLength = (maxLength - 3) / 2;
             var suffixLength = maxLength - 3 - prefixLength;
 
-            return stringValue.Substring(0, prefixLength) + "..." + stringValue.Substring(^suffixLength);
+            return stringValue.Substring(0, prefixLength) + "..." + stringValue.Substring((^suffixLength).GetOffset(0));
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
