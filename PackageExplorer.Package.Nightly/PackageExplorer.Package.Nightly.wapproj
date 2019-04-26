@@ -30,8 +30,11 @@
     <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <PackageCertificateKeyFile>PackageExplorer.Package.Nightly_TemporaryKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>A2D4C58B1602A29C0D823F1A664EF7EA9579F2E8</PackageCertificateThumbprint>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+    <AppInstallerUri>https://nugetpackageexplorer.blob.core.windows.net/nightly</AppInstallerUri>
+    <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
@@ -45,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\*.png" />
-    <None Include="PackageExplorer.Package.Nightly_TemporaryKey.pfx" />
+    <Content Include="Package.appinstaller" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj">
