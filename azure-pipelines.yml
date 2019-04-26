@@ -57,13 +57,6 @@ jobs:
       $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
       $manifest.Save(".\PackageExplorer.Package.Nightly\package.appxmanifest")
 
-      # TODO: Remove once hosted agents support appinstaller template file
-      #if('$(BuildOutputDirectory)' -eq 'Nightly')
-      #{
-      #  $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"
-      #  $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
-      #}
-
       # Update badges
       [xml]$badge = Get-Content ".\Build\ci_badge.svg"
       $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"
@@ -102,6 +95,17 @@ jobs:
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\"
       configuration: Nightly
       maximumCpuCount: true
+    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
+
+  - powershell: |
+      # Fix AppInstaller update settings
+      # This can be removed once 16.1 is on the agent with package templates
+      [xml]$doc = Get-Content "$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\PackageExplorer.Package.Nightly.appinstaller"
+      $doc.AppInstaller.UpdateSettings.OnLaunch.HoursBetweenUpdateChecks = "4"
+      $toInsert = $doc.CreateElement("AutomaticBackgroundTask", "http://schemas.microsoft.com/appx/appinstaller/2017/2")
+      $doc.AppInstaller.UpdateSettings.AppendChild($toInsert)
+      $doc.Save("$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\PackageExplorer.Package.Nightly.appinstaller")
+    displayName: Update AppInstaller settings
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
 
   - task: MSBuild@1
