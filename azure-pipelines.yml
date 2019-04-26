@@ -58,11 +58,11 @@ jobs:
       $manifest.Save(".\PackageExplorer.Package.Nightly\package.appxmanifest")
 
       # TODO: Remove once hosted agents support appinstaller template file
-      if('$(BuildOutputDirectory)' -eq 'Nightly')
-      {
-        $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"
-        $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
-      }
+      #if('$(BuildOutputDirectory)' -eq 'Nightly')
+      #{
+      #  $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"
+      #  $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
+      #}
 
       # Update badges
       [xml]$badge = Get-Content ".\Build\ci_badge.svg"
