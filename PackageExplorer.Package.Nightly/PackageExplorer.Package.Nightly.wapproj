@@ -34,6 +34,7 @@
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppInstallerUri>https://nugetpackageexplorer.blob.core.windows.net/nightly</AppInstallerUri>
     <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
