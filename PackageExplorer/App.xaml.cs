@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
@@ -26,14 +25,8 @@ namespace PackageExplorer
         public App()
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
-            // Initialize Bugsnag if we have a valid key
-            var apiKey = ConfigurationManager.AppSettings["InstrumentationKey"];
+            DiagnosticsClient.Initialize();
 
-            if (apiKey != "__AppInsightsKey__")
-            {
-                DiagnosticsClient.Initialize(apiKey);
-            }
-            
             DispatcherUnhandledException += App_DispatcherUnhandledException;
         }
 
