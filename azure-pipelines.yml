@@ -71,9 +71,9 @@ jobs:
 
   - powershell: |
       # Update App Insights key
-      [xml]$doc = Get-Content ".\PackageExplorer\app.config"
-      $doc.configuration.appSettings.add.value = "$(AppInsightsKey)"
-      $doc.Save(".\PackageExplorer\app.config")
+      [xml]$doc = Get-Content ".\PackageExplorer\ApplicationInsights.config"
+      $doc.ApplicationInsights.InstrumentationKey.InnerText = "$(AppInsightsKey)"
+      $doc.Save(".\PackageExplorer\ApplicationInsights.config")
 
     displayName: Set AppInsights Config
     env:

@@ -21,19 +21,15 @@ namespace NuGetPe
 
 
 
-        public static void Initialize(string apiKey)
+        public static void Initialize()
         {
-            if (!string.IsNullOrWhiteSpace(apiKey))
-            {
-                TelemetryConfiguration.Active.InstrumentationKey = apiKey;
-                TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
-                TelemetryConfiguration.Active.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
-                TelemetryConfiguration.Active.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
+            TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
+            TelemetryConfiguration.Active.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
+            TelemetryConfiguration.Active.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
 
-                _initialized = true;
+            _initialized = true;
 
-                _client = new TelemetryClient();
-            }
+            _client = new TelemetryClient();
         }
 
         public static void OnExit()
@@ -49,7 +45,7 @@ namespace NuGetPe
         {
             if (!_initialized) return;
             _client.TrackEvent(eventName, properties, metrics);
-        }  
+        }
 
         public static void TrackTrace(string evt)
         {
