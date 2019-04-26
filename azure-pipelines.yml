@@ -66,10 +66,12 @@ jobs:
 
       # Update badges
       [xml]$badge = Get-Content ".\Build\ci_badge.svg"
+      $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"
       $badge.svg.g[1].text[3].InnerText = "$(GitBuildVersionSimple).0"
       $badge.Save("$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\ci_badge.svg")
 
       [xml]$badge = Get-Content ".\Build\store_badge.svg"
+      $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"
       $badge.svg.g[1].text[3].InnerText = "$(GitBuildVersionSimple).0"
       $badge.Save("$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\stable_badge.svg")
     displayName: Update manifest and badge versions
@@ -143,10 +145,6 @@ jobs:
       archiveFile: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\PackageExplorer.$(Build.BuildNumber).zip
       includeRootFolder: false
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
-
-  - task: whitesource.ws-bolt.bolt.wss.WhiteSource Bolt@18
-    displayName: 'WhiteSource Bolt'
-    enabled: false
 
   - task: DotNetCoreCLI@2
     inputs:
