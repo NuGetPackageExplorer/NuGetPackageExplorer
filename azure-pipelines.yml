@@ -6,11 +6,14 @@ pr:
 - master
 - rel/*
 
+variables:
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+
 jobs:
 - job: Build
   pool:
     vmImage: windows-2019
-  strategy:    
+  strategy:
     matrix:
       Config_Release:
         BuildConfiguration: Release
@@ -24,13 +27,11 @@ jobs:
       Config_Choco:
         BuildConfiguration: Choco
         BuildOutputDirectory: Choco
-  workspace:
-    clean: all
 
   steps:
   - task: DotNetCoreInstaller@0
     inputs:
-      version: '3.0.100-preview4-011033'
+      version: '3.0.100-preview4-011223'
 
   - task: DotNetCoreCLI@2
     inputs:
@@ -38,42 +39,46 @@ jobs:
       custom: tool
       arguments: install --tool-path . nbgv
     displayName: Install NBGV tool
-    
-  - script: nbgv cloud
+
+  - script: nbgv cloud -c -a
     displayName: Set Version
 
   - powershell: |
       mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
-      
+
       # Set versions
-      $ver = .\nbgv get-version -f json | ConvertFrom-Json
 
       # Update appxmanifests. These must be done before build.
-      $doc = Get-Content ".\PackageExplorer.Package\package.appxmanifest"    
-      $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package\package.appxmanifest"
-      
-      $doc = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"    
-      $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
-      
+      [xml]$manifest = Get-Content ".\PackageExplorer.Package\package.appxmanifest"
+      $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
+      $manifest.Save(".\PackageExplorer.Package\package.appxmanifest")
+
+      [xml]$manifest = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+      $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
+      $manifest.Save(".\PackageExplorer.Package.Nightly\package.appxmanifest")
+
+      # TODO: Remove once hosted agents support appinstaller template file
       if('$(BuildOutputDirectory)' -eq 'Nightly')
       {
-        $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"    
+        $doc = Get-Content ".\Build\PackageExplorer.Package.Nightly.appinstaller"
         $doc | % { $_.Replace("3.25.0", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple)") } | Set-Content "$(Build.ArtifactStagingDirectory)\Nightly\PackageExplorer.Package.Nightly.appinstaller"
       }
-      
-      # Update badges
-      $doc = Get-Content ".\Build\ci_badge.svg"    
-      $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\ci_badge.svg"
-      
-      $doc = Get-Content ".\Build\store_badge.svg"    
-      $doc | % { $_.Replace("ver_number", "$($ver.CloudBuildVersionVars.GitBuildVersionSimple).0") } | Set-Content "$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\stable_badge.svg"
 
+      # Update badges
+      [xml]$badge = Get-Content ".\Build\ci_badge.svg"
+      $badge.svg.g[1].text[3].InnerText = "$(GitBuildVersionSimple).0"
+      $badge.Save("$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\ci_badge.svg")
+
+      [xml]$badge = Get-Content ".\Build\store_badge.svg"
+      $badge.svg.g[1].text[3].InnerText = "$(GitBuildVersionSimple).0"
+      $badge.Save("$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\stable_badge.svg")
     displayName: Update manifest and badge versions
 
   - powershell: |
-      # Update BugsnagApiKey
-      $doc = Get-Content ".\PackageExplorer\app.config"    
-      $doc | % { $_.Replace("__AppInsightsKey__", "$(AppInsightsKey)") } | Set-Content ".\PackageExplorer\app.config"
+      # Update App Insights key
+      [xml]$doc = Get-Content ".\PackageExplorer\app.config"
+      $doc.configuration.appSettings.add.value = "$(AppInsightsKey)"
+      $doc.Save(".\PackageExplorer\app.config")
 
     displayName: Set AppInsights Config
     env:
@@ -101,11 +106,11 @@ jobs:
     displayName: Build Store Package
     inputs:
       solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:UapAppxPackageBuildMode=StoreUpload
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:UapAppxPackageBuildMode=CI
       configuration: Store
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
-  
+
   - task: MSBuild@1
     displayName: Publish $(BuildConfiguration)
     inputs:
@@ -125,10 +130,8 @@ jobs:
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
 
   - powershell: |
-      # Chocolatey              
-      $ver = .\nbgv get-version -f json | ConvertFrom-Json
-
-      & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $($ver.ChocolateyPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
+      # Chocolatey
+      & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $(NBGV_ChocolateyPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
     displayName: Create Choco package
     condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Choco'))
 
@@ -145,12 +148,12 @@ jobs:
     displayName: 'WhiteSource Bolt'
     enabled: false
 
-  - task: DotNetCoreCLI@2  
+  - task: DotNetCoreCLI@2
     inputs:
       command: custom
       custom: tool
       arguments: install --tool-path $(System.DefaultWorkingDirectory)\Build SignClient
-    displayName: Install SignTool tool        
+    displayName: Install SignTool tool
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PowerShell@2
@@ -162,7 +165,7 @@ jobs:
       SignClientSecret: $(SignClientSecret)
       ArtifactDirectory: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
-      
+
   - task: PowerShell@2
     displayName: Authenticode Sign $(BuildOutputDirectory) Zip artifacts
     inputs:
@@ -170,7 +173,7 @@ jobs:
     env:
       SignClientUser: $(SignClientUser)
       SignClientSecret: $(SignClientSecret)
-      ArtifactDirectory: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory) 
+      ArtifactDirectory: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PublishBuildArtifacts@1
