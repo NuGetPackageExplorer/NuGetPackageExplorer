@@ -41,7 +41,7 @@ namespace NuGetPe
 
             _client.Flush();
             // Allow time for flushing:
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(2000);
         }
 
         private static void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
