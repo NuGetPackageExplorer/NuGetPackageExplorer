@@ -19,6 +19,7 @@ namespace PackageExplorer
         private ObservableCollection<FrameworkAssemblyReference> _frameworkAssemblies;
         private EditableFrameworkAssemblyReference _newFrameworkAssembly;
         private ICollection<PackageDependencyGroup> _dependencySets;
+        private ICollection<FrameworkReferenceGroup> _frameworkReferenceGroups;
         private ICollection<PackageReferenceSet> _referenceSets;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
@@ -51,6 +52,7 @@ namespace PackageExplorer
 
             _dependencySets = viewModel.PackageMetadata.DependencySets;
             _referenceSets = viewModel.PackageMetadata.PackageAssemblyReferences;
+            _frameworkReferenceGroups = viewModel.PackageMetadata.FrameworkReferenceGroups;
 
             _frameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(viewModel.PackageMetadata.FrameworkAssemblies);
             FrameworkAssembliesList.ItemsSource = _frameworkAssemblies;
@@ -162,6 +164,22 @@ namespace PackageExplorer
             }
         }
 
+        private void EditFrameworkReferencesButtonClicked(object sender, RoutedEventArgs e)
+        {
+            DiagnosticsClient.TrackEvent("PackageMetadataEditor_EditFrameworkReferencesButtonClicked");
+
+            var editor = new FrameworkReferencesEditor(_frameworkReferenceGroups)
+            {
+                Owner = Window.GetWindow(this),
+                PackageChooser = PackageChooser
+            };
+            var result = editor.ShowDialog();
+            if (result == true)
+            {
+                _frameworkReferenceGroups = editor.GetEditedReferences();
+            }
+        }
+
         #region IPackageEditorService
 
         void IPackageEditorService.BeginEdit()
@@ -191,6 +209,7 @@ namespace PackageExplorer
                 var viewModel = (PackageViewModel)DataContext;
                 viewModel.PackageMetadata.DependencySets = _dependencySets;
                 viewModel.PackageMetadata.PackageAssemblyReferences = _referenceSets;
+                viewModel.PackageMetadata.FrameworkReferenceGroups = _frameworkReferenceGroups;
                 _frameworkAssemblies.CopyTo(viewModel.PackageMetadata.FrameworkAssemblies);
             }
 

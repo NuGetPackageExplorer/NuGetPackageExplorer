@@ -80,6 +80,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
       </Grid.RowDefinitions>
 
             <Grid.BindingGroup>
@@ -237,8 +238,11 @@
             <!-- Dependencies -->
             <Button HorizontalAlignment="Center" Grid.Row="23" Grid.ColumnSpan="2" Margin="1,18,2,0" Padding="15,2" Content="Edit dependencies" Click="EditDependenciesButtonClicked" />
 
+            <!-- Framework references -->
+            <Button HorizontalAlignment="Center" Grid.Row="24" Grid.ColumnSpan="2" Margin="1,18,2,10" Padding="15,2" Content="Edit framework references" Click="EditFrameworkReferencesButtonClicked" />
+
             <!-- Filtered assembly references -->
-            <Button HorizontalAlignment="Center" Grid.Row="24" Grid.ColumnSpan="2" Margin="1,18,2,10" Padding="15,2" Content="Edit assembly references" Click="EditReferencesButtonClicked" />
+            <Button HorizontalAlignment="Center" Grid.Row="25" Grid.ColumnSpan="2" Margin="1,18,2,10" Padding="15,2" Content="Edit assembly references" Click="EditReferencesButtonClicked" />
         </Grid>
     </ScrollViewer>
 </UserControl>
