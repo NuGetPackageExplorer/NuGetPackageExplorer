@@ -212,7 +212,7 @@ namespace PackageExplorerViewModel
             {
                 if (!(exception is FatalProtocolException) && !(exception is IOException) && !(exception is NullReferenceException))
                 {
-                    DiagnosticsClient.Notify(exception);
+                    DiagnosticsClient.TrackException(exception);
                 }
                 ErrorMessage = exception.GetBaseException().Message;
             }

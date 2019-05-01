@@ -56,7 +56,7 @@ namespace PackageExplorer
                 // Don't send telemetry error for bad package
                 if (!(e is InvalidDataException))
                 {
-                    DiagnosticsClient.Notify(e);
+                    DiagnosticsClient.TrackException(e);
                 }
 
                 UIServices.Show(e.Message, MessageLevel.Error);

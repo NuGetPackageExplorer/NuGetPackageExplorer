@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
 using NuGetPe.Utility;
@@ -26,6 +27,8 @@ namespace NuGetPe
             TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
             TelemetryConfiguration.Active.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
             TelemetryConfiguration.Active.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
+            
+            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 
             _initialized = true;
 
@@ -41,6 +44,11 @@ namespace NuGetPe
             System.Threading.Thread.Sleep(1000);
         }
 
+        private static void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+        {
+            TrackException(e.Exception);
+        }
+
         public static void TrackEvent(string eventName, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
         {
             if (!_initialized) return;
@@ -53,7 +61,7 @@ namespace NuGetPe
             _client.TrackTrace(evt);
         }
 
-        public static void Notify(Exception exception)
+        public static void TrackException(Exception exception)
         {
             if (!_initialized) return;
 

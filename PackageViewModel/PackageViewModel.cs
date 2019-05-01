@@ -867,7 +867,7 @@ this);
                 {
                     if (!(ex is IOException) && !(ex is ArgumentException) && !(ex is UnauthorizedAccessException))
                     {
-                        DiagnosticsClient.Notify(ex);
+                        DiagnosticsClient.TrackException(ex);
                     }
                     UIServices.Show(ex.Message, MessageLevel.Error);
                 }
@@ -911,7 +911,7 @@ this);
             }
             catch (Exception ex)
             {
-                DiagnosticsClient.Notify(ex);
+                DiagnosticsClient.TrackException(ex);
                 UIServices.Show("The command failed with this error message:" +
                                 Environment.NewLine +
                                 Environment.NewLine +
@@ -1289,7 +1289,7 @@ this);
             {
                 if (!(e is ArgumentException))
                 {
-                    DiagnosticsClient.Notify(e);
+                    DiagnosticsClient.TrackException(e);
                 }
                 UIServices.Show(e.Message, MessageLevel.Error);
             }
