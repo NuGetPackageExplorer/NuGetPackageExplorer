@@ -56,8 +56,6 @@ namespace NuGetPe
 
         public string Source { get; }
 
-        #region IPackage Members
-
         public string Id
         {
             get { return _metadata.Id; }
@@ -209,6 +207,12 @@ namespace NuGetPe
             set { _metadata.LicenseMetadata = value; }
         }
 
+        public IEnumerable<FrameworkReferenceGroup> FrameworkReferenceGroups
+        {
+            get => _metadata.FrameworkReferenceGroups;
+            set => _metadata.FrameworkReferenceGroups = value;
+        }
+
         public DateTimeOffset? Published
         {
             get;
@@ -288,9 +292,7 @@ namespace NuGetPe
         {
             return _streamFactory();
         }
-
-        #endregion
-
+        
         public async Task LoadSignatureDataAsync()
         {
             using (var reader = new PackageArchiveReader(_streamFactory(), false))

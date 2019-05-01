@@ -45,13 +45,10 @@ namespace NuGetPe
             PackageTypes = packageBuilder.PackageTypes;
             MinClientVersion = packageBuilder.MinClientVersion;
             LicenseMetadata = packageBuilder.LicenseMetadata;
+            FrameworkReferenceGroups = packageBuilder.FrameworkReferenceGroups;
 
             _packageBuilder = packageBuilder;
         }
-
-        #region IPackage Members
-
-
         public IEnumerable<IPackageFile> GetFiles()
         {
             return _packageBuilder.Files.Where(p => !PackageUtility.IsManifest(p.Path));
@@ -156,9 +153,7 @@ namespace NuGetPe
 
         public LicenseMetadata LicenseMetadata { get; private set; }
 
-
-
-        #endregion
+        public IEnumerable<FrameworkReferenceGroup> FrameworkReferenceGroups { get; private set; }
 
         public void Dispose()
         {
