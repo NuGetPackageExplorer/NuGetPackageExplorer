@@ -47,7 +47,7 @@
             HorizontalAlignment="Stretch"
             MaxHeight="150"
             Visibility="{Binding ShowingAllVersionsList, Converter={StaticResource boolToVis}}"
-            IsTextSearchEnabled="False">
+            IsTextSearchEnabled="False" VirtualizingStackPanel.IsVirtualizing="False">
 
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
@@ -68,7 +68,7 @@
             <ListView.View>
                 <GridView AllowsColumnReorder="False" x:Name="PackageGridView">
 
-                    <GridViewColumn Width="80" Header="{x:Static self:Resources.PackageChooser_ColumnHeaderVersion}">
+                    <GridViewColumn Header="{x:Static self:Resources.PackageChooser_ColumnHeaderVersion}">
                         <GridViewColumn.HeaderContainerStyle>
                             <Style TargetType="{x:Type GridViewColumnHeader}">
                                 <Setter Property="HorizontalContentAlignment" Value="Right"/>
