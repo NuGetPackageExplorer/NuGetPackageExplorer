@@ -10,8 +10,6 @@ namespace PackageExplorer
     [ValueConversion(typeof(NuGetVersion), typeof(string))]
     public class NuGetVersionConverter : IValueConverter
     {
-        #region IValueConverter Members
-
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var version = value as NuGetVersion;
@@ -20,7 +18,7 @@ namespace PackageExplorer
 
         public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stringValue = (string)value;
+            var stringValue = (string?)value;
             if (string.IsNullOrWhiteSpace(stringValue))
             {
                 return null;
@@ -38,7 +36,5 @@ namespace PackageExplorer
                 }
             }
         }
-
-        #endregion
     }
 }

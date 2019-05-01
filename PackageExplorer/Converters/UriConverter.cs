@@ -7,9 +7,7 @@ namespace PackageExplorer
 {
     public class UriConverter : IValueConverter
     {
-        #region IValueConverter Members
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var uri = (Uri)value;
             return uri?.ToString();
@@ -34,7 +32,5 @@ namespace PackageExplorer
                 }
             }
         }
-
-        #endregion
     }
 }

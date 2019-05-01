@@ -33,12 +33,10 @@ namespace NuGetPe.AssemblyMetadata
 
             try
             {
-                using (var metadataParser = new AssemblyMetadataParser(assemblyPath))
-                {
-                    AddAssemblyAttributes(metadataParser, result);
-                    AddReferencedAssemblyInfo(metadataParser, result);
-                    result.DebugData = metadataParser.GetDebugData();
-                }
+                using var metadataParser = new AssemblyMetadataParser(assemblyPath);
+                AddAssemblyAttributes(metadataParser, result);
+                AddReferencedAssemblyInfo(metadataParser, result);
+                result.DebugData = metadataParser.GetDebugData();
             }
             catch
             {
@@ -50,10 +48,8 @@ namespace NuGetPe.AssemblyMetadata
 
         public static AssemblyDebugData ReadDebugData(Stream? peStream, Stream pdbStream)
         {
-            using (var reader = new AssemblyDebugParser(peStream, pdbStream))
-            {
-                return reader.GetDebugData();
-            }
+            using var reader = new AssemblyDebugParser(peStream, pdbStream);
+            return reader.GetDebugData();
         }
 
         private static void AddAssemblyAttributes(AssemblyMetadataParser parser, AssemblyMetaData result)

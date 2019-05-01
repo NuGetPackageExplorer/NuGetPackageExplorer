@@ -1,0 +1,135 @@
+﻿<self:StandardDialog x:Class="PackageExplorer.FrameworkReferencesEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:self="clr-namespace:PackageExplorer" 
+         xmlns:pack="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"            
+        Title="Framework References Editor" 
+        ShowInTaskbar="False"
+        WindowStartupLocation="CenterOwner"
+        FontSize="{Binding FontSize, Source={StaticResource Settings}, Mode=OneWay}" 
+        MinHeight="300" 
+        MinWidth="450"
+        Height="400"
+        Width="600">
+
+    <self:StandardDialog.Resources>
+        <self:TargetFrameworkConverter x:Key="TargetFrameworkConverter" />
+
+        <DataTemplate DataType="{x:Type pack:FrameworkReferenceGroup}" x:Key="FrameworkReferenceTemplate">
+            <TextBlock Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, TargetNullValue='[no target framework]'}" />
+        </DataTemplate>
+
+        <ControlTemplate x:Key="ListViewItemTemplate" TargetType="{x:Type ListViewItem}">
+            <Border>
+                <GridViewRowPresenter />
+            </Border>
+        </ControlTemplate>
+    </self:StandardDialog.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="150" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Groups label -->
+        <Label Content="_Groups" Target="ReferenceGroupList" FontWeight="SemiBold" />
+
+        <!-- buttons to add/remove group -->
+        <StackPanel HorizontalAlignment="Right" VerticalAlignment="Center" Orientation="Horizontal">
+            <Button ToolTip="Add a new group" Click="OnAddGroupClicked" Margin="0,0,4,0" Content="{StaticResource AddIcon}" />
+            <self:GrayscaleButton ToolTip="Delete the selected group" Click="OnRemoveGroupClicked" IsEnabled="{Binding SelectedItem, ElementName=ReferenceGroupList, Converter={StaticResource nullToBoolConverter}}">
+                <self:GrayscaleContentPresenter Content="{StaticResource RemoveIcon}" />
+            </self:GrayscaleButton>
+        </StackPanel>
+
+        <!-- Reference group listbox -->
+        <ListBox x:Name="ReferenceGroupList" Margin="0,0,0,10" Grid.Row="1" BorderThickness="1" ItemsSource="{Binding}" ItemTemplate="{StaticResource FrameworkReferenceTemplate}">
+        </ListBox>
+
+        <!-- Group details label -->
+        <Label Content="Group _details" FontWeight="SemiBold" Grid.Column="1" HorizontalAlignment="Center">
+        </Label>
+
+        <!-- group details -->
+        <Grid Margin="6,0,3,10" Grid.Row="1" Grid.Column="1" IsEnabled="{Binding SelectedItem, ElementName=ReferenceGroupList, Converter={StaticResource nullToBoolConverter}}" DataContext="{Binding SelectedItem, ElementName=ReferenceGroupList}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <Validation.ErrorTemplate>
+                <ControlTemplate></ControlTemplate>
+            </Validation.ErrorTemplate>
+
+            <!-- target framework textbox -->
+            <DockPanel Grid.ColumnSpan="2" LastChildFill="True">
+                <Label DockPanel.Dock="Left" Content="_Target framework" Target="TargetFrameworkBox" />
+                <TextBox x:Name="TargetFrameworkBox" Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, UpdateSourceTrigger=LostFocus}" />
+            </DockPanel>
+
+            <ListView 
+                x:Name="ReferenceList" 
+                ItemsSource="{Binding FrameworkReferences}" 
+                SelectionMode="Single"
+                Margin="0,4"
+                Grid.Row="1" 
+                Grid.ColumnSpan="2">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="Template" Value="{StaticResource ListViewItemTemplate}" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.View>
+                    <GridView AllowsColumnReorder="False">
+                        <GridViewColumn Header="Framework" DisplayMemberBinding="{Binding}" Width="180">
+                        </GridViewColumn>
+
+                        <GridViewColumn Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock ToolTipService.ToolTip="Delete this reference" TextAlignment="Center">
+                                        <Hyperlink Click="DeleteReferenceButtonClicked">delete</Hyperlink>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <TextBox x:Name="NewReferenceFile" Margin="2" Grid.Column="0" Grid.Row="2" />
+
+            <self:GrayscaleButton Margin="0,2,0,2" Grid.Column="3" Grid.Row="2" ToolTipService.ToolTip="Add new reference" Click="AddReferenceButtonClicked">
+                <self:GrayscaleContentPresenter Content="{StaticResource AddIcon}" />
+                <self:GrayscaleButton.IsEnabled>
+                    <Binding Path="Text" ElementName="NewReferenceFile" Converter="{StaticResource nullToBoolConverter}" Mode="OneWay" />
+                </self:GrayscaleButton.IsEnabled>
+            </self:GrayscaleButton>
+        </Grid>
+
+        <!-- Background color for the footer -->
+        <Border Grid.Row="3" Grid.ColumnSpan="2" Margin="-10,0,-10,-10" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}"></Border>
+
+        <!-- OK and Cancel buttons -->
+        <UniformGrid HorizontalAlignment="Right" Grid.Row="3" Grid.ColumnSpan="2" Rows="1" Columns="2">
+            <Button IsDefault="True" Content="OK" Margin="5,10,5,0" Click="OkButton_Click" Padding="15,2" />
+            <Button Content="Cancel" Command="{Binding CancelCommand, Mode=OneWay}" Click="CancelButton_Click" Margin="5,10,5,0" Padding="15,2" />
+        </UniformGrid>
+    </Grid>
+</self:StandardDialog>

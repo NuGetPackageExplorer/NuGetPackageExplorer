@@ -25,7 +25,7 @@
     
     <UseWPF>true</UseWPF>
 
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>preview</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
   </PropertyGroup>
 

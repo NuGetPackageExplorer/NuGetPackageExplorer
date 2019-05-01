@@ -55,17 +55,15 @@ namespace PackageExplorerViewModel
                 {
                     try
                     {
-                        using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+                        using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+                        store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+
+                        var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, settingsManager.SigningCertificate, validOnly: true);
+
+                        if (certificates.Count > 0)
                         {
-                            store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-
-                            var certificates = store.Certificates.Find(X509FindType.FindByThumbprint, settingsManager.SigningCertificate, validOnly: true);
-
-                            if (certificates.Count > 0)
-                            {
-                                Certificate = certificates[0];
-                                CertificateFileName = null;
-                            }
+                            Certificate = certificates[0];
+                            CertificateFileName = null;
                         }
                     }
                     catch { }
@@ -230,33 +228,31 @@ namespace PackageExplorerViewModel
 
             try
             {
-                using (var store = new X509Store(StoreName.My, StoreLocation.CurrentUser))
+                using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+                store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
+
+                // https://github.com/NuGet/NuGet.Client/blob/adfe6d5c37834e8eb11453518e4508a534c15f8d/src/NuGet.Core/NuGet.Commands/SignCommand/SignCommandRunner.cs#L271-L283
+                var collection = new X509Certificate2Collection();
+
+                foreach (var certificate in store.Certificates)
                 {
-                    store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-
-                    // https://github.com/NuGet/NuGet.Client/blob/adfe6d5c37834e8eb11453518e4508a534c15f8d/src/NuGet.Core/NuGet.Commands/SignCommand/SignCommandRunner.cs#L271-L283
-                    var collection = new X509Certificate2Collection();
-
-                    foreach (var certificate in store.Certificates)
+                    if (IsCertificateValidForNuGet(certificate))
                     {
-                        if (IsCertificateValidForNuGet(certificate))
-                        {
-                            collection.Add(certificate);
-                        }
+                        collection.Add(certificate);
                     }
+                }
 
-                    var certificates = X509Certificate2UI.SelectFromCollection(
-                        collection,
-                        Resources.ChooseCertificate_Title,
-                        Resources.ChooseCertificate_Description,
-                        X509SelectionFlag.SingleSelection);
+                var certificates = X509Certificate2UI.SelectFromCollection(
+                    collection,
+                    Resources.ChooseCertificate_Title,
+                    Resources.ChooseCertificate_Description,
+                    X509SelectionFlag.SingleSelection);
 
-                    if (certificates.Count > 0)
-                    {
-                        Certificate = certificates[0];
-                        CertificateFileName = null;
-                        ShowPassword = false;
-                    }
+                if (certificates.Count > 0)
+                {
+                    Certificate = certificates[0];
+                    CertificateFileName = null;
+                    ShowPassword = false;
                 }
             }
             catch (Exception ex)
@@ -300,35 +296,33 @@ namespace PackageExplorerViewModel
 
             try
             {
-                using (var tempCertificate = new X509Certificate2(Certificate))
-                using (var signRequest = new AuthorSignPackageRequest(tempCertificate, HashAlgorithmName))
+                using var tempCertificate = new X509Certificate2(Certificate);
+                using var signRequest = new AuthorSignPackageRequest(tempCertificate, HashAlgorithmName);
+                var packagePath = _packageViewModel.GetCurrentPackageTempFile();
+                var originalPackageCopyPath = Path.GetTempFileName();
+
+                ITimestampProvider? timestampProvider = null;
+                if (!string.IsNullOrEmpty(TimestampServer))
                 {
-                    var packagePath = _packageViewModel.GetCurrentPackageTempFile();
-                    var originalPackageCopyPath = Path.GetTempFileName();
-
-                    ITimestampProvider? timestampProvider = null;
-                    if (!string.IsNullOrEmpty(TimestampServer))
-                    {
-                        timestampProvider = new Rfc3161TimestampProvider(new Uri(TimestampServer));
-                    }
-                    var signatureProvider = new X509SignatureProvider(timestampProvider);
-
-                    using (var options = SigningOptions.CreateFromFilePaths(
-                        inputPackageFilePath: packagePath,
-                        outputPackageFilePath: originalPackageCopyPath,
-                        overwrite: true,
-                        signatureProvider: signatureProvider,
-                        logger: NullLogger.Instance))
-                    {
-                        await SigningUtility.SignAsync(options, signRequest, token);
-                    }
-
-                    File.Delete(packagePath);
-
-                    token.ThrowIfCancellationRequested();
-
-                    return originalPackageCopyPath;
+                    timestampProvider = new Rfc3161TimestampProvider(new Uri(TimestampServer));
                 }
+                var signatureProvider = new X509SignatureProvider(timestampProvider);
+
+                using (var options = SigningOptions.CreateFromFilePaths(
+                    inputPackageFilePath: packagePath,
+                    outputPackageFilePath: originalPackageCopyPath,
+                    overwrite: true,
+                    signatureProvider: signatureProvider,
+                    logger: NullLogger.Instance))
+                {
+                    await SigningUtility.SignAsync(options, signRequest, token);
+                }
+
+                File.Delete(packagePath);
+
+                token.ThrowIfCancellationRequested();
+
+                return originalPackageCopyPath;
             }
             catch (Exception e)
             {

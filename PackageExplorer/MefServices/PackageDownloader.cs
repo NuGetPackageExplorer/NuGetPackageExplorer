@@ -20,17 +20,18 @@ using PackageExplorerViewModel;
 namespace PackageExplorer
 {
     [Export(typeof(INuGetPackageDownloader))]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     internal class PackageDownloader : INuGetPackageDownloader
-#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
         private static readonly FileSizeConverter FileSizeConverter = new FileSizeConverter();
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         [Import]
         public Lazy<MainWindow> MainWindow { get; set; }
 
         [Import]
         public IUIServices UIServices { get; set; }
+
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
 
         #region IPackageDownloader Members
 
@@ -134,27 +135,23 @@ namespace PackageExplorer
                     var repository = PackageRepositoryFactory.CreateRepository(sourceRepository.PackageSource, new[] { new Lazy<INuGetResourceProvider>(() => httpProgressProvider) });
                     var downloadResource = await repository.GetResourceAsync<DownloadResource>(cts.Token).ConfigureAwait(false);
 
-                    using (var sourceCacheContext = new SourceCacheContext() { NoCache = true })
+                    using var sourceCacheContext = new SourceCacheContext() { NoCache = true };
+                    var context = new PackageDownloadContext(sourceCacheContext, Path.GetTempPath(), true);
+
+                    using var result = await downloadResource.GetDownloadResourceResultAsync(packageIdentity, context, string.Empty, NullLogger.Instance, cts.Token).ConfigureAwait(false);
+                    if (result.Status == DownloadResourceResultStatus.Cancelled)
+                        throw new OperationCanceledException();
+
+                    if (result.Status == DownloadResourceResultStatus.NotFound)
+                        throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
+
+                    var tempFilePath = Path.GetTempFileName();
+                    using (var fileStream = File.OpenWrite(tempFilePath))
                     {
-                        var context = new PackageDownloadContext(sourceCacheContext, Path.GetTempPath(), true);
-
-                        using (var result = await downloadResource.GetDownloadResourceResultAsync(packageIdentity, context, string.Empty, NullLogger.Instance, cts.Token).ConfigureAwait(false))
-                        {
-                            if (result.Status == DownloadResourceResultStatus.Cancelled)
-                                throw new OperationCanceledException();
-
-                            if (result.Status == DownloadResourceResultStatus.NotFound)
-                                throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
-
-                            var tempFilePath = Path.GetTempFileName();
-                            using (var fileStream = File.OpenWrite(tempFilePath))
-                            {
-                                await result.PackageStream.CopyToAsync(fileStream).ConfigureAwait(false);
-                            }
-
-                            return tempFilePath;
-                        }
+                        await result.PackageStream.CopyToAsync(fileStream).ConfigureAwait(false);
                     }
+
+                    return tempFilePath;
                 }
                 catch (OperationCanceledException)
                 {
@@ -238,7 +235,7 @@ namespace PackageExplorer
             return response;
         }
 
-        private static bool IsBinaryMediaType(string mediaType)
+        private static bool IsBinaryMediaType(string? mediaType)
         {
             return mediaType == "application/octet-stream" || // NuGet Protocol v3
                 mediaType == "binary/octet-stream"; // NuGet Protocol v2

@@ -59,13 +59,11 @@ namespace NuGetPe
 
             // now copy the package to the cache
             var filePath = GetPackageFilePath(package.Id, package.Version);
-            using (Stream stream = package.GetStream(),
-                          fileStream = File.Create(filePath))
+            using Stream stream = package.GetStream(),
+                          fileStream = File.Create(filePath);
+            if (stream != null)
             {
-                if (stream != null)
-                {
-                    stream.CopyTo(fileStream);
-                }
+                stream.CopyTo(fileStream);
             }
         }
 

@@ -346,7 +346,7 @@ namespace PackageExplorer
         {
             if (targetPath.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
             {
-                targetPath = targetPath.Substring(0, targetPath.Length - 1);
+                targetPath = targetPath[0..^1];
             }
 
             // when a plugin assembly is loaded by the app, we can't delete it directly.

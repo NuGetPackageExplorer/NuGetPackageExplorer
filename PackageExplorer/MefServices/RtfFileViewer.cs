@@ -13,28 +13,26 @@ namespace PackageExplorer
         {
             DiagnosticsClient.TrackEvent("RtfFileViewer");
 
-            using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
+            using var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true);
+            // don't display file bigger than 1MB
+            if (stream.Length > 1024 * 1024)
             {
-                // don't display file bigger than 1MB
-                if (stream.Length > 1024 * 1024)
-                {
-                    return "** This file is too big to view inline. ***";
-                }
-
-                var rtf = new RichTextBox
-                {
-                    IsReadOnly = true,
-                    BorderThickness = new System.Windows.Thickness(0),
-                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
-                };
-                rtf.Document.MinPageWidth = 800;
-
-                var range = new TextRange(rtf.Document.ContentStart, rtf.Document.ContentEnd);
-                range.Load(stream, System.Windows.DataFormats.Rtf);
-
-                return rtf;
+                return "** This file is too big to view inline. ***";
             }
+
+            var rtf = new RichTextBox
+            {
+                IsReadOnly = true,
+                BorderThickness = new System.Windows.Thickness(0),
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto
+            };
+            rtf.Document.MinPageWidth = 800;
+
+            var range = new TextRange(rtf.Document.ContentStart, rtf.Document.ContentEnd);
+            range.Load(stream, System.Windows.DataFormats.Rtf);
+
+            return rtf;
         }
     }
 }

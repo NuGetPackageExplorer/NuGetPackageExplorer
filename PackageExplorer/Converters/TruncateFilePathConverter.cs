@@ -82,7 +82,7 @@ namespace PackageExplorer
 
             if (res.Length == 0 && parts.Length > 0)
             {
-                var lastPart = parts[parts.Length - 1];
+                var lastPart = parts[^1];
                 res = lastPart.Substring(Math.Max(0, lastPart.Length - remainingLength));
             }
 

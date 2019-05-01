@@ -18,6 +18,8 @@ namespace PackageExplorerViewModel
             return Enumerable.Empty<IPackageFile>();
         }
 
+        public IEnumerable<FrameworkReferenceGroup> FrameworkReferenceGroups => Enumerable.Empty<FrameworkReferenceGroup>();
+
         public Stream GetStream()
         {
             return new MemoryStream();

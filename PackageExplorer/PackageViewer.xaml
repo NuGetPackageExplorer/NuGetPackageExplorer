@@ -222,7 +222,28 @@
                     </TextBlock>
                 </Grid>
             </DataTemplate>
+            
+            <DataTemplate x:Key="FrameworkReferenceItemTemplate" DataType="{x:Type packaging:FrameworkReference}">
+                <TextBlock Text="{Binding Name, Mode=OneWay}" TextTrimming="CharacterEllipsis" />
+            </DataTemplate>
+            
+            <DataTemplate DataType="{x:Type packaging:FrameworkReferenceGroup}">
+                <Grid Margin="0,0,0,8">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
 
+                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static self:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <ItemsControl
+                        x:Name="frameworkReferencesList"
+                        Grid.Row="1"
+                        Margin="20,0,0,0"
+                        ItemsSource="{Binding FrameworkReferences}"
+                        ItemTemplate="{StaticResource FrameworkReferenceItemTemplate}" />
+                </Grid>
+            </DataTemplate>
+  
             <DataTemplate x:Key="PackageReferenceItemTemplate">
                 <TextBlock Text="{Binding Mode=OneWay}" TextTrimming="CharacterEllipsis" />
             </DataTemplate>
@@ -295,7 +316,7 @@
             </DataTemplate>
 
             <!-- data template for the package details pane -->
-            <DataTemplate x:Key="PackageDetailTemplate">
+            <DataTemplate x:Key="PackageDetailTemplate" DataType="{x:Type viewmodel:EditablePackageMetadata}">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="8">
                         <Border BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Background="White" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconUrl}" Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
@@ -470,12 +491,19 @@
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
-                        
+
+                        <!-- Framework Reference Groups -->
+                        <TextBlock Visibility="{Binding Items.Count, ElementName=FrameworkReferenceGroups, Converter={StaticResource countConverter}}" Text="Framework References:" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                        <ItemsControl x:Name="FrameworkReferenceGroups" Margin="25,5,0,0" ItemsSource="{Binding FrameworkReferenceGroups}">
+                        </ItemsControl>
+
                         <!-- Package Assembly References -->
                         <TextBlock Visibility="{Binding Items.Count, ElementName=PackageAssemblyReferences, Converter={StaticResource countConverter}}" Text="Filtered Assembly References:" Margin="0,5,0,0" Style="{StaticResource DetailMetadataLabelStyle}" />
 
                         <ItemsControl x:Name="PackageAssemblyReferences" Margin="25,5,0,0" ItemsSource="{Binding PackageAssemblyReferences, Converter={StaticResource ReferenceSetConverter}}">
                         </ItemsControl>
+                       
                     </StackPanel>
                 </ScrollViewer>
             </DataTemplate>

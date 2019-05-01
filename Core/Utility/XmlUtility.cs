@@ -11,10 +11,8 @@ namespace NuGetPe
             {
                 try
                 {
-                    using (var configSream = fileSystem.OpenFile(path))
-                    {
-                        return XDocument.Load(configSream);
-                    }
+                    using var configSream = fileSystem.OpenFile(path);
+                    return XDocument.Load(configSream);
                 }
                 catch (Exception)
                 {

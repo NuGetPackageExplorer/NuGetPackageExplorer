@@ -14,30 +14,27 @@ namespace PackageExplorer
         {
             DiagnosticsClient.TrackEvent("ImageFileViewer");
 
-            using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
+            using var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true);
+            var source = new BitmapImage();
+            source.BeginInit();
+            source.CacheOption = BitmapCacheOption.OnLoad;
+            source.StreamSource = stream;
+            source.EndInit();
+
+            var image = new Image
             {
+                Source = source,
+                Width = source.Width,
+                Height = source.Height,
 
-                var source = new BitmapImage();
-                source.BeginInit();
-                source.CacheOption = BitmapCacheOption.OnLoad;
-                source.StreamSource = stream;
-                source.EndInit();
+            };
 
-                var image = new Image
-                {
-                    Source = source,
-                    Width = source.Width,
-                    Height = source.Height,
-
-                };
-
-                return new ScrollViewer
-                {
-                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Content = image
-                };
-            }
+            return new ScrollViewer
+            {
+                HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                Content = image
+            };
         }
     }
 }

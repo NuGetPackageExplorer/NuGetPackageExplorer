@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Runtime.InteropServices.ComTypes;
 using System.Windows.Input;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
@@ -15,7 +14,7 @@ namespace PackageExplorerViewModel
     {
         private int _hashCode;
         private bool _isSelected;
-        private string _name;
+        private string? _name;
         private PackageFolder? _parent;
         private string _path;
         private string? _extension;
@@ -53,7 +52,7 @@ namespace PackageExplorerViewModel
 
         public string Name
         {
-            get { return _name; }
+            get { return _name!; }
             set
             {
                 if (value == null)

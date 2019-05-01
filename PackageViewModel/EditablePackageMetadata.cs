@@ -38,6 +38,7 @@ namespace PackageExplorerViewModel
         private bool _isSigned;
         private ICollection<PackageDependencyGroup> _dependencySets;
         private ICollection<PackageReferenceSet> _packageAssemblyReferences;
+        private ICollection<FrameworkReferenceGroup> _frameworkReferenceGroups;
         private Version? _minClientVersion;
 
         private readonly RelayCommand _showValidationResultsCommand;
@@ -71,6 +72,7 @@ namespace PackageExplorerViewModel
             FrameworkAssemblies = new ObservableCollection<FrameworkAssemblyReference>(source.FrameworkReferences);
             _packageAssemblyReferences = new ObservableCollection<PackageReferenceSet>();
             ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
+            _frameworkReferenceGroups = new ObservableCollection<FrameworkReferenceGroup>(source.FrameworkReferenceGroups);
 
             Repository = source.Repository;
             LicenseMetadata = source.LicenseMetadata;
@@ -228,6 +230,23 @@ namespace PackageExplorerViewModel
                 {
                     _dependencySets = value;
                     RaisePropertyChange("DependencySets");
+                }
+            }
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public ICollection<FrameworkReferenceGroup> FrameworkReferenceGroups
+        {
+            get
+            {
+                return _frameworkReferenceGroups;
+            }
+            set
+            {
+                if (_frameworkReferenceGroups != value)
+                {
+                    _frameworkReferenceGroups = value;
+                    RaisePropertyChange(nameof(FrameworkReferenceGroups));
                 }
             }
         }
@@ -527,6 +546,11 @@ namespace PackageExplorerViewModel
             get { return PackageAssemblyReferences; }
         }
 
+        IEnumerable<FrameworkReferenceGroup> IPackageMetadata.FrameworkReferenceGroups
+        {
+            get { return FrameworkReferenceGroups; }
+        }
+
         IEnumerable<ManifestContentFiles> IPackageMetadata.ContentFiles => ContentFiles;
         public ICollection<ManifestContentFiles> ContentFiles { get; set; }
 
@@ -558,7 +582,7 @@ namespace PackageExplorerViewModel
 
 
 
-        private static Uri FixIconUrl(Uri uri)
+        private static Uri? FixIconUrl(Uri uri)
         {
             if (uri == null || uri.IsAbsoluteUri)
             {
@@ -573,7 +597,7 @@ namespace PackageExplorerViewModel
 
             var builder = new UriBuilder
             {
-                Scheme = "http",
+                Scheme = "https",
                 Host = "www.nuget.org",
                 Path = path
             };

@@ -15,10 +15,8 @@ namespace NuGetPe
 
         public static string ReadToEnd(this Stream stream)
         {
-            using (var streamReader = new StreamReader(stream))
-            {
-                return streamReader.ReadToEnd();
-            }
+            using var streamReader = new StreamReader(stream);
+            return streamReader.ReadToEnd();
         }
 
         public static Stream AsStream(this string value)

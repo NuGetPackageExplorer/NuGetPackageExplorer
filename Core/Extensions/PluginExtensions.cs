@@ -32,10 +32,8 @@ namespace NuGetPe
 
                     using (var stream = File.Open(targetPath, FileMode.Create, FileAccess.Write, FileShare.Read))
                     {
-                        using (var packageStream = file.GetStream())
-                        {
-                            packageStream.CopyTo(stream);
-                        }
+                        using var packageStream = file.GetStream();
+                        packageStream.CopyTo(stream);
                     }
 
                     numberOfFilesCopied++;

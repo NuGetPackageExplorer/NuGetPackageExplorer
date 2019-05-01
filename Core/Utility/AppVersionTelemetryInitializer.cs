@@ -8,7 +8,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 
 namespace NuGetPe.Utility
 {
-    class AppVersionTelemetryInitializer : ITelemetryInitializer
+    internal class AppVersionTelemetryInitializer : ITelemetryInitializer
     {
         private readonly string _wpfVersion;        
         private readonly string _appVersion;
@@ -17,8 +17,8 @@ namespace NuGetPe.Utility
         {
             _wpfVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;            
             _appVersion = typeof(DiagnosticsClient).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
-                                                           .FirstOrDefault(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
-                                                           ?.Value;
+                                                            .First(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
+                                                            .Value;
         }
 
         public void Initialize(ITelemetry telemetry)
