@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 using NuGetPe;
 using PackageExplorerViewModel;
@@ -30,6 +31,38 @@ namespace PackageExplorer
         {
             var viewModel = (PackageInfoViewModel)DataContext;
             viewModel.OpenCommand.Execute(null);
+        }
+
+        protected override void OnPropertyChanged(DependencyPropertyChangedEventArgs e)
+        {
+            base.OnPropertyChanged(e);
+
+            if (e.Property == DataContextProperty)
+            {
+                if (e.NewValue is PackageInfoViewModel newViewModel)
+                {
+                    newViewModel.PropertyChanged += PackageInfoViewModel_PropertyChanged;
+                }
+                if (e.OldValue is PackageInfoViewModel oldViewModel)
+                {
+                    oldViewModel.PropertyChanged -= PackageInfoViewModel_PropertyChanged;
+                }
+            }
+        }
+
+        private void PackageInfoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PackageInfoViewModel.HasFinishedLoading))
+            {
+                foreach (var column in PackageGridView.Columns)
+                {
+                    if (double.IsNaN(column.Width))
+                    {
+                        column.Width = 0;
+                        column.Width = double.NaN;
+                    }
+                }
+            }
         }
     }
 }
