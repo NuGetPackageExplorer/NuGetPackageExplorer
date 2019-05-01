@@ -24,7 +24,6 @@ namespace NuGetPe
 
         public static void Initialize()
         {
-            TelemetryConfiguration.Active.TelemetryChannel.DeveloperMode = Debugger.IsAttached;
             TelemetryConfiguration.Active.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
             TelemetryConfiguration.Active.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
             
