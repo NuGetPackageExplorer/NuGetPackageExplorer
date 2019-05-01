@@ -20,17 +20,18 @@ using PackageExplorerViewModel;
 namespace PackageExplorer
 {
     [Export(typeof(INuGetPackageDownloader))]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     internal class PackageDownloader : INuGetPackageDownloader
-#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
         private static readonly FileSizeConverter FileSizeConverter = new FileSizeConverter();
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         [Import]
         public Lazy<MainWindow> MainWindow { get; set; }
 
         [Import]
         public IUIServices UIServices { get; set; }
+
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
 
         #region IPackageDownloader Members
 
@@ -238,7 +239,7 @@ namespace PackageExplorer
             return response;
         }
 
-        private static bool IsBinaryMediaType(string mediaType)
+        private static bool IsBinaryMediaType(string? mediaType)
         {
             return mediaType == "application/octet-stream" || // NuGet Protocol v3
                 mediaType == "binary/octet-stream"; // NuGet Protocol v2

@@ -9,9 +9,7 @@ using PackageExplorerViewModel;
 namespace PackageExplorer
 {
     [Export(typeof(IPackageChooser))]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     internal class PackageChooserService : IPackageChooser
-#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
         private PackageChooserViewModel? _viewModel;
 
@@ -19,6 +17,7 @@ namespace PackageExplorer
         private PackageChooserDialog? _pluginDialog;
         private PackageChooserViewModel? _pluginViewModel;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         [Import]
         public IPackageViewModelFactory ViewModelFactory { get; set; }
 
@@ -34,6 +33,7 @@ namespace PackageExplorer
         [Import]
         public Lazy<MainWindow> Window { get; set; }
 
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
 
         public SourceRepository? Repository => _viewModel?.ActiveRepository;
 

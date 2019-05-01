@@ -11,7 +11,7 @@ namespace NuGetPe
     {
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters",
             Justification = "We don't care about base types")]
-        public static string GetOptionalAttributeValue(this XElement element, string localName,
+        public static string? GetOptionalAttributeValue(this XElement element, string localName,
                                                        string? namespaceName = null)
         {
             XAttribute attr;
@@ -28,7 +28,7 @@ namespace NuGetPe
 
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters",
             Justification = "We don't care about base types")]
-        public static string GetOptionalElementValue(this XElement element, string localName,
+        public static string? GetOptionalElementValue(this XElement element, string localName,
                                                      string? namespaceName = null)
         {
             XElement child;

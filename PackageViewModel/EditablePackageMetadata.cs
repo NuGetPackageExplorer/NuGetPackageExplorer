@@ -582,7 +582,7 @@ namespace PackageExplorerViewModel
 
 
 
-        private static Uri FixIconUrl(Uri uri)
+        private static Uri? FixIconUrl(Uri uri)
         {
             if (uri == null || uri.IsAbsoluteUri)
             {
@@ -597,7 +597,7 @@ namespace PackageExplorerViewModel
 
             var builder = new UriBuilder
             {
-                Scheme = "http",
+                Scheme = "https",
                 Host = "www.nuget.org",
                 Path = path
             };

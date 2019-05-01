@@ -13,13 +13,12 @@ using Ookii.Dialogs.Wpf;
 namespace PackageExplorer
 {
     [Export(typeof(IUIServices))]
-#pragma warning disable CS8618 // Non-nullable field is uninitialized.
     internal class UIServices : IUIServices
-#pragma warning restore CS8618 // Non-nullable field is uninitialized.
     {
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         [Import]
         public Lazy<MainWindow> Window { get; set; }
-
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         public object Initialize() => Window.Value;
 
         public bool OpenSaveFileDialog(string title, string defaultFileName, string? initialDirectory, string filter, bool overwritePrompt,

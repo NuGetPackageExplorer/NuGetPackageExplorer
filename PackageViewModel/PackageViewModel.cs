@@ -1398,7 +1398,7 @@ namespace PackageExplorerViewModel
                         f => new ManifestFile
                         {
 
-                            Source = string.IsNullOrEmpty(f.OriginalPath()) || f?.OriginalPath()?.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) == true ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()!),
+                            Source = string.IsNullOrEmpty(f.OriginalPath()) || f.OriginalPath()?.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) == true ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()!),
                             Target = f.Path
                         })
                     );

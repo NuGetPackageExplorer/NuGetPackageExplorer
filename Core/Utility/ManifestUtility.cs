@@ -76,7 +76,7 @@ namespace NuGetPe
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string ReplaceTokenWithMetadata(string value)
+        public static string? ReplaceTokenWithMetadata(string value)
         {
             // see if it's a token
 

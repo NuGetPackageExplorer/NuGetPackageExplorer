@@ -19,7 +19,7 @@ namespace PackageExplorer
 
         public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stringValue = (string)value;
+            var stringValue = (string?)value;
             if (string.IsNullOrEmpty(stringValue))
             {
                 return null;

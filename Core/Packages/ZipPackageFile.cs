@@ -27,7 +27,7 @@ namespace NuGetPe
                 return Uri.UnescapeDataString(path);
             }
 
-            return path;
+            return path!;
         }
 
         public override Stream GetStream()
