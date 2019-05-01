@@ -88,7 +88,7 @@ namespace NuGetPe
             var matches = TokenRegex.Matches(value);
             foreach (Match match in matches)
             {
-                var token = match.Value.Substring(1, match.Value.Length - 2);
+                var token = match.Value[1..^1];
                 value = value.Replace(match.Value, $"{TokenMetadataStart}{token}{TokenMetadataEnd}");
             }
 
@@ -112,7 +112,7 @@ namespace NuGetPe
 
             foreach (Match match in matches)
             {
-                var token = match.Value.Substring(TokenMetadataStart.Length, match.Value.Length - TokenMetadataEnd.Length - TokenMetadataStart.Length);
+                var token = match.Value[TokenMetadataStart.Length..^TokenMetadataEnd.Length];
                 value = value.Replace(match.Value, $"${token}$");
             }
 
