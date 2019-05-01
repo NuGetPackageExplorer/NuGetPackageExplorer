@@ -181,27 +181,25 @@ namespace PackageExplorerViewModel
         {
             var buffer = new char[1024 * 32];
             truncated = false;
-            using (var stream = file.GetStream())
-            using (var reader = new StreamReader(stream))
+            using var stream = file.GetStream();
+            using var reader = new StreamReader(stream);
+            // Read 500 kb
+            const int maxBytes = 500 * 1024;
+            var sb = new StringBuilder();
+
+            int bytesRead;
+
+            while ((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
             {
-                // Read 500 kb
-                const int maxBytes = 500 * 1024;
-                var sb = new StringBuilder();
-
-                int bytesRead;
-
-                while ((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
+                sb.Append(buffer, 0, bytesRead);
+                if (sb.Length >= maxBytes)
                 {
-                    sb.Append(buffer, 0, bytesRead);
-                    if (sb.Length >= maxBytes)
-                    {
-                        truncated = true;
-                        break;
-                    }
+                    truncated = true;
+                    break;
                 }
-
-                return sb.ToString();
             }
+
+            return sb.ToString();
         }
     }
 }

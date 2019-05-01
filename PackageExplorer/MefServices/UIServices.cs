@@ -309,62 +309,62 @@ namespace PackageExplorer
 
         private static bool ConfirmUsingTaskDialog(string message, string title, bool isWarning)
         {
-            using (var dialog = new TaskDialog())
+            using var dialog = new TaskDialog
             {
-                dialog.WindowTitle = Resources.Dialog_Title;
-                dialog.MainInstruction = title;
-                dialog.Content = message;
-                dialog.AllowDialogCancellation = true;
-                dialog.CenterParent = true;
-                //dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
-                if (isWarning)
-                {
-                    dialog.MainIcon = TaskDialogIcon.Warning;
-                }
-
-                var yesButton = new TaskDialogButton("Yes");
-                var noButton = new TaskDialogButton("No");
-
-                dialog.Buttons.Add(yesButton);
-                dialog.Buttons.Add(noButton);
-
-                var result = dialog.ShowDialog();
-                return result == yesButton;
+                WindowTitle = Resources.Dialog_Title,
+                MainInstruction = title,
+                Content = message,
+                AllowDialogCancellation = true,
+                CenterParent = true
+            };
+            //dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
+            if (isWarning)
+            {
+                dialog.MainIcon = TaskDialogIcon.Warning;
             }
+
+            var yesButton = new TaskDialogButton("Yes");
+            var noButton = new TaskDialogButton("No");
+
+            dialog.Buttons.Add(yesButton);
+            dialog.Buttons.Add(noButton);
+
+            var result = dialog.ShowDialog();
+            return result == yesButton;
         }
 
         private static bool? ConfirmWithCancelUsingTaskDialog(string message, string title)
         {
-            using (var dialog = new TaskDialog())
+            using var dialog = new TaskDialog
             {
-                dialog.WindowTitle = Resources.Dialog_Title;
-                dialog.MainInstruction = title;
-                dialog.AllowDialogCancellation = true;
-                dialog.Content = message;
-                dialog.CenterParent = true;
-                dialog.MainIcon = TaskDialogIcon.Warning;
-                //dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
+                WindowTitle = Resources.Dialog_Title,
+                MainInstruction = title,
+                AllowDialogCancellation = true,
+                Content = message,
+                CenterParent = true,
+                MainIcon = TaskDialogIcon.Warning
+            };
+            //dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
 
-                var yesButton = new TaskDialogButton("Yes");
-                var noButton = new TaskDialogButton("No");
-                var cancelButton = new TaskDialogButton("Cancel");
+            var yesButton = new TaskDialogButton("Yes");
+            var noButton = new TaskDialogButton("No");
+            var cancelButton = new TaskDialogButton("Cancel");
 
-                dialog.Buttons.Add(yesButton);
-                dialog.Buttons.Add(noButton);
-                dialog.Buttons.Add(cancelButton);
+            dialog.Buttons.Add(yesButton);
+            dialog.Buttons.Add(noButton);
+            dialog.Buttons.Add(cancelButton);
 
-                var result = dialog.ShowDialog();
-                if (result == yesButton)
-                {
-                    return true;
-                }
-                else if (result == noButton)
-                {
-                    return false;
-                }
-
-                return null;
+            var result = dialog.ShowDialog();
+            if (result == yesButton)
+            {
+                return true;
             }
+            else if (result == noButton)
+            {
+                return false;
+            }
+
+            return null;
         }
 
         private Tuple<bool?, bool> ConfirmMoveFileUsingTaskDialog(string fileName, string targetFolder,
@@ -430,33 +430,33 @@ namespace PackageExplorer
 
         private static bool ConfirmCloseEditorUsingTaskDialog(string title, string message)
         {
-            using (var dialog = new TaskDialog())
+            using var dialog = new TaskDialog
             {
-                dialog.WindowTitle = Resources.Dialog_Title;
-                dialog.MainInstruction = title;
-                dialog.Content = message;
-                dialog.AllowDialogCancellation = false;
-                dialog.CenterParent = true;
-                dialog.ButtonStyle = TaskDialogButtonStyle.CommandLinks;
+                WindowTitle = Resources.Dialog_Title,
+                MainInstruction = title,
+                Content = message,
+                AllowDialogCancellation = false,
+                CenterParent = true,
+                ButtonStyle = TaskDialogButtonStyle.CommandLinks
+            };
 
-                var yesButton = new TaskDialogButton
-                {
-                    Text = "Yes",
-                    CommandLinkNote = "Return to package view and lose all your changes."
-                };
+            var yesButton = new TaskDialogButton
+            {
+                Text = "Yes",
+                CommandLinkNote = "Return to package view and lose all your changes."
+            };
 
-                var noButton = new TaskDialogButton
-                {
-                    Text = "No",
-                    CommandLinkNote = "Stay at the metadata editor and fix the error."
-                };
+            var noButton = new TaskDialogButton
+            {
+                Text = "No",
+                CommandLinkNote = "Stay at the metadata editor and fix the error."
+            };
 
-                dialog.Buttons.Add(yesButton);
-                dialog.Buttons.Add(noButton);
+            dialog.Buttons.Add(yesButton);
+            dialog.Buttons.Add(noButton);
 
-                var result = dialog.ShowDialog();
-                return result == yesButton;
-            }
+            var result = dialog.ShowDialog();
+            return result == yesButton;
         }
 
         public bool TrySelectPortableFramework(out string portableFramework)
@@ -482,29 +482,29 @@ namespace PackageExplorer
         public bool OpenCredentialsDialog(string target, out NetworkCredential? networkCredential)
         {
             DiagnosticsClient.TrackEvent("UIServices_OpenCredentialsDialog");
-            using (var dialog = new CredentialDialog())
+            using var dialog = new CredentialDialog
             {
-                dialog.WindowTitle = Resources.Dialog_Title;
-                dialog.MainInstruction = "Credentials for " + target;
-                dialog.Content = "Enter Personal Access Tokens in the username field.";
-                dialog.Target = target;
+                WindowTitle = Resources.Dialog_Title,
+                MainInstruction = "Credentials for " + target,
+                Content = "Enter Personal Access Tokens in the username field.",
+                Target = target
+            };
 
-                try
+            try
+            {
+                if (dialog.ShowDialog())
                 {
-                    if (dialog.ShowDialog())
-                    {
-                        networkCredential = dialog.Credentials;
-                        return true;
-                    }
+                    networkCredential = dialog.Credentials;
+                    return true;
                 }
-                catch (Exception e)
-                {
-                    Show(e.Message, MessageLevel.Error);
-                }
-
-                networkCredential = null;
-                return false;
             }
+            catch (Exception e)
+            {
+                Show(e.Message, MessageLevel.Error);
+            }
+
+            networkCredential = null;
+            return false;
         }
     }
 }

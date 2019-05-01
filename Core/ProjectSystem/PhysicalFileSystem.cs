@@ -29,10 +29,8 @@ namespace NuGetPe
         {
             EnsureDirectory(Path.GetDirectoryName(path));
 
-            using (Stream outputStream = File.Create(GetFullPath(path)))
-            {
-                stream.CopyTo(outputStream);
-            }
+            using Stream outputStream = File.Create(GetFullPath(path));
+            stream.CopyTo(outputStream);
         }
 
         public virtual void DeleteFile(string path)

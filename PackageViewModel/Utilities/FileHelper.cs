@@ -314,12 +314,13 @@ namespace PackageExplorerViewModel
         public static Icon ExtractAssociatedIcon(string fileName)
         {
             var info = new SHFILEINFO();
+            var infoSize = (uint)Marshal.SizeOf(info);
 
             SHGetFileInfo(
                 fileName,
                 FILE_ATTRIBUTE_NORMAL,
                 out info,
-                (uint)Marshal.SizeOf(info),
+                infoSize,
                 SHGFI.Icon | SHGFI.SmallIcon | SHGFI.UseFileAttributes);
 
             var icon = (Icon)Icon.FromHandle(info.hIcon).Clone();

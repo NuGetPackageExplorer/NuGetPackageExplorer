@@ -736,11 +736,9 @@ namespace PackageExplorerViewModel
                 if (UIServices.OpenSaveFileDialog(title, file.Name, /* initial directory */ null, filter, /* overwritePrompt */ true,
                                                   out var selectedFileName, out var filterIndex))
                 {
-                    using (var fileStream = File.Open(selectedFileName, FileMode.Create, FileAccess.Write, FileShare.Read))
-                    using (var packageStream = file.GetStream())
-                    {
-                        packageStream.CopyTo(fileStream);
-                    }
+                    using var fileStream = File.Open(selectedFileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+                    using var packageStream = file.GetStream();
+                    packageStream.CopyTo(fileStream);
                 }
             }
             catch (Exception e)
@@ -812,17 +810,15 @@ namespace PackageExplorerViewModel
 
             try
             {
-                using (var mruSourceManager = new MruPackageSourceManager(
-                    new PublishSourceSettings(SettingsManager)))
-                {
-                    var publishPackageViewModel = new PublishPackageViewModel(
-                        mruSourceManager,
-                        SettingsManager,
-                        UIServices,
-                        _credentialPublishProvider,
-                        this);
-                    UIServices.OpenPublishDialog(publishPackageViewModel);
-                }
+                using var mruSourceManager = new MruPackageSourceManager(
+                    new PublishSourceSettings(SettingsManager));
+                var publishPackageViewModel = new PublishPackageViewModel(
+mruSourceManager,
+SettingsManager,
+UIServices,
+_credentialPublishProvider,
+this);
+                UIServices.OpenPublishDialog(publishPackageViewModel);
             }
             catch (Exception e)
             {
@@ -1387,36 +1383,31 @@ namespace PackageExplorerViewModel
             DiagnosticsClient.TrackEvent("PackageViewModel_ExportManifest");
             var rootPath = Path.GetDirectoryName(fullpath);
 
-            using (Stream fileStream = File.Create(fullpath))
+            using Stream fileStream = File.Create(fullpath);
+            var manifest = Manifest.Create(PackageMetadata);
+            if (includeFilesSection)
             {
-                var manifest = Manifest.Create(PackageMetadata);
-                if (includeFilesSection)
-                {
-                    var tempPath = Path.GetTempPath();
+                var tempPath = Path.GetTempPath();
 
-                    manifest.Files.AddRange(RootFolder.GetFiles().Select(
-                        f => new ManifestFile
-                        {
-
-                            Source = string.IsNullOrEmpty(f.OriginalPath()) || f.OriginalPath()?.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) == true ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()!),
-                            Target = f.Path
-                        })
-                    );
-                }
-                using (var ms = new MemoryStream())
-                {
-                    try
+                manifest.Files.AddRange(RootFolder.GetFiles().Select(
+                    f => new ManifestFile
                     {
-                        manifest.Save(ms);
-                        ms.Position = 0;
-                        ManifestUtility.SaveToStream(ms, fileStream);
-                    }
-                    catch (Exception e)
-                    {
-                        UIServices.Show(e.Message, MessageLevel.Error);
-                    }
-                }
 
+                        Source = string.IsNullOrEmpty(f.OriginalPath()) || f.OriginalPath()?.StartsWith(tempPath, StringComparison.OrdinalIgnoreCase) == true ? f.Path : PathUtility.RelativePathTo(rootPath, f.OriginalPath()!),
+                        Target = f.Path
+                    })
+                );
+            }
+            using var ms = new MemoryStream();
+            try
+            {
+                manifest.Save(ms);
+                ms.Position = 0;
+                ManifestUtility.SaveToStream(ms, fileStream);
+            }
+            catch (Exception e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
             }
         }
 
@@ -1533,7 +1524,7 @@ namespace PackageExplorerViewModel
             {
                 var parts = fileDescription.FilePath.Split(Path.DirectorySeparatorChar);
 
-                var name = parts[parts.Length - 1];
+                var name = parts[^1];
                 var parentFolder = folder;
                 for (var i = 0; i < parts.Length - 1; i++)
                 {
@@ -1586,31 +1577,27 @@ namespace PackageExplorerViewModel
                 return true;
             }
 
-            using (Stream metadataFileStream = File.OpenRead(editedFilePath))
+            using Stream metadataFileStream = File.OpenRead(editedFilePath);
+            try
             {
-                try
-                {
-                    using (var str = ManifestUtility.ReadManifest(metadataFileStream))
-                    {
-                        var manifest = Manifest.ReadFrom(str, true);
-                        var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices);
-                        PackageMetadata = newMetadata;
+                using var str = ManifestUtility.ReadManifest(metadataFileStream);
+                var manifest = Manifest.ReadFrom(str, true);
+                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices);
+                PackageMetadata = newMetadata;
 
-                        return true;
-                    }
+                return true;
 
-                }
-                catch (Exception exception)
-                {
-                    var confirmExit = UIServices.ConfirmCloseEditor(
-                        "There is an error in the metadata source.",
-                        exception.GetBaseException().Message +
-                        Environment.NewLine +
-                        Environment.NewLine +
-                        "Do you want to cancel your changes and return?");
+            }
+            catch (Exception exception)
+            {
+                var confirmExit = UIServices.ConfirmCloseEditor(
+                    "There is an error in the metadata source.",
+                    exception.GetBaseException().Message +
+                    Environment.NewLine +
+                    Environment.NewLine +
+                    "Do you want to cancel your changes and return?");
 
-                    return confirmExit;
-                }
+                return confirmExit;
             }
         }
     }

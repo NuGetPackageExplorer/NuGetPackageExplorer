@@ -106,10 +106,8 @@ namespace PackageExplorerViewModel
             {
                 if (_fileIcon == null)
                 {
-                    using (var icon = FileHelper.ExtractAssociatedIcon(Path))
-                    {
-                        _fileIcon = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                    }
+                    using var icon = FileHelper.ExtractAssociatedIcon(Path);
+                    _fileIcon = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
                 }
 
                 return _fileIcon;
@@ -193,11 +191,9 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            using (var stream = File.Create(fullPath))
-            using (var packageStream = GetStream())
-            {
-                packageStream.CopyTo(stream);
-            }
+            using var stream = File.Create(fullPath);
+            using var packageStream = GetStream();
+            packageStream.CopyTo(stream);
         }
 
         public bool Save(string editedFilePath)

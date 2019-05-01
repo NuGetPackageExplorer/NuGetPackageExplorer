@@ -295,69 +295,63 @@ namespace NuGetPe
         
         public async Task LoadSignatureDataAsync()
         {
-            using (var reader = new PackageArchiveReader(_streamFactory(), false))
+            using var reader = new PackageArchiveReader(_streamFactory(), false);
+            IsSigned = await reader.IsSignedAsync(CancellationToken.None);
+            if (IsSigned)
             {
-                IsSigned = await reader.IsSignedAsync(CancellationToken.None);
-                if (IsSigned)
+                try
                 {
-                    try
+                    var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None);
+
+                    // Author signatures must be the primary, but they can contain
+                    // a repository counter signature
+                    if (sig.Type == SignatureType.Author)
                     {
-                        var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None);
+                        PublisherSignature = new SignatureInfo(sig);
 
-                        // Author signatures must be the primary, but they can contain
-                        // a repository counter signature
-                        if (sig.Type == SignatureType.Author)
+                        var counter = RepositoryCountersignature.GetRepositoryCountersignature(sig);
+                        if (counter != null)
                         {
-                            PublisherSignature = new SignatureInfo(sig);
-
-                            var counter = RepositoryCountersignature.GetRepositoryCountersignature(sig);
-                            if (counter != null)
-                            {
-                                RepositorySignature = new RepositorySignatureInfo(counter);
-                            }
-                        }
-                        else if (sig.Type == SignatureType.Repository)
-                        {
-                            RepositorySignature = new RepositorySignatureInfo(sig);
+                            RepositorySignature = new RepositorySignatureInfo(counter);
                         }
                     }
-                    catch (SignatureException)
+                    else if (sig.Type == SignatureType.Repository)
                     {
+                        RepositorySignature = new RepositorySignatureInfo(sig);
                     }
-
                 }
+                catch (SignatureException)
+                {
+                }
+
             }
         }
 
         public async Task VerifySignatureAsync()
         {
-            using (var reader = new PackageArchiveReader(_streamFactory(), false))
+            using var reader = new PackageArchiveReader(_streamFactory(), false);
+            var signed = await reader.IsSignedAsync(CancellationToken.None);
+            if (signed)
             {
-                var signed = await reader.IsSignedAsync(CancellationToken.None);
-                if (signed)
-                {
-                    // Check verification
+                // Check verification
 
-                    var trustProviders = new ISignatureVerificationProvider[]
-                    {
+                var trustProviders = new ISignatureVerificationProvider[]
+                {
                         new IntegrityVerificationProvider(),
                         new SignatureTrustAndValidityVerificationProvider()
-                    };
-                    var verifier = new PackageSignatureVerifier(trustProviders);
+                };
+                var verifier = new PackageSignatureVerifier(trustProviders);
 
-                    VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None);
-                }
+                VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None);
             }
         }
 
         private void EnsureManifest()
         {
-            using (var stream = _streamFactory())
-            using (var reader = new PackageArchiveReader(stream))
-            {
-                var manifest = Manifest.ReadFrom(ManifestUtility.ReadManifest(reader.GetNuspec()), false);
-                _metadata = manifest.Metadata;
-            }
+            using var stream = _streamFactory();
+            using var reader = new PackageArchiveReader(stream);
+            var manifest = Manifest.ReadFrom(ManifestUtility.ReadManifest(reader.GetNuspec()), false);
+            _metadata = manifest.Metadata;
         }
 
         private static bool IsPackageFile(ZipArchiveEntry entry)

@@ -8,7 +8,7 @@ using Microsoft.ApplicationInsights.Extensibility;
 
 namespace NuGetPe.Utility
 {
-    class AppVersionTelemetryInitializer : ITelemetryInitializer
+    internal class AppVersionTelemetryInitializer : ITelemetryInitializer
     {
         private readonly string _wpfVersion;        
         private readonly string _appVersion;

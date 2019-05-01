@@ -32,10 +32,8 @@ namespace NuGetPe.AssemblyMetadata
                 return null;
             }
 
-            using (var reader = new AssemblyDebugParser(_peReader.ReadEmbeddedPortablePdbDebugDirectoryData(entry[0]), PdbType.Embedded))
-            {
-                return reader.GetDebugData();
-            }
+            using var reader = new AssemblyDebugParser(_peReader.ReadEmbeddedPortablePdbDebugDirectoryData(entry[0]), PdbType.Embedded);
+            return reader.GetDebugData();
         }
 
         public IEnumerable<AssemblyName> GetReferencedAssemblyNames()
@@ -129,7 +127,7 @@ namespace NuGetPe.AssemblyMetadata
 
         private class AttributeTypeProvider : ICustomAttributeTypeProvider<string>
         {
-            private static readonly Dictionary<PrimitiveTypeCode, Type> _primitiveTypeMappings =
+            private static readonly Dictionary<PrimitiveTypeCode, Type> PrimitiveTypeMappings =
                 new Dictionary<PrimitiveTypeCode, Type>
                 {
                     { PrimitiveTypeCode.Void, typeof(void) },
@@ -154,7 +152,7 @@ namespace NuGetPe.AssemblyMetadata
 
             public string GetPrimitiveType(PrimitiveTypeCode typeCode)
             {
-                if (_primitiveTypeMappings.TryGetValue(typeCode, out var type))
+                if (PrimitiveTypeMappings.TryGetValue(typeCode, out var type))
                 {
                     return type.FullName;
                 }
@@ -236,7 +234,7 @@ namespace NuGetPe.AssemblyMetadata
                 {
                     var underlyingType = runtimeType.GetEnumUnderlyingType();
 
-                    foreach (var primitiveTypeMapping in _primitiveTypeMappings)
+                    foreach (var primitiveTypeMapping in PrimitiveTypeMappings)
                     {
                         if (primitiveTypeMapping.Value == underlyingType)
                         {

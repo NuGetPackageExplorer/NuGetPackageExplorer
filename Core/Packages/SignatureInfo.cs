@@ -8,25 +8,25 @@ namespace NuGetPe
 {
     public class SignatureInfo
     {
-        private readonly Signature signature;
+        private readonly Signature _signature;
 
         public SignatureInfo(Signature signature)
         {
-            this.signature = signature;
+            _signature = signature;
             var ts = signature.Timestamps.FirstOrDefault();
             Timestamp = ts?.GeneralizedTime;
             TimestampSignerInfo = ts?.SignerInfo;
         }
 
-        public SignerInfo SignerInfo => signature.SignerInfo;
+        public SignerInfo SignerInfo => _signature.SignerInfo;
 
-        public SignatureType Type => signature.Type;
+        public SignatureType Type => _signature.Type;
 
         public DateTimeOffset? Timestamp { get; }
 
         public SignerInfo? TimestampSignerInfo { get; }
 
-        public string FriendlyName => signature.FriendlyName;
+        public string FriendlyName => _signature.FriendlyName;
     }
 
     public class RepositorySignatureInfo : SignatureInfo
@@ -34,7 +34,7 @@ namespace NuGetPe
         private readonly IRepositorySignature _repositorySignature;
         public RepositorySignatureInfo(Signature repositorySignature) : base(repositorySignature)
         {
-            this._repositorySignature = repositorySignature as IRepositorySignature ?? throw new ArgumentException("Not a repository signature", nameof(repositorySignature));
+            _repositorySignature = repositorySignature as IRepositorySignature ?? throw new ArgumentException("Not a repository signature", nameof(repositorySignature));
         }
 
         public Uri V3ServiceIndexUrl => _repositorySignature.V3ServiceIndexUrl;
