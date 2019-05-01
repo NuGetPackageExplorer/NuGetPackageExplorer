@@ -26,13 +26,6 @@ namespace PackageExplorer
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             DiagnosticsClient.Initialize();
-
-            DispatcherUnhandledException += App_DispatcherUnhandledException;
-        }
-
-        private void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            DiagnosticsClient.Notify(e.Exception);
         }
 
         private CompositionContainer _container;

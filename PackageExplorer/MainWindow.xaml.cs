@@ -123,7 +123,7 @@ namespace PackageExplorer
             }
             catch (Exception ex)
             {
-                DiagnosticsClient.Notify(ex);
+                DiagnosticsClient.TrackException(ex);
             }
         }
 
@@ -240,7 +240,7 @@ namespace PackageExplorer
                 {
                     if (!(e is ArgumentException))
                     {
-                        DiagnosticsClient.Notify(e);
+                        DiagnosticsClient.TrackException(e);
                     }
                     UIServices.Show($"Error loading package\n{e.Message}", MessageLevel.Error);
                 }
@@ -425,7 +425,7 @@ namespace PackageExplorer
                 }
                 catch (Exception ex)
                 {
-                    DiagnosticsClient.Notify(ex);
+                    DiagnosticsClient.TrackException(ex);
                 }
             }
         }
