@@ -15,7 +15,7 @@
     <self:StandardDialog.Resources>
         <self:TargetFrameworkConverter x:Key="TargetFrameworkConverter" />
 
-        <DataTemplate DataType="{x:Type pack:PackageDependencyGroup  }" x:Key="FrameworkReferenceTemplate">
+        <DataTemplate DataType="{x:Type pack:FrameworkReferenceGroup}" x:Key="FrameworkReferenceTemplate">
             <TextBlock Text="{Binding TargetFramework, Converter={StaticResource TargetFrameworkConverter}, TargetNullValue='[no target framework]'}" />
         </DataTemplate>
 
