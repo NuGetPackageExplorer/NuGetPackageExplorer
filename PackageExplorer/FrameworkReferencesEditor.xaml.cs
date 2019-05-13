@@ -43,7 +43,7 @@ namespace PackageExplorer
 
         public ICollection<FrameworkReferenceGroup> GetEditedReferences()
         {
-            return _referenceSets.Select(set => set.AsReadOnly()).ToArray();
+            return _referenceSets.Where(set => set.TargetFramework != null).Select(set => set.AsReadOnly()).ToArray();
         }
 
         private EditableFrameworkReferenceGroup ActivePackageReferenceSet
