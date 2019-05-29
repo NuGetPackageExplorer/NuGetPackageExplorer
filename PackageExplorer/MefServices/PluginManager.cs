@@ -263,7 +263,7 @@ namespace PackageExplorer
             var directoryInfo = new DirectoryInfo(PluginsDirectory);
             if (directoryInfo.Exists)
             {
-                return directoryInfo.GetDirectories().Select(ConvertFromDirectoryToPluginInfo).Where(p => p != null);
+                return directoryInfo.GetDirectories().Select(ConvertFromDirectoryToPluginInfo).Where(p => p != null)!;
             }
             else
             {

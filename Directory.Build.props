@@ -18,7 +18,6 @@
     <IsLegacyProject>$(MSBuildProjectName.Equals('PackageExplorer'))</IsLegacyProject>
     <IsPackageProject>$(MSBuildProjectName.Contains('.Package'))</IsPackageProject>
     <DebugType>embedded</DebugType>
-    <ExtrasEnableWpfProjectSetup>true</ExtrasEnableWpfProjectSetup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
@@ -27,6 +26,7 @@
 
     <LangVersion>preview</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -35,8 +35,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.3.138" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All"/>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.3.151" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19270-01" PrivateAssets="All"/>
     <Compile Include="$(MSBuildThisFileDirectory)Common\CommonAssemblyInfo.cs" LinkBase="Properties" />
   </ItemGroup>
   
