@@ -367,7 +367,7 @@ namespace PackageExplorerViewModel
             if (ActiveRepository != null)
             {
                 var ar = ActiveRepository;
-                Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, ar, _feedType, this)));
+                Packages.AddRangeScalar(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, ar, _feedType, this)));
             }
             UpdatePageNumber(beginPackage, endPackage);
         }

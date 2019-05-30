@@ -31,7 +31,7 @@ namespace PackageExplorer
         public FrameworkReferencesEditor(IEnumerable<FrameworkReferenceGroup> existingReferenceSets)
             : this()
         {
-            _referenceSets.AddRange(existingReferenceSets.Select(rs => new EditableFrameworkReferenceGroup(rs)));
+            _referenceSets.AddRangeScalar(existingReferenceSets.Select(rs => new EditableFrameworkReferenceGroup(rs)));
 
             if (_referenceSets.Count > 0)
             {

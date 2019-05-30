@@ -17,10 +17,7 @@
     </description>
     <summary>Makes creating and examining nuget packages very easy.</summary>
     <releaseNotes>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/releases</releaseNotes>
-    <tags>nuget admin nupkg nuspec</tags>
-    <dependencies>
-      <dependency id="vcredist140" version="14.16.27027.1" />
-    </dependencies>
+    <tags>nuget admin nupkg nuspec</tags>    
   </metadata>
   <files>
     <file src="ChocolateyInstall.ps1"  />

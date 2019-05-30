@@ -200,7 +200,7 @@ namespace PackageExplorerViewModel
                     query = query.OrderByDescending(p => p.Identity.Version);
 
                     // now show packages
-                    AllPackages.AddRange(query.Select(p => CreatePackageInfo(p, _feedType, versions)));
+                    AllPackages.AddRangeScalar(query.Select(p => CreatePackageInfo(p, _feedType, versions)));
                 }
 
                 HasFinishedLoading = true;

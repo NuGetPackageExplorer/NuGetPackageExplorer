@@ -80,7 +80,7 @@ namespace PackageExplorerViewModel
 
             if (source.PackageAssemblyReferences != null)
             {
-                PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
+                PackageAssemblyReferences.AddRangeScalar(source.PackageAssemblyReferences);
             }
             MinClientVersion = source.MinClientVersion;
         }

@@ -1,4 +1,5 @@
-using System;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging;
@@ -10,7 +11,7 @@ namespace NuGetPe
         public static void CopyTo<T>(this IEnumerable<T> sourceCollection, ICollection<T> targetCollection)
         {
             targetCollection.Clear();
-            targetCollection.AddRange(sourceCollection);
+            targetCollection.AddRangeScalar(sourceCollection);
         }
 
         public static int RemoveAll<T>(this ICollection<T> collection, Func<T, bool> match)
@@ -21,6 +22,14 @@ namespace NuGetPe
                 collection.Remove(item);
             }
             return toRemove.Count;
+        }
+
+        public static void AddRangeScalar<T>(this ICollection<T> source, IEnumerable<T> items)
+        {
+            foreach(var item in items)
+            {
+                source.Add(item);
+            }
         }
     }
 }

@@ -22,7 +22,7 @@ namespace PackageExplorerViewModel
             // set metadata
             CopyMetadata(packageMetadata, builder);
             // add files
-            builder.Files.AddRange(files);
+            builder.Files.AddRangeScalar(files);
 
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
@@ -64,7 +64,7 @@ namespace PackageExplorerViewModel
         {
             var builder = new PackageBuilder();
             CopyMetadata(metadata, builder);
-            builder.Files.AddRange(files);
+            builder.Files.AddRangeScalar(files);
             return builder.Build();
         }
 

@@ -1254,7 +1254,7 @@ this);
         private void SetPackageIssues(IEnumerable<PackageIssue> issues)
         {
             PackageIssues.Clear();
-            PackageIssues.AddRange(issues);
+            PackageIssues.AddRangeScalar(issues);
         }
 
         public void ShowFile(FileContentInfo fileInfo)
@@ -1389,7 +1389,7 @@ this);
             {
                 var tempPath = Path.GetTempPath();
 
-                manifest.Files.AddRange(RootFolder.GetFiles().Select(
+                manifest.Files.AddRangeScalar(RootFolder.GetFiles().Select(
                     f => new ManifestFile
                     {
 

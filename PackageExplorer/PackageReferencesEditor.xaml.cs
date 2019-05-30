@@ -31,7 +31,7 @@ namespace PackageExplorer
         public PackageReferencesEditor(IEnumerable<PackageReferenceSet> existingReferenceSets)
             : this()
         {
-            _referenceSets.AddRange(existingReferenceSets.Select(rs => new EditablePackageReferenceSet(rs)));
+            _referenceSets.AddRangeScalar(existingReferenceSets.Select(rs => new EditablePackageReferenceSet(rs)));
 
             if (_referenceSets.Count > 0)
             {
