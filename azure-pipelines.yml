@@ -121,7 +121,7 @@ jobs:
     displayName: Publish $(BuildConfiguration)
     inputs:
       solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-      msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true
+      msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true /p:PublishReadyToRun=true
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
     condition: and(succeeded(), or(eq(variables['BuildConfiguration'], 'Release'), eq(variables['BuildConfiguration'], 'Choco')))
