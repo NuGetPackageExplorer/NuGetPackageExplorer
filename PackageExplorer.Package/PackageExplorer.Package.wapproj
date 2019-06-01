@@ -52,7 +52,7 @@
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj">
       <DesktopBridgeSelfContained>True</DesktopBridgeSelfContained>
       <DesktopBridgeIdentifier>win-x86</DesktopBridgeIdentifier>
-      <Properties>SelfContained=%(DesktopBridgeSelfContained);RuntimeIdentifier=%(DesktopBridgeIdentifier)</Properties>
+      <Properties>SelfContained=%(DesktopBridgeSelfContained);RuntimeIdentifier=%(DesktopBridgeIdentifier);PublishReadyToRun=true</Properties>
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
     </ProjectReference>
   </ItemGroup>
