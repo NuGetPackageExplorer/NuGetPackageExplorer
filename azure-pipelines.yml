@@ -84,7 +84,7 @@ jobs:
   - task: MSBuild@1
     displayName: Build Package
     inputs:
-      solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.wapproj
+      solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\"
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
