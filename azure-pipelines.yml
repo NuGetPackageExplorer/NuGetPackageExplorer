@@ -93,7 +93,7 @@ jobs:
   - powershell: |
       # Fix AppInstaller update settings
       # This can be removed once 16.1 is on the agent with package templates
-      [xml]$doc = Get-Content "$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Nightly.appinstaller"
+      [xml]$doc = Get-Content "$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Package.appinstaller"
       $doc.AppInstaller.UpdateSettings.OnLaunch.HoursBetweenUpdateChecks = "4"
       $toInsert = $doc.CreateElement("AutomaticBackgroundTask", "http://schemas.microsoft.com/appx/appinstaller/2017/2")
       $doc.AppInstaller.UpdateSettings.AppendChild($toInsert)
