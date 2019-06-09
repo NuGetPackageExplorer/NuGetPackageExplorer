@@ -50,10 +50,6 @@ jobs:
       $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
       $manifest.Save(".\PackageExplorer.Package\package.appxmanifest")
 
-      [xml]$manifest = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
-      $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
-      $manifest.Save(".\PackageExplorer.Package.Nightly\package.appxmanifest")
-
       # Update badges
       [xml]$badge = Get-Content ".\Build\ci_badge.svg"
       $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"
@@ -86,13 +82,13 @@ jobs:
       maximumCpuCount: true
 
   - task: MSBuild@1
-    displayName: Build Nightly Package
+    displayName: Build Package
     inputs:
-      solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
+      solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.wapproj
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\"
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Nightly'))
+    condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'Store')))
 
   - powershell: |
       # Fix AppInstaller update settings
@@ -104,15 +100,6 @@ jobs:
       $doc.Save("$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Package.Nightly.appinstaller")
     displayName: Update AppInstaller settings
     condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Nightly'))
-
-  - task: MSBuild@1
-    displayName: Build Store Package
-    inputs:
-      solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\" /p:UapAppxPackageBuildMode=CI
-      configuration: $(BuildConfiguration)
-      maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Store'))
 
   - task: MSBuild@1
     displayName: Publish $(ReleaseChannel)
