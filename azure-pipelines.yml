@@ -95,7 +95,7 @@ jobs:
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\"
       configuration: Nightly
       maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Nightly'))
 
   - powershell: |
       # Fix AppInstaller update settings
@@ -106,7 +106,7 @@ jobs:
       $doc.AppInstaller.UpdateSettings.AppendChild($toInsert)
       $doc.Save("$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Package.Nightly.appinstaller")
     displayName: Update AppInstaller settings
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Nightly'))
 
   - task: MSBuild@1
     displayName: Build Store Package
@@ -115,7 +115,7 @@ jobs:
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\" /p:UapAppxPackageBuildMode=CI
       configuration: Store
       maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Store'))
 
   - task: MSBuild@1
     displayName: Publish $(BuildConfiguration)
@@ -124,7 +124,7 @@ jobs:
       msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true /p:PublishReadyToRun=true
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-    condition: and(succeeded(), or(eq(variables['BuildConfiguration'], 'Release'), eq(variables['BuildConfiguration'], 'Choco')))
+    condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Release'), eq(variables['ReleaseChannel'], 'Choco')))
 
   - task: MSBuild@1
     displayName: Pack Types Package
@@ -133,13 +133,13 @@ jobs:
       msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Release'))
 
   - powershell: |
       # Chocolatey
       & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $(NBGV_ChocolateyPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
     displayName: Create Choco package
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Choco'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Choco'))
 
   - task: ArchiveFiles@1
     displayName: Zip PackageExplorer files
@@ -148,7 +148,7 @@ jobs:
       rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.0/win-x86/publish
       archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
       includeRootFolder: false
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Release'))
 
   - task: DotNetCoreCLI@2
     inputs:
@@ -159,7 +159,7 @@ jobs:
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PowerShell@2
-    displayName: Authenticode Sign $(BuildConfiguration) Package artifacts
+    displayName: Authenticode Sign $(ReleaseChannel) Package artifacts
     inputs:
       filePath: Build/Sign-Package.ps1
     env:
