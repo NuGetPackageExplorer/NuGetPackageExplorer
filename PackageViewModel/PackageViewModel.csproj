@@ -6,7 +6,6 @@
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
     <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
-    <Configurations>Debug;Release;Choco;Nightly;Store</Configurations>
   </PropertyGroup>
   
   <ItemGroup>

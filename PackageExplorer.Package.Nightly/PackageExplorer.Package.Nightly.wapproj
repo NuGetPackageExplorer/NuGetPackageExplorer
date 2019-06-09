@@ -8,16 +8,8 @@
       <Configuration>Debug</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Nightly|x86">
-      <Configuration>Nightly</Configuration>
-      <Platform>x86</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x86">
       <Configuration>Release</Configuration>
-      <Platform>x86</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Store|x86">
-      <Configuration>Store</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
   </ItemGroup>

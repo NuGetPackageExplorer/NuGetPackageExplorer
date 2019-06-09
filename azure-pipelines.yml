@@ -16,16 +16,12 @@ jobs:
   strategy:
     matrix:
       Config_Release:
-        BuildConfiguration: Release
         ReleaseChannel: Zip
       Config_Store:
-        BuildConfiguration: Store
         ReleaseChannel: Store
       Config_Nightly:
-        BuildConfiguration: Nightly
         ReleaseChannel: Nightly
       Config_Choco:
-        BuildConfiguration: Choco
         ReleaseChannel: Choco
 
   steps:
@@ -81,11 +77,10 @@ jobs:
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['AppInsightsKey'], '')))
 
   - task: MSBuild@1
-    displayName: Build NuGet Package Explorer for $(BuildConfiguration)
+    displayName: Build NuGet Package Explorer for $(ReleaseChannel)
     inputs:
       solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
       msbuildArguments: /restore
-      configuration: $(BuildConfiguration)
       maximumCpuCount: true
 
   - task: MSBuild@1
@@ -93,7 +88,6 @@ jobs:
     inputs:
       solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\"
-      configuration: Nightly
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Nightly'))
 
@@ -113,16 +107,14 @@ jobs:
     inputs:
       solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
       msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\" /p:UapAppxPackageBuildMode=CI
-      configuration: Store
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Store'))
 
   - task: MSBuild@1
-    displayName: Publish $(BuildConfiguration)
+    displayName: Publish $(ReleaseChannel)
     inputs:
       solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
       msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true /p:PublishReadyToRun=true
-      configuration: $(BuildConfiguration)
       maximumCpuCount: true
     condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Release'), eq(variables['ReleaseChannel'], 'Choco')))
 
@@ -131,7 +123,6 @@ jobs:
     inputs:
       solution: Types/Types.csproj
       msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
-      configuration: $(BuildConfiguration)
       maximumCpuCount: true
     condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Release'))
 
