@@ -27,7 +27,7 @@
     <AppxBundle>Always</AppxBundle>
     <AppxBundlePlatforms>x86</AppxBundlePlatforms>
     <AppxPackageIncludePrivateSymbols>true</AppxPackageIncludePrivateSymbols>
-    <UapAppxPackageBuildMode>StoreOnly</UapAppxPackageBuildMode>
+    <UapAppxPackageBuildMode>SideLoadOnly</UapAppxPackageBuildMode>
     <UapAppxPackageBuildMode Condition="'$(ReleaseChannel)' == 'Store'">CI</UapAppxPackageBuildMode>
     <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
   </PropertyGroup>
