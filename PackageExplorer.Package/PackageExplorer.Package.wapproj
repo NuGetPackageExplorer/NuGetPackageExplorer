@@ -44,7 +44,7 @@
     <AppxManifest Include="Package-Nightly.appxmanifest" Condition="'$(ReleaseChannel)' == 'Nightly'" >
       <SubType>Designer</SubType>
     </AppxManifest>
-    <AppxManifest Include="Package-Local.appxmanifest" Condition="'$(ReleaseChannel)' == ''" >
+    <AppxManifest Include="Package-Local.appxmanifest" Condition="'$(ReleaseChannel)' != 'Store' and '$(ReleaseChannel)' != 'Nightly'" >
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="*.appxmanifest" />
