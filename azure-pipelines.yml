@@ -121,7 +121,7 @@ jobs:
       msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true /p:PublishReadyToRun=true
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-    condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Release'), eq(variables['ReleaseChannel'], 'Choco')))
+    condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
 
   - task: MSBuild@1
     displayName: Pack Types Package
@@ -130,7 +130,7 @@ jobs:
       msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Release'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
   - powershell: |
       # Chocolatey
@@ -145,7 +145,7 @@ jobs:
       rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.0/win-x86/publish
       archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
       includeRootFolder: false
-    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Release'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
   - task: DotNetCoreCLI@2
     inputs:
