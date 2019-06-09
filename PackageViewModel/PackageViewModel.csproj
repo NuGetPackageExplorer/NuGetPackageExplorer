@@ -11,11 +11,11 @@
   
   <ItemGroup>
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
-    <PackageReference Include="NuGet.Credentials" Version="5.2.0-xprivate.60006" />
-    <PackageReference Include="NuGet.PackageManagement" Version="5.2.0-xprivate.60006" />
-    <PackageReference Include="NuGet.Commands" Version="5.2.0-xprivate.60006" />
-    <PackageReference Include="NuGet.Resolver" Version="5.2.0-xprivate.60006" />
-    <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview4.19212.13" />
+    <PackageReference Include="NuGet.Credentials" Version="5.2.0-xprivate.60007" />
+    <PackageReference Include="NuGet.PackageManagement" Version="5.2.0-xprivate.60007" />
+    <PackageReference Include="NuGet.Commands" Version="5.2.0-xprivate.60007" />
+    <PackageReference Include="NuGet.Resolver" Version="5.2.0-xprivate.60007" />
+    <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview5.19224.8" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
