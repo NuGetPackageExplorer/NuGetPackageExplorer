@@ -16,13 +16,13 @@ jobs:
     vmImage: windows-2019
   strategy:
     matrix:
-      Config_Release:
+      Channel_Zip:
         ReleaseChannel: Zip
-      Config_Store:
+      Channel_Store:
         ReleaseChannel: Store
-      Config_Nightly:
+      Channel_Nightly:
         ReleaseChannel: Nightly
-      Config_Choco:
+      Channel_Choco:
         ReleaseChannel: Choco
 
   steps:
