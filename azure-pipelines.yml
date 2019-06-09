@@ -50,6 +50,10 @@ jobs:
       $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
       $manifest.Save(".\PackageExplorer.Package\package.appxmanifest")
 
+      [xml]$manifest = Get-Content ".\PackageExplorer.Package\Package-Nightly.appxmanifest"
+      $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
+      $manifest.Save(".\PackageExplorer.Package\Package-Nightly.appxmanifest")
+
       # Update badges
       [xml]$badge = Get-Content ".\Build\ci_badge.svg"
       $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"
@@ -90,6 +94,15 @@ jobs:
       maximumCpuCount: true
     condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'Store')))
 
+  - task: MSBuild@1
+    displayName: Build for Zip and Choco
+    inputs:
+      solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
+      msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true /p:PublishReadyToRun=true
+      configuration: $(BuildConfiguration)
+      maximumCpuCount: true
+    condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
+
   - powershell: |
       # Fix AppInstaller update settings
       # This can be removed once 16.1 is on the agent with package templates
@@ -100,15 +113,6 @@ jobs:
       $doc.Save("$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Package.appinstaller")
     displayName: Update AppInstaller settings
     condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Nightly'))
-
-  - task: MSBuild@1
-    displayName: Publish $(ReleaseChannel)
-    inputs:
-      solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-      msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true /p:PublishReadyToRun=true
-      configuration: $(BuildConfiguration)
-      maximumCpuCount: true
-    condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
 
   - task: MSBuild@1
     displayName: Pack Types Package
