@@ -11,7 +11,6 @@
     <RootNamespace>PackageExplorer</RootNamespace>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RuntimeIdentifiers>win-x86</RuntimeIdentifiers>
-    <Configurations>Debug;Release;Choco;Nightly;Store</Configurations>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
 

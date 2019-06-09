@@ -8,6 +8,7 @@ pr:
 
 variables:
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  BuildConfiguration: Release
 
 jobs:
 - job: Build
@@ -15,18 +16,14 @@ jobs:
     vmImage: windows-2019
   strategy:
     matrix:
-      Config_Release:
-        BuildConfiguration: Release
-        BuildOutputDirectory: Zip
-      Config_Store:
-        BuildConfiguration: Store
-        BuildOutputDirectory: Store
-      Config_Nightly:
-        BuildConfiguration: Nightly
-        BuildOutputDirectory: Nightly
-      Config_Choco:
-        BuildConfiguration: Choco
-        BuildOutputDirectory: Choco
+      Channel_Zip:
+        ReleaseChannel: Zip
+      Channel_Store:
+        ReleaseChannel: Store
+      Channel_Nightly:
+        ReleaseChannel: Nightly
+      Channel_Choco:
+        ReleaseChannel: Choco
 
   steps:
   - task: DotNetCoreInstaller@0
@@ -44,7 +41,7 @@ jobs:
     displayName: Set Version
 
   - powershell: |
-      mkdir $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
+      mkdir $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
 
       # Set versions
 
@@ -53,20 +50,20 @@ jobs:
       $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
       $manifest.Save(".\PackageExplorer.Package\package.appxmanifest")
 
-      [xml]$manifest = Get-Content ".\PackageExplorer.Package.Nightly\package.appxmanifest"
+      [xml]$manifest = Get-Content ".\PackageExplorer.Package\Package-Nightly.appxmanifest"
       $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
-      $manifest.Save(".\PackageExplorer.Package.Nightly\package.appxmanifest")
+      $manifest.Save(".\PackageExplorer.Package\Package-Nightly.appxmanifest")
 
       # Update badges
       [xml]$badge = Get-Content ".\Build\ci_badge.svg"
       $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"
       $badge.svg.g[1].text[3].InnerText = "$(GitBuildVersionSimple).0"
-      $badge.Save("$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\ci_badge.svg")
+      $badge.Save("$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\ci_badge.svg")
 
       [xml]$badge = Get-Content ".\Build\store_badge.svg"
       $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"
       $badge.svg.g[1].text[3].InnerText = "$(GitBuildVersionSimple).0"
-      $badge.Save("$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\stable_badge.svg")
+      $badge.Save("$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\stable_badge.svg")
     displayName: Update manifest and badge versions
 
   - powershell: |
@@ -81,7 +78,7 @@ jobs:
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['AppInsightsKey'], '')))
 
   - task: MSBuild@1
-    displayName: Build NuGet Package Explorer for $(BuildConfiguration)
+    displayName: Build NuGet Package Explorer for $(ReleaseChannel)
     inputs:
       solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
       msbuildArguments: /restore
@@ -89,66 +86,57 @@ jobs:
       maximumCpuCount: true
 
   - task: MSBuild@1
-    displayName: Build Nightly Package
-    inputs:
-      solution: PackageExplorer.Package.Nightly/PackageExplorer.Package.Nightly.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\"
-      configuration: Nightly
-      maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
-
-  - powershell: |
-      # Fix AppInstaller update settings
-      # This can be removed once 16.1 is on the agent with package templates
-      [xml]$doc = Get-Content "$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\PackageExplorer.Package.Nightly.appinstaller"
-      $doc.AppInstaller.UpdateSettings.OnLaunch.HoursBetweenUpdateChecks = "4"
-      $toInsert = $doc.CreateElement("AutomaticBackgroundTask", "http://schemas.microsoft.com/appx/appinstaller/2017/2")
-      $doc.AppInstaller.UpdateSettings.AppendChild($toInsert)
-      $doc.Save("$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\PackageExplorer.Package.Nightly.appinstaller")
-    displayName: Update AppInstaller settings
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Nightly'))
-
-  - task: MSBuild@1
-    displayName: Build Store Package
+    displayName: Build Package
     inputs:
       solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\\" /p:UapAppxPackageBuildMode=CI
-      configuration: Store
+      msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\"
+      configuration: $(BuildConfiguration)
       maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Store'))
+    condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'Store')))
 
   - task: MSBuild@1
-    displayName: Publish $(BuildConfiguration)
+    displayName: Build for Zip and Choco
     inputs:
       solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
       msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true /p:PublishReadyToRun=true
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-    condition: and(succeeded(), or(eq(variables['BuildConfiguration'], 'Release'), eq(variables['BuildConfiguration'], 'Choco')))
+    condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
+
+  - powershell: |
+      # Fix AppInstaller update settings
+      # This can be removed once 16.1 is on the agent with package templates
+      [xml]$doc = Get-Content "$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Package.appinstaller"
+      $doc.AppInstaller.UpdateSettings.OnLaunch.HoursBetweenUpdateChecks = "4"
+      $toInsert = $doc.CreateElement("AutomaticBackgroundTask", "http://schemas.microsoft.com/appx/appinstaller/2017/2")
+      $doc.AppInstaller.UpdateSettings.AppendChild($toInsert)
+      $doc.Save("$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Package.appinstaller")
+    displayName: Update AppInstaller settings
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Nightly'))
 
   - task: MSBuild@1
     displayName: Pack Types Package
     inputs:
       solution: Types/Types.csproj
-      msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\NuGet
+      msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
   - powershell: |
       # Chocolatey
-      & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $(NBGV_ChocolateyPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
+      & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $(NBGV_ChocolateyPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
     displayName: Create Choco package
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Choco'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Choco'))
 
   - task: ArchiveFiles@1
     displayName: Zip PackageExplorer files
     inputs:
       archiveType: zip
       rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.0/win-x86/publish
-      archiveFile: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)\PackageExplorer.$(Build.BuildNumber).zip
+      archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
       includeRootFolder: false
-    condition: and(succeeded(), eq(variables['BuildConfiguration'], 'Release'))
+    condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
   - task: DotNetCoreCLI@2
     inputs:
@@ -159,28 +147,28 @@ jobs:
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PowerShell@2
-    displayName: Authenticode Sign $(BuildConfiguration) Package artifacts
+    displayName: Authenticode Sign $(ReleaseChannel) Package artifacts
     inputs:
       filePath: Build/Sign-Package.ps1
     env:
       SignClientUser: $(SignClientUser)
       SignClientSecret: $(SignClientSecret)
-      ArtifactDirectory: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
+      ArtifactDirectory: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PowerShell@2
-    displayName: Authenticode Sign $(BuildOutputDirectory) Zip artifacts
+    displayName: Authenticode Sign $(ReleaseChannel) Zip artifacts
     inputs:
       filePath: Build/Sign-Zip.ps1
     env:
       SignClientUser: $(SignClientUser)
       SignClientSecret: $(SignClientSecret)
-      ArtifactDirectory: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
+      ArtifactDirectory: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
     condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
 
   - task: PublishBuildArtifacts@1
-    displayName: Publish $(BuildOutputDirectory) Artifact
+    displayName: Publish $(ReleaseChannel) Artifact
     inputs:
-      pathToPublish: $(Build.ArtifactStagingDirectory)\$(BuildOutputDirectory)
+      pathToPublish: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
       artifactType: container
-      artifactName: $(BuildOutputDirectory)
+      artifactName: $(ReleaseChannel)

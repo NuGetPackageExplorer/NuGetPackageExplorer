@@ -41,11 +41,15 @@
   </ItemGroup>
   
   <PropertyGroup>
-    <DefineConstants Condition="'$(Configuration)' == 'Store' ">$(DefineConstants);STORE</DefineConstants>
-    <DefineConstants Condition="'$(Configuration)' == 'Nightly' ">$(DefineConstants);NIGHTLY</DefineConstants>
-    <DefineConstants Condition="'$(Configuration)' == 'Choco' ">$(DefineConstants);CHOCO</DefineConstants>        
-    <DefineConstants Condition="'$(Configuration)' == 'Release' ">$(DefineConstants);ZIP</DefineConstants>    
-    <DefineConstants Condition="'$(Configuration)' == 'Debug' ">$(DefineConstants);ZIP</DefineConstants>    
+    <ReleaseChannel Condition="'$(ReleaseChannel)' == '' ">Debug</ReleaseChannel>
+  </PropertyGroup> 
+  
+  <PropertyGroup>
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Store' ">$(DefineConstants);STORE</DefineConstants>
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Nightly' ">$(DefineConstants);NIGHTLY</DefineConstants>
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Choco' ">$(DefineConstants);CHOCO</DefineConstants>        
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Release' ">$(DefineConstants);ZIP</DefineConstants>    
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Debug' ">$(DefineConstants);ZIP</DefineConstants>    
   </PropertyGroup>
 
 </Project>

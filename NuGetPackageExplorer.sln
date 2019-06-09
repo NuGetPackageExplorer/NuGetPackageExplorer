@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27130.2024
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29005.228
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetPackageExplorer", "PackageExplorer\NuGetPackageExplorer.csproj", "{3B56B367-7763-4F70-9933-2B8B23718A0D}"
 EndProject
@@ -23,85 +23,36 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		version.json = version.json
 	EndProjectSection
 EndProject
-Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "PackageExplorer.Package.Nightly", "PackageExplorer.Package.Nightly\PackageExplorer.Package.Nightly.wapproj", "{73402D91-1490-4196-823B-4BF1CFDAA9FE}"
-EndProject
 Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "PackageExplorer.Package", "PackageExplorer.Package\PackageExplorer.Package.wapproj", "{452579BF-FF89-46FD-953D-E9D02D71EFDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Choco|Any CPU = Choco|Any CPU
 		Debug|Any CPU = Debug|Any CPU
-		Nightly|Any CPU = Nightly|Any CPU
 		Release|Any CPU = Release|Any CPU
-		Store|Any CPU = Store|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Choco|Any CPU.ActiveCfg = Choco|Any CPU
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Choco|Any CPU.Build.0 = Choco|Any CPU
 		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Nightly|Any CPU.ActiveCfg = Nightly|Any CPU
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Nightly|Any CPU.Build.0 = Nightly|Any CPU
 		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Store|Any CPU.ActiveCfg = Store|Any CPU
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Store|Any CPU.Build.0 = Store|Any CPU
-		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Choco|Any CPU.ActiveCfg = Choco|Any CPU
-		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Choco|Any CPU.Build.0 = Choco|Any CPU
 		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Nightly|Any CPU.ActiveCfg = Nightly|Any CPU
-		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Nightly|Any CPU.Build.0 = Nightly|Any CPU
 		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Store|Any CPU.ActiveCfg = Store|Any CPU
-		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Store|Any CPU.Build.0 = Store|Any CPU
-		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Choco|Any CPU.ActiveCfg = Choco|Any CPU
-		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Choco|Any CPU.Build.0 = Choco|Any CPU
 		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Nightly|Any CPU.ActiveCfg = Nightly|Any CPU
-		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Nightly|Any CPU.Build.0 = Nightly|Any CPU
 		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Store|Any CPU.ActiveCfg = Store|Any CPU
-		{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}.Store|Any CPU.Build.0 = Store|Any CPU
-		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Choco|Any CPU.ActiveCfg = Release|Any CPU
-		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Choco|Any CPU.Build.0 = Release|Any CPU
 		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Nightly|Any CPU.ActiveCfg = Release|Any CPU
-		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Nightly|Any CPU.Build.0 = Release|Any CPU
 		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Store|Any CPU.ActiveCfg = Release|Any CPU
-		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Store|Any CPU.Build.0 = Release|Any CPU
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Choco|Any CPU.ActiveCfg = Nightly|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Debug|Any CPU.Build.0 = Debug|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Debug|Any CPU.Deploy.0 = Debug|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Nightly|Any CPU.ActiveCfg = Nightly|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Nightly|Any CPU.Build.0 = Nightly|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Nightly|Any CPU.Deploy.0 = Nightly|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Release|Any CPU.ActiveCfg = Release|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Release|Any CPU.Build.0 = Release|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Release|Any CPU.Deploy.0 = Release|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Store|Any CPU.ActiveCfg = Store|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Store|Any CPU.Build.0 = Store|x86
-		{73402D91-1490-4196-823B-4BF1CFDAA9FE}.Store|Any CPU.Deploy.0 = Store|x86
-		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Choco|Any CPU.ActiveCfg = Nightly|x86
 		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Debug|Any CPU.ActiveCfg = Debug|x86
 		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Debug|Any CPU.Build.0 = Debug|x86
 		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Debug|Any CPU.Deploy.0 = Debug|x86
-		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Nightly|Any CPU.ActiveCfg = Nightly|x86
-		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Nightly|Any CPU.Build.0 = Nightly|x86
-		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Nightly|Any CPU.Deploy.0 = Nightly|x86
 		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Release|Any CPU.ActiveCfg = Release|x86
 		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Release|Any CPU.Build.0 = Release|x86
 		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Release|Any CPU.Deploy.0 = Release|x86
-		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Store|Any CPU.ActiveCfg = Store|x86
-		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Store|Any CPU.Build.0 = Store|x86
-		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Store|Any CPU.Deploy.0 = Store|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

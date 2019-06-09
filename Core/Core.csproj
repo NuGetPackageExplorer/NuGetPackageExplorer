@@ -5,7 +5,6 @@
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
-    <Configurations>Debug;Release;Choco;Nightly;Store</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
