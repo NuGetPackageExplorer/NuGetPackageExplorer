@@ -18,7 +18,7 @@
     <PackageReference Include="AvalonEdit" Version="6.0.0-netcore3p4alpha1" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
     <PackageReference Include="Humanizer" Version="2.6.2" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="1.0.0" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="1.1.0" />
     <PackageReference Include="System.Memory" Version="4.5.3" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.2" />
     <PackageReference Include="System.Runtime.Caching" Version="4.5.0" />
