@@ -1364,7 +1364,7 @@ this);
             RootFolder.Export(rootPath);
 
             // export .nuspec file
-            ExportManifest(Path.Combine(rootPath, PackageMetadata + ".nuspec"));
+            ExportManifest(Path.Combine(rootPath, PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension));
         }
 
         internal void ExportManifest(string fullpath, bool askForConfirmation = true, bool includeFilesSection = true)
