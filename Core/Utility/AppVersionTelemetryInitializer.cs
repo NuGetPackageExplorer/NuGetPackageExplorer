@@ -15,10 +15,10 @@ namespace NuGetPe.Utility
 
         public AppVersionTelemetryInitializer()
         {
-            _wpfVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;            
+            _wpfVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;            
             _appVersion = typeof(DiagnosticsClient).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                                                             .First(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
-                                                            .Value;
+                                                            .Value!;
         }
 
         public void Initialize(ITelemetry telemetry)
