@@ -30,7 +30,7 @@ namespace NuGetPackageExplorer.Types
                 Version == other.Version;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is MruItem item && Equals(item);
         }
