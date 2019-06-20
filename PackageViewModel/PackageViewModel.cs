@@ -111,7 +111,8 @@ namespace PackageExplorerViewModel
                 if (_isInEditMode != value)
                 {
                     _isInEditMode = value;
-                    OnPropertyChanged("IsInEditMetadataMode");
+                    OnPropertyChanged(nameof(IsInEditMetadataMode));
+                    OnPropertyChanged(nameof(IsSignedOrInEditMetadataMode));
                 }
             }
         }
@@ -135,6 +136,7 @@ namespace PackageExplorerViewModel
                 {
                     _isSigned = value;
                     OnPropertyChanged(nameof(IsSigned));
+                    OnPropertyChanged(nameof(IsSignedOrInEditMetadataMode));
                     _saveCommand?.RaiseCanExecuteChangedEvent();
                 }
             }
