@@ -134,25 +134,16 @@ namespace PackageExplorer
 
         public void Show(string message, MessageLevel messageLevel)
         {
-            MessageBoxImage image;
-            switch (messageLevel)
+            var image = messageLevel switch
             {
-                case MessageLevel.Error:
-                    image = MessageBoxImage.Error;
-                    break;
+                MessageLevel.Error => MessageBoxImage.Error,
 
-                case MessageLevel.Information:
-                    image = MessageBoxImage.Information;
-                    break;
+                MessageLevel.Information => MessageBoxImage.Information,
 
-                case MessageLevel.Warning:
-                    image = MessageBoxImage.Warning;
-                    break;
+                MessageLevel.Warning => MessageBoxImage.Warning,
 
-                default:
-                    throw new ArgumentOutOfRangeException("messageLevel");
-            }
-
+                _ => throw new ArgumentOutOfRangeException("messageLevel"),
+            };
             void ShowDialog()
             {
                 MessageBox.Show(
