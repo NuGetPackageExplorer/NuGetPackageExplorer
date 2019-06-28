@@ -27,7 +27,11 @@ namespace NuGetPe
 
         public virtual void AddFile(string path, Stream stream)
         {
-            EnsureDirectory(Path.GetDirectoryName(path));
+            var d = Path.GetDirectoryName(path);
+            if (d != null)
+            {
+                EnsureDirectory(d);
+            }
 
             using Stream outputStream = File.Create(GetFullPath(path));
             stream.CopyTo(outputStream);

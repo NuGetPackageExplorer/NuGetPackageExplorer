@@ -150,7 +150,7 @@ namespace NuGetPe
             return GetCachePath(Environment.GetEnvironmentVariable, _ => Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, local));
         }
 
-        private static string? GetCachePath(Func<string, string> getEnvironmentVariable, Func<Environment.SpecialFolder, string> getFolderPath)
+        private static string? GetCachePath(Func<string, string?> getEnvironmentVariable, Func<Environment.SpecialFolder, string> getFolderPath)
         {
             var cacheOverride = getEnvironmentVariable(NuGetCachePathEnvironmentVariable);
             if (!string.IsNullOrEmpty(cacheOverride))

@@ -86,9 +86,11 @@ namespace NuGetPe
             }
 
             var matches = TokenRegex.Matches(value);
+#pragma warning disable CS8606 // Possible null reference assignment to iteration variable
             foreach (Match match in matches)
+#pragma warning restore CS8606 // Possible null reference assignment to iteration variable
             {
-                var token = match.Value[1..^1];
+                var token = match!.Value[1..^1];
                 value = value.Replace(match.Value, $"{TokenMetadataStart}{token}{TokenMetadataEnd}");
             }
 
@@ -110,9 +112,11 @@ namespace NuGetPe
             // see if it's a token
             var matches = MetadataRegEx.Matches(value);
 
+#pragma warning disable CS8606 // Possible null reference assignment to iteration variable
             foreach (Match match in matches)
+#pragma warning restore CS8606 // Possible null reference assignment to iteration variable
             {
-                var token = match.Value[TokenMetadataStart.Length..^TokenMetadataEnd.Length];
+                var token = match!.Value[TokenMetadataStart.Length..^TokenMetadataEnd.Length];
                 value = value.Replace(match.Value, $"${token}$");
             }
 
