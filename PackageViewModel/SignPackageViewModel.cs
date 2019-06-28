@@ -347,7 +347,7 @@ namespace PackageExplorerViewModel
             _certificateValidationTimer.Change(250, Timeout.Infinite);
         }
 
-        private void ValidateCertificateCallback(object state)
+        private void ValidateCertificateCallback(object? state)
         {
             Debug.Assert(_certificateValidationSemaphore != null, nameof(_certificateValidationSemaphore) + " != null");
 

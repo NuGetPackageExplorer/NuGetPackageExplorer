@@ -39,7 +39,7 @@ namespace PackageExplorer
         };
 
         // %localappdata%/NuGet/PackageExplorerPlugins
-        private static readonly string? PluginsDirectory = GetPluginDirectory();
+        private static readonly string PluginsDirectory = GetPluginDirectory()!;
 
 
 
@@ -377,7 +377,7 @@ namespace PackageExplorer
 
                         // also delete the real plugin directory
                         var pluginDirectory = Path.Combine(PluginsDirectory,
-                                                              Path.GetFileNameWithoutExtension(file.Name));
+                                                              Path.GetFileNameWithoutExtension(file.Name)!);
                         if (Directory.Exists(pluginDirectory))
                         {
                             Directory.Delete(pluginDirectory, recursive: true);
@@ -398,9 +398,12 @@ namespace PackageExplorer
             builder.AppendLine();
             builder.AppendLine();
 
-            foreach (var loaderException in exception.LoaderExceptions)
+            foreach (var loaderException in exception.LoaderExceptions!)
             {
-                builder.AppendLine(loaderException.Message);
+                if(loaderException != null)
+                {
+                    builder.AppendLine(loaderException.Message);
+                }                
             }
 
             return builder.ToString();

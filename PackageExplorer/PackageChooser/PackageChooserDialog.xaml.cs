@@ -39,7 +39,7 @@ namespace PackageExplorer
             DiagnosticsClient.TrackPageView(nameof(PackageChooserDialog));
         }
 
-        private void OnLoadPackagesCompleted(object sender, EventArgs e)
+        private void OnLoadPackagesCompleted(object? sender, EventArgs e)
         {
             // Ensure that the SearchBox is focused after the packages have loaded so that the user can search right
             // away if they need to. Currently the default search behavior is not working most likely do to the
@@ -47,7 +47,7 @@ namespace PackageExplorer
             FocusSearchBox();
         }
 
-        private void OnOpenPackageRequested(object sender, EventArgs e)
+        private void OnOpenPackageRequested(object? sender, EventArgs e)
         {
             Hide();
         }

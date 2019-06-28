@@ -273,7 +273,7 @@ namespace PackageExplorerViewModel
                 throw new ArgumentException("File does not exist.", "filePath");
             }
 
-            var newFileName = System.IO.Path.GetFileName(filePath);
+            var newFileName = System.IO.Path.GetFileName(filePath)!;
             if (ContainsFolder(newFileName))
             {
                 PackageViewModel.UIServices.Show(Resources.FileNameConflictWithExistingDirectory, MessageLevel.Error);

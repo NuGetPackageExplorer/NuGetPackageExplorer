@@ -120,8 +120,8 @@ namespace PackageExplorerViewModel
         {
             return !string.IsNullOrEmpty(packageSource) &&
                    Path.IsPathRooted(packageSource) && (
-                   Path.GetExtension(packageSource).Equals(NuGetPe.Constants.PackageExtension, StringComparison.OrdinalIgnoreCase) ||
-                   Path.GetExtension(packageSource).Equals(NuGetPe.Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase));
+                   NuGetPe.Constants.PackageExtension.Equals(Path.GetExtension(packageSource), StringComparison.OrdinalIgnoreCase) ||
+                   NuGetPe.Constants.SymbolPackageExtension.Equals(Path.GetExtension(packageSource), StringComparison.OrdinalIgnoreCase));
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.Confirm(System.String,System.String,System.Boolean)")]

@@ -64,11 +64,11 @@ namespace PackageExplorer
             return _viewModel.SelectedPackage;
         }
 
-        private async void OnPackageDownloadRequested(object sender, EventArgs e)
+        private async void OnPackageDownloadRequested(object? sender, EventArgs e)
         {
             DiagnosticsClient.TrackEvent("PackageChooserService_OnPackageDownloadRequested");
 
-            var vm = (PackageChooserViewModel)sender;
+            var vm = (PackageChooserViewModel)sender!;
             var repository = vm.ActiveRepository;
             var packageInfo = vm.SelectedPackage;
             if (packageInfo != null && repository != null)

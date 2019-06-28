@@ -99,7 +99,7 @@ namespace PackageExplorerViewModel
 
                         // Get peer files
                         var peerFiles = file.Parent!.GetFiles()
-                                            .Select(pf => new PackageFile(pf, Path.GetFileName(pf.Path), file.Parent!))
+                                            .Select(pf => new PackageFile(pf, Path.GetFileName(pf.Path)!, file.Parent!))
                                             .ToList();
 
                         content = viewer.GetView(file, peerFiles);

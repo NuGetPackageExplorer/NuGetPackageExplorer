@@ -106,7 +106,7 @@ namespace PackageExplorer
 
         }
 
-        private void IconBitmapImage_DownloadCompleted(object sender, EventArgs e)
+        private void IconBitmapImage_DownloadCompleted(object? sender, EventArgs e)
         {
             if (sender is BitmapImage bitmapImage && !bitmapImage.IsFrozen)
             {
@@ -114,7 +114,7 @@ namespace PackageExplorer
             }
         }
 
-        private void IconBitmapImage_DownloadOrDecodeFailed(object sender, System.Windows.Media.ExceptionEventArgs e)
+        private void IconBitmapImage_DownloadOrDecodeFailed(object? sender, System.Windows.Media.ExceptionEventArgs e)
         {
             // Fix the bitmap image cache to have default package icon, if some other failure didn't already do that.
             if (!(sender is BitmapImage bitmapImage))

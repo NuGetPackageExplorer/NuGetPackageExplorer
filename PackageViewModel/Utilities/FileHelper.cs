@@ -32,7 +32,7 @@ namespace PackageExplorerViewModel
         public static bool IsBinaryFile(string path)
         {
             // TODO: check for content type of the file here
-            var extension = Path.GetExtension(path).ToUpper(CultureInfo.InvariantCulture);
+            var extension = Path.GetExtension(path)?.ToUpper(CultureInfo.InvariantCulture);
             return !string.IsNullOrEmpty(extension) && BinaryFileExtensions.Any(p => p.Equals(extension));
         }
 
@@ -74,7 +74,7 @@ namespace PackageExplorerViewModel
 
         private static bool IsExecutableScript(string fileName)
         {
-            var extension = Path.GetExtension(fileName).ToUpperInvariant();
+            var extension = Path.GetExtension(fileName)?.ToUpperInvariant();
             return Array.IndexOf(ExecutableScriptsExtensions, extension) > -1;
         }
 
@@ -115,7 +115,7 @@ namespace PackageExplorerViewModel
 
         public static string GuessFolderNameFromFile(string file)
         {
-            var extension = Path.GetExtension(file).ToUpperInvariant();
+            var extension = Path.GetExtension(file)?.ToUpperInvariant();
             if (extension == ".DLL" || extension == ".PDB")
             {
                 return "lib";

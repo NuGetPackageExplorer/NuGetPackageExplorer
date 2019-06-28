@@ -244,9 +244,9 @@ namespace PackageExplorer
             return result ?? false;
         }
 
-        private void OnDialogClosed(object sender, EventArgs e)
+        private void OnDialogClosed(object? sender, EventArgs e)
         {
-            var window = (Window)sender;
+            var window = (Window)sender!;
             if (window.DataContext is IDisposable disposable)
             {
                 disposable.Dispose();
