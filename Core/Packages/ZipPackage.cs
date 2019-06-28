@@ -350,7 +350,10 @@ namespace NuGetPe
         {
             using var stream = _streamFactory();
             using var reader = new PackageArchiveReader(stream);
-            var manifest = Manifest.ReadFrom(ManifestUtility.ReadManifest(reader.GetNuspec()), false);
+            using var nuspecStream = reader.GetNuspec();
+            using var manifestStream = ManifestUtility.ReadManifest(nuspecStream);
+
+            var manifest = Manifest.ReadFrom(manifestStream, false);
             _metadata = manifest.Metadata;
         }
 

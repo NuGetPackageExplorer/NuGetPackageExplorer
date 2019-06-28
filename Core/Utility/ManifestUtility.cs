@@ -17,7 +17,8 @@ namespace NuGetPe
 
         public static Stream ReadManifest(string file)
         {
-            return ReadManifest(File.OpenRead(file));
+            using var str = File.OpenRead(file);
+            return ReadManifest(str);
         }
 
 
