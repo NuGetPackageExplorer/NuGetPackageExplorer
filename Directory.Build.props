@@ -26,7 +26,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <!-- This suppresses the warning we get because of defining UseWpf/UseWindowsForms where it doesn't
          apply to all of our projects -->
-    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);NETSDK1107</MSBuildWarningsAsMessages>
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);NETSDK1107</MSBuildWarningsAsMessages>    
 
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
