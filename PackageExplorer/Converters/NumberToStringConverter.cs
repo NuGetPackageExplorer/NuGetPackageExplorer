@@ -19,7 +19,7 @@ namespace PackageExplorer
             }
             if (value != null)
             {
-                var number = double.Parse(value.ToString(), culture);
+                var number = double.Parse(value.ToString()!, culture);
                 return number.ToMetric(decimals: 1);
             }
 

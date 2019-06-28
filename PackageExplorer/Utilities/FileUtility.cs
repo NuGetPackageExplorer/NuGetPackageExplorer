@@ -14,9 +14,9 @@ namespace PackageExplorer
             }
 
             var extension = Path.GetExtension(filepath);
-            return extension.Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase) ||
-                   extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase) ||
-                   extension.Equals(Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase);
+            return Constants.ManifestExtension.Equals(extension, StringComparison.OrdinalIgnoreCase) ||
+                   Constants.PackageExtension.Equals(extension, StringComparison.OrdinalIgnoreCase) ||
+                   Constants.SymbolPackageExtension.Equals(extension, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

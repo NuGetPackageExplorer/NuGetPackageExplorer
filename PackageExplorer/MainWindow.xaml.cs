@@ -161,13 +161,13 @@ namespace PackageExplorer
                 File.Copy(packagePath, tempFile, overwrite: true);
 
                 var extension = Path.GetExtension(packagePath);
-                if (extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase) ||
-                    extension.Equals(Constants.SymbolPackageExtension, StringComparison.OrdinalIgnoreCase))
+                if (Constants.PackageExtension.Equals(extension, StringComparison.OrdinalIgnoreCase) ||
+                    Constants.SymbolPackageExtension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                 {
                     DiagnosticsClient.TrackPageView("View Existing Package");
                     package = new ZipPackage(tempFile);
                 }
-                else if (extension.Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase))
+                else if (Constants.ManifestExtension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                 {
                     DiagnosticsClient.TrackPageView("View Nuspec");
                     using var str = ManifestUtility.ReadManifest(tempFile);

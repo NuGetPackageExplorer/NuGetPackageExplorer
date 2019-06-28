@@ -248,7 +248,7 @@ namespace PackageExplorerViewModel
                     // This may be a URI or a file
                     if (Uri.TryCreate(value, UriKind.Absolute, out var result))
                     {
-                        if (result.IsFile && File.Exists(value))
+                        if (result!.IsFile && File.Exists(value))
                         {
                             // Clean up the old one since we can't reliably change the Filter without a race
                             if (_watcher != null)
@@ -1346,7 +1346,7 @@ this);
         public IEnumerable<PackageIssue> Validate()
         {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-            var packageFileName = Path.IsPathRooted(PackagePath) ? Path.GetFileName(PackagePath) : string.Empty;
+            var packageFileName = Path.IsPathRooted(PackagePath) ? Path.GetFileName(PackagePath)! : string.Empty;
             return package.Validate(_packageRules.Select(r => r.Value), packageFileName);
         }
 
@@ -1383,7 +1383,7 @@ this);
             }
 
             DiagnosticsClient.TrackEvent("PackageViewModel_ExportManifest");
-            var rootPath = Path.GetDirectoryName(fullpath);
+            var rootPath = Path.GetDirectoryName(fullpath)!;
 
             using Stream fileStream = File.Create(fullpath);
             var manifest = Manifest.Create(PackageMetadata);
@@ -1460,7 +1460,7 @@ this);
                         {
                             // ask user if he wants to move file
                             var answer = UIServices.ConfirmMoveFile(
-                                Path.GetFileName(file),
+                                Path.GetFileName(file)!,
                                 guessFolderName, fileNames.Length - i - 1);
 
                             if (answer.Item1 == null)

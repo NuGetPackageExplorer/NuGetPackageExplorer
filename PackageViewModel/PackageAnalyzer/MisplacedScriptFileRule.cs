@@ -33,10 +33,10 @@ namespace PackageExplorerViewModel.Rules
                 {
                     var directory = Path.GetDirectoryName(path);
                     var name = Path.GetFileNameWithoutExtension(path);
-                    if (!directory.Equals(ToolsFolder, StringComparison.OrdinalIgnoreCase) ||
-                        !name.Equals("install", StringComparison.OrdinalIgnoreCase) &&
-                        !name.Equals("uninstall", StringComparison.OrdinalIgnoreCase) &&
-                        !name.Equals("init", StringComparison.OrdinalIgnoreCase))
+                    if (!ToolsFolder.Equals(directory, StringComparison.OrdinalIgnoreCase) ||
+                        !"install".Equals(name, StringComparison.OrdinalIgnoreCase) &&
+                        !"uninstall".Equals(name, StringComparison.OrdinalIgnoreCase) &&
+                        !"init".Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
                         yield return CreatePackageIssueForUnrecognizedScripts(path);
                     }

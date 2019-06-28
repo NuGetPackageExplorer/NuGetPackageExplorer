@@ -34,7 +34,7 @@ namespace PackageExplorer
 
             InitializeComponent();
 
-            ProductTitle.Text = $"{StringResources.Dialog_Title} - {Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion})";
+            ProductTitle.Text = $"{StringResources.Dialog_Title} - {Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion})";
 
             DiagnosticsClient.TrackPageView(nameof(AboutWindow));
         }
@@ -56,7 +56,7 @@ namespace PackageExplorer
 
         private void CopyVersion()
         {
-            var version = $"{Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion})";
+            var version = $"{Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion})";
 
             Clipboard.SetText(version);
         }

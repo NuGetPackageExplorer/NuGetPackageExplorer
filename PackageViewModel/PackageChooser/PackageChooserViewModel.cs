@@ -525,22 +525,18 @@ namespace PackageExplorerViewModel
             if (!IsEditable)
             {
                 return false;
-            }           
-
-            switch (action)
-            {
-                case "First":
-                    return CanMoveFirst();
-
-                case "Previous":
-                    return CanMovePrevious();
-
-                case "Next":
-                    return CanMoveNext();
-
-                default:
-                    throw new ArgumentOutOfRangeException("action");
             }
+
+            return action switch
+            {
+                "First" => CanMoveFirst(),
+
+                "Previous" => CanMovePrevious(),
+
+                "Next" => CanMoveNext(),
+
+                _ => throw new ArgumentOutOfRangeException("action"),
+            };
         }
 
         private async void NavigationCommandExecute(string action)
