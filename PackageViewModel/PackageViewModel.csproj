@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.2" /> 
     <PackageReference Include="NuGet.Commands" Version="5.3.0-xprivate.60008" />
     <PackageReference Include="NuGet.Resolver" Version="5.3.0-xprivate.60008" />
-    <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview5.19224.8" />
+    <PackageReference Include="System.Windows.Extensions" Version="4.6.0-preview8.19376.8" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
