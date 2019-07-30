@@ -115,15 +115,6 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Author: Luan Nguyen (@dotnetjunky). For more information, visit http://nuget.codeplex.com..
-        /// </summary>
-        public static string Dialog_HelpAbout {
-            get {
-                return ResourceManager.GetString("Dialog_HelpAbout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Id:.
         /// </summary>
         public static string Dialog_IdLabel {
