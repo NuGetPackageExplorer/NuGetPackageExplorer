@@ -110,21 +110,25 @@ namespace PackageExplorer
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
+            var style =  Application.Current.FindResource("SelectableTextBlockLikeStyleWithoutTriggers") as Style;
+
             foreach (var data in orderedAssemblyDataEntries)
             {
-                var label = new TextBlock
+                var label = new TextBox
                 {
                     Text = data.Key + ':',
                     FontWeight = FontWeights.SemiBold,
-                    Margin = new Thickness(3, 3, 10, 0)
+                    Margin = new Thickness(3, 3, 10, 0),
+                    Style = style
                 };
                 Grid.SetRow(label, grid.RowDefinitions.Count);
                 Grid.SetColumn(label, 0);
 
-                var value = new TextBlock
+                var value = new TextBox
                 {
                     Text = data.Value,
-                    Margin = new Thickness(0, 3, 3, 0)
+                    Margin = new Thickness(0, 3, 3, 0),
+                    Style = style
                 };
                 Grid.SetRow(value, grid.RowDefinitions.Count);
                 Grid.SetColumn(value, 1);
