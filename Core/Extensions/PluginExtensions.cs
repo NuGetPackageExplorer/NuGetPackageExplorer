@@ -35,6 +35,7 @@ namespace NuGetPe
                         using var packageStream = file.GetStream();
                         packageStream.CopyTo(stream);
                     }
+                    File.SetLastWriteTime(targetPath, file.LastWriteTime.DateTime);
 
                     numberOfFilesCopied++;
                 }

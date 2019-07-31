@@ -191,9 +191,12 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            using var stream = File.Create(fullPath);
-            using var packageStream = GetStream();
-            packageStream.CopyTo(stream);
+            {
+                using var stream = File.Create(fullPath);
+                using var packageStream = GetStream();
+                packageStream.CopyTo(stream);
+            }
+            File.SetLastWriteTime(fullPath, LastWriteTime.DateTime);
         }
 
         public bool Save(string editedFilePath)
