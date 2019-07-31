@@ -68,7 +68,7 @@
             </MenuItem>
 
             <MenuItem Header="_Help" Margin="3,0">
-                <MenuItem Header="Open B_ug..." Command="GoToPage" CommandParameter="http://npe.codeplex.com/WorkItem/Create" />
+                <MenuItem Header="Open B_ug..." Command="GoToPage" CommandParameter="https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/issues/new" />
                 <MenuItem Header="A_bout..." Command="Help" />
             </MenuItem>
         </Menu>
