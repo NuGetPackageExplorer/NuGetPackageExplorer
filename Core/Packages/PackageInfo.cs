@@ -20,7 +20,7 @@ namespace NuGetPe
         public string? Description { get; set; }
         public string? Summary { get; set; }
         public string? Authors { get; set; }
-        public int DownloadCount { get; set; }
+        public int? DownloadCount { get; set; }
         public DateTimeOffset? Published { get; set; }
 
         public string? IconUrl { get; set; }

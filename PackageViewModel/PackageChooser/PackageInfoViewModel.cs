@@ -298,11 +298,29 @@ namespace PackageExplorerViewModel
         {
             var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
 
+            DateTimeOffset? published = null;
+            int? downloadCount = null;
+
+            if (packageSearchMetadata.Published.HasValue && packageSearchMetadata.Published.Value.Year > 1900)
+            {
+                // Note nuget.org reports 1900 for unlisted packages. Pretty sure it's was published later ;)
+                published = packageSearchMetadata.Published;
+            }
+
+            downloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault());
+
+            if (!packageSearchMetadata.IsListed && versionInfo == null && downloadCount == 0)
+            {
+                // Note nuget.org reports no correct download counts in for unlisted. 
+                downloadCount = null;
+
+            }
+
             return new PackageInfo(packageSearchMetadata.Identity)
             {
                 Authors = packageSearchMetadata.Authors,
-                Published = packageSearchMetadata.Published,
-                DownloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault()),
+                Published = published,
+                DownloadCount = downloadCount,
                 IsRemotePackage = (feedType == FeedType.HttpV3 || feedType == FeedType.HttpV2),
                 IsPrefixReserved = packageSearchMetadata.PrefixReserved,
                 Description = packageSearchMetadata.Description,
