@@ -309,7 +309,7 @@ namespace PackageExplorerViewModel
 
             downloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault());
 
-            if (!packageSearchMetadata.IsListed && versionInfo == null && downloadCount == 0)
+            if (downloadCount == 0)
             {
                 // Note nuget.org reports no correct download counts in for unlisted. 
                 downloadCount = null;
