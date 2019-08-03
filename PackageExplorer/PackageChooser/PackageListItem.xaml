@@ -29,8 +29,10 @@
                                        Visibility="{Binding LatestPackageInfo.IsPrefixReserved, Converter={StaticResource boolToVis}}"/>
             <TextBlock HorizontalAlignment="Stretch" Margin="4,0,0,0">
                                 by
-                                <Run Text="{Binding LatestPackageInfo.Authors, Mode=OneWay}"/>,
-                                <Run Text="{Binding LatestPackageInfo.DownloadCount, Mode=OneWay, Converter={StaticResource NumberToStringConverter}}" FontWeight="Bold"/> downloads
+                                <Run Text="{Binding LatestPackageInfo.Authors, Mode=OneWay}"/>
+                                <TextBlock Visibility="{Binding LatestPackageInfo.DownloadCount, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">,</TextBlock>
+                                <Run Text="{Binding LatestPackageInfo.DownloadCount, Mode=OneWay, Converter={StaticResource NumberToStringConverter}}" FontWeight="Bold"/>
+                                <TextBlock Visibility="{Binding LatestPackageInfo.DownloadCount,  Mode=OneWay,Converter={StaticResource NullToVisibilityConverter}}">downloads</TextBlock>
             </TextBlock>
 
         </StackPanel>
