@@ -20,16 +20,12 @@ namespace PackageExplorerViewModel
         public string ActivePackageSource { get; set; }
 
         public ObservableCollection<string> PackageSources { get; } = new ObservableCollection<string>();
-
-        #region IDisposable Members
-
+        
         public void Dispose()
         {
             _sourceSettings.SetSources(PackageSources);
             _sourceSettings.ActiveSource = ActivePackageSource;
         }
-
-        #endregion
 
         private void LoadDataFromSettings()
         {
@@ -71,7 +67,7 @@ namespace PackageExplorerViewModel
         {
             if (newSource == null)
             {
-                throw new ArgumentNullException("newSource");
+                throw new ArgumentNullException(nameof(newSource));
             }
 
             var defaultFeed = _sourceSettings.DefaultSource;

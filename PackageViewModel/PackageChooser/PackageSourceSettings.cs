@@ -23,8 +23,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        #region ISourceSettings Members
-
         public IList<string> GetSources()
         {
             var sources = _settingsManager.GetPackageSources();
@@ -58,7 +56,5 @@ namespace PackageExplorerViewModel
             get { return _settingsManager.ActivePackageSource; }
             set { _settingsManager.ActivePackageSource = value; }
         }
-
-        #endregion
     }
 }
