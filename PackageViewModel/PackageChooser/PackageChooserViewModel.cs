@@ -319,7 +319,7 @@ namespace PackageExplorerViewModel
                 }
 
                 ClearMessage();
-                ShowPackages(packageInfos, _currentQuery.BeginPackage, _currentQuery.EndPackage);
+                ShowPackages(packageInfos, packageInfos.Count, _currentQuery.BeginPackage, _currentQuery.EndPackage);
             }
             catch (OperationCanceledException)
             {
@@ -361,12 +361,22 @@ namespace PackageExplorerViewModel
             return new List<IPackageSearchMetadata>();
         }
 
-        private void ShowPackages(IEnumerable<IPackageSearchMetadata> packages, int beginPackage, int endPackage)
+        private void ShowPackages(IEnumerable<IPackageSearchMetadata> packages, int packagesCount, int beginPackage, int endPackage)
         {
             Packages.Clear();
+
             if (ActiveRepository != null)
             {
                 var ar = ActiveRepository;
+                var skip = beginPackage - 1;
+                var count = endPackage - skip;
+
+                if (packagesCount > count + skip)
+                {
+                    // more packages then needed.
+                    packages = packages.Skip(skip).Take(count);
+                }
+
                 Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, ar, _feedType, this)));
             }
             UpdatePageNumber(beginPackage, endPackage);
