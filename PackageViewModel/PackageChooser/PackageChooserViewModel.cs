@@ -340,6 +340,8 @@ namespace PackageExplorerViewModel
                     return;
                 }
 
+                DiagnosticsClient.TrackException(exception);
+
                 var errorMessage = exception.Message;
 
                 ShowMessage(errorMessage, true);
