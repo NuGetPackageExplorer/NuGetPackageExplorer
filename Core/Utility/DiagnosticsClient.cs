@@ -55,17 +55,17 @@ namespace NuGetPe
             _client.TrackEvent(eventName, properties, metrics);
         }
 
-        public static void TrackTrace(string evt)
+        public static void TrackTrace(string evt, IDictionary<string, string>? properties = null)
         {
             if (!_initialized) return;
-            _client.TrackTrace(evt);
+            _client.TrackTrace(evt, properties);
         }
 
-        public static void TrackException(Exception exception)
+        public static void TrackException(Exception exception, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
         {
             if (!_initialized) return;
 
-            _client.TrackException(exception);
+            _client.TrackException(exception, properties, metrics);
         }
 
         public static void TrackPageView(string pageName)

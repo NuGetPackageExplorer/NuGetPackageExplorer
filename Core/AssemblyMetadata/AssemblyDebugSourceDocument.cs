@@ -44,7 +44,7 @@ namespace NuGetPe.AssemblyMetadata
             if (guid == Md5) return HashAlgorithmName.MD5;
             if (guid == Sha1) return HashAlgorithmName.SHA1;
             if (guid == Sha256) return HashAlgorithmName.SHA256;
-
+            
             throw new ArgumentOutOfRangeException(nameof(guid));
         }
     }
