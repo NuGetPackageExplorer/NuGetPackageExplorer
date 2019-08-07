@@ -98,7 +98,7 @@ jobs:
     displayName: Build for Zip and Choco
     inputs:
       solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-      msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x86 /p:SelfContained=true /p:PublishReadyToRun=true
+      msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x64 /p:SelfContained=true /p:PublishReadyToRun=true
       configuration: $(BuildConfiguration)
       maximumCpuCount: true
     condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
@@ -122,7 +122,7 @@ jobs:
     displayName: Zip PackageExplorer files
     inputs:
       archiveType: zip
-      rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.0/win-x86/publish
+      rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.0/win-x64/publish
       archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
       includeRootFolder: false
     condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
