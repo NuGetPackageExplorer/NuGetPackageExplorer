@@ -36,5 +36,15 @@
     <Content Include="ApplicationInsights.config" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <!-- Work around issue in .NET Core SDK 3.0 Preview 8, to be fixed in preview 9 -->
+  <!-- https://github.com/dotnet/sdk/issues/3512 -->
+  <Target Name="_WorkaroundToReferenceAero"
+          AfterTargets="ResolveReferences"
+          Condition="!@(ReferencePath->AnyHaveMetadataValue('Filename', 'PresentationFramework.Aero'))">
+    <ItemGroup>
+       <ReferencePath Include="@(ReferencePath->'%(RootDir)%(Directory)%(Filename).Aero%(Extension)')"
+                      Condition="'%(ReferencePath.Filename)' == 'PresentationFramework'" />
+    </ItemGroup>
+  </Target>
   
 </Project>
