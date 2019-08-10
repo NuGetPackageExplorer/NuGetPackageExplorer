@@ -27,7 +27,7 @@ namespace NuGetPe.AssemblyMetadata
         public string Name { get; }
         public byte[] Hash { get; }
         public SymbolLanguage Language { get; }
-        public HashAlgorithmName HashAlgorithm { get; }
+        public HashAlgorithmName? HashAlgorithm { get; }
 
         private SymbolLanguage LanguageFromGuid(Guid guid)
         {
@@ -35,17 +35,17 @@ namespace NuGetPe.AssemblyMetadata
             if (guid == VisualBasic) return SymbolLanguage.VisualBasic;
             if (guid == FSharp) return SymbolLanguage.FSharp;
 
-            throw new ArgumentOutOfRangeException(nameof(guid));
+            return SymbolLanguage.Unknown;
         }
 
 
-        public HashAlgorithmName HashAlgorithmNameFromGuid(Guid guid)
+        public HashAlgorithmName? HashAlgorithmNameFromGuid(Guid guid)
         {
             if (guid == Md5) return HashAlgorithmName.MD5;
             if (guid == Sha1) return HashAlgorithmName.SHA1;
             if (guid == Sha256) return HashAlgorithmName.SHA256;
-            
-            throw new ArgumentOutOfRangeException(nameof(guid));
+
+            return null;
         }
     }
 
@@ -56,6 +56,8 @@ namespace NuGetPe.AssemblyMetadata
         [Description("VB")]
         VisualBasic,
         [Description("F#")]
-        FSharp
+        FSharp,
+        [Description("Unknown")]
+        Unknown
     }
 }

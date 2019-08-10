@@ -130,7 +130,7 @@ namespace NuGetPe.AssemblyMetadata
         {
             var list = new List<AssemblyDebugSourceDocument>();
 
-            foreach(var docHandle in _reader.Documents)
+            foreach (var docHandle in _reader.Documents)
             {
                 var document = _reader.GetDocument(docHandle);
 
@@ -138,28 +138,25 @@ namespace NuGetPe.AssemblyMetadata
                 var hashGuid = _reader.GetGuid(document.HashAlgorithm);
                 var docName = _reader.GetString(document.Name).Replace(@"\", @"/"); // use forward slashes for the url
 
-                try
+                var doc = new AssemblyDebugSourceDocument
+                (
+                    docName,
+                    _reader.GetBlobBytes(document.Hash),
+                    langGuid,
+                    hashGuid
+                );
+                list.Add(doc);
+
+                if (doc.Language == SymbolLanguage.Unknown)
                 {
-                    var doc = new AssemblyDebugSourceDocument
-                    (
-                            docName,
-                            _reader.GetBlobBytes(document.Hash),
-                            langGuid,
-                            hashGuid
-                    );
-                    list.Add(doc);
-                }
-                catch(ArgumentOutOfRangeException ex)
-                {
-                    DiagnosticsClient.TrackException(ex, new Dictionary<string, string>
+                    DiagnosticsClient.TrackEvent("Unknown language Guid", new Dictionary<string, string>
                     {
                         { "LanguageGuid", langGuid.ToString() },
                         { "HashGuid", hashGuid.ToString() },
                         { "DocExtension", Path.GetExtension(docName)! }
                     });
-                }
+                }                
             }
-
             return list;
         }
 

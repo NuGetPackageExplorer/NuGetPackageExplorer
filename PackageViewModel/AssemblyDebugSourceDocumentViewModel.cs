@@ -21,7 +21,7 @@ namespace PackageExplorerViewModel
         public string Path { get; }
         public string? Location { get; }
 
-        public string HashAlgorithm => _sourceDocument.HashAlgorithm.Name;
+        public string? HashAlgorithm => _sourceDocument.HashAlgorithm?.Name;
 
         public SymbolLanguage Language => _sourceDocument.Language;
     }
