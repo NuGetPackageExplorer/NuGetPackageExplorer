@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -34,7 +35,7 @@ namespace PackageExplorer
 
             InitializeComponent();
 
-            ProductTitle.Text = $"{StringResources.Dialog_Title} - {Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion})";
+            ProductTitle.Text = $"{StringResources.Dialog_Title} - {Channel} - {RuntimeInformation.ProcessArchitecture} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion})";
 
             DiagnosticsClient.TrackPageView(nameof(AboutWindow));
         }
@@ -56,7 +57,7 @@ namespace PackageExplorer
 
         private void CopyVersion()
         {
-            var version = $"{Channel} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion})";
+            var version = $"{Channel} - {RuntimeInformation.ProcessArchitecture} - ({ typeof(AboutWindow).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion})";
 
             Clipboard.SetText(version);
         }
