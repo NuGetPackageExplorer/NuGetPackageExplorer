@@ -44,6 +44,10 @@ namespace PackageExplorerViewModel.PackageSearch
             return packages;
         }
 
+        /// <summary>
+        /// Calculate score for package with search term. 0 means no match
+        /// </summary>
+        /// <returns>number, 0 or higher</returns>
         private static int CalcScore(T package, string searchText)
         {
             var score = ScoreForEquals(package.Identity.Id, searchText);
@@ -59,17 +63,28 @@ namespace PackageExplorerViewModel.PackageSearch
             var authors = SplitValues(package.Authors, ",");
             score += ScoreForContains(authors, searchText);
 
-            if (package.DownloadCount != null)
+            if (score > 0)
+            {
+                // boost scope if there is a match
+                score += CalcDownloadScore(package.DownloadCount);
+            }
+
+            return score;
+        }
+
+        private static int CalcDownloadScore(long? packageDownloadCount)
+        {
+            if (packageDownloadCount >= 0)
             {
                 // From: NuGet.Services.Metadata
                 // This score ranges from 0 to less than 100, assuming that the most downloaded
                 // package has less than 500 million downloads. This scoring function increases
                 // quickly at first and then becomes approximately linear near the upper bound.
-                var downloadScore = (int)Math.Sqrt(package.DownloadCount.Value) / 220;
-                score += downloadScore;
+                var downloadScore = (int)Math.Sqrt(packageDownloadCount.Value) / 220;
+                return downloadScore;
             }
 
-            return score;
+            return 0;
         }
 
         private static int ScoreForContains(IEnumerable<string> values, string searchText)
