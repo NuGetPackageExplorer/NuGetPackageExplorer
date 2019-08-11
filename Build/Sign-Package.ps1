@@ -17,6 +17,9 @@ foreach ($appx in $appxs){
 
 	& $currentDirectory\SignClient 'sign' -c $appSettings -i $appx -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer'
 
+  if ($LASTEXITCODE -ne 0) {
+    exit 1
+  }
 	Write-Host "Finished signing $appx"
 }
 
