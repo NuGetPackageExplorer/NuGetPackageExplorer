@@ -11,6 +11,7 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+using PackageExplorerViewModel.PackageSearch;
 
 namespace PackageExplorerViewModel
 {
@@ -238,7 +239,8 @@ namespace PackageExplorerViewModel
         public event EventHandler OpenPackageRequested = delegate { };
         public event EventHandler PackageDownloadRequested = delegate { };
 
-
+        private readonly PackageListCache<IPackageSearchMetadata> _packageListCache = new PackageListCache<IPackageSearchMetadata>();
+        
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"),
          System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private async Task LoadPackages()
@@ -256,7 +258,7 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            _currentQuery = new ShowLatestVersionQueryContext<IPackageSearchMetadata>(repository, _currentSearch, ShowPrereleasePackages, PackageListPageSize);
+            _currentQuery = new ShowLatestVersionQueryContext<IPackageSearchMetadata>(repository, _currentSearch, ShowPrereleasePackages, PackageListPageSize, _packageListCache);
             _feedType = await repository.GetFeedType(usedTokenSource.Token);
 
             await LoadPage(CurrentCancellationTokenSource.Token);
@@ -370,15 +372,6 @@ namespace PackageExplorerViewModel
             if (ActiveRepository != null)
             {
                 var ar = ActiveRepository;
-                var skip = beginPackage - 1;
-                var count = endPackage - skip;
-
-                if (packagesCount > count + skip)
-                {
-                    // more packages then needed.
-                    packages = packages.Skip(skip).Take(count);
-                }
-
                 Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, ar, _feedType, this)));
             }
             UpdatePageNumber(beginPackage, endPackage);
