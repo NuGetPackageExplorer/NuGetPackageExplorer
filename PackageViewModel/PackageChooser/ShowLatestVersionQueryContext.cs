@@ -122,12 +122,15 @@ namespace PackageExplorerViewModel
                 {
                     _rawPackageSearchResouce = await _sourceRepository.GetResourceAsync<RawSearchResourceV3>(token);
                 }
-                
+
                 if (_rawPackageSearchResouce != null)
                 {
-                    var json = await _rawPackageSearchResouce.Search(searchText, _searchContext.Filter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
-
-                    result = json.Select(s => s.FromJToken<PackageSearchMetadata>());
+                    // Don't run the cpu-bound operations on GUI thread
+                    result = await Task.Run(async () =>
+                    {
+                        var json = await _rawPackageSearchResouce.Search(searchText, _searchContext.Filter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
+                        return json.Select(s => s.FromJToken<PackageSearchMetadata>()).ToList();
+                    }, token);
                 }
 
                 if (result == null)
