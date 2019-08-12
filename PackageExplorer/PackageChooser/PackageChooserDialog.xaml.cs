@@ -91,23 +91,13 @@ namespace PackageExplorer
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(_pendingSearch))
-            {
-                await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
-            }
-            else
+            if (!string.IsNullOrEmpty(_pendingSearch))
             {
                 await Dispatcher.BeginInvoke(
                     new Action<string>(InvokeSearch),
                     DispatcherPriority.Background,
                     _pendingSearch);
             }
-        }
-
-        private void LoadPackages()
-        {
-            var loadedCommand = (ICommand)Tag;
-            loadedCommand.Execute(null);
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -219,6 +209,28 @@ namespace PackageExplorer
             }
 
             e.Handled = true;
+        }
+
+        private void ListBoxPackages_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalChange != 0 && e.OriginalSource is ScrollViewer scrollViewer && scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+            {
+                if (scrollViewer.VerticalOffset == 0 && scrollViewer.ScrollableHeight == 0) // scroll back to top if packages got cleared
+                {
+                    scrollViewer.ScrollToTop();
+                }
+                else if (_viewModel.IsEditable && _viewModel.HasMore)
+                {
+                    _viewModel.LoadedCommand.Execute(null);
+                }
+            }
+            else if (e.ExtentHeight > 0 && e.ExtentHeight < e.ViewportHeight) // load more packages if viewport is higher than used space
+            {
+                if (_viewModel.IsEditable && _viewModel.HasMore)
+                {
+                    _viewModel.LoadedCommand.Execute(null);
+                }
+            }
         }
     }
 }
