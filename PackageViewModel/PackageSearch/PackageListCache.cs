@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NuGet.Protocol.Core.Types;
 
 namespace PackageExplorerViewModel.PackageSearch
@@ -13,7 +14,7 @@ namespace PackageExplorerViewModel.PackageSearch
             _packagesDict[packageSource] = packages;
         }
 
-        public bool TryGetPackages(string packageSource, out List<T> packages)
+        public bool TryGetPackages(string packageSource, [NotNullWhen(true)] out List<T>? packages)
         {
             return _packagesDict.TryGetValue(packageSource, out packages);
         }
