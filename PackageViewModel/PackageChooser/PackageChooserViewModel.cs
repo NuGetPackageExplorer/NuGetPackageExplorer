@@ -37,7 +37,7 @@ namespace PackageExplorerViewModel
 
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
             ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
-            LoadedCommand = new RelayCommand(async () => await LoadMore(CancellationToken.None));
+            LoadMoreCommand = new RelayCommand(async () => await LoadMore(CancellationToken.None), CanLoadMore);
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
 
@@ -186,8 +186,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public bool HasMore => _currentQuery?.HasMore == true;
-
         private CancellationTokenSource? _currentCancellationTokenSource;
         private CancellationTokenSource? CurrentCancellationTokenSource
         {
@@ -201,7 +199,7 @@ namespace PackageExplorerViewModel
 
         public ICommand SearchCommand { get; private set; }
         public ICommand ClearSearchCommand { get; private set; }
-        public ICommand LoadedCommand { get; private set; }
+        public ICommand LoadMoreCommand { get; private set; }
         public ICommand ChangePackageSourceCommand { get; private set; }
         public RelayCommand CancelCommand { get; private set; }
 
@@ -253,6 +251,8 @@ namespace PackageExplorerViewModel
 
             return ActiveRepository;
         }
+
+        private bool CanLoadMore() => IsEditable && _currentQuery?.HasMore == true;
 
         private async Task LoadMore(CancellationToken token)
         {
@@ -405,11 +405,6 @@ namespace PackageExplorerViewModel
             DiagnosticsClient.TrackEvent("PackageChooserViewModel_OnShowPrereleasePackagesChange");
 
             await LoadPackages();
-        }
-
-        public void OnAfterShow()
-        {
-            CurrentTypingSearch = _currentSearch;
         }
 
         internal void OnOpenPackage()
