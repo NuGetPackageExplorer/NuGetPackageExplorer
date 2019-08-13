@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -38,8 +37,7 @@ namespace PackageExplorerViewModel
 
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
             ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
-            NavigationCommand = new RelayCommand<string>(NavigationCommandExecute, NavigationCommandCanExecute);
-            LoadedCommand = new RelayCommand(async () => await LoadPackages());
+            LoadMoreCommand = new RelayCommand(async () => await LoadMore(CancellationToken.None), CanLoadMore);
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
 
@@ -123,7 +121,6 @@ namespace PackageExplorerViewModel
                 {
                     _isEditable = value;
                     OnPropertyChanged();
-                    NavigationCommand.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -144,34 +141,6 @@ namespace PackageExplorerViewModel
                     }
 
                     _selectedPackageViewModel = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private int _beginPackage;
-        public int BeginPackage
-        {
-            get { return _beginPackage; }
-            private set
-            {
-                if (_beginPackage != value)
-                {
-                    _beginPackage = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        private int _endPackage;
-        public int EndPackage
-        {
-            get { return _endPackage; }
-            private set
-            {
-                if (_endPackage != value)
-                {
-                    _endPackage = value;
                     OnPropertyChanged();
                 }
             }
@@ -228,10 +197,9 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public RelayCommand<string> NavigationCommand { get; private set; }
         public ICommand SearchCommand { get; private set; }
         public ICommand ClearSearchCommand { get; private set; }
-        public ICommand LoadedCommand { get; private set; }
+        public ICommand LoadMoreCommand { get; private set; }
         public ICommand ChangePackageSourceCommand { get; private set; }
         public RelayCommand CancelCommand { get; private set; }
 
@@ -240,37 +208,26 @@ namespace PackageExplorerViewModel
         public event EventHandler PackageDownloadRequested = delegate { };
 
         private readonly PackageListCache<IPackageSearchMetadata> _packageListCache = new PackageListCache<IPackageSearchMetadata>();
-        
+
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"),
          System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private async Task LoadPackages()
         {
             IsEditable = false;
-            ClearPackages(isErrorCase: true);
+            Packages.Clear();
+            SelectedPackageViewModel = null;
 
-            CurrentCancellationTokenSource = new CancellationTokenSource();
-            var usedTokenSource = CurrentCancellationTokenSource;
+            var usedTokenSource = new CancellationTokenSource();
+            CurrentCancellationTokenSource = usedTokenSource;
 
             var repository = GetPackageRepository();
-            if (repository == null)
-            {
-                await LoadPage(CurrentCancellationTokenSource.Token);
-                return;
-            }
 
             _currentQuery = new ShowLatestVersionQueryContext<IPackageSearchMetadata>(repository, _currentSearch, ShowPrereleasePackages, PackageListPageSize, _packageListCache);
             _feedType = await repository.GetFeedType(usedTokenSource.Token);
 
-            await LoadPage(CurrentCancellationTokenSource.Token);
-        }
+            await LoadMore(usedTokenSource.Token);
 
-        private void ClearPackages(bool isErrorCase)
-        {
-            Packages.Clear();
-            if (isErrorCase)
-            {
-                UpdatePageNumber(0, 0);
-            }
+            LoadPackagesCompleted(this, EventArgs.Empty);
         }
 
         private SourceRepository GetPackageRepository()
@@ -295,24 +252,25 @@ namespace PackageExplorerViewModel
             return ActiveRepository;
         }
 
-        private async Task LoadPage(CancellationToken token)
+        private bool CanLoadMore() => IsEditable && _currentQuery?.HasMore == true;
+
+        private async Task LoadMore(CancellationToken token)
         {
             Debug.Assert(_currentQuery != null);
 
             IsEditable = false;
-            ClearPackages(isErrorCase: false);
-
-            if (token == CancellationToken.None)
-            {
-                CurrentCancellationTokenSource = new CancellationTokenSource();
-                token = CurrentCancellationTokenSource.Token;
-            }
 
             var usedTokenSource = CurrentCancellationTokenSource;
+            if (token == CancellationToken.None)
+            {
+                usedTokenSource = new CancellationTokenSource();
+                token = usedTokenSource.Token;
+                CurrentCancellationTokenSource = usedTokenSource;
+            }
 
             try
             {
-                var packageInfos = await QueryPackages(token);
+                var packageInfos = await _currentQuery.LoadMore(token);
 
                 if (usedTokenSource != CurrentCancellationTokenSource)
                 {
@@ -320,8 +278,18 @@ namespace PackageExplorerViewModel
                     return;
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 ClearMessage();
-                ShowPackages(packageInfos, packageInfos.Count, _currentQuery.BeginPackage, _currentQuery.EndPackage);
+
+                var firstLoad = Packages.Count == 0;
+                var repository = GetPackageRepository();
+                Packages.AddRange(packageInfos.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, repository, _feedType, this)));
+
+                if (firstLoad)
+                {
+                    SelectedPackageViewModel = Packages?.FirstOrDefault();
+                }
             }
             catch (OperationCanceledException)
             {
@@ -332,7 +300,6 @@ namespace PackageExplorerViewModel
                 }
 
                 ClearMessage();
-                UpdatePageNumber(_currentQuery.BeginPackage, _currentQuery.EndPackage);
             }
             catch (Exception exception)
             {
@@ -347,52 +314,10 @@ namespace PackageExplorerViewModel
                 var errorMessage = exception.Message;
 
                 ShowMessage(errorMessage, true);
-                ClearPackages(isErrorCase: true);
             }
 
-            AutoSelectFirstAvailablePackage();
-            RestoreUI();
-        }
-
-        private async Task<IList<IPackageSearchMetadata>> QueryPackages(CancellationToken token)
-        {
-            if (_currentQuery != null)
-            {
-                var result = await _currentQuery.GetItemsForCurrentPage(token);
-                token.ThrowIfCancellationRequested();
-                return result;
-            }
-            return new List<IPackageSearchMetadata>();
-        }
-
-        private void ShowPackages(IEnumerable<IPackageSearchMetadata> packages, int packagesCount, int beginPackage, int endPackage)
-        {
-            Packages.Clear();
-
-            if (ActiveRepository != null)
-            {
-                var ar = ActiveRepository;
-                Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, ar, _feedType, this)));
-            }
-            UpdatePageNumber(beginPackage, endPackage);
-        }
-
-        private void UpdatePageNumber(int beginPackage, int endPackage)
-        {
-            BeginPackage = beginPackage;
-            EndPackage = endPackage;
-        }
-
-        private void AutoSelectFirstAvailablePackage()
-        {
-            SelectedPackageViewModel = Packages?.FirstOrDefault();
-        }
-
-        private void RestoreUI()
-        {
             IsEditable = true;
             CurrentCancellationTokenSource = null;
-            LoadPackagesCompleted(this, EventArgs.Empty);
         }
 
         #region Search
@@ -436,7 +361,7 @@ namespace PackageExplorerViewModel
 
                 PackageSource = source;
 
-                ResetPackageRepository();
+                ActiveRepository = null;
                 try
                 {
                     await LoadPackages();
@@ -462,11 +387,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private void ResetPackageRepository()
-        {
-            ActiveRepository = null;
-        }
-
         #region Status Bar
         private void ShowMessage(string message, bool isError)
         {
@@ -485,11 +405,6 @@ namespace PackageExplorerViewModel
             DiagnosticsClient.TrackEvent("PackageChooserViewModel_OnShowPrereleasePackagesChange");
 
             await LoadPackages();
-        }
-
-        public void OnAfterShow()
-        {
-            CurrentTypingSearch = _currentSearch;
         }
 
         internal void OnOpenPackage()
@@ -519,92 +434,6 @@ namespace PackageExplorerViewModel
         private bool CanCancelCommandExecute()
         {
             return !IsEditable && CurrentCancellationTokenSource != null;
-        }
-
-        #endregion
-
-        #region NavigationCommand
-
-        private bool NavigationCommandCanExecute(string action)
-        {
-            if (!IsEditable)
-            {
-                return false;
-            }
-
-            return action switch
-            {
-                "First" => CanMoveFirst(),
-
-                "Previous" => CanMovePrevious(),
-
-                "Next" => CanMoveNext(),
-
-                _ => throw new ArgumentOutOfRangeException("action"),
-            };
-        }
-
-        private async void NavigationCommandExecute(string action)
-        {
-            DiagnosticsClient.TrackEvent($"NavigationCommandExecute_{action}");
-
-            switch (action)
-            {
-                case "First":
-                    await MoveFirst();
-                    break;
-
-                case "Previous":
-                    await MovePrevious();
-                    break;
-
-                case "Next":
-                    await MoveNext();
-                    break;
-            }
-        }
-
-        private Task MoveNext()
-        {
-            var canMoveNext = _currentQuery?.MoveNext();
-            if (canMoveNext == true)
-            {
-                return LoadPage(CancellationToken.None);
-            }
-
-            return Task.FromResult(0);
-        }
-
-        private Task MovePrevious()
-        {
-            var canMovePrevious = _currentQuery?.MovePrevious();
-            if (canMovePrevious == true)
-            {
-                return LoadPage(CancellationToken.None);
-            }
-
-            return Task.FromResult(0);
-        }
-
-        private Task MoveFirst()
-        {
-            _currentQuery?.MoveFirst();
-            return LoadPage(CancellationToken.None);
-        }
-
-        private bool CanMoveNext()
-        {
-            return !_currentQuery?.IsLastPage ?? false;
-        }
-
-        private bool CanMovePrevious()
-        {
-            return BeginPackage > 1;
-        }
-
-        private bool CanMoveFirst()
-        {
-            return BeginPackage > 1;
         }
 
         #endregion

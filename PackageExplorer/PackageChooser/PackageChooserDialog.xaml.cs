@@ -55,7 +55,6 @@ namespace PackageExplorer
         private void CancelPendingRequestAndCloseDialog()
         {
             CancelPendingRequest();
-            _viewModel.SelectedPackageViewModel = null;
             Hide();
         }
 
@@ -91,23 +90,10 @@ namespace PackageExplorer
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(_pendingSearch))
-            {
-                await Dispatcher.BeginInvoke(new Action(LoadPackages), DispatcherPriority.Background);
-            }
-            else
-            {
-                await Dispatcher.BeginInvoke(
-                    new Action<string>(InvokeSearch),
-                    DispatcherPriority.Background,
-                    _pendingSearch);
-            }
-        }
-
-        private void LoadPackages()
-        {
-            var loadedCommand = (ICommand)Tag;
-            loadedCommand.Execute(null);
+            await Dispatcher.BeginInvoke(
+                new Action<string>(InvokeSearch),
+                DispatcherPriority.Background,
+                _pendingSearch);
         }
 
         private void Window_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -125,24 +111,6 @@ namespace PackageExplorer
             {
                 _settings.PackageChooserDialogHeight = e.NewSize.Height;
                 _settings.PackageChooserDialogWidth = e.NewSize.Width;
-            }
-        }
-
-        private async void StandardDialog_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            // The first time this event handler is invoked, IsLoaded = false
-            // We only do work from the second time.
-            if (IsVisible && IsLoaded)
-            {
-                if (string.IsNullOrEmpty(_pendingSearch))
-                {
-                    // there is no pending search operation, just set focus on the search box
-                    await Dispatcher.InvokeAsync(new Action(OnAfterShow), DispatcherPriority.Background);
-                }
-                else
-                {
-                    InvokeSearch(_pendingSearch);
-                }
             }
         }
 
@@ -166,12 +134,6 @@ namespace PackageExplorer
                 // move caret to the end 
                 SearchBox.Select(SearchBox.Text.Length, 0);
             }
-        }
-
-        private void OnAfterShow()
-        {
-            _viewModel.OnAfterShow();
-            FocusSearchBox();
         }
 
         private void PackageSourceBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -206,7 +168,7 @@ namespace PackageExplorer
 
         private void PackageSourceBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems == null || e.AddedItems.Count == 0)
+            if (!IsLoaded || e.AddedItems == null || e.AddedItems.Count == 0)
             {
                 e.Handled = true;
                 return;
@@ -219,6 +181,28 @@ namespace PackageExplorer
             }
 
             e.Handled = true;
+        }
+
+        private void ListBoxPackages_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            if (e.VerticalChange != 0 && e.OriginalSource is ScrollViewer scrollViewer && scrollViewer.VerticalOffset == scrollViewer.ScrollableHeight)
+            {
+                if (scrollViewer.VerticalOffset == 0 && scrollViewer.ScrollableHeight == 0) // scroll back to top if packages got cleared
+                {
+                    scrollViewer.ScrollToTop();
+                }
+                else if (_viewModel.LoadMoreCommand.CanExecute(null)) // load more packages if scrolled to end
+                {
+                    _viewModel.LoadMoreCommand.Execute(null);
+                }
+            }
+            else if (e.ExtentHeight > 0 && e.ExtentHeight < e.ViewportHeight) // load more packages if viewport is higher than used space
+            {
+                if (_viewModel.LoadMoreCommand.CanExecute(null))
+                {
+                    _viewModel.LoadMoreCommand.Execute(null);
+                }
+            }
         }
     }
 }
