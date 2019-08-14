@@ -21,9 +21,9 @@ namespace PackageExplorer
     {
         public const string ApiKeysSectionName = "apikeys";
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-        private readonly object lockObject = new object();
+        private readonly object _lockObject = new object();
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
@@ -32,7 +32,7 @@ namespace PackageExplorer
 
         private T GetValue<T>([CallerMemberName] string? name = null)
         {
-            lock(lockObject)
+            lock(_lockObject)
             {
                 object value;
                 try
@@ -102,7 +102,7 @@ namespace PackageExplorer
         {
             name ??= propertyName;
 
-            lock(lockObject)
+            lock(_lockObject)
             {
                 try
                 {

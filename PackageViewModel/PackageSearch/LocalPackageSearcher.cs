@@ -6,7 +6,7 @@ using NuGet.Protocol.Core.Types;
 
 namespace PackageExplorerViewModel.PackageSearch
 {
-    class LocalPackageSearcher<T> where T : IPackageSearchMetadata
+    internal class LocalPackageSearcher<T> where T : IPackageSearchMetadata
     {
         private readonly SearchContext _searchContext;
 
@@ -29,7 +29,7 @@ namespace PackageExplorerViewModel.PackageSearch
             {
                 packages = packages.Where(p => string.Equals(p.Identity.Id, searchText, StringComparison.OrdinalIgnoreCase));
             }
-            else if (!String.IsNullOrEmpty(searchText))
+            else if (!string.IsNullOrEmpty(searchText))
             {
                 // Support multiple terms
                 var searchValues = SplitValues(searchText, " ");

@@ -46,7 +46,7 @@ namespace PackageExplorerViewModel
             return !isSigned && !hasTokens && !ViewModel.IsInEditFileMode;
         }
 
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
         public void Execute(object parameter)
         {

@@ -60,8 +60,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        #region IDataErrorInfo Members
-
         public string? Error
         {
             get { return null; }
@@ -72,13 +70,7 @@ namespace PackageExplorerViewModel
             get { return IsValid(columnName); }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private void RaisePropertyChange(string propertyName)
         {

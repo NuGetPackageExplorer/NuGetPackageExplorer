@@ -269,7 +269,7 @@ namespace PackageExplorerViewModel
 
         #region INotifyPropertyChanged Members
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         private bool _developmentDependency;
         private RepositoryMetadata? _repository;
         private LicenseMetadata? _licenseMetadata;
