@@ -47,7 +47,7 @@ namespace PackageExplorerViewModel
             return new PackageDependencyGroup(TargetFramework ?? NuGetFramework.AnyFramework, Dependencies);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private void OnPropertyChange(string propertyName)
         {

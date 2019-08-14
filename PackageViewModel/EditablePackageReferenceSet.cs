@@ -20,7 +20,7 @@ namespace PackageExplorerViewModel
             References = new ObservableCollection<string>(packageReferenceSet.References);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public NuGetFramework? TargetFramework
         {

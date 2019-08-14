@@ -21,7 +21,7 @@ namespace PackageExplorerViewModel
             FrameworkReferences = new ObservableCollection<string>(frameworkReferenceGroup.FrameworkReferences.Select(fr => fr.Name));
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public NuGetFramework? TargetFramework
         {
