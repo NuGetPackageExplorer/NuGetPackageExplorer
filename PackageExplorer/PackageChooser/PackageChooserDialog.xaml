@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
     xmlns:self="clr-namespace:PackageExplorer"
     xmlns:viewmodel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"
+    xmlns:controls="clr-namespace:PackageExplorer.Controls"
     xmlns:g="clr-namespace:System.Globalization;assembly=mscorlib"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -145,7 +146,7 @@
                 </DataTemplate>
                 <DataTemplate DataType="{x:Type viewmodel:PackageChooserViewModel}">
                     <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Vertical" d:IsHidden="False">
-                        <ProgressBar Width="140" Height="24" IsIndeterminate="True" />
+                        <controls:Spinner x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" />
                         <Button Content="_Cancel" Margin="0,10,0,0" Padding="15,2" HorizontalAlignment="Center" Command="{Binding CancelCommand}" />
                     </StackPanel>
                 </DataTemplate>
