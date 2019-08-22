@@ -55,6 +55,7 @@ namespace PackageExplorer
         private void CancelPendingRequestAndCloseDialog()
         {
             CancelPendingRequest();
+            _viewModel.SelectedPackageViewModel = null;
             Hide();
         }
 
