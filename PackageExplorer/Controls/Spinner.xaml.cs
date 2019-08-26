@@ -14,7 +14,9 @@ namespace PackageExplorer.Controls
         public double Height { get; set; }
         public double Left { get; set; }
         public double Top { get; set; }
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         public Brush Fill { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }
 
     internal class EllipseData : ObservableCollection<EllipseDetails>
