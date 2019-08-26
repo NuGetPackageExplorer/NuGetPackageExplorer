@@ -55,6 +55,8 @@ namespace PackageExplorerViewModel
             get { return null; }
         }
 
+        public string? Icon => null;
+
         public Uri? LicenseUrl
         {
             get { return null; }

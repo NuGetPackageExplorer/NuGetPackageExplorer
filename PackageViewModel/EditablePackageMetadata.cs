@@ -22,6 +22,7 @@ namespace PackageExplorerViewModel
         private string? _authors;
         private string? _copyright;
         private string? _description;
+        private string? _icon;
         private Uri? _iconUrl;
         private string _id;
         private string? _language;
@@ -56,6 +57,7 @@ namespace PackageExplorerViewModel
             Title = source.Title;
             Authors = ConvertToString(source.Authors);
             Owners = ConvertToString(source.Owners);
+            Icon = source.Icon;
             IconUrl = FixIconUrl(source.IconUrl);
 
             ProjectUrl = source.ProjectUrl;
@@ -338,6 +340,19 @@ namespace PackageExplorerViewModel
                 {
                     _title = value;
                     RaisePropertyChange("Title");
+                }
+            }
+        }
+
+        public string? Icon
+        {
+            get => _icon;
+            set
+            {
+                if(_icon != value)
+                {
+                    _icon = value;
+                    RaisePropertyChange(nameof(Icon));
                 }
             }
         }
