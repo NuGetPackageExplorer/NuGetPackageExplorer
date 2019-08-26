@@ -86,6 +86,12 @@ namespace NuGetPe
             set { _metadata.Owners = value; }
         }
 
+        public string Icon
+        {
+            get { return _metadata.Icon; }
+            set { _metadata.Icon = value; }
+        }
+
         public Uri? IconUrl
         {
             get { return _metadata.IconUrl; }
