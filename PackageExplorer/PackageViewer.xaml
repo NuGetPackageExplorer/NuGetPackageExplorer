@@ -9,7 +9,7 @@
     xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging"
     xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
     xmlns:nugetpe="clr-namespace:NuGetPe;assembly=Core"
-    xmlns:spinners="clr-namespace:xamlSpinnersWPF"
+    xmlns:controls="clr-namespace:PackageExplorer.Controls"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
@@ -53,7 +53,7 @@
                     </StackPanel.InputBindings>
                     <TextBlock Name="isValid" Text="{x:Static self:Resources.Validation_Pending}" />
                     <ContentControl Name="icon" Margin="3,0,0,0" Width="16" Height="16" Visibility="Collapsed"  />
-                    <spinners:ucSpinnerDotCircle x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" Foreground="Black" />
+                    <controls:Spinner x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" />
                 </StackPanel>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Valid">

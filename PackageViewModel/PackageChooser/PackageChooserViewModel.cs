@@ -33,7 +33,7 @@ namespace PackageExplorerViewModel
         {
             _showPrereleasePackages = showPrereleasePackages;
             _defaultPackageSourceUrl = defaultPackageSourceUrl;
-            Packages = new ObservableCollection<PackageInfoViewModel>();
+            Packages = new ObservableCollection<object>();
 
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
             ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
@@ -121,11 +121,20 @@ namespace PackageExplorerViewModel
                 {
                     _isEditable = value;
                     OnPropertyChanged();
+
+                    if (_isEditable)
+                    {
+                        Packages.Remove(this);
+                    }
+                    else
+                    {
+                        Packages.Add(this);
+                    }
                 }
             }
         }
 
-        public ObservableCollection<PackageInfoViewModel> Packages { get; private set; }
+        public ObservableCollection<object> Packages { get; private set; }
 
         private PackageInfoViewModel? _selectedPackageViewModel;
         public PackageInfoViewModel? SelectedPackageViewModel
@@ -213,8 +222,8 @@ namespace PackageExplorerViewModel
          System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private async Task LoadPackages()
         {
-            IsEditable = false;
             Packages.Clear();
+            IsEditable = false;
             SelectedPackageViewModel = null;
 
             var usedTokenSource = new CancellationTokenSource();
@@ -282,13 +291,13 @@ namespace PackageExplorerViewModel
 
                 ClearMessage();
 
-                var firstLoad = Packages.Count == 0;
+                var firstLoad = !Packages.OfType<PackageInfoViewModel>().Any();
                 var repository = GetPackageRepository();
                 Packages.AddRange(packageInfos.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, repository, _feedType, this)));
 
                 if (firstLoad)
                 {
-                    SelectedPackageViewModel = Packages?.FirstOrDefault();
+                    SelectedPackageViewModel = Packages.OfType<PackageInfoViewModel>().FirstOrDefault();
                 }
             }
             catch (OperationCanceledException)
