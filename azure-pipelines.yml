@@ -26,9 +26,11 @@ jobs:
         ReleaseChannel: Choco
 
   steps:
-  - task: DotNetCoreInstaller@0
+  - task: UseDotNet@2
+    displayName: 'Use .Net Core sdk 3.x'
     inputs:
-      version: '3.0.100-preview8-013656'
+      version: 3.x
+      includePreviewVersions: true
 
   - task: DotNetCoreCLI@2
     inputs:
