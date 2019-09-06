@@ -95,7 +95,7 @@ Requirements to build the project:
 - VS2019 or later. If using the stable release, make sure to enable support for Preview .NET Core SDK's
 - [Windows 10 SDK 17134](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk)
 - [.NET Core 3 SDK](https://github.com/dotnet/core-sdk)
-- Shared IntelliCode model: https://prod.intellicode.vsengsaas.visualstudio.com/get?m=B971F4617299420C8D5CFEF23F395D2A
+- [Shared IntelliCode model](https://prod.intellicode.vsengsaas.visualstudio.com/get?m=B971F4617299420C8D5CFEF23F395D2A)
 
 ## Diagnostics
 
