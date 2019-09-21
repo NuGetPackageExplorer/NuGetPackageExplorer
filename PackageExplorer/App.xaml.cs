@@ -55,7 +55,8 @@ namespace PackageExplorer
         {
             DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", e.Args.Length > 0 ? "fileAssociation" : "shortcut" } });
 
-            Resources.Add("Settings", Container.GetExportedValue<ISettingsManager>());
+            // Overwrite settings with the real instance
+            Resources["Settings"] = Container.GetExportedValue<ISettingsManager>();
 
             InitCredentialService();
             HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>

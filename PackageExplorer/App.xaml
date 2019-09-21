@@ -14,6 +14,10 @@
                 <ResourceDictionary Source="Xaml/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- Add this in so the designer finds these via StaticResource.
+                 The instance will be replaced during startup -->
+            <self:SettingsManager x:Key="Settings" />
+
             <self:IntegerToBooleanConverter x:Key="FontSizeToBoolConverter" />
             <self:BooleanToVisibilityConverter x:Key="invertedBoolToVis" Inverted="True" />
             <self:BooleanToVisibilityConverter x:Key="boolToVis" />
