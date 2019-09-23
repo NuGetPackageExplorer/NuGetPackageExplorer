@@ -27,10 +27,9 @@ jobs:
 
   steps:
   - task: UseDotNet@2
-    displayName: 'Use .Net Core sdk 3.x'
+    displayName: 'Use .NET Core SDK 3.x'
     inputs:
       version: 3.x
-      includePreviewVersions: true
 
   - task: DotNetCoreCLI@2
     inputs:
