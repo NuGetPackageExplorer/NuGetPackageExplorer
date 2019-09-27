@@ -11,7 +11,7 @@
         $fileType1="Nuget.Package"
         Start-ChocolateyProcessAsAdmin "cmd /c assoc .nupkg=$fileType1"
     }
-    Start-ChocolateyProcessAsAdmin "cmd /c ftype $fileType1=`"$exe`" %1"
+    Start-ChocolateyProcessAsAdmin "cmd /c ftype $fileType1=`"$exe`" `"%1`""
 
     $testType2 = $allTypes | ? { $_.StartsWith('.snupkg') }
     if($testType2 -ne $null) {
@@ -21,4 +21,4 @@
         $fileType2="Nuget.SymbolPackage"
         Start-ChocolateyProcessAsAdmin "cmd /c assoc .snupkg=$fileType2"
     }
-    Start-ChocolateyProcessAsAdmin "cmd /c ftype $fileType2=`"$exe`" %1"
+    Start-ChocolateyProcessAsAdmin "cmd /c ftype $fileType2=`"$exe`" `"%1`""
