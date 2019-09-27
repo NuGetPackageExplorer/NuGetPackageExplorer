@@ -17,7 +17,7 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.0.0-rc1" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
-    <PackageReference Include="Humanizer" Version="2.7.2" />
+    <PackageReference Include="Humanizer" Version="2.7.9" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="1.1.0" />
     <PackageReference Include="System.Memory" Version="4.5.3" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
