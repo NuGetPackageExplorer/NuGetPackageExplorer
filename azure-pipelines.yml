@@ -138,7 +138,7 @@ stages:
       artifact: SigningScripts
 
 - stage: CodeSign
-  # condition: and(succeeded('Build'), not(eq(variables['build.reason'], 'PullRequest')))
+  condition: and(succeeded('Build'), not(eq(variables['build.reason'], 'PullRequest')))
   jobs:
   - deployment: CodeSign
     displayName: Code Signing
@@ -153,16 +153,19 @@ stages:
           steps:
 
           - task: DownloadPipelineArtifact@2
+            displayName: Download Zip Artifacts
             inputs:
               artifactName: Zip
               targetPath: $(Pipeline.Workspace)/ToSign/Zip
 
           - task: DownloadPipelineArtifact@2
+            displayName: Download Choco Artifacts
             inputs:
               artifactName: Choco
               targetPath: $(Pipeline.Workspace)/ToSign/Choco
 
           - task: DownloadPipelineArtifact@2
+            displayName: Download Nightly Artifacts
             inputs:
               artifactName: Nightly
               targetPath: $(Pipeline.Workspace)/ToSign/Nightly
