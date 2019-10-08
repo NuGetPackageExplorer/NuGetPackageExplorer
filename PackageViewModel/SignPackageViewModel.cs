@@ -426,6 +426,7 @@ namespace PackageExplorerViewModel
 
         private void Clear()
         {
+            CanSign = false;
             ShowProgress = false;
             HasError = false;
             Status = null;
