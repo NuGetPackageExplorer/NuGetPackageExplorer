@@ -180,7 +180,17 @@ stages:
               arguments: install --tool-path . SignClient
             displayName: Install SignTool tool
 
-          - script: SignClient "Sign" -b "$(Pipeline.Workspace)\ToSign" -i "**/*.{appxbundle,appinstaller,zip,nupkg}" -c "$(Pipeline.Workspace)\SigningScripts\appsettings.json" -f "$(Pipeline.Workspace)\SigningScripts\filelist.txt" -r $(SignClientUser) -s $(SignClientSecret) -n "NuGet Package Explorer" -d "NuGet Package Explorer" -u "https://github.com/NuGetPackageExplorer/NuGetPackageExplorer"
+          - script: |
+              SignClient "Sign" ^
+              --baseDirectory "$(Pipeline.Workspace)\ToSign" ^
+              --inpput "**/*.{appxbundle,appinstaller,zip,nupkg}" ^
+              --config "$(Pipeline.Workspace)\SigningScripts\appsettings.json" ^
+              --filter "$(Pipeline.Workspace)\SigningScripts\filelist.txt" ^
+              --user "$(SignClientUser)" ^
+              --secret "$(SignClientSecret)" ^
+              --name "NuGet Package Explorer" ^
+              --description "NuGet Package Explorer" ^
+              --descriptionUrl "https://github.com/NuGetPackageExplorer/NuGetPackageExplorer"
             displayName: Authenticode Sign artifacts
 
           - publish: $(Pipeline.Workspace)/ToSign/Zip
