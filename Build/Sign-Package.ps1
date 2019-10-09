@@ -10,45 +10,8 @@ if([string]::IsNullOrEmpty($Env:SignClientSecret)){
 $appSettings = "$currentDirectory\appsettings.json"
 $fileList = "$currentDirectory\filelist.txt"
 
-$appxs = gci $Env:ArtifactDirectory\*.appxbundle -recurse | Select -ExpandProperty FullName
+& $currentDirectory\SignClient 'sign' -c $appSettings -b $Env:ArtifactDirectory -i **/*.{appxbundle,appinstaller,zip,nupkg} -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer'
 
-foreach ($appx in $appxs){
-	Write-Host "Submitting $appx for signing"
-
-	& $currentDirectory\SignClient 'sign' -c $appSettings -i $appx -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer'
-
-  if ($LASTEXITCODE -ne 0) {
-    exit 1
-  }
-	Write-Host "Finished signing $appx"
+if ($LASTEXITCODE -ne 0) {
+  exit 1
 }
-
-$insts = gci $Env:ArtifactDirectory\*.appinstaller -recurse | Select -ExpandProperty FullName
-
-foreach ($inst in $insts){
-	Write-Host "Submitting $inst for signing"
-
-	& $currentDirectory\SignClient 'sign' -c $appSettings -i $inst -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer'
-
-	if ($LASTEXITCODE -ne 0) {
-        exit 1
-	}
-
-	Write-Host "Finished signing $inst"
-}
-
-$nupkgs = gci $Env:ArtifactDirectory\*.nupkg -recurse | Select -ExpandProperty FullName
-
-foreach ($nupkg in $nupkgs){
-	Write-Host "Submitting $nupkg for signing"
-
-	& $currentDirectory\SignClient 'sign' -c $appSettings -i $nupkg -f $fileList -r $Env:SignClientUser -s $Env:SignClientSecret -n 'NuGet Package Explorer' -d 'NuGet Package Explorer' -u 'https://github.com/NuGetPackageExplorer/NuGetPackageExplorer'
-
-    if ($LASTEXITCODE -ne 0) {
-        exit 1
-    }
-
-	Write-Host "Finished signing $nupkg"
-}
-
-Write-Host "Sign-package complete"

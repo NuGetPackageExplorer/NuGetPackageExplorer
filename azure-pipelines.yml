@@ -181,18 +181,11 @@ stages:
             displayName: Install SignTool tool
 
           - pwsh: $(Pipeline.Workspace)/SigningScripts/Sign-Package.ps1
-            displayName: Authenticode Sign Package artifacts
+            displayName: Authenticode Sign artifacts
             env:
               SignClientUser: $(SignClientUser)
               SignClientSecret: $(SignClientSecret)
               ArtifactDirectory: $(Pipeline.Workspace)\ToSign
-
-          - pwsh: $(Pipeline.Workspace)/SigningScripts/Sign-Zip.ps1
-            displayName: Authenticode Sign Zip artifacts
-            env:
-              SignClientUser: $(SignClientUser)
-              SignClientSecret: $(SignClientSecret)
-              ArtifactDirectory: $(Pipeline.Workspace)\ToSign\Zip
 
           - publish: $(Pipeline.Workspace)/ToSign/Zip
             displayName: Publish Signed Zip Packages
