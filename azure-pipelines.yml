@@ -183,7 +183,7 @@ stages:
           - script: |
               SignClient "Sign" ^
               --baseDirectory "$(Pipeline.Workspace)\ToSign" ^
-              --inpput "**/*.{appxbundle,appinstaller,zip,nupkg}" ^
+              --input "**/*.{appxbundle,appinstaller,zip,nupkg}" ^
               --config "$(Pipeline.Workspace)\SigningScripts\appsettings.json" ^
               --filter "$(Pipeline.Workspace)\SigningScripts\filelist.txt" ^
               --user "$(SignClientUser)" ^
