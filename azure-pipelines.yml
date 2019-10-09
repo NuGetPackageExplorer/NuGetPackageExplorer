@@ -177,15 +177,11 @@ stages:
             inputs:
               command: custom
               custom: tool
-              arguments: install --tool-path $(Pipeline.Workspace)\SigningScripts SignClient
+              arguments: install --tool-path . SignClient
             displayName: Install SignTool tool
 
-          - pwsh: $(Pipeline.Workspace)/SigningScripts/Sign-Package.ps1
+          - script: SignClient "Sign" -b "$(Pipeline.Workspace)\ToSign" -i "**/*.{appxbundle,appinstaller,zip,nupkg}" -c "$(Pipeline.Workspace)\SigningScripts\appsettings.json" -f "$(Pipeline.Workspace)\SigningScripts\filelist.txt" -r $(SignClientUser) -s $(SignClientSecret) -n "NuGet Package Explorer" -d "NuGet Package Explorer" -u "https://github.com/NuGetPackageExplorer/NuGetPackageExplorer"
             displayName: Authenticode Sign artifacts
-            env:
-              SignClientUser: $(SignClientUser)
-              SignClientSecret: $(SignClientSecret)
-              ArtifactDirectory: $(Pipeline.Workspace)\ToSign
 
           - publish: $(Pipeline.Workspace)/ToSign/Zip
             displayName: Publish Signed Zip Packages
