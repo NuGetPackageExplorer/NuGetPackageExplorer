@@ -36,7 +36,7 @@ namespace PackageExplorer
             }
         }
 
-        private void ExpireOlderValues(Queue<int> q, int expirationOffsetInTicks)
+        private static void ExpireOlderValues(Queue<int> q, int expirationOffsetInTicks)
         {
             while (q.Count > 0 && q.Peek() < expirationOffsetInTicks)
             {

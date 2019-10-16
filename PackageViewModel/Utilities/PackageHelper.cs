@@ -82,7 +82,7 @@ namespace PackageExplorerViewModel
                     }
                     catch (Exception)
                     {
-                        issues = new PackageIssue[0];
+                        issues = Array.Empty<PackageIssue>();
                     }
 
                     // can't yield inside a try/catch block

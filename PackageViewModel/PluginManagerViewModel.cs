@@ -100,6 +100,7 @@ namespace PackageExplorerViewModel
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddLocalPlugin()
         {
             var result = _uiServices.OpenFileDialog(

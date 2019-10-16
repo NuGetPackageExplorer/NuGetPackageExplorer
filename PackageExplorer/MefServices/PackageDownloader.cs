@@ -143,7 +143,7 @@ namespace PackageExplorer
                         throw new OperationCanceledException();
 
                     if (result.Status == DownloadResourceResultStatus.NotFound)
-                        throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
+                        throw new Exception($"Package '{packageIdentity.Id} {packageIdentity.Version}' not found");
 
                     var tempFilePath = Path.GetTempFileName();
                     using (var fileStream = File.OpenWrite(tempFilePath))

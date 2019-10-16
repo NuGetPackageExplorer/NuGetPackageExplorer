@@ -302,12 +302,12 @@ namespace NuGetPe
         public async Task LoadSignatureDataAsync()
         {
             using var reader = new PackageArchiveReader(_streamFactory(), false);
-            IsSigned = await reader.IsSignedAsync(CancellationToken.None);
+            IsSigned = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
             if (IsSigned)
             {
                 try
                 {
-                    var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None);
+                    var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None).ConfigureAwait(false);
 
                     // Author signatures must be the primary, but they can contain
                     // a repository counter signature
@@ -336,7 +336,7 @@ namespace NuGetPe
         public async Task VerifySignatureAsync()
         {
             using var reader = new PackageArchiveReader(_streamFactory(), false);
-            var signed = await reader.IsSignedAsync(CancellationToken.None);
+            var signed = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
             if (signed)
             {
                 // Check verification
@@ -348,7 +348,7 @@ namespace NuGetPe
                 };
                 var verifier = new PackageSignatureVerifier(trustProviders);
 
-                VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None);
+                VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None).ConfigureAwait(false);
             }
         }
 
@@ -368,7 +368,7 @@ namespace NuGetPe
             // We exclude any opc files and the manifest file (.nuspec)
             var path = entry.FullName;
 
-            return !path.EndsWith("/") && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
+            return !path.EndsWith("/", StringComparison.Ordinal) && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
         }
 

@@ -7,6 +7,8 @@ namespace NuGetPe
     {
         public static int UnpackPackage(this IPackage package, string sourceDirectory, string targetRootDirectory)
         {
+            if (package is null)
+                throw new ArgumentNullException(nameof(package));
             if (sourceDirectory == null)
             {
                 throw new ArgumentNullException(nameof(sourceDirectory));

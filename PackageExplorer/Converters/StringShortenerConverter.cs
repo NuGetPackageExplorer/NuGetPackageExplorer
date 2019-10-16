@@ -5,12 +5,15 @@ namespace PackageExplorer
 {
     public class StringShortenerConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            if (value is null)
+                return value;
             if (parameter == null)
             {
                 return value;
             }
+
             var stringValue = (string)value;
             var maxLength = System.Convert.ToInt32(parameter, culture);
             if (maxLength < 5)

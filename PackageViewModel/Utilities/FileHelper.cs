@@ -32,8 +32,8 @@ namespace PackageExplorerViewModel
         public static bool IsBinaryFile(string path)
         {
             // TODO: check for content type of the file here
-            var extension = Path.GetExtension(path)?.ToUpper(CultureInfo.InvariantCulture);
-            return !string.IsNullOrEmpty(extension) && BinaryFileExtensions.Any(p => p.Equals(extension));
+            var extension = Path.GetExtension(path);
+            return !string.IsNullOrEmpty(extension) && BinaryFileExtensions.Any(p => p.Equals(extension, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public static void OpenFileInShell(PackageFile file, IUIServices uiServices)

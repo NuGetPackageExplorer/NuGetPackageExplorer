@@ -107,7 +107,7 @@ namespace PackageExplorer
             }
             else
             {
-                selectedFileNames = new string[0];
+                selectedFileNames = Array.Empty<string>();
                 return false;
             }
         }

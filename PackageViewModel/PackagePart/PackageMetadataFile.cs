@@ -52,7 +52,7 @@ namespace PackageExplorerViewModel
 
         public IEnumerable<FrameworkName> SupportedFrameworks
         {
-            get { return new FrameworkName[0]; }
+            get { return Array.Empty<FrameworkName>(); }
         }
 
         public DateTimeOffset LastWriteTime => DateTimeOffset.MinValue;

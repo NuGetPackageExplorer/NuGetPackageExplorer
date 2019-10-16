@@ -69,7 +69,7 @@ namespace PackageExplorerViewModel
         private void OnNameChange(string newName)
         {
             // precalculate hash code to improve perf
-            _hashCode = newName == null ? 0 : newName.ToUpperInvariant().GetHashCode();
+            _hashCode = newName == null ? 0 : newName.ToUpperInvariant().GetHashCode(StringComparison.InvariantCulture);
 
             _name = newName;
             OnPropertyChanged(nameof(Name));

@@ -23,7 +23,7 @@ namespace PackageExplorer
 
         private static bool Matching(string pattern, string value)
         {
-            if (pattern.IndexOf('*') > -1)
+            if (pattern.IndexOf('*', StringComparison.Ordinal) > -1)
             {
                 var patternParts = pattern.Split('\\');
                 var valueParts = value.Split('\\');

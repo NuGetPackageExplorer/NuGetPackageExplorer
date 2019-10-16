@@ -108,7 +108,7 @@ namespace PackageExplorerViewModel
                 }
                 else
                 {
-                    return new IPackageFile[0];
+                    return Array.Empty<IPackageFile>();
                 }
             }
             else
@@ -212,8 +212,11 @@ namespace PackageExplorerViewModel
             return newFolder;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddFolder(PackageFolder childFolder, bool makeCopy = false)
         {
+            if (childFolder is null)
+                throw new ArgumentNullException(nameof(childFolder));
             if (!AddContentFolderCanExecute(childFolder.Name))
             {
                 PackageViewModel.UIServices.Show(
@@ -319,6 +322,7 @@ namespace PackageExplorerViewModel
             return newFile;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddFile(PackageFile file, bool makeCopy = false)
         {
             if (file == null)
@@ -373,6 +377,7 @@ namespace PackageExplorerViewModel
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         internal void ReplaceFile(PackageFile oldFile, string newFilePath)
         {
             var showingFile = PackageViewModel.IsShowingFileContent(oldFile);
@@ -418,6 +423,7 @@ namespace PackageExplorerViewModel
             AddPhysicalFolderCore(dirInfo);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddPhysicalFolderCore(DirectoryInfo dirInfo)
         {
             var childPackgeFolder = AddFolder(dirInfo.Name);

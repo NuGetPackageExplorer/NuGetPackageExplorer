@@ -10,6 +10,8 @@ namespace NuGetPe
 
         public static string? GetDecryptedValue(this ISettings settings, string section, string key)
         {
+            if (settings is null)
+                throw new ArgumentNullException(nameof(settings));
             if (string.IsNullOrEmpty(section))
             {
                 throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
@@ -37,6 +39,8 @@ namespace NuGetPe
 
         public static void SetEncryptedValue(this ISettings settings, string section, string key, string value)
         {
+            if (settings is null)
+                throw new ArgumentNullException(nameof(settings));
             if (string.IsNullOrEmpty(section))
             {
                 throw new ArgumentException("Argument cannot be null or empty.", nameof(section));

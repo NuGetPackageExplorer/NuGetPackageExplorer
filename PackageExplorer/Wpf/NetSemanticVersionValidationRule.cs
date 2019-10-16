@@ -14,7 +14,7 @@ namespace PackageExplorer
                 return ValidationResult.ValidResult;
             }
 
-            if (stringValue.Contains("$"))
+            if (stringValue.Contains("$", StringComparison.Ordinal))
             {
                 return ValidationResult.ValidResult;
             }

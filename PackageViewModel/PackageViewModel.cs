@@ -417,6 +417,7 @@ namespace PackageExplorerViewModel
             return !RootFolder.ContainsFolder(folderName);
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddContentFolderExecute(string folderName)
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_AddContentFolderExecute");
@@ -452,6 +453,7 @@ namespace PackageExplorerViewModel
             return parameter == null || parameter is PackageFolder;
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddNewFolderExecute(object parameter)
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_AddNewFolderExecute");
@@ -1128,6 +1130,7 @@ this);
             AddNewFileToFolder(folder ?? RootFolder);
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddNewFileToFolder(PackageFolder folder)
         {
             var result = UIServices.OpenRenameDialog(
@@ -1163,6 +1166,7 @@ this);
             }
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddScriptCommandExecute(string scriptName)
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_AddScriptCommandExecute");
@@ -1231,6 +1235,7 @@ this);
             return false;
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddBuildFileCommandExecute(string extension)
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_AddBuildFileCommandExecute");
@@ -1523,8 +1528,13 @@ this);
             }
         }
 
-        public void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<(string FilePath, Stream? Stream)> fileDescriptors)
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
+        public static void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<(string FilePath, Stream? Stream)> fileDescriptors)
         {
+            if (folder is null)
+                throw new ArgumentNullException(nameof(folder));
+            if (fileDescriptors is null)
+                throw new ArgumentNullException(nameof(fileDescriptors));
             foreach (var fileDescription in fileDescriptors)
             {
                 var parts = fileDescription.FilePath.Split(Path.DirectorySeparatorChar);

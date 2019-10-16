@@ -23,6 +23,8 @@ namespace NuGetPackageExplorer.Types
 
         public bool Equals(PluginInfo other)
         {
+            if (other is null) return false;
+
             return Id.Equals(other.Id, StringComparison.OrdinalIgnoreCase) && Version == other.Version;
         }
 
@@ -35,7 +37,7 @@ namespace NuGetPackageExplorer.Types
 
         public override int GetHashCode()
         {
-            return Id.GetHashCode() * 3137 + Version.GetHashCode();
+            return HashCode.Combine(Id, Version);
         }
     }
 }

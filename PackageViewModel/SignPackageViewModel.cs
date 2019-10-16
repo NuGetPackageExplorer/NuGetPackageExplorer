@@ -37,9 +37,9 @@ namespace PackageExplorerViewModel
 
         public SignPackageViewModel(PackageViewModel viewModel, IUIServices uiServices, ISettingsManager settingsManager)
         {
-            _uiServices = uiServices;
-            _settingsManager = settingsManager;
-            _packageViewModel = viewModel;
+            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
+            _settingsManager = settingsManager ?? throw new ArgumentNullException(nameof(settingsManager));
+            _packageViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
 
             SelectCertificateFileCommand = new RelayCommand(SelectCertificateFileCommandExecute);
             SelectCertificateStoreCommand = new RelayCommand(SelectCertificateStoreCommandExecute);
@@ -140,7 +140,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public IEnumerable<HashAlgorithmName> ValidHashAlgorithmNames
+        public static IEnumerable<HashAlgorithmName> ValidHashAlgorithmNames
         {
             get
             {

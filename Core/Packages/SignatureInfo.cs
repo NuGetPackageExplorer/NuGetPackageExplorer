@@ -12,7 +12,7 @@ namespace NuGetPe
 
         public SignatureInfo(Signature signature)
         {
-            _signature = signature;
+            _signature = signature ?? throw new ArgumentNullException(nameof(signature));
             var ts = signature.Timestamps.FirstOrDefault();
             Timestamp = ts?.GeneralizedTime;
             TimestampSignerInfo = ts?.SignerInfo;

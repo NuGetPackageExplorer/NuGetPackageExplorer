@@ -13,8 +13,8 @@ namespace PackageExplorer
     // code taken from http://dlaa.me/blog/post/9917797
     internal static class NativeDragDrop
     {
-        public static readonly string FileGroupDescriptorW = "FileGroupDescriptorW";
-        public static readonly string FileContents = "FileContents";
+        public const string FileGroupDescriptorW = "FileGroupDescriptorW";
+        public const string FileContents = "FileContents";
 
         public static Stream CreateFileGroupDescriptorW(string fileName, DateTimeOffset lastWriteTime, long? fileSize)
         {

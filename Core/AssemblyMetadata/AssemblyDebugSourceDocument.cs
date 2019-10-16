@@ -39,11 +39,11 @@ namespace NuGetPe.AssemblyMetadata
         }
 
 
-        public HashAlgorithmName? HashAlgorithmNameFromGuid(Guid guid)
+        public static HashAlgorithmName? HashAlgorithmNameFromGuid(Guid algorithmId)
         {
-            if (guid == Md5) return HashAlgorithmName.MD5;
-            if (guid == Sha1) return HashAlgorithmName.SHA1;
-            if (guid == Sha256) return HashAlgorithmName.SHA256;
+            if (algorithmId == Md5) return HashAlgorithmName.MD5;
+            if (algorithmId == Sha1) return HashAlgorithmName.SHA1;
+            if (algorithmId == Sha256) return HashAlgorithmName.SHA256;
 
             return null;
         }
