@@ -11,7 +11,7 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(root))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "root");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(root));
             }
             Root = root;
         }

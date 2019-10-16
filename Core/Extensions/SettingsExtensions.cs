@@ -12,12 +12,12 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
 
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
 
             var encrpytedString = settings.GetValue(section, key);
@@ -39,15 +39,15 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
 
             if (string.IsNullOrEmpty(value))

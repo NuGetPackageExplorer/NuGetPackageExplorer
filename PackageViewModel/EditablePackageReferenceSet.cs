@@ -33,7 +33,7 @@ namespace PackageExplorerViewModel
                 if (_targetFramework != value)
                 {
                     _targetFramework = value;
-                    OnPropertyChange("TargetFramework");
+                    OnPropertyChange(nameof(TargetFramework));
                 }
             }
         }

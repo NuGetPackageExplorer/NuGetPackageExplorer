@@ -9,12 +9,12 @@ namespace NuGetPe
         {
             if (sourceDirectory == null)
             {
-                throw new ArgumentNullException("sourceDirectory");
+                throw new ArgumentNullException(nameof(sourceDirectory));
             }
 
             if (targetRootDirectory == null)
             {
-                throw new ArgumentNullException("targetRootDirectory");
+                throw new ArgumentNullException(nameof(targetRootDirectory));
             }
 
             if (!sourceDirectory.EndsWith("\\", StringComparison.OrdinalIgnoreCase))

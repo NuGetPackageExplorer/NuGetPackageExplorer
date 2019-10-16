@@ -151,8 +151,8 @@ namespace PackageExplorerViewModel
                 if (_fileEditorViewModel != value)
                 {
                     _fileEditorViewModel = value;
-                    OnPropertyChanged("FileEditorViewModel");
-                    OnPropertyChanged("IsInEditFileMode");
+                    OnPropertyChanged(nameof(FileEditorViewModel));
+                    OnPropertyChanged(nameof(IsInEditFileMode));
                 }
             }
         }
@@ -170,8 +170,8 @@ namespace PackageExplorerViewModel
                 if (_packageMetadata != value)
                 {
                     _packageMetadata = value;
-                    OnPropertyChanged("PackageMetadata");
-                    OnPropertyChanged("IsTokenized");
+                    OnPropertyChanged(nameof(PackageMetadata));
+                    OnPropertyChanged(nameof(IsTokenized));
                 }
             }
         }
@@ -184,7 +184,7 @@ namespace PackageExplorerViewModel
                 if (_showContentViewer != value)
                 {
                     _showContentViewer = value;
-                    OnPropertyChanged("ShowContentViewer");
+                    OnPropertyChanged(nameof(ShowContentViewer));
                 }
             }
         }
@@ -197,7 +197,7 @@ namespace PackageExplorerViewModel
                 if (_showPackageAnalysis != value)
                 {
                     _showPackageAnalysis = value;
-                    OnPropertyChanged("ShowPackageAnalysis");
+                    OnPropertyChanged(nameof(ShowPackageAnalysis));
                 }
             }
         }
@@ -210,7 +210,7 @@ namespace PackageExplorerViewModel
                 if (_currentFileInfo != value)
                 {
                     _currentFileInfo = value;
-                    OnPropertyChanged("CurrentFileInfo");
+                    OnPropertyChanged(nameof(CurrentFileInfo));
                 }
             }
         }
@@ -228,7 +228,7 @@ namespace PackageExplorerViewModel
                 if (_selectedItem != value)
                 {
                     _selectedItem = value;
-                    OnPropertyChanged("SelectedItem");
+                    OnPropertyChanged(nameof(SelectedItem));
                     ((ViewContentCommand)ViewContentCommand).RaiseCanExecuteChanged();
                     CommandManager.InvalidateRequerySuggested();
                 }
@@ -243,7 +243,7 @@ namespace PackageExplorerViewModel
                 if (_packagePath != value)
                 {
                     _packagePath = value;
-                    OnPropertyChanged("PackageSource");
+                    OnPropertyChanged(nameof(PackageSource));
 
                     // This may be a URI or a file
                     if (Uri.TryCreate(value, UriKind.Absolute, out var result))
@@ -296,7 +296,7 @@ namespace PackageExplorerViewModel
                 if (_hasEdit != value)
                 {
                     _hasEdit = value;
-                    OnPropertyChanged("HasEdit");
+                    OnPropertyChanged(nameof(HasEdit));
                 }
             }
         }
@@ -1311,7 +1311,7 @@ this);
         {
             // raise the property change event here to force the edit form to rebind 
             // all controls, which will erase all error states, if any, left over from the previous edit
-            OnPropertyChanged("PackageMetadata");
+            OnPropertyChanged(nameof(PackageMetadata));
             IsInEditMetadataMode = true;
         }
 
@@ -1357,7 +1357,7 @@ this);
         {
             if (rootPath == null)
             {
-                throw new ArgumentNullException("rootPath");
+                throw new ArgumentNullException(nameof(rootPath));
             }
 
             if (!Directory.Exists(rootPath))

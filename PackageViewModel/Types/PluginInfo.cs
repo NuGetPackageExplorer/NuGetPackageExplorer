@@ -9,11 +9,11 @@ namespace NuGetPackageExplorer.Types
         {
             if (string.IsNullOrEmpty(id))
             {
-                throw new ArgumentException("Id cannot be null or empty.", "id");
+                throw new ArgumentException("Id cannot be null or empty.", nameof(id));
             }
 
             Id = id;
-            Version = version ?? throw new ArgumentNullException("version");
+            Version = version ?? throw new ArgumentNullException(nameof(version));
         }
 
         public string Id { get; private set; }

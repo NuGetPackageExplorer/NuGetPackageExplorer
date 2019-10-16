@@ -29,12 +29,12 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentException("Argument cannot be null.", "filePath");
+                throw new ArgumentException("Argument cannot be null.", nameof(filePath));
             }
 
             if (!File.Exists(filePath))
             {
-                throw new ArgumentException("File doesn't exist at '" + filePath + "'.", "filePath");
+                throw new ArgumentException("File doesn't exist at '" + filePath + "'.", nameof(filePath));
             }
 
             Source = filePath;

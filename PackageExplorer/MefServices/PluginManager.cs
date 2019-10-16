@@ -91,7 +91,7 @@ namespace PackageExplorer
         {
             if (catalog == null)
             {
-                throw new ArgumentNullException("catalog");
+                throw new ArgumentNullException(nameof(catalog));
             }
 
             // clean up from previous run
@@ -116,7 +116,7 @@ namespace PackageExplorer
         {
             if (plugin == null)
             {
-                throw new ArgumentNullException("plugin");
+                throw new ArgumentNullException(nameof(plugin));
             }
 
             if (PluginsDirectory == null)
@@ -180,7 +180,7 @@ namespace PackageExplorer
         {
             if (plugin == null)
             {
-                throw new ArgumentNullException("plugin");
+                throw new ArgumentNullException(nameof(plugin));
             }
 
             if (PluginsDirectory == null)

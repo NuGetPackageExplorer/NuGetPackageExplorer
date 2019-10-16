@@ -55,7 +55,7 @@ namespace PackageExplorer
 
             if (filePath == null)
             {
-                throw new ArgumentNullException("filePath");
+                throw new ArgumentNullException(nameof(filePath));
             }
 
             try

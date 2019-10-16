@@ -29,7 +29,7 @@ namespace PackageExplorerViewModel
         private PackageFile(IPackageFile file, string name, PackageFolder parent, PackageViewModel viewModel)
             : base(name, parent, viewModel)
         {
-            _file = file ?? throw new ArgumentNullException("file");
+            _file = file ?? throw new ArgumentNullException(nameof(file));
 
             if (file is DiskPackageFile physicalFile)
             {

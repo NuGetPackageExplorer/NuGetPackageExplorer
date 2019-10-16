@@ -25,10 +25,10 @@ namespace PackageExplorerViewModel
         {
             if (name == null)
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
-            PackageViewModel = viewModel ?? throw new ArgumentNullException("viewModel");
+            PackageViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
             _parent = parent;
 
             OnNameChange(name);
@@ -72,7 +72,7 @@ namespace PackageExplorerViewModel
             _hashCode = newName == null ? 0 : newName.ToUpperInvariant().GetHashCode();
 
             _name = newName;
-            OnPropertyChanged("Name");
+            OnPropertyChanged(nameof(Name));
 
             Extension = newName == null ? null : System.IO.Path.GetExtension(newName);
         }
@@ -85,7 +85,7 @@ namespace PackageExplorerViewModel
                 if (_extension != value)
                 {
                     _extension = value;
-                    OnPropertyChanged("Extension");
+                    OnPropertyChanged(nameof(Extension));
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace PackageExplorerViewModel
                 if (_path != value)
                 {
                     _path = value;
-                    OnPropertyChanged("Path");
+                    OnPropertyChanged(nameof(Path));
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace PackageExplorerViewModel
                 if (_isSelected != value)
                 {
                     _isSelected = value;
-                    OnPropertyChanged("IsSelected");
+                    OnPropertyChanged(nameof(IsSelected));
                 }
             }
         }

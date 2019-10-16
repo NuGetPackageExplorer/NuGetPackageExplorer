@@ -14,7 +14,7 @@ namespace NuGetPackageExplorer.Types
         {
             if (folder == null)
             {
-                throw new ArgumentNullException("folder");
+                throw new ArgumentNullException(nameof(folder));
             }
 
             if (string.IsNullOrEmpty(folder))

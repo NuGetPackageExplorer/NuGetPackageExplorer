@@ -142,7 +142,7 @@ namespace PackageExplorer
 
                 MessageLevel.Warning => MessageBoxImage.Warning,
 
-                _ => throw new ArgumentOutOfRangeException("messageLevel"),
+                _ => throw new ArgumentOutOfRangeException(nameof(messageLevel)),
             };
             void ShowDialog()
             {
@@ -286,7 +286,7 @@ namespace PackageExplorer
         {
             if (numberOfItemsLeft < 0)
             {
-                throw new ArgumentOutOfRangeException("numberOfItemsLeft");
+                throw new ArgumentOutOfRangeException(nameof(numberOfItemsLeft));
             }
 
             var mainInstruction = string.Format(

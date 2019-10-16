@@ -82,7 +82,7 @@ namespace PackageExplorer
             var updated = 0;
 
             var progressDialogLock = new object();
-            ProgressDialog? progressDialog = new ProgressDialog
+            var progressDialog = new ProgressDialog
             {
                 Text = progressDialogText,
                 WindowTitle = Resources.Dialog_Title,
@@ -170,7 +170,6 @@ namespace PackageExplorer
                     lock (progressDialogLock)
                     {
                         progressDialog.Dispose();
-                        progressDialog = null;
                     }
                 }
             }

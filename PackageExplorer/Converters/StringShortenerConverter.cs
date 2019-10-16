@@ -15,7 +15,7 @@ namespace PackageExplorer
             var maxLength = System.Convert.ToInt32(parameter, culture);
             if (maxLength < 5)
             {
-                throw new ArgumentOutOfRangeException("parameter");
+                throw new ArgumentOutOfRangeException(nameof(parameter));
             }
 
             if (stringValue.Length <= maxLength)

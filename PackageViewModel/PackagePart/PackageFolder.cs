@@ -77,7 +77,7 @@ namespace PackageExplorerViewModel
                 if (_isExpanded != value)
                 {
                     _isExpanded = value;
-                    OnPropertyChanged("IsExpanded");
+                    OnPropertyChanged(nameof(IsExpanded));
                 }
             }
         }
@@ -126,7 +126,7 @@ namespace PackageExplorerViewModel
         {
             if (child == null)
             {
-                throw new ArgumentNullException("child");
+                throw new ArgumentNullException(nameof(child));
             }
 
             var removed = Children.Remove(child);
@@ -270,7 +270,7 @@ namespace PackageExplorerViewModel
         {
             if (!File.Exists(filePath))
             {
-                throw new ArgumentException("File does not exist.", "filePath");
+                throw new ArgumentException("File does not exist.", nameof(filePath));
             }
 
             var newFileName = System.IO.Path.GetFileName(filePath)!;
@@ -323,7 +323,7 @@ namespace PackageExplorerViewModel
         {
             if (file == null)
             {
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
             }
 
             if (Contains(file))

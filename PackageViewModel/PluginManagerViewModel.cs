@@ -21,10 +21,10 @@ namespace PackageExplorerViewModel
             IPackageChooser packageChooser,
             INuGetPackageDownloader packageDownloader)
         {
-            _pluginManager = pluginManager ?? throw new ArgumentNullException("pluginManager");
-            _uiServices = uiServices ?? throw new ArgumentNullException("uiServices");
-            _packageChooser = packageChooser ?? throw new ArgumentNullException("packageChooser");
-            _packageDownloader = packageDownloader ?? throw new ArgumentNullException("packageDownloader");
+            _pluginManager = pluginManager ?? throw new ArgumentNullException(nameof(pluginManager));
+            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
+            _packageChooser = packageChooser ?? throw new ArgumentNullException(nameof(packageChooser));
+            _packageDownloader = packageDownloader ?? throw new ArgumentNullException(nameof(packageDownloader));
 
             DeleteCommand = new RelayCommand<PluginInfo>(DeleteCommandExecute, DeleteCommandCanExecute);
             AddCommand = new RelayCommand<string>(AddCommandExecute);

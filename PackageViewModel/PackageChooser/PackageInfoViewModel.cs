@@ -113,7 +113,7 @@ namespace PackageExplorerViewModel
                 {
                     _showingAllVersions = value;
                     OnPropertyChanged();
-                    OnPropertyChanged("ShowingAllVersionsList");
+                    OnPropertyChanged(nameof(ShowingAllVersionsList));
                     ToggleAllVersionsCommand.RaiseCanExecuteChanged();
                 }
             }
@@ -131,7 +131,7 @@ namespace PackageExplorerViewModel
                 {
                     _hasFinishedLoading = value;
                     OnPropertyChanged();
-                    OnPropertyChanged("ShowingAllVersionsList");
+                    OnPropertyChanged(nameof(ShowingAllVersionsList));
                 }
             }
         }
