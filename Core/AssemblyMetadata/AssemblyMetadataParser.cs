@@ -241,7 +241,7 @@ namespace NuGetPe.AssemblyMetadata
                     }
                 }
 
-                throw new UnknownTypeException(@"Type {type} is of uknown TypeCode");
+                throw new UnknownTypeException($"Type '{type}' is of unknown TypeCode");
             }
         }
 
