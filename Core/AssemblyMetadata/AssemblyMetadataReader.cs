@@ -10,7 +10,7 @@ namespace NuGetPe.AssemblyMetadata
 {
     public static class AssemblyMetadataReader
     {
-        public static AssemblyMetaData? ReadMetaData(string assemblyPath)
+        public static AssemblyMetaDataInfo? ReadMetaData(string assemblyPath)
         {
             if (string.IsNullOrWhiteSpace(assemblyPath))
             {
@@ -23,7 +23,7 @@ namespace NuGetPe.AssemblyMetadata
                 return null;
             }
 
-            var result = new AssemblyMetaData(assemblyName);
+            var result = new AssemblyMetaDataInfo(assemblyName);
 
             // For WinRT component, we can only read Full Name. 
             if (assemblyName.ContentType == AssemblyContentType.WindowsRuntime)
@@ -52,7 +52,7 @@ namespace NuGetPe.AssemblyMetadata
             return reader.GetDebugData();
         }
 
-        private static void AddAssemblyAttributes(AssemblyMetadataParser parser, AssemblyMetaData result)
+        private static void AddAssemblyAttributes(AssemblyMetadataParser parser, AssemblyMetaDataInfo result)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace NuGetPe.AssemblyMetadata
                 : shortName;
         }
 
-        private static void AddReferencedAssemblyInfo(AssemblyMetadataParser parser, AssemblyMetaData result)
+        private static void AddReferencedAssemblyInfo(AssemblyMetadataParser parser, AssemblyMetaDataInfo result)
         {
             try
             {

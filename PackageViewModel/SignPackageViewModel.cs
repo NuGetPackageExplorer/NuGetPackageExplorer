@@ -13,7 +13,7 @@ using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    public class SignPackageViewModel : ViewModelBase, IDisposable
+    public sealed class SignPackageViewModel : ViewModelBase, IDisposable
     {
         // https://github.com/NuGet/NuGet.Client/blob/a05632928e11d51b81d2299ba071334a16ce17a9/src/NuGet.Core/NuGet.Commands/SignCommand/CertificateProvider.cs#L22
         private const int ERROR_INVALID_PASSWORD_HRESULT = unchecked((int)0x80070056);
@@ -347,6 +347,7 @@ namespace PackageExplorerViewModel
             _certificateValidationTimer.Change(250, Timeout.Infinite);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void ValidateCertificateCallback(object? state)
         {
             Debug.Assert(_certificateValidationSemaphore != null, nameof(_certificateValidationSemaphore) + " != null");
@@ -451,6 +452,7 @@ namespace PackageExplorerViewModel
             try
             {
                 _cts?.Cancel();
+                _cts?.Dispose();
             }
             catch { }
 

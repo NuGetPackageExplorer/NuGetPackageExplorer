@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using NuGet.Versioning;
 
 namespace NuGetPackageExplorer.Types
 {
-    public class PluginInfo : IEquatable<PluginInfo>
+    [SuppressMessage("Design", "CA1036:Override methods on comparable types", Justification = "<Pending>")]
+    public class PluginInfo : IEquatable<PluginInfo>, IComparable<PluginInfo>
     {
         public PluginInfo(string id, NuGetVersion version)
         {
@@ -18,17 +22,18 @@ namespace NuGetPackageExplorer.Types
 
         public string Id { get; private set; }
         public NuGetVersion Version { get; private set; }
-
-        #region IEquatable<PluginInfo> Members
-
-        public bool Equals(PluginInfo other)
+        
+        public bool Equals(PluginInfo? other)
         {
             if (other is null) return false;
 
             return Id.Equals(other.Id, StringComparison.OrdinalIgnoreCase) && Version == other.Version;
         }
 
-        #endregion
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as PluginInfo);
+        }
 
         public override string ToString()
         {
@@ -38,6 +43,17 @@ namespace NuGetPackageExplorer.Types
         public override int GetHashCode()
         {
             return HashCode.Combine(Id, Version);
+        }
+
+        public int CompareTo([AllowNull] PluginInfo other)
+        {
+            if (other is null) return -1;
+
+            var id = StringComparer.OrdinalIgnoreCase.Compare(Id, other.Id);
+            if (id != 0)
+                return id;
+
+            return Version.CompareTo(other.Version);
         }
     }
 }

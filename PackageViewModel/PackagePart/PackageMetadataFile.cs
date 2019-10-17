@@ -50,7 +50,9 @@ namespace PackageExplorerViewModel
             get { return null; }
         }
 
+#pragma warning disable CA1822 // Mark members as static
         public IEnumerable<FrameworkName> SupportedFrameworks
+#pragma warning restore CA1822 // Mark members as static
         {
             get { return Array.Empty<FrameworkName>(); }
         }

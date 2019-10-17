@@ -16,6 +16,7 @@ namespace PackageExplorerViewModel
         private ICommand? _addContentFolderCommand;
         private bool _isExpanded;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public PackageFolder(string name, PackageFolder parent)
             : base(name, parent, parent.PackageViewModel)
         {
@@ -168,6 +169,7 @@ namespace PackageExplorerViewModel
             return !ContainsFolder(folderName) && !ContainsFile(folderName);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddContentFolderExecute(string folderName)
         {
             if (folderName == "portable")

@@ -9,16 +9,19 @@ namespace PackageExplorer
 {
     public class FrameworkNameConverter : IValueConverter
     {
-        private static readonly string[] _wellknownPackageFolders = new string[] { "content", "lib", "tools", "build", "ref" };
+        private static readonly string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build", "ref" };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var path = (string)value;
             var name = Path.GetFileName(path);
 
+            if (string.IsNullOrEmpty(path))
+                return string.Empty;
+
             var parts = path.Split('\\');
             if (parts.Length == 2 &&
-                _wellknownPackageFolders.Any(s => s.Equals(parts[0], StringComparison.OrdinalIgnoreCase)))
+                WellknownPackageFolders.Any(s => s.Equals(parts[0], StringComparison.OrdinalIgnoreCase)))
             {
                 NuGetFramework frameworkName;
                 try

@@ -21,6 +21,7 @@ namespace PackageExplorerViewModel
         private readonly IPackageFile _file;
         private FileSystemWatcher? _watcher;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public PackageFile(IPackageFile file, string name, PackageFolder parent)
             : this(file, name, parent, parent.PackageViewModel)
         {

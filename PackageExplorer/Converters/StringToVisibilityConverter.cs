@@ -15,7 +15,7 @@ namespace PackageExplorer
             var stringValue = (string)value;
 
             var parameterValue = (string)parameter;
-            var candidates = parameterValue.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var candidates = parameterValue?.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
 
             var contains = candidates.Any(s => Matching(s, stringValue));
             return contains ? Visibility.Visible : Visibility.Collapsed;

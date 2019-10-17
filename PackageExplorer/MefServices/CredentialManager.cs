@@ -40,14 +40,14 @@ namespace PackageExplorer.MefServices
             }
         }
 
-        public ICredentials Get(Uri uri)
+        public ICredentials GetForUri(Uri uri)
         {
             var credentials = CredentialCache.DefaultCredentials;
             lock (_feedsLock)
             {
                 var matchingFeeds = _feeds.Where(x => string.Compare(uri.Scheme, x.Item1.Scheme, StringComparison.OrdinalIgnoreCase) == 0 &&
                                                       string.Compare(uri.Host, x.Item1.Host, StringComparison.OrdinalIgnoreCase) == 0 &&
-                                                      uri.AbsolutePath.Contains(x.Item1.AbsolutePath));
+                                                      uri.AbsolutePath.Contains(x.Item1.AbsolutePath, StringComparison.OrdinalIgnoreCase));
                 if (matchingFeeds.Any())
                 {
                     credentials = matchingFeeds.First().Item2;

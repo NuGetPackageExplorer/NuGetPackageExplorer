@@ -5,13 +5,10 @@ namespace NuGetPe
 {
     public static class AppCompat
     {
-        private static readonly Lazy<bool> isWindows10S;
+#pragma warning disable IDE1006 // Naming Styles
+        private static readonly Lazy<bool> isWindows10S = new Lazy<bool>(GetIsWin10S);
+#pragma warning restore IDE1006 // Naming Styles
         public static bool IsWindows10S => isWindows10S.Value;
-
-        static AppCompat()
-        {
-            isWindows10S = new Lazy<bool>(GetIsWin10S);
-        }
 
         private static bool GetIsWin10S()
         {

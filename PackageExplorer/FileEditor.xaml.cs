@@ -71,6 +71,7 @@ namespace PackageExplorer
 
         #endregion
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             if (e.NewValue is FileEditorViewModel viewModel && viewModel.FileInEdit != null)

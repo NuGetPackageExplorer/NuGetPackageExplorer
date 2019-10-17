@@ -36,6 +36,7 @@ namespace PackageExplorer
             _searchPanel = SearchPanel.Install(contentBox.TextArea);      
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             var info = (FileContentInfo)DataContext;

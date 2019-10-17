@@ -8,7 +8,7 @@ namespace NuGetPe.AssemblyMetadata
     /// <summary>
     /// Meta data of the assembly, 
     /// </summary>
-    public class AssemblyMetaData
+    public class AssemblyMetaDataInfo
     {
         private Dictionary<string, string> MetadataEntries { get; } = new Dictionary<string, string>();
         private string FullName { get; set; }
@@ -17,7 +17,7 @@ namespace NuGetPe.AssemblyMetadata
         public AssemblyDebugData? DebugData { get; internal set; }
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
-        public AssemblyMetaData(AssemblyName assemblyName)
+        public AssemblyMetaDataInfo(AssemblyName assemblyName)
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             if (assemblyName == null)

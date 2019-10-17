@@ -15,7 +15,9 @@ namespace PackageExplorer
 
         // for select plugin dialog
         private PackageChooserDialog? _pluginDialog;
+#pragma warning disable CA2213 // Disposable fields should be disposed
         private PackageChooserViewModel? _pluginViewModel;
+#pragma warning restore CA2213 // Disposable fields should be disposed
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         [Import]

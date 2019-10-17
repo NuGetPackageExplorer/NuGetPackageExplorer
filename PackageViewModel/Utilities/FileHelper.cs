@@ -311,6 +311,7 @@ namespace PackageExplorerViewModel
             public string szTypeName;
         }
 #pragma warning restore IDE1006 // Naming Styles
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
         public static Icon ExtractAssociatedIcon(string fileName)
         {
             var info = new SHFILEINFO();

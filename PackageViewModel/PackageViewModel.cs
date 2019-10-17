@@ -368,6 +368,7 @@ namespace PackageExplorerViewModel
 
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddExistingFileToFolder(PackageFolder folder)
         {
             var result = UIServices.OpenMultipleFilesDialog(
@@ -1448,8 +1449,12 @@ this);
             CurrentFileInfo = null;
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddDraggedAndDroppedFiles(PackageFolder? folder, string[] fileNames)
         {
+            if (fileNames is null)
+                throw new ArgumentNullException(nameof(fileNames));
+
             if (folder == null)
             {
                 bool? rememberedAnswer = null;
@@ -1544,6 +1549,7 @@ this);
                 for (var i = 0; i < parts.Length - 1; i++)
                 {
                     parentFolder = (PackageFolder)parentFolder[parts[i]];
+                    if (parentFolder is null) throw new ArgumentNullException(nameof(folder)); // verify each part isn't null. should never happen
                 }
 
                 if (fileDescription.Stream != null) // file
@@ -1567,7 +1573,7 @@ this);
             }
 
             // any deps
-            return PackageMetadata.DependencySets
+            return PackageMetadata.DependencyGroups
                     .SelectMany(ds => ds.Packages)
                     .Any(dp => dp.VersionRange.MinVersion?.IsTokenized() == true || dp.VersionRange.MaxVersion?.IsTokenized() == true);
         }

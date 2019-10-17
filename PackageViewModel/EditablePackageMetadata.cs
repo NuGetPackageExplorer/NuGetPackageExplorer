@@ -224,7 +224,7 @@ namespace PackageExplorerViewModel
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public ICollection<PackageDependencyGroup> DependencySets
+        public ICollection<PackageDependencyGroup> DependencyGroups
         {
             get
             {
@@ -235,7 +235,7 @@ namespace PackageExplorerViewModel
                 if (_dependencySets != value)
                 {
                     _dependencySets = value;
-                    RaisePropertyChange(nameof(DependencySets));
+                    RaisePropertyChange(nameof(DependencyGroups));
                 }
             }
         }
@@ -549,12 +549,7 @@ namespace PackageExplorerViewModel
         {
             get { return SplitString(Owners); }
         }
-
-        IEnumerable<PackageDependencyGroup> IPackageMetadata.DependencyGroups
-        {
-            get { return DependencySets; }
-        }
-
+  
         IEnumerable<FrameworkAssemblyReference> IPackageMetadata.FrameworkReferences
         {
             get { return FrameworkAssemblies; }
@@ -571,11 +566,11 @@ namespace PackageExplorerViewModel
         }
 
         IEnumerable<ManifestContentFiles> IPackageMetadata.ContentFiles => ContentFiles;
-        public ICollection<ManifestContentFiles> ContentFiles { get; set; }
+        public ICollection<ManifestContentFiles> ContentFiles { get; }
 
 
         IEnumerable<PackageType> IPackageMetadata.PackageTypes => PackageTypes;
-        public ICollection<PackageType> PackageTypes { get; set; }
+        public ICollection<PackageType> PackageTypes { get; }
 
         public RepositoryMetadata? Repository
         {
@@ -643,6 +638,8 @@ namespace PackageExplorerViewModel
         /// file name for V2 local feeds {id}.{version}
         /// </summary>
         public string FileName => Id + "." + ManifestUtility.ReplaceMetadataWithToken(Version.ToFullString());
+
+        IEnumerable<PackageDependencyGroup> IPackageMetadata.DependencyGroups => DependencyGroups;
 
         private string? IsValid(string propertyName)
         {

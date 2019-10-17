@@ -13,7 +13,7 @@ using NuGet.Versioning;
 
 namespace NuGetPe
 {
-    public class ZipPackage : IDisposable, ISignaturePackage
+    public sealed class ZipPackage : IDisposable, ISignaturePackage
     {
         // paths to exclude
         private static readonly string[] ExcludePaths = new[] { "_rels/", "package/", "[Content_Types].xml", ".signature.p7s" };
@@ -275,7 +275,6 @@ namespace NuGetPe
         public RepositorySignatureInfo? RepositorySignature { get; private set; }
 
         public VerifySignaturesResult VerificationResult { get; private set; }
-
 
         // Keep a list of open stream here, and close on dispose.
         private readonly List<IDisposable> _danglingStreams = new List<IDisposable>();

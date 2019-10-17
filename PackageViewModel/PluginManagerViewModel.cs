@@ -41,26 +41,9 @@ namespace PackageExplorerViewModel
 
         public RelayCommand<string> AddCommand { get; private set; }
 
-        #region IComparer<PluginInfo> Members
-
-        public int Compare(PluginInfo x, PluginInfo y)
-        {
-            var result = string.Compare(x.Id, y.Id, StringComparison.CurrentCultureIgnoreCase);
-            if (result != 0)
-            {
-                return result;
-            }
-
-            return x.Version.CompareTo(y.Version);
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanged Members
+        public int Compare(PluginInfo x, PluginInfo y) => Comparer<PluginInfo>.Default.Compare(x, y);
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        #endregion
 
         private async void AddCommandExecute(string parameter)
         {

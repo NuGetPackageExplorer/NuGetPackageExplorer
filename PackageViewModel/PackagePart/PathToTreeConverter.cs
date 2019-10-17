@@ -25,6 +25,7 @@ namespace PackageExplorerViewModel
             return root;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private static void Parse(PackageFolder root, List<Tuple<IPackageFile, string[]>> parsedPaths, int level,
                                   int start, int end)
         {

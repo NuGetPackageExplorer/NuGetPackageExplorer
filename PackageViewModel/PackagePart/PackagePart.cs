@@ -126,8 +126,7 @@ namespace PackageExplorerViewModel
             get { return PackageViewModel.RenameContentCommand; }
         }
 
-        #region IComparable<PackagePart> Members
-
+      
         public int CompareTo(PackagePart other)
         {
             if (this == other)
@@ -153,30 +152,17 @@ namespace PackageExplorerViewModel
 
             return string.Compare(Path, other.Path, StringComparison.OrdinalIgnoreCase);
         }
-
-        #endregion
-
-        #region IDisposable Members
-
+        
+       
         public void Dispose()
         {
-            try
-            {
-                Dispose(true);
-            }
-            finally
-            {
-                GC.SuppressFinalize(this);
-            }
+            Dispose(true);            
+            GC.SuppressFinalize(this);
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged Members
+     
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
 
         public abstract void Export(string rootPath);
 

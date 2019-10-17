@@ -15,7 +15,7 @@ using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    public class PackageInfoViewModel : ViewModelBase
+    public sealed class PackageInfoViewModel : ViewModelBase, IDisposable
     {
         private readonly SourceRepository _repository;
         private readonly FeedType _feedType;
@@ -52,6 +52,7 @@ namespace PackageExplorerViewModel
             CancelCommand = new RelayCommand(OnCancelDownload, CanCancelDownload);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public PackageInfoViewModel(
             IPackageSearchMetadata info,
             bool showPrereleasePackages,
@@ -218,6 +219,7 @@ namespace PackageExplorerViewModel
             }
             finally
             {
+                _downloadCancelSource.Dispose();
                 _downloadCancelSource = null;
                 IsLoading = false;
             }
@@ -331,6 +333,12 @@ namespace PackageExplorerViewModel
                 ReportAbuseUrl = packageSearchMetadata.ReportAbuseUrl?.ToString() ?? string.Empty,
                 IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty
             };
+        }
+               
+        public void Dispose()
+        {
+            _downloadCancelSource?.Dispose();
+            _downloadCancelSource = null;
         }
     }
 }

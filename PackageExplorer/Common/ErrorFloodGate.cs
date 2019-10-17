@@ -57,7 +57,7 @@ namespace PackageExplorer
         }
 
         // Ticks here are of 5sec long
-        private int GetTicks(DateTimeOffset origin)
+        private static int GetTicks(DateTimeOffset origin)
         {
             return (int)((DateTimeOffset.Now - origin).TotalSeconds / SecondsInOneTick);
         }

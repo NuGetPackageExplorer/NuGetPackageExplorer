@@ -9,9 +9,9 @@ namespace PackageExplorer
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values[0] == null)
+            if (values?[0] == null)
             {
-                if (values[1] is bool val1)
+                if (values?[1] is bool val1)
                 {
                     return val1 ? Visibility.Visible : Visibility.Collapsed;
                 }

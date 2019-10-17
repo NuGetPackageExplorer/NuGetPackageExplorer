@@ -350,6 +350,7 @@ namespace PackageExplorer
             return Task.FromResult(new Tuple<bool, INuGetResource?>(curResource != null, curResource));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private HttpHandlerResourceV3 CreateResource(PackageSource packageSource)
         {
             var sourceUri = packageSource.SourceUri;

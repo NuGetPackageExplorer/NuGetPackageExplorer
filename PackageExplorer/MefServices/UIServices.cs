@@ -247,7 +247,7 @@ namespace PackageExplorer
 
         public bool OpenFolderDialog(string title, string initialPath, out string selectedPath)
         {
-            var dialog = new System.Windows.Forms.FolderBrowserDialog()
+            using var dialog = new System.Windows.Forms.FolderBrowserDialog()
             {
                 SelectedPath = initialPath,
                 Description = title,
@@ -366,7 +366,7 @@ namespace PackageExplorer
                 Resources.MoveContentFileToFolderExplanation,
                 targetFolder);
 
-            var dialog = new TaskDialog
+            using var dialog = new TaskDialog
             {
                 MainInstruction = mainInstruction,
                 Content = content,

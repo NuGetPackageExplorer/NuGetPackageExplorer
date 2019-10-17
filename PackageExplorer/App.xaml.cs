@@ -19,7 +19,9 @@ using Settings = PackageExplorer.Properties.Settings;
 
 namespace PackageExplorer
 {
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public partial class App : Application
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public App()

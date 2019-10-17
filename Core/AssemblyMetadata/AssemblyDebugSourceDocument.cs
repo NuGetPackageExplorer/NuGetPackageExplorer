@@ -25,7 +25,9 @@ namespace NuGetPe.AssemblyMetadata
         }
 
         public string Name { get; }
+#pragma warning disable CA1819 // Properties should not return arrays
         public byte[] Hash { get; }
+#pragma warning restore CA1819 // Properties should not return arrays
         public SymbolLanguage Language { get; }
         public HashAlgorithmName? HashAlgorithm { get; }
 
