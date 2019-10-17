@@ -65,7 +65,7 @@ namespace PackageExplorerViewModel.Rules
                 "Assembly outside known folders",
                 "The assembly '" + target +
                 $"' is not inside the '{folder}' folder and hence it won't be used when the package is installed into a project",
-                "Move it into a known folder folder."
+                "Move it into a known folder."
                 );
         }
     }
