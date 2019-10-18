@@ -8,7 +8,7 @@ using NuGet.Packaging;
 
 namespace PackageExplorerViewModel.Utilities
 {
-    public class TemporaryFile : IDisposable
+    public sealed class TemporaryFile : IDisposable
     {
         public TemporaryFile(Stream stream, string? extension)
         {

@@ -25,7 +25,9 @@ namespace NuGetPe.AssemblyMetadata
         }
 
         public string Name { get; }
+#pragma warning disable CA1819 // Properties should not return arrays
         public byte[] Hash { get; }
+#pragma warning restore CA1819 // Properties should not return arrays
         public SymbolLanguage Language { get; }
         public HashAlgorithmName? HashAlgorithm { get; }
 
@@ -39,11 +41,11 @@ namespace NuGetPe.AssemblyMetadata
         }
 
 
-        public HashAlgorithmName? HashAlgorithmNameFromGuid(Guid guid)
+        public static HashAlgorithmName? HashAlgorithmNameFromGuid(Guid algorithmId)
         {
-            if (guid == Md5) return HashAlgorithmName.MD5;
-            if (guid == Sha1) return HashAlgorithmName.SHA1;
-            if (guid == Sha256) return HashAlgorithmName.SHA256;
+            if (algorithmId == Md5) return HashAlgorithmName.MD5;
+            if (algorithmId == Sha1) return HashAlgorithmName.SHA1;
+            if (algorithmId == Sha256) return HashAlgorithmName.SHA256;
 
             return null;
         }

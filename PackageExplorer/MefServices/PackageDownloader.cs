@@ -82,7 +82,7 @@ namespace PackageExplorer
             var updated = 0;
 
             var progressDialogLock = new object();
-            ProgressDialog? progressDialog = new ProgressDialog
+            var progressDialog = new ProgressDialog
             {
                 Text = progressDialogText,
                 WindowTitle = Resources.Dialog_Title,
@@ -143,7 +143,7 @@ namespace PackageExplorer
                         throw new OperationCanceledException();
 
                     if (result.Status == DownloadResourceResultStatus.NotFound)
-                        throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
+                        throw new Exception($"Package '{packageIdentity.Id} {packageIdentity.Version}' not found");
 
                     var tempFilePath = Path.GetTempFileName();
                     using (var fileStream = File.OpenWrite(tempFilePath))
@@ -170,7 +170,6 @@ namespace PackageExplorer
                     lock (progressDialogLock)
                     {
                         progressDialog.Dispose();
-                        progressDialog = null;
                     }
                 }
             }
@@ -351,6 +350,7 @@ namespace PackageExplorer
             return Task.FromResult(new Tuple<bool, INuGetResource?>(curResource != null, curResource));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private HttpHandlerResourceV3 CreateResource(PackageSource packageSource)
         {
             var sourceUri = packageSource.SourceUri;

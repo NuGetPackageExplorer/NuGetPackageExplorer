@@ -21,6 +21,7 @@ namespace PackageExplorerViewModel
         private readonly IPackageFile _file;
         private FileSystemWatcher? _watcher;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public PackageFile(IPackageFile file, string name, PackageFolder parent)
             : this(file, name, parent, parent.PackageViewModel)
         {
@@ -29,7 +30,7 @@ namespace PackageExplorerViewModel
         private PackageFile(IPackageFile file, string name, PackageFolder parent, PackageViewModel viewModel)
             : base(name, parent, viewModel)
         {
-            _file = file ?? throw new ArgumentNullException("file");
+            _file = file ?? throw new ArgumentNullException(nameof(file));
 
             if (file is DiskPackageFile physicalFile)
             {

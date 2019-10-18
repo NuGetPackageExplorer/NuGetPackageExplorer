@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace PackageExplorerViewModel.Rules
         {
             if (package.Version.IsPrerelease)
             {
-                return new PackageIssue[0];
+                return Array.Empty<PackageIssue>();
             }
 
             return package.DependencyGroups.SelectMany(p => p.Packages)

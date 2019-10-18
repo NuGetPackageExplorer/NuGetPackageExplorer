@@ -25,10 +25,10 @@ namespace PackageExplorerViewModel
         {
             if (name == null)
             {
-                throw new ArgumentNullException("name");
+                throw new ArgumentNullException(nameof(name));
             }
 
-            PackageViewModel = viewModel ?? throw new ArgumentNullException("viewModel");
+            PackageViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
             _parent = parent;
 
             OnNameChange(name);
@@ -69,10 +69,10 @@ namespace PackageExplorerViewModel
         private void OnNameChange(string newName)
         {
             // precalculate hash code to improve perf
-            _hashCode = newName == null ? 0 : newName.ToUpperInvariant().GetHashCode();
+            _hashCode = newName == null ? 0 : newName.ToUpperInvariant().GetHashCode(StringComparison.InvariantCulture);
 
             _name = newName;
-            OnPropertyChanged("Name");
+            OnPropertyChanged(nameof(Name));
 
             Extension = newName == null ? null : System.IO.Path.GetExtension(newName);
         }
@@ -85,7 +85,7 @@ namespace PackageExplorerViewModel
                 if (_extension != value)
                 {
                     _extension = value;
-                    OnPropertyChanged("Extension");
+                    OnPropertyChanged(nameof(Extension));
                 }
             }
         }
@@ -98,7 +98,7 @@ namespace PackageExplorerViewModel
                 if (_path != value)
                 {
                     _path = value;
-                    OnPropertyChanged("Path");
+                    OnPropertyChanged(nameof(Path));
                 }
             }
         }
@@ -111,7 +111,7 @@ namespace PackageExplorerViewModel
                 if (_isSelected != value)
                 {
                     _isSelected = value;
-                    OnPropertyChanged("IsSelected");
+                    OnPropertyChanged(nameof(IsSelected));
                 }
             }
         }
@@ -126,8 +126,7 @@ namespace PackageExplorerViewModel
             get { return PackageViewModel.RenameContentCommand; }
         }
 
-        #region IComparable<PackagePart> Members
-
+      
         public int CompareTo(PackagePart other)
         {
             if (this == other)
@@ -153,30 +152,17 @@ namespace PackageExplorerViewModel
 
             return string.Compare(Path, other.Path, StringComparison.OrdinalIgnoreCase);
         }
-
-        #endregion
-
-        #region IDisposable Members
-
+        
+       
         public void Dispose()
         {
-            try
-            {
-                Dispose(true);
-            }
-            finally
-            {
-                GC.SuppressFinalize(this);
-            }
+            Dispose(true);            
+            GC.SuppressFinalize(this);
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged Members
+     
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
 
         public abstract void Export(string rootPath);
 

@@ -18,7 +18,7 @@ namespace PackageExplorer
                     var format = parameter as string;
                     if (!string.IsNullOrWhiteSpace(format))
                     {
-                        return dateTimeOffset.LocalDateTime.ToString(format);
+                        return dateTimeOffset.LocalDateTime.ToString(format, culture);
                     }
 
                     return dateTimeOffset.LocalDateTime.ToLongDateString();

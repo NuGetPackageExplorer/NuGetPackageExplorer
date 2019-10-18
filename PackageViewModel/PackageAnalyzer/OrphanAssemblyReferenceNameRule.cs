@@ -24,7 +24,7 @@ namespace PackageExplorerViewModel.Rules
                        where !libFilesSet.Contains(reference)
                        select CreateIssue(reference);
             }
-            return new PackageIssue[0];
+            return Array.Empty<PackageIssue>();
         }
 
         #endregion

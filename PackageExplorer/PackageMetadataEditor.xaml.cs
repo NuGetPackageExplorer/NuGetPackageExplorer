@@ -18,7 +18,7 @@ namespace PackageExplorer
     {
         private ObservableCollection<FrameworkAssemblyReference> _frameworkAssemblies;
         private EditableFrameworkAssemblyReference _newFrameworkAssembly;
-        private ICollection<PackageDependencyGroup> _dependencySets;
+        private ICollection<PackageDependencyGroup> _dependencyGroups;
         private ICollection<FrameworkReferenceGroup> _frameworkReferenceGroups;
         private ICollection<PackageReferenceSet> _referenceSets;
 
@@ -50,7 +50,7 @@ namespace PackageExplorer
         {
             var viewModel = (PackageViewModel)DataContext;
 
-            _dependencySets = viewModel.PackageMetadata.DependencySets;
+            _dependencyGroups = viewModel.PackageMetadata.DependencyGroups;
             _referenceSets = viewModel.PackageMetadata.PackageAssemblyReferences;
             _frameworkReferenceGroups = viewModel.PackageMetadata.FrameworkReferenceGroups;
 
@@ -136,7 +136,7 @@ namespace PackageExplorer
         {
             DiagnosticsClient.TrackEvent("PackageMetadataEditor_EditDependenciesButtonClicked");
 
-            var editor = new PackageDependencyEditor(_dependencySets)
+            var editor = new PackageDependencyEditor(_dependencyGroups)
             {
                 Owner = Window.GetWindow(this),
                 PackageChooser = PackageChooser
@@ -144,7 +144,7 @@ namespace PackageExplorer
             var result = editor.ShowDialog();
             if (result == true)
             {
-                _dependencySets = editor.GetEditedDependencySets();
+                _dependencyGroups = editor.GetEditedDependencySets();
             }
         }
 
@@ -207,7 +207,7 @@ namespace PackageExplorer
             if (valid)
             {
                 var viewModel = (PackageViewModel)DataContext;
-                viewModel.PackageMetadata.DependencySets = _dependencySets;
+                viewModel.PackageMetadata.DependencyGroups = _dependencyGroups;
                 viewModel.PackageMetadata.PackageAssemblyReferences = _referenceSets;
                 viewModel.PackageMetadata.FrameworkReferenceGroups = _frameworkReferenceGroups;
                 _frameworkAssemblies.CopyTo(viewModel.PackageMetadata.FrameworkAssemblies);

@@ -17,7 +17,7 @@ namespace NuGetPe
 
         public UserSettings(IFileSystem fileSystem)
         {
-            _fileSystem = fileSystem ?? throw new ArgumentNullException("fileSystem");
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _configLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet",
                                            "NuGet.Config");
             _config = XmlUtility.GetOrCreateDocument("configuration", _fileSystem, _configLocation);
@@ -27,12 +27,12 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
 
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
 
             var kvps = GetValues(section);
@@ -47,7 +47,7 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
 
             try
@@ -82,15 +82,15 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
 
             var sectionElement = _config.Root.Element(section);
@@ -123,11 +123,11 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
             if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
 
             var sectionElement = _config.Root.Element(section);

@@ -17,7 +17,7 @@ namespace NuGetPe
         {
             if (packageBuilder == null)
             {
-                throw new ArgumentNullException("packageBuilder");
+                throw new ArgumentNullException(nameof(packageBuilder));
             }
 
             Id = packageBuilder.Id;

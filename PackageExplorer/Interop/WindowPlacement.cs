@@ -2,6 +2,8 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 
+#pragma warning disable CA1815 // Override equals and operator equals on value types
+#pragma warning disable IDE1006 // Naming Styles
 namespace PackageExplorer
 {
     [Serializable]
@@ -31,6 +33,8 @@ namespace PackageExplorer
 
         public static WindowPlacement Parse(string value)
         {
+            if (value is null)
+                throw new ArgumentNullException(nameof(value));
             var parts = value.Split('|');
 
             if (parts.Length != 6)
@@ -60,6 +64,7 @@ namespace PackageExplorer
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
     public struct Rect
+
     {
         public int Left;
         public int Top;
@@ -81,6 +86,8 @@ namespace PackageExplorer
 
         public static Rect Parse(string value)
         {
+            if (value is null)
+                throw new ArgumentNullException(nameof(value));
             var ss = Array.ConvertAll(value.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries),
                                         v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 4 ? new Rect(ss[0], ss[1], ss[2], ss[3]) : new Rect();
@@ -107,9 +114,14 @@ namespace PackageExplorer
 
         public static Point Parse(string value)
         {
+            if (value is null)
+                throw new ArgumentNullException(nameof(value));
             var ss = Array.ConvertAll(value.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries),
                                         v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 2 ? new Point(ss[0], ss[1]) : new Point();
         }
     }
 }
+
+#pragma warning restore CA1815 // Override equals and operator equals on value types
+#pragma warning restore IDE1006 // Naming Styles

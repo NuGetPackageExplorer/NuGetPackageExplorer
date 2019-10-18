@@ -22,7 +22,7 @@ namespace NuGetPe
         private static string UnescapePath(string path)
         {
             if (path != null
-                && path.IndexOf('%') > -1)
+                && path.IndexOf('%', StringComparison.Ordinal) > -1)
             {
                 return Uri.UnescapeDataString(path);
             }

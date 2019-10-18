@@ -7,6 +7,7 @@ namespace PackageExplorer
 {
     public class StandardDialog : Window
     {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
         protected override void OnSourceInitialized(EventArgs e)
         {
             base.OnSourceInitialized(e);

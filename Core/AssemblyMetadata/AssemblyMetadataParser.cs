@@ -241,7 +241,7 @@ namespace NuGetPe.AssemblyMetadata
                     }
                 }
 
-                throw new UnknownTypeException();
+                throw new UnknownTypeException($"Type '{type}' is of unknown TypeCode");
             }
         }
 
@@ -252,7 +252,17 @@ namespace NuGetPe.AssemblyMetadata
 
         private class UnknownTypeException : InvalidOperationException
         {
+            public UnknownTypeException(string message) : base(message)
+            {
+            }
 
+            public UnknownTypeException(string message, Exception innerException) : base(message, innerException)
+            {
+            }
+
+            public UnknownTypeException()
+            {
+            }
         }
     }
 }

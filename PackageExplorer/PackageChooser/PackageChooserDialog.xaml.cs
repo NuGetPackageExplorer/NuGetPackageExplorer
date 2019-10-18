@@ -20,17 +20,13 @@ namespace PackageExplorer
         private readonly PackageChooserViewModel _viewModel;
         private string? _pendingSearch;
 
-#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public PackageChooserDialog(ISettingsManager settings, PackageChooserViewModel viewModel)
-#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 
             _settings = settings;
 
-            Debug.Assert(viewModel != null);
-
-            _viewModel = viewModel;
+            _viewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
             _viewModel.LoadPackagesCompleted += OnLoadPackagesCompleted;
             _viewModel.OpenPackageRequested += OnOpenPackageRequested;
 

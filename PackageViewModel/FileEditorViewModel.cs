@@ -45,7 +45,7 @@ namespace PackageExplorerViewModel
                 if (_hasEdit != value)
                 {
                     _hasEdit = value;
-                    OnPropertyChanged("HasEdit");
+                    OnPropertyChanged(nameof(HasEdit));
                 }
             }
         }
