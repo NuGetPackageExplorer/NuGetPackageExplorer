@@ -24,6 +24,8 @@ namespace NuGetPe
 
         public static bool IsTokenized(this NuGetVersion version)
         {
+            if (version is null)
+                throw new System.ArgumentNullException(nameof(version));
             var labels = version.ReleaseLabels.ToList();
 
             return labels.Count >= 3 && labels[0] == TokenStart && labels[labels.Count - 1] == TokenEnd;
@@ -92,7 +94,7 @@ namespace NuGetPe
 #pragma warning restore CS8606 // Possible null reference assignment to iteration variable
             {
                 var token = match!.Value[1..^1];
-                value = value.Replace(match.Value, $"{TokenMetadataStart}{token}{TokenMetadataEnd}");
+                value = value.Replace(match.Value, $"{TokenMetadataStart}{token}{TokenMetadataEnd}", System.StringComparison.Ordinal);
             }
 
             return value;
@@ -118,7 +120,7 @@ namespace NuGetPe
 #pragma warning restore CS8606 // Possible null reference assignment to iteration variable
             {
                 var token = match!.Value[TokenMetadataStart.Length..^TokenMetadataEnd.Length];
-                value = value.Replace(match.Value, $"${token}$");
+                value = value.Replace(match.Value, $"${token}$", System.StringComparison.Ordinal);
             }
 
             return value;

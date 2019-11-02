@@ -14,6 +14,8 @@ namespace NuGetPe
         public static string? GetOptionalAttributeValue(this XElement element, string localName,
                                                        string? namespaceName = null)
         {
+            if (element is null)
+                throw new ArgumentNullException(nameof(element));
             XAttribute attr;
             if (string.IsNullOrEmpty(namespaceName))
             {
@@ -31,6 +33,8 @@ namespace NuGetPe
         public static string? GetOptionalElementValue(this XElement element, string localName,
                                                      string? namespaceName = null)
         {
+            if (element is null)
+                throw new ArgumentNullException(nameof(element));
             XElement child;
             if (string.IsNullOrEmpty(namespaceName))
             {
@@ -45,6 +49,8 @@ namespace NuGetPe
 
         public static IEnumerable<XElement> ElementsNoNamespace(this XContainer container, string localName)
         {
+            if (container is null)
+                throw new ArgumentNullException(nameof(container));
             return container.Elements().Where(e => e.Name.LocalName == localName);
         }
 
@@ -56,6 +62,8 @@ namespace NuGetPe
         // REVIEW: We can use a stack if the perf is bad for Except and MergeWith
         public static XElement Except(this XElement source, XElement target)
         {
+            if (source is null)
+                throw new ArgumentNullException(nameof(source));
             if (target == null)
             {
                 return source;
@@ -99,6 +107,9 @@ namespace NuGetPe
         public static XElement MergeWith(this XElement source, XElement? target,
                                          IDictionary<XName, Action<XElement, XElement>>? nodeActions)
         {
+            if (source is null)
+                throw new ArgumentNullException(nameof(source));
+
             if (target == null)
             {
                 return source;
@@ -196,6 +207,11 @@ namespace NuGetPe
 
         public static void RemoveAttributes(this XElement element, Func<XAttribute, bool> condition)
         {
+            if (element is null)
+                throw new ArgumentNullException(nameof(element));
+            if (condition is null)
+                throw new ArgumentNullException(nameof(condition));
+
             element.Attributes()
                 .Where(condition)
                 .ToList()

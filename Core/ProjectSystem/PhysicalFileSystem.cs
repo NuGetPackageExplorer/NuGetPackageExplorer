@@ -11,7 +11,7 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(root))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "root");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(root));
             }
             Root = root;
         }
@@ -27,6 +27,8 @@ namespace NuGetPe
 
         public virtual void AddFile(string path, Stream stream)
         {
+            if (stream is null)
+                throw new ArgumentNullException(nameof(stream));
             var d = Path.GetDirectoryName(path);
             if (d != null)
             {
@@ -165,6 +167,8 @@ namespace NuGetPe
 
         protected string MakeRelativePath(string fullPath)
         {
+            if (fullPath is null)
+                throw new ArgumentNullException(nameof(fullPath));
             return fullPath.Substring(Root.Length).TrimStart(Path.DirectorySeparatorChar);
         }
 

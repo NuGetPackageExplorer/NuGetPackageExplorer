@@ -8,12 +8,12 @@ namespace NuGetPackageExplorer.Types
         {
             if (string.IsNullOrEmpty(title))
             {
-                throw new ArgumentException("Argument is null or empty.", "title");
+                throw new ArgumentException("Argument is null or empty.", nameof(title));
             }
 
             if (string.IsNullOrEmpty(description))
             {
-                throw new ArgumentException("Argument is null or empty.", "description");
+                throw new ArgumentException("Argument is null or empty.", nameof(description));
             }
 
             Level = type;

@@ -34,6 +34,8 @@ namespace NuGetPe
 
         public ISignaturePackage? FindPackage(string packageId, NuGetVersion version)
         {
+            if (version is null)
+                throw new ArgumentNullException(nameof(version));
             var path = GetPackageFilePath(packageId, version);
 
             if (File.Exists(path))
@@ -48,6 +50,8 @@ namespace NuGetPe
 
         public void AddPackage(IPackage package)
         {
+            if (package is null)
+                throw new ArgumentNullException(nameof(package));
             // if the package is already present in the cache, no need to do anything
             if (FindPackage(package.Id, package.Version) != null)
             {

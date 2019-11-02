@@ -45,7 +45,7 @@ namespace PackageExplorer
                     return names;
                 }
             }
-            return new NuGetFramework[0];
+            return Array.Empty<NuGetFramework>();
         }
 
         #endregion

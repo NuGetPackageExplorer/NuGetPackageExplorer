@@ -28,12 +28,12 @@ namespace PackageExplorerViewModel
         {
             if (fromDirectory == null)
             {
-                throw new ArgumentNullException("fromDirectory");
+                throw new ArgumentNullException(nameof(fromDirectory));
             }
 
             if (toPath == null)
             {
-                throw new ArgumentNullException("toPath");
+                throw new ArgumentNullException(nameof(toPath));
             }
 
             var isRooted = Path.IsPathRooted(fromDirectory)

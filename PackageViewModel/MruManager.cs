@@ -101,7 +101,7 @@ namespace PackageExplorerViewModel
         {
             if (mruItem == null)
             {
-                throw new ArgumentNullException("mruItem");
+                throw new ArgumentNullException(nameof(mruItem));
             }
 
             Files.Remove(mruItem);

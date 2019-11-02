@@ -16,6 +16,7 @@ namespace PackageExplorerViewModel
         private ICommand? _addContentFolderCommand;
         private bool _isExpanded;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public PackageFolder(string name, PackageFolder parent)
             : base(name, parent, parent.PackageViewModel)
         {
@@ -77,7 +78,7 @@ namespace PackageExplorerViewModel
                 if (_isExpanded != value)
                 {
                     _isExpanded = value;
-                    OnPropertyChanged("IsExpanded");
+                    OnPropertyChanged(nameof(IsExpanded));
                 }
             }
         }
@@ -108,7 +109,7 @@ namespace PackageExplorerViewModel
                 }
                 else
                 {
-                    return new IPackageFile[0];
+                    return Array.Empty<IPackageFile>();
                 }
             }
             else
@@ -126,7 +127,7 @@ namespace PackageExplorerViewModel
         {
             if (child == null)
             {
-                throw new ArgumentNullException("child");
+                throw new ArgumentNullException(nameof(child));
             }
 
             var removed = Children.Remove(child);
@@ -168,6 +169,7 @@ namespace PackageExplorerViewModel
             return !ContainsFolder(folderName) && !ContainsFile(folderName);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddContentFolderExecute(string folderName)
         {
             if (folderName == "portable")
@@ -212,8 +214,11 @@ namespace PackageExplorerViewModel
             return newFolder;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddFolder(PackageFolder childFolder, bool makeCopy = false)
         {
+            if (childFolder is null)
+                throw new ArgumentNullException(nameof(childFolder));
             if (!AddContentFolderCanExecute(childFolder.Name))
             {
                 PackageViewModel.UIServices.Show(
@@ -270,7 +275,7 @@ namespace PackageExplorerViewModel
         {
             if (!File.Exists(filePath))
             {
-                throw new ArgumentException("File does not exist.", "filePath");
+                throw new ArgumentException("File does not exist.", nameof(filePath));
             }
 
             var newFileName = System.IO.Path.GetFileName(filePath)!;
@@ -319,11 +324,12 @@ namespace PackageExplorerViewModel
             return newFile;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddFile(PackageFile file, bool makeCopy = false)
         {
             if (file == null)
             {
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
             }
 
             if (Contains(file))
@@ -373,6 +379,7 @@ namespace PackageExplorerViewModel
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         internal void ReplaceFile(PackageFile oldFile, string newFilePath)
         {
             var showingFile = PackageViewModel.IsShowingFileContent(oldFile);
@@ -418,6 +425,7 @@ namespace PackageExplorerViewModel
             AddPhysicalFolderCore(dirInfo);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddPhysicalFolderCore(DirectoryInfo dirInfo)
         {
             var childPackgeFolder = AddFolder(dirInfo.Name);

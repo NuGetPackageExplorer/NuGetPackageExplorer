@@ -13,7 +13,7 @@ using NuGet.Versioning;
 
 namespace NuGetPe
 {
-    public class ZipPackage : IDisposable, ISignaturePackage
+    public sealed class ZipPackage : IDisposable, ISignaturePackage
     {
         // paths to exclude
         private static readonly string[] ExcludePaths = new[] { "_rels/", "package/", "[Content_Types].xml", ".signature.p7s" };
@@ -29,12 +29,12 @@ namespace NuGetPe
         {
             if (string.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentException("Argument cannot be null.", "filePath");
+                throw new ArgumentException("Argument cannot be null.", nameof(filePath));
             }
 
             if (!File.Exists(filePath))
             {
-                throw new ArgumentException("File doesn't exist at '" + filePath + "'.", "filePath");
+                throw new ArgumentException("File doesn't exist at '" + filePath + "'.", nameof(filePath));
             }
 
             Source = filePath;
@@ -276,7 +276,6 @@ namespace NuGetPe
 
         public VerifySignaturesResult VerificationResult { get; private set; }
 
-
         // Keep a list of open stream here, and close on dispose.
         private readonly List<IDisposable> _danglingStreams = new List<IDisposable>();
 
@@ -302,12 +301,12 @@ namespace NuGetPe
         public async Task LoadSignatureDataAsync()
         {
             using var reader = new PackageArchiveReader(_streamFactory(), false);
-            IsSigned = await reader.IsSignedAsync(CancellationToken.None);
+            IsSigned = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
             if (IsSigned)
             {
                 try
                 {
-                    var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None);
+                    var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None).ConfigureAwait(false);
 
                     // Author signatures must be the primary, but they can contain
                     // a repository counter signature
@@ -336,7 +335,7 @@ namespace NuGetPe
         public async Task VerifySignatureAsync()
         {
             using var reader = new PackageArchiveReader(_streamFactory(), false);
-            var signed = await reader.IsSignedAsync(CancellationToken.None);
+            var signed = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
             if (signed)
             {
                 // Check verification
@@ -348,7 +347,7 @@ namespace NuGetPe
                 };
                 var verifier = new PackageSignatureVerifier(trustProviders);
 
-                VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None);
+                VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None).ConfigureAwait(false);
             }
         }
 
@@ -368,7 +367,7 @@ namespace NuGetPe
             // We exclude any opc files and the manifest file (.nuspec)
             var path = entry.FullName;
 
-            return !path.EndsWith("/") && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
+            return !path.EndsWith("/", StringComparison.Ordinal) && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
         }
 

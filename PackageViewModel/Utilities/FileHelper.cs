@@ -32,8 +32,8 @@ namespace PackageExplorerViewModel
         public static bool IsBinaryFile(string path)
         {
             // TODO: check for content type of the file here
-            var extension = Path.GetExtension(path)?.ToUpper(CultureInfo.InvariantCulture);
-            return !string.IsNullOrEmpty(extension) && BinaryFileExtensions.Any(p => p.Equals(extension));
+            var extension = Path.GetExtension(path);
+            return !string.IsNullOrEmpty(extension) && BinaryFileExtensions.Any(p => p.Equals(extension, StringComparison.InvariantCultureIgnoreCase));
         }
 
         public static void OpenFileInShell(PackageFile file, IUIServices uiServices)
@@ -145,7 +145,7 @@ namespace PackageExplorerViewModel
         {
             if (string.IsNullOrEmpty(fileName))
             {
-                throw new ArgumentException("Argument is null or empty", "fileName");
+                throw new ArgumentException("Argument is null or empty", nameof(fileName));
             }
 
             var filePath = Path.Combine(GetTempFilePath(), fileName);
@@ -157,7 +157,7 @@ namespace PackageExplorerViewModel
         {
             if (string.IsNullOrEmpty(fileName))
             {
-                throw new ArgumentException("Argument is null or empty", "fileName");
+                throw new ArgumentException("Argument is null or empty", nameof(fileName));
             }
 
             var filePath = Path.Combine(GetTempFilePath(), fileName);
@@ -311,6 +311,7 @@ namespace PackageExplorerViewModel
             public string szTypeName;
         }
 #pragma warning restore IDE1006 // Naming Styles
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
         public static Icon ExtractAssociatedIcon(string fileName)
         {
             var info = new SHFILEINFO();

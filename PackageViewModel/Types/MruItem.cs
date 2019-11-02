@@ -44,7 +44,7 @@ namespace NuGetPackageExplorer.Types
         {
             if (!string.IsNullOrEmpty(Id))
             {
-                return string.Format("{0} {1}", Id, Version);
+                return $"{Id} {Version}";
             }
             return Path ?? "MruItem";
         }

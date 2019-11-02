@@ -470,7 +470,7 @@
                         <!-- Dependencies list -->
                         <TextBlock Text="{x:Static self:Resources.Dialog_DependenciesLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                        <ItemsControl x:Name="DependencyItems" Margin="25,5,0,0" ItemsSource="{Binding DependencySets, Converter={StaticResource DependencySetConverter}}">
+                        <ItemsControl x:Name="DependencyItems" Margin="25,5,0,0" ItemsSource="{Binding DependencyGroups, Converter={StaticResource DependencySetConverter}}">
                         </ItemsControl>
 
                         <TextBlock Margin="25,5,0,0" Visibility="{Binding Items.Count, ElementName=DependencyItems, Converter={StaticResource invertedCountConverter}}" Style="{StaticResource NoDependencyTextBoxStyle}" Text="{x:Static self:Resources.Dialog_NoDependencyLabel}"></TextBlock>

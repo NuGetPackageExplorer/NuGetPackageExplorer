@@ -21,10 +21,10 @@ namespace PackageExplorerViewModel
             IPackageChooser packageChooser,
             INuGetPackageDownloader packageDownloader)
         {
-            _pluginManager = pluginManager ?? throw new ArgumentNullException("pluginManager");
-            _uiServices = uiServices ?? throw new ArgumentNullException("uiServices");
-            _packageChooser = packageChooser ?? throw new ArgumentNullException("packageChooser");
-            _packageDownloader = packageDownloader ?? throw new ArgumentNullException("packageDownloader");
+            _pluginManager = pluginManager ?? throw new ArgumentNullException(nameof(pluginManager));
+            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
+            _packageChooser = packageChooser ?? throw new ArgumentNullException(nameof(packageChooser));
+            _packageDownloader = packageDownloader ?? throw new ArgumentNullException(nameof(packageDownloader));
 
             DeleteCommand = new RelayCommand<PluginInfo>(DeleteCommandExecute, DeleteCommandCanExecute);
             AddCommand = new RelayCommand<string>(AddCommandExecute);
@@ -41,26 +41,9 @@ namespace PackageExplorerViewModel
 
         public RelayCommand<string> AddCommand { get; private set; }
 
-        #region IComparer<PluginInfo> Members
-
-        public int Compare(PluginInfo x, PluginInfo y)
-        {
-            var result = string.Compare(x.Id, y.Id, StringComparison.CurrentCultureIgnoreCase);
-            if (result != 0)
-            {
-                return result;
-            }
-
-            return x.Version.CompareTo(y.Version);
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanged Members
+        public int Compare(PluginInfo x, PluginInfo y) => Comparer<PluginInfo>.Default.Compare(x, y);
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        #endregion
 
         private async void AddCommandExecute(string parameter)
         {
@@ -100,6 +83,7 @@ namespace PackageExplorerViewModel
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddLocalPlugin()
         {
             var result = _uiServices.OpenFileDialog(

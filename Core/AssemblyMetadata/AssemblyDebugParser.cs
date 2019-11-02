@@ -99,7 +99,7 @@ namespace NuGetPe.AssemblyMetadata
                     }
                     catch (JsonReaderException e) when (e.Path == "documents")
                     {
-                        sl = sl.Replace(@"\", @"\\");
+                        sl = sl.Replace(@"\", @"\\", StringComparison.Ordinal);
                         jobj = JObject.Parse(sl);
                     }
 
@@ -108,7 +108,7 @@ namespace NuGetPe.AssemblyMetadata
                     var slis = (from prop in docs.Properties()
                                 select new SourceLinkMap
                                 {
-                                    Base = prop.Name.Replace(@"\", @"/"), // use forward slashes for the url,
+                                    Base = prop.Name.Replace(@"\", @"/", StringComparison.Ordinal), // use forward slashes for the url,
                                     Location = prop.Value.Value<string>()
                                 })
                         .ToList();
@@ -136,7 +136,7 @@ namespace NuGetPe.AssemblyMetadata
 
                 var langGuid = _reader.GetGuid(document.Language);
                 var hashGuid = _reader.GetGuid(document.HashAlgorithm);
-                var docName = _reader.GetString(document.Name).Replace(@"\", @"/"); // use forward slashes for the url
+                var docName = _reader.GetString(document.Name).Replace(@"\", @"/", StringComparison.Ordinal); // use forward slashes for the url
 
                 var doc = new AssemblyDebugSourceDocument
                 (

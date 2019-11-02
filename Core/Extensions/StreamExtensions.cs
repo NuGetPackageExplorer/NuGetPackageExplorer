@@ -1,4 +1,4 @@
-using System.IO;
+﻿using System.IO;
 using System.Text;
 
 namespace NuGetPe
@@ -7,6 +7,8 @@ namespace NuGetPe
     {
         public static byte[] ReadAllBytes(this Stream stream)
         {
+            if (stream is null)
+                throw new System.ArgumentNullException(nameof(stream));
             var length = (int)stream.Length;
             var buffer = new byte[length];
             stream.Read(buffer, 0, length);
@@ -26,6 +28,8 @@ namespace NuGetPe
 
         public static Stream AsStream(this string value, Encoding encoding)
         {
+            if (encoding is null)
+                throw new System.ArgumentNullException(nameof(encoding));
             return new MemoryStream(encoding.GetBytes(value));
         }
     }

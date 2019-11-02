@@ -224,7 +224,7 @@ namespace PackageExplorerViewModel
 
         private async void SignAndSaveAs()
         {
-            var signViewModel = new SignPackageViewModel(ViewModel, ViewModel.UIServices, ViewModel.SettingsManager);
+            using var signViewModel = new SignPackageViewModel(ViewModel, ViewModel.UIServices, ViewModel.SettingsManager);
 
             if (ViewModel.UIServices.OpenSignPackageDialog(signViewModel, out var signedPackagePath))
             {
