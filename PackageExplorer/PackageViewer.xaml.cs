@@ -303,6 +303,16 @@ namespace PackageExplorer
             if (DataContext is PackageViewModel model)
             {
                 model.SelectedItem = PackagesTreeView.SelectedItem;
+
+                for (var i = model.SelectedItems.Count - 1; i >= 0; i--)
+                {
+                    // get rid of null objects
+                    var item = model.SelectedItems[i];
+                    if (!(item is PackagePart))
+                    {
+                        model.SelectedItems.RemoveAt(i);
+                    }
+                }
             }
         }
 
@@ -342,10 +352,16 @@ namespace PackageExplorer
                     break;
                 }
             }
-            if (element is TreeViewItem)
+            if (element is TreeViewItem item)
             {
-                element.Focus();
-                e.Handled = true;
+                if (DataContext is PackageViewModel model)
+                {
+                    if (model.SelectedItems.Count <= 1)
+                    {
+                        element.Focus();
+                        e.Handled = true;
+                    }
+                }
             }
         }
 

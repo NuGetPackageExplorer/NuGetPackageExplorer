@@ -157,6 +157,17 @@ namespace PackageExplorerViewModel
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete selected entries?.
+        /// </summary>
+        public static string ConfirmToDeleteMultipleContent
+        {
+            get
+            {
+                return ResourceManager.GetString("ConfirmToDeleteMultipleContent", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Deleted file or folder is not recoverable..
         /// </summary>
         public static string ConfirmToDeleteContent_Title
@@ -164,6 +175,18 @@ namespace PackageExplorerViewModel
             get
             {
                 return ResourceManager.GetString("ConfirmToDeleteContent_Title", resourceCulture);
+            }
+        }
+
+
+        /// <summary>
+        ///   Looks up a localized string similar to Deleted files or folders are not recoverable..
+        /// </summary>
+        public static string ConfirmToDeleteMultipleContent_Title
+        {
+            get
+            {
+                return ResourceManager.GetString("ConfirmToDeleteMultipleContent_Title", resourceCulture);
             }
         }
 

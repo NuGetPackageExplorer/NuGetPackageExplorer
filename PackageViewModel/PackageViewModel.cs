@@ -60,6 +60,8 @@ namespace PackageExplorerViewModel
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
 
+        private List<object?> _selectedItems = new List<object?>();        
+
         #endregion
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
@@ -93,6 +95,8 @@ namespace PackageExplorerViewModel
             _isSigned = _packageMetadata.IsSigned;
 
             RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
+
+            //EnableOtherFunctions = false;
         }
 
 
@@ -235,6 +239,21 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public List<object?> SelectedItems
+        {
+            get { return _selectedItems; }
+            set
+            {
+                if (!_selectedItems.Contains(value))
+                {
+                    _selectedItems.Add(value);
+                    OnPropertyChanged("SelectedItems");
+                    ((ViewContentCommand)ViewContentCommand).RaiseCanExecuteChanged();
+                    CommandManager.InvalidateRequerySuggested();
+                }
+            }
+        }
+
         public string PackagePath
         {
             get { return _packagePath; }
@@ -306,6 +325,8 @@ namespace PackageExplorerViewModel
         public ObservableCollection<PackageIssue> PackageIssues { get; } = new ObservableCollection<PackageIssue>();
 
         public PackageFolder RootFolder { get; }
+
+        //public bool EnableOtherFunctions { get; set; }
 
         #region IDisposable Members
 
@@ -598,9 +619,40 @@ namespace PackageExplorerViewModel
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_DeleteContentExecute");
 
-            if ((parameter ?? SelectedItem) is PackagePart file)
+            // Null objects are put sometimes into List, so to not count them
+            //var moreValuesToDelete = SelectedItems.Select(p => ).Count();
+
+            if (SelectedItems.Count() <= 1)
             {
-                file.Delete();
+                if ((parameter ?? SelectedItem) is PackagePart file)
+                {
+                    file.Delete();
+                }
+            }
+            else
+            {
+                var confirm = UIServices.Confirm(
+                    Resources.ConfirmToDeleteMultipleContent_Title,
+                    string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToDeleteMultipleContent),
+                    isWarning: true);
+
+                if (!confirm)
+                {
+                    return;
+                }
+
+                for (int i = SelectedItems.Count - 1; i >= 0; i--)
+                {
+                    if (SelectedItems[i] is PackagePart file)
+                    {
+                        file.Delete(false);
+                        continue;
+                    }
+                    if (SelectedItems[i] == null)
+                    {
+                        SelectedItems.RemoveAt(i);
+                    }
+                }
             }
         }
 
@@ -1434,6 +1486,8 @@ this);
                 CloseContentViewer();
             }
 
+            // Remove deleted items (which were accepted to delete) from SelectedItems list
+            SelectedItems.Remove(packagePart);
             NotifyChanges();
         }
 
