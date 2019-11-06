@@ -53,7 +53,8 @@ namespace NuGetPe
             if (package is null)
                 throw new ArgumentNullException(nameof(package));
             // if the package is already present in the cache, no need to do anything
-            if (FindPackage(package.Id, package.Version) != null)
+            using var pkg = FindPackage(package.Id, package.Version);
+            if (pkg != null)
             {
                 return;
             }
