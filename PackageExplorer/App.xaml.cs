@@ -27,10 +27,6 @@ namespace PackageExplorer
         public App()
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
-            // Don't use the SocketHttphandler because it has some authentification issues accessing feeds like GitHub NuGet
-            // see https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/pull/841 for more details
-            AppContext.SetSwitch("System.Net.Http.UseSocketsHttpHandler", false);
-
             DiagnosticsClient.Initialize();
         }
 

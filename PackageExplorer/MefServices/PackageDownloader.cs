@@ -82,6 +82,7 @@ namespace PackageExplorer
             var updated = 0;
 
             var progressDialogLock = new object();
+#pragma warning disable CA2000 // Dispose objects before losing scope (handled in finally below)
             var progressDialog = new ProgressDialog
             {
                 Text = progressDialogText,
@@ -90,10 +91,10 @@ namespace PackageExplorer
                 CancellationText = "Canceling download..."
             };
 
-
             // polling for Cancel button being clicked
             var cts = new CancellationTokenSource();
             var timer = new System.Timers.Timer(100);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
             timer.Elapsed += (o, e) =>
                           {
@@ -165,7 +166,8 @@ namespace PackageExplorer
                 finally
                 {
                     timer.Stop();
-
+                    timer.Dispose();
+                    cts.Dispose();
                     // close progress dialog when done
                     lock (progressDialogLock)
                     {
