@@ -60,7 +60,7 @@ namespace PackageExplorerViewModel
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
 
-        private List<object?> _selectedItems = new List<object?>();        
+        private readonly List<object?> _selectedItems = new List<object?>();        
 
         #endregion
 
@@ -242,16 +242,6 @@ namespace PackageExplorerViewModel
         public List<object?> SelectedItems
         {
             get { return _selectedItems; }
-            set
-            {
-                if (!_selectedItems.Contains(value))
-                {
-                    _selectedItems = value;
-                    OnPropertyChanged(nameof(SelectedItems));
-                    ((ViewContentCommand)ViewContentCommand).RaiseCanExecuteChanged();
-                    CommandManager.InvalidateRequerySuggested();
-                }
-            }
         }
 
         public string PackagePath
