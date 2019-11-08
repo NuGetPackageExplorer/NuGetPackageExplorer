@@ -170,7 +170,9 @@ namespace PackageExplorer
                     Constants.SymbolPackageExtension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                 {
                     DiagnosticsClient.TrackPageView("View Existing Package");
+#pragma warning disable CA2000 // Dispose objects before losing scope
                     package = new ZipPackage(tempFile);
+#pragma warning restore CA2000 // Dispose objects before losing scope
                 }
                 else if (Constants.ManifestExtension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                 {
@@ -189,6 +191,7 @@ namespace PackageExplorer
             }
             catch (Exception ex)
             {
+                package?.Dispose();
                 package = null;
                 UIServices.Show(ex.Message, MessageLevel.Error);
                 return false;

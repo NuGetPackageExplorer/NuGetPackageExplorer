@@ -867,14 +867,13 @@ namespace PackageExplorerViewModel
 
             try
             {
-                using var mruSourceManager = new MruPackageSourceManager(
-                    new PublishSourceSettings(SettingsManager));
-                var publishPackageViewModel = new PublishPackageViewModel(
-mruSourceManager,
-SettingsManager,
-UIServices,
-_credentialPublishProvider,
-this);
+                using var mruSourceManager = new MruPackageSourceManager(new PublishSourceSettings(SettingsManager));
+                using var publishPackageViewModel = new PublishPackageViewModel(
+                                                            mruSourceManager,
+                                                            SettingsManager,
+                                                            UIServices,
+                                                            _credentialPublishProvider,
+                                                            this);
                 UIServices.OpenPublishDialog(publishPackageViewModel);
             }
             catch (Exception e)
