@@ -13,9 +13,19 @@ namespace PackageExplorer.Controls
     {
         public MultiSelectTreeView()
         {
-            GotFocus += OnTreeViewItemGotFocus;
-            PreviewMouseLeftButtonDown += OnTreeViewItemPreviewMouseDown;
-            PreviewMouseLeftButtonUp += OnTreeViewItemPreviewMouseUp;
+            Loaded += (s, a) =>
+            {
+                GotFocus += OnTreeViewItemGotFocus;
+                PreviewMouseLeftButtonDown += OnTreeViewItemPreviewMouseDown;
+                PreviewMouseLeftButtonUp += OnTreeViewItemPreviewMouseUp;
+            };
+
+            Unloaded += (s, a) =>
+            {
+                GotFocus -= OnTreeViewItemGotFocus;
+                PreviewMouseLeftButtonDown -= OnTreeViewItemPreviewMouseDown;
+                PreviewMouseLeftButtonUp -= OnTreeViewItemPreviewMouseUp;
+            };
         }
 
         private static TreeViewItem _selectTreeViewItemOnMouseUp;

@@ -352,7 +352,7 @@ namespace PackageExplorer
                     break;
                 }
             }
-            if (element is TreeViewItem item)
+            if (element is TreeViewItem)
             {
                 if (DataContext is PackageViewModel model)
                 {

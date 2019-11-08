@@ -246,8 +246,8 @@ namespace PackageExplorerViewModel
             {
                 if (!_selectedItems.Contains(value))
                 {
-                    _selectedItems.Add(value);
-                    OnPropertyChanged("SelectedItems");
+                    _selectedItems = value;
+                    OnPropertyChanged(nameof(SelectedItems));
                     ((ViewContentCommand)ViewContentCommand).RaiseCanExecuteChanged();
                     CommandManager.InvalidateRequerySuggested();
                 }
@@ -622,10 +622,7 @@ namespace PackageExplorerViewModel
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_DeleteContentExecute");
 
-            // Null objects are put sometimes into List, so to not count them
-            //var moreValuesToDelete = SelectedItems.Select(p => ).Count();
-
-            if (SelectedItems.Count() <= 1)
+            if (SelectedItems.Count <= 1)
             {
                 if ((parameter ?? SelectedItem) is PackagePart file)
                 {
