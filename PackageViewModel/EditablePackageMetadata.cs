@@ -348,12 +348,14 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public string? IconOrIconUrl => Icon ?? IconUrl?.OriginalString;
+
         public string? Icon
         {
             get => _icon;
             set
             {
-                if(_icon != value)
+                if (_icon != value)
                 {
                     _icon = value;
                     RaisePropertyChange(nameof(Icon));
@@ -549,7 +551,7 @@ namespace PackageExplorerViewModel
         {
             get { return SplitString(Owners); }
         }
-  
+
         IEnumerable<FrameworkAssemblyReference> IPackageMetadata.FrameworkReferences
         {
             get { return FrameworkAssemblies; }
