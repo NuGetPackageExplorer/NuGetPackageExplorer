@@ -20,7 +20,7 @@ namespace PackageExplorer
                 {
                     foreach (var file in package.RootFolder.GetFiles())
                     {
-                        if (file.Path == metadata.Icon)
+                        if (string.Equals(file.Path, metadata.Icon, StringComparison.OrdinalIgnoreCase))
                         {
                             var image = new BitmapImage();
                             image.BeginInit();
