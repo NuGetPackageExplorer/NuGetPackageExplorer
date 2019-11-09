@@ -3,7 +3,7 @@
   <Identity Name="50582LuanNguyen.NuGetPackageExplorer.Local" Publisher="CN=oren" Version="3.25.0.0" />
   <Properties>
     <DisplayName>NuGet Package Explorer (Local)</DisplayName>
-    <PublisherDisplayName>Oren Novotny, LLC</PublisherDisplayName>
+    <PublisherDisplayName>NuGet Package Explorer (Local)</PublisherDisplayName>
     <Logo>NightlyAssets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
