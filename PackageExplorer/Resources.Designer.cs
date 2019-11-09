@@ -484,7 +484,18 @@ namespace PackageExplorer {
                 return ResourceManager.GetString("PackageChooser_ActionShowAllVersions", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Alternate Package:.
+        /// </summary>
+        public static string PackageChooser_AlternatePackage
+        {
+            get
+            {
+                return ResourceManager.GetString("PackageChooser_AlternatePackage", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Clear search.
         /// </summary>

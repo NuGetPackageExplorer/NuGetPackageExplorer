@@ -63,7 +63,7 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Deprecated -->
-                    <Label Grid.Row="0" Grid.Column="0" Padding="0" Visibility="{Binding SelectedPackage.IsDeprecated, Converter={StaticResource boolToVis}}">
+                    <Label Grid.Row="0" Grid.Column="0" Padding="0" Visibility="{Binding SelectedPackage.DeprecationInfo, Converter={StaticResource NullToVisibilityConverter}}">
                         <Label.Content>
                             <TextBlock>
                                 <ContentControl Content="{StaticResource StatusSecurityWarningIcon}" />
@@ -71,7 +71,22 @@
                             </TextBlock>
                         </Label.Content>
                     </Label>
-                    
+                    <Grid Grid.Row="0" Grid.Column="1" Visibility="{Binding SelectedPackage.DeprecationInfo, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <!-- Deprecation Message -->
+                        <TextBlock Grid.Row="0" Text="{Binding SelectedPackage.DeprecationInfo.Message, Mode=OneWay}" Visibility="{Binding SelectedPackage.DeprecationInfo.Message, Converter={StaticResource NullToVisibilityConverter}}" />
+                        <!-- Deprecation Alternate Package -->
+                        <TextBlock Grid.Row="1" Visibility="{Binding SelectedPackage.DeprecationInfo.AlternatePackageInfo, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='test'}">
+                            <Run Text="{x:Static self:Resources.PackageChooser_AlternatePackage}"/>
+                            <Hyperlink Command="{Binding OpenAlternatePackageCommand}" CommandParameter="{Binding SelectedPackage.DeprecationInfo.AlternatePackageInfo.Id}">
+                                <Run Text="{Binding SelectedPackage.DeprecationInfo.AlternatePackageInfo.Id}"/>
+                            </Hyperlink>
+                        </TextBlock>
+                    </Grid>
+
                     <!-- Version -->
                     <Label Grid.Row="1" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailVersion}" />
                     <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedPackage.Version, Mode=OneWay}" />

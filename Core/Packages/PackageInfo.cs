@@ -101,9 +101,9 @@ namespace NuGetPe
         public bool IsRemotePackage { get; set; }
 
         /// <summary>
-        /// Gets or sets whether or not the package is deprecated.
+        /// Gets or sets set package deprecation info.
         /// </summary>
-        public bool IsDeprecated { get; set; }
+        public DeprecationInfo? DeprecationInfo { get; set; }
 
         /// <summary>
         /// Gets whether or not the package is currently published.
