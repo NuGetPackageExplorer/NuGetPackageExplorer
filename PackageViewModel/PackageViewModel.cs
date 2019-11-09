@@ -307,6 +307,23 @@ namespace PackageExplorerViewModel
 
         public PackageFolder RootFolder { get; }
 
+        public IEnumerable<string> IconPaths
+        {
+            get
+            {
+                yield return "";
+
+                foreach (var file in RootFolder.GetFiles())
+                {
+                    if (file.Path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                        file.Path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return file.Path;
+                    }
+                }
+            }
+        }
+
         #region IDisposable Members
 
         public void Dispose()
@@ -1349,6 +1366,7 @@ namespace PackageExplorerViewModel
         internal void NotifyChanges()
         {
             HasEdit = true;
+            OnPropertyChanged(nameof(IconPaths));
         }
 
         public IEnumerable<PackageIssue> Validate()

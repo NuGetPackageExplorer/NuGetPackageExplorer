@@ -134,9 +134,9 @@
             <!-- Development Dependency -->
             <CheckBox Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" VerticalContentAlignment="Center" IsChecked="{Binding PackageMetadata.DevelopmentDependency}" Content="_Development Dependency" Style="{StaticResource CheckBoxStyle}" />
 
-            <!-- IconUrl -->
-            <Label Grid.Row="7" Grid.Column="0" Target="IconUrlBox" Style="{StaticResource LabelStyle}" Content="Icon _Url" />
-            <TextBox Grid.Row="7" Grid.Column="1" x:Name="IconUrlBox" Text="{Binding PackageMetadata.IconUrl, Converter={StaticResource UriConverter}}" />
+            <!-- Icon -->
+            <Label Grid.Row="7" Grid.Column="0" Target="IconBox" Style="{StaticResource LabelStyle}" Content="Icon" />
+            <ComboBox Grid.Row="7" Grid.Column="1" x:Name="IconBox" IsEditable="True" Text="{Binding PackageMetadata.IconOrIconUrl}" ItemsSource="{Binding IconPaths}" Style="{StaticResource ComboBoxStyle}" />
 
             <!-- ProjectUrl -->
             <Label Grid.Row="8" Grid.Column="0" Target="ProjectUrlBox" Style="{StaticResource LabelStyle}" Content="_Project Url" />

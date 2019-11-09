@@ -348,12 +348,37 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public string? IconOrIconUrl
+        {
+            get => Icon ?? IconUrl?.OriginalString;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    Icon = null;
+                    IconUrl = null;
+                }
+
+                if (Uri.TryCreate(value, UriKind.Absolute, out var uri))
+                {
+                    Icon = null;
+                    IconUrl = uri;
+                }
+                else
+                {
+                    Icon = value;
+                    IconUrl = null;
+                }
+                RaisePropertyChange(nameof(IconOrIconUrl));
+            }
+        }
+
         public string? Icon
         {
             get => _icon;
             set
             {
-                if(_icon != value)
+                if (_icon != value)
                 {
                     _icon = value;
                     RaisePropertyChange(nameof(Icon));
@@ -549,7 +574,7 @@ namespace PackageExplorerViewModel
         {
             get { return SplitString(Owners); }
         }
-  
+
         IEnumerable<FrameworkAssemblyReference> IPackageMetadata.FrameworkReferences
         {
             get { return FrameworkAssemblies; }
