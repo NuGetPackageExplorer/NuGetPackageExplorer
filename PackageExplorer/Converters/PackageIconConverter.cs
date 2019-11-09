@@ -18,9 +18,13 @@ namespace PackageExplorer
 
                 if (!string.IsNullOrEmpty(metadata.Icon))
                 {
+                    // Normalize any directories to match what's the package
+                    // We do this here instead of the metadata so that we round-trip
+                    // whatever the user originally had when in edit view
+                    var iconPath = metadata.Icon.Replace('/', '\\');
                     foreach (var file in package.RootFolder.GetFiles())
                     {
-                        if (string.Equals(file.Path, metadata.Icon, StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(file.Path, iconPath, StringComparison.OrdinalIgnoreCase))
                         {
                             var image = new BitmapImage();
                             image.BeginInit();
