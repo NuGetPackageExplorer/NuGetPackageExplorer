@@ -348,7 +348,30 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string? IconOrIconUrl => Icon ?? IconUrl?.OriginalString;
+        public string? IconOrIconUrl
+        {
+            get => Icon ?? IconUrl?.OriginalString;
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    Icon = null;
+                    IconUrl = null;
+                }
+
+                if (Uri.TryCreate(value, UriKind.Absolute, out var uri))
+                {
+                    Icon = null;
+                    IconUrl = uri;
+                }
+                else
+                {
+                    Icon = value;
+                    IconUrl = null;
+                }
+                RaisePropertyChange(nameof(IconOrIconUrl));
+            }
+        }
 
         public string? Icon
         {

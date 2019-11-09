@@ -6,13 +6,13 @@ using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
-    public class PackageIconConverter : IValueConverter
+    public class PackageIconConverter : IMultiValueConverter
     {
-        #region IValueConverter Members
+        #region IMultiValueConverter Members
 
-        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is PackageViewModel package)
+            if (values?.Length > 1 && values[0] is PackageViewModel package && values[1] is string str && !string.IsNullOrEmpty(str))
             {
                 var metadata = package.PackageMetadata;
 
@@ -33,12 +33,19 @@ namespace PackageExplorer
 
                 }
 
-                return metadata.IconUrl;
+                if (metadata.IconUrl != null)
+                {
+                    var image = new BitmapImage();
+                    image.BeginInit();
+                    image.UriSource = metadata.IconUrl;
+                    image.EndInit();
+                    return image;
+                }
             }
             return null;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
