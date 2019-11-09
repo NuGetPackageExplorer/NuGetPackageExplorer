@@ -59,7 +59,7 @@ namespace PackageExplorerViewModel
             SourceRepository repository,
             FeedType feedType,
             PackageChooserViewModel parentViewModel)
-            : this(CreatePackageInfo(info, feedType, null), showPrereleasePackages, repository, feedType, parentViewModel)
+            : this(CreatePackageInfo(info, feedType, null, null), showPrereleasePackages, repository, feedType, parentViewModel)
         {
             _versionInfos = info.GetVersionsAsync;
         }
@@ -200,8 +200,15 @@ namespace PackageExplorerViewModel
 
                     query = query.OrderByDescending(p => p.Identity.Version);
 
-                    // now show packages
-                    AllPackages.AddRange(query.Select(p => CreatePackageInfo(p, _feedType, versions)));
+                    var packages = query.ToList();
+                    var deprecations = await Task.WhenAll(packages.Select(p => p.GetDeprecationMetadataAsync()));
+                    for (var i = 0; i < packages.Count; i++)
+                    {
+                        var package = packages[i];
+                        var deprecation = deprecations[i];
+
+                        AllPackages.Add(CreatePackageInfo(package, _feedType, versions, deprecation));
+                    }
                 }
 
                 HasFinishedLoading = true;
@@ -296,33 +303,25 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, FeedType feedType, IEnumerable<VersionInfo>? versionInfos)
+        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, FeedType feedType, IEnumerable<VersionInfo>? versionInfos, PackageDeprecationMetadata? deprecationMetadata)
         {
-            var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
-
             DateTimeOffset? published = null;
-            int? downloadCount = null;
-
             if (packageSearchMetadata.Published.HasValue && packageSearchMetadata.Published.Value.Year > 1900)
             {
                 // Note nuget.org reports 1900 for unlisted packages. Pretty sure it's was published later ;)
                 published = packageSearchMetadata.Published;
             }
 
-            downloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault());
+            var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
 
-            if (downloadCount == 0)
-            {
-                // Note nuget.org reports no correct download counts in for unlisted. 
-                downloadCount = null;
-
-            }
+            var downloadCount = (int?)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount);
 
             return new PackageInfo(packageSearchMetadata.Identity)
             {
                 Authors = packageSearchMetadata.Authors,
                 Published = published,
                 DownloadCount = downloadCount,
+                IsDeprecated = deprecationMetadata != null,
                 IsRemotePackage = (feedType == FeedType.HttpV3 || feedType == FeedType.HttpV2),
                 IsPrefixReserved = packageSearchMetadata.PrefixReserved,
                 Description = packageSearchMetadata.Description,
@@ -334,7 +333,7 @@ namespace PackageExplorerViewModel
                 IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty
             };
         }
-               
+
         public void Dispose()
         {
             _downloadCancelSource?.Dispose();

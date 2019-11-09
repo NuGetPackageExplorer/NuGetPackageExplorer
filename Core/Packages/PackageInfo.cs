@@ -5,7 +5,7 @@ using NuGet.Versioning;
 namespace NuGetPe
 {
     /// <summary>
-    /// Encapsulates relevant Nuget package information
+    /// Encapsulates relevant NuGet package information.
     /// </summary>
     public class PackageInfo
     {
@@ -21,12 +21,12 @@ namespace NuGetPe
         }
 
         /// <summary>
-        /// Gets the core package identity
+        /// Gets the core package identity.
         /// </summary>
         public PackageIdentity Identity { get; }
 
         /// <summary>
-        /// Gets the name of the package
+        /// Gets the name of the package.
         /// </summary>
         public string Id => Identity.Id;
 
@@ -41,52 +41,52 @@ namespace NuGetPe
         public string Version => SemanticVersion.ToFullString();
 
         /// <summary>
-        /// Gets or sets the full package description
+        /// Gets or sets the full package description.
         /// </summary>
         public string? Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the short description of the package
+        /// Gets or sets the short description of the package.
         /// </summary>
         public string? Summary { get; set; }
 
         /// <summary>
-        /// Gets or sets the comma-separated list of packages authors
+        /// Gets or sets the comma-separated list of packages authors.
         /// </summary>
         public string? Authors { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of package downloads
+        /// Gets or sets the number of package downloads.
         /// </summary>
         public int? DownloadCount { get; set; }
 
         /// <summary>
-        /// Gets or sets the time of the packages publishing
+        /// Gets or sets the time of the packages publishing.
         /// </summary>
         public DateTimeOffset? Published { get; set; }
 
         /// <summary>
-        /// Gets or sets the url to the package icon
+        /// Gets or sets the url to the package icon.
         /// </summary>
         public string? IconUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets the url to the package license information
+        /// Gets or sets the url to the package license information.
         /// </summary>
         public string? LicenseUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets the url to the package website
+        /// Gets or sets the url to the package website.
         /// </summary>
         public string? ProjectUrl { get; set; }
 
         /// <summary>
-        /// Gets or sets the space-delimited list of tags and keywords that describe the package
+        /// Gets or sets the space-delimited list of tags and keywords that describe the package.
         /// </summary>
         public string? Tags { get; set; }
 
         /// <summary>
-        /// Gets or sets the url to report abuse of the package
+        /// Gets or sets the url to report abuse of the package.
         /// </summary>
         public string? ReportAbuseUrl { get; set; }
 
@@ -101,7 +101,12 @@ namespace NuGetPe
         public bool IsRemotePackage { get; set; }
 
         /// <summary>
-        /// Gets whether or not the package is currently published
+        /// Gets or sets whether or not the package is deprecated.
+        /// </summary>
+        public bool IsDeprecated { get; set; }
+
+        /// <summary>
+        /// Gets whether or not the package is currently published.
         /// </summary>
         public bool IsUnlisted
         {
