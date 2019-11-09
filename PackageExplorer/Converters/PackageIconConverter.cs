@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using System.Globalization;
+using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using PackageExplorerViewModel;
@@ -8,6 +10,8 @@ namespace PackageExplorer
 {
     public class PackageIconConverter : IMultiValueConverter
     {
+        private static readonly IconUrlToImageCacheConverter IconUrlConverter = new IconUrlToImageCacheConverter();
+
         public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
             if (values?.Length > 1 && values[0] is PackageViewModel package && values[1] is string str && !string.IsNullOrEmpty(str))
@@ -28,7 +32,7 @@ namespace PackageExplorer
                             image.BeginInit();
                             image.CacheOption = BitmapCacheOption.OnLoad;
                             image.StreamSource = file.GetStream();
-                            image.EndInit();
+                            image.EndInit();                            
                             return image;
                         }
                     }
@@ -37,14 +41,10 @@ namespace PackageExplorer
 
                 if (metadata.IconUrl != null)
                 {
-                    var image = new BitmapImage();
-                    image.BeginInit();
-                    image.UriSource = metadata.IconUrl;
-                    image.EndInit();
-                    return image;
+                    return IconUrlConverter.Convert(metadata.IconUrl?.ToString()!, targetType, Images.DefaultPackageIcon, culture);
                 }
             }
-            return null;
+            return Images.DefaultPackageIcon;
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
