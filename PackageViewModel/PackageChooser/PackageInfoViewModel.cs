@@ -185,19 +185,17 @@ namespace PackageExplorerViewModel
             {
                 var packageMetadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
 
-                using (var sourceCacheContext = new SourceCacheContext())
+                using var sourceCacheContext = new SourceCacheContext();
+                var package = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Identity, sourceCacheContext, NullLogger.Instance, CancellationToken.None);
+
+                var deprecationMetadata = await package.GetDeprecationMetadataAsync();
+
+                LatestPackageInfo.DeprecationInfo = ConvertPackageDeprecationMetadata(deprecationMetadata);
+
+                OnPropertyChanged(nameof(LatestPackageInfo));
+                if (_parentViewModel.SelectedPackage == LatestPackageInfo)
                 {
-                    var package = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Identity, sourceCacheContext, NullLogger.Instance, CancellationToken.None);
-
-                    var deprecationMetadata = await package.GetDeprecationMetadataAsync();
-
-                    LatestPackageInfo.DeprecationInfo = ConvertPackageDeprecationMetadata(deprecationMetadata);
-
-                    OnPropertyChanged(nameof(LatestPackageInfo));
-                    if (_parentViewModel.SelectedPackage == LatestPackageInfo)
-                    {
-                        OnPropertyChanged(nameof(SelectedPackage));
-                    }
+                    OnPropertyChanged(nameof(SelectedPackage));
                 }
             }
             catch { }

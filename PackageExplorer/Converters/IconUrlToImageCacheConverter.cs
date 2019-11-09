@@ -47,7 +47,9 @@ namespace PackageExplorer
                 return defaultPackageIcon;
             }
 
+#pragma warning disable IDE0007 // Use implicit type
             BitmapImage? iconBitmapImage = new BitmapImage();
+#pragma warning restore IDE0007 // Use implicit type
             iconBitmapImage.BeginInit();
             iconBitmapImage.UriSource = new Uri(iconUrl);
 
