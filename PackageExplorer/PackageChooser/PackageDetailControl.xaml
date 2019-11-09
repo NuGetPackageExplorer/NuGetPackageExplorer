@@ -67,7 +67,7 @@
                         <Label.Content>
                             <TextBlock>
                                 <ContentControl Content="{StaticResource StatusSecurityWarningIcon}" />
-                                <Run BaselineAlignment="Center">Deprecated</Run>
+                                <Run BaselineAlignment="Center" Text="{x:Static self:Resources.PackageChooser_Deprecated}" />
                             </TextBlock>
                         </Label.Content>
                     </Label>

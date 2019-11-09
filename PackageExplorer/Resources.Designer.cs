@@ -520,7 +520,18 @@ namespace PackageExplorer {
                 return ResourceManager.GetString("PackageChooser_ColumnHeaderVersion", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Deprecated.
+        /// </summary>
+        public static string PackageChooser_Deprecated
+        {
+            get
+            {
+                return ResourceManager.GetString("PackageChooser_Deprecated", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Author(s):.
         /// </summary>
