@@ -44,6 +44,7 @@
                 <Run Text="Maintainers: " />
                 <Hyperlink NavigateUri="https://github.com/304NotModified" Click="Hyperlink_Click"><Run Text="Julian Verdurmen" /></Hyperlink><Run Text=", "/>
                 <Hyperlink NavigateUri="https://twitter.com/onovotny" Click="Hyperlink_Click"><Run Text="Oren Novotny" /></Hyperlink><Run Text=", "/>
+                <Hyperlink NavigateUri="https://github.com/campersau" Click="Hyperlink_Click"><Run Text="Bastian Buchholz" /></Hyperlink><Run Text=", "/>
                 <Hyperlink NavigateUri="https://twitter.com/dsplaisted" Click="Hyperlink_Click"><Run Text="Daniel Plaisted" /></Hyperlink>
             </TextBlock>
             <TextBlock Margin="0,5,0,0">
