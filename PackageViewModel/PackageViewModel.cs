@@ -59,6 +59,7 @@ namespace PackageExplorerViewModel
         private ICommand? _viewPackageAnalysisCommand;
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
+        private bool _disposed;
 
         #endregion
 
@@ -324,10 +325,14 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public bool IsDisposed => _disposed;
+
         #region IDisposable Members
 
         public void Dispose()
         {
+            _disposed = true;
+
             RootFolder.Dispose();
             _package.Dispose();
 

@@ -14,7 +14,7 @@ namespace PackageExplorer
 
         public object? Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values?.Length > 1 && values[0] is PackageViewModel package && values[1] is string str && !string.IsNullOrEmpty(str))
+            if (values?.Length > 1 && values[0] is PackageViewModel package && !package.IsDisposed && values[1] is string str && !string.IsNullOrEmpty(str))
             {
                 var metadata = package.PackageMetadata;
 
