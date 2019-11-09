@@ -55,51 +55,77 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0.4*"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
 
+                    <!-- Deprecated -->
+                    <Label Grid.Row="0" Grid.Column="0" Padding="0" Visibility="{Binding SelectedPackage.DeprecationInfo, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Label.Content>
+                            <TextBlock>
+                                <ContentControl Content="{StaticResource StatusSecurityWarningIcon}" />
+                                <Run BaselineAlignment="Center" Text="{x:Static self:Resources.PackageChooser_Deprecated}" />
+                            </TextBlock>
+                        </Label.Content>
+                    </Label>
+                    <Grid Grid.Row="0" Grid.Column="1" Visibility="{Binding SelectedPackage.DeprecationInfo, Converter={StaticResource NullToVisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <!-- Deprecation Message -->
+                        <TextBlock Grid.Row="0" Text="{Binding SelectedPackage.DeprecationInfo.Message, Mode=OneWay}" Visibility="{Binding SelectedPackage.DeprecationInfo.Message, Converter={StaticResource NullToVisibilityConverter}}" />
+                        <!-- Deprecation Alternate Package -->
+                        <TextBlock Grid.Row="1" Visibility="{Binding SelectedPackage.DeprecationInfo.AlternatePackageInfo, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter='test'}">
+                            <Run Text="{x:Static self:Resources.PackageChooser_AlternatePackage}"/>
+                            <Hyperlink Command="{Binding OpenAlternatePackageCommand}" CommandParameter="{Binding SelectedPackage.DeprecationInfo.AlternatePackageInfo.Id}">
+                                <Run Text="{Binding SelectedPackage.DeprecationInfo.AlternatePackageInfo.Id}"/>
+                            </Hyperlink>
+                        </TextBlock>
+                    </Grid>
+
                     <!-- Version -->
-                    <Label Grid.Row="0" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailVersion}" />
-                    <TextBox Grid.Row="0" Grid.Column="1" Text="{Binding SelectedPackage.Version, Mode=OneWay}" />
+                    <Label Grid.Row="1" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailVersion}" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding SelectedPackage.Version, Mode=OneWay}" />
 
                     <!-- Authors -->
-                    <Label Grid.Row="1" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailAuthors}" />
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding SelectedPackage.Authors}" />
+                    <Label Grid.Row="2" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailAuthors}" />
+                    <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding SelectedPackage.Authors}" />
 
                     <!-- License URL -->
-                    <Label Grid.Row="2" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailLicense}" />
-                    <TextBlock Grid.Row="2" Grid.Column="1">
+                    <Label Grid.Row="3" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailLicense}" />
+                    <TextBlock Grid.Row="3" Grid.Column="1">
                         <Hyperlink NavigateUri="{Binding SelectedPackage.LicenseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
                             <Run Text="{Binding SelectedPackage.LicenseUrl}"/>
                         </Hyperlink>
                     </TextBlock>
 
                     <!-- Published Date -->
-                    <Label Grid.Row="3" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailDatePublished}" Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
-                    <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SelectedPackage.Published, Converter={StaticResource DateTimeOffsetLongDateConverter}}"  Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
+                    <Label Grid.Row="4" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailDatePublished}" Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
+                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedPackage.Published, Converter={StaticResource DateTimeOffsetLongDateConverter}}"  Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
 
                     <!-- Project URL --> 
-                    <Label Grid.Row="4" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailProjectUrl}" />
-                    <TextBlock Grid.Row="4" Grid.Column="1">
+                    <Label Grid.Row="5" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailProjectUrl}" />
+                    <TextBlock Grid.Row="5" Grid.Column="1">
                         <Hyperlink NavigateUri="{Binding SelectedPackage.ProjectUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
                             <Run Text="{Binding SelectedPackage.ProjectUrl}"/>
                         </Hyperlink>
                     </TextBlock>
 
                      <!-- Report Abuse URL -->
-                    <Label Grid.Row="5" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailReportAbuse}" />
-                    <TextBlock Grid.Row="5" Grid.Column="1">
+                    <Label Grid.Row="6" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailReportAbuse}" />
+                    <TextBlock Grid.Row="6" Grid.Column="1">
                         <Hyperlink NavigateUri="{Binding SelectedPackage.ReportAbuseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
                             <Run Text="{Binding SelectedPackage.ReportAbuseUrl}" />
                         </Hyperlink>
                     </TextBlock>
 
                      <!-- Tags --> 
-                    <Label Grid.Row="6" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailTags}" />
-                    <TextBlock Grid.Row="6" Grid.Column="1" Text="{Binding SelectedPackage.Tags}" />
+                    <Label Grid.Row="7" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailTags}" />
+                    <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding SelectedPackage.Tags}" />
                 </Grid>
             </StackPanel>
         </Border>

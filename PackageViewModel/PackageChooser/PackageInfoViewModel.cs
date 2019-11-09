@@ -8,9 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet.Common;
-using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
 using NuGetPe;
 
 namespace PackageExplorerViewModel
@@ -50,6 +50,7 @@ namespace PackageExplorerViewModel
             OpenCommand = new RelayCommand(OnOpenPackage);
             DownloadCommand = new RelayCommand(OnDownloadPackage);
             CancelCommand = new RelayCommand(OnCancelDownload, CanCancelDownload);
+            OpenAlternatePackageCommand = new RelayCommand<string>(OnOpenAlternatePackage);
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
@@ -59,9 +60,11 @@ namespace PackageExplorerViewModel
             SourceRepository repository,
             FeedType feedType,
             PackageChooserViewModel parentViewModel)
-            : this(CreatePackageInfo(info, feedType, null), showPrereleasePackages, repository, feedType, parentViewModel)
+            : this(CreatePackageInfo(info, feedType, null, null), showPrereleasePackages, repository, feedType, parentViewModel)
         {
             _versionInfos = info.GetVersionsAsync;
+
+            _ = Task.Run(LoadDeprecationInfo);
         }
 
         public ObservableCollection<PackageInfo> AllPackages { get; private set; }
@@ -93,6 +96,7 @@ namespace PackageExplorerViewModel
         public ICommand OpenCommand { get; private set; }
         public ICommand DownloadCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
+        public ICommand OpenAlternatePackageCommand { get; private set; }
 
         public bool ShowingAllVersionsList
         {
@@ -175,6 +179,30 @@ namespace PackageExplorerViewModel
             }
         }
 
+        private async Task LoadDeprecationInfo()
+        {
+            try
+            {
+                var packageMetadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
+
+                using (var sourceCacheContext = new SourceCacheContext())
+                {
+                    var package = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Identity, sourceCacheContext, NullLogger.Instance, CancellationToken.None);
+
+                    var deprecationMetadata = await package.GetDeprecationMetadataAsync();
+
+                    LatestPackageInfo.DeprecationInfo = ConvertPackageDeprecationMetadata(deprecationMetadata);
+
+                    OnPropertyChanged(nameof(LatestPackageInfo));
+                    if (_parentViewModel.SelectedPackage == LatestPackageInfo)
+                    {
+                        OnPropertyChanged(nameof(SelectedPackage));
+                    }
+                }
+            }
+            catch { }
+        }
+
         private async Task LoadPackages()
         {
             if (IsLoading)
@@ -200,8 +228,15 @@ namespace PackageExplorerViewModel
 
                     query = query.OrderByDescending(p => p.Identity.Version);
 
-                    // now show packages
-                    AllPackages.AddRange(query.Select(p => CreatePackageInfo(p, _feedType, versions)));
+                    var packages = query.ToList();
+                    var deprecations = await Task.WhenAll(packages.Select(p => p.GetDeprecationMetadataAsync()));
+                    for (var i = 0; i < packages.Count; i++)
+                    {
+                        var package = packages[i];
+                        var deprecationMetadata = deprecations[i];
+
+                        AllPackages.Add(CreatePackageInfo(package, _feedType, versions, deprecationMetadata));
+                    }
                 }
 
                 HasFinishedLoading = true;
@@ -283,6 +318,13 @@ namespace PackageExplorerViewModel
             }
         }
 
+        private void OnOpenAlternatePackage(string packageId)
+        {
+            DiagnosticsClient.TrackEvent("PackageInfoViewModel_OpenAlternatePackage");
+
+            _parentViewModel.SearchCommand.Execute("id:" + packageId);
+        }
+
         internal void OnDeselected()
         {
             if (IsLoading)
@@ -296,33 +338,25 @@ namespace PackageExplorerViewModel
             }
         }
 
-        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, FeedType feedType, IEnumerable<VersionInfo>? versionInfos)
+        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, FeedType feedType, IEnumerable<VersionInfo>? versionInfos, PackageDeprecationMetadata? deprecationMetadata)
         {
-            var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
-
             DateTimeOffset? published = null;
-            int? downloadCount = null;
-
             if (packageSearchMetadata.Published.HasValue && packageSearchMetadata.Published.Value.Year > 1900)
             {
                 // Note nuget.org reports 1900 for unlisted packages. Pretty sure it's was published later ;)
                 published = packageSearchMetadata.Published;
             }
 
-            downloadCount = (int)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount.GetValueOrDefault());
+            var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
 
-            if (downloadCount == 0)
-            {
-                // Note nuget.org reports no correct download counts in for unlisted. 
-                downloadCount = null;
-
-            }
+            var downloadCount = (int?)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount);
 
             return new PackageInfo(packageSearchMetadata.Identity)
             {
                 Authors = packageSearchMetadata.Authors,
                 Published = published,
                 DownloadCount = downloadCount,
+                DeprecationInfo = ConvertPackageDeprecationMetadata(deprecationMetadata),
                 IsRemotePackage = (feedType == FeedType.HttpV3 || feedType == FeedType.HttpV2),
                 IsPrefixReserved = packageSearchMetadata.PrefixReserved,
                 Description = packageSearchMetadata.Description,
@@ -334,7 +368,30 @@ namespace PackageExplorerViewModel
                 IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty
             };
         }
-               
+
+        private static DeprecationInfo? ConvertPackageDeprecationMetadata(PackageDeprecationMetadata? deprecationMetadata)
+        {
+            if (deprecationMetadata == null)
+            {
+                return null;
+            }
+
+            var deprecationInfo = new DeprecationInfo
+            {
+                Message = deprecationMetadata.Message,
+                Reasons = deprecationMetadata.Reasons
+            };
+            if (deprecationMetadata.AlternatePackage != null)
+            {
+                deprecationInfo.AlternatePackageInfo = new AlternatePackageInfo
+                {
+                    Id = deprecationMetadata.AlternatePackage.PackageId,
+                    Range = deprecationMetadata.AlternatePackage.Range
+                };
+            }
+            return deprecationInfo;
+        }
+
         public void Dispose()
         {
             _downloadCancelSource?.Dispose();
