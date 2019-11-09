@@ -321,7 +321,7 @@
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="8">
                         <Border BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Background="White" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconOrIconUrl}" Visibility="{Binding IconOrIconUrl, Converter={StaticResource NullToVisibilityConverter}}">
-                            <Image Width="32" Height="32" Stretch="Fill" StretchDirection="DownOnly">
+                            <Image Width="32" Height="32" >
                                 <Image.Source>
                                     <MultiBinding Converter="{StaticResource PackageIconConverter}">
                                         <Binding ElementName="PackageMetadataViewer" Path="DataContext" />
