@@ -303,16 +303,6 @@ namespace PackageExplorer
             if (DataContext is PackageViewModel model)
             {
                 model.SelectedItem = PackagesTreeView.SelectedItem;
-
-                for (var i = model.SelectedItems.Count - 1; i >= 0; i--)
-                {
-                    // get rid of null objects
-                    var item = model.SelectedItems[i];
-                    if (!(item is PackagePart))
-                    {
-                        model.SelectedItems.RemoveAt(i);
-                    }
-                }
             }
         }
 

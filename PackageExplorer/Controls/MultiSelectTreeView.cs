@@ -57,15 +57,20 @@ namespace PackageExplorer.Controls
             if (treeViewItem != null && treeView != null)
             {
                 var selectedItems = GetSelectedItems(treeView);
+
                 if (selectedItems != null)
                 {
                     if (GetIsItemSelected(treeViewItem))
                     {
-                        selectedItems.Add(treeViewItem.Header);
+                        if (selectedItems.Contains(treeViewItem.DataContext))
+                        {
+                            return;
+                        }
+                        selectedItems.Add(treeViewItem.DataContext);
                     }
                     else
                     {
-                        selectedItems.Remove(treeViewItem.Header);
+                        selectedItems.Remove(treeViewItem.DataContext);
                     }
                 }
             }
