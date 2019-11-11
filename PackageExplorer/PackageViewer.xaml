@@ -36,6 +36,7 @@
             <self:NuGetVersionConverter x:Key="NuGetVersionConverter" />
             <self:NuGetVersionPreReleaseConverter x:Key="NuGetVersionPreReleaseConverter" />
             <self:ListToStringConverter x:Key="ListToStringConverter" />
+            <self:PackageIconConverter x:Key="PackageIconConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
@@ -319,8 +320,15 @@
             <DataTemplate x:Key="PackageDetailTemplate" DataType="{x:Type viewmodel:EditablePackageMetadata}">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="8">
-                        <Border BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Background="White" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconUrl}" Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
-                            <Image Source="{Binding IconUrl, TargetNullValue={x:Null}}" Width="32" Height="32" Stretch="Fill" StretchDirection="DownOnly" />
+                        <Border BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Background="White" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconOrIconUrl}" Visibility="{Binding IconOrIconUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Image Width="32" Height="32" >
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource PackageIconConverter}">
+                                        <Binding ElementName="PackageMetadataViewer" Path="DataContext" />
+                                        <Binding Path="IconOrIconUrl" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
                         </Border>
 
                         <!-- Id -->
@@ -757,7 +765,7 @@
                     </StackPanel>
                 </Border>
 
-                <ContentControl Grid.Row="1" Content="{Binding PackageMetadata}" ContentTemplate="{StaticResource PackageDetailTemplate}" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}"></ContentControl>
+                <ContentControl x:Name="PackageMetadataViewer" Grid.Row="1" Content="{Binding PackageMetadata}" ContentTemplate="{StaticResource PackageDetailTemplate}" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}" />
 
                 <self:PackageMetadataEditor x:Name="PackageMetadataEditor" Grid.Row="1" Margin="4,12,4,7" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" />
             </Grid>

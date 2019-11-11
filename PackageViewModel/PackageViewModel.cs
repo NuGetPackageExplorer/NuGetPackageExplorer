@@ -59,6 +59,7 @@ namespace PackageExplorerViewModel
         private ICommand? _viewPackageAnalysisCommand;
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
+        private bool _disposed;
 
         private readonly List<object?> _selectedItems = new List<object?>();        
 
@@ -316,12 +317,31 @@ namespace PackageExplorerViewModel
 
         public PackageFolder RootFolder { get; }
 
-        //public bool EnableOtherFunctions { get; set; }
+        public IEnumerable<string> IconPaths
+        {
+            get
+            {
+                yield return "";
+
+                foreach (var file in RootFolder.GetFiles())
+                {
+                    if (file.Path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                        file.Path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return file.Path;
+                    }
+                }
+            }
+        }
+
+        public bool IsDisposed => _disposed;
 
         #region IDisposable Members
 
         public void Dispose()
         {
+            _disposed = true;
+
             RootFolder.Dispose();
             _package.Dispose();
 
@@ -1388,6 +1408,7 @@ namespace PackageExplorerViewModel
         internal void NotifyChanges()
         {
             HasEdit = true;
+            OnPropertyChanged(nameof(IconPaths));
         }
 
         public IEnumerable<PackageIssue> Validate()
