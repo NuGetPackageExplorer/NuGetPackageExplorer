@@ -36,6 +36,8 @@
   <PropertyGroup>
     <TargetPlatformMinVersion>10.0.10563.0</TargetPlatformMinVersion>
     <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
+    
+    <NuGetDependencyVersion>5.5.0-xprivate.60016</NuGetDependencyVersion>
   </PropertyGroup>
 
   <ItemGroup>
