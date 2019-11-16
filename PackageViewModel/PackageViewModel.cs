@@ -96,8 +96,6 @@ namespace PackageExplorerViewModel
             _isSigned = _packageMetadata.IsSigned;
 
             RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
-
-            //EnableOtherFunctions = false;
         }
 
 

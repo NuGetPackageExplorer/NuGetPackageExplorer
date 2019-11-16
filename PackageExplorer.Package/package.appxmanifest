@@ -3,11 +3,11 @@
   <Identity Name="50582LuanNguyen.NuGetPackageExplorer" Publisher="CN=3466D5D7-00EE-41FA-A7A4-6F7CA3E1C7F8" Version="3.25.0.0" />
   <Properties>
     <DisplayName>NuGet Package Explorer</DisplayName>
-    <PublisherDisplayName>NuGet Package Explorer (.NET Foundation)</PublisherDisplayName>
+    <PublisherDisplayName>Oren Novotny, LLC</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.15063.0" MaxVersionTested="10.0.17763.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17134.0" MaxVersionTested="10.0.18362.0" />
   </Dependencies>
   <Resources>
     <Resource Language="EN-US" />

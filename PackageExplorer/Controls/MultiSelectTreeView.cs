@@ -98,7 +98,7 @@ namespace PackageExplorer.Controls
             }
             else
             {
-                throw new ArgumentException("TreeView element is null. Cannot set value for null element.");
+                throw new ArgumentNullException("TreeView element is null. Cannot set value for null element.");
             }
         }
 
@@ -206,23 +206,22 @@ namespace PackageExplorer.Controls
 
         private static void DeSelectAllItems(TreeView? treeView, TreeViewItem? treeViewItem)
         {
+            ItemsControl? element = null;
+
             if (treeView != null)
             {
-                for (int i = 0; i < treeView.Items.Count; i++)
-                {
-                    var item = treeView.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
-                    if (item != null)
-                    {
-                        SetIsItemSelected(item, false);
-                        DeSelectAllItems(null, item);
-                    }
-                }
+                element = treeView as TreeView;
             }
             else if (treeViewItem != null)
             {
-                for (int i = 0; i < treeViewItem.Items.Count; i++)
+                element = treeViewItem as TreeViewItem;
+            }
+
+            if (element != null)
+            {
+                for (int i = 0; i < element.Items.Count; i++)
                 {
-                    var item = treeViewItem.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
+                    var item = element.ItemContainerGenerator.ContainerFromIndex(i) as TreeViewItem;
                     if (item != null)
                     {
                         SetIsItemSelected(item, false);
