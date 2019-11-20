@@ -132,7 +132,7 @@ namespace PackageExplorer.Controls
             var currentTime = DateTime.Now;
 
             // This is to prevent case, when holding CONTROL, GotFocus triggers twice (not all the time), so selected item do not get unselected right after
-            if ((currentTime - _lastTime).Milliseconds < 100)
+            if ((currentTime - _lastTime).Milliseconds < 5)
             {
                 return;
             }

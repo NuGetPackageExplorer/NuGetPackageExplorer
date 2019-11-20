@@ -656,10 +656,6 @@ namespace PackageExplorerViewModel
                         file.Delete(false);
                         continue;
                     }
-                    if (SelectedItems[i] == null)
-                    {
-                        SelectedItems.RemoveAt(i);
-                    }
                 }
             }
         }
