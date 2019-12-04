@@ -22,7 +22,7 @@
   <files>
     <file src="ChocolateyInstall.ps1"  />
     <file src="NuGetPackageExplorer.exe.gui"  />
-    <file src="bin\Release\netcoreapp3.0\win-x64\publish\**\*.*" target=""  />
+    <file src="bin\Release\netcoreapp3.1\win-x64\publish\**\*.*" target=""  />
     <file src="..\LICENSE.txt" target="legal\LICENSE.txt" />
     <file src="..\Build\Verification.txt" target="legal\Verification.txt" />
   </files>
