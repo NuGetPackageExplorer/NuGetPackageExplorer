@@ -5,6 +5,7 @@ using System.Net;
 using System.Runtime.Caching;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace PackageExplorer
 {
@@ -50,6 +51,8 @@ namespace PackageExplorer
 #pragma warning disable IDE0007 // Use implicit type
             BitmapImage? iconBitmapImage = new BitmapImage();
 #pragma warning restore IDE0007 // Use implicit type
+
+            RenderOptions.SetBitmapScalingMode(iconBitmapImage, BitmapScalingMode.HighQuality);
             iconBitmapImage.BeginInit();
             iconBitmapImage.UriSource = new Uri(iconUrl);
 
