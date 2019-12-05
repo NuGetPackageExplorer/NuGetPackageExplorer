@@ -478,13 +478,22 @@ namespace PackageExplorer
                 WindowTitle = Resources.Dialog_Title,
                 MainInstruction = "Credentials for " + target,
                 Content = "Enter Personal Access Tokens in the username field.",
-                Target = target
+                Target = target,
+                ShowSaveCheckBox = true, // Allow user to save the credentials to operating system's credential manager
+                ShowUIForSavedCredentials = false // Do not show dialog when credentials can be grabbed from OS credential manager
             };
 
             try
             {
+                // Show dialog or query credential manager
                 if (dialog.ShowDialog())
                 {
+                    // When dialog was shown
+                    if (!dialog.IsStoredCredential)
+                    {
+                        // Save the credentials when save checkbox was checked
+                        dialog.ConfirmCredentials(true);
+                    }
                     networkCredential = dialog.Credentials;
                     return true;
                 }
