@@ -21,7 +21,10 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    
+
+
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
     <!-- This suppresses the warning we get because of defining UseWpf/UseWindowsForms where it doesn't

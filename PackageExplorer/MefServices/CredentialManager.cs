@@ -18,7 +18,7 @@ namespace PackageExplorer.MefServices
             _feeds = new List<Tuple<Uri, ICredentials>>();
         }
 
-        private bool TryAddUriCredentials(Uri feedUri, out NetworkCredential credentials)
+        private bool TryAddUriCredentials(Uri feedUri, out NetworkCredential? credentials)
         {
             // Support username and password in feed URL as specified in RFC 1738
             if (!string.IsNullOrEmpty(feedUri.UserInfo))
@@ -58,7 +58,7 @@ namespace PackageExplorer.MefServices
                 }
                 else if(TryAddUriCredentials(uri, out var uriCredentials))
                 {
-                    credentials = uriCredentials;
+                    credentials = uriCredentials!;
                 }
             }
             return credentials;

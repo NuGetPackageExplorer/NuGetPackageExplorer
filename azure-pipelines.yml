@@ -28,9 +28,9 @@ stages:
 
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .NET Core SDK 3.0.x'
+      displayName: 'Use .NET Core SDK 3.1.x'
       inputs:
-        version: 3.0.x
+        version: 3.1.x
 
     - task: DotNetCoreCLI@2
       inputs:
@@ -100,7 +100,7 @@ stages:
       displayName: Build for Zip and Choco
       inputs:
         solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-        msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x64 /p:SelfContained=true /p:PublishReadyToRun=true
+        msbuildArguments: /t:publish /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml
         configuration: $(BuildConfiguration)
         maximumCpuCount: true
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
@@ -124,7 +124,7 @@ stages:
       displayName: Zip PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.0/win-x64/publish
+        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.1/win-x64/publish
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))

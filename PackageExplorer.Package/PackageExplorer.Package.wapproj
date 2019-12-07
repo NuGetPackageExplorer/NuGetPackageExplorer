@@ -48,13 +48,13 @@
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
   <ItemGroup>
-    <AppxManifest Include="Package.appxmanifest" Condition="'$(ReleaseChannel)' == 'Store'" >
+    <AppxManifest Include="Package.appxmanifest" Condition="'$(ReleaseChannel)' == 'Store'">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <AppxManifest Include="Package-Nightly.appxmanifest" Condition="'$(ReleaseChannel)' == 'Nightly'" >
+    <AppxManifest Include="Package-Nightly.appxmanifest" Condition="'$(ReleaseChannel)' == 'Nightly'">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <AppxManifest Include="Package-Local.appxmanifest" Condition="'$(ReleaseChannel)' != 'Store' and '$(ReleaseChannel)' != 'Nightly'" >
+    <AppxManifest Include="Package-Local.appxmanifest" Condition="'$(ReleaseChannel)' != 'Store' and '$(ReleaseChannel)' != 'Nightly'">
       <SubType>Designer</SubType>
     </AppxManifest>
     <None Include="*.appxmanifest" />
@@ -64,14 +64,13 @@
     <Content Include="Assets\*.png" Condition="'$(ReleaseChannel)' == 'Store'" />
     <Content Include="NightlyAssets\*.png" Condition="'$(ReleaseChannel)' != 'Store'" />
     <None Include="Package.xml" />
-    <None Include="Assets\*.png" Condition="'$(ReleaseChannel)' != 'Store'"  />
+    <None Include="Assets\*.png" Condition="'$(ReleaseChannel)' != 'Store'" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj">
-      <DesktopBridgeSelfContained>True</DesktopBridgeSelfContained>
-      <DesktopBridgeIdentifier>win-$(Platform)</DesktopBridgeIdentifier>
-      <Properties>SelfContained=%(DesktopBridgeSelfContained);RuntimeIdentifier=%(DesktopBridgeIdentifier);PublishReadyToRun=true</Properties>
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
+      <PublishProfile Condition="'$(Platform)'=='x64'">Properties\PublishProfiles\WinX64.pubxml</PublishProfile>
+      <PublishProfile Condition="'$(Platform)'=='x86'">Properties\PublishProfiles\WinX86.pubxml</PublishProfile>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
