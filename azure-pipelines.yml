@@ -100,7 +100,7 @@ stages:
       displayName: Build for Zip and Choco
       inputs:
         solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-        msbuildArguments: /t:publish /p:RuntimeIdentifier=win-x64 /p:SelfContained=true /p:PublishReadyToRun=true
+        msbuildArguments: /t:publish /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml
         configuration: $(BuildConfiguration)
         maximumCpuCount: true
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
