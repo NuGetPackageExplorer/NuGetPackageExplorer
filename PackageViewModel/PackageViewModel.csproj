@@ -13,7 +13,7 @@
     <PackageReference Include="NuGet.Credentials" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />
     <!-- Needs 2.1.2 explicitly until https://github.com/NuGet/Home/issues/5957 is fixed -->
-    <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.2" /> 
+    <PackageReference Include="Microsoft.Web.Xdt" Version="3.0.0" /> 
     <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="System.Windows.Extensions" Version="4.7.0" />
