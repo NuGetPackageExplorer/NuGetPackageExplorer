@@ -90,7 +90,9 @@ namespace NuGetPe
 
             var matches = TokenRegex.Matches(value);
 #pragma warning disable CS8606 // Possible null reference assignment to iteration variable
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             foreach (Match match in matches)
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8606 // Possible null reference assignment to iteration variable
             {
                 var token = match!.Value[1..^1];
@@ -116,7 +118,9 @@ namespace NuGetPe
             var matches = MetadataRegEx.Matches(value);
 
 #pragma warning disable CS8606 // Possible null reference assignment to iteration variable
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
             foreach (Match match in matches)
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
 #pragma warning restore CS8606 // Possible null reference assignment to iteration variable
             {
                 var token = match!.Value[TokenMetadataStart.Length..^TokenMetadataEnd.Length];
