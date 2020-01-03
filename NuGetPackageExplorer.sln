@@ -1,30 +1,30 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.40629.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29005.228
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageExplorer", "PackageExplorer\PackageExplorer.csproj", "{3B56B367-7763-4F70-9933-2B8B23718A0D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetPackageExplorer", "PackageExplorer\NuGetPackageExplorer.csproj", "{3B56B367-7763-4F70-9933-2B8B23718A0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageViewModel", "PackageViewModel\PackageViewModel.csproj", "{A1E66420-E485-4719-A37F-5B49AAFB43AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageViewModel", "PackageViewModel\PackageViewModel.csproj", "{A1E66420-E485-4719-A37F-5B49AAFB43AB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{57B4C84E-427E-4041-A4E0-14A3C00E6BA5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{32DED69B-057F-4E5E-B171-A9B1557CA2BC}"
-	ProjectSection(SolutionItems) = preProject
-		Build\Build.proj = Build\Build.proj
-		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Types", "Types\Types.csproj", "{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeExecutor", "CodeExecutor\CodeExecutor.csproj", "{0DE0AF9F-4D53-4900-8D15-F02C3542584F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Types", "Types\Types.csproj", "{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9BCEC868-73D3-4393-8099-D4DF2DC6DB74}"
 	ProjectSection(SolutionItems) = preProject
-		LICENSE = LICENSE
+		.editorconfig = .editorconfig
+		azure-pipelines.yml = azure-pipelines.yml
+		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		NuGetPackageExplorer.ruleset = NuGetPackageExplorer.ruleset
 		README-developers.md = README-developers.md
 		README.md = README.md
+		version.json = version.json
 	EndProjectSection
+EndProject
+Project("{C7167F0D-BC9F-4E6E-AFE1-012C56B48DB5}") = "PackageExplorer.Package", "PackageExplorer.Package\PackageExplorer.Package.wapproj", "{452579BF-FF89-46FD-953D-E9D02D71EFDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,10 +32,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Debug|Any CPU.Build.0 = Debug|x86
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Release|Any CPU.ActiveCfg = Release|x86
-		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Release|Any CPU.Build.0 = Release|x86
+		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B56B367-7763-4F70-9933-2B8B23718A0D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1E66420-E485-4719-A37F-5B49AAFB43AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -48,12 +48,17 @@ Global
 		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0DE0AF9F-4D53-4900-8D15-F02C3542584F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0DE0AF9F-4D53-4900-8D15-F02C3542584F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0DE0AF9F-4D53-4900-8D15-F02C3542584F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0DE0AF9F-4D53-4900-8D15-F02C3542584F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Debug|Any CPU.Build.0 = Debug|x64
+		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Debug|Any CPU.Deploy.0 = Debug|x64
+		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Release|Any CPU.ActiveCfg = Release|x64
+		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Release|Any CPU.Build.0 = Release|x64
+		{452579BF-FF89-46FD-953D-E9D02D71EFDD}.Release|Any CPU.Deploy.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {23EC8E7E-FE69-480B-A23A-D5C7F1E1FFFC}
 	EndGlobalSection
 EndGlobal

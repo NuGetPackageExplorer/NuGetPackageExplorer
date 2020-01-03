@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using NuGet;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
@@ -15,7 +14,7 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            if (package.Description.Length > DescriptionLengthThreshold && String.IsNullOrEmpty(package.Summary))
+            if (package.Description.Length > DescriptionLengthThreshold && string.IsNullOrEmpty(package.Summary))
             {
                 yield return new PackageIssue(
                     PackageIssueLevel.Warning,

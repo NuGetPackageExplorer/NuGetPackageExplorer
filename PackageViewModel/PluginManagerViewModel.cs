@@ -3,90 +3,47 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net.NetworkInformation;
 using System.Threading.Tasks;
-using NuGet;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
     public class PluginManagerViewModel : INotifyPropertyChanged, IComparer<PluginInfo>
     {
         private readonly IPackageChooser _packageChooser;
-        private readonly IPackageDownloader _packageDownloader;
+        private readonly INuGetPackageDownloader _packageDownloader;
         private readonly IPluginManager _pluginManager;
         private readonly IUIServices _uiServices;
-        private SortedCollection<PluginInfo> _plugins;
 
         public PluginManagerViewModel(
             IPluginManager pluginManager,
             IUIServices uiServices,
             IPackageChooser packageChooser,
-            IPackageDownloader packageDownloader)
+            INuGetPackageDownloader packageDownloader)
         {
-            if (pluginManager == null)
-            {
-                throw new ArgumentNullException("pluginManager");
-            }
-
-            if (packageChooser == null)
-            {
-                throw new ArgumentNullException("packageChooser");
-            }
-
-            if (uiServices == null)
-            {
-                throw new ArgumentNullException("uiServices");
-            }
-
-            if (packageDownloader == null)
-            {
-                throw new ArgumentNullException("packageDownloader");
-            }
-
-            _pluginManager = pluginManager;
-            _uiServices = uiServices;
-            _packageChooser = packageChooser;
-            _packageDownloader = packageDownloader;
+            _pluginManager = pluginManager ?? throw new ArgumentNullException(nameof(pluginManager));
+            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
+            _packageChooser = packageChooser ?? throw new ArgumentNullException(nameof(packageChooser));
+            _packageDownloader = packageDownloader ?? throw new ArgumentNullException(nameof(packageDownloader));
 
             DeleteCommand = new RelayCommand<PluginInfo>(DeleteCommandExecute, DeleteCommandCanExecute);
             AddCommand = new RelayCommand<string>(AddCommandExecute);
+
+            Plugins = new SortedCollection<PluginInfo>(_pluginManager.Plugins, this);
         }
 
         public ICollection<PluginInfo> Plugins
         {
-            get
-            {
-                if (_plugins == null)
-                {
-                    _plugins = new SortedCollection<PluginInfo>(_pluginManager.Plugins, this);
-                }
-                return _plugins;
-            }
+            get;
         }
 
         public RelayCommand<PluginInfo> DeleteCommand { get; private set; }
 
         public RelayCommand<string> AddCommand { get; private set; }
 
-        #region IComparer<PluginInfo> Members
-
-        public int Compare(PluginInfo x, PluginInfo y)
-        {
-            int result = String.Compare(x.Id, y.Id, StringComparison.CurrentCultureIgnoreCase);
-            if (result != 0)
-            {
-                return result;
-            }
-
-            return x.Version.CompareTo(y.Version);
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanged Members
+        public int Compare(PluginInfo x, PluginInfo y) => Comparer<PluginInfo>.Default.Compare(x, y);
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
-
-        #endregion
 
         private async void AddCommandExecute(string parameter)
         {
@@ -108,38 +65,49 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            PackageInfo selectedPackageInfo = _packageChooser.SelectPluginPackage();
+            var selectedPackageInfo = _packageChooser.SelectPluginPackage();
             if (selectedPackageInfo != null)
             {
-                IPackage package = await _packageDownloader.Download(
-                    selectedPackageInfo.DownloadUrl,
-                    selectedPackageInfo.Id,
-                    selectedPackageInfo.Version);
-
-                if (package != null)
+                var repository = _packageChooser.PluginRepository;
+                if (repository != null)
                 {
-                    AddSelectedPluginPackage(package);
+                    var package = await _packageDownloader.Download(
+                    repository,
+                    selectedPackageInfo.Identity);
+
+                    if (package != null)
+                    {
+                        AddSelectedPluginPackage(package);
+                    }
                 }
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddLocalPlugin()
         {
-            string selectedFile;
-            bool result = _uiServices.OpenFileDialog(
+            var result = _uiServices.OpenFileDialog(
                 "Select Plugin Package",
                 "NuGet package (*.nupkg)|*.nupkg",
-                out selectedFile);
+                out var selectedFile);
 
             if (result)
             {
-                AddSelectedPluginPackage(new ZipPackage(selectedFile));
+                try
+                {
+                    AddSelectedPluginPackage(new ZipPackage(selectedFile));
+                }
+                catch (Exception e)
+                {
+                    _uiServices.Show(e.Message, MessageLevel.Error);
+                }
+
             }
         }
 
         private void AddSelectedPluginPackage(IPackage selectedPackage)
         {
-            PluginInfo packageInfo = _pluginManager.AddPlugin(selectedPackage);
+            var packageInfo = _pluginManager.AddPlugin(selectedPackage);
             if (packageInfo != null)
             {
                 Plugins.Add(packageInfo);
@@ -148,7 +116,7 @@ namespace PackageExplorerViewModel
 
         private void DeleteCommandExecute(PluginInfo file)
         {
-            bool confirmed = _uiServices.Confirm(
+            var confirmed = _uiServices.Confirm(
                 "Confirm deleting " + file,
                 Resources.ConfirmToDeletePlugin,
                 isWarning: true);
@@ -158,7 +126,7 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            bool succeeded = _pluginManager.DeletePlugin(file);
+            var succeeded = _pluginManager.DeletePlugin(file);
             if (succeeded)
             {
                 Plugins.Remove(file);

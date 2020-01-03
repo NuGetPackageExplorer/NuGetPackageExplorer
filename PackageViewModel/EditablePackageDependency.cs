@@ -1,16 +1,19 @@
 ﻿using System;
-using System.Linq;
 using System.ComponentModel;
 using System.Diagnostics;
-using NuGet;
+using System.Linq;
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 
 namespace PackageExplorerViewModel
 {
     public class EditablePackageDependency : INotifyPropertyChanged, IDataErrorInfo
     {
-        private string _id;
-        private IVersionSpec _versionSpec;
-        private Func<EditablePackageDependencySet> _getActiveDependencySet;
+        private string? _id;
+        private string? _exclude;
+        private VersionRange? _versionSpec;
+        private readonly Func<EditablePackageDependencySet> _getActiveDependencySet;
 
         public EditablePackageDependency(Func<EditablePackageDependencySet> getActiveDependencySet)
         {
@@ -18,7 +21,7 @@ namespace PackageExplorerViewModel
             _getActiveDependencySet = getActiveDependencySet;
         }
 
-        public string Id
+        public string? Id
         {
             get { return _id; }
             set
@@ -26,12 +29,12 @@ namespace PackageExplorerViewModel
                 if (_id != value)
                 {
                     _id = value;
-                    RaisePropertyChange("Id");
+                    RaisePropertyChange(nameof(Id));
                 }
             }
         }
 
-        public IVersionSpec VersionSpec
+        public VersionRange? VersionSpec
         {
             get { return _versionSpec; }
             set
@@ -39,46 +42,48 @@ namespace PackageExplorerViewModel
                 if (_versionSpec != value)
                 {
                     _versionSpec = value;
-                    RaisePropertyChange("VersionSpec");
+                    RaisePropertyChange(nameof(VersionSpec));
                 }
             }
         }
 
-        #region IDataErrorInfo Members
+        public string? Exclude
+        {
+            get { return _exclude; }
+            set
+            {
+                if (_exclude != value)
+                {
+                    _exclude = value;
+                    RaisePropertyChange(nameof(Exclude));
+                }
+            }
+        }
 
-        public string Error
+        public string? Error
         {
             get { return null; }
         }
 
-        public string this[string columnName]
+        public string? this[string columnName]
         {
             get { return IsValid(columnName); }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private void RaisePropertyChange(string propertyName)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private string IsValid(string columnName)
+        private string? IsValid(string columnName)
         {
             if (columnName == "Id")
             {
-                if (String.IsNullOrEmpty(Id))
+                if (string.IsNullOrEmpty(Id))
                 {
-                    return VersionSpec != null ? "Package id must not be empty." : (string)null;
+                    return VersionSpec != null ? "Package id must not be empty." : null;
                 }
 
                 if (!PackageIdValidator.IsValidPackageId(Id))
@@ -86,7 +91,7 @@ namespace PackageExplorerViewModel
                     return "'" + Id + "' is an invalid package id.";
                 }
 
-                EditablePackageDependencySet activeDependencySet = _getActiveDependencySet();
+                var activeDependencySet = _getActiveDependencySet();
                 if (activeDependencySet != null)
                 {
                     if (activeDependencySet.Dependencies.Any(p => p.Id.Equals(Id, StringComparison.OrdinalIgnoreCase)))
@@ -101,7 +106,7 @@ namespace PackageExplorerViewModel
 
         public PackageDependency AsReadOnly()
         {
-            return new PackageDependency(Id, VersionSpec);
+            return new PackageDependency(Id, VersionSpec, null, Exclude?.Split(',').Select(s => s.Trim()).ToList());
         }
     }
 }

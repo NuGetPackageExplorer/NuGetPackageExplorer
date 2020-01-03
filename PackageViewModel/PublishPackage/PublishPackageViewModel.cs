@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
-using NuGet;
+using NuGet.Common;
+using NuGet.Packaging;
+using NuGet.Protocol.Core.Types;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -15,41 +14,48 @@ namespace PackageExplorerViewModel
     {
         private readonly MruPackageSourceManager _mruSourceManager;
         private readonly IPackageMetadata _package;
-        private readonly string _packageFilePath;
+        private readonly string? _packageFilePath;
         private readonly ISettingsManager _settingsManager;
+        private readonly IUIServices _uiServices;
+        private readonly CredentialPublishProvider _credentialPublishProvider;
         private bool _canPublish = true;
         private bool _hasError;
-        private string _publishKey;
+        private string? _publishKeyOrPAT;
         private bool? _publishAsUnlisted = true;
         private bool? _appendV2ApiToUrl = true;
-        private string _selectedPublishItem;
+        private string? _selectedPublishItem;
         private bool _showProgress;
-        private string _status;
+        private string? _status;
         private bool _suppressReadingApiKey;
-        private GalleryServer _uploadHelper;
 
         public PublishPackageViewModel(
             MruPackageSourceManager mruSourceManager,
             ISettingsManager settingsManager,
+            IUIServices uiServices,
+            CredentialPublishProvider credentialPublishProvider,
             PackageViewModel viewModel)
         {
-            _mruSourceManager = mruSourceManager;
-            _settingsManager = settingsManager;
+            if (viewModel is null)
+                throw new ArgumentNullException(nameof(viewModel));
+            _mruSourceManager = mruSourceManager ?? throw new ArgumentNullException(nameof(mruSourceManager));
+            _settingsManager = settingsManager ?? throw new ArgumentNullException(nameof(settingsManager));
+            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
+            _credentialPublishProvider = credentialPublishProvider ?? throw new ArgumentNullException(nameof(credentialPublishProvider));
             _package = viewModel.PackageMetadata;
             _packageFilePath = viewModel.GetCurrentPackageTempFile();
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
             PublishAsUnlisted = _settingsManager.PublishAsUnlisted;
         }
 
-        public string PublishKey
+        public string? PublishKeyOrPAT
         {
-            get { return _publishKey; }
+            get { return _publishKeyOrPAT; }
             set
             {
-                if (_publishKey != value)
+                if (_publishKeyOrPAT != value)
                 {
-                    _publishKey = value;
-                    OnPropertyChanged("PublishKey");
+                    _publishKeyOrPAT = value;
+                    OnPropertyChanged(nameof(PublishKeyOrPAT));
                 }
             }
         }
@@ -63,12 +69,12 @@ namespace PackageExplorerViewModel
                 if (_mruSourceManager.ActivePackageSource != value)
                 {
                     _mruSourceManager.ActivePackageSource = value;
-                    OnPropertyChanged("PublishUrl");
+                    OnPropertyChanged(nameof(PublishUrl));
                 }
             }
         }
 
-        public string SelectedPublishItem
+        public string? SelectedPublishItem
         {
             get { return _selectedPublishItem; }
             set
@@ -76,7 +82,7 @@ namespace PackageExplorerViewModel
                 if (_selectedPublishItem != value)
                 {
                     _selectedPublishItem = value;
-                    OnPropertyChanged("SelectedPublishItem");
+                    OnPropertyChanged(nameof(SelectedPublishItem));
 
                     if (value != null)
                     {
@@ -86,10 +92,18 @@ namespace PackageExplorerViewModel
                         if (!_suppressReadingApiKey)
                         {
                             // when the selection change, we retrieve the API key for that source
-                            string key = _settingsManager.ReadApiKey(value);
-                            if (!String.IsNullOrEmpty(key))
+                            try
                             {
-                                PublishKey = key;
+                                var key = _settingsManager.ReadApiKey(value);
+                                if (!string.IsNullOrEmpty(key))
+                                {
+                                    PublishKeyOrPAT = key;
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                _uiServices.Show("Cannot read API key:\n" + e.Message, MessageLevel.Error);
+                                PublishKeyOrPAT = null;
                             }
                         }
                     }
@@ -110,7 +124,7 @@ namespace PackageExplorerViewModel
                 if (_publishAsUnlisted != value)
                 {
                     _publishAsUnlisted = value;
-                    OnPropertyChanged("PublishAsUnlisted");
+                    OnPropertyChanged(nameof(PublishAsUnlisted));
                 }
             }
         }
@@ -123,11 +137,11 @@ namespace PackageExplorerViewModel
                 if (_appendV2ApiToUrl != value)
                 {
                     _appendV2ApiToUrl = value;
-                    OnPropertyChanged("AppendV2ApiToUrl");
+                    OnPropertyChanged(nameof(AppendV2ApiToUrl));
                 }
             }
         }
-        
+
         public string Id
         {
             get { return _package.Id; }
@@ -135,7 +149,7 @@ namespace PackageExplorerViewModel
 
         public string Version
         {
-            get { return _package.Version.ToString(); }
+            get { return _package.Version.ToFullString(); }
         }
 
         public bool HasError
@@ -146,7 +160,7 @@ namespace PackageExplorerViewModel
                 if (_hasError != value)
                 {
                     _hasError = value;
-                    OnPropertyChanged("HasError");
+                    OnPropertyChanged(nameof(HasError));
                 }
             }
         }
@@ -159,7 +173,7 @@ namespace PackageExplorerViewModel
                 if (_showProgress != value)
                 {
                     _showProgress = value;
-                    OnPropertyChanged("ShowProgress");
+                    OnPropertyChanged(nameof(ShowProgress));
                 }
             }
         }
@@ -172,25 +186,12 @@ namespace PackageExplorerViewModel
                 if (_canPublish != value)
                 {
                     _canPublish = value;
-                    OnPropertyChanged("CanPublish");
+                    OnPropertyChanged(nameof(CanPublish));
                 }
             }
         }
 
-        public GalleryServer GalleryServer
-        {
-            get
-            {
-                if (_uploadHelper == null ||
-                    !PublishUrl.Equals(_uploadHelper.Source, StringComparison.OrdinalIgnoreCase))
-                {
-                    _uploadHelper = new GalleryServer(PublishUrl, HttpUtility.CreateUserAgentString(Constants.UserAgentClient));
-                }
-                return _uploadHelper;
-            }
-        }
-
-        public string Status
+        public string? Status
         {
             get { return _status; }
             set
@@ -198,7 +199,7 @@ namespace PackageExplorerViewModel
                 if (_status != value)
                 {
                     _status = value;
-                    OnPropertyChanged("Status");
+                    OnPropertyChanged(nameof(Status));
                 }
             }
         }
@@ -210,12 +211,18 @@ namespace PackageExplorerViewModel
             ShowProgress = false;
             HasError = false;
             Status = (PublishAsUnlisted == true) ? "Package published and unlisted successfully." : "Package published successfully.";
-            _settingsManager.WriteApiKey(PublishUrl, PublishKey);
+            if (PublishKeyOrPAT != null)
+            {
+                _settingsManager.WriteApiKey(PublishUrl, PublishKeyOrPAT);
+            }
+
             CanPublish = true;
         }
 
         public void OnError(Exception error)
         {
+            if (error is null)
+                throw new ArgumentNullException(nameof(error));
             ShowProgress = false;
             HasError = true;
             Status = error.Message;
@@ -230,14 +237,26 @@ namespace PackageExplorerViewModel
 
         public async Task PushPackage()
         {
+            DiagnosticsClient.TrackEvent("PushPackage");
+
             ShowProgress = true;
             Status = (PublishAsUnlisted == true) ? "Publishing and unlisting package..." : "Publishing package...";
             HasError = false;
             CanPublish = false;
 
+            _credentialPublishProvider.PersonalAccessToken = PublishKeyOrPAT;
+
             try
             {
-                await GalleryServer.PushPackage(PublishKey, _packageFilePath, _package, PublishAsUnlisted ?? false, AppendV2ApiToUrl ?? false);
+                var repository = PackageRepositoryFactory.CreateRepository(PublishUrl);
+                var updateResource = await repository.GetResourceAsync<PackageUpdateResource>();
+
+                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, AppendV2ApiToUrl != true, NullLogger.Instance);
+
+                if (PublishAsUnlisted == true)
+                {
+                    await updateResource.Delete(Id, Version, s => PublishKeyOrPAT, s => true, AppendV2ApiToUrl != true, NullLogger.Instance);
+                }
 
                 OnCompleted();
             }
@@ -249,6 +268,8 @@ namespace PackageExplorerViewModel
             {
                 // add the publish url to the list
                 _mruSourceManager.NotifyPackageSourceAdded(PublishUrl);
+
+                _credentialPublishProvider.PersonalAccessToken = null;
 
                 // this is to make sure the combo box doesn't goes blank after publishing
                 try
@@ -265,7 +286,7 @@ namespace PackageExplorerViewModel
 
         public void Dispose()
         {
-            _settingsManager.PublishAsUnlisted = (bool)PublishAsUnlisted;
+            _settingsManager.PublishAsUnlisted = PublishAsUnlisted.GetValueOrDefault();
         }
     }
 }

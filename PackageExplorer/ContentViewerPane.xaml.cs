@@ -5,6 +5,7 @@ using System.Windows.Input;
 using ICSharpCode.AvalonEdit.Highlighting;
 using ICSharpCode.AvalonEdit.Search;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -13,9 +14,11 @@ namespace PackageExplorer
     /// </summary>
     public partial class ContentViewerPane : UserControl
     {
-        private CommandBinding _findCommand;
+        private readonly SearchPanel _searchPanel;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public ContentViewerPane()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 
@@ -30,19 +33,19 @@ namespace PackageExplorer
             contentBox.Options.EnableHyperlinks = false;
             contentBox.TextArea.SelectionCornerRadius = 0;
 
-            var searchInput = new SearchInputHandler(contentBox.TextArea);
-            _findCommand = searchInput.CommandBindings.FirstOrDefault(binding => binding.Command == ApplicationCommands.Find);
-            contentBox.TextArea.DefaultInputHandler.NestedInputHandlers.Add(searchInput);
+            _searchPanel = SearchPanel.Install(contentBox.TextArea);      
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void UserControl_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var info = (FileContentInfo) DataContext;
+            var info = (FileContentInfo)DataContext;
             if (info != null && info.IsTextFile)
             {
+                DiagnosticsClient.TrackEvent("ContentViewer_LoadTextFile");
                 LanguageBox.SelectedItem = SyntaxHighlightingHelper.GuessHighligtingDefinition(info.File.Name);
                 contentBox.ScrollToHome();
-                contentBox.Load(StreamUtility.ToStream((string) info.Content));
+                contentBox.Load(StreamUtility.ToStream((string)info.Content));
             }
             else
             {
@@ -52,11 +55,11 @@ namespace PackageExplorer
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            Window rootWindow = Window.GetWindow(this);
-            if (rootWindow != null && _findCommand != null)
+            var rootWindow = Window.GetWindow(this);
+            if (rootWindow != null)
             {
                 // add the Find command to the window so that we can press Ctrl+F from anywhere to bring up the search box
-                rootWindow.CommandBindings.Add(_findCommand);
+                _searchPanel.RegisterCommands(rootWindow.CommandBindings);
             }
         }
     }

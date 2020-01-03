@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace PackageExplorer
@@ -10,14 +8,14 @@ namespace PackageExplorer
     internal static class SyntaxHighlightingHelper
     {
         private static bool _hasRegistered;
-        private static readonly object _lock = new object();
-        private static string[] _nugetExtensions = new[] { ".nuspec", ".props", ".targets", ".xdt" };
+        private static readonly object Lock = new object();
+        private static readonly string[] NugetExtensions = new[] { ".nuspec", ".props", ".targets", ".xdt" };
 
         public static void RegisterHightingExtensions()
         {
             if (!_hasRegistered)
             {
-                lock (_lock)
+                lock (Lock)
                 {
                     if (!_hasRegistered)
                     {
@@ -41,8 +39,8 @@ namespace PackageExplorer
                 return TextHighlightingDefinition.Instance;
             }
 
-            string extension = Path.GetExtension(name).ToUpperInvariant();
-            if (_nugetExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
+            var extension = Path.GetExtension(name)?.ToUpperInvariant();
+            if (NugetExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase))
             {
                 // treat these extension as xml
                 extension = ".XML";
@@ -52,8 +50,8 @@ namespace PackageExplorer
                 // if the extension is .pp or .transform, it is NuGet transform files.
                 // in which case, we strip out this extension and examine the real extension instead
 
-                name = Path.GetFileNameWithoutExtension(name);
-                extension = Path.GetExtension(name).ToUpperInvariant();
+                name = Path.GetFileNameWithoutExtension(name)!;
+                extension = Path.GetExtension(name)?.ToUpperInvariant();
             }
 
             return HighlightingManager.Instance.GetDefinitionByExtension(extension) ?? TextHighlightingDefinition.Instance;

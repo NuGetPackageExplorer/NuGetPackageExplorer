@@ -9,7 +9,7 @@
       <Value Profile="(Default)">400</Value>
     </Setting>
     <Setting Name="PackageSource" Type="System.String" Scope="User">
-      <Value Profile="(Default)">https://nuget.org/api/v2/</Value>
+      <Value Profile="(Default)">https://api.nuget.org/v3/index.json</Value>
     </Setting>
     <Setting Name="WindowPlacement" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -56,13 +56,22 @@
     <Setting Name="ShowPrereleasePackages" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="SolicitInstallNpeForWin8" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="IsFirstTimeAfterMigrate" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="AutoLoadPackages" Type="System.Boolean" Scope="User">
+    <Setting Name="SigningCertificate" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="TimestampServer" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SigningHashAlgorithmName" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AutoLoadPackages" Type="System.String" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UseApiKey" Type="System.String" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>

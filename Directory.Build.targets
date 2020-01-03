@@ -1,0 +1,33 @@
+<Project>
+
+  <PropertyGroup>
+    <WindowsWinmdFile Condition="Exists('$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd')">$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd</WindowsWinmdFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Update="Windows" Private="false" HintPath="$(WindowsWinmdFile)" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <Product Condition="'$(IsTypesProject)' != 'true'">$(Product) ($(Configuration)) ($(Platform))</Product>
+  </PropertyGroup>
+
+  <Target Name="AddCommitHashToAssemblyAttributes" BeforeTargets="GetAssemblyAttributes">
+    <ItemGroup>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition=" '$(SourceRevisionId)' != '' ">
+        <_Parameter1>CommitHash</_Parameter1>
+        <_Parameter2>$(SourceRevisionId)</_Parameter2>
+      </AssemblyAttribute>
+
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition=" '$(PublicRelease)' == 'true' ">
+        <_Parameter1>CloudBuildNumber</_Parameter1>
+        <_Parameter2>$(BuildVersionSimple)</_Parameter2>
+      </AssemblyAttribute>
+      <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute" Condition=" '$(PublicRelease)' == 'false' ">
+        <_Parameter1>CloudBuildNumber</_Parameter1>
+        <_Parameter2>$(BuildVersionSimple)$(SemVerBuildSuffix)</_Parameter2>
+      </AssemblyAttribute>
+    </ItemGroup>
+
+  </Target>
+</Project>

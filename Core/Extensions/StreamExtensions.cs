@@ -1,13 +1,15 @@
-using System.IO;
+﻿using System.IO;
 using System.Text;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class StreamExtensions
     {
         public static byte[] ReadAllBytes(this Stream stream)
         {
-            var length = (int) stream.Length;
+            if (stream is null)
+                throw new System.ArgumentNullException(nameof(stream));
+            var length = (int)stream.Length;
             var buffer = new byte[length];
             stream.Read(buffer, 0, length);
             return buffer;
@@ -15,10 +17,8 @@ namespace NuGet
 
         public static string ReadToEnd(this Stream stream)
         {
-            using (var streamReader = new StreamReader(stream))
-            {
-                return streamReader.ReadToEnd();
-            }
+            using var streamReader = new StreamReader(stream);
+            return streamReader.ReadToEnd();
         }
 
         public static Stream AsStream(this string value)
@@ -28,6 +28,8 @@ namespace NuGet
 
         public static Stream AsStream(this string value, Encoding encoding)
         {
+            if (encoding is null)
+                throw new System.ArgumentNullException(nameof(encoding));
             return new MemoryStream(encoding.GetBytes(value));
         }
     }

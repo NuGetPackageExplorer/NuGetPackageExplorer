@@ -1,20 +1,22 @@
 ﻿using System;
 using System.IO;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class PluginExtensions
     {
         public static int UnpackPackage(this IPackage package, string sourceDirectory, string targetRootDirectory)
         {
+            if (package is null)
+                throw new ArgumentNullException(nameof(package));
             if (sourceDirectory == null)
             {
-                throw new ArgumentNullException("sourceDirectory");
+                throw new ArgumentNullException(nameof(sourceDirectory));
             }
 
             if (targetRootDirectory == null)
             {
-                throw new ArgumentNullException("targetRootDirectory");
+                throw new ArgumentNullException(nameof(targetRootDirectory));
             }
 
             if (!sourceDirectory.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
@@ -22,21 +24,20 @@ namespace NuGet
                 sourceDirectory += "\\";
             }
 
-            int numberOfFilesCopied = 0;
-            foreach (IPackageFile file in package.GetFiles())
+            var numberOfFilesCopied = 0;
+            foreach (var file in package.GetFiles())
             {
                 if (file.Path.StartsWith(sourceDirectory, StringComparison.OrdinalIgnoreCase))
                 {
-                    string suffixPath = file.Path.Substring(sourceDirectory.Length);
-                    string targetPath = Path.Combine(targetRootDirectory, suffixPath);
+                    var suffixPath = file.Path.Substring(sourceDirectory.Length);
+                    var targetPath = Path.Combine(targetRootDirectory, suffixPath);
 
-                    using (FileStream stream = File.OpenWrite(targetPath))
+                    using (var stream = File.Open(targetPath, FileMode.Create, FileAccess.Write, FileShare.Read))
                     {
-                        using (Stream packageStream = file.GetStream())
-                        {
-                            packageStream.CopyTo(stream);
-                        }
+                        using var packageStream = file.GetStream();
+                        packageStream.CopyTo(stream);
                     }
+                    File.SetLastWriteTime(targetPath, file.LastWriteTime.DateTime);
 
                     numberOfFilesCopied++;
                 }

@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap mp rescap uap3 desktop">
+  <Identity Name="50582LuanNguyen.NuGetPackageExplorer" Publisher="CN=3466D5D7-00EE-41FA-A7A4-6F7CA3E1C7F8" Version="3.25.0.0" />
+  <Properties>
+    <DisplayName>NuGet Package Explorer</DisplayName>
+    <PublisherDisplayName>Oren Novotny, LLC</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17134.0" MaxVersionTested="10.0.18362.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="EN-US" />
+    <Resource Language="AF" />
+    <Resource Language="AR" />
+    <Resource Language="BG" />
+    <Resource Language="BN-BD" />
+    <Resource Language="CS" />
+    <Resource Language="DA" />
+    <Resource Language="DE" />
+    <Resource Language="EL" />
+    <Resource Language="ES" />
+    <Resource Language="FA" />
+    <Resource Language="FI-FI" />
+    <Resource Language="FR" />
+    <Resource Language="FR-BE" />
+    <Resource Language="HE" />
+    <Resource Language="HR" />
+    <Resource Language="HU" />
+    <Resource Language="ID" />
+    <Resource Language="IT" />
+    <Resource Language="JA" />
+    <Resource Language="LV" />
+    <Resource Language="MS-MY" />
+    <Resource Language="MT" />
+    <Resource Language="NB" />
+    <Resource Language="NB-NO" />
+    <Resource Language="NL" />
+    <Resource Language="PL" />
+    <Resource Language="PT" />
+    <Resource Language="RO" />
+    <Resource Language="RU" />
+    <Resource Language="SK" />
+    <Resource Language="SL" />
+    <Resource Language="SR-LATN" />
+    <Resource Language="SV" />
+    <Resource Language="TR" />
+    <Resource Language="UK" />
+    <!--<Resource Language="UZ-CYRL-UZ" />-->
+    <Resource Language="UZ-LATN-UZ" />
+    <Resource Language="VI" />
+    <Resource Language="ZH-CN" />
+    <Resource Language="ZH-HANS" />
+    <Resource Language="ZH-HANT" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
+      <uap:VisualElements DisplayName="NuGet Package Explorer" Description="NuGet Package Explorer" BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png">
+        <uap:DefaultTile Square310x310Logo="Assets\Square310x310Logo.png" Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="NuGet Package Explorer" Square71x71Logo="Assets\SmallTile.png">
+          <uap:ShowNameOnTiles>
+            <uap:ShowOn Tile="square150x150Logo" />
+            <uap:ShowOn Tile="wide310x150Logo" />
+            <uap:ShowOn Tile="square310x310Logo" />
+          </uap:ShowNameOnTiles>
+        </uap:DefaultTile>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
+      <Extensions>
+        <uap3:Extension Category="windows.appExecutionAlias" Executable="NuGetPackageExplorer\NuGetPackageExplorer.exe" EntryPoint="Windows.FullTrustApplication">
+          <uap3:AppExecutionAlias>
+            <desktop:ExecutionAlias Alias="NuGetPackageExplorer.exe" />
+          </uap3:AppExecutionAlias>
+        </uap3:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="package">
+            <uap:DisplayName>NuGet package file</uap:DisplayName>
+            <uap:Logo>Assets\nupkg.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.nupkg</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="symbolspackage">
+            <uap:DisplayName>NuGet Symbols package file</uap:DisplayName>
+            <uap:Logo>Assets\nupkg.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.snupkg</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+        <uap:Extension Category="windows.fileTypeAssociation">
+          <uap:FileTypeAssociation Name="spec">
+            <uap:DisplayName>NuGet spec file</uap:DisplayName>
+            <uap:Logo>Assets\nuspec.png</uap:Logo>
+            <uap:SupportedFileTypes>
+              <uap:FileType>.nuspec</uap:FileType>
+            </uap:SupportedFileTypes>
+          </uap:FileTypeAssociation>
+        </uap:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

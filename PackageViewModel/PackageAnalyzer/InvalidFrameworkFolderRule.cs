@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using NuGet;
+using NuGet.Frameworks;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
@@ -16,10 +17,10 @@ namespace PackageExplorerViewModel.Rules
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
             var set = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (IPackageFile file in package.GetFiles())
+            foreach (var file in package.GetFiles())
             {
-                string path = file.Path;
-                string[] parts = path.Split(Path.DirectorySeparatorChar);
+                var path = file.Path;
+                var parts = path.Split(Path.DirectorySeparatorChar);
                 if (parts.Length >= 3 && parts[0].Equals("lib", StringComparison.OrdinalIgnoreCase))
                 {
                     set.Add(parts[1]);
@@ -33,7 +34,7 @@ namespace PackageExplorerViewModel.Rules
 
         private bool IsInvalidFrameworkName(string name)
         {
-            return VersionUtility.ParseFrameworkName(name) == VersionUtility.UnsupportedFrameworkName;
+            return NuGetFramework.ParseFrameworkName(name, DefaultFrameworkNameProvider.Instance) == NuGetFramework.UnsupportedFramework;
         }
 
         private static PackageIssue CreatePackageIssue(string target)

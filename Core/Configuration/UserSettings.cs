@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Xml.Linq;
-using NuGet.Resources;
+using NuGetPe.Resources;
 
 //using Microsoft.Internal.Web.Utils;
 
-namespace NuGet
+namespace NuGetPe
 {
     public class UserSettings : ISettings
     {
@@ -17,60 +17,53 @@ namespace NuGet
 
         public UserSettings(IFileSystem fileSystem)
         {
-            if (fileSystem == null)
-            {
-                throw new ArgumentNullException("fileSystem");
-            }
-            _fileSystem = fileSystem;
+            _fileSystem = fileSystem ?? throw new ArgumentNullException(nameof(fileSystem));
             _configLocation = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "NuGet",
                                            "NuGet.Config");
             _config = XmlUtility.GetOrCreateDocument("configuration", _fileSystem, _configLocation);
         }
 
-        #region ISettings Members
-
-        public string GetValue(string section, string key)
+        public string? GetValue(string section, string key)
         {
-            if (String.IsNullOrEmpty(section))
+            if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
 
-            if (String.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
 
-            IDictionary<string, string> kvps = GetValues(section);
-            string value;
-            if (kvps == null || !kvps.TryGetValue(key, out value))
+            var kvps = GetValues(section);
+            if (kvps == null || !kvps.TryGetValue(key, out var value))
             {
                 return null;
             }
             return value;
         }
 
-        public IDictionary<string, string> GetValues(string section)
+        public IDictionary<string, string>? GetValues(string section)
         {
-            if (String.IsNullOrEmpty(section))
+            if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
 
             try
             {
-                XElement sectionElement = _config.Root.Element(section);
+                var sectionElement = _config.Root.Element(section);
                 if (sectionElement == null)
                 {
                     return null;
                 }
 
                 var kvps = new Dictionary<string, string>();
-                foreach (XElement e in sectionElement.Elements("add"))
+                foreach (var e in sectionElement.Elements("add"))
                 {
-                    string key = e.GetOptionalAttributeValue("key");
-                    string value = e.GetOptionalAttributeValue("value");
-                    if (!String.IsNullOrEmpty(key) && value != null)
+                    var key = e.GetOptionalAttributeValue("key");
+                    var value = e.GetOptionalAttributeValue("value");
+                    if (!string.IsNullOrEmpty(key) && value != null)
                     {
                         kvps.Add(key, value);
                     }
@@ -80,35 +73,36 @@ namespace NuGet
             }
             catch (Exception e)
             {
+                DiagnosticsClient.TrackException(e);
                 throw new InvalidOperationException(NuGetResources.UserSettings_UnableToParseConfigFile, e);
             }
         }
 
         public void SetValue(string section, string key, string value)
         {
-            if (String.IsNullOrEmpty(section))
+            if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
-            if (String.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
 
-            XElement sectionElement = _config.Root.Element(section);
+            var sectionElement = _config.Root.Element(section);
             if (sectionElement == null)
             {
                 sectionElement = new XElement(section);
                 _config.Root.Add(sectionElement);
             }
 
-            foreach (XElement e in sectionElement.Elements("add"))
+            foreach (var e in sectionElement.Elements("add"))
             {
-                string tempKey = e.GetOptionalAttributeValue("key");
+                var tempKey = e.GetOptionalAttributeValue("key");
 
                 if (tempKey == key)
                 {
@@ -127,25 +121,25 @@ namespace NuGet
 
         public void DeleteValue(string section, string key)
         {
-            if (String.IsNullOrEmpty(section))
+            if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
-            if (String.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
 
-            XElement sectionElement = _config.Root.Element(section);
+            var sectionElement = _config.Root.Element(section);
             if (sectionElement == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
                                                                   NuGetResources.UserSettings_SectionDoesNotExist,
                                                                   section));
             }
 
-            XElement elementToDelete = null;
-            foreach (XElement e in sectionElement.Elements("add"))
+            XElement? elementToDelete = null;
+            foreach (var e in sectionElement.Elements("add"))
             {
                 if (e.GetOptionalAttributeValue("key") == key)
                 {
@@ -155,15 +149,13 @@ namespace NuGet
             }
             if (elementToDelete == null)
             {
-                throw new InvalidOperationException(String.Format(CultureInfo.CurrentCulture,
+                throw new InvalidOperationException(string.Format(CultureInfo.CurrentCulture,
                                                                   NuGetResources.UserSettings_SectionDoesNotExist,
                                                                   section));
             }
             elementToDelete.Remove();
             Save(_config);
         }
-
-        #endregion
 
         private void Save(XDocument document)
         {

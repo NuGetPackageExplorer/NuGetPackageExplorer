@@ -1,28 +1,31 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal class SimplePackage : IPackage
     {
-        private readonly IPackageBuilder _packageBuilder;
+        private readonly PackageBuilder _packageBuilder;
 
-        public SimplePackage(IPackageBuilder packageBuilder)
+        public SimplePackage(PackageBuilder packageBuilder)
         {
             if (packageBuilder == null)
             {
-                throw new ArgumentNullException("packageBuilder");
+                throw new ArgumentNullException(nameof(packageBuilder));
             }
 
             Id = packageBuilder.Id;
             Version = packageBuilder.Version;
             Title = packageBuilder.Title;
-            Authors = new SafeEnumerable<string>(packageBuilder.Authors);
-            Owners = new SafeEnumerable<string>(packageBuilder.Owners);
+            Authors = packageBuilder.Authors;
+            Owners = packageBuilder.Owners;
+            Icon = packageBuilder.Icon;
             IconUrl = packageBuilder.IconUrl;
             LicenseUrl = packageBuilder.LicenseUrl;
             ProjectUrl = packageBuilder.ProjectUrl;
@@ -32,21 +35,21 @@ namespace NuGet
             Summary = packageBuilder.Summary;
             ReleaseNotes = packageBuilder.ReleaseNotes;
             Language = packageBuilder.Language;
-            Tags = packageBuilder.Tags;
-            FrameworkAssemblies = new SafeEnumerable<FrameworkAssemblyReference>(packageBuilder.FrameworkAssemblies);
-            DependencySets = new SafeEnumerable<PackageDependencySet>(packageBuilder.DependencySets);
-            PackageAssemblyReferences = new SafeEnumerable<PackageReferenceSet>(packageBuilder.PackageAssemblyReferences);
+            Tags = string.Join(" ", packageBuilder.Tags);
+            Serviceable = packageBuilder.Serviceable;
+            FrameworkReferences = packageBuilder.FrameworkReferences;
+            DependencyGroups = packageBuilder.DependencyGroups;
+            PackageAssemblyReferences = packageBuilder.PackageAssemblyReferences;
             Copyright = packageBuilder.Copyright;
+            Repository = packageBuilder.Repository;
+            ContentFiles = packageBuilder.ContentFiles;
+            PackageTypes = packageBuilder.PackageTypes;
+            MinClientVersion = packageBuilder.MinClientVersion;
+            LicenseMetadata = packageBuilder.LicenseMetadata;
+            FrameworkReferenceGroups = packageBuilder.FrameworkReferenceGroups;            
+
             _packageBuilder = packageBuilder;
         }
-
-        #region IPackage Members
-
-        public IEnumerable<IPackageAssemblyReference> AssemblyReferences
-        {
-            get { return Enumerable.Empty<IPackageAssemblyReference>(); }
-        }
-
         public IEnumerable<IPackageFile> GetFiles()
         {
             return _packageBuilder.Files.Where(p => !PackageUtility.IsManifest(p.Path));
@@ -62,13 +65,15 @@ namespace NuGet
 
         public string Id { get; private set; }
 
-        public SemanticVersion Version { get; private set; }
+        public NuGetVersion Version { get; private set; }
 
         public string Title { get; private set; }
 
         public IEnumerable<string> Authors { get; private set; }
 
         public IEnumerable<string> Owners { get; private set; }
+
+        public string Icon { get; private set; }
 
         public Uri IconUrl { get; private set; }
 
@@ -97,9 +102,11 @@ namespace NuGet
 
         public string Tags { get; private set; }
 
-        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; private set; }
+        public bool Serviceable { get; private set; }
 
-        public IEnumerable<PackageDependencySet> DependencySets { get; private set; }
+        public IEnumerable<FrameworkAssemblyReference> FrameworkReferences { get; private set; }
+
+        public IEnumerable<PackageDependencyGroup> DependencyGroups { get; private set; }
 
         public IEnumerable<PackageReferenceSet> PackageAssemblyReferences { get; private set; }
 
@@ -107,21 +114,16 @@ namespace NuGet
         {
             get
             {
-                return !String.IsNullOrEmpty(Version.SpecialVersion);
+                return Version.IsPrerelease;
             }
         }
 
-        public Uri ReportAbuseUrl
+        public Uri? ReportAbuseUrl
         {
             get { return null; }
         }
 
         public int DownloadCount
-        {
-            get { return -1; }
-        }
-
-        public int VersionDownloadCount
         {
             get { return -1; }
         }
@@ -141,49 +143,23 @@ namespace NuGet
             get { return DateTimeOffset.UtcNow; }
         }
 
-        public long PackageSize
-        {
-            get { return 0; }
-        }
-
-        public string PackageHash
-        {
-            get { return null; }
-        }
-
         public Version MinClientVersion
         {
-            get { return null; }
+            get; private set;
         }
 
-        #endregion
+        public IEnumerable<ManifestContentFiles> ContentFiles { get; private set; }
 
-        #region Nested type: SafeEnumerable
+        public IEnumerable<PackageType> PackageTypes { get; private set; }
 
-        private class SafeEnumerable<T> : IEnumerable<T>
+        public RepositoryMetadata Repository { get; private set; }
+
+        public LicenseMetadata LicenseMetadata { get; private set; }
+
+        public IEnumerable<FrameworkReferenceGroup> FrameworkReferenceGroups { get; private set; }
+
+        public void Dispose()
         {
-            private readonly IEnumerable<T> _source;
-
-            public SafeEnumerable(IEnumerable<T> source)
-            {
-                _source = source;
-            }
-
-            #region IEnumerable<T> Members
-
-            public IEnumerator<T> GetEnumerator()
-            {
-                return _source.GetEnumerator();
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
-            }
-
-            #endregion
         }
-
-        #endregion
     }
 }

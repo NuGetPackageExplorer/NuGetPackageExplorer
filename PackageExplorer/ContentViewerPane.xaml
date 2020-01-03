@@ -1,22 +1,37 @@
-﻿<UserControl x:Class="PackageExplorer.ContentViewerPane" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit" xmlns:self="clr-namespace:PackageExplorer" mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="500" Loaded="UserControl_Loaded">
-	<Grid>
+﻿<UserControl x:Class="PackageExplorer.ContentViewerPane"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
+             xmlns:self="clr-namespace:PackageExplorer"
+             xmlns:authenticode="clr-namespace:AuthenticodeExaminer;assembly=AuthenticodeExaminer"
+             mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="500" Loaded="UserControl_Loaded">
+    <Grid>
 		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
 		<!-- for binary file -->
-		<ScrollViewer Grid.Row="1" Visibility="{Binding IsTextFile, Converter={StaticResource invertedBoolToVis}}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Padding="4,5,4,2" Content="{Binding Content}"></ScrollViewer>
+        <ContentControl Grid.Row="2"
+                        Visibility="{Binding IsTextFile, Converter={StaticResource invertedBoolToVis}}"
+                        VerticalAlignment="Stretch"
+                        HorizontalAlignment="Stretch"
+                        Padding="4,5,4,2"
+                        Content="{Binding Content}"
+                        />
 
 		<!-- for built-in text file -->
 		
-		<ae:TextEditor x:Name="contentBox" FontFamily="Consolas" Grid.Row="1" Padding="3,5,3,2" BorderThickness="0" IsReadOnly="True" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" DataContextChanged="UserControl_DataContextChanged" SyntaxHighlighting="{Binding SelectedItem, ElementName=LanguageBox, Mode=OneWay}" />
+		<ae:TextEditor x:Name="contentBox" FontFamily="Consolas" Grid.Row="2" Padding="3,5,3,2" BorderThickness="0" IsReadOnly="True" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" DataContextChanged="UserControl_DataContextChanged" SyntaxHighlighting="{Binding SelectedItem, ElementName=LanguageBox, Mode=OneWay}" />
 
 		<!-- 
 			Note: the order of elements matter. This Border element has to come last. 
 			Otherwise, the content won't update properly. I know, this is lame. 
 		-->
-		<Border Grid.Row="0" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
+		<Border Grid.Row="1" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
 			<DockPanel>
 				<TextBlock 
 					Margin="5,0"
@@ -34,5 +49,90 @@
 				</StackPanel>
 			</DockPanel>
 		</Border>
+        <Border Grid.Row="0" Background="LightYellow" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0"
+                Visibility="{Binding Signatures.Count, Converter={StaticResource countConverter}}"
+                Padding="3">
+            <DockPanel>
+                <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                    <TextBlock Text="Valid:" Margin="0,0,2,0" VerticalAlignment="Center"/>
+                    <ContentControl x:Name="icon" Height="16" Width="16" VerticalAlignment="Center">
+                        <ContentControl.Style>
+                            <Style TargetType="ContentControl">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="Valid">
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                                        <Setter Property="ToolTip" Value="The signature is valid and trusted."/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="BadDigest">
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
+                                        <Setter Property="ToolTip" Value="The file is signed, however the signed hash does not match the computed hash."/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="ExplicitDistrust">
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
+                                        <Setter Property="ToolTip" Value="The file is signed, however is explicitly distrusted on this system."/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="UntrustedRoot">
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
+                                        <Setter Property="ToolTip" Value="The file is signed with an untrusted certificate."/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SignatureStatus}" Value="UnknownProvider">
+                                        <Setter Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
+                                        <Setter Property="ToolTip" Value="The file has a signature, but a provider could not be found to verify its authenticity."/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ContentControl.Style>
+                    </ContentControl>
+                </StackPanel>
+
+                <ItemsControl DockPanel.Dock="Bottom" x:Name="publisher"
+                              ItemsSource="{Binding Signatures}"
+                            Visibility="{Binding ElementName=publisher, Path=HasItems, Converter={StaticResource boolToVis}}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="authenticode:AuthenticodeSignature">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Publisher Info:" FontWeight="Bold"/>
+                                <TextBlock Margin="2,0,0,0">
+                                    <Run Text="Url: " /><Hyperlink Command="GoToPage" CommandParameter="{Binding PublisherInformation.UrlLink, Mode=OneWay}">
+                                        <Run Text="{Binding PublisherInformation.UrlLink, Mode=OneWay}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                                <TextBlock Margin="5,0,0,0">
+                                    <Run Text="Description: " /><Run Text="{Binding PublisherInformation.Description, Mode=OneWay}"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <ItemsControl ItemsSource="{Binding Signatures}" Margin="2,0,0,0">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="authenticode:AuthenticodeSignature">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock>
+                                    <Run Text="{Binding DigestAlgorithmName.Name, Mode=OneWay}" /><Run Text=":"/>
+                                </TextBlock>
+                                <TextBlock Margin="5,0,0,0">
+                                    <Hyperlink Command="GoToPage" CommandParameter="{Binding SigningCertificate, Mode=OneWay}">
+                                        <Run Text="{Binding SigningCertificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                                <TextBlock Margin="5,0,0,0"
+                                           Visibility="{Binding TimestampSignatures.Count, Converter={StaticResource countConverter}}">
+                                    <Run Text="@"/>
+                                    <Run Text="{Binding TimestampSignatures[0].TimestampDateTime, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=ddd\, MMM dd\, yyyy h:mm:ss tt, Mode=OneWay}" />
+                                </TextBlock>
+                                <TextBlock Margin="5,0,0,0"
+                                           Visibility="{Binding TimestampSignatures.Count, Converter={StaticResource countConverter}}">
+                                    <Run Text="by"/>
+                                    <Hyperlink Command="GoToPage" CommandParameter="{Binding TimestampSignatures[0].SigningCertificate, Mode=OneWay}">
+                                        <Run Text="{Binding TimestampSignatures[0].SigningCertificate, Converter={StaticResource CertificateToSubjectConverter}, Mode=OneWay}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </DockPanel>
+        </Border>
 	</Grid>
 </UserControl>

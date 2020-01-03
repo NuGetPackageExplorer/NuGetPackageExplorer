@@ -1,21 +1,23 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class XElementExtensions
     {
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters",
             Justification = "We don't care about base types")]
-        public static string GetOptionalAttributeValue(this XElement element, string localName,
-                                                       string namespaceName = null)
+        public static string? GetOptionalAttributeValue(this XElement element, string localName,
+                                                       string? namespaceName = null)
         {
+            if (element is null)
+                throw new ArgumentNullException(nameof(element));
             XAttribute attr;
-            if (String.IsNullOrEmpty(namespaceName))
+            if (string.IsNullOrEmpty(namespaceName))
             {
                 attr = element.Attribute(localName);
             }
@@ -23,16 +25,18 @@ namespace NuGet
             {
                 attr = element.Attribute(XName.Get(localName, namespaceName));
             }
-            return attr != null ? attr.Value : null;
+            return attr?.Value;
         }
 
         [SuppressMessage("Microsoft.Design", "CA1011:ConsiderPassingBaseTypesAsParameters",
             Justification = "We don't care about base types")]
-        public static string GetOptionalElementValue(this XElement element, string localName,
-                                                     string namespaceName = null)
+        public static string? GetOptionalElementValue(this XElement element, string localName,
+                                                     string? namespaceName = null)
         {
+            if (element is null)
+                throw new ArgumentNullException(nameof(element));
             XElement child;
-            if (String.IsNullOrEmpty(namespaceName))
+            if (string.IsNullOrEmpty(namespaceName))
             {
                 child = element.Element(localName);
             }
@@ -40,11 +44,13 @@ namespace NuGet
             {
                 child = element.Element(XName.Get(localName, namespaceName));
             }
-            return child != null ? child.Value : null;
+            return child?.Value;
         }
 
         public static IEnumerable<XElement> ElementsNoNamespace(this XContainer container, string localName)
         {
+            if (container is null)
+                throw new ArgumentNullException(nameof(container));
             return container.Elements().Where(e => e.Name.LocalName == localName);
         }
 
@@ -56,27 +62,29 @@ namespace NuGet
         // REVIEW: We can use a stack if the perf is bad for Except and MergeWith
         public static XElement Except(this XElement source, XElement target)
         {
+            if (source is null)
+                throw new ArgumentNullException(nameof(source));
             if (target == null)
             {
                 return source;
             }
 
-            IEnumerable<XAttribute> attributesToRemove = from e in source.Attributes()
-                                                         where AttributeEquals(e, target.Attribute(e.Name))
-                                                         select e;
+            var attributesToRemove = from e in source.Attributes()
+                                     where AttributeEquals(e, target.Attribute(e.Name))
+                                     select e;
             // Remove the attributes
-            foreach (XAttribute a in attributesToRemove.ToList())
+            foreach (var a in attributesToRemove.ToList())
             {
                 a.Remove();
             }
 
-            foreach (XElement sourceChild in source.Elements().ToList())
+            foreach (var sourceChild in source.Elements().ToList())
             {
-                XElement targetChild = FindElement(target, sourceChild);
+                var targetChild = FindElement(target, sourceChild);
                 if (targetChild != null && !HasConflict(sourceChild, targetChild))
                 {
                     Except(sourceChild, targetChild);
-                    bool hasContent = sourceChild.HasAttributes || sourceChild.HasElements;
+                    var hasContent = sourceChild.HasAttributes || sourceChild.HasElements;
                     if (!hasContent)
                     {
                         // Remove the element if there is no content
@@ -96,18 +104,21 @@ namespace NuGet
 
         [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures",
             Justification = "No reason to create a new type")]
-        public static XElement MergeWith(this XElement source, XElement target,
-                                         IDictionary<XName, Action<XElement, XElement>> nodeActions)
+        public static XElement MergeWith(this XElement source, XElement? target,
+                                         IDictionary<XName, Action<XElement, XElement>>? nodeActions)
         {
+            if (source is null)
+                throw new ArgumentNullException(nameof(source));
+
             if (target == null)
             {
                 return source;
             }
 
             // Merge the attributes
-            foreach (XAttribute targetAttribute in target.Attributes())
+            foreach (var targetAttribute in target.Attributes())
             {
-                XAttribute sourceAttribute = source.Attribute(targetAttribute.Name);
+                var sourceAttribute = source.Attribute(targetAttribute.Name);
                 if (sourceAttribute == null)
                 {
                     source.Add(targetAttribute);
@@ -115,9 +126,9 @@ namespace NuGet
             }
 
             // Go through the elements to be merged
-            foreach (XElement targetChild in target.Elements())
+            foreach (var targetChild in target.Elements())
             {
-                XElement sourceChild = FindElement(source, targetChild);
+                var sourceChild = FindElement(source, targetChild);
                 if (sourceChild != null && !HasConflict(sourceChild, targetChild))
                 {
                     // Other wise merge recursively
@@ -125,8 +136,7 @@ namespace NuGet
                 }
                 else
                 {
-                    Action<XElement, XElement> nodeAction;
-                    if (nodeActions != null && nodeActions.TryGetValue(targetChild.Name, out nodeAction))
+                    if (nodeActions != null && nodeActions.TryGetValue(targetChild.Name, out var nodeAction))
                     {
                         nodeAction(source, targetChild);
                     }
@@ -143,7 +153,7 @@ namespace NuGet
         private static XElement FindElement(XElement source, XElement targetChild)
         {
             // Get all of the elements in the source that match this name
-            List<XElement> sourceElements = source.Elements(targetChild.Name).ToList();
+            var sourceElements = source.Elements(targetChild.Name).ToList();
 
             // Try to find the best matching element based on attribute names and values
             sourceElements.Sort((a, b) => Compare(targetChild, a, b));
@@ -156,14 +166,14 @@ namespace NuGet
             Debug.Assert(left.Name == right.Name);
 
             // First check how much attribute names and values match
-            int leftExactMathes = CountMatches(left, target, AttributeEquals);
-            int rightExactMathes = CountMatches(right, target, AttributeEquals);
+            var leftExactMathes = CountMatches(left, target, AttributeEquals);
+            var rightExactMathes = CountMatches(right, target, AttributeEquals);
 
             if (leftExactMathes == rightExactMathes)
             {
                 // Then check which names match
-                int leftNameMatches = CountMatches(left, target, (a, b) => a.Name == b.Name);
-                int rightNameMatches = CountMatches(right, target, (a, b) => a.Name == b.Name);
+                var leftNameMatches = CountMatches(left, target, (a, b) => a.Name == b.Name);
+                var rightNameMatches = CountMatches(right, target, (a, b) => a.Name == b.Name);
 
                 return rightNameMatches.CompareTo(leftNameMatches);
             }
@@ -182,13 +192,12 @@ namespace NuGet
         private static bool HasConflict(XElement source, XElement target)
         {
             // Get all attributes as name value pairs
-            Dictionary<XName, string> sourceAttr = source.Attributes().ToDictionary(a => a.Name, a => a.Value);
+            var sourceAttr = source.Attributes().ToDictionary(a => a.Name, a => a.Value);
             // Loop over all the other attributes and see if there are
-            foreach (XAttribute targetAttr in target.Attributes())
+            foreach (var targetAttr in target.Attributes())
             {
-                string sourceValue;
                 // if any of the attributes are in the source (names match) but the value doesn't match then we've found a conflict
-                if (sourceAttr.TryGetValue(targetAttr.Name, out sourceValue) && sourceValue != targetAttr.Value)
+                if (sourceAttr.TryGetValue(targetAttr.Name, out var sourceValue) && sourceValue != targetAttr.Value)
                 {
                     return true;
                 }
@@ -198,6 +207,11 @@ namespace NuGet
 
         public static void RemoveAttributes(this XElement element, Func<XAttribute, bool> condition)
         {
+            if (element is null)
+                throw new ArgumentNullException(nameof(element));
+            if (condition is null)
+                throw new ArgumentNullException(nameof(condition));
+
             element.Attributes()
                 .Where(condition)
                 .ToList()

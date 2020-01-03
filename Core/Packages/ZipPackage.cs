@@ -1,65 +1,223 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
-using System.IO.Packaging;
+using System.IO.Compression;
 using System.Linq;
-using NuGet.Resources;
+using System.Threading;
+using System.Threading.Tasks;
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
+using NuGet.Versioning;
 
-namespace NuGet
+namespace NuGetPe
 {
-    public class ZipPackage : IPackage
+    public sealed class ZipPackage : IDisposable, ISignaturePackage
     {
-        private const string AssemblyReferencesDir = "lib";
-        private const string ResourceAssemblyExtension = ".resources.dll";
-        private static readonly string[] AssemblyReferencesExtensions = new[] {".dll", ".exe", ".winmd"};
-
         // paths to exclude
-        private static readonly string[] ExcludePaths = new[] {"_rels", "package"};
+        private static readonly string[] ExcludePaths = new[] { "_rels/", "package/", "[Content_Types].xml", ".signature.p7s" };
 
         // We don't store the steam itself, just a way to open the stream on demand
         // so we don't have to hold on to that resource
         private readonly Func<Stream> _streamFactory;
-        private readonly string _filePath;
+        private ManifestMetadata _metadata;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public ZipPackage(string filePath)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
-            if (String.IsNullOrEmpty(filePath))
+            if (string.IsNullOrEmpty(filePath))
             {
-                throw new ArgumentException("Argument cannot be null.", "filePath");
+                throw new ArgumentException("Argument cannot be null.", nameof(filePath));
             }
 
             if (!File.Exists(filePath))
             {
-                throw new ArgumentException("File doesn't exist at '" + filePath + "'.", "filePath");
+                throw new ArgumentException("File doesn't exist at '" + filePath + "'.", nameof(filePath));
             }
 
-            _filePath = filePath;
-            _streamFactory = () => File.OpenRead(filePath);
+            Source = filePath;
+            _streamFactory = () =>
+            {
+                try
+                {
+                    return File.Open(filePath, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    //just try read
+                    return File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+                }
+
+            };
             EnsureManifest();
         }
 
-        public string Source
+        public string Source { get; }
+
+        public string Id
         {
-            get { return _filePath; }
+            get { return _metadata.Id; }
+            set { _metadata.Id = value; }
         }
 
-        #region IPackage Members
+        public NuGetVersion Version
+        {
+            get { return _metadata.Version; }
+            set { _metadata.Version = value; }
+        }
 
-        public string Id { get; set; }
+        public string? Title
+        {
+            get { return _metadata.Title; }
+            set { _metadata.Title = value; }
+        }
 
-        public SemanticVersion Version { get; set; }
+        public IEnumerable<string> Authors
+        {
+            get { return _metadata.Authors; }
+            set { _metadata.Authors = value; }
+        }
 
-        public string Title { get; set; }
+        public IEnumerable<string> Owners
+        {
+            get { return _metadata.Owners; }
+            set { _metadata.Owners = value; }
+        }
 
-        public IEnumerable<string> Authors { get; set; }
+        public string Icon
+        {
+            get { return _metadata.Icon; }
+            set { _metadata.Icon = value; }
+        }
 
-        public IEnumerable<string> Owners { get; set; }
+        public Uri? IconUrl
+        {
+            get { return _metadata.IconUrl; }
+            set { _metadata.SetIconUrl(value?.ToString()); }
+        }
 
-        public Uri IconUrl { get; set; }
+        public Uri? LicenseUrl
+        {
+            get { return _metadata.LicenseUrl; }
+            set { _metadata.SetLicenseUrl(value?.ToString()); }
+        }
 
-        public Uri LicenseUrl { get; set; }
+        public Uri? ProjectUrl
+        {
+            get { return _metadata.ProjectUrl; }
+            set { _metadata.SetProjectUrl(value?.ToString()); }
+        }
 
-        public Uri ProjectUrl { get; set; }
+        public bool RequireLicenseAcceptance
+        {
+            get { return _metadata.RequireLicenseAcceptance; }
+            set { _metadata.RequireLicenseAcceptance = value; }
+        }
+
+        public bool DevelopmentDependency
+        {
+            get { return _metadata.DevelopmentDependency; }
+            set { _metadata.DevelopmentDependency = value; }
+        }
+
+        public string? Description
+        {
+            get { return _metadata.Description; }
+            set { _metadata.Description = value; }
+        }
+
+        public string? Summary
+        {
+            get { return _metadata.Summary; }
+            set { _metadata.Summary = value; }
+        }
+
+        public string? ReleaseNotes
+        {
+            get { return _metadata.ReleaseNotes; }
+            set { _metadata.ReleaseNotes = value; }
+        }
+
+        public string? Language
+        {
+            get { return _metadata.Language; }
+            set { _metadata.Language = value; }
+        }
+
+        public string? Tags
+        {
+            // Ensure tags start and end with an empty " " so we can do contains filtering reliably
+            get { return !string.IsNullOrWhiteSpace(_metadata.Tags) ? $" {_metadata.Tags} " : _metadata.Tags; }
+            set { _metadata.Tags = value?.Trim(); }
+        }
+
+        public bool Serviceable
+        {
+            get { return _metadata.Serviceable; }
+            set { _metadata.Serviceable = value; }
+        }
+
+        public string? Copyright
+        {
+            get { return _metadata.Copyright; }
+            set { _metadata.Copyright = value; }
+        }
+
+        public Version MinClientVersion
+        {
+            get { return _metadata.MinClientVersion; }
+            set { _metadata.MinClientVersionString = value?.ToString(); }
+        }
+
+        public IEnumerable<PackageDependencyGroup> DependencyGroups
+        {
+            get { return _metadata.DependencyGroups; }
+            set { _metadata.DependencyGroups = value; }
+        }
+
+        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
+        {
+            get { return _metadata.PackageAssemblyReferences; }
+            set { _metadata.PackageAssemblyReferences = value; }
+        }
+
+        public IEnumerable<FrameworkAssemblyReference> FrameworkReferences
+        {
+            get { return _metadata.FrameworkReferences; }
+            set { _metadata.FrameworkReferences = value; }
+        }
+
+        public IEnumerable<ManifestContentFiles> ContentFiles
+        {
+            get { return _metadata.ContentFiles; }
+            set { _metadata.ContentFiles = value; }
+        }
+
+        public IEnumerable<PackageType> PackageTypes
+        {
+            get { return _metadata.PackageTypes; }
+            set { _metadata.PackageTypes = value; }
+        }
+
+        public RepositoryMetadata? Repository
+        {
+            get { return _metadata.Repository; }
+            set { _metadata.Repository = value; }
+        }
+
+        public LicenseMetadata? LicenseMetadata
+        {
+            get { return _metadata.LicenseMetadata; }
+            set { _metadata.LicenseMetadata = value; }
+        }
+
+        public IEnumerable<FrameworkReferenceGroup> FrameworkReferenceGroups
+        {
+            get => _metadata.FrameworkReferenceGroups;
+            set => _metadata.FrameworkReferenceGroups = value;
+        }
 
         public DateTimeOffset? Published
         {
@@ -67,41 +225,14 @@ namespace NuGet
             set;
         }
 
-        public Uri ReportAbuseUrl
+        public Uri? ReportAbuseUrl
         {
             get { return null; }
         }
 
         public int DownloadCount
         {
-            get { return 0; }
-        }
-
-        public int VersionDownloadCount
-        {
-            get { return 0; }
-        }
-
-        public bool RequireLicenseAcceptance { get; set; }
-
-        public bool DevelopmentDependency { get; set; }
-
-        public string Description { get; set; }
-
-        public string Summary { get; set; }
-
-        public string ReleaseNotes { get; set; }
-
-        public string Language { get; set; }
-
-        public string Tags { get; set; }
-
-        public string Copyright { get; set; }
-
-        public Version MinClientVersion
-        {
-            get;
-            private set;
+            get { return -1; }
         }
 
         public bool IsAbsoluteLatestVersion
@@ -117,168 +248,152 @@ namespace NuGet
         private DateTimeOffset? _lastUpdated;
         public DateTimeOffset LastUpdated
         {
-            get 
+            get
             {
                 if (_lastUpdated == null)
                 {
-                    _lastUpdated = File.GetLastWriteTimeUtc(_filePath);
+                    _lastUpdated = File.GetLastWriteTimeUtc(Source);
                 }
                 return _lastUpdated.Value;
             }
-        }
-
-        private long? _packageSize;
-        public long PackageSize
-        {
-            get 
-            {
-                if (_packageSize == null)
-                {
-                    _packageSize = new FileInfo(_filePath).Length;
-                }
-                return _packageSize.Value;
-            }
-        }
-
-        public string PackageHash
-        {
-            get { return null; }
         }
 
         public bool IsPrerelease
         {
             get
             {
-                return !String.IsNullOrEmpty(Version.SpecialVersion);
+                return Version.IsPrerelease;
             }
         }
 
-        public IEnumerable<PackageDependencySet> DependencySets
-        {
-            get;
-            set;
-        }
+        public bool IsSigned { get; private set; }
 
-        public IEnumerable<PackageReferenceSet> PackageAssemblyReferences
-        {
-            get;
-            private set;
-        }
+        public bool IsVerified => false;
 
-        public IEnumerable<IPackageAssemblyReference> AssemblyReferences
-        {
-            get
-            {
-                using (Stream stream = _streamFactory())
-                {
-                    Package package = Package.Open(stream);
-                    return (from part in package.GetParts()
-                            where IsAssemblyReference(part)
-                            select new ZipPackageAssemblyReference(part)).ToList();
-                }
-            }
-        }
+        public SignatureInfo? PublisherSignature { get; private set; }
 
-        public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies { get; set; }
+        public RepositorySignatureInfo? RepositorySignature { get; private set; }
+
+        public VerifySignaturesResult VerificationResult { get; private set; }
+
+        // Keep a list of open stream here, and close on dispose.
+        private readonly List<IDisposable> _danglingStreams = new List<IDisposable>();
 
         public IEnumerable<IPackageFile> GetFiles()
         {
-            using (Stream stream = _streamFactory())
-            {
-                Package package = Package.Open(stream);
+            var stream = _streamFactory();
+            var reader = new MyPackageArchiveReader(stream, false); // should not close
 
-                return (from part in package.GetParts()
-                        where IsPackageFile(part)
-                        select new ZipPackageFile(part)).ToList();
-            }
+            _danglingStreams.Add(reader);           // clean up on dispose
+
+
+            var entries = reader.GetZipEntries();
+            return (from entry in entries
+                    where IsPackageFile(entry)
+                    select new ZipPackageFile(reader, entry)).ToList();
         }
 
         public Stream GetStream()
         {
             return _streamFactory();
         }
-
-        #endregion
-
-        private void EnsureManifest()
+        
+        public async Task LoadSignatureDataAsync()
         {
-            using (Stream stream = _streamFactory())
+            using var reader = new PackageArchiveReader(_streamFactory(), false);
+            IsSigned = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
+            if (IsSigned)
             {
-                Package package = Package.Open(stream);
-
-                PackageRelationship relationshipType =
-                    package.GetRelationshipsByType(Constants.PackageRelationshipNamespace +
-                                                   PackageBuilder.ManifestRelationType).SingleOrDefault();
-
-                if (relationshipType == null)
+                try
                 {
-                    throw new InvalidOperationException(NuGetResources.PackageDoesNotContainManifest);
-                }
+                    var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None).ConfigureAwait(false);
 
-                PackagePart manifestPart = package.GetPart(relationshipType.TargetUri);
-
-                if (manifestPart == null)
-                {
-                    throw new InvalidOperationException(NuGetResources.PackageDoesNotContainManifest);
-                }
-
-                using (Stream manifestStream = manifestPart.GetStream())
-                {
-                    Manifest manifest = Manifest.ReadFrom(manifestStream);
-                    IPackageMetadata metadata = manifest.Metadata;
-
-                    Id = metadata.Id;
-                    Version = metadata.Version;
-                    Title = metadata.Title;
-                    Authors = metadata.Authors;
-                    Owners = metadata.Owners;
-                    IconUrl = metadata.IconUrl;
-                    LicenseUrl = metadata.LicenseUrl;
-                    ProjectUrl = metadata.ProjectUrl;
-                    RequireLicenseAcceptance = metadata.RequireLicenseAcceptance;
-                    Description = metadata.Description;
-                    Summary = metadata.Summary;
-                    ReleaseNotes = metadata.ReleaseNotes;
-                    Copyright = metadata.Copyright;
-                    Language = metadata.Language;
-                    Tags = metadata.Tags;
-                    DependencySets = metadata.DependencySets;
-                    FrameworkAssemblies = metadata.FrameworkAssemblies;
-                    PackageAssemblyReferences = metadata.PackageAssemblyReferences;
-                    Published = File.GetLastWriteTimeUtc(_filePath);
-                    MinClientVersion = metadata.MinClientVersion;
-                    DevelopmentDependency = metadata.DevelopmentDependency;
-
-                    // Ensure tags start and end with an empty " " so we can do contains filtering reliably
-                    if (!String.IsNullOrEmpty(Tags))
+                    // Author signatures must be the primary, but they can contain
+                    // a repository counter signature
+                    if (sig.Type == SignatureType.Author)
                     {
-                        Tags = " " + Tags + " ";
+                        PublisherSignature = new SignatureInfo(sig);
+
+                        var counter = RepositoryCountersignature.GetRepositoryCountersignature(sig);
+                        if (counter != null)
+                        {
+                            RepositorySignature = new RepositorySignatureInfo(counter);
+                        }
+                    }
+                    else if (sig.Type == SignatureType.Repository)
+                    {
+                        RepositorySignature = new RepositorySignatureInfo(sig);
                     }
                 }
+                catch (SignatureException)
+                {
+                }
+
             }
         }
 
-        private static bool IsAssemblyReference(PackagePart part)
+        public async Task VerifySignatureAsync()
         {
-            // Assembly references are in lib/ and have a .dll/.exe extension
-            string path = UriUtility.GetPath(part.Uri);
-            return path.StartsWith(AssemblyReferencesDir, StringComparison.OrdinalIgnoreCase) &&
-                   // Exclude resource assemblies
-                   !path.EndsWith(ResourceAssemblyExtension, StringComparison.OrdinalIgnoreCase) &&
-                   AssemblyReferencesExtensions.Contains(Path.GetExtension(path), StringComparer.OrdinalIgnoreCase);
+            using var reader = new PackageArchiveReader(_streamFactory(), false);
+            var signed = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
+            if (signed)
+            {
+                // Check verification
+
+                var trustProviders = new ISignatureVerificationProvider[]
+                {
+                        new IntegrityVerificationProvider(),
+                        new SignatureTrustAndValidityVerificationProvider()
+                };
+                var verifier = new PackageSignatureVerifier(trustProviders);
+
+                VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None).ConfigureAwait(false);
+            }
         }
 
-        private static bool IsPackageFile(PackagePart part)
+        private void EnsureManifest()
         {
-            string path = UriUtility.GetPath(part.Uri);
+            using var stream = _streamFactory();
+            using var reader = new PackageArchiveReader(stream);
+            using var nuspecStream = reader.GetNuspec();
+            using var manifestStream = ManifestUtility.ReadManifest(nuspecStream);
+
+            var manifest = Manifest.ReadFrom(manifestStream, false);
+            _metadata = manifest.Metadata;
+        }
+
+        private static bool IsPackageFile(ZipArchiveEntry entry)
+        {
             // We exclude any opc files and the manifest file (.nuspec)
-            return !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
+            var path = entry.FullName;
+
+            return !path.EndsWith("/", StringComparison.Ordinal) && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
         }
 
         public override string ToString()
         {
             return this.GetFullName();
+        }
+
+        public void Dispose()
+        {
+            _danglingStreams.ForEach(ds => ds.Dispose());
+        }
+
+
+        private class MyPackageArchiveReader : PackageArchiveReader
+        {
+            private readonly ZipArchive _zipArchive;
+
+            /// <summary>Nupkg package reader</summary>
+            /// <param name="stream">Nupkg data stream.</param>
+            /// <param name="leaveStreamOpen">If true the nupkg stream will not be closed by the zip reader.</param>
+            public MyPackageArchiveReader(Stream stream, bool leaveStreamOpen) : base(stream, leaveStreamOpen)
+            {
+                _zipArchive = new ZipArchive(stream, ZipArchiveMode.Read);
+            }
+            public ReadOnlyCollection<ZipArchiveEntry> GetZipEntries() => _zipArchive.Entries;
         }
     }
 }

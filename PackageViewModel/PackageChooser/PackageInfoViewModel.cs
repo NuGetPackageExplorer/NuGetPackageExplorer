@@ -1,51 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Services.Client;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NuGet;
+using NuGet.Common;
+using NuGet.Protocol;
+using NuGet.Protocol.Core.Types;
+using NuGet.Versioning;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    public class PackageInfoViewModel : ViewModelBase
+    public sealed class PackageInfoViewModel : ViewModelBase, IDisposable
     {
-        private readonly IPackageRepository _repository;
+        private readonly SourceRepository _repository;
+        private readonly FeedType _feedType;
         private bool _isLoading;
-        private string _errorMessage;
+        private string? _errorMessage;
         private bool _showingAllVersions;
-        private PackageInfo _selectedPackage;
+        private PackageInfo? _selectedPackage;
         private readonly PackageChooserViewModel _parentViewModel;
-        private CancellationTokenSource _downloadCancelSource;
+        private CancellationTokenSource? _downloadCancelSource;
         private bool _hasFinishedLoading;
+        private readonly Func<Task<IEnumerable<VersionInfo>>> _versionInfos = () => Task.FromResult(Enumerable.Empty<VersionInfo>());
 
         public PackageInfoViewModel(
-            PackageInfo info, 
+            PackageInfo info,
             bool showPrereleasePackages,
-            IPackageRepository repository,
+            SourceRepository repository,
+            FeedType feedType,
             PackageChooserViewModel parentViewModel)
         {
             Debug.Assert(info != null);
             Debug.Assert(repository != null);
 
             LatestPackageInfo = info;
+            SelectedPackage = info;
             ShowPrerelease = showPrereleasePackages;
             _repository = repository;
             _parentViewModel = parentViewModel;
+            _feedType = feedType;
             AllPackages = new ObservableCollection<PackageInfo>();
 
             ToggleAllVersionsCommand = new RelayCommand(OnToggleAllVersions, CanToggleAllVersions);
             OpenCommand = new RelayCommand(OnOpenPackage);
             DownloadCommand = new RelayCommand(OnDownloadPackage);
             CancelCommand = new RelayCommand(OnCancelDownload, CanCancelDownload);
+            OpenAlternatePackageCommand = new RelayCommand<string>(OnOpenAlternatePackage);
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
+        public PackageInfoViewModel(
+            IPackageSearchMetadata info,
+            bool showPrereleasePackages,
+            SourceRepository repository,
+            FeedType feedType,
+            PackageChooserViewModel parentViewModel)
+            : this(CreatePackageInfo(info, feedType, null, null), showPrereleasePackages, repository, feedType, parentViewModel)
+        {
+            _versionInfos = info.GetVersionsAsync;
+
+            _ = Task.Run(LoadDeprecationInfo);
         }
 
         public ObservableCollection<PackageInfo> AllPackages { get; private set; }
 
-        public PackageInfo SelectedPackage
+        public PackageInfo? SelectedPackage
         {
             get
             {
@@ -55,17 +79,12 @@ namespace PackageExplorerViewModel
             {
                 if (_selectedPackage != value)
                 {
-                    _selectedPackage = value;
+                    if (value != null)
+                    {
+                        _selectedPackage = value;
+                    }
                     OnPropertyChanged();
                 }
-            }
-        }
-
-        public PackageInfo EffectiveSelectedPackage
-        {
-            get
-            {
-                return ShowingAllVersions ? SelectedPackage : LatestPackageInfo;
             }
         }
 
@@ -77,6 +96,7 @@ namespace PackageExplorerViewModel
         public ICommand OpenCommand { get; private set; }
         public ICommand DownloadCommand { get; private set; }
         public ICommand CancelCommand { get; private set; }
+        public ICommand OpenAlternatePackageCommand { get; private set; }
 
         public bool ShowingAllVersionsList
         {
@@ -98,13 +118,13 @@ namespace PackageExplorerViewModel
                 {
                     _showingAllVersions = value;
                     OnPropertyChanged();
-                    OnPropertyChanged("ShowingAllVersionsList");
+                    OnPropertyChanged(nameof(ShowingAllVersionsList));
                     ToggleAllVersionsCommand.RaiseCanExecuteChanged();
                 }
             }
         }
 
-        public bool HasFinishedLoading 
+        public bool HasFinishedLoading
         {
             get
             {
@@ -116,7 +136,7 @@ namespace PackageExplorerViewModel
                 {
                     _hasFinishedLoading = value;
                     OnPropertyChanged();
-                    OnPropertyChanged("ShowingAllVersionsList");
+                    OnPropertyChanged(nameof(ShowingAllVersionsList));
                 }
             }
         }
@@ -133,7 +153,7 @@ namespace PackageExplorerViewModel
                 {
                     _isLoading = value;
                     OnPropertyChanged();
-                    
+
                     // we don't need to raise this event because the Cancel button
                     // is only visible when IsLoading = true anyway.
                     //CancelCommand.RaiseCanExecuteChanged();
@@ -143,7 +163,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public string ErrorMessage
+        public string? ErrorMessage
         {
             get
             {
@@ -157,6 +177,28 @@ namespace PackageExplorerViewModel
                     OnPropertyChanged();
                 }
             }
+        }
+
+        private async Task LoadDeprecationInfo()
+        {
+            try
+            {
+                var packageMetadataResource = await _repository.GetResourceAsync<PackageMetadataResource>();
+
+                using var sourceCacheContext = new SourceCacheContext();
+                var package = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Identity, sourceCacheContext, NullLogger.Instance, CancellationToken.None);
+
+                var deprecationMetadata = await package.GetDeprecationMetadataAsync();
+
+                LatestPackageInfo.DeprecationInfo = ConvertPackageDeprecationMetadata(deprecationMetadata);
+
+                OnPropertyChanged(nameof(LatestPackageInfo));
+                if (_parentViewModel.SelectedPackage == LatestPackageInfo)
+                {
+                    OnPropertyChanged(nameof(SelectedPackage));
+                }
+            }
+            catch { }
         }
 
         private async Task LoadPackages()
@@ -174,52 +216,26 @@ namespace PackageExplorerViewModel
 
             try
             {
-                IQueryable<IPackage> query = _repository.GetPackagesById(LatestPackageInfo.Id, ShowPrerelease);
-                query = query.OrderByDescending(p => p.Published);
+                var versions = await _versionInfos();
 
-                IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, _repository);
+                var packageMetadataResource = await _repository.GetResourceAsync<PackageMetadataResource>(_downloadCancelSource.Token);
 
-                PackageInfo[] packageInfoList = null;
-                bool resourceNotFoundError = false;
-                try
+                using (var sourceCacheContext = new SourceCacheContext())
                 {
-                    packageInfoList = await LoadData(packageInfos, _downloadCancelSource.Token);
-                }
-                catch (DataServiceQueryException ex)
-                {
-                    resourceNotFoundError = IsResourceNotFoundError(ex);
-                    if (!resourceNotFoundError) throw;
-                }
+                    var query = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Id, ShowPrerelease, ShowPrerelease, sourceCacheContext, NullLogger.Instance, _downloadCancelSource.Token);
 
-                // for a 404 error, use the legacy way to find packages by id,
-                // which requires filtering pre-release packages after the fact
-                if (resourceNotFoundError)
-                {
-                    query = ((DataServicePackageRepository)_repository).LegacyGetPackagesById(LatestPackageInfo.Id);
-                    packageInfos = GetPackageInfos(query, _repository);
-                    packageInfoList = await LoadData(packageInfos, _downloadCancelSource.Token);
-                    if (!ShowPrerelease)
+                    query = query.OrderByDescending(p => p.Identity.Version);
+
+                    var packages = query.ToList();
+                    var deprecations = await Task.WhenAll(packages.Select(p => p.GetDeprecationMetadataAsync()));
+                    for (var i = 0; i < packages.Count; i++)
                     {
-                        packageInfoList = Array.FindAll(packageInfoList, p => !p.IsPrerelease);
+                        var package = packages[i];
+                        var deprecationMetadata = deprecations[i];
+
+                        AllPackages.Add(CreatePackageInfo(package, _feedType, versions, deprecationMetadata));
                     }
                 }
-
-                var dataServiceRepository = _repository as DataServicePackageRepository;
-                if (dataServiceRepository != null)
-                {
-                    foreach (PackageInfo entity in packageInfoList)
-                    {
-                        entity.DownloadUrl = dataServiceRepository.GetReadStreamUri(entity);
-                    }
-                }
-
-                foreach (var p in packageInfoList)
-                {
-                    p.ShowAll = true;
-                }
-
-                // now show packages
-                AllPackages.AddRange(packageInfoList);
 
                 HasFinishedLoading = true;
             }
@@ -228,76 +244,18 @@ namespace PackageExplorerViewModel
             }
             catch (Exception exception)
             {
+                if (!(exception is FatalProtocolException) && !(exception is IOException) && !(exception is NullReferenceException) && !(exception is UnauthorizedAccessException))
+                {
+                    DiagnosticsClient.TrackException(exception);
+                }
                 ErrorMessage = exception.GetBaseException().Message;
             }
             finally
             {
+                _downloadCancelSource.Dispose();
                 _downloadCancelSource = null;
                 IsLoading = false;
             }
-        }
-
-        private static bool IsResourceNotFoundError(DataServiceQueryException ex)
-        {
-            return ex.InnerException is DataServiceClientException &&
-                ((DataServiceClientException)ex.InnerException).StatusCode == 404;
-        }
-
-        private static IQueryable<PackageInfo> GetPackageInfos(IQueryable<IPackage> query, IPackageRepository repository)
-        {
-            if (repository is DataServicePackageRepository)
-            {
-                return query.Cast<DataServicePackage>().Select(p => new PackageInfo
-                    {
-                        Id = p.Id,
-                        Version = p.Version,
-                        Authors = p.Authors,
-                        DownloadCount = p.DownloadCount,
-                        VersionDownloadCount = p.VersionDownloadCount,
-                        PackageHash = p.PackageHash,
-                        PackageSize = p.PackageSize,
-                        Published = p.Published
-                    });
-            }
-            else
-            {
-                return query.Cast<ZipPackage>().Select(p => new PackageInfo
-                    {
-                        Id = p.Id,
-                        Version = p.Version.ToString(),
-                        Authors = String.Join(", ", p.Authors),
-                        DownloadCount = p.DownloadCount,
-                        VersionDownloadCount = p.VersionDownloadCount,
-                        PackageHash = p.PackageHash,
-                        PackageSize = p.PackageSize,
-                        DownloadUrl = new Uri(p.Source),
-                        Published = p.Published,
-                    });
-            }
-        }
-
-        protected async Task<PackageInfo[]> LoadData(IQueryable<PackageInfo> query, CancellationToken token)
-        {
-            PackageInfo[] results;
-
-            var dataServiceQuery = query as DataServiceQuery<PackageInfo>;
-            if (dataServiceQuery != null)
-            {
-                IEnumerable<PackageInfo> queryResponse =
-                    await Task.Factory.FromAsync<IEnumerable<PackageInfo>>(dataServiceQuery.BeginExecute(null, null), dataServiceQuery.EndExecute);
-
-                token.ThrowIfCancellationRequested();
-                results = queryResponse.ToArray();
-            }
-            else
-            {
-                results = await Task.Run((Func<PackageInfo[]>)query.ToArray, token);
-            }
-
-            // sort by Version descending
-            Array.Sort(results, (a, b) => b.Version.CompareTo(a.Version));
-
-            return results;
         }
 
         private bool CanToggleAllVersions()
@@ -344,8 +302,8 @@ namespace PackageExplorerViewModel
 
         private bool CanCancelDownload()
         {
-            return IsLoading && 
-                   _downloadCancelSource != null && 
+            return IsLoading &&
+                   _downloadCancelSource != null &&
                    !_downloadCancelSource.IsCancellationRequested;
         }
 
@@ -358,17 +316,84 @@ namespace PackageExplorerViewModel
             }
         }
 
+        private void OnOpenAlternatePackage(string packageId)
+        {
+            DiagnosticsClient.TrackEvent("PackageInfoViewModel_OpenAlternatePackage");
+
+            _parentViewModel.SearchCommand.Execute("id:" + packageId);
+        }
+
         internal void OnDeselected()
         {
             if (IsLoading)
             {
                 OnCancelDownload();
             }
-            
-            if (ShowingAllVersions) 
+
+            if (ShowingAllVersions)
             {
                 ShowingAllVersions = false;
             }
+        }
+
+        private static PackageInfo CreatePackageInfo(IPackageSearchMetadata packageSearchMetadata, FeedType feedType, IEnumerable<VersionInfo>? versionInfos, PackageDeprecationMetadata? deprecationMetadata)
+        {
+            DateTimeOffset? published = null;
+            if (packageSearchMetadata.Published.HasValue && packageSearchMetadata.Published.Value.Year > 1900)
+            {
+                // Note nuget.org reports 1900 for unlisted packages. Pretty sure it's was published later ;)
+                published = packageSearchMetadata.Published;
+            }
+
+            var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
+
+            var downloadCount = (int?)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount);
+
+            return new PackageInfo(packageSearchMetadata.Identity)
+            {
+                Authors = packageSearchMetadata.Authors,
+                Published = published,
+                DownloadCount = downloadCount,
+                DeprecationInfo = ConvertPackageDeprecationMetadata(deprecationMetadata),
+                IsRemotePackage = (feedType == FeedType.HttpV3 || feedType == FeedType.HttpV2),
+                IsPrefixReserved = packageSearchMetadata.PrefixReserved,
+                Description = packageSearchMetadata.Description,
+                Tags = packageSearchMetadata.Tags,
+                Summary = packageSearchMetadata.Summary,
+                LicenseUrl = packageSearchMetadata.LicenseUrl?.ToString() ?? string.Empty,
+                ProjectUrl = packageSearchMetadata.ProjectUrl?.ToString() ?? string.Empty,
+                ReportAbuseUrl = packageSearchMetadata.ReportAbuseUrl?.ToString() ?? string.Empty,
+                IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty
+            };
+        }
+
+        private static DeprecationInfo? ConvertPackageDeprecationMetadata(PackageDeprecationMetadata? deprecationMetadata)
+        {
+            if (deprecationMetadata == null)
+            {
+                return null;
+            }
+
+            var deprecationInfo = new DeprecationInfo
+            {
+                Message = deprecationMetadata.Message,
+                Reasons = deprecationMetadata.Reasons
+            };
+            if (deprecationMetadata.AlternatePackage != null)
+            {
+                deprecationInfo.AlternatePackageInfo = new AlternatePackageInfo
+                {
+                    Id = deprecationMetadata.AlternatePackage.PackageId,
+                    Range = deprecationMetadata.AlternatePackage.Range
+                };
+            }
+            return deprecationInfo;
+        }
+
+        public void Dispose()
+        {
+            _downloadCancelSource?.Dispose();
+            _downloadCancelSource = null;
         }
     }
 }

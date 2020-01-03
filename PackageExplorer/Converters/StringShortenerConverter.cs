@@ -1,22 +1,24 @@
 ﻿using System;
-using System.Globalization;
 using System.Windows.Data;
 
 namespace PackageExplorer
 {
     public class StringShortenerConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
+            if (value is null)
+                return value;
             if (parameter == null)
             {
                 return value;
             }
-            string stringValue = (string)value;
-            int maxLength = System.Convert.ToInt32(parameter, culture);
+
+            var stringValue = (string)value;
+            var maxLength = System.Convert.ToInt32(parameter, culture);
             if (maxLength < 5)
             {
-                throw new ArgumentOutOfRangeException("parameter");
+                throw new ArgumentOutOfRangeException(nameof(parameter));
             }
 
             if (stringValue.Length <= maxLength)
@@ -24,10 +26,11 @@ namespace PackageExplorer
                 return stringValue;
             }
 
-            int prefixLength = (maxLength - 3) / 2;
-            int suffixLength = maxLength - 3 - prefixLength;
+            var prefixLength = (maxLength - 3) / 2;
+            var suffixLength = maxLength - 3 - prefixLength;
+            if (suffixLength < 0) suffixLength = 0;
 
-            return stringValue.Substring(0, prefixLength) + "..." + stringValue.Substring(stringValue.Length - suffixLength);
+            return stringValue.Substring(0, prefixLength) + "..." + stringValue[^suffixLength];
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

@@ -1,22 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using System.Deployment.Application;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using CodeExecutor;
-using NuGet;
+using System.Windows.Controls;
+using NuGet.Common;
+using NuGet.Configuration;
+using NuGet.Credentials;
+using NuGet.Protocol;
 using NuGetPackageExplorer.Types;
-using PackageExplorer.Properties;
+using NuGetPe;
 using PackageExplorerViewModel;
+using PackageExplorerViewModel.Types;
+using Settings = PackageExplorer.Properties.Settings;
 
 namespace PackageExplorer
 {
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public partial class App : Application
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
+        public App()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
+        {
+            // Don't use the SocketHttphandler because it has some authentification issues accessing feeds like GitHub NuGet
+            // see https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/pull/841 for more details
+            AppContext.SetSwitch("System.Net.Http.UseSocketsHttpHandler", false);
+
+            DiagnosticsClient.Initialize();
+        }
+
         private CompositionContainer _container;
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
@@ -42,91 +59,70 @@ namespace PackageExplorer
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", e.Args.Length > 0 ? "fileAssociation" : "shortcut" } });
+
+            // Overwrite settings with the real instance
+            Resources["Settings"] = Container.GetExportedValue<ISettingsManager>();
+
+            InitCredentialService();
+            HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>
+            {
+                Container.GetExportedValue<ICredentialManager>().Add(credentials, uri);
+                InitCredentialService();
+            };
+
             MigrateSettings();
 
             var window = Container.GetExportedValue<MainWindow>();
-            window.Show();
+            var uiServices = Container.GetExportedValue<IUIServices>();
+            uiServices.Initialize();
 
-            //Disable this sellup as it doesn't work well with Windows 10 and the Windows Store application is not maintained.
-            //CheckWindows8AndDisplayUpsellDialog();
+            window.Show();
 
             if (e.Args.Length > 0)
             {
-                string file = e.Args[0];
-                bool successful = await LoadFile(window, file);
+                var file = e.Args[0];
+                var successful = await LoadFile(window, file);
                 if (successful)
                 {
                     return;
                 }
             }
-
-            // activation via ClickOnce url
-            if (ApplicationDeployment.IsNetworkDeployed &&
-                ApplicationDeployment.CurrentDeployment != null &&
-                ApplicationDeployment.CurrentDeployment.ActivationUri != null)
-            {
-                string queryString = ApplicationDeployment.CurrentDeployment.ActivationUri.Query;
-                var arguments = HttpUtility.ParseQueryString(queryString);
-
-                string downloadUrl = arguments["url"];
-                Uri uri;
-
-                if (!String.IsNullOrEmpty(downloadUrl) && Uri.TryCreate(downloadUrl, UriKind.Absolute, out uri))
-                {
-                    string id = arguments["id"];
-                    string versionString = arguments["version"];
-                    SemanticVersion version = null;
-                    SemanticVersion.TryParse(versionString, out version);
-
-                    await window.DownloadAndOpenDataServicePackage(downloadUrl, id, version);
-                    return;
-                }
-            }
-
-            if (AppDomain.CurrentDomain.SetupInformation != null &&
-                AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
-            {
-                // click-once deployment
-                string[] activationData = AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
-                if (activationData != null && activationData.Length > 0)
-                {
-                    string file = activationData[0];
-                    await LoadFile(window, file);
-                    return;
-                }
-            }
         }
 
-        private void CheckWindows8AndDisplayUpsellDialog()
+        private void InitCredentialService()
         {
-            if (NativeMethods.IsWindows8OrLater && Settings.Default.SolicitInstallNpeForWin8)
+            Task<IEnumerable<ICredentialProvider>> getProviders()
             {
-                bool isInstalled = RemoteCodeExecutor.IsNpeMetroInstalled;
-                if (!isInstalled)
+                return Task.FromResult<IEnumerable<ICredentialProvider>>(new ICredentialProvider[]
                 {
-                    IUIServices uiServices = Container.GetExportedValue<IUIServices>();
-                    bool? result = uiServices.AskToInstallNpeOnWindows8();
+                    Container.GetExportedValue<CredentialManagerProvider>(),
+                    Container.GetExportedValue<CredentialPublishProvider>(),
+                    Container.GetExportedValue<CredentialDialogProvider>()
+                });
+            };
 
-                    // if result == null, remind user next time
-                    Settings.Default.SolicitInstallNpeForWin8 = (result != false);
+            HttpHandlerResourceV3.CredentialService =
+                new Lazy<ICredentialService>(() => new CredentialService(
+                                                      new AsyncLazy<IEnumerable<ICredentialProvider>>(() => getProviders()),
+                                                      nonInteractive: false,
+                                                      handlesDefaultCredentials: false));
 
-                    if (result == true)
-                    {
-                        Process.Start("ms-windows-store:PDP?PFN=50582LuanNguyen.NuGetPackageExplorer_w6y2tyx5bpzwa");
-                    }
-                }
-            }
         }
 
         private static void MigrateSettings()
         {
-            Settings settings = Settings.Default;
-            if (settings.IsFirstTime)
+            try
             {
-                settings.Upgrade();
-                settings.IsFirstTime = false;
-                settings.Save();
+                var settings = Settings.Default;
+                if (settings.IsFirstTime)
+                {
+                    settings.Upgrade();
+                    settings.IsFirstTime = false;
+                    settings.Save();
+                }
             }
+            catch { }
         }
 
         private static async Task<bool> LoadFile(MainWindow window, string file)
@@ -149,10 +145,26 @@ namespace PackageExplorer
                 _container.Dispose();
             }
 
-            // IMPORTANT: Call this after calling _container.Dispose(). Some exports relies on Dispose()
-            // being called to save settings values.
-            Settings.Default.IsFirstTimeAfterMigrate = false;
-            Settings.Default.Save();
+            // Try to save, if there's an IO error, just ignore it here, nothing we can do
+            try
+            {
+                Settings.Default.Save();
+            }
+            catch
+            {
+            }
+
+            DiagnosticsClient.TrackEvent("AppExit");
+
+            DiagnosticsClient.OnExit();
+        }
+
+        private void PackageIconImage_ImageFailed(object sender, ExceptionRoutedEventArgs e)
+        {
+            if (sender is Image image)
+            {
+                image.Source = Images.DefaultPackageIcon;
+            }
         }
     }
 }

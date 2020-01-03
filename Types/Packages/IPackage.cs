@@ -1,11 +1,12 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using NuGet.Packaging;
 
-namespace NuGet
+namespace NuGetPe
 {
-    public interface IPackage : IPackageMetadata, IServerPackageMetadata
+    public interface IPackage : IPackageMetadata, IServerPackageMetadata, IDisposable
     {
         bool IsAbsoluteLatestVersion { get; }
 
@@ -15,11 +16,7 @@ namespace NuGet
 
         DateTimeOffset LastUpdated { get; }
 
-        long PackageSize { get; }
-
         DateTimeOffset? Published { get; }
-
-        IEnumerable<IPackageAssemblyReference> AssemblyReferences { get; }
 
         [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
             Justification = "This might be expensive")]

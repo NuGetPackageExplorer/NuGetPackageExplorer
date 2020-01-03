@@ -1,90 +1,132 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Services.Client;
-using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using NuGet;
+using NuGet.Common;
+using NuGet.Protocol;
+using NuGet.Protocol.Core.Types;
+using PackageExplorerViewModel.PackageSearch;
 
 namespace PackageExplorerViewModel
 {
-    internal class ShowLatestVersionQueryContext<T> : QueryContextBase<T>, IQueryContext<T> where T : IPackageInfoType
+    internal class ShowLatestVersionQueryContext<T> : IQueryContext<T> where T : IPackageSearchMetadata
     {
+        private readonly SourceRepository _sourceRepository;
+        private readonly SearchContext _searchContext;
         private readonly int _pageSize;
-        private int _pageIndex;
+        private readonly PackageListCache<T> _packageListCache;
+        private readonly LocalPackageSearcher<T> _localPackageSearcher;
+        private PackageSearchResource? _packageSearchResouce;
+        private RawSearchResourceV3? _rawPackageSearchResouce;
+        private int? _lastPageIndex;
 
-        public ShowLatestVersionQueryContext(IQueryable<T> source, int pageSize) 
-            : base(source)
+        public ShowLatestVersionQueryContext(SourceRepository sourceRepository, string? search, bool showPreReleasePackages, int pageSize, PackageListCache<T> packageListCache)
         {
+            _sourceRepository = sourceRepository;
+            _searchContext = new SearchContext(search, new SearchFilter(showPreReleasePackages));
             _pageSize = pageSize;
-        }
-
-        private int PageCount
-        {
-            get { return (TotalItemCount + (_pageSize - 1)) / _pageSize; }
+            _packageListCache = packageListCache ?? throw new ArgumentNullException(nameof(packageListCache));
+            _localPackageSearcher = new LocalPackageSearcher<T>(_searchContext);
         }
 
         #region IQueryContext<T> Members
 
-        public int BeginPackage
+        public int CurrentPage { get; private set; }
+
+        public bool HasMore => CurrentPage != _lastPageIndex;
+
+        public async Task<IList<T>> LoadMore(CancellationToken token)
         {
-            get { return Math.Min(TotalItemCount, _pageIndex * _pageSize + 1); }
-        }
-
-        public int EndPackage
-        {
-            get { return Math.Min(TotalItemCount, (_pageIndex + 1) * _pageSize); }
-        }
-
-        public async Task<IList<T>> GetItemsForCurrentPage(CancellationToken token)
-        {
-            var pagedQuery = Source.Skip(_pageIndex * _pageSize).Take(_pageSize);
-            T[] queryResponse = (await LoadData(pagedQuery)).ToArray();
-
-            token.ThrowIfCancellationRequested();
-
-            foreach (var package in queryResponse)
+            var packageSource = _sourceRepository.PackageSource.Source;
+            List<T> list;
+            if (_packageListCache.TryGetPackages(packageSource, out var packages))
             {
-                package.ShowAll = false;
+                list = LocalSearch(packages);
+            }
+            else
+            {
+                list = await SearchOnServer(token);
+
+                if (list.Count > _pageSize)
+                {
+                    // More packages than requested, assume static feed
+                    _packageListCache.SetPackages(packageSource, list);
+                    list = LocalSearch(list);
+                }
+            }
+
+            if (list.Count < _pageSize)
+            {
+                _lastPageIndex = CurrentPage;
+            }
+            else
+            {
+                CurrentPage++;
+            }
+
+            return list;
+        }
+
+        private List<T> LocalSearch(IEnumerable<T> packages)
+        {
+            var items = _localPackageSearcher.SearchPackages(packages);
+
+            return items.Skip(CurrentPage * _pageSize).Take(_pageSize).ToList();
+        }
+
+        private async Task<List<T>> SearchOnServer(CancellationToken token)
+        {
+            var searchText = _searchContext.SearchText;
+            IEnumerable<IPackageSearchMetadata>? result = null;
+            if (_searchContext.IsIdSearch)
+            {
+                if (!string.IsNullOrEmpty(searchText))
+                {
+                    var findPackageByIdResource = await _sourceRepository.GetResourceAsync<PackageMetadataResource>(token);
+
+                    var metadata = await findPackageByIdResource.GetMetadataAsync(searchText, _searchContext.Filter.IncludePrerelease, true, NullSourceCacheContext.Instance, NullLogger.Instance, token);
+
+                    result = metadata.OrderByDescending(m => m.Identity.Version).Take(1);
+                }
+                else
+                {
+                    result = Enumerable.Empty<IPackageSearchMetadata>();
+                }
+            }
+            else
+            {
+                if (_packageSearchResouce == null && _rawPackageSearchResouce == null)
+                {
+                    _rawPackageSearchResouce = await _sourceRepository.GetResourceAsync<RawSearchResourceV3>(token);
+                }
+
+                if (_rawPackageSearchResouce != null)
+                {
+                    // Don't run the cpu-bound operations on GUI thread
+                    result = await Task.Run(async () =>
+                    {
+                        var json = await _rawPackageSearchResouce.Search(searchText, _searchContext.Filter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
+                        return json.Select(s => s.FromJToken<PackageSearchMetadata>()).ToList();
+                    }, token);
+                }
+
+                if (result == null)
+                {
+                    if (_packageSearchResouce == null)
+                    {
+                        _packageSearchResouce = await _sourceRepository.GetResourceAsync<PackageSearchResource>(token);
+                    }
+
+                    result = await _packageSearchResouce.SearchAsync(searchText, _searchContext.Filter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
+                }
             }
 
             token.ThrowIfCancellationRequested();
 
-            return queryResponse;
-        }
-
-        public bool MoveFirst()
-        {
-            _pageIndex = 0;
-            return true;
-        }
-
-        public bool MoveNext()
-        {
-            if (_pageIndex < PageCount - 1)
-            {
-                _pageIndex++;
-                return true;
-            }
-
-            return false;
-        }
-
-        public bool MovePrevious()
-        {
-            if (_pageIndex > 0)
-            {
-                _pageIndex--;
-                return true;
-            }
-            return false;
-        }
-
-        public bool MoveLast()
-        {
-            _pageIndex = PageCount - 1;
-            return true;
+            var list = result.Cast<T>().ToList();
+            return list;
         }
 
         #endregion

@@ -7,19 +7,22 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Threading;
-using NuGet;
+using NuGet.Packaging;
+using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
-using PackageExplorer.Properties;
+using NuGetPe;
 using PackageExplorerViewModel;
-using Constants = NuGet.Constants;
+using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
-using StringResources = PackageExplorer.Resources.Resources;
+using StringResources = PackageExplorer.Resources;
 
 namespace PackageExplorer
 {
@@ -32,12 +35,26 @@ namespace PackageExplorer
         private readonly IMruManager _mruManager;
 
         [ImportingConstructor]
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public MainWindow(IMruManager mruManager)
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
+            if (mruManager is null)
+                throw new ArgumentNullException(nameof(mruManager));
+
             InitializeComponent();
 
             RecentFilesMenuItem.DataContext = _mruManager = mruManager;
             RecentFilesContainer.Collection = _mruManager.Files;
+
+            if (AppCompat.IsWindows10S)
+            {
+                pluginMenuItem.Visibility = Visibility.Collapsed;
+                pluginMenuItem.IsEnabled = false;
+                mnuPluginSep.Visibility = Visibility.Collapsed;
+            }
+
+            DiagnosticsClient.TrackPageView(nameof(MainWindow));
         }
 
         [Import]
@@ -47,7 +64,7 @@ namespace PackageExplorer
         public IUIServices UIServices { get; set; }
 
         [Import]
-        public IPackageDownloader PackageDownloader { get; set; }
+        public INuGetPackageDownloader PackageDownloader { get; set; }
 
         [Import]
         public IPluginManager PluginManager { get; set; }
@@ -59,13 +76,15 @@ namespace PackageExplorer
         public IPackageViewModelFactory PackageViewModelFactory { get; set; }
 
         [ImportMany(AllowRecomposition = true)]
+#pragma warning disable CA2227 // Collection properties should be read only
         public ObservableCollection<LazyPackageCommand> PackageCommands
+#pragma warning restore CA2227 // Collection properties should be read only
         {
             get
             {
                 return PackageCommandsContainer != null
-                           ? (ObservableCollection<LazyPackageCommand>) PackageCommandsContainer.Collection
-                           : null;
+                           ? (ObservableCollection<LazyPackageCommand>)PackageCommandsContainer.Collection
+                           : null!;
             }
             set
             {
@@ -79,11 +98,13 @@ namespace PackageExplorer
         [Export]
         public IPackageEditorService EditorService { get; set; }
 
+        private string? _tempFile;
+
         private bool HasUnsavedChanges
         {
             get
             {
-                var viewModel = (PackageViewModel) DataContext;
+                var viewModel = (PackageViewModel)DataContext;
                 return (viewModel != null && viewModel.HasEdit);
             }
         }
@@ -92,7 +113,7 @@ namespace PackageExplorer
         {
             get
             {
-                var viewModel = (PackageViewModel) DataContext;
+                var viewModel = (PackageViewModel)DataContext;
                 return (viewModel != null && viewModel.IsInEditFileMode);
             }
         }
@@ -105,23 +126,26 @@ namespace PackageExplorer
             {
                 LoadSettings();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                DiagnosticsClient.TrackException(ex);
             }
         }
 
         internal async Task OpenLocalPackage(string packagePath)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_OpenLocalPackage");
+
             if (!File.Exists(packagePath))
             {
                 UIServices.Show("File not found at " + packagePath, MessageLevel.Error);
                 return;
             }
 
-            object oldContent = PackageSourceItem.Content;
+            var oldContent = PackageSourceItem.Content;
             PackageSourceItem.SetCurrentValue(ContentProperty, "Loading " + packagePath + "...");
 
-            bool succeeded = await Dispatcher.InvokeAsync(
+            var succeeded = await Dispatcher.InvokeAsync(
                 () => OpenLocalPackageCore(packagePath), DispatcherPriority.Loaded);
 
             if (!succeeded)
@@ -133,37 +157,61 @@ namespace PackageExplorer
 
         private bool OpenLocalPackageCore(string packagePath)
         {
-            IPackage package = null;
+            IPackage? package = null;
 
+            string? tempFile = null;
             try
             {
-                string extension = Path.GetExtension(packagePath);
-                if (extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase))
+                tempFile = Path.GetTempFileName();
+                File.Copy(packagePath, tempFile, overwrite: true);
+
+                var extension = Path.GetExtension(packagePath);
+                if (Constants.PackageExtension.Equals(extension, StringComparison.OrdinalIgnoreCase) ||
+                    Constants.SymbolPackageExtension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                 {
-                    package = new ZipPackage(packagePath);
+                    DiagnosticsClient.TrackPageView("View Existing Package");
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                    package = new ZipPackage(tempFile);
+#pragma warning restore CA2000 // Dispose objects before losing scope
                 }
-                else if (extension.Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase))
+                else if (Constants.ManifestExtension.Equals(extension, StringComparison.OrdinalIgnoreCase))
                 {
-                    var builder = new PackageBuilder(packagePath);
+                    DiagnosticsClient.TrackPageView("View Nuspec");
+                    using var str = ManifestUtility.ReadManifest(tempFile);
+                    var builder = new PackageBuilder(str, Path.GetDirectoryName(packagePath));
                     package = builder.Build();
                 }
 
                 if (package != null)
                 {
-                    LoadPackage(package, packagePath, PackageType.LocalPackage);
+                    LoadPackage(package, packagePath, packagePath, PackageType.LocalPackage);
+                    _tempFile = tempFile;
                     return true;
                 }
             }
             catch (Exception ex)
             {
+                package?.Dispose();
+                package = null;
                 UIServices.Show(ex.Message, MessageLevel.Error);
                 return false;
+            }
+            finally
+            {
+                if (package == null && tempFile != null && File.Exists(tempFile))
+                {
+                    try
+                    {
+                        File.Delete(tempFile);
+                    }
+                    catch { /* ignore */ }
+                }
             }
 
             return false;
         }
 
-        private void LoadPackage(IPackage package, string packagePath, PackageType packageType)
+        private async void LoadPackage(IPackage package, string packagePath, string packageSource, PackageType packageType)
         {
             DisposeViewModel();
 
@@ -171,12 +219,12 @@ namespace PackageExplorer
             {
                 if (!HasLoadedContent<PackageViewer>())
                 {
-                    var packageViewer = new PackageViewer(UIServices, PackageChooser);
+                    var packageViewer = new PackageViewer(SettingsManager, UIServices, PackageChooser);
                     var binding = new Binding
-                                  {
-                                      Converter = new NullToVisibilityConverter(),
-                                      FallbackValue = Visibility.Collapsed
-                                  };
+                    {
+                        Converter = new NullToVisibilityConverter(),
+                        FallbackValue = Visibility.Collapsed
+                    };
                     packageViewer.SetBinding(VisibilityProperty, binding);
 
                     MainContentContainer.Children.Add(packageViewer);
@@ -185,28 +233,39 @@ namespace PackageExplorer
                     EditorService = packageViewer.PackageMetadataEditor;
                 }
 
-                PackageViewModel packageViewModel = PackageViewModelFactory.CreateViewModel(package, packagePath);
-                packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
-
-                DataContext = packageViewModel;
-                if (!String.IsNullOrEmpty(packagePath))
+                try
                 {
-                    _mruManager.NotifyFileAdded(package, packagePath, packageType);
+                    var packageViewModel = await PackageViewModelFactory.CreateViewModel(package, packagePath, packageSource);
+                    packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+
+                    DataContext = packageViewModel;
+                    if (!string.IsNullOrEmpty(packageSource))
+                    {
+                        _mruManager.NotifyFileAdded(package, packageSource, packageType);
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (!(e is ArgumentException))
+                    {
+                        DiagnosticsClient.TrackException(e);
+                    }
+                    UIServices.Show($"Error loading package\n{e.Message}", MessageLevel.Error);
                 }
             }
         }
 
         private void OnPackageViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            var viewModel = (PackageViewModel) sender;
+            var viewModel = (PackageViewModel)sender;
             if (e.PropertyName == "IsInEditFileMode")
             {
                 if (viewModel.IsInEditFileMode)
                 {
-                    var fileEditor = new FileEditor
-                                     {
-                                         DataContext = viewModel.FileEditorViewModel
-                                     };
+                    var fileEditor = new FileEditor(SettingsManager, UIServices)
+                    {
+                        DataContext = viewModel.FileEditorViewModel
+                    };
                     Content = fileEditor;
                 }
                 else
@@ -219,34 +278,53 @@ namespace PackageExplorer
         private void DisposeViewModel()
         {
             // dispose the old view model before opening a new one.
-            var currentViewModel = DataContext as PackageViewModel;
-            if (currentViewModel != null)
+            if (DataContext is PackageViewModel currentViewModel)
             {
                 currentViewModel.PropertyChanged -= OnPackageViewModelPropertyChanged;
                 currentViewModel.Dispose();
             }
+            if (_tempFile != null)
+            {
+                if (File.Exists(_tempFile))
+                {
+                    try
+                    {
+                        File.Delete(_tempFile);
+                    }
+                    catch { /* ignore */ }
+                }
+                _tempFile = null;
+            }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void NewMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
-            bool canceled = AskToSaveCurrentFile();
+            DiagnosticsClient.TrackEvent("MainWindow_NewMenuItemClick");
+
+            var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
                 return;
             }
 
-            LoadPackage(new EmptyPackage(), String.Empty, PackageType.LocalPackage);
+            DiagnosticsClient.TrackPageView("Edit Blank Package");
+            LoadPackage(new EmptyPackage(), string.Empty, string.Empty, PackageType.LocalPackage);
         }
 
         private void OpenMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_OpenMenuItemClick");
+
             OpenPackageFromLocal();
         }
 
         private async void OpenFeedItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
-            var parameter = (string) e.Parameter;
-            if (!String.IsNullOrEmpty(parameter))
+            DiagnosticsClient.TrackEvent("MainWindow_OpenFeedItemClick");
+
+            var parameter = (string)e.Parameter;
+            if (!string.IsNullOrEmpty(parameter))
             {
                 parameter = "id:" + parameter;
             }
@@ -255,17 +333,16 @@ namespace PackageExplorer
 
         private Task OpenPackageFromLocal()
         {
-            bool canceled = AskToSaveCurrentFile();
+            var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
                 return Task.FromResult(0);
             }
 
-            string selectedFile;
-            bool result = UIServices.OpenFileDialog(
+            var result = UIServices.OpenFileDialog(
                 "Select File",
                 StringResources.Dialog_OpenFileFilter,
-                out selectedFile);
+                out var selectedFile);
 
             if (result)
             {
@@ -277,76 +354,75 @@ namespace PackageExplorer
 
         private async Task OpenPackageFromRepository(string searchTerm)
         {
-            bool canceled = AskToSaveCurrentFile();
+            var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
                 return;
             }
 
-            PackageInfo selectedPackageInfo = PackageChooser.SelectPackage(searchTerm);
+            var selectedPackageInfo = PackageChooser.SelectPackage(searchTerm);
             if (selectedPackageInfo == null)
             {
                 return;
             }
 
-            if (selectedPackageInfo.IsLocalPackage)
+            var repository = PackageChooser.Repository;
+            if (repository == null)
             {
-                await OpenLocalPackage(selectedPackageInfo.DownloadUrl.LocalPath);
+                return;
             }
-            else 
+
+            var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, selectedPackageInfo.SemanticVersion);
+
+            DispatcherOperation processPackageAction(ISignaturePackage package)
             {
-                var packageVersion = new SemanticVersion(selectedPackageInfo.Version);
-                IPackage cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, packageVersion);
+                LoadPackage(package,
+                            package.Source,
+                            repository!.PackageSource.Source,
+                            PackageType.RemotePackage);
 
-                Func<IPackage, DispatcherOperation> processPackageAction = (package) =>
-                                                        {
-                                                            DataServicePackage servicePackage = selectedPackageInfo.AsDataServicePackage();
-                                                            servicePackage.CorePackage = package;
-                                                            LoadPackage(servicePackage,
-                                                                        selectedPackageInfo.DownloadUrl.ToString(),
-                                                                        PackageType.DataServicePackage);
+                // adding package to the cache, but with low priority
+                return Dispatcher.BeginInvoke(
+                    (Action<IPackage>)MachineCache.Default.AddPackage,
+                    DispatcherPriority.ApplicationIdle,
+                    package);
+            }
 
-                                                            // adding package to the cache, but with low priority
-                                                            return Dispatcher.BeginInvoke(
-                                                                (Action<IPackage>) MachineCache.Default.AddPackage,
-                                                                DispatcherPriority.ApplicationIdle,
-                                                                package);
-                                                        };
+            if (cachePackage == null)
+            {
+                var downloadedPackage = await PackageDownloader.Download(
+                    repository,
+                    selectedPackageInfo.Identity);
 
-                if (cachePackage == null || cachePackage.GetHash() != selectedPackageInfo.PackageHash)
+                if (downloadedPackage != null)
                 {
-                    IPackage downloadedPackage = await PackageDownloader.Download(
-                        selectedPackageInfo.DownloadUrl,
-                        selectedPackageInfo.Id,
-                        packageVersion.ToString());
-
-                    if (downloadedPackage != null)
-                    {
-                        await processPackageAction(downloadedPackage);
-                    }
+                    await processPackageAction(downloadedPackage);
                 }
-                else
-                {
-                    await processPackageAction(cachePackage);
-                }
+            }
+            else
+            {
+                await processPackageAction(cachePackage);
             }
         }
 
         private void ExitMenuItem_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_ExitMenuItemClick");
             Close();
         }
 
         private void HelpCommandExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            var dialog = new AboutWindow {Owner = this};
+            DiagnosticsClient.TrackEvent("MainWindow_HelpCommandExecuted");
+
+            var dialog = new AboutWindow { Owner = this };
             dialog.ShowDialog();
             e.Handled = true;
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            bool isCanceled = AskToSaveCurrentFile();
+            var isCanceled = AskToSaveCurrentFile();
             e.Cancel = isCanceled;
 
             if (!isCanceled)
@@ -356,8 +432,9 @@ namespace PackageExplorer
                     SaveSettings();
                     DisposeViewModel();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    DiagnosticsClient.TrackException(ex);
                 }
             }
         }
@@ -368,11 +445,11 @@ namespace PackageExplorer
         /// <returns>true if user cancels the impending action</returns>
         private bool AskToSaveCurrentFile()
         {
-            var viewModel = (PackageViewModel) DataContext;
-            if (HasUnsavedChanges || (IsInEditFileMode && viewModel.FileEditorViewModel.HasEdit))
+            var viewModel = (PackageViewModel)DataContext;
+            if (HasUnsavedChanges || (IsInEditFileMode && viewModel.FileEditorViewModel?.HasEdit == true))
             {
                 // if there is unsaved changes, ask user for confirmation
-                bool? result = UIServices.ConfirmWithCancel("You have unsaved changes in the current package.", StringResources.Dialog_SaveQuestion);
+                var result = UIServices.ConfirmWithCancel("You have unsaved changes in the current package.", StringResources.Dialog_SaveQuestion);
 
                 if (result == null)
                 {
@@ -384,10 +461,10 @@ namespace PackageExplorer
                     {
                         // force a Save from outside the file editor.
                         // In this case, Content is the FileEditor user control
-                        viewModel.FileEditorViewModel.SaveOnExit((IFileEditorService) Content);
+                        viewModel.FileEditorViewModel?.SaveOnExit((IFileEditorService)Content);
                     }
 
-                    ICommand saveCommand = viewModel.SaveCommand;
+                    var saveCommand = viewModel.SaveCommand;
                     const string parameter = "ForceSave";
                     saveCommand.Execute(parameter);
                 }
@@ -398,21 +475,21 @@ namespace PackageExplorer
 
         private void OnFontSizeItem_Click(object sender, RoutedEventArgs e)
         {
-            var item = (MenuItem) sender;
-            int size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
-            Settings.Default.FontSize = size;
+            DiagnosticsClient.TrackEvent("MainWindow_OnFontSizeItemClick");
+
+            var item = (MenuItem)sender;
+            var size = Convert.ToInt32(item.Tag, CultureInfo.InvariantCulture);
+            SettingsManager.FontSize = size;
         }
 
         private void LoadSettings()
         {
-            Settings settings = Settings.Default;
-            this.LoadWindowPlacementFromSettings(settings.WindowPlacement);
+            this.LoadWindowPlacementFromSettings(SettingsManager.WindowPlacement);
         }
 
         private void SaveSettings()
         {
-            Settings settings = Settings.Default;
-            settings.WindowPlacement = this.SaveWindowPlacementToSettings();
+            SettingsManager.WindowPlacement = this.SaveWindowPlacementToSettings();
         }
 
         private void OpenExternalLink(object sender, ExecutedRoutedEventArgs e)
@@ -422,10 +499,19 @@ namespace PackageExplorer
                 return;
             }
 
+            // We might get a certificate to display instead
+            if (e.Parameter is X509Certificate2 cert)
+            {
+                DiagnosticsClient.TrackEvent("DisplayCertificate");
+                var hwnd = new WindowInteropHelper(this).Handle;
+                X509Certificate2UI.DisplayCertificate(cert, hwnd);
+                return;
+            }
+
             var uri = e.Parameter as Uri;
             if (uri == null)
             {
-                var url = (string) e.Parameter;
+                var url = (string)e.Parameter;
                 Uri.TryCreate(url, UriKind.Absolute, out uri);
             }
 
@@ -437,12 +523,16 @@ namespace PackageExplorer
 
         private void CloseMenuItem_Click(object sender, ExecutedRoutedEventArgs e)
         {
-            bool isCanceled = AskToSaveCurrentFile();
+            var isCanceled = AskToSaveCurrentFile();
             if (isCanceled)
             {
                 return;
             }
 
+            DiagnosticsClient.TrackEvent("MainWindow_CloseMenuItemClick");
+            DiagnosticsClient.TrackPageView(nameof(MainWindow));
+
+            DisposeViewModel();
             DataContext = null;
         }
 
@@ -454,19 +544,16 @@ namespace PackageExplorer
 
         private async void RecentFileMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            bool canceled = AskToSaveCurrentFile();
+            var canceled = AskToSaveCurrentFile();
             if (canceled)
             {
                 return;
             }
 
-            var menuItem = (MenuItem) sender;
-            var mruItem = menuItem.DataContext as MruItem;
-            if (mruItem == null)
-            {
-                _mruManager.Clear();
-            }
-            else
+            DiagnosticsClient.TrackEvent("MainWindow_RecentFileMenuItemClick");
+
+            var menuItem = (MenuItem)sender;
+            if (menuItem.DataContext is MruItem mruItem)
             {
                 if (mruItem.PackageType == PackageType.LocalPackage)
                 {
@@ -477,6 +564,10 @@ namespace PackageExplorer
                     await DownloadAndOpenDataServicePackage(mruItem);
                 }
             }
+            else
+            {
+                _mruManager.Clear();
+            }
         }
 
         internal Task DownloadAndOpenDataServicePackage(MruItem item)
@@ -484,7 +575,7 @@ namespace PackageExplorer
             return DownloadAndOpenDataServicePackage(item.Path, item.Id, item.Version);
         }
 
-        internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string id = null, SemanticVersion version = null)
+        internal async Task DownloadAndOpenDataServicePackage(string packageUrl, string? id = null, NuGetVersion? version = null)
         {
             if (!NetworkInterface.GetIsNetworkAvailable())
             {
@@ -494,19 +585,22 @@ namespace PackageExplorer
                 return;
             }
 
-            Uri downloadUrl;
-            if (Uri.TryCreate(packageUrl, UriKind.Absolute, out downloadUrl) && downloadUrl.IsRemoteUri())
+            if (id != null && version != null && Uri.TryCreate(packageUrl, UriKind.Absolute, out _))
             {
-                IPackage downloadedPackage = await PackageDownloader.Download(downloadUrl, id, version.ToString());
+                var repository = PackageRepositoryFactory.CreateRepository(packageUrl);
+                var packageIdentity = new NuGet.Packaging.Core.PackageIdentity(id, version);
+
+                var downloadedPackage = await PackageDownloader.Download(repository, packageIdentity);
                 if (downloadedPackage != null)
                 {
-                    LoadPackage(downloadedPackage, packageUrl, PackageType.DataServicePackage);
+                    DiagnosticsClient.TrackPageView("View Feed Package");
+                    LoadPackage(downloadedPackage, downloadedPackage.Source, packageUrl, PackageType.RemotePackage);
                 }
             }
             else
             {
                 UIServices.Show(
-                    String.Format(
+                    string.Format(
                         CultureInfo.CurrentCulture,
                         StringResources.Dialog_InvalidPackageUrl,
                         packageUrl),
@@ -517,11 +611,13 @@ namespace PackageExplorer
 
         private void AddPluginFromAssembly_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("MainWindow_AddPluginFromAssemblyClick");
+
             var dialog = new PluginManagerDialog
-                         {
-                             Owner = this,
-                             DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
-                         };
+            {
+                Owner = this,
+                DataContext = PackageViewModelFactory.CreatePluginManagerViewModel()
+            };
             dialog.ShowDialog();
         }
 
@@ -541,11 +637,13 @@ namespace PackageExplorer
             // if the Control key (and only Control key) is pressed 
             if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
             {
-                int fontSizeDelta = e.Delta > 0 ? 2 : -2;
-                int newFontSize = Settings.Default.FontSize + fontSizeDelta;
+                DiagnosticsClient.TrackEvent("MainWindow_MouseWheelFontSize");
+
+                var fontSizeDelta = e.Delta > 0 ? 2 : -2;
+                var newFontSize = SettingsManager.FontSize + fontSizeDelta;
                 newFontSize = Math.Max(newFontSize, 12);
                 newFontSize = Math.Min(newFontSize, 18);
-                Settings.Default.FontSize = newFontSize;
+                SettingsManager.FontSize = newFontSize;
 
                 e.Handled = true;
             }
@@ -553,20 +651,23 @@ namespace PackageExplorer
 
         private void ViewDownloadCache_Click(object sender, EventArgs args)
         {
-            string cacheSource = MachineCache.Default.Source;
-            if (Directory.Exists(cacheSource))
+            DiagnosticsClient.TrackEvent("MainWindow_ViewDownloadCache");
+
+            var cacheSource = MachineCache.Default.Source;
+            try
             {
-                Process.Start(cacheSource);
+                Process.Start("explorer.exe", cacheSource.FullName);
             }
-            else
+            catch // Possible Win32 exception, nothing we can do
             {
-                UIServices.Show("The NuGet download cache does not exist.", MessageLevel.Information);
             }
         }
 
         private void ClearDownloadCache_Click(object sender, EventArgs args)
         {
-            bool result = MachineCache.Default.Clear();
+            DiagnosticsClient.TrackEvent("MainWindow_ClearDownloadCache");
+
+            var result = MachineCache.Default.Clear();
             if (result)
             {
                 UIServices.Show("The NuGet download cache has been cleared successfully.", MessageLevel.Information);
@@ -581,16 +682,15 @@ namespace PackageExplorer
 
         private void Window_DragOver(object sender, DragEventArgs e)
         {
-            IDataObject data = e.Data;
+            var data = e.Data;
             if (data.GetDataPresent(DataFormats.FileDrop))
             {
-                object value = data.GetData(DataFormats.FileDrop);
-                var filenames = value as string[];
-                if (filenames != null && filenames.Length > 0)
+                var value = data.GetData(DataFormats.FileDrop);
+                if (value is string[] filenames && filenames.Length > 0)
                 {
-                    string firstFile = filenames[0];
+                    var firstFile = filenames[0];
                     if (FileUtility.IsSupportedFile(firstFile))
-                    {
+                    {                        
                         e.Effects = DragDropEffects.Copy;
                         e.Handled = true;
                         return;
@@ -604,21 +704,22 @@ namespace PackageExplorer
 
         private async void Window_Drop(object sender, DragEventArgs e)
         {
-            IDataObject data = e.Data;
+            var data = e.Data;
             if (data.GetDataPresent(DataFormats.FileDrop))
             {
-                object value = data.GetData(DataFormats.FileDrop);
-                var filenames = value as string[];
-                if (filenames != null && filenames.Length > 0)
+                var value = data.GetData(DataFormats.FileDrop);
+                if (value is string[] filenames && filenames.Length > 0)
                 {
-                    string firstFile = filenames.FirstOrDefault(FileUtility.IsSupportedFile);
+                    var firstFile = filenames.FirstOrDefault(FileUtility.IsSupportedFile);
                     if (firstFile != null)
                     {
                         e.Handled = true;
 
-                        bool canceled = AskToSaveCurrentFile();
+                        var canceled = AskToSaveCurrentFile();
                         if (!canceled)
                         {
+                            DiagnosticsClient.TrackEvent("MainWindow_Drop");
+
                             await OpenLocalPackage(firstFile);
                         }
                     }

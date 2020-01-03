@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using NuGet;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
@@ -17,14 +17,14 @@ namespace PackageExplorerViewModel.Rules
         {
             if (package.PackageAssemblyReferences.Any())
             {
-                IEnumerable<string> allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
-                var libFilesSet = new HashSet<string>(allLibFiles, StringComparer.OrdinalIgnoreCase);
+                var allLibFiles = package.GetFilesInFolder("lib").Select(Path.GetFileName);
+                var libFilesSet = new HashSet<string>(allLibFiles!, StringComparer.OrdinalIgnoreCase);
 
                 return from reference in package.PackageAssemblyReferences.SelectMany(set => set.References)
                        where !libFilesSet.Contains(reference)
                        select CreateIssue(reference);
             }
-            return new PackageIssue[0];
+            return Array.Empty<PackageIssue>();
         }
 
         #endregion

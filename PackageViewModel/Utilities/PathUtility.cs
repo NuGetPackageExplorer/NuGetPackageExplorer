@@ -27,63 +27,79 @@ namespace PackageExplorerViewModel
         public static string RelativePathTo(string fromDirectory, string toPath)
         {
             if (fromDirectory == null)
-                throw new ArgumentNullException("fromDirectory");
+            {
+                throw new ArgumentNullException(nameof(fromDirectory));
+            }
 
             if (toPath == null)
-                throw new ArgumentNullException("toPath");
+            {
+                throw new ArgumentNullException(nameof(toPath));
+            }
 
-            bool isRooted = Path.IsPathRooted(fromDirectory)
+            var isRooted = Path.IsPathRooted(fromDirectory)
                 && Path.IsPathRooted(toPath);
 
             if (isRooted)
             {
-                bool isDifferentRoot = !String.Equals(
+                var isDifferentRoot = !string.Equals(
                     Path.GetPathRoot(fromDirectory),
                     Path.GetPathRoot(toPath), StringComparison.OrdinalIgnoreCase);
 
                 if (isDifferentRoot)
+                {
                     return toPath;
+                }
             }
 
-            StringCollection relativePath = new StringCollection();
-            string[] fromDirectories = fromDirectory.Split(
+            var relativePath = new StringCollection();
+            var fromDirectories = fromDirectory.Split(
                 Path.DirectorySeparatorChar);
 
-            string[] toDirectories = toPath.Split(
+            var toDirectories = toPath.Split(
                 Path.DirectorySeparatorChar);
 
-            int length = Math.Min(
+            var length = Math.Min(
                 fromDirectories.Length,
                 toDirectories.Length);
 
-            int lastCommonRoot = -1;
+            var lastCommonRoot = -1;
 
             // find common root
-            for (int x = 0; x < length; x++)
+            for (var x = 0; x < length; x++)
             {
-                if (!String.Equals(fromDirectories[x], toDirectories[x], StringComparison.OrdinalIgnoreCase))
+                if (!string.Equals(fromDirectories[x], toDirectories[x], StringComparison.OrdinalIgnoreCase))
+                {
                     break;
+                }
 
                 lastCommonRoot = x;
             }
 
             if (lastCommonRoot == -1)
+            {
                 return toPath;
+            }
 
             // add relative folders in from path
-            for (int x = lastCommonRoot + 1; x < fromDirectories.Length; x++)
+            for (var x = lastCommonRoot + 1; x < fromDirectories.Length; x++)
+            {
                 if (fromDirectories[x].Length > 0)
+                {
                     relativePath.Add("..");
+                }
+            }
 
             // add to folders to path
-            for (int x = lastCommonRoot + 1; x < toDirectories.Length; x++)
+            for (var x = lastCommonRoot + 1; x < toDirectories.Length; x++)
+            {
                 relativePath.Add(toDirectories[x]);
+            }
 
             // create relative path
-            string[] relativeParts = new string[relativePath.Count];
+            var relativeParts = new string[relativePath.Count];
             relativePath.CopyTo(relativeParts, 0);
 
-            string newPath = string.Join(
+            var newPath = string.Join(
                 Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture),
                 relativeParts);
 

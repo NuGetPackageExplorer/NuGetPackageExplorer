@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace PackageExplorer
@@ -10,17 +8,18 @@ namespace PackageExplorer
     {
         public static readonly TextHighlightingDefinition Instance = new TextHighlightingDefinition();
         private static readonly HighlightingRuleSet _emptyRuleSet = new HighlightingRuleSet();
+        private static readonly Dictionary<string, string> _emptyProperties = new Dictionary<string, string>();
 
         private TextHighlightingDefinition()
         {
         }
 
-        public HighlightingColor GetNamedColor(string name)
+        public HighlightingColor? GetNamedColor(string name)
         {
             return null;
         }
 
-        public HighlightingRuleSet GetNamedRuleSet(string name)
+        public HighlightingRuleSet? GetNamedRuleSet(string name)
         {
             return null;
         }
@@ -42,5 +41,7 @@ namespace PackageExplorer
         {
             get { return Enumerable.Empty<HighlightingColor>(); }
         }
+
+        public IDictionary<string, string> Properties => _emptyProperties;
     }
 }

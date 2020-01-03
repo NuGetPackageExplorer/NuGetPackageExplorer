@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
-using NuGet;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
@@ -28,9 +28,9 @@ namespace PackageExplorerViewModel.Rules
 
         private static bool HasContentOrDependency(IPackage package)
         {
-            return package.GetFiles().Any() || 
-                   package.DependencySets.SelectMany(p => p.Dependencies).Any() || 
-                   package.FrameworkAssemblies.Any();
+            return package.GetFiles().Any() ||
+                   package.DependencyGroups.SelectMany(p => p.Packages).Any() ||
+                   package.FrameworkReferences.Any();
         }
     }
 }

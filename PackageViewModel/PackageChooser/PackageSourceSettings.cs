@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using NuGet;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -15,31 +15,26 @@ namespace PackageExplorerViewModel
             Debug.Assert(settingsManager != null);
             _settingsManager = settingsManager;
 
-            if (settingsManager.IsFirstTimeAfterUpdate)
+            // migrate active package source
+            if (NuGetConstants.V2FeedUrl.Equals(ActiveSource, StringComparison.OrdinalIgnoreCase) ||
+                NuGetConstants.V2LegacyFeedUrl.Equals(ActiveSource, StringComparison.OrdinalIgnoreCase))
             {
-                // migrate active package source
-                if (ActiveSource.Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
-                {
-                    ActiveSource = NuGetConstants.DefaultFeedUrl;
-                }
+                ActiveSource = NuGetConstants.DefaultFeedUrl;
             }
         }
 
-        #region ISourceSettings Members
-
         public IList<string> GetSources()
         {
-            IList<string> sources = _settingsManager.GetPackageSources();
+            var sources = _settingsManager.GetPackageSources();
 
-            if (_settingsManager.IsFirstTimeAfterUpdate)
+
+            // migrate nuget v1 feed to v2 feed
+            for (var i = 0; i < sources.Count; i++)
             {
-                // migrate nuget v1 feed to v2 feed
-                for (int i = 0; i < sources.Count; i++)
+                if (sources[i].Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase) ||
+                    sources[i].Equals(NuGetConstants.V2FeedUrl, StringComparison.OrdinalIgnoreCase))
                 {
-                    if (sources[i].Equals(NuGetConstants.V2LegacyFeedUrl, StringComparison.OrdinalIgnoreCase))
-                    {
-                        sources[i] = NuGetConstants.DefaultFeedUrl;
-                    }
+                    sources[i] = NuGetConstants.DefaultFeedUrl;
                 }
             }
 
@@ -61,7 +56,5 @@ namespace PackageExplorerViewModel
             get { return _settingsManager.ActivePackageSource; }
             set { _settingsManager.ActivePackageSource = value; }
         }
-
-        #endregion
     }
 }

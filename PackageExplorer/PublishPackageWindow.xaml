@@ -28,10 +28,10 @@
         </DockPanel.BindingGroup>
 
         <!-- Main instruction -->
-        <TextBlock DockPanel.Dock="Top" Text="Enter your publish key." FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
+        <TextBlock DockPanel.Dock="Top" Text="Enter your publish key or PAT (Personal Access Token)." FontSize="12pt" Margin="10,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
 
         <!-- Secondary instruction -->
-        <TextBlock DockPanel.Dock="Top" Margin="10,0" Text="Provide the publish Url and the publish key associated with it." TextWrapping="Wrap" />
+        <TextBlock DockPanel.Dock="Top" Margin="10,0" Text="Provide the publish Url and the publish key or PAT associated with it." TextWrapping="Wrap" />
 
         <!-- Id & Version -->
         <TextBlock DockPanel.Dock="Top" Margin="10,10,10,0">
@@ -45,7 +45,7 @@
 
         <!-- Publish Url -->
         <DockPanel DockPanel.Dock="Top" Margin="7,8,10,5">
-            <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishUrl}" Content="Publish _Url:" Width="75" />
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishUrl}" Content="Publish _Url:" Width="110" />
             <ComboBox x:Name="PublishUrl" ItemsSource="{Binding PublishSources}" IsReadOnly="False" IsEditable="True" VerticalContentAlignment="Center" SelectedItem="{Binding SelectedPublishItem, BindingGroupName=Random}" IsEnabled="{Binding CanPublish}">
                 <ComboBox.Text>
                     <Binding Path="PublishUrl">
@@ -58,15 +58,17 @@
         </DockPanel>
 
         <!-- Publish key -->
-        <DockPanel DockPanel.Dock="Top" Margin="7,0,10,5">
-            <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishKey}" Content="Publish _key:" Width="75" />
-            <TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0" Text="{Binding PublishKey}">
+        <DockPanel x:Name="PanelApiKey" DockPanel.Dock="Top" Margin="7,0,10,5">
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=PublishKey}" Content="Publish _key or PAT:" Width="110" />
+            <TextBox x:Name="PublishKey" VerticalContentAlignment="Center" IsEnabled="{Binding CanPublish}" Margin="0" Text="{Binding PublishKeyOrPAT}">
             </TextBox>
         </DockPanel>
-        <CheckBox Margin="10,5,0,5" VerticalContentAlignment="Center" IsChecked="{Binding AppendV2ApiToUrl, BindingGroupName=Nothing, Mode=TwoWay}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="Append 'api/v2/package' to publish url" ToolTip="Check this for publishing to NuGet.org ."/>
 
+        <!-- Service Endpoint -->
+        <CheckBox Margin="10,5,0,5" VerticalContentAlignment="Center" IsChecked="{Binding AppendV2ApiToUrl, BindingGroupName=Nothing, Mode=TwoWay}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="Append 'api/v2/package' to publish url" ToolTip="Check this for publishing to NuGet.org."/>
+        
         <!-- Publish as unlisted flag -->
-        <CheckBox Margin="10,5" VerticalContentAlignment="Center" IsChecked="{Binding PublishAsUnlisted, Mode=TwoWay, BindingGroupName=Nothing}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="U_nlist this package so that it doesn't appear in search results." ToolTip="If checked, the package will be unlisted."></CheckBox>
+        <CheckBox Margin="10,5" VerticalContentAlignment="Center" IsChecked="{Binding PublishAsUnlisted, Mode=TwoWay, BindingGroupName=Nothing}" DockPanel.Dock="Top" IsEnabled="{Binding CanPublish}" HorizontalAlignment="Left" Content="U_nlist this package so that it doesn't appear in search results" ToolTip="If checked, the package will be unlisted."></CheckBox>
 
         <!-- Progress bar -->
         <ProgressBar Margin="10,5" IsIndeterminate="true" Visibility="{Binding ShowProgress, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" DockPanel.Dock="Top" Height="22" Maximum="100" Value="{Binding PercentComplete, Mode=OneWay}" />

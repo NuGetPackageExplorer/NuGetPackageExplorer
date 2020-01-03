@@ -1,19 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Runtime.Versioning;
+using System.Windows;
 using System.Windows.Input;
-using NuGet;
+using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    public class PackageFile : PackagePart, IPackageFile, IEditablePackageFile
+    [DebuggerDisplay("{Path}")]
+    public class PackageFile : PackagePart, IPackageFile, IEditablePackageFile, IPackageContent
     {
         private readonly IPackageFile _file;
-        private FileSystemWatcher _watcher;
+        private FileSystemWatcher? _watcher;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public PackageFile(IPackageFile file, string name, PackageFolder parent)
             : this(file, name, parent, parent.PackageViewModel)
         {
@@ -22,19 +30,13 @@ namespace PackageExplorerViewModel
         private PackageFile(IPackageFile file, string name, PackageFolder parent, PackageViewModel viewModel)
             : base(name, parent, viewModel)
         {
-            if (file == null)
-            {
-                throw new ArgumentNullException("file");
-            }
+            _file = file ?? throw new ArgumentNullException(nameof(file));
 
-            _file = file;
-
-            var physicalFile = file as PhysicalPackageFile;
-            if (physicalFile != null)
+            if (file is DiskPackageFile physicalFile)
             {
                 WatchPhysicalFile(physicalFile);
             }
-            ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsInEditFileMode);
+            ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsSigned && !viewModel.IsInEditFileMode);
         }
 
         #region IPackageFile members
@@ -42,9 +44,9 @@ namespace PackageExplorerViewModel
         /// <summary>
         /// Returns the path on disk if this file is a PhysicalPackageFile. Otherwise, returns null;
         /// </summary>
-        public string OriginalPath
+        public string? OriginalPath
         {
-            get { return _file.OriginalPath; }
+            get { return _file.OriginalPath(); }
         }
 
         public string EffectivePath
@@ -55,11 +57,6 @@ namespace PackageExplorerViewModel
         public FrameworkName TargetFramework
         {
             get { return _file.TargetFramework; }
-        }
-
-        public IEnumerable<FrameworkName> SupportedFrameworks
-        {
-            get { return _file.SupportedFrameworks; }
         }
 
         public Stream GetStream()
@@ -100,16 +97,34 @@ namespace PackageExplorerViewModel
             private set;
         }
 
-        private void WatchPhysicalFile(PhysicalPackageFile physicalFile)
+        public DateTimeOffset LastWriteTime => _file.LastWriteTime;
+
+        private ImageSource? _fileIcon;
+
+        public ImageSource FileIcon
         {
-            string folderPath = System.IO.Path.GetDirectoryName(physicalFile.OriginalPath);
-            string fileName = System.IO.Path.GetFileName(physicalFile.OriginalPath);
+            get
+            {
+                if (_fileIcon == null)
+                {
+                    using var icon = FileHelper.ExtractAssociatedIcon(Path);
+                    _fileIcon = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                }
+
+                return _fileIcon;
+            }
+        }
+
+        private void WatchPhysicalFile(DiskPackageFile physicalFile)
+        {
+            var folderPath = System.IO.Path.GetDirectoryName(physicalFile.OriginalPath);
+            var fileName = System.IO.Path.GetFileName(physicalFile.OriginalPath);
 
             _watcher = new FileSystemWatcher(folderPath, fileName)
-                       {
-                           IncludeSubdirectories = false,
-                           EnableRaisingEvents = true
-                       };
+            {
+                IncludeSubdirectories = false,
+                EnableRaisingEvents = true
+            };
 
             _watcher.Changed += OnFileChanged;
             _watcher.Deleted += OnFileDeleted;
@@ -132,12 +147,17 @@ namespace PackageExplorerViewModel
         private void ShowMessageAndDeleteFile()
         {
             PackageViewModel.UIServices.Show(
-                String.Format(CultureInfo.CurrentCulture, Resources.PhysicalFileMissing, Path),
+                string.Format(CultureInfo.CurrentCulture, Resources.PhysicalFileMissing, Path),
                 MessageLevel.Warning);
             Delete(false);
         }
 
         public override IEnumerable<IPackageFile> GetFiles()
+        {
+            yield return this;
+        }
+
+        public override IEnumerable<PackagePart> GetPackageParts()
         {
             yield return this;
         }
@@ -160,27 +180,29 @@ namespace PackageExplorerViewModel
 
         public override void Export(string rootPath)
         {
-            string fullPath = System.IO.Path.Combine(rootPath, Path);
+            var fullPath = System.IO.Path.Combine(rootPath, Path);
             if (File.Exists(fullPath))
             {
-                bool confirmed = PackageViewModel.UIServices.Confirm(
+                var confirmed = PackageViewModel.UIServices.Confirm(
                     Resources.ConfirmToReplaceFile_Title,
-                    String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullPath));
+                    string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullPath));
                 if (!confirmed)
                 {
                     return;
                 }
             }
 
-            using (FileStream stream = File.Create(fullPath))
             {
-                GetStream().CopyTo(stream);
+                using var stream = File.Create(fullPath);
+                using var packageStream = GetStream();
+                packageStream.CopyTo(stream);
             }
+            File.SetLastWriteTime(fullPath, LastWriteTime.DateTime);
         }
 
         public bool Save(string editedFilePath)
         {
-            if (!String.Equals(OriginalPath, editedFilePath, StringComparison.OrdinalIgnoreCase))
+            if (!string.Equals(OriginalPath, editedFilePath, StringComparison.OrdinalIgnoreCase))
             {
                 ReplaceWith(editedFilePath);
             }

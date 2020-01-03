@@ -3,9 +3,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:self="clr-namespace:PackageExplorer" 
-        xmlns:settings="clr-namespace:PackageExplorer.Properties"
-        xmlns:resources="clr-namespace:PackageExplorer.Resources"
-        FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}}" 
+        FontSize="{Binding FontSize, Source={StaticResource Settings}}" 
         Title="Pick Target Frameworks"
         WindowStartupLocation="CenterOwner" 
         SizeToContent="WidthAndHeight" 
@@ -40,6 +38,7 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <Grid.ColumnDefinitions>
@@ -53,26 +52,34 @@
                     <ComboBoxItem Tag="net4">.NET Framework 4 and higher</ComboBoxItem>
                     <ComboBoxItem Tag="net403">.NET Framework 4.0.3 and higher</ComboBoxItem>
                     <ComboBoxItem Tag="net45">.NET Framework 4.5 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="net451">.NET Framework 4.5.1 and higher</ComboBoxItem>
+                </ComboBox>
+
+                <!-- Windows -->
+                <CheckBox x:Name="WindowsCheckBox" Grid.Row="1" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="WindowsFx" Grid.Row="1" IsEnabled="{Binding IsChecked, ElementName=WindowsCheckBox, Mode=OneWay}">
+                    <ComboBoxItem Tag="win8">Windows 8</ComboBoxItem>
+                    <ComboBoxItem Tag="win81">Windows 8.1</ComboBoxItem>
+                </ComboBox>
+
+                <!-- Windows Phone Silverlight -->
+                <CheckBox x:Name="WPSLCheckBox" Grid.Row="2" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="WPSLFx" Grid.Row="2" IsEnabled="{Binding IsChecked, ElementName=WPSLCheckBox, Mode=OneWay}">
+                    <ComboBoxItem Tag="wp7">Windows Phone Silverlight 7 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="wp71">Windows Phone Silverlight 7.5 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="wp8">Windows Phone Silverlight 8 and higher</ComboBoxItem>
+                    <ComboBoxItem Tag="wp81">Windows Phone Silverlight 8.1 and higher</ComboBoxItem>
                 </ComboBox>
 
                 <!-- Silverlight -->
-                <CheckBox x:Name="SilverlightCheckBox" Grid.Row="1" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
-                <ComboBox x:Name="SilverlightFx" Grid.Row="1" IsEnabled="{Binding IsChecked, ElementName=SilverlightCheckBox, Mode=OneWay}">
+                <CheckBox x:Name="SilverlightCheckBox" Grid.Row="3" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
+                <ComboBox x:Name="SilverlightFx" Grid.Row="3" IsEnabled="{Binding IsChecked, ElementName=SilverlightCheckBox, Mode=OneWay}">
                     <ComboBoxItem Tag="sl4">Silverlight 4 and higher</ComboBoxItem>
                     <ComboBoxItem Tag="sl5">Silverlight 5</ComboBoxItem>
                 </ComboBox>
 
-                <!-- Windows Phone -->
-                <CheckBox x:Name="WPCheckBox" Grid.Row="2" VerticalAlignment="Center" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
-                <ComboBox x:Name="WPFx" Grid.Row="2" IsEnabled="{Binding IsChecked, ElementName=WPCheckBox, Mode=OneWay}">
-                    <ComboBoxItem Tag="wp7">Windows Phone 7 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="wp71">Windows Phone 7.5 and higher</ComboBoxItem>
-                    <ComboBoxItem Tag="wp8">Windows Phone 8</ComboBoxItem>
-                </ComboBox>
-
-                <!-- .NET for Windows Store apps -->
-                <CheckBox x:Name="WindowsCheckBox" Grid.Row="3" Grid.ColumnSpan="2"  VerticalAlignment="Center" Content=".NET for Windows Store apps" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState">
-                </CheckBox>
+                <!-- Windows Phone  -->
+                <CheckBox x:Name="WindowsPhoneCheckBox" Grid.Row="4" Grid.ColumnSpan="2"  VerticalAlignment="Center" Content="Windows Phone 8.1" Margin="0,2,0,0" Checked="EvaluateButtonEnabledState" Unchecked="EvaluateButtonEnabledState" />
             </Grid>
         </Border>
     </DockPanel>

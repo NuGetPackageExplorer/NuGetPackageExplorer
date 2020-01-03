@@ -1,0 +1,92 @@
+﻿<self:StandardDialog 
+    x:Class="PackageExplorer.ValidationResultWindow" 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+    xmlns:self="clr-namespace:PackageExplorer" 
+    xmlns:viewModel="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"
+    xmlns:NuGetSigning="clr-namespace:NuGet.Packaging.Signing;assembly=NuGet.Packaging"
+    FontSize="{Binding FontSize, Source={StaticResource Settings}}" 
+    Title="{x:Static self:Resources.Dialog_ValidationResultTitle}" 
+    ResizeMode="NoResize" 
+    WindowStartupLocation="CenterOwner" 
+    SizeToContent="WidthAndHeight"
+    ShowInTaskbar="False">
+    <self:StandardDialog.Resources>
+        <DataTemplate DataType="{x:Type viewModel:ValidationResultViewModel}" x:Key="Results">
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{x:Static self:Resources.Dialog_ValidationResult}" FontSize="12pt" Margin="0,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
+                <TextBlock Name="isValid"  FontSize="12pt" Margin="3,10,0,15" Foreground="{StaticResource TaskDialogMainInstructionBrush}" />
+                <ContentControl Width="16" Height="16" Name="icon" Margin="3,10,0,15" />
+            </StackPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Trust}" Value="Valid">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Trust}" Value="Disallowed">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Disallowed}" />
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Trust}" Value="Suspect">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Suspect}" />
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding Trust}" Value="Unknown">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Unknown}" />
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate DataType="{x:Type NuGetSigning:SignatureLog}">
+            <TextBlock Text="{Binding Message, Mode=OneWay}" />
+        </DataTemplate>
+
+    </self:StandardDialog.Resources>
+
+    <DockPanel LastChildFill="true">
+
+        <Border DockPanel.Dock="Bottom" Margin="0,30,0,0" BorderThickness="0,0.5,0,0" BorderBrush="{DynamicResource ResourceKey={x:Static SystemColors.ActiveBorderBrushKey}}" Background="{DynamicResource ResourceKey={x:Static SystemColors.ControlBrushKey}}">
+            <Button Content="OK" Padding="20,0,20,0" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="10,10,15,10" IsDefault="True" IsCancel="True" Click="Button_Click" />
+        </Border>
+
+        <StackPanel Orientation="Vertical" DockPanel.Dock="Top" Margin="15,20,15,0">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource Results}" />
+            <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <Expander IsExpanded="True"
+                              Visibility="{Binding ErrorIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <ContentPresenter Content="{StaticResource StatusSecurityCriticalIcon}" />
+                                <TextBlock Text="{x:Static self:Resources.Dialog_Errors}" Margin="3,0,0,0" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <ItemsControl ItemsSource="{Binding ErrorIssues, Mode=OneWay}" />
+                    </Expander>
+                    <Expander IsExpanded="True"
+                              Visibility="{Binding WarningIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <ContentPresenter Content="{StaticResource StatusSecurityWarningIcon}" />
+                                <TextBlock Text="{x:Static self:Resources.Dialog_Warnings}" Margin="3,0,0,0" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <ItemsControl ItemsSource="{Binding WarningIssues, Mode=OneWay}" />
+                    </Expander>
+                    <Expander IsExpanded="True"
+                              Visibility="{Binding InformationIssues.Count, Converter={StaticResource countConverter}, Mode=OneWay}">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <ContentPresenter Content="{StaticResource StatusInformationIcon}" />
+                                <TextBlock Text="{x:Static self:Resources.Dialog_Information}" Margin="3,0,0,0" />
+                            </StackPanel>
+                        </Expander.Header>
+                        <ItemsControl ItemsSource="{Binding InformationIssues, Mode=OneWay}" />
+                    </Expander>
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
+    </DockPanel>
+</self:StandardDialog>

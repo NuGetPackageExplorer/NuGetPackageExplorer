@@ -1,0 +1,7 @@
+[*.cs]
+
+# CA2007: Consider calling ConfigureAwait on the awaited task
+dotnet_diagnostic.CA2007.severity = silent
+
+# CA1801: Review unused parameters
+dotnet_diagnostic.CA1801.severity = none

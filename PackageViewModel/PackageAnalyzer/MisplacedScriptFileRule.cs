@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
-using NuGet;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
@@ -17,9 +17,9 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            foreach (IPackageFile file in package.GetFiles())
+            foreach (var file in package.GetFiles())
             {
-                string path = file.Path;
+                var path = file.Path;
                 if (!path.EndsWith(ScriptExtension, StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
@@ -31,12 +31,12 @@ namespace PackageExplorerViewModel.Rules
                 }
                 else
                 {
-                    string directory = Path.GetDirectoryName(path);
-                    string name = Path.GetFileNameWithoutExtension(path);
-                    if (!directory.Equals(ToolsFolder, StringComparison.OrdinalIgnoreCase) ||
-                        !name.Equals("install", StringComparison.OrdinalIgnoreCase) &&
-                        !name.Equals("uninstall", StringComparison.OrdinalIgnoreCase) &&
-                        !name.Equals("init", StringComparison.OrdinalIgnoreCase))
+                    var directory = Path.GetDirectoryName(path);
+                    var name = Path.GetFileNameWithoutExtension(path);
+                    if (!ToolsFolder.Equals(directory, StringComparison.OrdinalIgnoreCase) ||
+                        !"install".Equals(name, StringComparison.OrdinalIgnoreCase) &&
+                        !"uninstall".Equals(name, StringComparison.OrdinalIgnoreCase) &&
+                        !"init".Equals(name, StringComparison.OrdinalIgnoreCase))
                     {
                         yield return CreatePackageIssueForUnrecognizedScripts(path);
                     }

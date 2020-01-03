@@ -1,74 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data.Services.Client;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using NuGet;
+using NuGet.Packaging;
+using NuGet.Protocol;
+using NuGet.Protocol.Core.Types;
+using NuGetPackageExplorer.Types;
+using NuGetPe;
+using PackageExplorerViewModel.PackageSearch;
 
 namespace PackageExplorerViewModel
 {
     public sealed class PackageChooserViewModel : ViewModelBase, IDisposable
     {
-        private const int ShowLatestVersionPageSize = 15;
-        private const int PageBuffer = 30;
-        private readonly string _fixedPackageSource;
-        private int _beginPackage;
-        private CancellationTokenSource _currentCancellationTokenSource;
-        private IQueryContext<PackageInfo> _currentQuery;
-        private string _currentSearch;
-        private string _currentTypingSearch;
-        private int _endPackage;
-        private bool _hasError;
-        private bool _isEditable = true;
-        private IPackageRepository _packageRepository;
-        private MruPackageSourceManager _packageSourceManager;
-        private bool _showPrereleasePackages;
-        private bool _autoLoadPackages;
-        private string _sortColumn;
-        private ListSortDirection _sortDirection;
-        private string _statusContent;
-        private int _totalPackageCount;
-        private PackageInfoViewModel _selectedPackageViewModel;
+        private const int PackageListPageSize = 15;
 
-        public PackageChooserViewModel(
-            MruPackageSourceManager packageSourceManager,
-            bool showPrereleasePackages,
-            bool autoLoadPackages,
-            string fixedPackageSource)
+        private IQueryContext<IPackageSearchMetadata>? _currentQuery;
+        private string? _currentSearch;
+        private FeedType _feedType;
+        private MruPackageSourceManager? _packageSourceManager;
+        private readonly IUIServices _uIServices;
+        private readonly string? _defaultPackageSourceUrl;
+        private bool _disposed;
+
+        public PackageChooserViewModel(MruPackageSourceManager packageSourceManager,
+                                       IUIServices uIServices,
+                                       bool showPrereleasePackages,
+                                       string? defaultPackageSourceUrl)
         {
-            if (packageSourceManager == null)
-            {
-                throw new ArgumentNullException("packageSourceManager");
-            }
-
             _showPrereleasePackages = showPrereleasePackages;
-            _fixedPackageSource = fixedPackageSource;
-            _autoLoadPackages = autoLoadPackages;
-            Packages = new ObservableCollection<PackageInfoViewModel>();
-            SortCommand = new RelayCommand<string>(Sort, CanSort);
+            _defaultPackageSourceUrl = defaultPackageSourceUrl;
+            Packages = new ObservableCollection<object>();
+
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
             ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
-            NavigationCommand = new RelayCommand<string>(NavigationCommandExecute, NavigationCommandCanExecute);
-            LoadedCommand = new RelayCommand(async () => await Sort("VersionDownloadCount", ListSortDirection.Descending));
+            LoadMoreCommand = new RelayCommand(async () => await LoadMore(CancellationToken.None), CanLoadMore);
             ChangePackageSourceCommand = new RelayCommand<string>(ChangePackageSource);
             CancelCommand = new RelayCommand(CancelCommandExecute, CanCancelCommandExecute);
-            _packageSourceManager = packageSourceManager;
+
+            _packageSourceManager = packageSourceManager ?? throw new ArgumentNullException(nameof(packageSourceManager));
+            _uIServices = uIServices;
         }
 
-        public IPackageRepository ActiveRepository
-        {
-            get
-            {
-                return _packageRepository;
-            }
-        }
+        #region Bound Properties
 
-        public string CurrentTypingSearch
+        private string? _currentTypingSearch;
+        public string? CurrentTypingSearch
         {
             get { return _currentTypingSearch; }
             set
@@ -76,12 +56,88 @@ namespace PackageExplorerViewModel
                 if (_currentTypingSearch != value)
                 {
                     _currentTypingSearch = value;
-                    OnPropertyChanged("CurrentTypingSearch");
+                    OnPropertyChanged();
                 }
             }
         }
 
-        public PackageInfoViewModel SelectedPackageViewModel
+        private bool _showPrereleasePackages;
+        public bool ShowPrereleasePackages
+        {
+            get { return _showPrereleasePackages; }
+            set
+            {
+                if (_showPrereleasePackages != value)
+                {
+                    _showPrereleasePackages = value;
+                    OnPropertyChanged();
+
+                    OnShowPrereleasePackagesChange();
+                }
+            }
+        }
+
+        public string PackageSource
+        {
+            get
+            {
+                CheckDisposed();
+                return _defaultPackageSourceUrl ?? _packageSourceManager!.ActivePackageSource;
+            }
+            private set
+            {
+                if (_defaultPackageSourceUrl != null)
+                {
+                    throw new InvalidOperationException(
+                        "Cannot set active package source when fixed package source is used.");
+                }
+                CheckDisposed();
+                _packageSourceManager!.ActivePackageSource = value.Trim();
+                OnPropertyChanged();
+            }
+        }
+
+        public bool AllowsChangingPackageSource
+        {
+            get { return _defaultPackageSourceUrl == null; }
+        }
+
+        public ObservableCollection<string> PackageSources
+        {
+            get
+            {
+                CheckDisposed();
+                return _packageSourceManager!.PackageSources;
+            }
+        }
+
+        private bool _isEditable = true;
+        public bool IsEditable
+        {
+            get { return _isEditable; }
+            set
+            {
+                if (_isEditable != value)
+                {
+                    _isEditable = value;
+                    OnPropertyChanged();
+
+                    if (_isEditable)
+                    {
+                        Packages.Remove(this);
+                    }
+                    else
+                    {
+                        Packages.Add(this);
+                    }
+                }
+            }
+        }
+
+        public ObservableCollection<object> Packages { get; private set; }
+
+        private PackageInfoViewModel? _selectedPackageViewModel;
+        public PackageInfoViewModel? SelectedPackageViewModel
         {
             get { return _selectedPackageViewModel; }
             set
@@ -99,109 +155,48 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public PackageInfo SelectedPackage
+        private string? _statusContent;
+        public string? StatusContent
         {
-            get
-            {
-                return _selectedPackageViewModel == null ? null : _selectedPackageViewModel.EffectiveSelectedPackage;
-            }
-        }
-
-        public string SortColumn
-        {
-            get { return _sortColumn; }
-
+            get { return _statusContent; }
             set
             {
-                if (_sortColumn != value)
+                if (_statusContent != value)
                 {
-                    _sortColumn = value;
-                    OnPropertyChanged("SortColumn");
-                }
-            }
-        }
-
-        public ListSortDirection SortDirection
-        {
-            get { return _sortDirection; }
-            set
-            {
-                // IMPORTANT: must NOT check if (_sortDirection != value) here.
-                // We want SortDirection property change event to raise even in that case so that
-                // the UI can redraw the sort glyph when SortColumn property chagnes.
-                _sortDirection = value;
-                OnPropertyChanged("SortDirection");
-            }
-        }
-
-        public bool IsEditable
-        {
-            get { return _isEditable; }
-            set
-            {
-                if (_isEditable != value)
-                {
-                    _isEditable = value;
-                    OnPropertyChanged("IsEditable");
-                    NavigationCommand.RaiseCanExecuteChanged();
-                }
-            }
-        }
-
-        public bool ShowPrereleasePackages
-        {
-            get { return _showPrereleasePackages; }
-            set
-            {
-                if (_showPrereleasePackages != value)
-                {
-                    _showPrereleasePackages = value;
-                    OnPropertyChanged("ShowPrereleasePackages");
-
-                    OnShowPrereleasePackagesChange();
-                }
-            }
-        }
-
-        public bool AutoLoadPackages
-        {
-            get { return _autoLoadPackages; }
-            set
-            {
-                if (_autoLoadPackages != value)
-                {
-                    _autoLoadPackages = value;
+                    _statusContent = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public ObservableCollection<string> PackageSources
+        private bool _hasError;
+        public bool HasError
         {
-            get { return _packageSourceManager.PackageSources; }
-        }
-
-        public bool AllowsChangingPackageSource
-        {
-            get { return _fixedPackageSource == null; }
-        }
-
-        public string PackageSource
-        {
-            get { return _fixedPackageSource ?? _packageSourceManager.ActivePackageSource; }
-            private set
+            get { return _hasError; }
+            set
             {
-                if (_fixedPackageSource != null)
+                if (_hasError != value)
                 {
-                    throw new InvalidOperationException(
-                        "Cannot set active package source when fixed package source is used.");
+                    _hasError = value;
+                    OnPropertyChanged();
                 }
-                _packageSourceManager.ActivePackageSource = value;
-                OnPropertyChanged("PackageSource");
             }
         }
 
-        private CancellationTokenSource CurrentCancellationTokenSource
+        #endregion
+
+        public SourceRepository? ActiveRepository { get; private set; }
+
+        public PackageInfo? SelectedPackage
+        {
+            get
+            {
+                return _selectedPackageViewModel?.SelectedPackage;
+            }
+        }
+
+        private CancellationTokenSource? _currentCancellationTokenSource;
+        private CancellationTokenSource? CurrentCancellationTokenSource
         {
             get { return _currentCancellationTokenSource; }
             set
@@ -211,78 +206,9 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public int TotalPackageCount
-        {
-            get { return _totalPackageCount; }
-            private set
-            {
-                if (_totalPackageCount != value)
-                {
-                    _totalPackageCount = value;
-                    OnPropertyChanged("TotalPackageCount");
-                }
-            }
-        }
-
-        public int BeginPackage
-        {
-            get { return _beginPackage; }
-            private set
-            {
-                if (_beginPackage != value)
-                {
-                    _beginPackage = value;
-                    OnPropertyChanged("BeginPackage");
-                }
-            }
-        }
-
-        public int EndPackage
-        {
-            get { return _endPackage; }
-            private set
-            {
-                if (_endPackage != value)
-                {
-                    _endPackage = value;
-                    OnPropertyChanged("EndPackage");
-                }
-            }
-        }
-
-        public string StatusContent
-        {
-            get { return _statusContent; }
-            set
-            {
-                if (_statusContent != value)
-                {
-                    _statusContent = value;
-                    OnPropertyChanged("StatusContent");
-                }
-            }
-        }
-
-        public bool HasError
-        {
-            get { return _hasError; }
-            set
-            {
-                if (_hasError != value)
-                {
-                    _hasError = value;
-                    OnPropertyChanged("HasError");
-                }
-            }
-        }
-
-        public ObservableCollection<PackageInfoViewModel> Packages { get; private set; }
-
-        public RelayCommand<string> NavigationCommand { get; private set; }
-        public ICommand SortCommand { get; private set; }
         public ICommand SearchCommand { get; private set; }
         public ICommand ClearSearchCommand { get; private set; }
-        public ICommand LoadedCommand { get; private set; }
+        public ICommand LoadMoreCommand { get; private set; }
         public ICommand ChangePackageSourceCommand { get; private set; }
         public RelayCommand CancelCommand { get; private set; }
 
@@ -290,235 +216,123 @@ namespace PackageExplorerViewModel
         public event EventHandler OpenPackageRequested = delegate { };
         public event EventHandler PackageDownloadRequested = delegate { };
 
-        private async void OnShowPrereleasePackagesChange()
+        private readonly PackageListCache<IPackageSearchMetadata> _packageListCache = new PackageListCache<IPackageSearchMetadata>();
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"),
+         System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        private async Task LoadPackages()
         {
-            await Sort(SortColumn, SortDirection);
+            Packages.Clear();
+            IsEditable = false;
+            SelectedPackageViewModel = null;
+
+            var usedTokenSource = new CancellationTokenSource();
+            CurrentCancellationTokenSource = usedTokenSource;
+
+            var repository = GetPackageRepository();
+
+            _currentQuery = new ShowLatestVersionQueryContext<IPackageSearchMetadata>(repository, _currentSearch, ShowPrereleasePackages, PackageListPageSize, _packageListCache);
+            _feedType = await repository.GetFeedType(usedTokenSource.Token);
+
+            await LoadMore(usedTokenSource.Token);
+
+            LoadPackagesCompleted(this, EventArgs.Empty);
         }
 
-        private IPackageRepository GetPackageRepository()
+        private SourceRepository GetPackageRepository()
         {
-            if (_packageRepository == null)
+            if (ActiveRepository == null)
             {
-                _packageRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+                _feedType = FeedType.Undefined;
+                try
+                {
+                    ActiveRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+                }
+                catch (ArgumentException)
+                {
+                    var origSource = PackageSource;
+                    PackageSource = _defaultPackageSourceUrl ?? NuGetConstants.DefaultFeedUrl;
+                    ActiveRepository = PackageRepositoryFactory.CreateRepository(PackageSource);
+
+                    _uIServices.Show($"Package Source '{origSource}' is not valid. Defaulting to '{NuGetConstants.DefaultFeedUrl}", MessageLevel.Error);
+                }
             }
 
-            return _packageRepository;
+            return ActiveRepository;
         }
 
-        private void ResetPackageRepository()
-        {
-            _packageRepository = null;
-        }
+        private bool CanLoadMore() => IsEditable && _currentQuery?.HasMore == true;
 
-        internal async Task LoadPage(CancellationToken token)
+        private async Task LoadMore(CancellationToken token)
         {
             Debug.Assert(_currentQuery != null);
 
             IsEditable = false;
-            //ShowMessage(Resources.LoadingMessage, false);
-            ClearPackages(isErrorCase: false);
 
+            var usedTokenSource = CurrentCancellationTokenSource;
             if (token == CancellationToken.None)
             {
-                CurrentCancellationTokenSource = new CancellationTokenSource();
-                token = CurrentCancellationTokenSource.Token;
+                usedTokenSource = new CancellationTokenSource();
+                token = usedTokenSource.Token;
+                CurrentCancellationTokenSource = usedTokenSource;
             }
-
-            CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
 
             try
             {
-                IList<PackageInfo> packageInfos = await QueryPackages(token);
+                var packageInfos = await _currentQuery.LoadMore(token);
 
                 if (usedTokenSource != CurrentCancellationTokenSource)
                 {
-                    // this mean this request has already been canceled. No need to process this request anymore.
+                    // This request has already been canceled. No need to process this request anymore.
                     return;
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 ClearMessage();
-                ShowPackages(packageInfos, _currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
+
+                var firstLoad = !Packages.OfType<PackageInfoViewModel>().Any();
+                var repository = GetPackageRepository();
+                Packages.AddRange(packageInfos.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, repository, _feedType, this)));
+
+                if (firstLoad)
+                {
+                    SelectedPackageViewModel = Packages.OfType<PackageInfoViewModel>().FirstOrDefault();
+                }
             }
             catch (OperationCanceledException)
             {
                 if (usedTokenSource != CurrentCancellationTokenSource)
                 {
-                    // this mean this request has already been canceled. No need to process this request anymore.
+                    // This request has already been canceled. No need to process this request anymore.
                     return;
                 }
 
                 ClearMessage();
-                UpdatePageNumber(_currentQuery.TotalItemCount, _currentQuery.BeginPackage, _currentQuery.EndPackage);
             }
             catch (Exception exception)
             {
                 if (usedTokenSource != CurrentCancellationTokenSource)
                 {
-                    // this mean this request has already been canceled. No need to process this request anymore.
+                    // This request has already been canceled. No need to process this request anymore.
                     return;
                 }
 
-                string errorMessage = exception.Message;
+                DiagnosticsClient.TrackException(exception);
 
-                var queryException = exception as DataServiceQueryException;
-                if (queryException != null && queryException.Response != null)
-                {
-                    errorMessage = errorMessage + ". The remote server returned status code: " + queryException.Response.StatusCode + ".";
-                }
-                
+                var errorMessage = exception.Message;
+
                 ShowMessage(errorMessage, true);
-                ClearPackages(isErrorCase: true);
             }
 
-            RestoreUI();
+            IsEditable = true;
+            CurrentCancellationTokenSource = null;
         }
 
-        private async Task<IList<PackageInfo>> QueryPackages(CancellationToken token)
-        {
-            IList<PackageInfo> result = await _currentQuery.GetItemsForCurrentPage(token);
-
-            IPackageRepository repository = GetPackageRepository();
-
-            // this is the only way we can the download uri for each data service package
-            var dataServiceRepository = repository as DataServicePackageRepository;
-            if (dataServiceRepository != null)
-            {
-                foreach (PackageInfo entity in result)
-                {
-                    entity.DownloadUrl = dataServiceRepository.GetReadStreamUri(entity);
-                }
-            }
-
-            token.ThrowIfCancellationRequested();
-            return result;
-        }
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private Task LoadPackages()
-        {
-            IsEditable = false;
-            ClearPackages(isErrorCase: true);
-
-            CurrentCancellationTokenSource = new CancellationTokenSource();
-            CancellationTokenSource usedTokenSource = CurrentCancellationTokenSource;
-
-            IPackageRepository repository = GetPackageRepository();
-
-            IQueryable<IPackage> query = null;
-
-            // special case for searching
-            if (!String.IsNullOrEmpty(_currentSearch))
-            {
-                var searchableRepository = repository as IPackageSearchable;
-                if (searchableRepository != null)
-                {
-                    query = searchableRepository.Search(_currentSearch, ShowPrereleasePackages);
-                }
-            }
-
-            if (query == null)
-            {
-                try
-                {
-                    query = repository.GetPackages();
-                }
-                catch (Exception error)
-                {
-                    // only show error if user hasn't canceled this request
-                    if (usedTokenSource == CurrentCancellationTokenSource)
-                    {
-                        ShowMessage(error.Message, isError: true);
-                        RestoreUI();
-                    }
-                    return Task.FromResult(0);
-                }
-
-                if (!String.IsNullOrEmpty(_currentSearch))
-                {
-                    query = query.Search(_currentSearch);
-                }
-            }
-
-            switch (SortColumn)
-            {
-                case "Id":
-                    query = SortDirection == ListSortDirection.Descending
-                                ? query.OrderByDescending(p => p.Id)
-                                : query.OrderBy(p => p.Id);
-                    break;
-
-                case "VersionDownloadCount":
-                    query = SortDirection == ListSortDirection.Descending
-                                ? query.OrderByDescending(p => p.DownloadCount)
-                                : query.OrderBy(p => p.DownloadCount);
-                    break;
-
-                case "PackageSize":
-                    query = SortDirection == ListSortDirection.Descending
-                                ? query.OrderByDescending(p => p.PackageSize)
-                                : query.OrderBy(p => p.PackageSize);
-                    break;
-
-                default:
-                    query = query.OrderByDescending(p => p.DownloadCount);
-                    break;
-            }
-
-            IQueryable<PackageInfo> packageInfos = GetPackageInfos(query, repository, showPrerelease: ShowPrereleasePackages);
-            _currentQuery = new ShowLatestVersionQueryContext<PackageInfo>(packageInfos, ShowLatestVersionPageSize);
-
-            return LoadPage(CurrentCancellationTokenSource.Token);
-        }
-
-        private static IQueryable<PackageInfo> GetPackageInfos(IQueryable<IPackage> query, IPackageRepository repository, bool showPrerelease)
-        {
-            if (repository is DataServicePackageRepository)
-            {
-                if (showPrerelease)
-                {
-                    query = query.Where(p => p.IsAbsoluteLatestVersion);
-                }
-                else
-                {
-                    query = query.Where(p => p.IsLatestVersion);
-                }
-
-                return query.Cast<DataServicePackage>().Select(p => new PackageInfo
-                                                        {
-                                                            Id = p.Id,
-                                                            Version = p.Version,
-                                                            Authors = p.Authors,
-                                                            DownloadCount = p.DownloadCount,
-                                                            VersionDownloadCount = p.VersionDownloadCount,
-                                                            PackageHash = p.PackageHash,
-                                                            PackageSize = p.PackageSize,
-                                                            Published = p.Published
-                                                        });
-            }
-            else
-            {
-                query = query.GroupBy(p => p.Id, StringComparer.OrdinalIgnoreCase)
-                             .Select(g => g.OrderByDescending(p => p.Version)
-                             .First());
-
-                return query.Cast<ZipPackage>().Select(p => new PackageInfo
-                                                    {
-                                                        Id = p.Id,
-                                                        Version = p.Version.ToString(),
-                                                        Authors = String.Join(", ", p.Authors),
-                                                        DownloadCount = p.DownloadCount,
-                                                        VersionDownloadCount = p.VersionDownloadCount,
-                                                        PackageHash = p.PackageHash,
-                                                        PackageSize = p.PackageSize,
-                                                        DownloadUrl = new Uri(p.Source),
-                                                        Published = p.Published,
-                                                    });
-            }
-        }
-
+        #region Search
         private async void Search(string searchTerm)
         {
-            searchTerm = searchTerm ?? CurrentTypingSearch ?? String.Empty;
+            searchTerm ??= CurrentTypingSearch ?? string.Empty;
             searchTerm = searchTerm.Trim();
             if (_currentSearch != searchTerm)
             {
@@ -530,100 +344,59 @@ namespace PackageExplorerViewModel
 
         private bool CanSearch(string searchTerm)
         {
-            return IsEditable && !String.IsNullOrEmpty(searchTerm);
+            return IsEditable && !string.IsNullOrEmpty(searchTerm);
         }
 
         private async void ClearSearch()
         {
-            CurrentTypingSearch = _currentSearch = String.Empty;
+            CurrentTypingSearch = _currentSearch = string.Empty;
             await LoadPackages();
         }
 
         private bool CanClearSearch()
         {
-            return IsEditable && !String.IsNullOrEmpty(_currentSearch);
+            return IsEditable && !string.IsNullOrEmpty(_currentSearch);
         }
-
-        private async void Sort(string column)
-        {
-            if (column == "Version" || column == "Authors")
-            {
-                return;
-            }
-
-            await Sort(column, null);
-        }
-
-        private bool CanSort(string column)
-        {
-            return TotalPackageCount > 0;
-        }
-
-        private Task Sort(string column, ListSortDirection? direction)
-        {
-            if (SortColumn == column)
-            {
-                if (direction.HasValue)
-                {
-                    SortDirection = direction.Value;
-                }
-                else
-                {
-                    SortDirection = SortDirection == ListSortDirection.Ascending
-                                        ? ListSortDirection.Descending
-                                        : ListSortDirection.Ascending;
-                }
-            }
-            else
-            {
-                SortColumn = column;
-                SortDirection = direction ?? ListSortDirection.Ascending;
-            }
-
-            return LoadPackages();
-        }
+        #endregion
 
         private async void ChangePackageSource(string source)
         {
             if (PackageSource != source)
             {
-                // add the new source to MRU list
-                _packageSourceManager.NotifyPackageSourceAdded(source);
+                DiagnosticsClient.TrackEvent("PackageChooserViewModel_ChangePackageSource");
+
+                CheckDisposed();
+
+
                 PackageSource = source;
 
-                ResetPackageRepository();
-                await LoadPackages();
+                ActiveRepository = null;
+                try
+                {
+                    await LoadPackages();
+
+                    // add the new source to MRU list, after the load succeeds, in case there's an error with the source
+                    _packageSourceManager!.NotifyPackageSourceAdded(source);
+                }
+                catch (Exception e)
+                {
+                    _uIServices.Show(e.Message, MessageLevel.Error);
+                }
             }
             else
             {
-                await LoadPackages();
+                try
+                {
+                    await LoadPackages();
+                }
+                catch (Exception e)
+                {
+                    _uIServices.Show(e.Message, MessageLevel.Error);
+                }
             }
         }
 
-        private void UpdatePageNumber(int totalPackageCount, int beginPackage, int endPackage)
-        {
-            TotalPackageCount = totalPackageCount;
-            BeginPackage = beginPackage;
-            EndPackage = endPackage;
-        }
-
-        private void ClearPackages(bool isErrorCase)
-        {
-            Packages.Clear();
-            if (isErrorCase)
-            {
-                UpdatePageNumber(0, 0, 0);
-            }
-        }
-
-        private void ShowPackages(
-            IEnumerable<PackageInfo> packages, int totalPackageCount, int beginPackage, int endPackage)
-        {
-            Packages.Clear();
-            Packages.AddRange(packages.Select(p => new PackageInfoViewModel(p, ShowPrereleasePackages, _packageRepository, this)));
-            UpdatePageNumber(totalPackageCount, beginPackage, endPackage);
-        }
-
+        #region Status Bar
         private void ShowMessage(string message, bool isError)
         {
             StatusContent = message;
@@ -632,28 +405,26 @@ namespace PackageExplorerViewModel
 
         private void ClearMessage()
         {
-            ShowMessage(String.Empty, isError: false);
+            ShowMessage(string.Empty, isError: false);
         }
+        #endregion
 
-        public void OnAfterShow()
+        private async void OnShowPrereleasePackagesChange()
         {
-            CurrentTypingSearch = _currentSearch;
-        }
+            DiagnosticsClient.TrackEvent("PackageChooserViewModel_OnShowPrereleasePackagesChange");
 
-        private void RestoreUI()
-        {
-            IsEditable = true;
-            CurrentCancellationTokenSource = null;
-            LoadPackagesCompleted(this, EventArgs.Empty);
+            await LoadPackages();
         }
 
         internal void OnOpenPackage()
         {
+            DiagnosticsClient.TrackEvent("PackageChooserViewModel_OnOpenPackage");
             OpenPackageRequested(this, EventArgs.Empty);
         }
 
         internal void OnDownloadPackage()
         {
+            DiagnosticsClient.TrackEvent("PackageChooserViewModel_OnDownloadPackage");
             PackageDownloadRequested(this, EventArgs.Empty);
         }
 
@@ -676,117 +447,6 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-        #region NavigationCommand
-
-        private bool NavigationCommandCanExecute(string action)
-        {
-            if (!IsEditable)
-            {
-                return false;
-            }
-
-            switch (action)
-            {
-                case "First":
-                    return CanMoveFirst();
-
-                case "Previous":
-                    return CanMovePrevious();
-
-                case "Next":
-                    return CanMoveNext();
-
-                case "Last":
-                    return CanMoveLast();
-
-                default:
-                    throw new ArgumentOutOfRangeException("action");
-            }
-        }
-
-        private async void NavigationCommandExecute(string action)
-        {
-            switch (action)
-            {
-                case "First":
-                    await MoveFirst();
-                    break;
-
-                case "Previous":
-                    await MovePrevious();
-                    break;
-
-                case "Next":
-                    await MoveNext();
-                    break;
-
-                case "Last":
-                    await MoveLast();
-                    break;
-            }
-        }
-
-        private Task MoveLast()
-        {
-            bool canMoveLast = _currentQuery.MoveLast();
-            if (canMoveLast)
-            {
-                return LoadPage(CancellationToken.None);
-            }
-
-            return Task.FromResult(0);
-        }
-
-        private Task MoveNext()
-        {
-            bool canMoveNext = _currentQuery.MoveNext();
-            if (canMoveNext)
-            {
-                return LoadPage(CancellationToken.None);
-            }
-
-            return Task.FromResult(0);
-        }
-
-        private Task MovePrevious()
-        {
-            bool canMovePrevious = _currentQuery.MovePrevious();
-            if (canMovePrevious)
-            {
-                return LoadPage(CancellationToken.None);
-            }
-
-            return Task.FromResult(0);
-        }
-
-        private Task MoveFirst()
-        {
-            _currentQuery.MoveFirst();
-            return LoadPage(CancellationToken.None);
-        }
-
-        private bool CanMoveLast()
-        {
-            return EndPackage < TotalPackageCount;
-        }
-
-        private bool CanMoveNext()
-        {
-            return EndPackage < TotalPackageCount;
-        }
-
-        private bool CanMovePrevious()
-        {
-            return BeginPackage > 1;
-        }
-
-        private bool CanMoveFirst()
-        {
-            return BeginPackage > 1;
-        }
-
-        #endregion
-
         public void Dispose()
         {
             if (_packageSourceManager != null)
@@ -795,10 +455,13 @@ namespace PackageExplorerViewModel
                 _packageSourceManager = null;
             }
 
-            if (CurrentCancellationTokenSource != null)
-            {
-                CurrentCancellationTokenSource.Dispose();
-            }
+            _disposed = true;
+            CurrentCancellationTokenSource?.Dispose();
+        }
+
+        private void CheckDisposed()
+        {
+            if (_disposed) throw new ObjectDisposedException(nameof(PackageChooserViewModel));
         }
     }
 }

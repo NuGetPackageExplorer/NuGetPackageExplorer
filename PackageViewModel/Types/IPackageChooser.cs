@@ -1,11 +1,14 @@
 ﻿using System;
-using NuGet;
+using NuGet.Protocol.Core.Types;
+using NuGetPe;
 
 namespace NuGetPackageExplorer.Types
 {
     public interface IPackageChooser : IDisposable
     {
-        PackageInfo SelectPackage(string searchTerm);
-        PackageInfo SelectPluginPackage();
+        SourceRepository? Repository { get; }
+        PackageInfo? SelectPackage(string? searchTerm);
+        SourceRepository? PluginRepository { get; }
+        PackageInfo? SelectPluginPackage();
     }
 }

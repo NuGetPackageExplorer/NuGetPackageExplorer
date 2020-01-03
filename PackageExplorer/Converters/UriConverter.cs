@@ -7,25 +7,22 @@ namespace PackageExplorer
 {
     public class UriConverter : IValueConverter
     {
-        #region IValueConverter Members
-
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var uri = (Uri) value;
-            return uri == null ? null : uri.ToString();
+            var uri = (Uri)value;
+            return uri?.ToString();
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var stringValue = (string) value;
-            if (String.IsNullOrEmpty(stringValue))
+            var stringValue = (string)value;
+            if (string.IsNullOrEmpty(stringValue))
             {
                 return null;
             }
             else
             {
-                Uri uri;
-                if (Uri.TryCreate(stringValue, UriKind.Absolute, out uri))
+                if (Uri.TryCreate(stringValue, UriKind.Absolute, out var uri))
                 {
                     return uri;
                 }
@@ -35,7 +32,5 @@ namespace PackageExplorer
                 }
             }
         }
-
-        #endregion
     }
 }

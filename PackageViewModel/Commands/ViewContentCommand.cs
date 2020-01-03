@@ -5,7 +5,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+using AuthenticodeExaminer;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
+using PackageExplorerViewModel.Utilities;
 
 namespace PackageExplorerViewModel
 {
@@ -39,16 +42,30 @@ namespace PackageExplorerViewModel
 
         public void Execute(object parameter)
         {
+            DiagnosticsClient.TrackEvent("ViewContentCommand");
+
             if ("Hide".Equals(parameter))
             {
                 ViewModel.ShowContentViewer = false;
             }
             else
             {
-                var file = (parameter ?? ViewModel.SelectedItem) as PackageFile;
-                if (file != null)
+                if ((parameter ?? ViewModel.SelectedItem) is PackageFile file)
                 {
-                    ShowFile(file);
+                    try
+                    {
+                        ShowFile(file);
+                    }
+                    catch (Exception e)
+                    {
+                        if (!(e is IOException))
+                        {
+                            DiagnosticsClient.TrackException(e);
+                        }
+
+                        ViewModel.UIServices.Show(e.Message, MessageLevel.Error);
+                    }
+
                 }
             }
         }
@@ -66,37 +83,36 @@ namespace PackageExplorerViewModel
             Justification = "We don't want plugin to crash the app.")]
         private void ShowFile(PackageFile file)
         {
-            long size = -1;
-            object content = null;
-            bool isBinary = false;
+            object? content = null;
+            var isBinary = false;
 
             // find all plugins which can handle this file's extension
-            IEnumerable<IPackageContentViewer> contentViewers = FindContentViewer(file);
+            var contentViewers = FindContentViewer(file);
             if (contentViewers != null)
             {
                 isBinary = true;
                 try
                 {
                     // iterate over all plugins, looking for the first one that return non-null content
-                    foreach (IPackageContentViewer viewer in contentViewers)
+                    foreach (var viewer in contentViewers)
                     {
-                        using (Stream stream = file.GetStream())
+
+                        // Get peer files
+                        var peerFiles = file.Parent!.GetFiles()
+                                            .Select(pf => new PackageFile(pf, Path.GetFileName(pf.Path)!, file.Parent!))
+                                            .ToList();
+
+                        content = viewer.GetView(file, peerFiles);
+                        if (content != null)
                         {
-                            if (size == -1)
-                            {
-                                size = stream.Length;
-                            }
-                            content = viewer.GetView(Path.GetExtension(file.Name), stream);
-                            if (content != null)
-                            {
-                                // found a plugin that can read this file, stop
-                                break;
-                            }
+                            // found a plugin that can read this file, stop
+                            break;
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (!(ex is FileNotFoundException))
                 {
+                    DiagnosticsClient.TrackException(ex);
                     // don't let plugin crash the app
                     content = Resources.PluginFailToReadContent + Environment.NewLine + ex.ToString();
                 }
@@ -108,25 +124,32 @@ namespace PackageExplorerViewModel
             }
 
             // if plugins fail to read this file, fall back to the default viewer
+            var truncated = false;
             if (content == null)
             {
                 isBinary = FileHelper.IsBinaryFile(file.Name);
                 if (isBinary)
                 {
-                    // don't calculate the size again if we already have it
-                    if (size == -1)
-                    {
-                        using (Stream stream = file.GetStream())
-                        {
-                            size = stream.Length;
-                        }
-                    }
                     content = Resources.UnsupportedFormatMessage;
                 }
                 else
                 {
-                    content = ReadFileContent(file, out size);
+                    content = ReadFileContent(file, out truncated);
                 }
+            }
+
+            long size = -1;
+            IReadOnlyList<AuthenticodeSignature> sigs;
+            SignatureCheckResult isValidSig;
+            using (var str = file.GetStream())
+            using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Name)))
+            {
+                var extractor = new FileInspector(tempFile.FileName);
+
+                sigs = extractor.GetSignatures().ToList();
+                isValidSig = extractor.Validate();
+
+                size = tempFile.Length;
             }
 
             var fileInfo = new FileContentInfo(
@@ -134,54 +157,45 @@ namespace PackageExplorerViewModel
                 file.Path,
                 content,
                 !isBinary,
-                size);
+                size,
+                truncated,
+                sigs,
+                isValidSig);
 
             ViewModel.ShowFile(fileInfo);
         }
 
         private IEnumerable<IPackageContentViewer> FindContentViewer(PackageFile file)
         {
-            string extension = Path.GetExtension(file.Name);
+            var extension = Path.GetExtension(file.Name);
+
             return from p in ViewModel.ContentViewerMetadata
+                   where AppCompat.IsWindows10S ? p.Metadata.SupportsWindows10S : true // Filter out incompatible addins on 10s
                    where p.Metadata.SupportedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase)
                    orderby p.Metadata.Priority
                    select p.Value;
         }
 
-        private static string ReadFileContent(PackageFile file, out long size)
+
+        private static string ReadFileContent(PackageFile file, out bool truncated)
         {
-            const int MaxLengthToOpen = 10*1024; // limit to 10K 
-            const int BufferSize = 2*1024;
-            var buffer = new char[BufferSize]; // read 2K at a time
-
+            var buffer = new char[1024 * 32];
+            truncated = false;
+            using var stream = file.GetStream();
+            using var reader = new StreamReader(stream);
+            // Read 500 kb
+            const int maxBytes = 500 * 1024;
             var sb = new StringBuilder();
-            Stream stream = file.GetStream();
-            size = stream.Length;
-            using (var reader = new StreamReader(stream))
+
+            int bytesRead;
+
+            while ((bytesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
             {
-                while (sb.Length < MaxLengthToOpen)
+                sb.Append(buffer, 0, bytesRead);
+                if (sb.Length >= maxBytes)
                 {
-                    int bytesRead = reader.Read(buffer, 0, BufferSize);
-                    if (bytesRead == 0)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        sb.Append(new string(buffer, 0, bytesRead));
-                    }
-                }
-
-                // if not reaching the end of the stream yet, append the text "Truncating..."
-                if (reader.Peek() > -1)
-                {
-                    // continue reading the rest of the current line to avoid dangling line
-                    sb.AppendLine(reader.ReadLine());
-
-                    if (reader.Peek() > -1)
-                    {
-                        sb.AppendLine().AppendLine("*** The rest of the content is truncated. ***");
-                    }
+                    truncated = true;
+                    break;
                 }
             }
 

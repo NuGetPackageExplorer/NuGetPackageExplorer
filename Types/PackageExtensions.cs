@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using NuGet;
+using NuGetPe;
 
 namespace NuGetPackageExplorer.Types
 {
@@ -12,21 +12,23 @@ namespace NuGetPackageExplorer.Types
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "InFolder")]
         public static IEnumerable<string> GetFilesInFolder(this IPackage package, string folder)
         {
+            if (package is null)
+                throw new ArgumentNullException(nameof(package));
             if (folder == null)
             {
-                throw new ArgumentNullException("folder");
+                throw new ArgumentNullException(nameof(folder));
             }
 
-            if (String.IsNullOrEmpty(folder))
+            if (string.IsNullOrEmpty(folder))
             {
                 // return files at the root
                 return from s in package.GetFiles()
-                       where s.Path.IndexOf(Path.DirectorySeparatorChar) == -1
+                       where s.Path.IndexOf(Path.DirectorySeparatorChar, StringComparison.Ordinal) == -1
                        select s.Path;
             }
             else
             {
-                string prefix = folder + Path.DirectorySeparatorChar;
+                var prefix = folder + Path.DirectorySeparatorChar;
                 return from s in package.GetFiles()
                        where s.Path.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
                        select s.Path;
@@ -35,7 +37,7 @@ namespace NuGetPackageExplorer.Types
 
         public static IEnumerable<string> GetFilesUnderRoot(this IPackage package)
         {
-            return GetFilesInFolder(package, String.Empty);
+            return GetFilesInFolder(package, string.Empty);
         }
     }
 }

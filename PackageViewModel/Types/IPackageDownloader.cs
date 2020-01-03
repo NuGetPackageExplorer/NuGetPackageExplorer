@@ -1,12 +1,13 @@
-﻿using System;
-using System.Threading.Tasks;
-using NuGet;
+﻿using System.Threading.Tasks;
+using NuGet.Packaging.Core;
+using NuGet.Protocol.Core.Types;
+using NuGetPe;
 
 namespace NuGetPackageExplorer.Types
 {
-    public interface IPackageDownloader
+    public interface INuGetPackageDownloader
     {
-        Task<IPackage> Download(Uri downloadUri, string packageId, string packageVersion);
-        Task Download(string targetFilePath, Uri downloadUri, string packageId, string packageVersion);
+        Task<ISignaturePackage?> Download(SourceRepository sourceRepository, PackageIdentity packageIdentity);
+        Task Download(string targetFilePath, SourceRepository sourceRepository, PackageIdentity packageIdentity);
     }
 }

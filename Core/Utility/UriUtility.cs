@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.IO.Packaging;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal static class UriUtility
     {
@@ -11,7 +11,7 @@ namespace NuGet
         /// </summary>
         internal static string GetPath(Uri uri)
         {
-            string path = uri.OriginalString;
+            var path = uri.OriginalString;
             if (path.StartsWith("/", StringComparison.Ordinal))
             {
                 path = path.Substring(1);

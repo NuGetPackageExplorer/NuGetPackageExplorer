@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace NuGet
+namespace NuGetPe
 {
     public sealed class PackageInfoEqualityComparer : IEqualityComparer<PackageInfo>
     {
@@ -31,7 +31,7 @@ namespace NuGet
 
         public int GetHashCode(PackageInfo obj)
         {
-            return obj.Id.GetHashCode();
+            return obj?.Id.GetHashCode(StringComparison.OrdinalIgnoreCase) ?? 0;
         }
 
         #endregion

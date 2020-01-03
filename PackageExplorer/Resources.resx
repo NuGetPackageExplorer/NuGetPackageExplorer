@@ -129,20 +129,32 @@
   <data name="Dialog_DownloadingPackage" xml:space="preserve">
     <value>Downloading package {0} {1}</value>
   </data>
+  <data name="Dialog_Errors" xml:space="preserve">
+    <value>Errors</value>
+  </data>
   <data name="Dialog_FrameworkAssembliesLabel" xml:space="preserve">
     <value>Framework Assembly References:</value>
   </data>
-  <data name="Dialog_HelpAbout" xml:space="preserve">
-    <value>Author: Luan Nguyen (@dotnetjunky). For more information, visit http://nuget.codeplex.com.</value>
-  </data>
   <data name="Dialog_IdLabel" xml:space="preserve">
     <value>Id:</value>
+  </data>
+  <data name="Dialog_Information" xml:space="preserve">
+    <value>Information</value>
   </data>
   <data name="Dialog_InvalidPackageUrl" xml:space="preserve">
     <value>The package URL {0} is invalid and can not be opened.</value>
   </data>
   <data name="Dialog_LanguageLabel" xml:space="preserve">
     <value>Language:</value>
+  </data>
+  <data name="Dialog_LicenceMeta" xml:space="preserve">
+    <value>License Meta:</value>
+  </data>
+  <data name="Dialog_LicenseExpression" xml:space="preserve">
+    <value>Expression:</value>
+  </data>
+  <data name="Dialog_LicenseExpressionVersion" xml:space="preserve">
+    <value>Expression Version:</value>
   </data>
   <data name="Dialog_MinVersionLabel" xml:space="preserve">
     <value>Min client version:</value>
@@ -154,13 +166,31 @@
     <value>No Dependencies</value>
   </data>
   <data name="Dialog_OpenFileFilter" xml:space="preserve">
-    <value>All supported files|*.nupkg;*.nuspec|NuGet package file (*.nupkg)|*.nupkg|NuSpec file (*.nuspec)|*.nuspec</value>
+    <value>All supported files|*.nupkg;*.snupkg;*.nuspec|NuGet package file (*.nupkg)|*.nupkg|NuGet Symbols package file (*.snupkg)|*.snupkg|NuSpec file (*.nuspec)|*.nuspec</value>
   </data>
   <data name="Dialog_OwnersLabel" xml:space="preserve">
     <value>Owners:</value>
   </data>
+  <data name="Dialog_PublisherLabel" xml:space="preserve">
+    <value>Publisher:</value>
+  </data>
   <data name="Dialog_ReportAbuse" xml:space="preserve">
     <value>Report Abuse</value>
+  </data>
+  <data name="Dialog_RepositoryBranch" xml:space="preserve">
+    <value>Branch:</value>
+  </data>
+  <data name="Dialog_RepositoryCommit" xml:space="preserve">
+    <value>Commit:</value>
+  </data>
+  <data name="Dialog_RepositoryLabel" xml:space="preserve">
+    <value>Repository:</value>
+  </data>
+  <data name="Dialog_RepositoryType" xml:space="preserve">
+    <value>Type:</value>
+  </data>
+  <data name="Dialog_RepositoryUrl" xml:space="preserve">
+    <value>Url:</value>
   </data>
   <data name="Dialog_RequireLicenseLabel" xml:space="preserve">
     <value>Requires License Acceptance:</value>
@@ -168,10 +198,19 @@
   <data name="Dialog_SaveQuestion" xml:space="preserve">
     <value>Do you want to save your changes?</value>
   </data>
+  <data name="Dialog_ServiceableLabel" xml:space="preserve">
+    <value>Serviceable:</value>
+  </data>
   <data name="Dialog_SetActivePackagePublishSource" xml:space="preserve">
     <value>The external url wants to add a publish source to NuGet Package Explorer.
 
 Do you want to add '{0}' to the list of package publish sources?</value>
+  </data>
+  <data name="Dialog_ShowDetails" xml:space="preserve">
+    <value>Show details...</value>
+  </data>
+  <data name="Dialog_SignatureValidation" xml:space="preserve">
+    <value>Signature Validation:</value>
   </data>
   <data name="Dialog_TagLabel" xml:space="preserve">
     <value>Tags:</value>
@@ -182,11 +221,20 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="Dialog_TitleLabel" xml:space="preserve">
     <value>Title:</value>
   </data>
+  <data name="Dialog_ValidationResult" xml:space="preserve">
+    <value>Validation Results:</value>
+  </data>
+  <data name="Dialog_ValidationResultTitle" xml:space="preserve">
+    <value>Package Validation Results</value>
+  </data>
   <data name="Dialog_VersionLabel" xml:space="preserve">
     <value>Version:</value>
   </data>
   <data name="Dialog_ViewLicense" xml:space="preserve">
     <value>View License Terms</value>
+  </data>
+  <data name="Dialog_Warnings" xml:space="preserve">
+    <value>Warnings</value>
   </data>
   <data name="MoveContentFileToFolder" xml:space="preserve">
     <value>Do you want to add the file '{0}' to '{1}' folder instead?</value>
@@ -200,6 +248,78 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="NoNetworkConnection" xml:space="preserve">
     <value>Network connection is not detected.</value>
   </data>
+  <data name="PackageChooser_ActionDownload" xml:space="preserve">
+    <value>download</value>
+  </data>
+  <data name="PackageChooser_ActionHideAllVersions" xml:space="preserve">
+    <value>hide all versions</value>
+  </data>
+  <data name="PackageChooser_ActionOpen" xml:space="preserve">
+    <value>open</value>
+  </data>
+  <data name="PackageChooser_ActionShowAllVersions" xml:space="preserve">
+    <value>show all versions</value>
+  </data>
+  <data name="PackageChooser_AlternatePackage" xml:space="preserve">
+    <value>Alternate Package:</value>
+  </data>
+  <data name="PackageChooser_ClearSearchButtonTooltip" xml:space="preserve">
+    <value>Clear search</value>
+  </data>
+  <data name="PackageChooser_ColumnHeaderDownloads" xml:space="preserve">
+    <value>Downloads</value>
+  </data>
+  <data name="PackageChooser_ColumnHeaderPublished" xml:space="preserve">
+    <value>Published</value>
+  </data>
+  <data name="PackageChooser_ColumnHeaderVersion" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="PackageChooser_Deprecated" xml:space="preserve">
+    <value>Deprecated:</value>
+  </data>
+  <data name="PackageChooser_DetailAuthors" xml:space="preserve">
+    <value>Author(s):</value>
+  </data>
+  <data name="PackageChooser_DetailDatePublished" xml:space="preserve">
+    <value>Date published:</value>
+  </data>
+  <data name="PackageChooser_DetailDescription" xml:space="preserve">
+    <value>Description</value>
+  </data>
+  <data name="PackageChooser_DetailLicense" xml:space="preserve">
+    <value>License:</value>
+  </data>
+  <data name="PackageChooser_DetailProjectUrl" xml:space="preserve">
+    <value>Project URL:</value>
+  </data>
+  <data name="PackageChooser_DetailReportAbuse" xml:space="preserve">
+    <value>Report Abuse:</value>
+  </data>
+  <data name="PackageChooser_DetailTags" xml:space="preserve">
+    <value>Tags:</value>
+  </data>
+  <data name="PackageChooser_DetailVersion" xml:space="preserve">
+    <value>Version:</value>
+  </data>
+  <data name="PackageChooser_PackageSource" xml:space="preserve">
+    <value>_Package source:</value>
+  </data>
+  <data name="PackageChooser_SearchBoxTooltip" xml:space="preserve">
+    <value>Search for package</value>
+  </data>
+  <data name="PackageChooser_SearchBoxWatermark" xml:space="preserve">
+    <value>Search (Ctrl+E)</value>
+  </data>
+  <data name="PackageChooser_SearchButtonTooltip" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="PackageChooser_ShowPreReleasePackages" xml:space="preserve">
+    <value>Show pre-release packages</value>
+  </data>
+  <data name="PackageChooser_WindowTitle" xml:space="preserve">
+    <value>Select Package</value>
+  </data>
   <data name="PackageContentsVerifyError" xml:space="preserve">
     <value>Failed to download package correctly. The contents of the package could not be verified.</value>
   </data>
@@ -208,5 +328,20 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="ProxyConnectToMessage" xml:space="preserve">
     <value>Connect to {0}</value>
+  </data>
+  <data name="Validation_Disallowed" xml:space="preserve">
+    <value>Disallowed</value>
+  </data>
+  <data name="Validation_Pending" xml:space="preserve">
+    <value>Pending</value>
+  </data>
+  <data name="Validation_Suspect" xml:space="preserve">
+    <value>Suspect</value>
+  </data>
+  <data name="Validation_Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="Validation_Valid" xml:space="preserve">
+    <value>Valid</value>
   </data>
 </root>

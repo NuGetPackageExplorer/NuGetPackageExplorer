@@ -5,8 +5,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using NuGet;
+using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -16,19 +19,23 @@ namespace PackageExplorer
     /// </summary>
     public partial class PackageDependencyEditor : StandardDialog
     {
-        private ObservableCollection<EditablePackageDependencySet> _dependencySets = new ObservableCollection<EditablePackageDependencySet>();
+        private readonly ObservableCollection<EditablePackageDependencySet> _dependencySets = new ObservableCollection<EditablePackageDependencySet>();
 
         private EditablePackageDependency _newPackageDependency;
 
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public PackageDependencyEditor()
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             InitializeComponent();
 
             DependencyGroupList.DataContext = _dependencySets;
             ClearDependencyTextBox();
+
+            DiagnosticsClient.TrackPageView(nameof(PackageDependencyEditor));
         }
 
-        public PackageDependencyEditor(IEnumerable<PackageDependencySet> existingDependencySets)
+        public PackageDependencyEditor(IEnumerable<PackageDependencyGroup> existingDependencySets)
             : this()
         {
             _dependencySets.AddRange(existingDependencySets.Select(ds => new EditablePackageDependencySet(ds)));
@@ -41,7 +48,7 @@ namespace PackageExplorer
 
         public IPackageChooser PackageChooser { get; set; }
 
-        public ICollection<PackageDependencySet> GetEditedDependencySets()
+        public ICollection<PackageDependencyGroup> GetEditedDependencySets()
         {
             return _dependencySets.Select(set => set.AsReadOnly()).ToArray();
         }
@@ -61,7 +68,9 @@ namespace PackageExplorer
                 return;
             }
 
-            bool canClose = String.IsNullOrEmpty(NewDependencyId.Text) || AddNewDependency();
+            DiagnosticsClient.TrackEvent("PackageDependencyEditor_OkButton");
+
+            var canClose = string.IsNullOrEmpty(NewDependencyId.Text) || AddNewDependency();
             if (canClose)
             {
                 DialogResult = true;
@@ -70,11 +79,14 @@ namespace PackageExplorer
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageDependencyEditor_CancelButton");
+
             DialogResult = false;
         }
 
         private void RemoveDependencyButtonClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageDependencyEditor_RemoveDependencyButtonClicked");
             var hyperlink = (Hyperlink)sender;
             var selectedPackageDependency = (PackageDependency)hyperlink.DataContext;
             if (selectedPackageDependency != null)
@@ -85,16 +97,20 @@ namespace PackageExplorer
 
         private void SelectDependencyButtonClicked(object sender, RoutedEventArgs e)
         {
-            PackageInfo selectedPackage = PackageChooser.SelectPackage(null);
+            DiagnosticsClient.TrackEvent("PackageDependencyEditor_SelectDependencyButtonClicked");
+
+            var selectedPackage = PackageChooser.SelectPackage(null);
             if (selectedPackage != null)
             {
                 _newPackageDependency.Id = selectedPackage.Id;
-                _newPackageDependency.VersionSpec = VersionUtility.ParseVersionSpec(selectedPackage.Version);
+                _newPackageDependency.VersionSpec = VersionRange.Parse(selectedPackage.Version);
             }
         }
 
         private void OnAddGroupClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageDependencyEditor_OnAddGroupClicked");
+
             _dependencySets.Add(new EditablePackageDependencySet());
 
             if (DependencyGroupList.SelectedIndex == -1)
@@ -105,8 +121,10 @@ namespace PackageExplorer
 
         private void OnRemoveGroupClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageDependencyEditor_OnRemoveGroupClicked");
+
             // remember the currently selected index;
-            int selectedIndex = DependencyGroupList.SelectedIndex;
+            var selectedIndex = DependencyGroupList.SelectedIndex;
 
             _dependencySets.Remove((EditablePackageDependencySet)DependencyGroupList.SelectedItem);
 
@@ -120,13 +138,15 @@ namespace PackageExplorer
 
         private void AddDependencyButtonClicked(object sender, RoutedEventArgs e)
         {
+            DiagnosticsClient.TrackEvent("PackageDependencyEditor_AddDependencyButtonClicked");
+
             AddNewDependency();
         }
 
         private bool AddNewDependency()
         {
-            if (String.IsNullOrEmpty(NewDependencyId.Text) &&
-                String.IsNullOrEmpty(NewDependencyVersion.Text))
+            if (string.IsNullOrEmpty(NewDependencyId.Text) &&
+                string.IsNullOrEmpty(NewDependencyVersion.Text))
             {
                 return true;
             }

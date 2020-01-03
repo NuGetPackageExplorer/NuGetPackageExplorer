@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssetTargetFallback>net472</AssetTargetFallback>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>NuGetPackageExplorer</AssemblyName>
+    <ApplicationIcon>nupack.ico</ApplicationIcon>
+    <Title>NuGet Package Explorer</Title>
+    <Description>This is a NuGet package explorer tool which lets you view the metadata of a .nupkg package. After installing it, you can double click on .nupkg packages to open them in Package Explorer.</Description>
+    <RootNamespace>PackageExplorer</RootNamespace>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.0.1" />
+    <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
+    <PackageReference Include="Humanizer" Version="2.7.9" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" Version="1.1.0" />
+    <PackageReference Include="System.Memory" Version="4.5.3" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="4.7.0" />
+
+    <Reference Include="Windows" />
+
+    <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\*.*" />
+    <None Remove=".editorconfig" />
+    <None Remove="Resources\default-package-icon.png" />
+    <AdditionalFiles Include=".editorconfig" />
+    <Content Include="Resources\fxAssemblies.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Resource Include="Resources\default-package-icon.png" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="ApplicationInsights.config" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

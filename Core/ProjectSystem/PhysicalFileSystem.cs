@@ -3,27 +3,22 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace NuGet
+namespace NuGetPe
 {
     public class PhysicalFileSystem : IFileSystem
     {
-        private readonly string _root;
-
         public PhysicalFileSystem(string root)
         {
-            if (String.IsNullOrEmpty(root))
+            if (string.IsNullOrEmpty(root))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "root");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(root));
             }
-            _root = root;
+            Root = root;
         }
 
         #region IFileSystem Members
 
-        public string Root
-        {
-            get { return _root; }
-        }
+        public string Root { get; }
 
         public virtual string GetFullPath(string path)
         {
@@ -32,12 +27,16 @@ namespace NuGet
 
         public virtual void AddFile(string path, Stream stream)
         {
-            EnsureDirectory(Path.GetDirectoryName(path));
-
-            using (Stream outputStream = File.Create(GetFullPath(path)))
+            if (stream is null)
+                throw new ArgumentNullException(nameof(stream));
+            var d = Path.GetDirectoryName(path);
+            if (d != null)
             {
-                stream.CopyTo(outputStream);
+                EnsureDirectory(d);
             }
+
+            using Stream outputStream = File.Create(GetFullPath(path));
+            stream.CopyTo(outputStream);
         }
 
         public virtual void DeleteFile(string path)
@@ -168,6 +167,8 @@ namespace NuGet
 
         protected string MakeRelativePath(string fullPath)
         {
+            if (fullPath is null)
+                throw new ArgumentNullException(nameof(fullPath));
             return fullPath.Substring(Root.Length).TrimStart(Path.DirectorySeparatorChar);
         }
 

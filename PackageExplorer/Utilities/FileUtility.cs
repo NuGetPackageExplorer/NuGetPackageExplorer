@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using NuGet;
+using NuGetPe;
 
 namespace PackageExplorer
 {
@@ -8,14 +8,15 @@ namespace PackageExplorer
     {
         public static bool IsSupportedFile(string filepath)
         {
-            if (String.IsNullOrEmpty(filepath))
+            if (string.IsNullOrEmpty(filepath))
             {
                 return false;
             }
 
-            string extension = Path.GetExtension(filepath);
-            return extension.Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase) ||
-                   extension.Equals(Constants.PackageExtension, StringComparison.OrdinalIgnoreCase);
+            var extension = Path.GetExtension(filepath);
+            return Constants.ManifestExtension.Equals(extension, StringComparison.OrdinalIgnoreCase) ||
+                   Constants.PackageExtension.Equals(extension, StringComparison.OrdinalIgnoreCase) ||
+                   Constants.SymbolPackageExtension.Equals(extension, StringComparison.OrdinalIgnoreCase);
         }
     }
 }

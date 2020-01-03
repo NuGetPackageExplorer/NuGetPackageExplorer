@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
-using NuGet;
+using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
     public class PackageFolder : PackagePart
     {
-        private ICommand _addContentFolderCommand;
+        private ICommand? _addContentFolderCommand;
         private bool _isExpanded;
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1062:Validate arguments of public methods", Justification = "<Pending>")]
         public PackageFolder(string name, PackageFolder parent)
             : base(name, parent, parent.PackageViewModel)
         {
@@ -77,7 +78,7 @@ namespace PackageExplorerViewModel
                 if (_isExpanded != value)
                 {
                     _isExpanded = value;
-                    OnPropertyChanged("IsExpanded");
+                    OnPropertyChanged(nameof(IsExpanded));
                 }
             }
         }
@@ -91,12 +92,9 @@ namespace PackageExplorerViewModel
         {
             base.UpdatePath();
 
-            if (Children != null)
+            foreach (var child in Children)
             {
-                foreach (PackagePart child in Children)
-                {
-                    child.UpdatePath();
-                }
+                child.UpdatePath();
             }
         }
 
@@ -107,11 +105,11 @@ namespace PackageExplorerViewModel
                 if (Parent != null)
                 {
                     // only treat this folder as an empty folder if it's NOT the root folder.
-                    return new[] { new EmptyFolderFile(this.Path) };
+                    return new[] { new EmptyFolderFile(Path) };
                 }
                 else
                 {
-                    return new IPackageFile[0];
+                    return Array.Empty<IPackageFile>();
                 }
             }
             else
@@ -120,14 +118,19 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public override IEnumerable<PackagePart> GetPackageParts()
+        {
+            return new PackagePart[] { this }.Concat(Children.SelectMany(p => p.GetPackageParts()));
+        }
+
         public void RemoveChild(PackagePart child)
         {
             if (child == null)
             {
-                throw new ArgumentNullException("child");
+                throw new ArgumentNullException(nameof(child));
             }
 
-            bool removed = Children.Remove(child);
+            var removed = Children.Remove(child);
             if (removed)
             {
                 child.Dispose();
@@ -137,8 +140,8 @@ namespace PackageExplorerViewModel
 
         private void Attach(PackagePart child)
         {
-            Children.Add(child);
             child.Parent = this;
+            Children.Add(child);
         }
 
         /// <summary>
@@ -158,7 +161,7 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            if (PackageViewModel.IsInEditFileMode)
+            if (PackageViewModel.IsSigned || PackageViewModel.IsInEditFileMode)
             {
                 return false;
             }
@@ -166,6 +169,7 @@ namespace PackageExplorerViewModel
             return !ContainsFolder(folderName) && !ContainsFile(folderName);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddContentFolderExecute(string folderName)
         {
             if (folderName == "portable")
@@ -181,36 +185,26 @@ namespace PackageExplorerViewModel
 
         public bool ContainsFolder(string folderName)
         {
-            if (Children == null)
-            {
-                return false;
-            }
-
             return Children.Any(p => p is PackageFolder && p.Name.Equals(folderName, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool ContainsFile(string fileName)
         {
-            if (Children == null)
-            {
-                return false;
-            }
-
             return Children.Any(p => p is PackageFile && p.Name.Equals(fileName, StringComparison.OrdinalIgnoreCase));
         }
 
         public bool Contains(PackagePart child)
         {
             // we can't call Children.Contains(child) here because that will only check by file name, not the actual instance
-            return Children != null && Children.Any(p => p == child);
+            return Children.Any(p => p == child);
         }
 
-        public PackageFolder AddFolder(string folderName)
+        public PackageFolder? AddFolder(string folderName)
         {
             if (!AddContentFolderCanExecute(folderName))
             {
                 PackageViewModel.UIServices.Show(
-                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
+                    string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
                     MessageLevel.Error);
                 return null;
             }
@@ -220,27 +214,53 @@ namespace PackageExplorerViewModel
             return newFolder;
         }
 
-        public void AddFolder(PackageFolder childFolder)
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
+        public void AddFolder(PackageFolder childFolder, bool makeCopy = false)
         {
+            if (childFolder is null)
+                throw new ArgumentNullException(nameof(childFolder));
             if (!AddContentFolderCanExecute(childFolder.Name))
             {
                 PackageViewModel.UIServices.Show(
-                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, childFolder.Name),
+                    string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, childFolder.Name),
                     MessageLevel.Error);
                 return;
             }
 
-            if (this.IsDescendantOf(childFolder))
+            if (IsDescendantOf(childFolder))
             {
                 return;
             }
 
-            if (childFolder.Parent != null)
+            PackageFolder newFolder;
+
+            if (makeCopy)
             {
-                childFolder.Parent.Detach(childFolder);
+                newFolder = new PackageFolder(childFolder.Name, this);
+
+                foreach (var child in childFolder.Children)
+                {
+                    if (child is PackageFile packageFile)
+                    {
+                        newFolder.AddFile(packageFile, true);
+                    }
+                    else if (child is PackageFolder packageFolder)
+                    {
+                        newFolder.AddFolder(packageFolder, true);
+                    }
+                }
+            }
+            else
+            {
+                if (childFolder.Parent != null)
+                {
+                    childFolder.Parent.Detach(childFolder);
+                }
+
+                newFolder = childFolder;
             }
 
-            AddFolderCore(childFolder);
+            AddFolderCore(newFolder);
         }
 
         private void AddFolderCore(PackageFolder childFolder)
@@ -251,26 +271,26 @@ namespace PackageExplorerViewModel
             PackageViewModel.NotifyChanges();
         }
 
-        public PackageFile AddFile(string filePath, bool isTempFile)
+        public PackageFile? AddFile(string filePath)
         {
             if (!File.Exists(filePath))
             {
-                throw new ArgumentException("File does not exist.", "filePath");
+                throw new ArgumentException("File does not exist.", nameof(filePath));
             }
 
-            string newFileName = System.IO.Path.GetFileName(filePath);
+            var newFileName = System.IO.Path.GetFileName(filePath)!;
             if (ContainsFolder(newFileName))
             {
                 PackageViewModel.UIServices.Show(Resources.FileNameConflictWithExistingDirectory, MessageLevel.Error);
                 return null;
             }
 
-            bool showingRemovedFile = false;
+            var showingRemovedFile = false;
             if (ContainsFile(newFileName))
             {
-                bool confirmed = PackageViewModel.UIServices.Confirm(
+                var confirmed = PackageViewModel.UIServices.Confirm(
                     Resources.ConfirmToReplaceExsitingFile_Title,
-                    String.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceExsitingFile, newFileName),
+                    string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceExsitingFile, newFileName),
                     isWarning: true);
 
                 if (confirmed)
@@ -287,8 +307,8 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            string newTargetPath = this.Path + "\\" + newFileName;
-            var physicalFile = new PhysicalPackageFile(isTempFile, filePath, newTargetPath);
+            var newTargetPath = Path + "\\" + newFileName;
+            var physicalFile = new DiskPackageFile(newTargetPath, filePath);
             var newFile = new PackageFile(physicalFile, newFileName, this);
 
             Children.Add(newFile);
@@ -304,11 +324,12 @@ namespace PackageExplorerViewModel
             return newFile;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddFile(PackageFile file, bool makeCopy = false)
         {
             if (file == null)
             {
-                throw new ArgumentNullException("file");
+                throw new ArgumentNullException(nameof(file));
             }
 
             if (Contains(file))
@@ -321,13 +342,13 @@ namespace PackageExplorerViewModel
             if (makeCopy)
             {
                 string fileCopyPath;
-                using (Stream originalFileStream = file.GetStream())
+                using (var originalFileStream = file.GetStream())
                 {
                     fileCopyPath = FileHelper.CreateTempFile(file.Name, originalFileStream);
                 }
 
-                string newTargetPath = this.Path + "\\" + file.Name;
-                var physicalFile = new PhysicalPackageFile(isTempFile: true, originalPath: fileCopyPath, targetPath: newTargetPath);
+                var newTargetPath = Path + "\\" + file.Name;
+                var physicalFile = new DiskPackageFile(newTargetPath, fileCopyPath);
 
                 newFile = new PackageFile(physicalFile, file.Name, this);
             }
@@ -350,23 +371,23 @@ namespace PackageExplorerViewModel
 
         internal void ReplaceFile(PackageFile oldFile)
         {
-            string selectedFileName;
-            bool result = PackageViewModel.UIServices.OpenFileDialog("Select New File", "All files (*.*)|*.*",
-                                                                     out selectedFileName);
+            var result = PackageViewModel.UIServices.OpenFileDialog("Select New File", "All files (*.*)|*.*",
+                                                                     out var selectedFileName);
             if (result)
             {
                 ReplaceFile(oldFile, selectedFileName);
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         internal void ReplaceFile(PackageFile oldFile, string newFilePath)
         {
-            bool showingFile = PackageViewModel.IsShowingFileContent(oldFile);
+            var showingFile = PackageViewModel.IsShowingFileContent(oldFile);
 
             // temporarily remove the old file in order to add a new file
             Children.Remove(oldFile);
 
-            PackageFile newFile = AddFile(newFilePath, isTempFile: false);
+            var newFile = AddFile(newFilePath);
             if (newFile != null)
             {
                 // new file added successfully, officially delete the old file by disposing it
@@ -392,11 +413,11 @@ namespace PackageExplorerViewModel
                 return;
             }
 
-            string folderName = dirInfo.Name;
+            var folderName = dirInfo.Name;
             if (!AddContentFolderCanExecute(folderName))
             {
                 PackageViewModel.UIServices.Show(
-                    String.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
+                    string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
                     MessageLevel.Error);
                 return;
             }
@@ -404,22 +425,23 @@ namespace PackageExplorerViewModel
             AddPhysicalFolderCore(dirInfo);
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddPhysicalFolderCore(DirectoryInfo dirInfo)
         {
-            PackageFolder childPackgeFolder = AddFolder(dirInfo.Name);
-            foreach (FileInfo file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly))
+            var childPackgeFolder = AddFolder(dirInfo.Name);
+            foreach (var file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly))
             {
-                childPackgeFolder.AddFile(file.FullName, isTempFile: false);
+                childPackgeFolder?.AddFile(file.FullName);
             }
-            foreach (DirectoryInfo subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly))
+            foreach (var subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly))
             {
-                childPackgeFolder.AddPhysicalFolderCore(subFolder);
+                childPackgeFolder?.AddPhysicalFolderCore(subFolder);
             }
         }
 
         private void RemoveChildByName(string name)
         {
-            int count = Children.RemoveAll(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            var count = Children.RemoveAll(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             Debug.Assert(count <= 1);
             if (count == 1)
             {
@@ -429,13 +451,13 @@ namespace PackageExplorerViewModel
 
         public override void Export(string rootPath)
         {
-            string fullPath = System.IO.Path.Combine(rootPath, Path);
+            var fullPath = System.IO.Path.Combine(rootPath, Path);
             if (!Directory.Exists(fullPath))
             {
                 Directory.CreateDirectory(fullPath);
             }
 
-            foreach (PackagePart part in Children)
+            foreach (var part in Children)
             {
                 part.Export(rootPath);
             }
@@ -443,7 +465,7 @@ namespace PackageExplorerViewModel
 
         protected override void Dispose(bool disposing)
         {
-            foreach (PackagePart part in Children)
+            foreach (var part in Children)
             {
                 part.Dispose();
             }

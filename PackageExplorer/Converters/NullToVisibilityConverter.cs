@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
@@ -17,10 +17,9 @@ namespace PackageExplorer
             {
                 Visibility returnValue;
 
-                var stringValue = value as string;
-                if (stringValue != null)
+                if (value is string stringValue)
                 {
-                    returnValue = String.IsNullOrEmpty(stringValue) ? Visibility.Collapsed : Visibility.Visible;
+                    returnValue = string.IsNullOrEmpty(stringValue) ? Visibility.Collapsed : Visibility.Visible;
                 }
                 else
                 {

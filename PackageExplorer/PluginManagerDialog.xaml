@@ -1,4 +1,4 @@
-﻿<self:StandardDialog x:Class="PackageExplorer.PluginManagerDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:PackageExplorer" xmlns:settings="clr-namespace:PackageExplorer.Properties" Title="Plugin Manager" MinWidth="350" MinHeight="250" ShowInTaskbar="false" WindowStartupLocation="CenterOwner" FontSize="{Binding FontSize, Source={x:Static settings:Settings.Default}, Mode=OneWay}" Height="350" Width="450">
+﻿<self:StandardDialog x:Class="PackageExplorer.PluginManagerDialog" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:self="clr-namespace:PackageExplorer" Title="Plugin Manager" MinWidth="350" MinHeight="250" ShowInTaskbar="false" WindowStartupLocation="CenterOwner" FontSize="{Binding FontSize, Source={StaticResource Settings}, Mode=OneWay}" Height="350" Width="450">
 
 	<Window.CommandBindings>
 		<CommandBinding Command="GoToPage" Executed="GoToPageCommand_Executed" />
@@ -20,15 +20,13 @@
 
 		<StackPanel Margin="10,10,10,0" Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
 			<Button DockPanel.Dock="Left" Margin="0,0,10,0" ToolTip="Add Local Plugin..." Command="{Binding AddCommand}" CommandParameter="Local">
-				<Image Source="Images/Add.png" />
-			</Button>
-			<Button DockPanel.Dock="Left" Margin="0,0,10,0" ToolTip="Add Feed Plugin..." Command="{Binding AddCommand}" CommandParameter="Remote">
-				<Image Source="Images/Properties.png" />
-			</Button>
-			<self:GrayscaleButton ToolTip="Delete the selected plugin" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=PluginFiles}">
+                <ContentPresenter Content="{StaticResource AddIcon}" />
+            </Button>
+            <Button DockPanel.Dock="Left" Margin="0,0,10,0" ToolTip="Add Feed Plugin..." Command="{Binding AddCommand}" CommandParameter="Remote" Content="{StaticResource PropertyIcon}" />
+            <self:GrayscaleButton ToolTip="Delete the selected plugin" Command="{Binding DeleteCommand}" CommandParameter="{Binding SelectedItem, ElementName=PluginFiles}">
 				<self:GrayscaleButton.Content>
-					<self:GrayscaleImage Source="Images/Delete.png" />
-				</self:GrayscaleButton.Content>
+                    <self:GrayscaleContentPresenter Content="{StaticResource RemoveIcon}" />
+                </self:GrayscaleButton.Content>
 			</self:GrayscaleButton>
 		</StackPanel>
 
@@ -51,7 +49,7 @@
 			<DockPanel Margin="10,5">
 				<Button DockPanel.Dock="Right" Content="_Close" Margin="5,5,0,5" Padding="15,2" Click="Button_Click" IsCancel="True" />
 				<TextBlock Margin="5">
-					<Hyperlink Command="GoToPage" CommandParameter="http://npe.codeplex.com/wikipage?title=How%20to%20write%20a%20plugin%20for%20NuGet%20Package%20Explorer" ToolTip="{Binding CommandParameter, RelativeSource={RelativeSource Self}}">
+					<Hyperlink Command="GoToPage" CommandParameter="https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/wiki/How-to-Write-a-plugin-for-NuGet-Package-Explorer" ToolTip="{Binding CommandParameter, RelativeSource={RelativeSource Self}}">
 						<Run Text="How to write a plugin?" />
 					</Hyperlink>
 				</TextBlock>

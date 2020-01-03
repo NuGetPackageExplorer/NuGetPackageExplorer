@@ -2,31 +2,31 @@
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Runtime.Versioning;
 using System.Windows.Data;
-using NuGet;
+using NuGet.Frameworks;
 
 namespace PackageExplorer
 {
     public class FrameworkNameConverter : IValueConverter
     {
-        private static string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build" };
-
-        #region IValueConverter Members
+        private static readonly string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build", "ref" };
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var path = (string) value;
-            string name = Path.GetFileName(path);
+            var path = (string)value;
+            var name = Path.GetFileName(path);
 
-            string[] parts = path.Split('\\');
-            if (parts.Length == 2 && 
+            if (string.IsNullOrEmpty(path))
+                return string.Empty;
+
+            var parts = path.Split('\\');
+            if (parts.Length == 2 &&
                 WellknownPackageFolders.Any(s => s.Equals(parts[0], StringComparison.OrdinalIgnoreCase)))
             {
-                FrameworkName frameworkName;
+                NuGetFramework frameworkName;
                 try
                 {
-                    frameworkName = VersionUtility.ParseFrameworkName(name);
+                    frameworkName = NuGetFramework.Parse(name);
                 }
                 catch (ArgumentException)
                 {
@@ -37,13 +37,13 @@ namespace PackageExplorer
                     }
                     else
                     {
-                        return String.Empty;
+                        return string.Empty;
                     }
                 }
 
-                if (frameworkName != VersionUtility.UnsupportedFrameworkName)
+                if (!frameworkName.IsUnsupported)
                 {
-                    return " (" + frameworkName + ")";
+                    return $" ({frameworkName.DotNetFrameworkName})";
                 }
                 else if (!parts[0].Equals("content", StringComparison.OrdinalIgnoreCase))
                 {
@@ -51,7 +51,7 @@ namespace PackageExplorer
                 }
             }
 
-            return String.Empty;
+            return string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -59,6 +59,5 @@ namespace PackageExplorer
             throw new NotImplementedException();
         }
 
-        #endregion
     }
 }

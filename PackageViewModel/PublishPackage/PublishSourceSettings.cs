@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using NuGet;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -21,7 +21,7 @@ namespace PackageExplorerViewModel
         public IList<string> GetSources()
         {
             var sources = _settingsManager.GetPublishSources();
-            for (int i = 0; i < sources.Count; i++)
+            for (var i = 0; i < sources.Count; i++)
             {
                 sources[i] = MigrateOfficialNuGetSource(sources[i]);
             }

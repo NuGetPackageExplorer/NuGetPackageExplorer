@@ -1,22 +1,23 @@
 ﻿using System;
-using NuGet;
+using NuGet.Versioning;
 
 namespace NuGetPackageExplorer.Types
 {
     public enum PackageType
     {
         LocalPackage,
-        DataServicePackage
+        RemotePackage
     }
 
     public sealed class MruItem : IEquatable<MruItem>
     {
+#pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public string Id { get; set; }
-        public SemanticVersion Version { get; set; }
+        public NuGetVersion Version { get; set; }
         public string Path { get; set; }
         public PackageType PackageType { get; set; }
-
-        #region IEquatable<MruItem> Members
+#pragma warning restore CS8618 // Non-nullable field is uninitialized.
+        
 
         public bool Equals(MruItem other)
         {
@@ -24,19 +25,28 @@ namespace NuGetPackageExplorer.Types
             {
                 return false;
             }
-            return Path.Equals(other.Path, StringComparison.OrdinalIgnoreCase);
+            return string.Equals(Path, other.Path, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(Id, other.Id, StringComparison.OrdinalIgnoreCase) &&
+                Version == other.Version;
         }
 
-        #endregion
-
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
-            return Equals(obj as MruItem);
+            return obj is MruItem item && Equals(item);
         }
 
         public override int GetHashCode()
         {
-            return Path.GetHashCode();
+            return Tuple.Create(Path, Id, Version).GetHashCode();
+        }
+
+        public override string ToString()
+        {
+            if (!string.IsNullOrEmpty(Id))
+            {
+                return $"{Id} {Version}";
+            }
+            return Path ?? "MruItem";
         }
     }
 }

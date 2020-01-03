@@ -2,64 +2,68 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace NuGet
+namespace NuGetPe
 {
     public static class SettingsExtensions
     {
         private const string Entropy = "NuGet";
 
-        public static string GetDecryptedValue(this ISettings settings, string section, string key)
+        public static string? GetDecryptedValue(this ISettings settings, string section, string key)
         {
-            if (String.IsNullOrEmpty(section))
+            if (settings is null)
+                throw new ArgumentNullException(nameof(settings));
+            if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
 
-            if (String.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
 
-            string encrpytedString = settings.GetValue(section, key);
+            var encrpytedString = settings.GetValue(section, key);
             if (encrpytedString == null)
             {
                 return null;
             }
-            if (String.IsNullOrEmpty(encrpytedString))
+            if (string.IsNullOrEmpty(encrpytedString))
             {
-                return String.Empty;
+                return string.Empty;
             }
-            byte[] encrpytedByteArray = Convert.FromBase64String(encrpytedString);
-            byte[] decryptedByteArray = ProtectedData.Unprotect(encrpytedByteArray, StringToBytes(Entropy),
+            var encrpytedByteArray = Convert.FromBase64String(encrpytedString);
+            var decryptedByteArray = ProtectedData.Unprotect(encrpytedByteArray, StringToBytes(Entropy),
                                                                 DataProtectionScope.CurrentUser);
             return BytesToString(decryptedByteArray);
         }
 
         public static void SetEncryptedValue(this ISettings settings, string section, string key, string value)
         {
-            if (String.IsNullOrEmpty(section))
+            if (settings is null)
+                throw new ArgumentNullException(nameof(settings));
+            if (string.IsNullOrEmpty(section))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "section");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(section));
             }
-            if (String.IsNullOrEmpty(key))
+            if (string.IsNullOrEmpty(key))
             {
-                throw new ArgumentException("Argument cannot be null or empty.", "key");
+                throw new ArgumentException("Argument cannot be null or empty.", nameof(key));
             }
             if (value == null)
             {
-                throw new ArgumentNullException("value");
+                throw new ArgumentNullException(nameof(value));
             }
 
-            if (String.IsNullOrEmpty(value))
+            if (string.IsNullOrEmpty(value))
             {
-                settings.SetValue(section, key, String.Empty);
+                settings.SetValue(section, key, string.Empty);
             }
             else
             {
-                byte[] decryptedByteArray = StringToBytes(value);
-                byte[] encryptedByteArray = ProtectedData.Protect(decryptedByteArray, StringToBytes(Entropy),
+                var decryptedByteArray = StringToBytes(value);
+                var encryptedByteArray = ProtectedData.Protect(decryptedByteArray, StringToBytes(Entropy),
                                                                   DataProtectionScope.CurrentUser);
-                string encryptedString = Convert.ToBase64String(encryptedByteArray);
+                var encryptedString = Convert.ToBase64String(encryptedByteArray);
                 settings.SetValue(section, key, encryptedString);
             }
         }

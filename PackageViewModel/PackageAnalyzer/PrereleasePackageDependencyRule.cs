@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.Linq;
 using System.Globalization;
-using NuGet;
+using System.Linq;
+using NuGet.Packaging.Core;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
@@ -15,12 +16,12 @@ namespace PackageExplorerViewModel.Rules
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            if (IsPreReleasedVersion(package.Version))
+            if (package.Version.IsPrerelease)
             {
-                return new PackageIssue[0];
+                return Array.Empty<PackageIssue>();
             }
 
-            return package.DependencySets.SelectMany(p => p.Dependencies)
+            return package.DependencyGroups.SelectMany(p => p.Packages)
                                          .Where(IsPrereleaseDependency)
                                          .Select(CreatePackageIssue);
         }
@@ -29,28 +30,23 @@ namespace PackageExplorerViewModel.Rules
 
         private static bool IsPrereleaseDependency(PackageDependency pd)
         {
-            if (pd.VersionSpec == null)
+            if (pd.VersionRange == null)
             {
                 return false;
             }
 
-            return IsPreReleasedVersion(pd.VersionSpec.MinVersion) || IsPreReleasedVersion(pd.VersionSpec.MaxVersion);
-        }
-
-        private static bool IsPreReleasedVersion(SemanticVersion version)
-        {
-            return version != null && !String.IsNullOrEmpty(version.SpecialVersion);
+            return pd.VersionRange.MinVersion?.IsPrerelease == true || pd.VersionRange.MaxVersion?.IsPrerelease == true;
         }
 
         private static PackageIssue CreatePackageIssue(PackageDependency target)
         {
             return new PackageIssue(
-                PackageIssueLevel.Error,
+                PackageIssueLevel.Warning,
                 "Invalid prerelease dependency",
-                String.Format(CultureInfo.CurrentCulture,
+                string.Format(CultureInfo.CurrentCulture,
                               "A stable release of a package must not have a dependency on a prerelease package, '{0}'.",
                               target),
-                String.Format(CultureInfo.CurrentCulture,
+                string.Format(CultureInfo.CurrentCulture,
                               "Either modify the version spec of dependency '{0}' or update the version field.", target)
                 );
         }

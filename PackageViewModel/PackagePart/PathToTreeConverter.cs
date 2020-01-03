@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using NuGet;
+using NuGet.Packaging;
 
 namespace PackageExplorerViewModel
 {
@@ -11,34 +11,35 @@ namespace PackageExplorerViewModel
         {
             if (paths == null)
             {
-                throw new ArgumentNullException("paths");
+                throw new ArgumentNullException(nameof(paths));
             }
 
-            paths.Sort((p1, p2) => String.Compare(p1.Path, p2.Path, StringComparison.OrdinalIgnoreCase));
+            paths.Sort((p1, p2) => string.Compare(p1.Path, p2.Path, StringComparison.OrdinalIgnoreCase));
 
             var root = new PackageFolder("", viewModel);
 
-            List<Tuple<IPackageFile, string[]>> parsedPaths =
+            var parsedPaths =
                 paths.Select(p => Tuple.Create(p, p.Path.Split('\\'))).ToList();
             Parse(root, parsedPaths, 0, 0, parsedPaths.Count);
 
             return root;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private static void Parse(PackageFolder root, List<Tuple<IPackageFile, string[]>> parsedPaths, int level,
                                   int start, int end)
         {
-            int i = start;
+            var i = start;
             while (i < end)
             {
-                string s = parsedPaths[i].Item2[level];
+                var s = parsedPaths[i].Item2[level];
 
                 if (parsedPaths[i].Item2.Length == level + 1)
                 {
                     // it's a file
                     // Starting from nuget 2.0, they use a dummy file with the name "_._" to represent
                     // an empty folder. Therefore, we just ignore it. 
-                    if (!s.Equals(NuGet.Constants.PackageEmptyFileName, StringComparison.OrdinalIgnoreCase))
+                    if (!s.Equals(NuGetPe.Constants.PackageEmptyFileName, StringComparison.OrdinalIgnoreCase))
                     {
                         root.Children.Add(new PackageFile(parsedPaths[i].Item1, s, root));
                     }
@@ -47,7 +48,7 @@ namespace PackageExplorerViewModel
                 else
                 {
                     // it's a folder
-                    int j = i;
+                    var j = i;
                     while (
                         j < end &&
                         level < parsedPaths[j].Item2.Length &&

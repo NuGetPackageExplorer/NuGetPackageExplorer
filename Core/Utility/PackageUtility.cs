@@ -1,13 +1,13 @@
 ﻿using System;
 using System.IO;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal static class PackageUtility
     {
         internal static bool IsManifest(string path)
         {
-            return Path.GetExtension(path).Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase);
+            return Constants.ManifestExtension.Equals(Path.GetExtension(path), StringComparison.OrdinalIgnoreCase);
         }
     }
 }

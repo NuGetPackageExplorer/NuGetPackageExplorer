@@ -1,92 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{E2EEEC5A-6A07-447E-9E95-C14307F57EDE}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>NuGetPackageExplorer.Types</RootNamespace>
-    <AssemblyName>NuGetPackageExplorer.Types</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
-    <RunCodeAnalysis Condition="'$(EnableCodeAnalysis)'=='true'">true</RunCodeAnalysis>
-    <CodeAnalysisRuleSet>..\NuGetPackageExplorer.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Description>Contains types to enable the plugin architecture in NuGet Package Explorer.</Description>
+    <Product>NuGet Package Explorer</Product>
     <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyOriginatorKeyFile>NuGetPackageExplorer.snk</AssemblyOriginatorKeyFile>
+    <AssemblyName>NuGetPackageExplorer.Types</AssemblyName>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
+    <!--<PackageReference Include="Microsoft.Web.Xdt" Version="3.0.0" />-->
+    <PackageReference Include="NuGet.Packaging" Version="$(NuGetDependencyVersion)" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="IPackageCommandMetadata.cs" />
-    <Compile Include="IPackageContentViewerMetadata.cs" />
-    <Compile Include="IPackageRule.cs" />
-    <Compile Include="PackageExtensions.cs" />
-    <Compile Include="PackageIssue.cs" />
-    <Compile Include="PackageIssueLevel.cs" />
-    <Compile Include="Packages\FrameworkAssemblyReference.cs" />
-    <Compile Include="Packages\IFrameworkTargetable.cs" />
-    <Compile Include="Packages\IPackage.cs" />
-    <Compile Include="IPackageContentViewer.cs" />
-    <Compile Include="IPackageCommand.cs" />
-    <Compile Include="Packages\IPackageAssemblyReference.cs" />
-    <Compile Include="Packages\IPackageFile.cs" />
-    <Compile Include="Packages\IPackageMetadata.cs" />
-    <Compile Include="Packages\IServerPackageMetadata.cs" />
-    <Compile Include="PackageContentViewerMetadataAttribute.cs" />
-    <Compile Include="PackageCommandMetadataAttribute.cs" />
-    <Compile Include="Packages\IVersionSpec.cs" />
-    <Compile Include="Packages\PackageDependency.cs" />
-    <Compile Include="Packages\PackageDependencySet.cs" />
-    <Compile Include="Packages\PackageReferenceSet.cs" />
-    <Compile Include="Packages\SemanticVersion.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ReplacementTokens.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="NuGetPackageExplorer.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <CodeAnalysisDictionary Include="..\CodeAnalysisDictionary.xml">
-      <Link>Properties\CodeAnalysisDictionary.xml</Link>
-    </CodeAnalysisDictionary>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  
 </Project>

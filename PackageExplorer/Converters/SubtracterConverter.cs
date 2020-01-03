@@ -10,8 +10,8 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            double doubleValue = System.Convert.ToDouble(value, culture);
-            double subtract = parameter == null ? 0 : System.Convert.ToDouble(parameter, culture);
+            var doubleValue = System.Convert.ToDouble(value, culture);
+            var subtract = parameter == null ? 0 : System.Convert.ToDouble(parameter, culture);
             return Math.Max(0, doubleValue - subtract);
         }
 

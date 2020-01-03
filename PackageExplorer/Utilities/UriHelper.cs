@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,12 +8,24 @@ namespace PackageExplorer
 {
     internal static class UriHelper
     {
-        public static void OpenExternalLink(Uri licenseUrl)
+        public static void OpenExternalLink(Uri link)
         {
-            if (IsRemoteUri(licenseUrl))
+            try
             {
-                Process.Start(licenseUrl.AbsoluteUri);
+                if (IsRemoteUri(link))
+                {
+                    var psi = new ProcessStartInfo
+                    {
+                        FileName = link.AbsoluteUri,
+                        UseShellExecute = true
+                    };
+                    Process.Start(psi);
+                }
             }
+            catch // Possible Win32 exception: operation was canceled by the user. Nothing we can do.
+            {
+            }
+
         }
 
         public static bool IsRemoteUri(this Uri url)
@@ -29,23 +41,9 @@ namespace PackageExplorer
                 return false;
             }
 
-            string scheme = url.Scheme;
+            var scheme = url.Scheme;
             return (scheme.Equals(Uri.UriSchemeHttp, StringComparison.OrdinalIgnoreCase) ||
                     scheme.Equals(Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase));
-        }
-
-        public static Dictionary<string, string> GetRequestParameters(this Uri uri)
-        {
-            if (uri == null)
-            {
-                return null;
-            }
-
-            MatchCollection matches = Regex.Matches(uri.Query, @"[\?&](([^&=]+)=([^&=#]*))");
-            return matches.Cast<Match>().ToDictionary(
-                m => Uri.UnescapeDataString(m.Groups[2].Value),
-                m => Uri.UnescapeDataString(m.Groups[3].Value),
-                StringComparer.OrdinalIgnoreCase);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Windows.Threading;
 
 namespace NuGetPackageExplorer.Types
@@ -13,7 +14,9 @@ namespace NuGetPackageExplorer.Types
 
     public interface IUIServices
     {
-        bool OpenSaveFileDialog(string title, string defaultFileName, string initialDirectory, string filter, bool overwritePrompt,
+        object Initialize();
+
+        bool OpenSaveFileDialog(string title, string defaultFileName, string? initialDirectory, string filter, bool overwritePrompt,
                                 out string selectedFilePath, out int selectedFilterIndex);
 
         bool OpenFileDialog(string title, string filter, out string selectedFileName);
@@ -21,7 +24,11 @@ namespace NuGetPackageExplorer.Types
 
         bool OpenRenameDialog(string currentName, string description, out string newName);
 
+        bool OpenCredentialsDialog(string target, out NetworkCredential? networkCredential);
+
         bool OpenPublishDialog(object viewModel);
+        bool OpenSignatureValidationDialog(object viewModel);
+        bool OpenSignPackageDialog(object viewModel, out string signedPackagePath);
         bool OpenFolderDialog(string title, string initialPath, out string selectedPath);
 
         bool Confirm(string title, string message);
@@ -35,8 +42,6 @@ namespace NuGetPackageExplorer.Types
         bool TrySelectPortableFramework(out string portableFramework);
 
         bool ConfirmCloseEditor(string title, string message);
-
-        bool? AskToInstallNpeOnWindows8();
 
         DispatcherOperation BeginInvoke(Action action);
     }

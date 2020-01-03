@@ -1,8 +1,7 @@
-using System;
-using System.IO;
+﻿using System;
 using System.Xml.Linq;
 
-namespace NuGet
+namespace NuGetPe
 {
     internal static class XmlUtility
     {
@@ -12,10 +11,8 @@ namespace NuGet
             {
                 try
                 {
-                    using (Stream configSream = fileSystem.OpenFile(path))
-                    {
-                        return XDocument.Load(configSream);
-                    }
+                    using var configSream = fileSystem.OpenFile(path);
+                    return XDocument.Load(configSream);
                 }
                 catch (Exception)
                 {

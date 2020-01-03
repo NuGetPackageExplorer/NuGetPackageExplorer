@@ -1,61 +1,90 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using CodeExecutor;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
+using NuGetPe.AssemblyMetadata;
+using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
-    [PackageContentViewerMetadata(100, ".dll", ".exe", ".winmd")]
+    [PackageContentViewerMetadata(100, ".dll", ".exe", ".winmd", SupportsWindows10S = false)]
     internal class AssemblyFileViewer : IPackageContentViewer
     {
-        #region IPackageContentViewer Members
 
-        public object GetView(string extension, Stream stream)
+        public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
-            string tempFile = Path.GetTempFileName();
-            using (FileStream fileStream = File.OpenWrite(tempFile))
-            {
-                stream.CopyTo(fileStream);
-            }
+            DiagnosticsClient.TrackEvent("AssemblyFileViewer");
+
+            var tempFile = Path.GetTempFileName();
 
             try
             {
-                IDictionary<string, string> assemblyData = RemoteCodeExecutor.GetAssemblyMetadata(tempFile);
-
-                var grid = new Grid();
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-                grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-
-                foreach (var data in assemblyData.OrderBy(d => d.Key))
+                using (var str = selectedFile.GetStream())
+                using (var fileStream = File.OpenWrite(tempFile))
                 {
-                    var label = new TextBlock 
-                    { 
-                        Text = data.Key + ':', 
-                        FontWeight = FontWeights.SemiBold,
-                        Margin = new Thickness(3,3,10,0)
-                    };
-                    Grid.SetRow(label, grid.RowDefinitions.Count);
-                    Grid.SetColumn(label, 0);
-
-                    var value = new TextBlock 
-                    { 
-                        Text = data.Value,
-                        Margin = new Thickness(0, 3, 3, 0)
-                    };
-                    Grid.SetRow(value, grid.RowDefinitions.Count);
-                    Grid.SetColumn(value, 1);
-
-                    grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
-                    grid.Children.Add(label);
-                    grid.Children.Add(value);
+                    str.CopyTo(fileStream);
                 }
 
-                return grid;
+                var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile);
+                AssemblyDebugDataViewModel? debugDataViewModel = null;
+                if (assemblyMetadata?.DebugData != null)
+                    debugDataViewModel = new AssemblyDebugDataViewModel(assemblyMetadata.DebugData);
+
+                // No debug data to display
+                if (assemblyMetadata != null && debugDataViewModel == null)
+                {
+                    var orderedAssemblyDataEntries = assemblyMetadata.GetMetadataEntriesOrderedByImportance();
+
+                    var grid = CreateAssemblyMetadataGrid(orderedAssemblyDataEntries);
+
+                    return new ScrollViewer
+                    {
+                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                        Content = grid,
+                    };
+                }
+                else if (assemblyMetadata != null && debugDataViewModel != null)
+                {
+                    var orderedAssemblyDataEntries = assemblyMetadata.GetMetadataEntriesOrderedByImportance();
+
+                    // Tab control with two pages
+                    var tc = new TabControl()
+                    {
+                        Items =
+                        {
+                            new TabItem
+                            {
+                                Header = "Assembly Attributes",
+                                Content = new ScrollViewer()
+                                {
+                                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    Content = CreateAssemblyMetadataGrid(orderedAssemblyDataEntries)
+                                }
+                            },
+                            new TabItem
+                            {
+                                Header = "Embedded PDB Data",
+                                Content = new ScrollViewer
+                                {
+                                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    Content = new Controls.PdbFileViewer
+                                    {
+                                        DataContext = debugDataViewModel
+                                    }
+                                }
+                            }
+                        }
+                    };
+
+                    return tc;
+                }
             }
+            catch { }
             finally
             {
                 if (File.Exists(tempFile))
@@ -69,8 +98,47 @@ namespace PackageExplorer
                     }
                 }
             }
+
+            return new Grid();
         }
 
-        #endregion
+
+        private static Grid CreateAssemblyMetadataGrid(IEnumerable<KeyValuePair<string, string>> orderedAssemblyDataEntries)
+        {
+
+            var grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+
+            var style =  Application.Current.FindResource("SelectableTextBlockLikeStyleWithoutTriggers") as Style;
+
+            foreach (var data in orderedAssemblyDataEntries)
+            {
+                var label = new TextBox
+                {
+                    Text = data.Key + ':',
+                    FontWeight = FontWeights.SemiBold,
+                    Margin = new Thickness(3, 3, 10, 0),
+                    Style = style
+                };
+                Grid.SetRow(label, grid.RowDefinitions.Count);
+                Grid.SetColumn(label, 0);
+
+                var value = new TextBox
+                {
+                    Text = data.Value,
+                    Margin = new Thickness(0, 3, 3, 0),
+                    Style = style
+                };
+                Grid.SetRow(value, grid.RowDefinitions.Count);
+                Grid.SetColumn(value, 1);
+
+                grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Auto) });
+                grid.Children.Add(label);
+                grid.Children.Add(value);
+            }
+
+            return grid;
+        }
     }
 }

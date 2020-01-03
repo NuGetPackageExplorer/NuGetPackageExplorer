@@ -1,70 +1,71 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
-using System.IO;
-using NuGet;
+using System.Linq;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
     [Export(typeof(IPackageRule))]
     internal class MisplacedAssemblyRule : IPackageRule
     {
-        private const string LibFolder = "lib";
+        private static readonly HashSet<string> assemblyFolders = new HashSet<string>(new[] { "lib", "analyzers", "build", "ref", "tools" }, StringComparer.OrdinalIgnoreCase);
 
         #region IPackageRule Members
 
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
-            foreach (IPackageFile file in package.GetFiles())
+            foreach (var file in package.GetFiles())
             {
-                string path = file.Path;
-                string directory = Path.GetDirectoryName(path);
+                var path = file.Path;
+                var segments = path.Split('\\');
+                var directory = segments.First();
 
-                // if under 'lib' directly
-                if (directory.Equals(LibFolder, StringComparison.OrdinalIgnoreCase))
+                // if under 'folder' directly
+                if (assemblyFolders.Contains(directory))
                 {
-                    if (FileHelper.IsAssembly(path))
+                    // file under the directory. Tools can do anything
+                    if (segments.Length == 2 && FileHelper.IsAssembly(path) && !"tools".Equals(directory, StringComparison.OrdinalIgnoreCase))
                     {
-                        yield return CreatePackageIssueForAssembliesUnderLib(path);
+                        yield return CreatePackageIssueForAssembliesUnderLib(path, directory);
                     }
                 }
-                else if (
-                    !directory.StartsWith(LibFolder + Path.DirectorySeparatorChar,
-                                          StringComparison.OrdinalIgnoreCase))
+                else
                 {
-                    // when checking for assemblies outside 'lib' folder, only check .dll files.
+                    // when checking for assemblies outside known folders, only check .dll files.
                     // .exe files are often legitimate outside 'lib'.
                     if (path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
                         path.EndsWith(".winmd", StringComparison.OrdinalIgnoreCase))
                     {
-                        yield return CreatePackageIssueForAssembliesOutsideLib(path);
+                        yield return CreatePackageIssueForAssembliesOutsideLib(path, directory);
                     }
                 }
+
             }
         }
 
         #endregion
 
-        private static PackageIssue CreatePackageIssueForAssembliesUnderLib(string target)
+        private static PackageIssue CreatePackageIssueForAssembliesUnderLib(string target, string folder)
         {
             return new PackageIssue(
                 PackageIssueLevel.Warning,
                 "Assembly not inside a framework folder",
                 "The assembly '" + target +
-                "' is placed directly under 'lib' folder. It is recommended that assemblies be placed inside a framework-specific folder.",
+                $"' is placed directly under '{folder}' folder. It is recommended that assemblies be placed inside a framework-specific folder.",
                 "Move it into a framework-specific folder. If this assembly is targeted for multiple frameworks, ignore this warning."
                 );
         }
 
-        private static PackageIssue CreatePackageIssueForAssembliesOutsideLib(string target)
+        private static PackageIssue CreatePackageIssueForAssembliesOutsideLib(string target, string folder)
         {
             return new PackageIssue(
                 PackageIssueLevel.Warning,
-                "Assembly outside lib folder",
+                "Assembly outside known folders",
                 "The assembly '" + target +
-                "' is not inside the 'lib' folder and hence it won't be added as reference when the package is installed into a project",
-                "Move it into 'lib' folder."
+                $"' is not inside the '{folder}' folder and hence it won't be used when the package is installed into a project",
+                "Move it into a known folder."
                 );
         }
     }

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using NuGet;
+using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -25,7 +26,7 @@ namespace PackageExplorerViewModel
 
             // create package in the temprary file first in case the operation fails which would
             // override existing file with a 0-byte file.
-            string fileNameToUse = useTempFile ? Path.GetTempFileName() : targetFilePath;
+            var fileNameToUse = useTempFile ? Path.GetTempFileName() : targetFilePath;
             try
             {
                 using (Stream stream = File.Create(fileNameToUse))
@@ -56,26 +57,7 @@ namespace PackageExplorerViewModel
 
         private static void CopyMetadata(IPackageMetadata source, PackageBuilder builder)
         {
-            builder.Id = source.Id;
-            builder.Version = source.Version;
-            builder.Title = source.Title;
-            builder.Authors.AddRange(source.Authors);
-            builder.Owners.AddRange(source.Owners);
-            builder.IconUrl = source.IconUrl;
-            builder.LicenseUrl = source.LicenseUrl;
-            builder.ProjectUrl = source.ProjectUrl;
-            builder.RequireLicenseAcceptance = source.RequireLicenseAcceptance;
-            builder.DevelopmentDependency = source.DevelopmentDependency;
-            builder.Description = source.Description;
-            builder.Summary = source.Summary;
-            builder.ReleaseNotes = source.ReleaseNotes;
-            builder.Copyright = source.Copyright;
-            builder.Language = source.Language;
-            builder.Tags.AddRange(ParseTags(source.Tags));
-            builder.DependencySets.AddRange(source.DependencySets);
-            builder.FrameworkReferences.AddRange(source.FrameworkAssemblies);
-            builder.PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
-            builder.MinClientVersion = source.MinClientVersion;
+            builder.Populate(new ManifestMetadata(source));
         }
 
         public static IPackage BuildPackage(IPackageMetadata metadata, IEnumerable<IPackageFile> files)
@@ -89,39 +71,27 @@ namespace PackageExplorerViewModel
         public static IEnumerable<PackageIssue> Validate
             (this IPackage package, IEnumerable<IPackageRule> rules, string packageSource)
         {
-            foreach (IPackageRule rule in rules)
+            foreach (var rule in rules)
             {
                 if (rule != null)
                 {
-                    PackageIssue[] issues = null;
+                    PackageIssue[]? issues = null;
                     try
                     {
                         issues = rule.Validate(package, packageSource).ToArray();
                     }
                     catch (Exception)
                     {
-                        issues = new PackageIssue[0];
+                        issues = Array.Empty<PackageIssue>();
                     }
 
                     // can't yield inside a try/catch block
-                    foreach (PackageIssue issue in issues)
+                    foreach (var issue in issues)
                     {
                         yield return issue;
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Tags come in this format. tag1 tag2 tag3 etc..
-        /// </summary>
-        private static IEnumerable<string> ParseTags(string tags)
-        {
-            if (tags == null)
-            {
-                return Enumerable.Empty<string>();
-            }
-            return tags.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }
