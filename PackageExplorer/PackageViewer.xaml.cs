@@ -57,6 +57,7 @@ namespace PackageExplorer
                         "v2.1","netcoreapp2.1",
                         "v2.2","netcoreapp2.2",
                         "v3.0","netcoreapp3.0",
+                        "v3.1","netcoreapp3.1",
                     }
                 }
                 ,
