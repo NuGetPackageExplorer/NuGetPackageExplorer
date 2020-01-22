@@ -59,6 +59,7 @@ namespace PackageExplorerViewModel
         private ICommand? _viewPackageAnalysisCommand;
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
+        private bool _disposed;
 
         #endregion
 
@@ -111,7 +112,8 @@ namespace PackageExplorerViewModel
                 if (_isInEditMode != value)
                 {
                     _isInEditMode = value;
-                    OnPropertyChanged("IsInEditMetadataMode");
+                    OnPropertyChanged(nameof(IsInEditMetadataMode));
+                    OnPropertyChanged(nameof(IsSignedOrInEditMetadataMode));
                 }
             }
         }
@@ -135,6 +137,7 @@ namespace PackageExplorerViewModel
                 {
                     _isSigned = value;
                     OnPropertyChanged(nameof(IsSigned));
+                    OnPropertyChanged(nameof(IsSignedOrInEditMetadataMode));
                     _saveCommand?.RaiseCanExecuteChangedEvent();
                 }
             }
@@ -149,8 +152,8 @@ namespace PackageExplorerViewModel
                 if (_fileEditorViewModel != value)
                 {
                     _fileEditorViewModel = value;
-                    OnPropertyChanged("FileEditorViewModel");
-                    OnPropertyChanged("IsInEditFileMode");
+                    OnPropertyChanged(nameof(FileEditorViewModel));
+                    OnPropertyChanged(nameof(IsInEditFileMode));
                 }
             }
         }
@@ -168,8 +171,8 @@ namespace PackageExplorerViewModel
                 if (_packageMetadata != value)
                 {
                     _packageMetadata = value;
-                    OnPropertyChanged("PackageMetadata");
-                    OnPropertyChanged("IsTokenized");
+                    OnPropertyChanged(nameof(PackageMetadata));
+                    OnPropertyChanged(nameof(IsTokenized));
                 }
             }
         }
@@ -182,7 +185,7 @@ namespace PackageExplorerViewModel
                 if (_showContentViewer != value)
                 {
                     _showContentViewer = value;
-                    OnPropertyChanged("ShowContentViewer");
+                    OnPropertyChanged(nameof(ShowContentViewer));
                 }
             }
         }
@@ -195,7 +198,7 @@ namespace PackageExplorerViewModel
                 if (_showPackageAnalysis != value)
                 {
                     _showPackageAnalysis = value;
-                    OnPropertyChanged("ShowPackageAnalysis");
+                    OnPropertyChanged(nameof(ShowPackageAnalysis));
                 }
             }
         }
@@ -208,7 +211,7 @@ namespace PackageExplorerViewModel
                 if (_currentFileInfo != value)
                 {
                     _currentFileInfo = value;
-                    OnPropertyChanged("CurrentFileInfo");
+                    OnPropertyChanged(nameof(CurrentFileInfo));
                 }
             }
         }
@@ -226,7 +229,7 @@ namespace PackageExplorerViewModel
                 if (_selectedItem != value)
                 {
                     _selectedItem = value;
-                    OnPropertyChanged("SelectedItem");
+                    OnPropertyChanged(nameof(SelectedItem));
                     ((ViewContentCommand)ViewContentCommand).RaiseCanExecuteChanged();
                     CommandManager.InvalidateRequerySuggested();
                 }
@@ -241,12 +244,12 @@ namespace PackageExplorerViewModel
                 if (_packagePath != value)
                 {
                     _packagePath = value;
-                    OnPropertyChanged("PackageSource");
+                    OnPropertyChanged(nameof(PackageSource));
 
                     // This may be a URI or a file
                     if (Uri.TryCreate(value, UriKind.Absolute, out var result))
                     {
-                        if (result.IsFile && File.Exists(value))
+                        if (result!.IsFile && File.Exists(value))
                         {
                             // Clean up the old one since we can't reliably change the Filter without a race
                             if (_watcher != null)
@@ -294,7 +297,7 @@ namespace PackageExplorerViewModel
                 if (_hasEdit != value)
                 {
                     _hasEdit = value;
-                    OnPropertyChanged("HasEdit");
+                    OnPropertyChanged(nameof(HasEdit));
                 }
             }
         }
@@ -305,10 +308,31 @@ namespace PackageExplorerViewModel
 
         public PackageFolder RootFolder { get; }
 
+        public IEnumerable<string> IconPaths
+        {
+            get
+            {
+                yield return "";
+
+                foreach (var file in RootFolder.GetFiles())
+                {
+                    if (file.Path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
+                        file.Path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return file.Path;
+                    }
+                }
+            }
+        }
+
+        public bool IsDisposed => _disposed;
+
         #region IDisposable Members
 
         public void Dispose()
         {
+            _disposed = true;
+
             RootFolder.Dispose();
             _package.Dispose();
 
@@ -366,6 +390,7 @@ namespace PackageExplorerViewModel
 
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddExistingFileToFolder(PackageFolder folder)
         {
             var result = UIServices.OpenMultipleFilesDialog(
@@ -415,6 +440,7 @@ namespace PackageExplorerViewModel
             return !RootFolder.ContainsFolder(folderName);
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddContentFolderExecute(string folderName)
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_AddContentFolderExecute");
@@ -450,6 +476,7 @@ namespace PackageExplorerViewModel
             return parameter == null || parameter is PackageFolder;
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddNewFolderExecute(object parameter)
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_AddNewFolderExecute");
@@ -736,9 +763,12 @@ namespace PackageExplorerViewModel
                 if (UIServices.OpenSaveFileDialog(title, file.Name, /* initial directory */ null, filter, /* overwritePrompt */ true,
                                                   out var selectedFileName, out var filterIndex))
                 {
-                    using var fileStream = File.Open(selectedFileName, FileMode.Create, FileAccess.Write, FileShare.Read);
-                    using var packageStream = file.GetStream();
-                    packageStream.CopyTo(fileStream);
+                    {
+                        using var fileStream = File.Open(selectedFileName, FileMode.Create, FileAccess.Write, FileShare.Read);
+                        using var packageStream = file.GetStream();
+                        packageStream.CopyTo(fileStream);
+                    }
+                    File.SetLastWriteTime(selectedFileName, file.LastWriteTime.DateTime);
                 }
             }
             catch (Exception e)
@@ -810,14 +840,13 @@ namespace PackageExplorerViewModel
 
             try
             {
-                using var mruSourceManager = new MruPackageSourceManager(
-                    new PublishSourceSettings(SettingsManager));
-                var publishPackageViewModel = new PublishPackageViewModel(
-mruSourceManager,
-SettingsManager,
-UIServices,
-_credentialPublishProvider,
-this);
+                using var mruSourceManager = new MruPackageSourceManager(new PublishSourceSettings(SettingsManager));
+                using var publishPackageViewModel = new PublishPackageViewModel(
+                                                            mruSourceManager,
+                                                            SettingsManager,
+                                                            UIServices,
+                                                            _credentialPublishProvider,
+                                                            this);
                 UIServices.OpenPublishDialog(publishPackageViewModel);
             }
             catch (Exception e)
@@ -1123,6 +1152,7 @@ this);
             AddNewFileToFolder(folder ?? RootFolder);
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddNewFileToFolder(PackageFolder folder)
         {
             var result = UIServices.OpenRenameDialog(
@@ -1158,6 +1188,7 @@ this);
             }
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddScriptCommandExecute(string scriptName)
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_AddScriptCommandExecute");
@@ -1226,6 +1257,7 @@ this);
             return false;
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddBuildFileCommandExecute(string extension)
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_AddBuildFileCommandExecute");
@@ -1306,7 +1338,7 @@ this);
         {
             // raise the property change event here to force the edit form to rebind 
             // all controls, which will erase all error states, if any, left over from the previous edit
-            OnPropertyChanged("PackageMetadata");
+            OnPropertyChanged(nameof(PackageMetadata));
             IsInEditMetadataMode = true;
         }
 
@@ -1339,12 +1371,13 @@ this);
         internal void NotifyChanges()
         {
             HasEdit = true;
+            OnPropertyChanged(nameof(IconPaths));
         }
 
         public IEnumerable<PackageIssue> Validate()
         {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
-            var packageFileName = Path.IsPathRooted(PackagePath) ? Path.GetFileName(PackagePath) : string.Empty;
+            var packageFileName = Path.IsPathRooted(PackagePath) ? Path.GetFileName(PackagePath)! : string.Empty;
             return package.Validate(_packageRules.Select(r => r.Value), packageFileName);
         }
 
@@ -1352,7 +1385,7 @@ this);
         {
             if (rootPath == null)
             {
-                throw new ArgumentNullException("rootPath");
+                throw new ArgumentNullException(nameof(rootPath));
             }
 
             if (!Directory.Exists(rootPath))
@@ -1364,7 +1397,7 @@ this);
             RootFolder.Export(rootPath);
 
             // export .nuspec file
-            ExportManifest(Path.Combine(rootPath, PackageMetadata + ".nuspec"));
+            ExportManifest(Path.Combine(rootPath, PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension));
         }
 
         internal void ExportManifest(string fullpath, bool askForConfirmation = true, bool includeFilesSection = true)
@@ -1381,7 +1414,7 @@ this);
             }
 
             DiagnosticsClient.TrackEvent("PackageViewModel_ExportManifest");
-            var rootPath = Path.GetDirectoryName(fullpath);
+            var rootPath = Path.GetDirectoryName(fullpath)!;
 
             using Stream fileStream = File.Create(fullpath);
             var manifest = Manifest.Create(PackageMetadata);
@@ -1438,8 +1471,12 @@ this);
             CurrentFileInfo = null;
         }
 
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddDraggedAndDroppedFiles(PackageFolder? folder, string[] fileNames)
         {
+            if (fileNames is null)
+                throw new ArgumentNullException(nameof(fileNames));
+
             if (folder == null)
             {
                 bool? rememberedAnswer = null;
@@ -1458,7 +1495,7 @@ this);
                         {
                             // ask user if he wants to move file
                             var answer = UIServices.ConfirmMoveFile(
-                                Path.GetFileName(file),
+                                Path.GetFileName(file)!,
                                 guessFolderName, fileNames.Length - i - 1);
 
                             if (answer.Item1 == null)
@@ -1518,8 +1555,13 @@ this);
             }
         }
 
-        public void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<(string FilePath, Stream? Stream)> fileDescriptors)
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
+        public static void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<(string FilePath, Stream? Stream)> fileDescriptors)
         {
+            if (folder is null)
+                throw new ArgumentNullException(nameof(folder));
+            if (fileDescriptors is null)
+                throw new ArgumentNullException(nameof(fileDescriptors));
             foreach (var fileDescription in fileDescriptors)
             {
                 var parts = fileDescription.FilePath.Split(Path.DirectorySeparatorChar);
@@ -1529,6 +1571,7 @@ this);
                 for (var i = 0; i < parts.Length - 1; i++)
                 {
                     parentFolder = (PackageFolder)parentFolder[parts[i]];
+                    if (parentFolder is null) throw new ArgumentNullException(nameof(folder)); // verify each part isn't null. should never happen
                 }
 
                 if (fileDescription.Stream != null) // file
@@ -1552,7 +1595,7 @@ this);
             }
 
             // any deps
-            return PackageMetadata.DependencySets
+            return PackageMetadata.DependencyGroups
                     .SelectMany(ds => ds.Packages)
                     .Any(dp => dp.VersionRange.MinVersion?.IsTokenized() == true || dp.VersionRange.MaxVersion?.IsTokenized() == true);
         }

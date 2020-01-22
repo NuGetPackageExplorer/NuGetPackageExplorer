@@ -35,10 +35,12 @@ namespace PackageExplorerViewModel
             CredentialPublishProvider credentialPublishProvider,
             PackageViewModel viewModel)
         {
-            _mruSourceManager = mruSourceManager;
-            _settingsManager = settingsManager;
-            _uiServices = uiServices;
-            _credentialPublishProvider = credentialPublishProvider;
+            if (viewModel is null)
+                throw new ArgumentNullException(nameof(viewModel));
+            _mruSourceManager = mruSourceManager ?? throw new ArgumentNullException(nameof(mruSourceManager));
+            _settingsManager = settingsManager ?? throw new ArgumentNullException(nameof(settingsManager));
+            _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
+            _credentialPublishProvider = credentialPublishProvider ?? throw new ArgumentNullException(nameof(credentialPublishProvider));
             _package = viewModel.PackageMetadata;
             _packageFilePath = viewModel.GetCurrentPackageTempFile();
             SelectedPublishItem = _mruSourceManager.ActivePackageSource;
@@ -219,6 +221,8 @@ namespace PackageExplorerViewModel
 
         public void OnError(Exception error)
         {
+            if (error is null)
+                throw new ArgumentNullException(nameof(error));
             ShowProgress = false;
             HasError = true;
             Status = error.Message;

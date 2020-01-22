@@ -15,7 +15,9 @@ namespace PackageExplorer
 
         // for select plugin dialog
         private PackageChooserDialog? _pluginDialog;
+#pragma warning disable CA2213 // Disposable fields should be disposed
         private PackageChooserViewModel? _pluginViewModel;
+#pragma warning restore CA2213 // Disposable fields should be disposed
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         [Import]
@@ -64,11 +66,11 @@ namespace PackageExplorer
             return _viewModel.SelectedPackage;
         }
 
-        private async void OnPackageDownloadRequested(object sender, EventArgs e)
+        private async void OnPackageDownloadRequested(object? sender, EventArgs e)
         {
             DiagnosticsClient.TrackEvent("PackageChooserService_OnPackageDownloadRequested");
 
-            var vm = (PackageChooserViewModel)sender;
+            var vm = (PackageChooserViewModel)sender!;
             var repository = vm.ActiveRepository;
             var packageInfo = vm.SelectedPackage;
             if (packageInfo != null && repository != null)

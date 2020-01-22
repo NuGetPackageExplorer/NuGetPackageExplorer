@@ -11,7 +11,7 @@ namespace NuGetPackageExplorer.Types
         {
             if (string.IsNullOrEmpty("text"))
             {
-                throw new ArgumentNullException("text");
+                throw new ArgumentNullException(nameof(text));
             }
 
             Text = text;

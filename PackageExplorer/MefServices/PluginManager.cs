@@ -18,7 +18,7 @@ using Windows.Storage;
 namespace PackageExplorer
 {
     [Export(typeof(IPluginManager))]
-    internal class PluginManager : IPluginManager
+    internal class PluginManager : IPluginManager, IDisposable
     {
         private const string NuGetDirectoryName = "NuGet";
         private const string PluginsDirectoryName = "PackageExplorerPlugins";
@@ -35,11 +35,12 @@ namespace PackageExplorer
             "lib\\net471",
             "lib\\net472",
             "lib\\net48",
-            "lib\\netcoreapp3.0"
+            "lib\\netcoreapp3.0",
+            "lib\\netcoreapp3.1",
         };
 
         // %localappdata%/NuGet/PackageExplorerPlugins
-        private static readonly string? PluginsDirectory = GetPluginDirectory();
+        private static readonly string PluginsDirectory = GetPluginDirectory()!;
 
 
 
@@ -91,7 +92,7 @@ namespace PackageExplorer
         {
             if (catalog == null)
             {
-                throw new ArgumentNullException("catalog");
+                throw new ArgumentNullException(nameof(catalog));
             }
 
             // clean up from previous run
@@ -116,7 +117,7 @@ namespace PackageExplorer
         {
             if (plugin == null)
             {
-                throw new ArgumentNullException("plugin");
+                throw new ArgumentNullException(nameof(plugin));
             }
 
             if (PluginsDirectory == null)
@@ -180,7 +181,7 @@ namespace PackageExplorer
         {
             if (plugin == null)
             {
-                throw new ArgumentNullException("plugin");
+                throw new ArgumentNullException(nameof(plugin));
             }
 
             if (PluginsDirectory == null)
@@ -263,7 +264,7 @@ namespace PackageExplorer
             var directoryInfo = new DirectoryInfo(PluginsDirectory);
             if (directoryInfo.Exists)
             {
-                return directoryInfo.GetDirectories().Select(ConvertFromDirectoryToPluginInfo).Where(p => p != null);
+                return directoryInfo.GetDirectories().Select(ConvertFromDirectoryToPluginInfo).Where(p => p != null)!;
             }
             else
             {
@@ -271,6 +272,7 @@ namespace PackageExplorer
             }
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private bool AddPluginToCatalog(PluginInfo pluginInfo, string targetPath, bool quietMode)
         {
             try
@@ -300,6 +302,11 @@ namespace PackageExplorer
 
                 return false;
             }
+        }
+
+        public void Dispose()
+        {
+            _pluginCatalog.Dispose();
         }
 
         private void RemovePluginFromCatalog(PluginInfo pluginInfo)
@@ -377,7 +384,7 @@ namespace PackageExplorer
 
                         // also delete the real plugin directory
                         var pluginDirectory = Path.Combine(PluginsDirectory,
-                                                              Path.GetFileNameWithoutExtension(file.Name));
+                                                              Path.GetFileNameWithoutExtension(file.Name)!);
                         if (Directory.Exists(pluginDirectory))
                         {
                             Directory.Delete(pluginDirectory, recursive: true);
@@ -398,9 +405,12 @@ namespace PackageExplorer
             builder.AppendLine();
             builder.AppendLine();
 
-            foreach (var loaderException in exception.LoaderExceptions)
+            foreach (var loaderException in exception.LoaderExceptions!)
             {
-                builder.AppendLine(loaderException.Message);
+                if(loaderException != null)
+                {
+                    builder.AppendLine(loaderException.Message);
+                }                
             }
 
             return builder.ToString();

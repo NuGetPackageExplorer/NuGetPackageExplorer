@@ -43,7 +43,7 @@ namespace PackageExplorer
             if (Path.IsPathRooted(path))
             {
                 separator = Path.DirectorySeparatorChar;
-                var index = path.IndexOf(Path.VolumeSeparatorChar);
+                var index = path.IndexOf(Path.VolumeSeparatorChar, StringComparison.Ordinal);
                 if (index > -1)
                 {
                     prefix = path.Substring(0, Math.Min(path.Length, index + 2));
@@ -53,7 +53,7 @@ namespace PackageExplorer
             else
             {
                 separator = '/';
-                var index = path.IndexOf(Uri.SchemeDelimiter, StringComparison.OrdinalIgnoreCase);
+                var index = path.IndexOf(Uri.SchemeDelimiter, StringComparison.Ordinal);
                 if (index > -1)
                 {
                     prefix = path.Substring(0, Math.Min(path.Length, index + 3));

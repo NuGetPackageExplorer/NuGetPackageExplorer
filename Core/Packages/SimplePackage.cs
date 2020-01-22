@@ -17,7 +17,7 @@ namespace NuGetPe
         {
             if (packageBuilder == null)
             {
-                throw new ArgumentNullException("packageBuilder");
+                throw new ArgumentNullException(nameof(packageBuilder));
             }
 
             Id = packageBuilder.Id;
@@ -25,6 +25,7 @@ namespace NuGetPe
             Title = packageBuilder.Title;
             Authors = packageBuilder.Authors;
             Owners = packageBuilder.Owners;
+            Icon = packageBuilder.Icon;
             IconUrl = packageBuilder.IconUrl;
             LicenseUrl = packageBuilder.LicenseUrl;
             ProjectUrl = packageBuilder.ProjectUrl;
@@ -45,7 +46,7 @@ namespace NuGetPe
             PackageTypes = packageBuilder.PackageTypes;
             MinClientVersion = packageBuilder.MinClientVersion;
             LicenseMetadata = packageBuilder.LicenseMetadata;
-            FrameworkReferenceGroups = packageBuilder.FrameworkReferenceGroups;
+            FrameworkReferenceGroups = packageBuilder.FrameworkReferenceGroups;            
 
             _packageBuilder = packageBuilder;
         }
@@ -71,6 +72,8 @@ namespace NuGetPe
         public IEnumerable<string> Authors { get; private set; }
 
         public IEnumerable<string> Owners { get; private set; }
+
+        public string Icon { get; private set; }
 
         public Uri IconUrl { get; private set; }
 

@@ -18,34 +18,48 @@
     <IsLegacyProject>$(MSBuildProjectName.Equals('PackageExplorer'))</IsLegacyProject>
     <IsPackageProject>$(MSBuildProjectName.Contains('.Package'))</IsPackageProject>
     <DebugType>embedded</DebugType>
-    <ExtrasEnableWpfProjectSetup>true</ExtrasEnableWpfProjectSetup>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
-    
-    <UseWPF>true</UseWPF>
+
+
+    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
+
+    <UseWpf>true</UseWpf>
+    <UseWindowsForms>true</UseWindowsForms>
+    <!-- This suppresses the warning we get because of defining UseWpf/UseWindowsForms where it doesn't
+         apply to all of our projects -->
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);NETSDK1107</MSBuildWarningsAsMessages>    
 
     <LangVersion>preview</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <TargetPlatformMinVersion>10.0.10563.0</TargetPlatformMinVersion>
-    <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
+    
+    <NuGetDependencyVersion>5.5.0-xprivate.60017</NuGetDependencyVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="2.3.138" PrivateAssets="all" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All"/>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.0.50" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All"/>
     <Compile Include="$(MSBuildThisFileDirectory)Common\CommonAssemblyInfo.cs" LinkBase="Properties" />
   </ItemGroup>
   
   <PropertyGroup>
-    <DefineConstants Condition="'$(Configuration)' == 'Store' ">$(DefineConstants);STORE</DefineConstants>
-    <DefineConstants Condition="'$(Configuration)' == 'Nightly' ">$(DefineConstants);NIGHTLY</DefineConstants>
-    <DefineConstants Condition="'$(Configuration)' == 'Choco' ">$(DefineConstants);CHOCO</DefineConstants>        
-    <DefineConstants Condition="'$(Configuration)' == 'Release' ">$(DefineConstants);ZIP</DefineConstants>    
-    <DefineConstants Condition="'$(Configuration)' == 'Debug' ">$(DefineConstants);ZIP</DefineConstants>    
+    <ReleaseChannel Condition="'$(ReleaseChannel)' == '' ">Debug</ReleaseChannel>
+  </PropertyGroup> 
+  
+  <PropertyGroup>
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Store' ">$(DefineConstants);STORE</DefineConstants>
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Nightly' ">$(DefineConstants);NIGHTLY</DefineConstants>
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Choco' ">$(DefineConstants);CHOCO</DefineConstants>        
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Release' ">$(DefineConstants);ZIP</DefineConstants>    
+    <DefineConstants Condition="'$(ReleaseChannel)' == 'Debug' ">$(DefineConstants);ZIP</DefineConstants>    
   </PropertyGroup>
 
 </Project>

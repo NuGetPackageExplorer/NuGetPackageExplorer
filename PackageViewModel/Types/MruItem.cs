@@ -30,7 +30,7 @@ namespace NuGetPackageExplorer.Types
                 Version == other.Version;
         }
 
-        public override bool Equals(object obj)
+        public override bool Equals(object? obj)
         {
             return obj is MruItem item && Equals(item);
         }
@@ -44,7 +44,7 @@ namespace NuGetPackageExplorer.Types
         {
             if (!string.IsNullOrEmpty(Id))
             {
-                return string.Format("{0} {1}", Id, Version);
+                return $"{Id} {Version}";
             }
             return Path ?? "MruItem";
         }

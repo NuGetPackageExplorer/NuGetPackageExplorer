@@ -14,6 +14,10 @@
                 <ResourceDictionary Source="Xaml/Icons.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- Add this in so the designer finds these via StaticResource.
+                 The instance will be replaced during startup -->
+            <self:SettingsManager x:Key="Settings" />
+
             <self:IntegerToBooleanConverter x:Key="FontSizeToBoolConverter" />
             <self:BooleanToVisibilityConverter x:Key="invertedBoolToVis" Inverted="True" />
             <self:BooleanToVisibilityConverter x:Key="boolToVis" />
@@ -90,10 +94,26 @@
                 </Style.Triggers>
             </Style>
 
+            <!-- Clone of SelectableTextBlockLikeStyle, but without triggers -->
+            <Style x:Key="SelectableTextBlockLikeStyleWithoutTriggers" TargetType="TextBox" BasedOn="{StaticResource {x:Type TextBox}}">
+                <Setter Property="IsReadOnly" Value="True"/>
+                <Setter Property="IsTabStop" Value="False"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="Padding" Value="-2,0,0,0"/>
+                <!-- The Padding -2,0,0,0 is required because the TextBox
+        seems to have an inherent "Padding" of about 2 pixels.
+        Without the Padding property,
+        the text seems to be 2 pixels to the left
+        compared to a TextBlock
+    -->
+            </Style>
+
             <Style TargetType="{x:Type Image}" x:Key="ImageStyleBase">
                 <Setter Property="Width" Value="16" />
                 <Setter Property="Height" Value="16" />
                 <Setter Property="Stretch" Value="Uniform" />
+                <Setter Property="RenderOptions.BitmapScalingMode" Value="NearestNeighbor" />
             </Style>
 
             <Style TargetType="{x:Type self:GrayscaleImage}" BasedOn="{StaticResource ImageStyleBase}"></Style>

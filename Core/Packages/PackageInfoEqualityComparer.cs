@@ -31,7 +31,7 @@ namespace NuGetPe
 
         public int GetHashCode(PackageInfo obj)
         {
-            return obj.Id.GetHashCode();
+            return obj?.Id.GetHashCode(StringComparison.OrdinalIgnoreCase) ?? 0;
         }
 
         #endregion

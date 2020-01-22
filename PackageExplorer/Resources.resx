@@ -135,9 +135,6 @@
   <data name="Dialog_FrameworkAssembliesLabel" xml:space="preserve">
     <value>Framework Assembly References:</value>
   </data>
-  <data name="Dialog_HelpAbout" xml:space="preserve">
-    <value>Author: Luan Nguyen (@dotnetjunky). For more information, visit http://nuget.codeplex.com.</value>
-  </data>
   <data name="Dialog_IdLabel" xml:space="preserve">
     <value>Id:</value>
   </data>
@@ -263,6 +260,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="PackageChooser_ActionShowAllVersions" xml:space="preserve">
     <value>show all versions</value>
   </data>
+  <data name="PackageChooser_AlternatePackage" xml:space="preserve">
+    <value>Alternate Package:</value>
+  </data>
   <data name="PackageChooser_ClearSearchButtonTooltip" xml:space="preserve">
     <value>Clear search</value>
   </data>
@@ -274,6 +274,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="PackageChooser_ColumnHeaderVersion" xml:space="preserve">
     <value>Version</value>
+  </data>
+  <data name="PackageChooser_Deprecated" xml:space="preserve">
+    <value>Deprecated:</value>
   </data>
   <data name="PackageChooser_DetailAuthors" xml:space="preserve">
     <value>Author(s):</value>

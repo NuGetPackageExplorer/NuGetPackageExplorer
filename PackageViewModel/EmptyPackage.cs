@@ -9,7 +9,7 @@ using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    public class EmptyPackage : IPackage
+    public sealed class EmptyPackage : IPackage
     {
         #region IPackage Members
 
@@ -54,6 +54,8 @@ namespace PackageExplorerViewModel
         {
             get { return null; }
         }
+
+        public string? Icon => null;
 
         public Uri? LicenseUrl
         {
@@ -110,11 +112,6 @@ namespace PackageExplorerViewModel
             get { return false; }
         }
 
-        public IEnumerable<PackageDependencyGroup> DependencySets
-        {
-            get { return Enumerable.Empty<PackageDependencyGroup>(); }
-        }
-
         public Uri? ReportAbuseUrl
         {
             get { return null; }
@@ -125,7 +122,9 @@ namespace PackageExplorerViewModel
             get { return -1; }
         }
 
+#pragma warning disable CA1822 // Mark members as static
         public IEnumerable<FrameworkAssemblyReference> FrameworkAssemblies
+#pragma warning restore CA1822 // Mark members as static
         {
             get { return Enumerable.Empty<FrameworkAssemblyReference>(); }
         }

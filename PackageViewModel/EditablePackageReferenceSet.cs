@@ -16,11 +16,13 @@ namespace PackageExplorerViewModel
 
         public EditablePackageReferenceSet(PackageReferenceSet packageReferenceSet)
         {
+            if (packageReferenceSet is null)
+                throw new System.ArgumentNullException(nameof(packageReferenceSet));
             _targetFramework = packageReferenceSet.TargetFramework;
             References = new ObservableCollection<string>(packageReferenceSet.References);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public NuGetFramework? TargetFramework
         {
@@ -33,7 +35,7 @@ namespace PackageExplorerViewModel
                 if (_targetFramework != value)
                 {
                     _targetFramework = value;
-                    OnPropertyChange("TargetFramework");
+                    OnPropertyChange(nameof(TargetFramework));
                 }
             }
         }

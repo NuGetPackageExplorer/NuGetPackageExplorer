@@ -28,9 +28,11 @@
                                        Margin="4,0,0,0"
                                        Visibility="{Binding LatestPackageInfo.IsPrefixReserved, Converter={StaticResource boolToVis}}"/>
             <TextBlock HorizontalAlignment="Stretch" Margin="4,0,0,0">
-                                by
-                                <Run Text="{Binding LatestPackageInfo.Authors, Mode=OneWay}"/>,
-                                <Run Text="{Binding LatestPackageInfo.DownloadCount, Mode=OneWay, Converter={StaticResource NumberToStringConverter}}" FontWeight="Bold"/> downloads
+                by
+                <Run Text="{Binding LatestPackageInfo.Authors, Mode=OneWay}"/>
+                <TextBlock Visibility="{Binding LatestPackageInfo.DownloadCount, Mode=OneWay, Converter={StaticResource NullToVisibilityConverter}}">,</TextBlock>
+                <Run Text="{Binding LatestPackageInfo.DownloadCount, Mode=OneWay, Converter={StaticResource NumberToStringConverter}}" FontWeight="Bold"/>
+                <TextBlock Visibility="{Binding LatestPackageInfo.DownloadCount,  Mode=OneWay,Converter={StaticResource NullToVisibilityConverter}}">downloads</TextBlock>
             </TextBlock>
 
         </StackPanel>
@@ -48,7 +50,8 @@
             </Label.Style>
             <Label.Content>
                 <TextBlock>
-                                    v<Run Text="{Binding LatestPackageInfo.SemanticVersion, Mode=OneWay}"/>
+                    <ContentControl Content="{StaticResource StatusSecurityWarningIcon}" ToolTip="{Binding LatestPackageInfo.DeprecationInfo.Message, Mode=OneWay}" Visibility="{Binding LatestPackageInfo.DeprecationInfo, Converter={StaticResource NullToVisibilityConverter}}" />
+                    <Run BaselineAlignment="Center">v</Run><Run BaselineAlignment="Center" Text="{Binding LatestPackageInfo.SemanticVersion, Mode=OneWay}"/>
                 </TextBlock>
             </Label.Content>
         </Label>

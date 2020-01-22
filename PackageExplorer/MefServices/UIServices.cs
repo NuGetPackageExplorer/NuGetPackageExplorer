@@ -107,7 +107,7 @@ namespace PackageExplorer
             }
             else
             {
-                selectedFileNames = new string[0];
+                selectedFileNames = Array.Empty<string>();
                 return false;
             }
         }
@@ -134,25 +134,16 @@ namespace PackageExplorer
 
         public void Show(string message, MessageLevel messageLevel)
         {
-            MessageBoxImage image;
-            switch (messageLevel)
+            var image = messageLevel switch
             {
-                case MessageLevel.Error:
-                    image = MessageBoxImage.Error;
-                    break;
+                MessageLevel.Error => MessageBoxImage.Error,
 
-                case MessageLevel.Information:
-                    image = MessageBoxImage.Information;
-                    break;
+                MessageLevel.Information => MessageBoxImage.Information,
 
-                case MessageLevel.Warning:
-                    image = MessageBoxImage.Warning;
-                    break;
+                MessageLevel.Warning => MessageBoxImage.Warning,
 
-                default:
-                    throw new ArgumentOutOfRangeException("messageLevel");
-            }
-
+                _ => throw new ArgumentOutOfRangeException(nameof(messageLevel)),
+            };
             void ShowDialog()
             {
                 MessageBox.Show(
@@ -244,9 +235,9 @@ namespace PackageExplorer
             return result ?? false;
         }
 
-        private void OnDialogClosed(object sender, EventArgs e)
+        private void OnDialogClosed(object? sender, EventArgs e)
         {
-            var window = (Window)sender;
+            var window = (Window)sender!;
             if (window.DataContext is IDisposable disposable)
             {
                 disposable.Dispose();
@@ -256,7 +247,7 @@ namespace PackageExplorer
 
         public bool OpenFolderDialog(string title, string initialPath, out string selectedPath)
         {
-            var dialog = new System.Windows.Forms.FolderBrowserDialog()
+            using var dialog = new System.Windows.Forms.FolderBrowserDialog()
             {
                 SelectedPath = initialPath,
                 Description = title,
@@ -295,7 +286,7 @@ namespace PackageExplorer
         {
             if (numberOfItemsLeft < 0)
             {
-                throw new ArgumentOutOfRangeException("numberOfItemsLeft");
+                throw new ArgumentOutOfRangeException(nameof(numberOfItemsLeft));
             }
 
             var mainInstruction = string.Format(
@@ -375,7 +366,7 @@ namespace PackageExplorer
                 Resources.MoveContentFileToFolderExplanation,
                 targetFolder);
 
-            var dialog = new TaskDialog
+            using var dialog = new TaskDialog
             {
                 MainInstruction = mainInstruction,
                 Content = content,
@@ -487,13 +478,22 @@ namespace PackageExplorer
                 WindowTitle = Resources.Dialog_Title,
                 MainInstruction = "Credentials for " + target,
                 Content = "Enter Personal Access Tokens in the username field.",
-                Target = target
+                Target = target,
+                ShowSaveCheckBox = true, // Allow user to save the credentials to operating system's credential manager
+                ShowUIForSavedCredentials = false // Do not show dialog when credentials can be grabbed from OS credential manager
             };
 
             try
             {
+                // Show dialog or query credential manager
                 if (dialog.ShowDialog())
                 {
+                    // When dialog was shown
+                    if (!dialog.IsStoredCredential)
+                    {
+                        // Save the credentials when save checkbox was checked
+                        dialog.ConfirmCredentials(true);
+                    }
                     networkCredential = dialog.Credentials;
                     return true;
                 }

@@ -4,56 +4,73 @@
     <VisualStudioVersion>15.0</VisualStudioVersion>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x86">
       <Configuration>Debug</Configuration>
-      <Platform>x86</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Nightly|x86">
-      <Configuration>Nightly</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x86">
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
-    <ProjectConfiguration Include="Store|x86">
-      <Configuration>Store</Configuration>
-      <Platform>x86</Platform>
-    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <WapProjPath Condition="'$(WapProjPath)'==''">$(MSBuildExtensionsPath)\Microsoft\DesktopBridge\</WapProjPath>
   </PropertyGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" />
   <PropertyGroup>
     <ProjectGuid>452579bf-ff89-46fd-953d-e9d02d71efdd</ProjectGuid>
-    <TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.15063.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
-    <PackageCertificateKeyFile>PackageExplorer.Package_StoreKey.pfx</PackageCertificateKeyFile>
-    <PackageCertificateThumbprint>520E65EB4C066EAB2601FA5D6AB2FB6E1271CB6B</PackageCertificateThumbprint>
+    <DebuggerType>ManagedOnly</DebuggerType>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x64|x86</AppxBundlePlatforms>
     <AppxPackageIncludePrivateSymbols>true</AppxPackageIncludePrivateSymbols>
+    <UapAppxPackageBuildMode>SideLoadOnly</UapAppxPackageBuildMode>
+    <UapAppxPackageBuildMode Condition="'$(ReleaseChannel)' == 'Store'">CI</UapAppxPackageBuildMode>
     <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(ReleaseChannel)' == 'Nightly'">
+    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+    <AppInstallerUri>https://nugetpackageexplorer.blob.core.windows.net/nightly</AppInstallerUri>
+    <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
+    <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
+  </PropertyGroup>
   <ItemGroup>
-    <AppxManifest Include="Package.appxmanifest">
+    <AppxManifest Include="Package.appxmanifest" Condition="'$(ReleaseChannel)' == 'Store'">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <AppxManifest Include="Package-Nightly.appxmanifest" Condition="'$(ReleaseChannel)' == 'Nightly'">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+    <AppxManifest Include="Package-Local.appxmanifest" Condition="'$(ReleaseChannel)' != 'Store' and '$(ReleaseChannel)' != 'Nightly'">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+    <None Include="*.appxmanifest" />
+    <None Include="*.appinstaller" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\*.png" />
-    <None Include="PackageExplorer.Package_StoreKey.pfx" />
+    <Content Include="Assets\*.png" Condition="'$(ReleaseChannel)' == 'Store'" />
+    <Content Include="NightlyAssets\*.png" Condition="'$(ReleaseChannel)' != 'Store'" />
     <None Include="Package.xml" />
+    <None Include="Assets\*.png" Condition="'$(ReleaseChannel)' != 'Store'" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj">
-      <DesktopBridgeSelfContained>True</DesktopBridgeSelfContained>
-      <DesktopBridgeIdentifier>win-x86</DesktopBridgeIdentifier>
-      <Properties>SelfContained=%(DesktopBridgeSelfContained);RuntimeIdentifier=%(DesktopBridgeIdentifier)</Properties>
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
+      <PublishProfile Condition="'$(Platform)'=='x64'">Properties\PublishProfiles\WinX64.pubxml</PublishProfile>
+      <PublishProfile Condition="'$(Platform)'=='x86'">Properties\PublishProfiles\WinX86.pubxml</PublishProfile>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />

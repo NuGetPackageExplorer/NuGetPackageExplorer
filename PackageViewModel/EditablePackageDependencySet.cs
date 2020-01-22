@@ -17,6 +17,8 @@ namespace PackageExplorerViewModel
 
         public EditablePackageDependencySet(PackageDependencyGroup packageDependencySet)
         {
+            if (packageDependencySet is null)
+                throw new System.ArgumentNullException(nameof(packageDependencySet));
             _targetFramework = packageDependencySet.TargetFramework;
             Dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Packages);
         }
@@ -32,7 +34,7 @@ namespace PackageExplorerViewModel
                 if (_targetFramework != value)
                 {
                     _targetFramework = value;
-                    OnPropertyChange("TargetFramework");
+                    OnPropertyChange(nameof(TargetFramework));
                 }
             }
         }
@@ -47,7 +49,7 @@ namespace PackageExplorerViewModel
             return new PackageDependencyGroup(TargetFramework ?? NuGetFramework.AnyFramework, Dependencies);
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private void OnPropertyChange(string propertyName)
         {

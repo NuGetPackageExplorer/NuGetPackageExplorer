@@ -36,7 +36,7 @@ namespace PackageExplorer
             }
         }
 
-        private void ExpireOlderValues(Queue<int> q, int expirationOffsetInTicks)
+        private static void ExpireOlderValues(Queue<int> q, int expirationOffsetInTicks)
         {
             while (q.Count > 0 && q.Peek() < expirationOffsetInTicks)
             {
@@ -57,7 +57,7 @@ namespace PackageExplorer
         }
 
         // Ticks here are of 5sec long
-        private int GetTicks(DateTimeOffset origin)
+        private static int GetTicks(DateTimeOffset origin)
         {
             return (int)((DateTimeOffset.Now - origin).TotalSeconds / SecondsInOneTick);
         }

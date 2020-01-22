@@ -21,7 +21,9 @@ namespace PackageExplorer
     {
         public const string ApiKeysSectionName = "apikeys";
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private readonly object _lockObject = new object();
 
         private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
@@ -30,52 +32,55 @@ namespace PackageExplorer
 
         private T GetValue<T>([CallerMemberName] string? name = null)
         {
-            object value;
-            try
+            lock(_lockObject)
             {
-                if (WindowsVersionHelper.HasPackageIdentity)
+                object value;
+                try
                 {
-                    value = GetValueFromLocalSettings<T>(name!)!;
+                    if (WindowsVersionHelper.HasPackageIdentity)
+                    {
+                        value = GetValueFromLocalSettings<T>(name!)!;
+                    }
+                    else
+                    {
+                        value = Settings.Default[name];
+                        if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
+                        {
+                            value = sc.Cast<string>().ToArray();
+                        }
+                    }
+
+                    if (value is T t)
+                    {
+                        return t;
+                    }
                 }
-                else
+                catch (ConfigurationErrorsException)
                 {
+                    // Corrupt settings file
+                    Settings.Default.Reset();
+
+                    // Try getting it again
                     value = Settings.Default[name];
                     if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
                     {
                         value = sc.Cast<string>().ToArray();
                     }
-                }
 
-                if (value is T t)
+                    if (value is T t)
+                    {
+                        return t;
+                    }
+                }
+                catch (UnauthorizedAccessException)
+                { }
+                catch (IOException)
                 {
-                    return t;
-                }
-            }
-            catch (ConfigurationErrorsException)
-            {
-                // Corrupt settings file
-                Settings.Default.Reset();
-
-                // Try getting it again
-                value = Settings.Default[name];
-                if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
-                {
-                    value = sc.Cast<string>().ToArray();
+                    // not much we can do if we can't read/write the settings file
                 }
 
-                if (value is T t)
-                {
-                    return t;
-                }
-            }
-            catch (UnauthorizedAccessException)
-            { }
-            catch (IOException)
-            {
-                // not much we can do if we can't read/write the settings file
-            }
-
-            return default!;
+                return default!;
+            }            
         }
 
         // Don't load these types inline
@@ -97,29 +102,32 @@ namespace PackageExplorer
         {
             name ??= propertyName;
 
-            try
+            lock(_lockObject)
             {
-                if (WindowsVersionHelper.HasPackageIdentity)
+                try
                 {
-                    SetValueInLocalSettings(value, name!);
-                }
-                else
-                {
-                    if (value is List<string> list)
+                    if (WindowsVersionHelper.HasPackageIdentity)
                     {
-                        var sc = new StringCollection();
-                        sc.AddRange(list.ToArray());
-                        value = sc;
+                        SetValueInLocalSettings(value, name!);
                     }
-                    Settings.Default[name] = value;
+                    else
+                    {
+                        if (value is List<string> list)
+                        {
+                            var sc = new StringCollection();
+                            sc.AddRange(list.ToArray());
+                            value = sc;
+                        }
+                        Settings.Default[name] = value;
+                    }
                 }
-            }
-            catch (UnauthorizedAccessException)
-            { }
-            catch (IOException)
-            {
-                // not much we can do if we can't read/write the settings file
-            }
+                catch (UnauthorizedAccessException)
+                { }
+                catch (IOException)
+                {
+                    // not much we can do if we can't read/write the settings file
+                }
+            }            
 
             OnPropertyChanged(propertyName);
         }

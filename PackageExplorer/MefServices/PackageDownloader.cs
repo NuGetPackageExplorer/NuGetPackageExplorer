@@ -82,7 +82,8 @@ namespace PackageExplorer
             var updated = 0;
 
             var progressDialogLock = new object();
-            ProgressDialog? progressDialog = new ProgressDialog
+#pragma warning disable CA2000 // Dispose objects before losing scope (handled in finally below)
+            var progressDialog = new ProgressDialog
             {
                 Text = progressDialogText,
                 WindowTitle = Resources.Dialog_Title,
@@ -90,10 +91,10 @@ namespace PackageExplorer
                 CancellationText = "Canceling download..."
             };
 
-
             // polling for Cancel button being clicked
             var cts = new CancellationTokenSource();
             var timer = new System.Timers.Timer(100);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
             timer.Elapsed += (o, e) =>
                           {
@@ -143,7 +144,7 @@ namespace PackageExplorer
                         throw new OperationCanceledException();
 
                     if (result.Status == DownloadResourceResultStatus.NotFound)
-                        throw new Exception(string.Format("Package '{0} {1}' not found", packageIdentity.Id, packageIdentity.Version));
+                        throw new Exception($"Package '{packageIdentity.Id} {packageIdentity.Version}' not found");
 
                     var tempFilePath = Path.GetTempFileName();
                     using (var fileStream = File.OpenWrite(tempFilePath))
@@ -165,12 +166,12 @@ namespace PackageExplorer
                 finally
                 {
                     timer.Stop();
-
+                    timer.Dispose();
+                    cts.Dispose();
                     // close progress dialog when done
                     lock (progressDialogLock)
                     {
                         progressDialog.Dispose();
-                        progressDialog = null;
                     }
                 }
             }
@@ -351,6 +352,7 @@ namespace PackageExplorer
             return Task.FromResult(new Tuple<bool, INuGetResource?>(curResource != null, curResource));
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private HttpHandlerResourceV3 CreateResource(PackageSource packageSource)
         {
             var sourceUri = packageSource.SourceUri;

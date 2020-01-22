@@ -29,7 +29,7 @@ namespace PackageExplorerViewModel
                 return Task.FromResult(new CredentialResponse(CredentialStatus.UserCanceled));
             }
 
-            var credentials = _credentialManager.Get(uri);
+            var credentials = _credentialManager.GetForUri(uri);
 
             if (credentials != null)
             {

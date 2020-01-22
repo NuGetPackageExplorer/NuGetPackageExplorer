@@ -154,7 +154,7 @@ namespace NuGetPe.AssemblyMetadata
             {
                 if (PrimitiveTypeMappings.TryGetValue(typeCode, out var type))
                 {
-                    return type.FullName;
+                    return type.FullName!;
                 }
 
                 throw new ArgumentOutOfRangeException(nameof(typeCode), typeCode, @"Unexpected type code.");
@@ -194,16 +194,14 @@ namespace NuGetPe.AssemblyMetadata
                     : reader.GetString(reference.Namespace) + "." + reader.GetString(reference.Name);
 
                 Handle scope = reference.ResolutionScope;
-                switch (scope.Kind)
+                return scope.Kind switch
                 {
-                    case HandleKind.TypeReference:
-                        return GetTypeFromReference(reader, (TypeReferenceHandle)scope, 0) + "+" + name;
+                    HandleKind.TypeReference => GetTypeFromReference(reader, (TypeReferenceHandle)scope, 0) + "+" + name,
 
                     // If type refers other module or assembly, don't append them to result.
                     // Usually we don't have those assemblies, so we'll be unable to resolve the exact type.
-                    default:
-                        return name;
-                }
+                    _ => name,
+                };
             }
 
             public string GetSZArrayType(string elementType)
@@ -213,7 +211,7 @@ namespace NuGetPe.AssemblyMetadata
 
             public string GetSystemType()
             {
-                return typeof(Type).FullName;
+                return typeof(Type).FullName!;
             }
 
             public bool IsSystemType(string type)
@@ -243,7 +241,7 @@ namespace NuGetPe.AssemblyMetadata
                     }
                 }
 
-                throw new UnknownTypeException();
+                throw new UnknownTypeException($"Type '{type}' is of unknown TypeCode");
             }
         }
 
@@ -254,7 +252,17 @@ namespace NuGetPe.AssemblyMetadata
 
         private class UnknownTypeException : InvalidOperationException
         {
+            public UnknownTypeException(string message) : base(message)
+            {
+            }
 
+            public UnknownTypeException(string message, Exception innerException) : base(message, innerException)
+            {
+            }
+
+            public UnknownTypeException()
+            {
+            }
         }
     }
 }

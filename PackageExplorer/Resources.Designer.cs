@@ -115,15 +115,6 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Author: Luan Nguyen (@dotnetjunky). For more information, visit http://nuget.codeplex.com..
-        /// </summary>
-        public static string Dialog_HelpAbout {
-            get {
-                return ResourceManager.GetString("Dialog_HelpAbout", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Id:.
         /// </summary>
         public static string Dialog_IdLabel {
@@ -493,7 +484,18 @@ namespace PackageExplorer {
                 return ResourceManager.GetString("PackageChooser_ActionShowAllVersions", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Alternate Package:.
+        /// </summary>
+        public static string PackageChooser_AlternatePackage
+        {
+            get
+            {
+                return ResourceManager.GetString("PackageChooser_AlternatePackage", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Clear search.
         /// </summary>
@@ -529,7 +531,18 @@ namespace PackageExplorer {
                 return ResourceManager.GetString("PackageChooser_ColumnHeaderVersion", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Deprecated.
+        /// </summary>
+        public static string PackageChooser_Deprecated
+        {
+            get
+            {
+                return ResourceManager.GetString("PackageChooser_Deprecated", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Author(s):.
         /// </summary>

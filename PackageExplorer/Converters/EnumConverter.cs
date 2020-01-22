@@ -19,7 +19,7 @@ namespace PackageExplorer
             return value;
         }
 
-        public static string GetDescription(Enum en)
+        private static string GetDescription(Enum en)
         {
             var type = en.GetType();
             var memInfo = type.GetMember(en.ToString());

@@ -18,7 +18,7 @@ namespace PackageExplorer.MefServices
             _feeds = new List<Tuple<Uri, ICredentials>>();
         }
 
-        public void TryAddUriCredentials(Uri feedUri)
+        private bool TryAddUriCredentials(Uri feedUri, out NetworkCredential? credentials)
         {
             // Support username and password in feed URL as specified in RFC 1738
             if (!string.IsNullOrEmpty(feedUri.UserInfo))
@@ -26,9 +26,13 @@ namespace PackageExplorer.MefServices
                 var userInfoSplitted = feedUri.UserInfo.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
                 if (userInfoSplitted.Length >= 2)
                 {
-                    Add(new NetworkCredential(userInfoSplitted[0], userInfoSplitted[1]), feedUri);
+                    credentials = new NetworkCredential(userInfoSplitted[0], userInfoSplitted[1]);
+                    Add(credentials, feedUri);
+                    return true;
                 }
             }
+            credentials = null;
+            return false;
         }
 
         public void Add(ICredentials credentials, Uri feedUri)
@@ -40,17 +44,21 @@ namespace PackageExplorer.MefServices
             }
         }
 
-        public ICredentials Get(Uri uri)
+        public ICredentials GetForUri(Uri uri)
         {
             var credentials = CredentialCache.DefaultCredentials;
             lock (_feedsLock)
             {
                 var matchingFeeds = _feeds.Where(x => string.Compare(uri.Scheme, x.Item1.Scheme, StringComparison.OrdinalIgnoreCase) == 0 &&
                                                       string.Compare(uri.Host, x.Item1.Host, StringComparison.OrdinalIgnoreCase) == 0 &&
-                                                      uri.AbsolutePath.Contains(x.Item1.AbsolutePath));
+                                                      uri.AbsolutePath.Contains(x.Item1.AbsolutePath, StringComparison.OrdinalIgnoreCase));
                 if (matchingFeeds.Any())
                 {
                     credentials = matchingFeeds.First().Item2;
+                }
+                else if(TryAddUriCredentials(uri, out var uriCredentials))
+                {
+                    credentials = uriCredentials!;
                 }
             }
             return credentials;

@@ -3,12 +3,11 @@
   <Identity Name="50582LuanNguyen.NuGetPackageExplorer.Nightly" Publisher="CN=oren" Version="3.25.0.0" />
   <Properties>
     <DisplayName>NuGet Package Explorer (Nightly)</DisplayName>
-    <PublisherDisplayName>Oren Novotny, LLC</PublisherDisplayName>
-    <Logo>Assets\StoreLogo.png</Logo>
+    <PublisherDisplayName>NuGet Package Explorer (.NET Foundation)</PublisherDisplayName>
+    <Logo>NightlyAssets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
-    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.15063.0" MaxVersionTested="10.0.17763.0" />
-    <PackageDependency Publisher="CN=Microsoft Corporation, O=Microsoft Corporation, L=Redmond, S=Washington, C=US" Name="Microsoft.VCLibs.140.00.UWPDesktop" MinVersion="14.0.26905.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17134.0" MaxVersionTested="10.0.18362.0" />
   </Dependencies>
   <Resources>
     <Resource Language="EN-US" />
@@ -56,15 +55,15 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$">
-      <uap:VisualElements DisplayName="NPE (Nightly)" Description="NuGet Package Explorer" BackgroundColor="transparent" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png">
-        <uap:DefaultTile Square310x310Logo="Assets\Square310x310Logo.png" Wide310x150Logo="Assets\Wide310x150Logo.png" ShortName="NPE (Nightly)" Square71x71Logo="Assets\SmallTile.png">
+      <uap:VisualElements DisplayName="NPE (Nightly)" Description="NuGet Package Explorer" BackgroundColor="transparent" Square150x150Logo="NightlyAssets\Square150x150Logo.png" Square44x44Logo="NightlyAssets\Square44x44Logo.png">
+        <uap:DefaultTile Square310x310Logo="NightlyAssets\Square310x310Logo.png" Wide310x150Logo="NightlyAssets\Wide310x150Logo.png" ShortName="NPE (Nightly)" Square71x71Logo="NightlyAssets\SmallTile.png">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="square150x150Logo" />
             <uap:ShowOn Tile="wide310x150Logo" />
             <uap:ShowOn Tile="square310x310Logo" />
           </uap:ShowNameOnTiles>
         </uap:DefaultTile>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        <uap:SplashScreen Image="NightlyAssets\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
         <uap3:Extension Category="windows.appExecutionAlias" Executable="NuGetPackageExplorer\NuGetPackageExplorer.exe" EntryPoint="Windows.FullTrustApplication">
@@ -75,7 +74,7 @@
         <uap:Extension Category="windows.fileTypeAssociation">
           <uap:FileTypeAssociation Name="package">
             <uap:DisplayName>NuGet package file</uap:DisplayName>
-            <uap:Logo>Assets\nupkg.png</uap:Logo>
+            <uap:Logo>NightlyAssets\nupkg.png</uap:Logo>
             <uap:SupportedFileTypes>
               <uap:FileType>.nupkg</uap:FileType>
             </uap:SupportedFileTypes>
@@ -84,7 +83,7 @@
         <uap:Extension Category="windows.fileTypeAssociation">
           <uap:FileTypeAssociation Name="symbolspackage">
             <uap:DisplayName>NuGet Symbols package file</uap:DisplayName>
-            <uap:Logo>Assets\nupkg.png</uap:Logo>
+            <uap:Logo>NightlyAssets\nupkg.png</uap:Logo>
             <uap:SupportedFileTypes>
               <uap:FileType>.snupkg</uap:FileType>
             </uap:SupportedFileTypes>
@@ -93,7 +92,7 @@
         <uap:Extension Category="windows.fileTypeAssociation">
           <uap:FileTypeAssociation Name="spec">
             <uap:DisplayName>NuGet spec file</uap:DisplayName>
-            <uap:Logo>Assets\nuspec.png</uap:Logo>
+            <uap:Logo>NightlyAssets\nuspec.png</uap:Logo>
             <uap:SupportedFileTypes>
               <uap:FileType>.nuspec</uap:FileType>
             </uap:SupportedFileTypes>

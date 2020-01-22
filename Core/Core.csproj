@@ -1,11 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
-    <Configurations>Debug;Release;Choco;Nightly;Store</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,10 +14,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />    
-    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.10.42-preview" />
-    <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta1-63314-01" />
-    <PackageReference Include="OSVersionHelper" Version="1.0.10" />
-    <PackageReference Include="System.Reflection.Metadata" Version="1.6.0" />    
+    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.10.55" />
+    <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-19409-01" />
+    <PackageReference Include="OSVersionHelper" Version="1.0.11" />
+    <PackageReference Include="System.Reflection.Metadata" Version="1.8.0" />    
     <Reference Include="Windows" />
   </ItemGroup>
   

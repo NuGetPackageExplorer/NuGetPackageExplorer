@@ -15,7 +15,7 @@ namespace PackageExplorer
             var stringValue = (string)value;
 
             var parameterValue = (string)parameter;
-            var candidates = parameterValue.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+            var candidates = parameterValue?.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>();
 
             var contains = candidates.Any(s => Matching(s, stringValue));
             return contains ? Visibility.Visible : Visibility.Collapsed;
@@ -23,7 +23,7 @@ namespace PackageExplorer
 
         private static bool Matching(string pattern, string value)
         {
-            if (pattern.IndexOf('*') > -1)
+            if (pattern.IndexOf('*', StringComparison.Ordinal) > -1)
             {
                 var patternParts = pattern.Split('\\');
                 var valueParts = value.Split('\\');

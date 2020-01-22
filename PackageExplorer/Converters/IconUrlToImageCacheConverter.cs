@@ -5,6 +5,7 @@ using System.Net;
 using System.Runtime.Caching;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
+using System.Windows.Media;
 
 namespace PackageExplorer
 {
@@ -47,7 +48,11 @@ namespace PackageExplorer
                 return defaultPackageIcon;
             }
 
+#pragma warning disable IDE0007 // Use implicit type
             BitmapImage? iconBitmapImage = new BitmapImage();
+#pragma warning restore IDE0007 // Use implicit type
+
+            RenderOptions.SetBitmapScalingMode(iconBitmapImage, BitmapScalingMode.HighQuality);
             iconBitmapImage.BeginInit();
             iconBitmapImage.UriSource = new Uri(iconUrl);
 
@@ -106,7 +111,7 @@ namespace PackageExplorer
 
         }
 
-        private void IconBitmapImage_DownloadCompleted(object sender, EventArgs e)
+        private void IconBitmapImage_DownloadCompleted(object? sender, EventArgs e)
         {
             if (sender is BitmapImage bitmapImage && !bitmapImage.IsFrozen)
             {
@@ -114,7 +119,7 @@ namespace PackageExplorer
             }
         }
 
-        private void IconBitmapImage_DownloadOrDecodeFailed(object sender, System.Windows.Media.ExceptionEventArgs e)
+        private void IconBitmapImage_DownloadOrDecodeFailed(object? sender, System.Windows.Media.ExceptionEventArgs e)
         {
             // Fix the bitmap image cache to have default package icon, if some other failure didn't already do that.
             if (!(sender is BitmapImage bitmapImage))

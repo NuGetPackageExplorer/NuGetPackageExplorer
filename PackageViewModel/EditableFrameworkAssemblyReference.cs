@@ -20,7 +20,7 @@ namespace PackageExplorerViewModel
                 if (_assemblyName != value)
                 {
                     _assemblyName = value;
-                    RaisePropertyChange("AssemblyName");
+                    RaisePropertyChange(nameof(AssemblyName));
                 }
             }
         }
@@ -33,15 +33,15 @@ namespace PackageExplorerViewModel
                 if (_supportedFrameworks != value)
                 {
                     _supportedFrameworks = value;
-                    RaisePropertyChange("SupportedFrameworks");
-                    RaisePropertyChange("AssemblyName");
+                    RaisePropertyChange(nameof(SupportedFrameworks));
+                    RaisePropertyChange(nameof(AssemblyName));
                 }
             }
         }
 
         #region INotifyPropertyChanged Members
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         #endregion
 

@@ -28,7 +28,7 @@ namespace PackageExplorer
             {
                 {
                     "Portable Library",
-                    new string[0]
+                    Array.Empty<string>()
                 },
                 {
                     "Native",
@@ -57,6 +57,7 @@ namespace PackageExplorer
                         "v2.1","netcoreapp2.1",
                         "v2.2","netcoreapp2.2",
                         "v3.0","netcoreapp3.0",
+                        "v3.1","netcoreapp3.1",
                     }
                 }
                 ,
@@ -609,8 +610,7 @@ namespace PackageExplorer
             {
                 folder ??= RootFolder;
 
-                var viewModel = (PackageViewModel)DataContext;
-                viewModel.AddDraggedAndDroppedFileDescriptors(folder, NativeDragDrop.GetFileGroupDescriptorW(data));
+                PackageViewModel.AddDraggedAndDroppedFileDescriptors(folder, NativeDragDrop.GetFileGroupDescriptorW(data));
                 return true;
             }
             if (data.GetDataPresent(DataFormats.FileDrop))
@@ -626,6 +626,7 @@ namespace PackageExplorer
             return false;
         }
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private IDataObject CreateDataObject(PackagePart packagePart)
         {
             var data = new DataObject();

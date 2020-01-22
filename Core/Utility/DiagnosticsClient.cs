@@ -1,12 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -16,11 +9,7 @@ namespace NuGetPe
 {
     public static class DiagnosticsClient
     {
-        private static bool _initialized;
-
-        private static TelemetryClient  _client;
-
-
+        private static TelemetryClient?  _client;
 
         public static void Initialize()
         {
@@ -28,16 +17,12 @@ namespace NuGetPe
             TelemetryConfiguration.Active.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
             
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
-
-            _initialized = true;
-
             _client = new TelemetryClient();
         }
 
         public static void OnExit()
         {
-            if (!_initialized) return;
-
+            if (_client == null) return;
             _client.Flush();
 
             // Allow time for flushing and sending:
@@ -51,27 +36,25 @@ namespace NuGetPe
 
         public static void TrackEvent(string eventName, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
         {
-            if (!_initialized) return;
+            if (_client == null) return;
             _client.TrackEvent(eventName, properties, metrics);
         }
 
-        public static void TrackTrace(string evt)
+        public static void TrackTrace(string evt, IDictionary<string, string>? properties = null)
         {
-            if (!_initialized) return;
-            _client.TrackTrace(evt);
+            if (_client == null) return;
+            _client.TrackTrace(evt, properties);
         }
 
-        public static void TrackException(Exception exception)
+        public static void TrackException(Exception exception, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
         {
-            if (!_initialized) return;
-
-            _client.TrackException(exception);
+            if (_client == null) return;
+            _client.TrackException(exception, properties, metrics);
         }
 
         public static void TrackPageView(string pageName)
         {
-            if (!_initialized) return;
-
+            if (_client == null) return;
             _client.TrackPageView(pageName);
         }
     }

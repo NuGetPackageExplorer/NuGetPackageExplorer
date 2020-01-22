@@ -99,7 +99,7 @@ namespace NuGetPe.AssemblyMetadata
                     }
                     catch (JsonReaderException e) when (e.Path == "documents")
                     {
-                        sl = sl.Replace(@"\", @"\\");
+                        sl = sl.Replace(@"\", @"\\", StringComparison.Ordinal);
                         jobj = JObject.Parse(sl);
                     }
 
@@ -108,7 +108,7 @@ namespace NuGetPe.AssemblyMetadata
                     var slis = (from prop in docs.Properties()
                                 select new SourceLinkMap
                                 {
-                                    Base = prop.Name.Replace(@"\", @"/"), // use forward slashes for the url,
+                                    Base = prop.Name.Replace(@"\", @"/", StringComparison.Ordinal), // use forward slashes for the url,
                                     Location = prop.Value.Value<string>()
                                 })
                         .ToList();
@@ -128,17 +128,36 @@ namespace NuGetPe.AssemblyMetadata
 
         private IReadOnlyList<AssemblyDebugSourceDocument> GetSourceDocuments()
         {
-            var docs = (from docHandle in _reader.Documents
-                        let document = _reader.GetDocument(docHandle)
-                        select new AssemblyDebugSourceDocument
-                        (
-                            _reader.GetString(document.Name).Replace(@"\", @"/"), // use forward slashes for the url
-                            _reader.GetBlobBytes(document.Hash),
-                            _reader.GetGuid(document.Language),
-                            _reader.GetGuid(document.HashAlgorithm)
-                        )).ToList();
+            var list = new List<AssemblyDebugSourceDocument>();
 
-            return docs;
+            foreach (var docHandle in _reader.Documents)
+            {
+                var document = _reader.GetDocument(docHandle);
+
+                var langGuid = _reader.GetGuid(document.Language);
+                var hashGuid = _reader.GetGuid(document.HashAlgorithm);
+                var docName = _reader.GetString(document.Name).Replace(@"\", @"/", StringComparison.Ordinal); // use forward slashes for the url
+
+                var doc = new AssemblyDebugSourceDocument
+                (
+                    docName,
+                    _reader.GetBlobBytes(document.Hash),
+                    langGuid,
+                    hashGuid
+                );
+                list.Add(doc);
+
+                if (doc.Language == SymbolLanguage.Unknown)
+                {
+                    DiagnosticsClient.TrackEvent("Unknown language Guid", new Dictionary<string, string>
+                    {
+                        { "LanguageGuid", langGuid.ToString() },
+                        { "HashGuid", hashGuid.ToString() },
+                        { "DocExtension", Path.GetExtension(docName)! }
+                    });
+                }                
+            }
+            return list;
         }
 
 

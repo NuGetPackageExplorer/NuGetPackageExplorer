@@ -8,7 +8,7 @@ namespace PackageExplorerViewModel
     public class SortedCollection<T> : ICollection<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {
         private static readonly PropertyChangedEventArgs CountPropertyChangeEventArgs =
-            new PropertyChangedEventArgs("Count");
+            new PropertyChangedEventArgs(nameof(Count));
 
         private readonly SortedSet<T> _items;
 
@@ -94,15 +94,11 @@ namespace PackageExplorerViewModel
 
         #region INotifyCollectionChanged Members
 
-        public event NotifyCollectionChangedEventHandler CollectionChanged;
+        public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
         #endregion
 
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private int IndexOf(T item)
         {

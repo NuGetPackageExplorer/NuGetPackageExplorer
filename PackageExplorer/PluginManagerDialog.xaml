@@ -49,7 +49,7 @@
 			<DockPanel Margin="10,5">
 				<Button DockPanel.Dock="Right" Content="_Close" Margin="5,5,0,5" Padding="15,2" Click="Button_Click" IsCancel="True" />
 				<TextBlock Margin="5">
-					<Hyperlink Command="GoToPage" CommandParameter="http://npe.codeplex.com/wikipage?title=How%20to%20write%20a%20plugin%20for%20NuGet%20Package%20Explorer" ToolTip="{Binding CommandParameter, RelativeSource={RelativeSource Self}}">
+					<Hyperlink Command="GoToPage" CommandParameter="https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/wiki/How-to-Write-a-plugin-for-NuGet-Package-Explorer" ToolTip="{Binding CommandParameter, RelativeSource={RelativeSource Self}}">
 						<Run Text="How to write a plugin?" />
 					</Hyperlink>
 				</TextBlock>

@@ -19,12 +19,18 @@ using Settings = PackageExplorer.Properties.Settings;
 
 namespace PackageExplorer
 {
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public partial class App : Application
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public App()
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
+            // Don't use the SocketHttphandler because it has some authentification issues accessing feeds like GitHub NuGet
+            // see https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/pull/841 for more details
+            AppContext.SetSwitch("System.Net.Http.UseSocketsHttpHandler", false);
+
             DiagnosticsClient.Initialize();
         }
 
@@ -55,7 +61,8 @@ namespace PackageExplorer
         {
             DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", e.Args.Length > 0 ? "fileAssociation" : "shortcut" } });
 
-            Resources.Add("Settings", Container.GetExportedValue<ISettingsManager>());
+            // Overwrite settings with the real instance
+            Resources["Settings"] = Container.GetExportedValue<ISettingsManager>();
 
             InitCredentialService();
             HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>

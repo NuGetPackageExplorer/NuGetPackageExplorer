@@ -9,7 +9,7 @@
     xmlns:core="clr-namespace:NuGet.Packaging.Core;assembly=NuGet.Packaging"
     xmlns:packaging="clr-namespace:NuGet.Packaging;assembly=NuGet.Packaging"
     xmlns:nugetpe="clr-namespace:NuGetPe;assembly=Core"
-    xmlns:spinners="clr-namespace:xamlSpinnersWPF"
+    xmlns:controls="clr-namespace:PackageExplorer.Controls"
     Visibility="{Binding Converter={StaticResource NullToVisibilityConverter}, FallbackValue=Collapsed}" 
     Margin="5,7,5,7"
     mc:Ignorable="d" 
@@ -36,6 +36,7 @@
             <self:NuGetVersionConverter x:Key="NuGetVersionConverter" />
             <self:NuGetVersionPreReleaseConverter x:Key="NuGetVersionPreReleaseConverter" />
             <self:ListToStringConverter x:Key="ListToStringConverter" />
+            <self:PackageIconConverter x:Key="PackageIconConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
@@ -53,7 +54,7 @@
                     </StackPanel.InputBindings>
                     <TextBlock Name="isValid" Text="{x:Static self:Resources.Validation_Pending}" />
                     <ContentControl Name="icon" Margin="3,0,0,0" Width="16" Height="16" Visibility="Collapsed"  />
-                    <spinners:ucSpinnerDotCircle x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" Foreground="Black" />
+                    <controls:Spinner x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" />
                 </StackPanel>
                 <DataTemplate.Triggers>
                     <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Valid">
@@ -319,8 +320,15 @@
             <DataTemplate x:Key="PackageDetailTemplate" DataType="{x:Type viewmodel:EditablePackageMetadata}">
                 <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="8">
-                        <Border BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Background="White" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconUrl}" Visibility="{Binding IconUrl, Converter={StaticResource NullToVisibilityConverter}}">
-                            <Image Source="{Binding IconUrl, TargetNullValue={x:Null}}" Width="32" Height="32" Stretch="Fill" StretchDirection="DownOnly" />
+                        <Border BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Background="White" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconOrIconUrl}" Visibility="{Binding IconOrIconUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                            <Image Width="32" Height="32" >
+                                <Image.Source>
+                                    <MultiBinding Converter="{StaticResource PackageIconConverter}">
+                                        <Binding ElementName="PackageMetadataViewer" Path="DataContext" />
+                                        <Binding Path="IconOrIconUrl" />
+                                    </MultiBinding>
+                                </Image.Source>
+                            </Image>
                         </Border>
 
                         <!-- Id -->
@@ -470,7 +478,7 @@
                         <!-- Dependencies list -->
                         <TextBlock Text="{x:Static self:Resources.Dialog_DependenciesLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                        <ItemsControl x:Name="DependencyItems" Margin="25,5,0,0" ItemsSource="{Binding DependencySets, Converter={StaticResource DependencySetConverter}}">
+                        <ItemsControl x:Name="DependencyItems" Margin="25,5,0,0" ItemsSource="{Binding DependencyGroups, Converter={StaticResource DependencySetConverter}}">
                         </ItemsControl>
 
                         <TextBlock Margin="25,5,0,0" Visibility="{Binding Items.Count, ElementName=DependencyItems, Converter={StaticResource invertedCountConverter}}" Style="{StaticResource NoDependencyTextBoxStyle}" Text="{x:Static self:Resources.Dialog_NoDependencyLabel}"></TextBlock>
@@ -644,7 +652,7 @@
                     </StackPanel>
                 </Border>
 
-                <ContentControl Grid.Row="1" Content="{Binding PackageMetadata}" ContentTemplate="{StaticResource PackageDetailTemplate}" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}"></ContentControl>
+                <ContentControl x:Name="PackageMetadataViewer" Grid.Row="1" Content="{Binding PackageMetadata}" ContentTemplate="{StaticResource PackageDetailTemplate}" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}" />
 
                 <self:PackageMetadataEditor x:Name="PackageMetadataEditor" Grid.Row="1" Margin="4,12,4,7" Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}" />
             </Grid>

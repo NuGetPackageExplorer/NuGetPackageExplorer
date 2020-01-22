@@ -34,6 +34,8 @@ namespace NuGetPe
 
         public ISignaturePackage? FindPackage(string packageId, NuGetVersion version)
         {
+            if (version is null)
+                throw new ArgumentNullException(nameof(version));
             var path = GetPackageFilePath(packageId, version);
 
             if (File.Exists(path))
@@ -48,8 +50,11 @@ namespace NuGetPe
 
         public void AddPackage(IPackage package)
         {
+            if (package is null)
+                throw new ArgumentNullException(nameof(package));
             // if the package is already present in the cache, no need to do anything
-            if (FindPackage(package.Id, package.Version) != null)
+            using var pkg = FindPackage(package.Id, package.Version);
+            if (pkg != null)
             {
                 return;
             }
@@ -150,7 +155,7 @@ namespace NuGetPe
             return GetCachePath(Environment.GetEnvironmentVariable, _ => Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, local));
         }
 
-        private static string? GetCachePath(Func<string, string> getEnvironmentVariable, Func<Environment.SpecialFolder, string> getFolderPath)
+        private static string? GetCachePath(Func<string, string?> getEnvironmentVariable, Func<Environment.SpecialFolder, string> getFolderPath)
         {
             var cacheOverride = getEnvironmentVariable(NuGetCachePathEnvironmentVariable);
             if (!string.IsNullOrEmpty(cacheOverride))

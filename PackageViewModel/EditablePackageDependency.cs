@@ -29,7 +29,7 @@ namespace PackageExplorerViewModel
                 if (_id != value)
                 {
                     _id = value;
-                    RaisePropertyChange("Id");
+                    RaisePropertyChange(nameof(Id));
                 }
             }
         }
@@ -42,7 +42,7 @@ namespace PackageExplorerViewModel
                 if (_versionSpec != value)
                 {
                     _versionSpec = value;
-                    RaisePropertyChange("VersionSpec");
+                    RaisePropertyChange(nameof(VersionSpec));
                 }
             }
         }
@@ -55,12 +55,10 @@ namespace PackageExplorerViewModel
                 if (_exclude != value)
                 {
                     _exclude = value;
-                    RaisePropertyChange("Exclude");
+                    RaisePropertyChange(nameof(Exclude));
                 }
             }
         }
-
-        #region IDataErrorInfo Members
 
         public string? Error
         {
@@ -72,13 +70,7 @@ namespace PackageExplorerViewModel
             get { return IsValid(columnName); }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        #endregion
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         private void RaisePropertyChange(string propertyName)
         {

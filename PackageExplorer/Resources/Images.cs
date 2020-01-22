@@ -7,7 +7,9 @@ namespace PackageExplorer
     {
         public static readonly BitmapImage DefaultPackageIcon;
 
+#pragma warning disable CA1810 // Initialize reference type static fields inline
         static Images()
+#pragma warning restore CA1810 // Initialize reference type static fields inline
         {
             DefaultPackageIcon = new BitmapImage();
 

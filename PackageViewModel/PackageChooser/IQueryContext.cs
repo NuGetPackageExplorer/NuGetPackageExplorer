@@ -6,14 +6,8 @@ namespace PackageExplorerViewModel
 {
     internal interface IQueryContext<T>
     {
-        int BeginPackage { get; }
-        int EndPackage { get; }
-        bool IsLastPage { get; }
+        bool HasMore { get; }
 
-        Task<IList<T>> GetItemsForCurrentPage(CancellationToken token);
-
-        bool MoveFirst();
-        bool MoveNext();
-        bool MovePrevious();
+        Task<IList<T>> LoadMore(CancellationToken token);
     }
 }

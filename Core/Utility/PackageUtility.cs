@@ -7,7 +7,7 @@ namespace NuGetPe
     {
         internal static bool IsManifest(string path)
         {
-            return Path.GetExtension(path).Equals(Constants.ManifestExtension, StringComparison.OrdinalIgnoreCase);
+            return Constants.ManifestExtension.Equals(Path.GetExtension(path), StringComparison.OrdinalIgnoreCase);
         }
     }
 }
