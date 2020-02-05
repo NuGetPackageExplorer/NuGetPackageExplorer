@@ -22,8 +22,6 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.0" />
     <PackageReference Include="System.Runtime.Caching" Version="4.7.0" />
 
-    <Reference Include="Windows" />
-
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
   </ItemGroup>
 

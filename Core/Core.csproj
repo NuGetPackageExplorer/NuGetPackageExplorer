@@ -13,12 +13,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Types\Types.csproj" />    
+    <ProjectReference Include="..\Types\Types.csproj" />
     <PackageReference Include="AppInsights.WindowsDesktop" Version="2.10.55" />
     <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-19409-01" />
+    <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.18362.2005" />
     <PackageReference Include="OSVersionHelper" Version="1.0.11" />
-    <PackageReference Include="System.Reflection.Metadata" Version="1.8.0" />    
+    <PackageReference Include="System.Reflection.Metadata" Version="1.8.0" />
     <Reference Include="Windows" />
   </ItemGroup>
-  
+
 </Project>
