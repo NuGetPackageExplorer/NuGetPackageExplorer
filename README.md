@@ -97,6 +97,4 @@ Requirements to build the project:
 - [.NET Core 5 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0)
 - [Shared IntelliCode model](https://prod.intellicode.vsengsaas.visualstudio.com/get?m=B971F4617299420C8D5CFEF23F395D2A)
 
-## Diagnostics
 
-Thank you to [Bugsnag](https://www.bugsnag.com/) for their generous [license for Open Source projects](https://www.bugsnag.com/open-source/)!
