@@ -127,7 +127,7 @@ namespace PackageExplorerViewModel
         }
 
       
-        public int CompareTo(PackagePart other)
+        public int CompareTo(PackagePart? other)
         {
             if (this == other)
             {

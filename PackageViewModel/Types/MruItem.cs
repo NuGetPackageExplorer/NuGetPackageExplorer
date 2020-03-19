@@ -19,7 +19,7 @@ namespace NuGetPackageExplorer.Types
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         
 
-        public bool Equals(MruItem other)
+        public bool Equals(MruItem? other)
         {
             if (other == null)
             {
