@@ -255,9 +255,9 @@ namespace PackageExplorer
             }
         }
 
-        private void OnPackageViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPackageViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            var viewModel = (PackageViewModel)sender;
+            var viewModel = (PackageViewModel)sender!;
             if (e.PropertyName == "IsInEditFileMode")
             {
                 if (viewModel.IsInEditFileMode)

@@ -100,9 +100,9 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-        private void OnPackageChooserViewModelPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnPackageChooserViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
-            var model = (PackageChooserViewModel)sender;
+            var model = (PackageChooserViewModel)sender!;
 
             if (e.PropertyName == "ShowPrereleasePackages")
             {

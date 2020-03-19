@@ -5,11 +5,11 @@ namespace PackageExplorerViewModel
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event PropertyChangedEventHandler? PropertyChanged = delegate { };
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged!(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

@@ -318,7 +318,8 @@ namespace PackageExplorerViewModel
                     await SigningUtility.SignAsync(options, signRequest, token);
                 }
 
-                File.Delete(packagePath);
+                if(packagePath != null)
+                    File.Delete(packagePath);
 
                 token.ThrowIfCancellationRequested();
 

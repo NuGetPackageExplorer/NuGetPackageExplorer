@@ -267,7 +267,7 @@ namespace PackageExplorerViewModel
                             _watcher.Deleted += OnFileChange;
                             _watcher.Renamed += OnFileChange;
 
-                            _watcher.Path = Path.GetDirectoryName(PackagePath);
+                            _watcher.Path = Path.GetDirectoryName(PackagePath)!;
                             _watcher.Filter = Path.GetFileName(PackagePath);
                             _watcher.EnableRaisingEvents = true;
                         }
@@ -1519,7 +1519,7 @@ namespace PackageExplorerViewModel
                         {
                             if (RootFolder.ContainsFolder(guessFolderName))
                             {
-                                targetFolder = (PackageFolder)RootFolder[guessFolderName];
+                                targetFolder = (PackageFolder)RootFolder[guessFolderName]!;
                             }
                             else
                             {
@@ -1570,7 +1570,7 @@ namespace PackageExplorerViewModel
                 var parentFolder = folder;
                 for (var i = 0; i < parts.Length - 1; i++)
                 {
-                    parentFolder = (PackageFolder)parentFolder[parts[i]];
+                    parentFolder = (PackageFolder)parentFolder[parts[i]]!;
                     if (parentFolder is null) throw new ArgumentNullException(nameof(folder)); // verify each part isn't null. should never happen
                 }
 

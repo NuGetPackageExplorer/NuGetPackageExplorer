@@ -37,9 +37,9 @@ namespace PackageExplorerViewModel
         }
 
         [DebuggerStepThrough]
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
-            return _canExecute == null || _canExecute((T)parameter);
+            return _canExecute == null || _canExecute((T)parameter!);
         }
 
         public event EventHandler CanExecuteChanged
@@ -60,9 +60,9 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
-            _execute((T)parameter);
+            _execute((T)parameter!);
         }
 
         private readonly Predicate<T>? _canExecute;

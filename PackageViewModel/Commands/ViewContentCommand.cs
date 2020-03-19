@@ -23,7 +23,7 @@ namespace PackageExplorerViewModel
 
         public event EventHandler CanExecuteChanged = delegate { };
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             if (ViewModel.IsInEditFileMode)
             {
@@ -40,7 +40,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             DiagnosticsClient.TrackEvent("ViewContentCommand");
 

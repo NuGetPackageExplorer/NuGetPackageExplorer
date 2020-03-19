@@ -162,7 +162,7 @@ namespace PackageExplorerViewModel
 
      
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public abstract void Export(string rootPath);
 
