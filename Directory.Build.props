@@ -1,13 +1,13 @@
 <Project>
 
   <PropertyGroup>
-    <Authors>Luan Nguyen,Julian Verdurmen,Oren Novotny</Authors>
+    <Authors>Luan Nguyen,Julian Verdurmen,Claire Novotny</Authors>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <NoPackageAnalysis>true</NoPackageAnalysis>
     <PackageIconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/images/nuget.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer</PackageProjectUrl>
     <PackageLicenseUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/LICENSE</PackageLicenseUrl>
-    <Copyright>© 2019 .NET Foundation and Contributors</Copyright>
+    <Copyright>© 2020 .NET Foundation and Contributors</Copyright>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)NuGetPackageExplorer.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisDictionary>$(MSBuildThisFileDirectory)CodeAnalysisDictionary.xml</CodeAnalysisDictionary>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -40,7 +40,7 @@
     <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
     
-    <NuGetDependencyVersion>5.5.0-xprivate.60017</NuGetDependencyVersion>
+    <NuGetDependencyVersion>5.6.0-xprivate.60018</NuGetDependencyVersion>
   </PropertyGroup>
 
   <ItemGroup>
