@@ -120,15 +120,19 @@ namespace PackageExplorerViewModel
             var folderPath = System.IO.Path.GetDirectoryName(physicalFile.OriginalPath);
             var fileName = System.IO.Path.GetFileName(physicalFile.OriginalPath);
 
-            _watcher = new FileSystemWatcher(folderPath, fileName)
+            if (folderPath != null && fileName != null)
             {
-                IncludeSubdirectories = false,
-                EnableRaisingEvents = true
-            };
+                _watcher = new FileSystemWatcher(folderPath, fileName)
+                {
+                    IncludeSubdirectories = false,
+                    EnableRaisingEvents = true
+                };
+            
+                _watcher.Changed += OnFileChanged;
+                _watcher.Deleted += OnFileDeleted;
+                _watcher.Renamed += OnFileDeleted;
 
-            _watcher.Changed += OnFileChanged;
-            _watcher.Deleted += OnFileDeleted;
-            _watcher.Renamed += OnFileDeleted;
+            }
         }
 
         private async void OnFileChanged(object sender, FileSystemEventArgs e)

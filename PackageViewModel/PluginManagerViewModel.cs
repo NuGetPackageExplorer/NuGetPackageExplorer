@@ -43,7 +43,7 @@ namespace PackageExplorerViewModel
 
         public int Compare(PluginInfo? x, PluginInfo? y) => Comparer<PluginInfo>.Default.Compare(x, y);
 
-        public event PropertyChangedEventHandler PropertyChanged = delegate { };
+        public event PropertyChangedEventHandler? PropertyChanged = delegate { };
 
         private async void AddCommandExecute(string parameter)
         {

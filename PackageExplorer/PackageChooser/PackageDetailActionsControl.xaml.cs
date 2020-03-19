@@ -50,7 +50,7 @@ namespace PackageExplorer
             }
         }
 
-        private void PackageInfoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void PackageInfoViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(PackageInfoViewModel.HasFinishedLoading))
             {

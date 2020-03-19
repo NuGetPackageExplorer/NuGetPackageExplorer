@@ -35,7 +35,7 @@ namespace PackageExplorerViewModel
 
         public Stream GetStream()
         {
-            return File.OpenRead(OriginalPath);
+            return File.OpenRead(OriginalPath!);
         }
 
         public bool Save(string editedFilePath)

@@ -150,7 +150,7 @@ namespace NuGetPe
             return source;
         }
 
-        private static XElement FindElement(XElement source, XElement targetChild)
+        private static XElement? FindElement(XElement source, XElement targetChild)
         {
             // Get all of the elements in the source that match this name
             var sourceElements = source.Elements(targetChild.Name).ToList();

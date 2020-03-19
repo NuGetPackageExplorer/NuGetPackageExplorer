@@ -114,13 +114,13 @@ namespace PackageExplorer
 
 
             var tcs = new TaskCompletionSource<string?>();
-            progressDialog.DoWork += (object sender, DoWorkEventArgs args) =>
+            progressDialog.DoWork += (object? sender, DoWorkEventArgs args) =>
             {
                 var t = DoWorkAsync();
                 t.Wait(cts.Token);
                 tcs.TrySetResult(t.Result);
             };
-            progressDialog.RunWorkerCompleted += (object sender, RunWorkerCompletedEventArgs args) =>
+            progressDialog.RunWorkerCompleted += (object? sender, RunWorkerCompletedEventArgs args) =>
             {
                 MainWindow.Value.Activate();
             };
@@ -134,7 +134,7 @@ namespace PackageExplorer
                 {
                     var httpProgressProvider = new ProgressHttpHandlerResourceV3Provider(OnProgress);
                     var repository = PackageRepositoryFactory.CreateRepository(sourceRepository.PackageSource, new[] { new Lazy<INuGetResourceProvider>(() => httpProgressProvider) });
-                    var downloadResource = await repository.GetResourceAsync<DownloadResource>(cts.Token).ConfigureAwait(false);
+                    var downloadResource = await repository.GetResourceAsync<DownloadResource>(cts!.Token).ConfigureAwait(false);
 
                     using var sourceCacheContext = new SourceCacheContext() { NoCache = true };
                     var context = new PackageDownloadContext(sourceCacheContext, Path.GetTempPath(), true);
@@ -165,13 +165,13 @@ namespace PackageExplorer
                 }
                 finally
                 {
-                    timer.Stop();
+                    timer!.Stop();
                     timer.Dispose();
-                    cts.Dispose();
+                    cts!.Dispose();
                     // close progress dialog when done
-                    lock (progressDialogLock)
+                    lock (progressDialogLock!)
                     {
-                        progressDialog.Dispose();
+                        progressDialog!.Dispose();
                     }
                 }
             }

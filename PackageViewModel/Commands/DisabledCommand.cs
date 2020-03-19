@@ -7,7 +7,7 @@ namespace PackageExplorerViewModel
     {
         #region ICommand Members
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             return false;
         }
@@ -18,7 +18,7 @@ namespace PackageExplorerViewModel
             remove { }
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
         }
 
