@@ -125,7 +125,7 @@ stages:
       displayName: Zip PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.1/win-x64/publish
+        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp5.0/win-x64/publish
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
