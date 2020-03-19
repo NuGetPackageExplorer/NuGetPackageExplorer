@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netcoreapp5.0</TargetFramework>
     <AssetTargetFallback>net472</AssetTargetFallback>
     <OutputType>WinExe</OutputType>
     <AssemblyName>NuGetPackageExplorer</AssemblyName>

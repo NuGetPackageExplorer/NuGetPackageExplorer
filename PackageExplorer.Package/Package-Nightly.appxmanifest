@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" xmlns:uap3="http://schemas.microsoft.com/appx/manifest/uap/windows10/3" xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10" xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities" IgnorableNamespaces="uap mp rescap uap3 desktop">
-  <Identity Name="50582LuanNguyen.NuGetPackageExplorer.Nightly" Publisher="CN=oren" Version="3.25.0.0" />
+  <Identity Name="50582LuanNguyen.NuGetPackageExplorer.Nightly" Publisher="CN=claire" Version="3.25.0.0" />
   <Properties>
     <DisplayName>NuGet Package Explorer (Nightly)</DisplayName>
     <PublisherDisplayName>NuGet Package Explorer (.NET Foundation)</PublisherDisplayName>
