@@ -48,7 +48,7 @@ namespace PackageExplorerViewModel
         {
             var filename = System.IO.Path.GetFileNameWithoutExtension(Name);
 
-            foreach (var file in Parent!.GetFiles().Cast<PackageFile>())
+            foreach (var file in Parent!.GetFiles().Where(pf => pf is PackageFile).Cast<PackageFile>())
             {
                 if(file.Path != Path)
                 {

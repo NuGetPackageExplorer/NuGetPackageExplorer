@@ -11,6 +11,7 @@ using System.Windows.Input;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 
 namespace PackageExplorerViewModel
@@ -75,7 +76,8 @@ namespace PackageExplorerViewModel
             ISettingsManager settingsManager,
             CredentialPublishProvider credentialPublishProvider,
             IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata,
-            IList<Lazy<IPackageRule>> packageRules)
+            IList<Lazy<IPackageRule>> packageRules
+            )
         {
             SettingsManager = settingsManager ?? throw new ArgumentNullException(nameof(settingsManager));
             _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
@@ -86,14 +88,20 @@ namespace PackageExplorerViewModel
             ContentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
-            _packageMetadata = new EditablePackageMetadata(_package, UIServices);
 
             PackagePath = path;
             PackageSource = source;
 
-            _isSigned = _packageMetadata.IsSigned;
-
+            
             RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
+
+            SymbolValidator = new SymbolValidator(this);
+            SymbolValidator.Refresh();
+
+
+
+            _packageMetadata = new EditablePackageMetadata(_package, UIServices, SymbolValidator);
+            _isSigned = _packageMetadata.IsSigned;
         }
 
 
@@ -157,6 +165,8 @@ namespace PackageExplorerViewModel
                 }
             }
         }
+
+        public SymbolValidator SymbolValidator { get; } 
 
         public string WindowTitle
         {
@@ -1371,7 +1381,7 @@ namespace PackageExplorerViewModel
         internal void NotifyChanges()
         {
             HasEdit = true;
-            OnPropertyChanged(nameof(IconPaths));
+            OnPropertyChanged(null); // refresh all
         }
 
         public IEnumerable<PackageIssue> Validate()
@@ -1625,7 +1635,7 @@ namespace PackageExplorerViewModel
             {
                 using var str = ManifestUtility.ReadManifest(metadataFileStream);
                 var manifest = Manifest.ReadFrom(str, true);
-                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices);
+                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices, SymbolValidator);
                 PackageMetadata = newMetadata;
 
                 return true;
