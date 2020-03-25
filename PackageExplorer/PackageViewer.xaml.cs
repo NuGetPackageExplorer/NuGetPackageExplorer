@@ -23,31 +23,25 @@ namespace PackageExplorer
     {
         private const string PackageFileDataFormat = "PackageFileContent";
 
-        private static readonly Dictionary<string, string[]> FrameworkFolders =
-            new Dictionary<string, string[]>
+        private static readonly List<(string displayName, string[] tfms)> FrameworkFolders = new List<(string, string[])>
             {
-                {
-                    "Portable Library",
-                    Array.Empty<string>()
-                },
-                {
-                    "Native",
-                    new []
+                //see https://docs.microsoft.com/en-us/nuget/schema/target-frameworks
+                (
+                    ".NET",
+                    new[]
                     {
-                        "(no version)", "native"
+                        "v5.0","net5.0",
+                        "v5.0-android", "net5.0-android",
+                        "v5.0-ios", "net5.0-ios",
+                        "v5.0-macos", "net5.0-macos",
+                        "v5.0-tvos", "net5.0-tvos",
+                        "v5.0-watchos", "net5.0-watchos",
+                        "v5.0-windows", "net5.0-windows"
                     }
-                },
-                {
-                    "ASP.NET 5",
-                    new []
-                    {
-                        "dnxcore", "dnxcore50",
-                        "dotnet5.4","dotnet5.4"
-                    }
-                },
+                ),
 
                 //see https://docs.microsoft.com/en-us/nuget/schema/target-frameworks
-                {
+                (
                     ".NET Core App",
                     new[]
                     {
@@ -59,98 +53,9 @@ namespace PackageExplorer
                         "v3.0","netcoreapp3.0",
                         "v3.1","netcoreapp3.1",
                     }
-                }
-                ,
+                ),
 
-                {
-                    "Tizen",
-                    new[]
-                    {
-                        "v3","tizen3",
-                        "v4","tizen4",
-                    }
-                }
-                ,
-
-                {
-                    "Mono",
-                    new[]
-                    {
-                        "Android", "MonoAndroid",
-                        "Mono", "Mono",
-                        "iOS", "MonoTouch",
-                        "OSX", "MonoMac"
-                    }
-                },
-                {
-                    //see https://docs.nuget.org/ndocs/schema/target-frameworks
-                    "Xamarin",
-                    new[]
-                    {
-                        "Mac", "xamarinmac",
-                        "iOS", "xamarinios",
-                        "Playstation 3", "xamarinpsthree",
-                        "Playstation 4", "xamarinpsfour",
-                        "PS Vita", "xamarinpsvita",
-                        "Watch OS", "xamarinwatchos",
-                        "TV OS", "xamarintvos",
-                        "XBox 360", "xamarinxboxthreesixty",
-                        "XBox One", "xamarinxboxone",
-                    }
-                },
-                {
-                    "Windows Phone (Windows Runtime)",
-                    new []
-                    {
-                        "(no version)", "wpa",
-                        "v8.1", "wpa81"
-                    }
-                },
-                  {
-                    "Windows Phone (appx)",
-                    new[] {
-                        "v8.1", "wpa81",
-                    }
-                },
-                {
-                    "Windows Phone (Silverlight)",
-                    new[] {
-                        "v7.0", "sl3-wp",
-                        "v7.1 (Mango)", "sl4-wp71",
-                        "v8.0", "wp8",
-                        "v8.1", "wp81"}
-                },
-
-                {
-                    "Silverlight",
-                    new[]
-                    {
-                        "(no version)", "sl",
-                        "v2.0", "sl2",
-                        "v3.0", "sl30",
-                        "v4.0", "sl40",
-                        "v5.0", "sl50"
-                    }
-                },
-                {
-                    "Windows Store",
-                    new[] {
-                        "(no version)", "netcore",
-                        "Windows 8", "netcore45",
-                        "Windows 8.1", "netcore451",
-                        "Windows 10", "uap10.0",
-                    }
-                },
-                {
-                    ".NET Client profile",
-                    new []
-                    {
-                        "v3.5 client", "net35-client",
-                        "v4.0 client", "net40-client"
-                    }
-                },
-
-                {
+                (
                     //see https://github.com/dotnet/corefx/blob/master/Documentation/architecture/net-platform-standard.md 
                     //and https://docs.microsoft.com/en-us/dotnet/articles/standard/library
                     ".NET Platform Standard",
@@ -167,11 +72,11 @@ namespace PackageExplorer
                         ".NET Standard 2.1","netstandard2.1",
                     }
 
-                }
+                )
                 ,
 
-                {
-                    ".NET",
+                (
+                    ".NET Framework",
                     new[]
                     {
                         "(no version)", "net",
@@ -190,9 +95,65 @@ namespace PackageExplorer
                         "v4.7", "net47",
                         "v4.7.1", "net471",
                         "v4.7.2", "net472",
-                        "v4.8", "net48",
+                        "v4.8", "net48"
                     }
-                }
+                )
+                
+                ,
+                (
+                    //see https://docs.nuget.org/ndocs/schema/target-frameworks
+                    "Xamarin",
+                    new[]
+                    {
+
+                        "Android", "MonoAndroid",
+                        "Mac", "xamarinmac",
+                        "iOS", "xamarinios",
+                        "Playstation 3", "xamarinpsthree",
+                        "Playstation 4", "xamarinpsfour",
+                        "PS Vita", "xamarinpsvita",
+                        "Watch OS", "xamarinwatchos",
+                        "TV OS", "xamarintvos",
+                        "XBox One", "xamarinxboxone",
+                    }
+                )
+                ,
+                (
+                    "Windows UWP",
+                    new[] {
+                        "Windows 10", "uap10.0"
+                    }
+                )
+                ,
+
+                (
+                    "Native",
+                    new []
+                    {
+                        "(no version)", "native"
+                    }
+                ),
+
+                (
+                    "Tizen",
+                    new[]
+                    {
+                        "v3","tizen3",
+                        "v4","tizen4",
+                    }
+                ),
+
+                (
+                    "Silverlight",
+                    new[]
+                    {
+                        "v5.0", "sl50"
+                    }
+                ),
+                (
+                    "Portable Library",
+                    Array.Empty<string>()
+                )
             };
 
         private readonly ISettingsManager _settings;
@@ -663,41 +624,40 @@ namespace PackageExplorer
 
             var commandBinding = new Binding("AddContentFolderCommand");
 
-            var addSeparator = menu.Items.Count > 0;
-            if (addSeparator)
-            {
-                var separator = new Separator();
-                separator.SetBinding(VisibilityProperty, visibilityBinding);
-                menu.Items.Insert(0, separator);
-            }
+
+
+            var menuItems = new List<object>();
+
+          
+
 
             foreach (var pair in FrameworkFolders)
             {
                 var item = new MenuItem
                 {
-                    Header = string.Format(CultureInfo.CurrentCulture, "Add {0} folder", pair.Key),
+                    Header = string.Format(CultureInfo.CurrentCulture, "Add {0} folder", pair.displayName),
                     Visibility = Visibility.Collapsed
                 };
                 item.SetBinding(VisibilityProperty, visibilityBinding);
 
-                var values = pair.Value;
-                if (values.Length > 2)
+                var tfm = pair.tfms;
+                if (tfm.Length > 2)
                 {
-                    for (var i = 0; i < values.Length; i += 2)
+                    for (var i = 0; i < tfm.Length; i += 2)
                     {
                         var childItem = new MenuItem
                         {
-                            Header = values[i],
-                            CommandParameter = values[i + 1]
+                            Header = tfm[i],
+                            CommandParameter = tfm[i + 1]
                         };
                         childItem.SetBinding(MenuItem.CommandProperty, commandBinding);
                         item.Items.Add(childItem);
                     }
                 }
-                else if (values.Length == 2)
+                else if (tfm.Length == 2)
                 {
                     item.SetBinding(MenuItem.CommandProperty, commandBinding);
-                    item.CommandParameter = values[1];
+                    item.CommandParameter = tfm[1];
                 }
                 else
                 {
@@ -706,6 +666,21 @@ namespace PackageExplorer
                     item.CommandParameter = "portable";
                 }
 
+                menuItems.Insert(0, item);;
+            }
+
+            var addSeparator = menu.Items.Count > 0;
+            if (addSeparator)
+            {
+                var separator = new Separator();
+                separator.SetBinding(VisibilityProperty, visibilityBinding);
+                menuItems.Insert(0, separator);
+            }
+
+
+            // We use the list as an intermediate to reverse the order as we build it
+            foreach (var item in menuItems)
+            {
                 menu.Items.Insert(0, item);
             }
         }
