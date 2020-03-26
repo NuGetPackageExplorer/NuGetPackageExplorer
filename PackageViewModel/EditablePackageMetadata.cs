@@ -46,7 +46,7 @@ namespace PackageExplorerViewModel
 
         public ICommand ShowValidationResultsCommand => _showValidationResultsCommand;
 
-        public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices)
+        public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices, SymbolValidator symbolValidator)
         {
             if (source is null)
                 throw new ArgumentNullException(nameof(source));
@@ -87,10 +87,12 @@ namespace PackageExplorerViewModel
                 PackageAssemblyReferences.AddRange(source.PackageAssemblyReferences);
             }
             MinClientVersion = source.MinClientVersion;
+
+            SymbolValidator = symbolValidator;
         }
 
-        public EditablePackageMetadata(IPackage source, IUIServices uiServices)
-            : this((IPackageMetadata)source, uiServices)
+        public EditablePackageMetadata(IPackage source, IUIServices uiServices, SymbolValidator symbolValidator)
+            : this((IPackageMetadata)source, uiServices, symbolValidator)
         {
             // Zip Packages may be signed, we need to load that data async
             if (source is ISignaturePackage zip)
@@ -165,6 +167,11 @@ namespace PackageExplorerViewModel
                     RaisePropertyChange(nameof(IsSigned));
                 }
             }
+        }
+
+        public SymbolValidator SymbolValidator
+        {
+            get;
         }
 
         public ValidationResultViewModel? ValidationResult

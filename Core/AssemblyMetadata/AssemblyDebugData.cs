@@ -15,6 +15,8 @@ namespace NuGetPe.AssemblyMetadata
 
         public IReadOnlyList<AssemblyDebugSourceDocument> Sources { get; internal set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
+
+        public bool HasSourceLink => SourceLink.Count > 0;
     }
 
     public enum PdbType

@@ -20,11 +20,9 @@ namespace PackageExplorer
             AssemblyDebugDataViewModel? data = null;
 
             // Get the PE file, exe or dll that matches
-            var filename = Path.GetFileNameWithoutExtension(selectedFile.Name);
-            var pe = peerFiles.FirstOrDefault(pc => pc.Path != selectedFile.Path &&
-                                                    Path.GetFileNameWithoutExtension(pc.Name)!.Equals(filename, StringComparison.OrdinalIgnoreCase) &&
-                                                    (".dll".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) ||
-                                                     ".exe".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase)));
+            var pe = peerFiles.FirstOrDefault(pc => ".dll".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) ||
+                                                     ".exe".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) ||
+                                                     ".winmd".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) );
 
             Stream? peStream = null;
             try

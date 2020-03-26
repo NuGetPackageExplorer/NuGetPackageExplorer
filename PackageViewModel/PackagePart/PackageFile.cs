@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Runtime.Versioning;
 using System.Windows;
 using System.Windows.Input;
@@ -39,7 +40,25 @@ namespace PackageExplorerViewModel
             ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsSigned && !viewModel.IsInEditFileMode);
         }
 
-        #region IPackageFile members
+        /// <summary>
+        /// Gets files in the same directory that end with PDB, XML, or PRI
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<PackageFile> GetAssociatedFiles()
+        {
+            var filename = System.IO.Path.GetFileNameWithoutExtension(Name);
+
+            foreach (var file in Parent!.GetFiles().Where(pf => pf is PackageFile).Cast<PackageFile>())
+            {
+                if(file.Path != Path)
+                {
+                    if(System.IO.Path.GetFileNameWithoutExtension(file.Path)!.Equals(filename, StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return file;
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Returns the path on disk if this file is a PhysicalPackageFile. Otherwise, returns null;
@@ -64,7 +83,6 @@ namespace PackageExplorerViewModel
             return _file.GetStream();
         }
 
-        #endregion
 
         public ICommand ViewCommand
         {
