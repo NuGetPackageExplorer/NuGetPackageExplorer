@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using NuGet.Packaging;
@@ -103,10 +104,18 @@ namespace PackageExplorerViewModel
             var noSourceLink = new List<PackageFile>();
             var noSymbols = new List<PackageFile>();
 
-            foreach(var file in filesWithPdb)
+            var allFilePaths = filesWithPdb.ToDictionary(pf => pf.Primary.Path);
+
+            foreach(var file in filesWithPdb.ToArray()) // work on array as we'll remove items that are satellite assemblies as we go
             {
+                // Skip satellite assemblies
+                if(IsSatelliteAssembly(file.Primary.Path))
+                {
+                    filesWithPdb.Remove(allFilePaths[file.Primary.Path]);
+                    continue;
+                }
+
                 // If we have a PDB, try loading that first. If not, may be embedded. Ottherwise, missing for now
-                // TODO: Check for symbol server and SNUPKG later
 
                 if(file.Pdb != null)
                 {
@@ -342,6 +351,18 @@ namespace PackageExplorerViewModel
                 stream.Dispose();
             }
             return memoryStream;
+        }
+
+
+        // From https://github.com/ctaggart/SourceLink/blob/51e5b47ae64d87447a0803cec559947242fe935b/dotnet-sourcelink/Program.cs
+        private static bool IsSatelliteAssembly(string path)
+        {
+            var match = Regex.Match(path, @"^(.*)\\[^\\]+\\([^\\]+).resources.dll$");
+
+            return match.Success;
+
+            // Satellite assemblies may not be in the same package as their main dll
+           // return match.Success && dlls.Contains($"{match.Groups[1]}\\{match.Groups[2]}.dll");
         }
 
 
