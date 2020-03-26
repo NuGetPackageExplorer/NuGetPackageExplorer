@@ -118,15 +118,13 @@ namespace PackageExplorerViewModel
                         // Try anyway in case it succeeds as a ppdb
                         try
                         {
-                            using (var stream = MakeSeekable(file.Pdb.GetStream(), true))
-                            {
-                                var data = AssemblyMetadataReader.ReadDebugData(peStream, stream);
+                            using var stream = MakeSeekable(file.Pdb.GetStream(), true);
+                            var data = AssemblyMetadataReader.ReadDebugData(peStream, stream);
 
-                                if(!data.HasSourceLink)
-                                {
-                                    // Have a PDB, but it's missing source link data
-                                    noSourceLink.Add(file.Primary);
-                                }
+                            if (!data.HasSourceLink)
+                            {
+                                // Have a PDB, but it's missing source link data
+                                noSourceLink.Add(file.Primary);
                             }
 
                         }
@@ -238,15 +236,13 @@ namespace PackageExplorerViewModel
                                     // Try anyway in case it succeeds as a ppdb
                                     try
                                     {
-                                        using (var stream = MakeSeekable(pdbfile.GetStream(), true))
-                                        {
-                                            var data = AssemblyMetadataReader.ReadDebugData(peStream, stream);
+                                        using var stream = MakeSeekable(pdbfile.GetStream(), true);
+                                        var data = AssemblyMetadataReader.ReadDebugData(peStream, stream);
 
-                                            if (!data.HasSourceLink)
-                                            {
-                                                // Have a PDB, but it's missing source link data
-                                                noSourceLink.Add(file);
-                                            }
+                                        if (!data.HasSourceLink)
+                                        {
+                                            // Have a PDB, but it's missing source link data
+                                            noSourceLink.Add(file);
                                         }
 
                                     }
@@ -330,7 +326,7 @@ namespace PackageExplorerViewModel
             
         }
 
-        static Stream MakeSeekable(Stream stream, bool disposeOriginal = false)
+        private static Stream MakeSeekable(Stream stream, bool disposeOriginal = false)
         {
             if (stream.CanSeek)
             {
@@ -361,8 +357,10 @@ namespace PackageExplorerViewModel
 
         private class FileWithPdb
         {
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
             public PackageFile Primary { get; set; }
-            public PackageFile Pdb { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+            public PackageFile? Pdb { get; set; }
         }
     }
 }
