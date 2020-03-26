@@ -335,6 +335,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="Validation_Disallowed" xml:space="preserve">
     <value>Disallowed</value>
   </data>
+  <data name="Validation_InvalidSourceLink" xml:space="preserve">
+    <value>Invalid Source Link</value>
+  </data>
   <data name="Validation_MissingSourceLink" xml:space="preserve">
     <value>Has Symbols, No Source Link</value>
   </data>

@@ -11,15 +11,17 @@ namespace PackageExplorerViewModel
     {
         private readonly AssemblyDebugSourceDocument _sourceDocument;
 
-        public AssemblyDebugSourceDocumentViewModel(AssemblyDebugSourceDocument sourceDocument, string path, string? location)
+        public AssemblyDebugSourceDocumentViewModel(AssemblyDebugSourceDocument sourceDocument, string path, string? location, bool isEmbedded)
         {
             _sourceDocument = sourceDocument ?? throw new ArgumentNullException(nameof(sourceDocument));
             Path = path;
             Location = location;
+            IsEmbedded = isEmbedded;
         }
 
         public string Path { get; }
         public string? Location { get; }
+        public bool IsEmbedded { get; }
 
         public string? HashAlgorithm => _sourceDocument.HashAlgorithm?.Name;
 

@@ -711,6 +711,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid Source Link.
+        /// </summary>
+        public static string Validation_InvalidSourceLink {
+            get {
+                return ResourceManager.GetString("Validation_InvalidSourceLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Has Symbols, No Source Link.
         /// </summary>
         public static string Validation_MissingSourceLink {
