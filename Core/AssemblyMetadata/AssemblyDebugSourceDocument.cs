@@ -16,12 +16,13 @@ namespace NuGetPe.AssemblyMetadata
         private static readonly Guid Sha1 = new Guid("ff1816ec-aa5e-4d10-87f7-6f4963833460");
         private static readonly Guid Sha256 = new Guid("8829d00f-11b8-4213-878b-770e8597ac16");
 
-        internal AssemblyDebugSourceDocument(string name, byte[] hash, Guid language, Guid hashAlgorithm)
+        internal AssemblyDebugSourceDocument(string name, byte[] hash, Guid language, Guid hashAlgorithm, bool isEmbedded)
         {
             Name = name;
             Hash = hash;
             Language = LanguageFromGuid(language);
             HashAlgorithm = HashAlgorithmNameFromGuid(hashAlgorithm);
+            IsEmbedded = isEmbedded;
         }
 
         public string Name { get; }
@@ -30,6 +31,9 @@ namespace NuGetPe.AssemblyMetadata
 #pragma warning restore CA1819 // Properties should not return arrays
         public SymbolLanguage Language { get; }
         public HashAlgorithmName? HashAlgorithm { get; }
+        public bool IsEmbedded { get; }
+        public bool HasSourceLink => IsEmbedded || !string.IsNullOrWhiteSpace(Url);
+        public string? Url { get; internal set; }
 
         private SymbolLanguage LanguageFromGuid(Guid guid)
         {

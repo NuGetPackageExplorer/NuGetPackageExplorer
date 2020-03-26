@@ -22,6 +22,7 @@ namespace PackageExplorerViewModel
     {
         Valid,
         ValidExternal,
+        InvalidSourceLink,
         NoSourceLink,
         NoSymbols,
         Pending,
@@ -99,8 +100,9 @@ namespace PackageExplorerViewModel
                                     Pdb = pf.GetAssociatedFiles().FirstOrDefault(af => ".pdb".Equals(Path.GetExtension(af.Path), StringComparison.OrdinalIgnoreCase))
                                 })
                                 .ToList();
-                     
 
+
+            var sourceLinkErrors = new List<(PackageFile file, string errors)>();
             var noSourceLink = new List<PackageFile>();
             var noSymbols = new List<PackageFile>();
 
@@ -136,6 +138,12 @@ namespace PackageExplorerViewModel
                                 noSourceLink.Add(file.Primary);
                             }
 
+                            if(data.SourceLinkErrors.Count > 0)
+                            {
+                                // Has source link errors
+                                sourceLinkErrors.Add((file.Primary, string.Join("\n", data.SourceLinkErrors)));
+                            }
+
                         }
                         catch (ArgumentNullException)
                         {
@@ -167,6 +175,12 @@ namespace PackageExplorerViewModel
                             if(!assemblyMetadata.DebugData.HasSourceLink)
                             {
                                 noSourceLink.Add(file.Primary);
+                            }
+
+                            if (assemblyMetadata.DebugData.SourceLinkErrors.Count > 0)
+                            {
+                                // Has source link errors
+                                sourceLinkErrors.Add((file.Primary, string.Join("\n", assemblyMetadata.DebugData.SourceLinkErrors)));
                             }
                         }
                         else // no embedded pdb, try to look for it
@@ -254,6 +268,12 @@ namespace PackageExplorerViewModel
                                             noSourceLink.Add(file);
                                         }
 
+                                        if (data.SourceLinkErrors.Count > 0)
+                                        {
+                                            // Has source link errors
+                                            sourceLinkErrors.Add((file, string.Join("\n", data.SourceLinkErrors)));
+                                        }
+
                                     }
                                     catch (ArgumentNullException)
                                     {
@@ -290,7 +310,7 @@ namespace PackageExplorerViewModel
             }
 
 
-            if (noSymbols.Count == 0 && noSourceLink.Count == 0)
+            if (noSymbols.Count == 0 && noSourceLink.Count == 0 && sourceLinkErrors.Count == 0)
             {
                 if(filesWithPdb.Count == 0)
                 {
@@ -317,6 +337,21 @@ namespace PackageExplorerViewModel
                     Result = SymbolValidationResult.NoSourceLink;
 
                     sb.AppendLine($"Missing Source Link for:\n{string.Join("\n", noSourceLink.Select(p => p.Path)) }");
+                    found = true;
+                }
+
+                if(sourceLinkErrors.Count > 0)
+                {
+                    Result = SymbolValidationResult.InvalidSourceLink;
+
+                    if (found)
+                        sb.AppendLine();
+
+                    foreach(var item in sourceLinkErrors)
+                    {
+                        sb.AppendLine($"Source Link errors for {item.file.Path}:\n{string.Join("\n", item.errors) }");
+                    }                    
+
                     found = true;
                 }
 
