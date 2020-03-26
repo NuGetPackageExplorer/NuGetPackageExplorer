@@ -341,6 +341,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="Validation_MissingSymbols" xml:space="preserve">
     <value>Missing Symbols</value>
   </data>
+  <data name="Validation_NothingToValidate" xml:space="preserve">
+    <value>No files found to validate</value>
+  </data>
   <data name="Validation_Pending" xml:space="preserve">
     <value>Pending</value>
   </data>
@@ -352,5 +355,8 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="Validation_Valid" xml:space="preserve">
     <value>Valid</value>
+  </data>
+  <data name="Validation_ValidExternal" xml:space="preserve">
+    <value>Valid with Symbol Server</value>
   </data>
 </root>

@@ -729,6 +729,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No files found to validate.
+        /// </summary>
+        public static string Validation_NothingToValidate {
+            get {
+                return ResourceManager.GetString("Validation_NothingToValidate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pending.
         /// </summary>
         public static string Validation_Pending {
@@ -761,6 +770,15 @@ namespace PackageExplorer {
         public static string Validation_Valid {
             get {
                 return ResourceManager.GetString("Validation_Valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid with Symbol Server.
+        /// </summary>
+        public static string Validation_ValidExternal {
+            get {
+                return ResourceManager.GetString("Validation_ValidExternal", resourceCulture);
             }
         }
     }

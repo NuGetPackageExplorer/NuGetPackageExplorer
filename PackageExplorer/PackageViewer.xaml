@@ -59,6 +59,18 @@
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding Result}" Value="ValidExternal">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_ValidExternal}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Result}" Value="NothingToValidate">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NothingToValidate}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding Result}" Value="NoSourceLink">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_MissingSourceLink}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />

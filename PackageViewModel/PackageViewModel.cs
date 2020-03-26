@@ -95,7 +95,7 @@ namespace PackageExplorerViewModel
             
             RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
 
-            SymbolValidator = new SymbolValidator(this);
+            SymbolValidator = new SymbolValidator(this, _package);
             SymbolValidator.Refresh();
 
 
