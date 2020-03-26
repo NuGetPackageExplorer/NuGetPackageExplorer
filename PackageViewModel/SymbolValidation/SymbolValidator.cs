@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,6 +14,14 @@ using NuGetPe.AssemblyMetadata;
 
 namespace PackageExplorerViewModel
 {
+    public enum SymbolValidationResult
+    {
+        Valid,
+        NoSourceLink,
+        NoSymbols,
+        Pending
+    }
+
     public class SymbolValidator : INotifyPropertyChanged
     {
         private readonly PackageViewModel _packageViewModel;
@@ -21,13 +30,15 @@ namespace PackageExplorerViewModel
         {
             _packageViewModel = packageViewModel ?? throw new ArgumentNullException(nameof(packageViewModel));
             _packageViewModel.PropertyChanged += _packageViewModel_PropertyChanged;
+
+            Result = SymbolValidationResult.Pending;
         }
 
         private void _packageViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if(e.PropertyName == null)
             {
-                HasSourceLink = null;
+                Result = SymbolValidationResult.Pending;
                 ErrorMessage = null;
                 Refresh();
             }
@@ -52,7 +63,7 @@ namespace PackageExplorerViewModel
             }
             finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasSourceLink)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Result)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
             }
         }
@@ -72,7 +83,8 @@ namespace PackageExplorerViewModel
                                 .ToList();
 
 
-            var missing = new List<PackageFile>();
+            var noSourceLink = new List<PackageFile>();
+            var noSymbols = new List<PackageFile>();
 
             foreach(var file in filesWithPdb)
             {
@@ -95,14 +107,16 @@ namespace PackageExplorerViewModel
 
                                 if(!data.HasSourceLink)
                                 {
-                                    missing.Add(file.primary);
+                                    // Have a PDB, but it's missing source link data
+                                    noSourceLink.Add(file.primary);
                                 }
                             }
 
                         }
                         catch (ArgumentNullException)
                         {
-                            missing.Add(file.primary);
+                            // Have a PDB, but ithere's an error with the source link data
+                            noSourceLink.Add(file.primary);
                         }
                     }
                     finally
@@ -110,7 +124,7 @@ namespace PackageExplorerViewModel
                         peStream?.Dispose();
                     }
                 }
-                else
+                else // No PDB, see if it's embedded
                 {
                     var tempFile = Path.GetTempFileName();
                     try
@@ -123,14 +137,23 @@ namespace PackageExplorerViewModel
 
                         var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile);
 
-                        if (assemblyMetadata?.DebugData?.HasSourceLink != true)
+                        if(assemblyMetadata?.DebugData != null)
                         {
-                            missing.Add(file.primary);
+                            // we have an embedded pdb
+                            if(!assemblyMetadata.DebugData.HasSourceLink)
+                            {
+                                noSourceLink.Add(file.primary);
+                            }
                         }
+                        else // no embedded pdb, try to look for it
+                        {
+                            noSymbols.Add(file.primary);
+                        }
+
                     }
-                    catch
+                    catch // an error occured, no symbols
                     {
-                        missing.Add(file.primary);
+                        noSymbols.Add(file.primary);
                     }
                     finally
                     {
@@ -148,16 +171,35 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            if(missing.Count == 0)
+            if(noSymbols.Count == 0 && noSourceLink.Count == 0)
             {
-                HasSourceLink = true;
+                Result = SymbolValidationResult.Valid;
                 ErrorMessage = null;
             }
             else
             {
-                HasSourceLink = false;
-                ErrorMessage = $"Missing Source Link for {string.Join(", ", missing.Select(p => p.Path)) }";
-            }               
+                var found = false;
+                var sb = new StringBuilder();
+                if (noSourceLink.Count > 0)
+                {                    
+                    Result = SymbolValidationResult.NoSourceLink;
+
+                    sb.AppendLine($"Missing Source Link for:\n{string.Join("\n", noSourceLink.Select(p => p.Path)) }");
+                    found = true;
+                }
+
+                if (noSymbols.Count > 0) // No symbols "wins" as it's more severe
+                {
+                    Result = SymbolValidationResult.NoSymbols;
+
+                    if (found)
+                        sb.AppendLine();
+
+                    sb.AppendLine($"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.Path)) }");
+                }
+
+                ErrorMessage = sb.ToString();
+            }
             
         }
 
@@ -180,7 +222,7 @@ namespace PackageExplorerViewModel
         }
 
 
-        public bool? HasSourceLink
+        public SymbolValidationResult Result
         {
             get; private set;
         }
