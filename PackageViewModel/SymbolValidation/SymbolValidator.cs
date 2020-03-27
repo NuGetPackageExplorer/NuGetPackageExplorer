@@ -34,7 +34,9 @@ namespace PackageExplorerViewModel
         NothingToValidate
     }
 
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public class SymbolValidator : INotifyPropertyChanged
+#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         private readonly PackageViewModel _packageViewModel;
         private readonly IPackage _package;
@@ -269,9 +271,9 @@ namespace PackageExplorerViewModel
                     if (found)
                         sb.AppendLine();
 
-                    foreach(var item in sourceLinkErrors)
+                    foreach(var (file, errors) in sourceLinkErrors)
                     {
-                        sb.AppendLine($"Source Link errors for {item.file.Path}:\n{string.Join("\n", item.errors) }");
+                        sb.AppendLine($"Source Link errors for {file.Path}:\n{string.Join("\n", errors) }");
                     }                    
 
                     found = true;
@@ -405,19 +407,17 @@ namespace PackageExplorerViewModel
                     request.Headers.Add("SymbolChecksum", string.Join(";", symbolKey.Checksums));
                 }
 
-                using (var response = await _httpClient.SendAsync(request, cancellationToken))
+                using var response = await _httpClient.SendAsync(request, cancellationToken);
+                if (!response.IsSuccessStatusCode)
                 {
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        continue;
-                    }
-
-                    var pdbStream = new MemoryStream();
-                    await response.Content.CopyToAsync(pdbStream);
-                    pdbStream.Position = 0;
-
-                    return pdbStream;
+                    continue;
                 }
+
+                var pdbStream = new MemoryStream();
+                await response.Content.CopyToAsync(pdbStream);
+                pdbStream.Position = 0;
+
+                return pdbStream;
             }
 
             return null;
