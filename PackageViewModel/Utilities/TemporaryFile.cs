@@ -22,7 +22,9 @@ namespace PackageExplorerViewModel.Utilities
 
             FileName = Path.GetTempFileName() + extension;
 
-            stream.CopyToFile(FileName);
+            using var fstream = File.Open(FileName, FileMode.Create);
+            stream.CopyTo(fstream);
+            fstream.Flush();
         }
 
         public string FileName { get; }
