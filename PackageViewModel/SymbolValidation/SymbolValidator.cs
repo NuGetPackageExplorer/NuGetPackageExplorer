@@ -7,7 +7,10 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
+
+using AuthenticodeExaminer;
 
 using NuGet.Packaging;
 
@@ -36,6 +39,8 @@ namespace PackageExplorerViewModel
         private readonly PackageViewModel _packageViewModel;
         private readonly IPackage _package;
         private readonly bool _publishedOnNuGetOrg;
+        private readonly HttpClient _httpClient = new HttpClient();
+
 
         public SymbolValidator(PackageViewModel packageViewModel, IPackage package)
         {
@@ -106,7 +111,7 @@ namespace PackageExplorerViewModel
 
             var sourceLinkErrors = new List<(PackageFile file, string errors)>();
             var noSourceLink = new List<PackageFile>();
-            var noSymbols = new List<PackageFile>();
+            var noSymbols = new List<FileWithDebugData>();
 
             var allFilePaths = filesWithPdb.ToDictionary(pf => pf.Primary.Path);
 
@@ -123,7 +128,7 @@ namespace PackageExplorerViewModel
                 // Local checks first
                 if(file.Pdb != null)
                 {
-                    ValidatePdb(file.Primary, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors);                   
+                    ValidatePdb(new FileWithDebugData(file.Primary, null), file.Pdb.GetStream(), noSourceLink, sourceLinkErrors);                   
                 }
                 else // No PDB, see if it's embedded
                 {
@@ -135,7 +140,7 @@ namespace PackageExplorerViewModel
 
                         var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
 
-                        if(assemblyMetadata?.DebugData != null)
+                        if(assemblyMetadata?.DebugData.HasDebugInfo == true)
                         {
                             // we have an embedded pdb
                             if(!assemblyMetadata.DebugData.HasSourceLink)
@@ -149,15 +154,15 @@ namespace PackageExplorerViewModel
                                 sourceLinkErrors.Add((file.Primary, string.Join("\n", assemblyMetadata.DebugData.SourceLinkErrors)));
                             }
                         }
-                        else // no embedded pdb, try to look for it
+                        else // no embedded pdb, try to look for it elsewhere
                         {
-                            noSymbols.Add(file.Primary);
+                            noSymbols.Add(new FileWithDebugData(file.Primary, assemblyMetadata?.DebugData));
                         }
 
                     }
                     catch // an error occured, no symbols
                     {
-                        noSymbols.Add(file.Primary);
+                        noSymbols.Add(new FileWithDebugData(file.Primary, null));
                     }
                 }
             }
@@ -168,14 +173,13 @@ namespace PackageExplorerViewModel
             if (noSymbols.Count > 0 && _publishedOnNuGetOrg)
             {
                 // try to get on NuGet.org
-                // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect
-                using var client = new HttpClient();
+                // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect               
 
                 
                 try
                 {
 #pragma warning disable CA2234 // Pass system uri objects instead of strings
-                    var response = await client.GetAsync($"https://www.nuget.org/api/v2/symbolpackage/{_package.Id}/{_package.Version.ToNormalizedString()}").ConfigureAwait(false);
+                    var response = await _httpClient.GetAsync($"https://www.nuget.org/api/v2/symbolpackage/{_package.Id}/{_package.Version.ToNormalizedString()}").ConfigureAwait(false);
 #pragma warning restore CA2234 // Pass system uri objects instead of strings
 
                     if (response.IsSuccessStatusCode) // we'll get a 404 if none
@@ -192,7 +196,7 @@ namespace PackageExplorerViewModel
                         foreach(var file in noSymbols.ToArray()) // from a copy so we can remove as we go
                         {
                             // file to look for                            
-                            var pdbpath = Path.ChangeExtension(file.Path, ".pdb");
+                            var pdbpath = Path.ChangeExtension(file.File.Path, ".pdb");
 
                             if(dict.TryGetValue(pdbpath, out var pdbfile))
                             {
@@ -209,7 +213,24 @@ namespace PackageExplorerViewModel
                 }
             }
 
+            // Check for Microsoft assemblies on the Microsoft symbol server
+            if (noSymbols.Count > 0)
+            {
+                var microsoftFiles = noSymbols.Where(f => f.DebugData != null && IsMicrosoftFile(f.File)).ToList();
 
+                foreach(var file in microsoftFiles)
+                {
+                    var pdbStream = await GetSymbolsAsync(file.DebugData!.SymbolKeys);
+                    if(pdbStream != null)
+                    {
+                        requireExternal = true;
+                        noSymbols.Remove(file);
+                        // Found a PDB for it
+                        ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors);
+                    }
+                }
+
+            }
 
             if (noSymbols.Count == 0 && noSourceLink.Count == 0 && sourceLinkErrors.Count == 0)
             {
@@ -263,7 +284,7 @@ namespace PackageExplorerViewModel
                     if (found)
                         sb.AppendLine();
 
-                    sb.AppendLine($"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.Path)) }");
+                    sb.AppendLine($"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.File.Path)) }");
                 }
 
                 ErrorMessage = sb.ToString();
@@ -271,35 +292,62 @@ namespace PackageExplorerViewModel
             
         }
 
-        static void ValidatePdb(PackageFile peFile, Stream pdbStream, List<PackageFile> noSourceLink, List<(PackageFile file, string errors)> sourceLinkErrors)
+        private static bool IsMicrosoftFile(PackageFile file)
         {
-            var peStream = MakeSeekable(peFile.GetStream(), true);
+            IReadOnlyList<AuthenticodeSignature> sigs;
+            SignatureCheckResult isValidSig;
+            using (var str = file.GetStream())
+            using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Name)))
+            {
+                var extractor = new FileInspector(tempFile.FileName);
+
+                sigs = extractor.GetSignatures().ToList();
+                isValidSig = extractor.Validate();
+
+                if(isValidSig == SignatureCheckResult.Valid && sigs.Count > 0)
+                {
+                    return sigs[0].SigningCertificate.Subject.EndsWith(", O=Microsoft Corporation, L=Redmond, S=Washington, C=US", StringComparison.OrdinalIgnoreCase);
+                }
+            }
+
+            return false;
+        }
+
+        private static void ValidatePdb(FileWithDebugData input, Stream pdbStream, List<PackageFile> noSourceLink, List<(PackageFile file, string errors)> sourceLinkErrors)
+        {
+            var peStream = MakeSeekable(input.File.GetStream(), true);
             try
             {
+                // TODO: Verify that the PDB and DLL match
+
                 // This might throw an exception because we don't know if it's a full PDB or portable
                 // Try anyway in case it succeeds as a ppdb
                 try
                 {
-                    using var stream = MakeSeekable(pdbStream, true);
-                    var data = AssemblyMetadataReader.ReadDebugData(peStream, stream);
-
-                    if (!data.HasSourceLink)
+                    if(input.DebugData == null || !input.DebugData.HasDebugInfo) // get it again if this is a shell with keys
                     {
-                        // Have a PDB, but it's missing source link data
-                        noSourceLink.Add(peFile);
+                        using var stream = MakeSeekable(pdbStream, true);
+                        input.DebugData = AssemblyMetadataReader.ReadDebugData(peStream, stream);
                     }
 
-                    if (data.SourceLinkErrors.Count > 0)
+
+                    if (!input.DebugData.HasSourceLink)
+                    {
+                        // Have a PDB, but it's missing source link data
+                        noSourceLink.Add(input.File);
+                    }
+
+                    if (input.DebugData.SourceLinkErrors.Count > 0)
                     {
                         // Has source link errors
-                        sourceLinkErrors.Add((peFile, string.Join("\n", data.SourceLinkErrors)));
+                        sourceLinkErrors.Add((input.File, string.Join("\n", input.DebugData.SourceLinkErrors)));
                     }
 
                 }
                 catch (ArgumentNullException)
                 {
                     // Have a PDB, but ithere's an error with the source link data
-                    noSourceLink.Add(peFile);
+                    noSourceLink.Add(input.File);
                 }
             }
             finally
@@ -339,6 +387,42 @@ namespace PackageExplorerViewModel
         }
 
 
+        private async Task<Stream?> GetSymbolsAsync(IReadOnlyList<SymbolKey> symbolKeys, CancellationToken cancellationToken = default)
+        {
+            foreach (var symbolKey in symbolKeys)
+            {
+               //var uri = new Uri(new Uri("https://symbols.nuget.org/download/symbols/"), symbolKey.Key);
+               var uri = new Uri(new Uri("https://msdl.microsoft.com/download/symbols/"), symbolKey.Key);
+
+                using var request = new HttpRequestMessage
+                {
+                    Method = HttpMethod.Get,
+                    RequestUri = uri
+                };
+
+                if (symbolKey.Checksums?.Any() == true)
+                {
+                    request.Headers.Add("SymbolChecksum", string.Join(";", symbolKey.Checksums));
+                }
+
+                using (var response = await _httpClient.SendAsync(request, cancellationToken))
+                {
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        continue;
+                    }
+
+                    var pdbStream = new MemoryStream();
+                    await response.Content.CopyToAsync(pdbStream);
+                    pdbStream.Position = 0;
+
+                    return pdbStream;
+                }
+            }
+
+            return null;
+        }
+
         public SymbolValidationResult Result
         {
             get; private set;
@@ -355,6 +439,18 @@ namespace PackageExplorerViewModel
             public PackageFile Primary { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
             public PackageFile? Pdb { get; set; }
+        }
+
+        private class FileWithDebugData
+        {
+            public FileWithDebugData(PackageFile file, AssemblyDebugData? debugData)
+            {
+                File = file;
+                DebugData = debugData;
+            }
+
+            public PackageFile File { get; }
+            public AssemblyDebugData? DebugData { get; set; }
         }
     }
 }
