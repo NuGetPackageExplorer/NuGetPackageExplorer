@@ -117,7 +117,10 @@ namespace PackageExplorerViewModel
 
             var allFilePaths = filesWithPdb.ToDictionary(pf => pf.Primary.Path);
 
-            foreach(var file in filesWithPdb.ToArray()) // work on array as we'll remove items that are satellite assemblies as we go
+
+            var pdbChecksumValid = true;
+
+            foreach (var file in filesWithPdb.ToArray()) // work on array as we'll remove items that are satellite assemblies as we go
             {
                 // Skip satellite assemblies
                 if(IsSatelliteAssembly(file.Primary.Path))
@@ -130,7 +133,12 @@ namespace PackageExplorerViewModel
                 // Local checks first
                 if(file.Pdb != null)
                 {
-                    ValidatePdb(new FileWithDebugData(file.Primary, null), file.Pdb.GetStream(), noSourceLink, sourceLinkErrors);                   
+                    var filePair = new FileWithDebugData(file.Primary, null);
+                    if (!ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors))
+                    {
+                        pdbChecksumValid = false;
+                        noSymbols.Add(filePair);
+                    }
                 }
                 else // No PDB, see if it's embedded
                 {
@@ -202,10 +210,15 @@ namespace PackageExplorerViewModel
 
                             if(dict.TryGetValue(pdbpath, out var pdbfile))
                             {
-                                noSymbols.Remove(file);
-
                                 // Validate
-                                ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors);
+                                if (ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors))
+                                {
+                                    noSymbols.Remove(file);
+                                }
+                                else
+                                {
+                                    pdbChecksumValid = false;
+                                }
                             }
                         }
                     }                    
@@ -226,9 +239,16 @@ namespace PackageExplorerViewModel
                     if(pdbStream != null)
                     {
                         requireExternal = true;
-                        noSymbols.Remove(file);
+                        
                         // Found a PDB for it
-                        ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors);
+                        if(ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors))
+                        {
+                            noSymbols.Remove(file);
+                        }
+                        else
+                        {
+                            pdbChecksumValid = false;
+                        }
                     }
                 }
 
@@ -286,6 +306,11 @@ namespace PackageExplorerViewModel
                     if (found)
                         sb.AppendLine();
 
+                    if(!pdbChecksumValid)
+                    {
+                        sb.AppendLine("Some PDB's checksums do not match their PE files and are shown as missing.");
+                    }
+
                     sb.AppendLine($"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.File.Path)) }");
                 }
 
@@ -315,7 +340,7 @@ namespace PackageExplorerViewModel
             return false;
         }
 
-        private static void ValidatePdb(FileWithDebugData input, Stream pdbStream, List<PackageFile> noSourceLink, List<(PackageFile file, string errors)> sourceLinkErrors)
+        private static bool ValidatePdb(FileWithDebugData input, Stream pdbStream, List<PackageFile> noSourceLink, List<(PackageFile file, string errors)> sourceLinkErrors)
         {
             var peStream = MakeSeekable(input.File.GetStream(), true);
             try
@@ -332,6 +357,11 @@ namespace PackageExplorerViewModel
                         input.DebugData = AssemblyMetadataReader.ReadDebugData(peStream, stream);
                     }
 
+                    // Check to see if the PDB is valid
+                    if(!input.DebugData.PdbChecksumIsValid)
+                    {
+                        return false;
+                    }
 
                     if (!input.DebugData.HasSourceLink)
                     {
@@ -356,6 +386,8 @@ namespace PackageExplorerViewModel
             {
                 peStream.Dispose();
             }
+
+            return true;
         }
 
         private static Stream MakeSeekable(Stream stream, bool disposeOriginal = false)

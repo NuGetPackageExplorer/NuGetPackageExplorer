@@ -6,8 +6,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Reflection.PortableExecutable;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.DiaSymReader.Tools;
+using Microsoft.FileFormats;
+using Microsoft.FileFormats.PDB;
+using Microsoft.FileFormats.PE;
 using Microsoft.SourceLink.Tools;
 
 namespace NuGetPe.AssemblyMetadata
@@ -22,6 +26,12 @@ namespace NuGetPe.AssemblyMetadata
                 if (peStream == null)
                     throw new ArgumentNullException(nameof(peStream), "Full PDB's require the PE file to be next to the PDB");
                 // Full PDB. convert to ppdb in memory
+
+                _pdbBytes = pdbStream.ReadAllBytes();
+                pdbStream.Position = 0;
+                _peBytes = peStream.ReadAllBytes();
+                peStream.Position = 0;
+
                 _temporaryPdbStream = new MemoryStream();
                 PdbConverter.Default.ConvertWindowsToPortable(peStream, pdbStream, _temporaryPdbStream);
                 _temporaryPdbStream.Position = 0;
@@ -33,11 +43,17 @@ namespace NuGetPe.AssemblyMetadata
             {
                 inputStream = pdbStream;
                 _pdbType = PdbType.Portable;
+                _pdbBytes = pdbStream.ReadAllBytes();
+                pdbStream.Position = 0;
             }
 
-            _readerProvider = MetadataReaderProvider.FromPortablePdbStream(inputStream);
+            
+
+            _readerProvider = MetadataReaderProvider.FromPortablePdbStream(inputStream);            
             _reader = _readerProvider.GetMetadataReader();
+            
             _peReader = new PEReader(peStream!);
+            //_peReader.
             _ownPeReader = true;
         }
 
@@ -60,6 +76,8 @@ namespace NuGetPe.AssemblyMetadata
         private readonly PEReader _peReader;
         private readonly bool _ownPeReader;
         private readonly Stream? _temporaryPdbStream;
+        private readonly byte[]? _pdbBytes;
+        private readonly byte[]? _peBytes;
 
         private static readonly Guid SourceLinkId = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
 
@@ -79,6 +97,7 @@ namespace NuGetPe.AssemblyMetadata
                 Sources = documents,
                 SourceLinkErrors = errors,
                 SymbolKeys = GetSymbolKeys(_peReader),
+                PdbChecksumIsValid = VerifyPdbChecksums(),
                 HasDebugInfo = true
             };
 
@@ -110,6 +129,81 @@ namespace NuGetPe.AssemblyMetadata
             }
             return false;
         }
+
+        // reference: https://github.com/NuGet/NuGet.Jobs/blob/26c23697fee363d3133171f71e129cda9b5a3707/src/Validation.Symbols/SymbolsValidatorService.cs#L186
+
+        private bool VerifyPdbChecksums()
+        {
+            // Nothing to verify as the pdb is inside the PE file
+            if (_pdbType == PdbType.Embedded)
+                return true;
+
+
+            if(_pdbType == PdbType.Portable)
+            {
+                var checksumRecords = _peReader.ReadDebugDirectory()
+                                          .Where(entry => entry.Type == DebugDirectoryEntryType.PdbChecksum)
+                                          .Select(_peReader.ReadPdbChecksumDebugDirectoryData)
+                                          .ToList();
+
+                if (checksumRecords.Count == 0)
+                {
+                    return false;
+                }
+
+                var hashes = new Dictionary<string, byte[]>();
+
+                if (_reader.DebugMetadataHeader == null)
+                    return false;
+
+                var idOffset = _reader.DebugMetadataHeader.IdStartOffset;
+
+                foreach (var checksumRecord in checksumRecords)
+                {
+                    if (!hashes.TryGetValue(checksumRecord.AlgorithmName, out var hash))
+                    {
+                        var han = new HashAlgorithmName(checksumRecord.AlgorithmName);
+                        using (var hashAlg = IncrementalHash.CreateHash(han))
+                        {
+                            hashAlg.AppendData(_pdbBytes!, 0, idOffset);
+                            hashAlg.AppendData(new byte[20]);
+                            int offset = idOffset + 20;
+                            int count = _pdbBytes!.Length - offset;
+                            hashAlg.AppendData(_pdbBytes!, offset, count);
+                            hash = hashAlg.GetHashAndReset();
+                        }
+                        hashes.Add(checksumRecord.AlgorithmName, hash);
+                    }
+                    if (checksumRecord.Checksum.ToArray().SequenceEqual(hash))
+                    {
+                        // found the right checksum
+                        return true;
+                    }
+                }
+
+                // Not found any checksum record that matches the PDB.
+                return false;
+            }
+
+            // Deal with Windows PDB's
+
+            using var pdbBytesStream = new MemoryStream(_pdbBytes!);
+            var pdbFile = new PDBFile(new StreamAddressSpace(pdbBytesStream));
+
+            using var peBytesStream = new MemoryStream(_peBytes!);
+            var peFile = new PEFile(new StreamAddressSpace(peBytesStream));
+
+            var pdb = peFile.Pdbs.FirstOrDefault(p => p.Signature == pdbFile.Signature && p.Age == pdbFile.Age);
+
+            if(pdb != null)
+            {
+                return true;
+            }
+
+            return false;       
+        }
+
+
 
         public static IReadOnlyList<SymbolKey> GetSymbolKeys(PEReader peReader)
         {
