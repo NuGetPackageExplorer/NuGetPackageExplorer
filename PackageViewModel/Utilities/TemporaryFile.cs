@@ -10,7 +10,7 @@ namespace PackageExplorerViewModel.Utilities
 {
     public sealed class TemporaryFile : IDisposable
     {
-        public TemporaryFile(Stream stream, string? extension)
+        public TemporaryFile(Stream stream, string? extension = null)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));

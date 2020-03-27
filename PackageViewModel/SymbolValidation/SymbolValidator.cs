@@ -16,6 +16,8 @@ using NuGetPackageExplorer.Types;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 
+using PackageExplorerViewModel.Utilities;
+
 namespace PackageExplorerViewModel
 {
     public enum SymbolValidationResult
@@ -117,57 +119,21 @@ namespace PackageExplorerViewModel
                     continue;
                 }
 
-                // If we have a PDB, try loading that first. If not, may be embedded. Ottherwise, missing for now
-
+                // If we have a PDB, try loading that first. If not, may be embedded. 
+                // Local checks first
                 if(file.Pdb != null)
                 {
-                    var peStream = MakeSeekable(file.Primary.GetStream(), true);
-                    try
-                    {
-
-                        // This might throw an exception because we don't know if it's a full PDB or portable
-                        // Try anyway in case it succeeds as a ppdb
-                        try
-                        {
-                            using var stream = MakeSeekable(file.Pdb.GetStream(), true);
-                            var data = AssemblyMetadataReader.ReadDebugData(peStream, stream);
-
-                            if (!data.HasSourceLink)
-                            {
-                                // Have a PDB, but it's missing source link data
-                                noSourceLink.Add(file.Primary);
-                            }
-
-                            if(data.SourceLinkErrors.Count > 0)
-                            {
-                                // Has source link errors
-                                sourceLinkErrors.Add((file.Primary, string.Join("\n", data.SourceLinkErrors)));
-                            }
-
-                        }
-                        catch (ArgumentNullException)
-                        {
-                            // Have a PDB, but ithere's an error with the source link data
-                            noSourceLink.Add(file.Primary);
-                        }
-                    }
-                    finally
-                    {
-                        peStream?.Dispose();
-                    }
+                    ValidatePdb(file.Primary, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors);                   
                 }
                 else // No PDB, see if it's embedded
                 {
-                    var tempFile = Path.GetTempFileName();
                     try
-                    {                        
-                        using (var str = file.Primary.GetStream())
-                        using (var fileStream = File.OpenWrite(tempFile))
-                        {
-                            str.CopyTo(fileStream);
-                        }
+                    {
 
-                        var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile);
+                        using var str = file.Primary.GetStream();
+                        using var tempFile = new TemporaryFile(str);
+
+                        var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
 
                         if(assemblyMetadata?.DebugData != null)
                         {
@@ -193,19 +159,6 @@ namespace PackageExplorerViewModel
                     {
                         noSymbols.Add(file.Primary);
                     }
-                    finally
-                    {
-                        if (File.Exists(tempFile))
-                        {
-                            try
-                            {
-                                File.Delete(tempFile);
-                            }
-                            catch
-                            {
-                            }
-                        }
-                    }
                 }
             }
 
@@ -218,7 +171,7 @@ namespace PackageExplorerViewModel
                 // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect
                 using var client = new HttpClient();
 
-                var tempFile = Path.GetTempFileName();
+                
                 try
                 {
 #pragma warning disable CA2234 // Pass system uri objects instead of strings
@@ -229,62 +182,24 @@ namespace PackageExplorerViewModel
                     {
                         requireExternal = true;
 
-                        using (var getStream = await response.Content.ReadAsStreamAsync())
-                        using (var fileStream = File.OpenWrite(tempFile))
-                        {
-                            await getStream.CopyToAsync(fileStream);
-                        }
-
-                        using var package = new ZipPackage(tempFile);
+                        using var getStream = await response.Content.ReadAsStreamAsync();
+                        using var tempFile = new TemporaryFile(getStream, ".snupkg");
+                        using var package = new ZipPackage(tempFile.FileName);
 
                         // Look for pdb's for the missing files
                         var dict = package.GetFiles().ToDictionary(k => k.Path);
 
                         foreach(var file in noSymbols.ToArray()) // from a copy so we can remove as we go
                         {
-                            // file to look for
-
-                            var ext = Path.GetExtension(file.Path);
-                            var pdbpath = $"{file.Path[0..^ext.Length]}.pdb";
+                            // file to look for                            
+                            var pdbpath = Path.ChangeExtension(file.Path, ".pdb");
 
                             if(dict.TryGetValue(pdbpath, out var pdbfile))
                             {
                                 noSymbols.Remove(file);
 
                                 // Validate
-                                var peStream = MakeSeekable(file.GetStream(), true);
-                                try
-                                {
-                                    // This might throw an exception because we don't know if it's a full PDB or portable
-                                    // Try anyway in case it succeeds as a ppdb
-                                    try
-                                    {
-                                        using var stream = MakeSeekable(pdbfile.GetStream(), true);
-                                        var data = AssemblyMetadataReader.ReadDebugData(peStream, stream);
-
-                                        if (!data.HasSourceLink)
-                                        {
-                                            // Have a PDB, but it's missing source link data
-                                            noSourceLink.Add(file);
-                                        }
-
-                                        if (data.SourceLinkErrors.Count > 0)
-                                        {
-                                            // Has source link errors
-                                            sourceLinkErrors.Add((file, string.Join("\n", data.SourceLinkErrors)));
-                                        }
-
-                                    }
-                                    catch (ArgumentNullException)
-                                    {
-                                        // Have a PDB, but ithere's an error with the source link data
-                                        noSourceLink.Add(file);
-                                    }
-                                }
-                                finally
-                                {
-                                    peStream?.Dispose();
-                                }
+                                ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors);
                             }
                         }
                     }                    
@@ -292,22 +207,8 @@ namespace PackageExplorerViewModel
                 catch // Could not check, leave status as-is
                 {
                 }
-                finally
-                {
-                    if (File.Exists(tempFile))
-                    {
-                        try
-                        {
-                            File.Delete(tempFile);
-                        }
-                        catch
-                        {
-                        }
-                    }
-
-                }
-
             }
+
 
 
             if (noSymbols.Count == 0 && noSourceLink.Count == 0 && sourceLinkErrors.Count == 0)
@@ -368,6 +269,43 @@ namespace PackageExplorerViewModel
                 ErrorMessage = sb.ToString();
             }
             
+        }
+
+        static void ValidatePdb(PackageFile peFile, Stream pdbStream, List<PackageFile> noSourceLink, List<(PackageFile file, string errors)> sourceLinkErrors)
+        {
+            var peStream = MakeSeekable(peFile.GetStream(), true);
+            try
+            {
+                // This might throw an exception because we don't know if it's a full PDB or portable
+                // Try anyway in case it succeeds as a ppdb
+                try
+                {
+                    using var stream = MakeSeekable(pdbStream, true);
+                    var data = AssemblyMetadataReader.ReadDebugData(peStream, stream);
+
+                    if (!data.HasSourceLink)
+                    {
+                        // Have a PDB, but it's missing source link data
+                        noSourceLink.Add(peFile);
+                    }
+
+                    if (data.SourceLinkErrors.Count > 0)
+                    {
+                        // Has source link errors
+                        sourceLinkErrors.Add((peFile, string.Join("\n", data.SourceLinkErrors)));
+                    }
+
+                }
+                catch (ArgumentNullException)
+                {
+                    // Have a PDB, but ithere's an error with the source link data
+                    noSourceLink.Add(peFile);
+                }
+            }
+            finally
+            {
+                peStream.Dispose();
+            }
         }
 
         private static Stream MakeSeekable(Stream stream, bool disposeOriginal = false)
