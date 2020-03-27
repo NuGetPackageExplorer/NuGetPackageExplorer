@@ -10,9 +10,6 @@ using System.Text;
 using Microsoft.DiaSymReader.Tools;
 using Microsoft.SourceLink.Tools;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 namespace NuGetPe.AssemblyMetadata
 {
     internal sealed class AssemblyDebugParser : IDisposable
@@ -41,6 +38,7 @@ namespace NuGetPe.AssemblyMetadata
             _readerProvider = MetadataReaderProvider.FromPortablePdbStream(inputStream);
             _reader = _readerProvider.GetMetadataReader();
             _peReader = new PEReader(peStream!);
+            _ownPeReader = true;
         }
 
         public AssemblyDebugParser(PEReader peReader, MetadataReaderProvider readerProvider, PdbType pdbType)
@@ -48,6 +46,7 @@ namespace NuGetPe.AssemblyMetadata
             _readerProvider = readerProvider;
             _pdbType = pdbType;
             _peReader = peReader;
+            _ownPeReader = false;
 
             // Possible BadImageFormatException if a full PDB is passed
             // in. We'll let the throw bubble up to something that can handle it
@@ -59,6 +58,7 @@ namespace NuGetPe.AssemblyMetadata
         private readonly MetadataReaderProvider _readerProvider;
         private readonly MetadataReader _reader;
         private readonly PEReader _peReader;
+        private readonly bool _ownPeReader;
         private readonly Stream? _temporaryPdbStream;
 
         private static readonly Guid SourceLinkId = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
@@ -230,6 +230,10 @@ namespace NuGetPe.AssemblyMetadata
             {
                 _readerProvider.Dispose();
                 _temporaryPdbStream?.Dispose();
+
+                if(_ownPeReader)
+                    _peReader.Dispose();
+
                 _disposedValue = true;
             }
         }
