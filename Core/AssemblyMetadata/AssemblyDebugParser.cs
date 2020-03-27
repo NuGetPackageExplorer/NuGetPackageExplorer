@@ -138,13 +138,12 @@ namespace NuGetPe.AssemblyMetadata
             if (_pdbType == PdbType.Embedded)
                 return true;
 
-
             if(_pdbType == PdbType.Portable)
             {
                 var checksumRecords = _peReader.ReadDebugDirectory()
-                                          .Where(entry => entry.Type == DebugDirectoryEntryType.PdbChecksum)
-                                          .Select(_peReader.ReadPdbChecksumDebugDirectoryData)
-                                          .ToList();
+                                               .Where(entry => entry.Type == DebugDirectoryEntryType.PdbChecksum)
+                                               .Select(_peReader.ReadPdbChecksumDebugDirectoryData)
+                                               .ToList();
 
                 if (checksumRecords.Count == 0)
                 {
@@ -167,8 +166,8 @@ namespace NuGetPe.AssemblyMetadata
                         {
                             hashAlg.AppendData(_pdbBytes!, 0, idOffset);
                             hashAlg.AppendData(new byte[20]);
-                            int offset = idOffset + 20;
-                            int count = _pdbBytes!.Length - offset;
+                            var offset = idOffset + 20;
+                            var count = _pdbBytes!.Length - offset;
                             hashAlg.AppendData(_pdbBytes!, offset, count);
                             hash = hashAlg.GetHashAndReset();
                         }
@@ -202,8 +201,6 @@ namespace NuGetPe.AssemblyMetadata
 
             return false;       
         }
-
-
 
         public static IReadOnlyList<SymbolKey> GetSymbolKeys(PEReader peReader)
         {
@@ -251,7 +248,6 @@ namespace NuGetPe.AssemblyMetadata
             return result;
         }
 
-
         private IEnumerable<AssemblyDebugSourceDocument> GetSourceDocuments()
         {
             foreach (var dh in _reader.Documents)
@@ -290,7 +286,6 @@ namespace NuGetPe.AssemblyMetadata
             }
         }
 
-
         private (IReadOnlyList<AssemblyDebugSourceDocument> documents, IReadOnlyList<string> errors) GetDocumentsWithUrls()
         {
             var bytes = GetSourceLinkBytes();
@@ -314,9 +309,6 @@ namespace NuGetPe.AssemblyMetadata
 
             return (list, errors);
         }
-
-
-
 
         public void Dispose()
         {
