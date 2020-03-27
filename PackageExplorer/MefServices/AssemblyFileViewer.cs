@@ -6,6 +6,7 @@ using NuGetPackageExplorer.Types;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
+using PackageExplorerViewModel.Utilities;
 
 namespace PackageExplorer
 {
@@ -17,19 +18,16 @@ namespace PackageExplorer
         {
             DiagnosticsClient.TrackEvent("AssemblyFileViewer");
 
-            var tempFile = Path.GetTempFileName();
+            
 
             try
             {
-                using (var str = selectedFile.GetStream())
-                using (var fileStream = File.OpenWrite(tempFile))
-                {
-                    str.CopyTo(fileStream);
-                }
+                using var str = selectedFile.GetStream();
+                using var tempFile = new TemporaryFile(str);
 
-                var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile);
+                var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
                 AssemblyDebugDataViewModel? debugDataViewModel = null;
-                if (assemblyMetadata?.DebugData.Sources != null)
+                if (assemblyMetadata?.DebugData.HasDebugInfo == true)
                     debugDataViewModel = new AssemblyDebugDataViewModel(assemblyMetadata.DebugData);
 
                 // No debug data to display
@@ -85,19 +83,6 @@ namespace PackageExplorer
                 }
             }
             catch { }
-            finally
-            {
-                if (File.Exists(tempFile))
-                {
-                    try
-                    {
-                        File.Delete(tempFile);
-                    }
-                    catch
-                    {
-                    }
-                }
-            }
 
             return new Grid();
         }
