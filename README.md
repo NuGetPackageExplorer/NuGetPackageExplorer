@@ -1,6 +1,6 @@
 ![Logo](images/npe-logo.png)
 
-[![Build Status](https://dev.azure.com/onovotny/GitBuilds/_apis/build/status/NuGet%20Package%20Explorer/NuGet%20Package%20Explorer%20CI?branchName=master)](https://dev.azure.com/onovotny/GitBuilds/_build/latest?definitionId=16)
+[![Build Status](https://dev.azure.com/clairernovotny/GitBuilds/_apis/build/status/NuGet%20Package%20Explorer/NuGet%20Package%20Explorer%20CI?branchName=master)](https://dev.azure.com/clairernovotny/GitBuilds/_build/latest?definitionId=16)
 [![Twitter Follow](https://img.shields.io/twitter/follow/NuGetPE.svg?style=social?maxAge=2592000)](https://twitter.com/NuGetPE)
 
 ## How to install
@@ -94,9 +94,7 @@ Requirements to build the project:
 
 - VS2019 or later. If using the stable release, make sure to enable support for Preview .NET Core SDK's
 - [Windows 10 SDK 17134](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk)
-- [.NET Core 3 SDK](https://github.com/dotnet/core-sdk)
+- [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0)
 - [Shared IntelliCode model](https://prod.intellicode.vsengsaas.visualstudio.com/get?m=B971F4617299420C8D5CFEF23F395D2A)
 
-## Diagnostics
 
-Thank you to [Bugsnag](https://www.bugsnag.com/) for their generous [license for Open Source projects](https://www.bugsnag.com/open-source/)!

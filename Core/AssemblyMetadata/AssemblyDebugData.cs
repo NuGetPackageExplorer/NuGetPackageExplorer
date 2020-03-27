@@ -8,13 +8,23 @@ namespace NuGetPe.AssemblyMetadata
 {
     public class AssemblyDebugData
     {
-#pragma warning disable CS8618 // Non-nullable field is uninitialized.
+        public AssemblyDebugData()
+        {
+            SourceLinkErrors = new List<string>();
+            Sources = new List<AssemblyDebugSourceDocument>();
+            SymbolKeys = new List<SymbolKey>();
+        }
+
         public PdbType PdbType { get; internal set; }
 
-        public IReadOnlyList<SourceLinkMap> SourceLink { get; internal set; }
-
         public IReadOnlyList<AssemblyDebugSourceDocument> Sources { get; internal set; }
-#pragma warning restore CS8618 // Non-nullable field is uninitialized.
+        public IReadOnlyList<string> SourceLinkErrors { get; internal set; }
+        public IReadOnlyList<SymbolKey> SymbolKeys { get; internal set; }
+        public bool HasSourceLink => Sources.All(doc => doc.HasSourceLink);
+
+
+        public bool HasDebugInfo { get; internal set; }
+
     }
 
     public enum PdbType

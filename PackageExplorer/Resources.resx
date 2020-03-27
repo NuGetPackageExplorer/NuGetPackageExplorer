@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Dialog_CreatedByLabel" xml:space="preserve">
     <value>Authors:</value>
@@ -211,6 +211,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="Dialog_SignatureValidation" xml:space="preserve">
     <value>Signature Validation:</value>
+  </data>
+  <data name="Dialog_SourceLinkValidation" xml:space="preserve">
+    <value>Source Link:</value>
   </data>
   <data name="Dialog_TagLabel" xml:space="preserve">
     <value>Tags:</value>
@@ -332,6 +335,18 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="Validation_Disallowed" xml:space="preserve">
     <value>Disallowed</value>
   </data>
+  <data name="Validation_InvalidSourceLink" xml:space="preserve">
+    <value>Invalid Source Link</value>
+  </data>
+  <data name="Validation_MissingSourceLink" xml:space="preserve">
+    <value>Has Symbols, No Source Link</value>
+  </data>
+  <data name="Validation_MissingSymbols" xml:space="preserve">
+    <value>Missing Symbols</value>
+  </data>
+  <data name="Validation_NothingToValidate" xml:space="preserve">
+    <value>No files found to validate</value>
+  </data>
   <data name="Validation_Pending" xml:space="preserve">
     <value>Pending</value>
   </data>
@@ -343,5 +358,8 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="Validation_Valid" xml:space="preserve">
     <value>Valid</value>
+  </data>
+  <data name="Validation_ValidExternal" xml:space="preserve">
+    <value>Valid with Symbol Server</value>
   </data>
 </root>

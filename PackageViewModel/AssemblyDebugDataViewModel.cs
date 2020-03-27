@@ -25,25 +25,9 @@ namespace PackageExplorerViewModel
         {
             var list = new List<AssemblyDebugSourceDocumentViewModel>(debugData.Sources.Count);
 
-            var lookup = debugData.SourceLink.ToDictionary(sm => sm.Base[0..^1], sm => sm.Location[0..^1]);
-
             foreach (var doc in debugData.Sources)
             {
-                var path = doc.Name;
-                string? location = null;
-                // see if any keys match the base
-                foreach (var key in lookup.Keys)
-                {
-                    if (doc.Name.StartsWith(key, StringComparison.Ordinal))
-                    {
-                        path = doc.Name.Substring(key.Length);
-                        location = lookup[key] + path;
-
-                        break;
-                    }
-                }
-
-                list.Add(new AssemblyDebugSourceDocumentViewModel(doc, path, location));
+                list.Add(new AssemblyDebugSourceDocumentViewModel(doc, doc.Name, doc.Url, doc.IsEmbedded));
             }
 
             return list;

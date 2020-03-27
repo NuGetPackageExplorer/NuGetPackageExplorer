@@ -19,7 +19,7 @@ namespace PackageExplorer {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -342,6 +342,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Source Link:.
+        /// </summary>
+        public static string Dialog_SourceLinkValidation {
+            get {
+                return ResourceManager.GetString("Dialog_SourceLinkValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Tags:.
         /// </summary>
         public static string Dialog_TagLabel {
@@ -484,18 +493,16 @@ namespace PackageExplorer {
                 return ResourceManager.GetString("PackageChooser_ActionShowAllVersions", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Alternate Package:.
         /// </summary>
-        public static string PackageChooser_AlternatePackage
-        {
-            get
-            {
+        public static string PackageChooser_AlternatePackage {
+            get {
                 return ResourceManager.GetString("PackageChooser_AlternatePackage", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Clear search.
         /// </summary>
@@ -531,18 +538,16 @@ namespace PackageExplorer {
                 return ResourceManager.GetString("PackageChooser_ColumnHeaderVersion", resourceCulture);
             }
         }
-
+        
         /// <summary>
-        ///   Looks up a localized string similar to Deprecated.
+        ///   Looks up a localized string similar to Deprecated:.
         /// </summary>
-        public static string PackageChooser_Deprecated
-        {
-            get
-            {
+        public static string PackageChooser_Deprecated {
+            get {
                 return ResourceManager.GetString("PackageChooser_Deprecated", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Author(s):.
         /// </summary>
@@ -706,6 +711,42 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid Source Link.
+        /// </summary>
+        public static string Validation_InvalidSourceLink {
+            get {
+                return ResourceManager.GetString("Validation_InvalidSourceLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Has Symbols, No Source Link.
+        /// </summary>
+        public static string Validation_MissingSourceLink {
+            get {
+                return ResourceManager.GetString("Validation_MissingSourceLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing Symbols.
+        /// </summary>
+        public static string Validation_MissingSymbols {
+            get {
+                return ResourceManager.GetString("Validation_MissingSymbols", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No files found to validate.
+        /// </summary>
+        public static string Validation_NothingToValidate {
+            get {
+                return ResourceManager.GetString("Validation_NothingToValidate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pending.
         /// </summary>
         public static string Validation_Pending {
@@ -738,6 +779,15 @@ namespace PackageExplorer {
         public static string Validation_Valid {
             get {
                 return ResourceManager.GetString("Validation_Valid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Valid with Symbol Server.
+        /// </summary>
+        public static string Validation_ValidExternal {
+            get {
+                return ResourceManager.GetString("Validation_ValidExternal", resourceCulture);
             }
         }
     }

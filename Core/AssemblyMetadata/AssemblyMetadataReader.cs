@@ -96,7 +96,7 @@ namespace NuGetPe.AssemblyMetadata
             var singleCtorParameter = attribute.FixedArguments[0];
             if (singleCtorParameter.Type.Equals(typeof(string).FullName, StringComparison.Ordinal))
             {
-                var strValue = singleCtorParameter.Value.ToString();
+                var strValue = singleCtorParameter.Value!.ToString();
                 return string.IsNullOrEmpty(strValue)
                     ? null
                     : strValue;

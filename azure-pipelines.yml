@@ -28,9 +28,10 @@ stages:
 
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .NET Core SDK 3.1.x'
+      displayName: 'Use .NET Core SDK 5.0.x'
       inputs:
-        version: 3.1.x
+        version: 5.0.x
+        includePreviewVersions: true
 
     - task: DotNetCoreCLI@2
       inputs:
@@ -124,7 +125,7 @@ stages:
       displayName: Zip PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp3.1/win-x64/publish
+        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp5.0/win-x64/publish
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))

@@ -11,6 +11,7 @@ using System.Windows.Input;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 
 namespace PackageExplorerViewModel
@@ -59,7 +60,6 @@ namespace PackageExplorerViewModel
         private ICommand? _viewPackageAnalysisCommand;
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
-        private bool _disposed;
 
         #endregion
 
@@ -75,7 +75,8 @@ namespace PackageExplorerViewModel
             ISettingsManager settingsManager,
             CredentialPublishProvider credentialPublishProvider,
             IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> contentViewerMetadata,
-            IList<Lazy<IPackageRule>> packageRules)
+            IList<Lazy<IPackageRule>> packageRules
+            )
         {
             SettingsManager = settingsManager ?? throw new ArgumentNullException(nameof(settingsManager));
             _editorService = editorService ?? throw new ArgumentNullException(nameof(editorService));
@@ -86,14 +87,20 @@ namespace PackageExplorerViewModel
             ContentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
-            _packageMetadata = new EditablePackageMetadata(_package, UIServices);
 
             PackagePath = path;
             PackageSource = source;
 
-            _isSigned = _packageMetadata.IsSigned;
-
+            
             RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
+
+            SymbolValidator = new SymbolValidator(this, _package);
+            SymbolValidator.Refresh();
+
+
+
+            _packageMetadata = new EditablePackageMetadata(_package, UIServices, SymbolValidator);
+            _isSigned = _packageMetadata.IsSigned;
         }
 
 
@@ -157,6 +164,8 @@ namespace PackageExplorerViewModel
                 }
             }
         }
+
+        public SymbolValidator SymbolValidator { get; } 
 
         public string WindowTitle
         {
@@ -267,7 +276,7 @@ namespace PackageExplorerViewModel
                             _watcher.Deleted += OnFileChange;
                             _watcher.Renamed += OnFileChange;
 
-                            _watcher.Path = Path.GetDirectoryName(PackagePath);
+                            _watcher.Path = Path.GetDirectoryName(PackagePath)!;
                             _watcher.Filter = Path.GetFileName(PackagePath);
                             _watcher.EnableRaisingEvents = true;
                         }
@@ -325,13 +334,13 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public bool IsDisposed => _disposed;
+        public bool IsDisposed { get; private set; }
 
         #region IDisposable Members
 
         public void Dispose()
         {
-            _disposed = true;
+            IsDisposed = true;
 
             RootFolder.Dispose();
             _package.Dispose();
@@ -1371,7 +1380,7 @@ namespace PackageExplorerViewModel
         internal void NotifyChanges()
         {
             HasEdit = true;
-            OnPropertyChanged(nameof(IconPaths));
+            OnPropertyChanged(null); // refresh all
         }
 
         public IEnumerable<PackageIssue> Validate()
@@ -1519,7 +1528,7 @@ namespace PackageExplorerViewModel
                         {
                             if (RootFolder.ContainsFolder(guessFolderName))
                             {
-                                targetFolder = (PackageFolder)RootFolder[guessFolderName];
+                                targetFolder = (PackageFolder)RootFolder[guessFolderName]!;
                             }
                             else
                             {
@@ -1570,7 +1579,7 @@ namespace PackageExplorerViewModel
                 var parentFolder = folder;
                 for (var i = 0; i < parts.Length - 1; i++)
                 {
-                    parentFolder = (PackageFolder)parentFolder[parts[i]];
+                    parentFolder = (PackageFolder)parentFolder[parts[i]]!;
                     if (parentFolder is null) throw new ArgumentNullException(nameof(folder)); // verify each part isn't null. should never happen
                 }
 
@@ -1625,7 +1634,7 @@ namespace PackageExplorerViewModel
             {
                 using var str = ManifestUtility.ReadManifest(metadataFileStream);
                 var manifest = Manifest.ReadFrom(str, true);
-                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices);
+                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices, SymbolValidator);
                 PackageMetadata = newMetadata;
 
                 return true;

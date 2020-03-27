@@ -10,7 +10,7 @@ namespace PackageExplorerViewModel.Utilities
 {
     public sealed class TemporaryFile : IDisposable
     {
-        public TemporaryFile(Stream stream, string? extension)
+        public TemporaryFile(Stream stream, string? extension = null)
         {
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
@@ -22,7 +22,9 @@ namespace PackageExplorerViewModel.Utilities
 
             FileName = Path.GetTempFileName() + extension;
 
-            stream.CopyToFile(FileName);
+            using var fstream = File.Open(FileName, FileMode.Create);
+            stream.CopyTo(fstream);
+            fstream.Flush();
         }
 
         public string FileName { get; }

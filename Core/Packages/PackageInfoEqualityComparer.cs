@@ -14,7 +14,7 @@ namespace NuGetPe
 
         #region IEqualityComparer<PackageInfo> Members
 
-        public bool Equals(PackageInfo x, PackageInfo y)
+        public bool Equals(PackageInfo? x, PackageInfo? y)
         {
             if (x == y)
             {
@@ -29,7 +29,7 @@ namespace NuGetPe
             return x.Id.Equals(y.Id, StringComparison.OrdinalIgnoreCase);
         }
 
-        public int GetHashCode(PackageInfo obj)
+        public int GetHashCode(PackageInfo? obj)
         {
             return obj?.Id.GetHashCode(StringComparison.OrdinalIgnoreCase) ?? 0;
         }

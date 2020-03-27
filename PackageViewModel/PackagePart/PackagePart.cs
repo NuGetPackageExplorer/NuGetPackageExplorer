@@ -127,7 +127,7 @@ namespace PackageExplorerViewModel
         }
 
       
-        public int CompareTo(PackagePart other)
+        public int CompareTo(PackagePart? other)
         {
             if (this == other)
             {
@@ -162,7 +162,7 @@ namespace PackageExplorerViewModel
 
      
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public abstract void Export(string rootPath);
 

@@ -24,15 +24,21 @@ namespace NuGetPe.AssemblyMetadata
             _metadataReader = _peReader.GetMetadataReader();
         }
 
-        public AssemblyDebugData? GetDebugData()
+        public AssemblyDebugData GetDebugData()
         {
             var entry = _peReader.ReadDebugDirectory().Where(de => de.Type == DebugDirectoryEntryType.EmbeddedPortablePdb).ToList();
             if (entry.Count == 0) // no embedded ppdb
             {
-                return null;
+
+                return new AssemblyDebugData
+                {
+                    HasDebugInfo = false,
+                    SymbolKeys = AssemblyDebugParser.GetSymbolKeys(_peReader)
+                };
+
             }
 
-            using var reader = new AssemblyDebugParser(_peReader.ReadEmbeddedPortablePdbDebugDirectoryData(entry[0]), PdbType.Embedded);
+            using var reader = new AssemblyDebugParser(_peReader, _peReader.ReadEmbeddedPortablePdbDebugDirectoryData(entry[0]), PdbType.Embedded);
             return reader.GetDebugData();
         }
 

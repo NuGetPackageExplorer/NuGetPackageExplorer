@@ -24,7 +24,7 @@ namespace PackageExplorerViewModel
 
         #region ICommand Members
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             var isSigned = ViewModel.IsSigned;
 
@@ -48,7 +48,7 @@ namespace PackageExplorerViewModel
 
         public event EventHandler? CanExecuteChanged;
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             if (ViewModel.IsInEditMetadataMode)
             {

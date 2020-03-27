@@ -23,7 +23,7 @@ namespace PackageExplorerViewModel
 
         public event EventHandler CanExecuteChanged = delegate { };
 
-        public bool CanExecute(object parameter)
+        public bool CanExecute(object? parameter)
         {
             if (ViewModel.IsInEditFileMode)
             {
@@ -40,7 +40,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public void Execute(object parameter)
+        public void Execute(object? parameter)
         {
             DiagnosticsClient.TrackEvent("ViewContentCommand");
 
@@ -97,12 +97,9 @@ namespace PackageExplorerViewModel
                     foreach (var viewer in contentViewers)
                     {
 
-                        // Get peer files
-                        var peerFiles = file.Parent!.GetFiles()
-                                            .Select(pf => new PackageFile(pf, Path.GetFileName(pf.Path)!, file.Parent!))
-                                            .ToList();
+                        var files = file.GetAssociatedFiles().ToList();
 
-                        content = viewer.GetView(file, peerFiles);
+                        content = viewer.GetView(file, files);
                         if (content != null)
                         {
                             // found a plugin that can read this file, stop

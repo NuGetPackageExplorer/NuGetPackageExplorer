@@ -83,7 +83,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public PackagePart this[string name]
+        public PackagePart? this[string name]
         {
             get { return Children.SingleOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)); }
         }
