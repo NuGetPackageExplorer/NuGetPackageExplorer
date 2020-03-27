@@ -9,6 +9,9 @@ using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 using System.Text;
 using Microsoft.DiaSymReader.Tools;
+using Microsoft.FileFormats;
+using Microsoft.FileFormats.PDB;
+using Microsoft.FileFormats.PE;
 using Microsoft.SourceLink.Tools;
 
 namespace NuGetPe.AssemblyMetadata
@@ -26,6 +29,8 @@ namespace NuGetPe.AssemblyMetadata
 
                 _pdbBytes = pdbStream.ReadAllBytes();
                 pdbStream.Position = 0;
+                _peBytes = peStream.ReadAllBytes();
+                peStream.Position = 0;
 
                 _temporaryPdbStream = new MemoryStream();
                 PdbConverter.Default.ConvertWindowsToPortable(peStream, pdbStream, _temporaryPdbStream);
@@ -48,6 +53,7 @@ namespace NuGetPe.AssemblyMetadata
             _reader = _readerProvider.GetMetadataReader();
             
             _peReader = new PEReader(peStream!);
+            //_peReader.
             _ownPeReader = true;
         }
 
@@ -71,6 +77,7 @@ namespace NuGetPe.AssemblyMetadata
         private readonly bool _ownPeReader;
         private readonly Stream? _temporaryPdbStream;
         private readonly byte[]? _pdbBytes;
+        private readonly byte[]? _peBytes;
 
         private static readonly Guid SourceLinkId = new Guid("CC110556-A091-4D38-9FEC-25AB9A351A6A");
 
@@ -178,8 +185,22 @@ namespace NuGetPe.AssemblyMetadata
                 return false;
             }
 
-            // Windows PDB
-            return true;           
+            // Deal with Windows PDB's
+
+            using var pdbBytesStream = new MemoryStream(_pdbBytes!);
+            var pdbFile = new PDBFile(new StreamAddressSpace(pdbBytesStream));
+
+            using var peBytesStream = new MemoryStream(_peBytes!);
+            var peFile = new PEFile(new StreamAddressSpace(peBytesStream));
+
+            var pdb = peFile.Pdbs.FirstOrDefault(p => p.Signature == pdbFile.Signature && p.Age == pdbFile.Age);
+
+            if(pdb != null)
+            {
+                return true;
+            }
+
+            return false;       
         }
 
 
