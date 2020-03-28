@@ -16,9 +16,11 @@ namespace NuGetPe.AssemblyMetadata
             SymbolKeys = new List<SymbolKey>();
 
             _untrackedSources = new Lazy<IReadOnlyList<string>>(() => GetNonEmbeddedSourcesInObjDir());
+            _sourcesAreDeterministic = new Lazy<bool>(CalculateSourcesDeterministic);
         }
 
         private readonly Lazy<IReadOnlyList<string>> _untrackedSources;
+        private readonly Lazy<bool> _sourcesAreDeterministic;
 
         public PdbType PdbType { get; internal set; }
 
@@ -34,6 +36,8 @@ namespace NuGetPe.AssemblyMetadata
 
         public IReadOnlyList<string> UntrackedSources => _untrackedSources.Value;
 
+        public bool SourcesAreDeterministic => _sourcesAreDeterministic.Value;
+
         private IReadOnlyList<string> GetNonEmbeddedSourcesInObjDir()
         {
             // get sources where /obj/ is in the name and it's not
@@ -45,6 +49,11 @@ namespace NuGetPe.AssemblyMetadata
                         select doc.Name).ToList();
 
             return docs;
+        }
+
+        private bool CalculateSourcesDeterministic()
+        {
+            return Sources.All(doc => doc.Name.StartsWith("/_/", StringComparison.OrdinalIgnoreCase));
         }
 
     }

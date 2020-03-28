@@ -123,6 +123,9 @@
   <data name="Dialog_DependenciesLabel" xml:space="preserve">
     <value>Dependencies:</value>
   </data>
+  <data name="Dialog_DeterministicValidation" xml:space="preserve">
+    <value>Deterministic:</value>
+  </data>
   <data name="Dialog_DevelopmentDependencyLabel" xml:space="preserve">
     <value>Development Dependency:</value>
   </data>
@@ -134,6 +137,9 @@
   </data>
   <data name="Dialog_FrameworkAssembliesLabel" xml:space="preserve">
     <value>Framework Assembly References:</value>
+  </data>
+  <data name="Dialog_Health" xml:space="preserve">
+    <value>Health:</value>
   </data>
   <data name="Dialog_IdLabel" xml:space="preserve">
     <value>Id:</value>
@@ -210,7 +216,7 @@ Do you want to add '{0}' to the list of package publish sources?</value>
     <value>Show details...</value>
   </data>
   <data name="Dialog_SignatureValidation" xml:space="preserve">
-    <value>Signature Validation:</value>
+    <value>Signature:</value>
   </data>
   <data name="Dialog_SourceLinkValidation" xml:space="preserve">
     <value>Source Link:</value>
@@ -346,6 +352,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="Validation_MissingSymbols" xml:space="preserve">
     <value>Missing Symbols</value>
+  </data>
+  <data name="Validation_NonDeterministic" xml:space="preserve">
+    <value>Non deterministic</value>
   </data>
   <data name="Validation_NothingToValidate" xml:space="preserve">
     <value>No files found to validate</value>

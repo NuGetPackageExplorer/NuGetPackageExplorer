@@ -46,56 +46,89 @@
                 </TextBlock>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewmodel:SymbolValidator}">
-                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{Binding ErrorMessage, Mode=OneWay}">
+            <DataTemplate DataType="{x:Type viewmodel:SymbolValidator}" x:Key="SourceLinkValidation">
+                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{Binding SourceLinkErrorMessage, Mode=OneWay}">
                     <TextBlock Name="isValid" Text="{x:Static self:Resources.Validation_Pending}" />
                     <ContentControl Name="icon" Margin="3,0,0,0" Width="16" Height="16" Visibility="Collapsed"  />
                     <controls:Spinner x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" />
                 </StackPanel>
                 <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding Result}" Value="Valid">
+                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="Valid">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Result}" Value="ValidExternal">
+                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="ValidExternal">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_ValidExternal}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Result}" Value="NothingToValidate">
+                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="NothingToValidate">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NothingToValidate}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Result}" Value="NoSourceLink">
+                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="NoSourceLink">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_MissingSourceLink}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Result}" Value="HasUntrackedSources">
+                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="HasUntrackedSources">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_HasUntrackedSources}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Result}" Value="InvalidSourceLink">
+                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="InvalidSourceLink">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_InvalidSourceLink}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Result}" Value="NoSymbols">
+                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="NoSymbols">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_MissingSymbols}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding Result}" Value="Pending">
+                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="Pending">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Pending}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Collapsed"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodel:SymbolValidator}" x:Key="DeterministicValidation">
+                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{Binding DeterministicErrorMessage, Mode=OneWay}">
+                    <TextBlock Name="isValid" Text="{x:Static self:Resources.Validation_Pending}" />
+                    <ContentControl Name="icon" Margin="3,0,0,0" Width="16" Height="16" Visibility="Collapsed"  />
+                    <controls:Spinner x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" />
+                </StackPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding DeterministicResult}" Value="Valid">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding DeterministicResult}" Value="NonDeterministic">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NonDeterministic}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="NothingToValidate">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NothingToValidate}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding DeterministicResult}" Value="Pending">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Pending}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Collapsed"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Visible"/>
@@ -420,19 +453,31 @@
                         </StackPanel>
   
                         <!-- Validation -->
-                        <StackPanel Style="{StaticResource DetailMetadataStyle}" 
+                        <StackPanel>
+                            <TextBlock Text="{x:Static self:Resources.Dialog_Health}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <StackPanel Margin="14,0,0,0">
+                                <StackPanel Style="{StaticResource DetailMetadataStyle}" 
                                     Visibility="{Binding IsSigned, Converter={StaticResource boolToVis}}">
-                            <TextBlock Text="{x:Static self:Resources.Dialog_SignatureValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                                    <TextBlock Text="{x:Static self:Resources.Dialog_SignatureValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                            <ContentPresenter Content="{Binding Mode=OneWay}" ContentTemplate="{StaticResource VerifySignaturesResult}" Margin="3,0,0,0" />
-                        </StackPanel>
+                                    <ContentPresenter Content="{Binding Mode=OneWay}" ContentTemplate="{StaticResource VerifySignaturesResult}" Margin="3,0,0,0" />
+                                </StackPanel>
 
-                        <!-- Validation -->
-                        <StackPanel Style="{StaticResource DetailMetadataStyle}">
-                            <TextBlock Text="{x:Static self:Resources.Dialog_SourceLinkValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                                <!-- Source Link Validation -->
+                                <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                                    <TextBlock Text="{x:Static self:Resources.Dialog_SourceLinkValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                            <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}"  Margin="3,0,0,0" />
-                        </StackPanel>
+                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource SourceLinkValidation}" Margin="3,0,0,0" />
+                                </StackPanel>
+
+                                <!-- Deterministic Validation -->
+                                <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                                    <TextBlock Text="{x:Static self:Resources.Dialog_DeterministicValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource DeterministicValidation}" Margin="3,0,0,0" />
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>                       
 
                         <!-- Title -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Title, Converter={StaticResource NullToVisibilityConverter}}">
