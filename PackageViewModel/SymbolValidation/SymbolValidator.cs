@@ -84,7 +84,12 @@ namespace PackageExplorerViewModel
         /// <summary>
         /// No relevant files to validate. 
         /// </summary>
-        NothingToValidate
+        NothingToValidate,
+
+        /// <summary>
+        /// Valid but has untracked sources
+        /// </summary>
+        HasUntrackedSources
     }
 
 #pragma warning disable CA1001 // Types that own disposable fields should be disposable
@@ -439,6 +444,11 @@ namespace PackageExplorerViewModel
                 }
 
                 DeterministicErrorMessage = sb.ToString();
+            }
+            else if(SourceLinkResult == SymbolValidationResult.HasUntrackedSources)
+            {
+                DeterministicResult = DeterministicResult.HasUntrackedSources;
+                DeterministicErrorMessage = null;
             }
             else
             {
