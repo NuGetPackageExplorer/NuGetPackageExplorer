@@ -79,6 +79,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deterministic:.
+        /// </summary>
+        public static string Dialog_DeterministicValidation {
+            get {
+                return ResourceManager.GetString("Dialog_DeterministicValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Development Dependency:.
         /// </summary>
         public static string Dialog_DevelopmentDependencyLabel {
@@ -111,6 +120,15 @@ namespace PackageExplorer {
         public static string Dialog_FrameworkAssembliesLabel {
             get {
                 return ResourceManager.GetString("Dialog_FrameworkAssembliesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Health:.
+        /// </summary>
+        public static string Dialog_Health {
+            get {
+                return ResourceManager.GetString("Dialog_Health", resourceCulture);
             }
         }
         
@@ -333,7 +351,7 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Signature Validation:.
+        ///   Looks up a localized string similar to Signature:.
         /// </summary>
         public static string Dialog_SignatureValidation {
             get {
@@ -743,6 +761,15 @@ namespace PackageExplorer {
         public static string Validation_MissingSymbols {
             get {
                 return ResourceManager.GetString("Validation_MissingSymbols", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Non deterministic.
+        /// </summary>
+        public static string Validation_NonDeterministic {
+            get {
+                return ResourceManager.GetString("Validation_NonDeterministic", resourceCulture);
             }
         }
         

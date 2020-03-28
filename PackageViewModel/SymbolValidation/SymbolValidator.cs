@@ -25,14 +25,66 @@ namespace PackageExplorerViewModel
 {
     public enum SymbolValidationResult
     {
+        /// <summary>
+        /// Everything checks out and symbols are in the package
+        /// </summary>
         Valid,
+        /// <summary>
+        /// Valid with symbol servers
+        /// </summary>
         ValidExternal,
+
+        /// <summary>
+        /// Source Link exists but has errors
+        /// </summary>
         InvalidSourceLink,
+
+        /// <summary>
+        /// Missing source link data
+        /// </summary>
         NoSourceLink,
+
+        /// <summary>
+        /// No symbols found
+        /// </summary>
         NoSymbols,
+
+        /// <summary>
+        /// In progress
+        /// </summary>
         Pending,
+
+        /// <summary>
+        /// No relevant files to validate. 
+        /// </summary>
         NothingToValidate,
+
+        /// <summary>
+        /// Valid/ValidExternal except contains untracked sources
+        /// </summary>
         HasUntrackedSources
+    }
+
+    public enum DeterministicResult
+    {
+        /// <summary>
+        /// Assembly and sources are deterministic
+        /// </summary>
+        Valid,
+
+        /// <summary>
+        /// In Progress
+        /// </summary>
+        Pending,
+        /// <summary>
+        /// Source and assembly are not deterministic
+        /// </summary>
+        NonDeterministic,
+
+        /// <summary>
+        /// No relevant files to validate. 
+        /// </summary>
+        NothingToValidate
     }
 
 #pragma warning disable CA1001 // Types that own disposable fields should be disposable
@@ -51,7 +103,8 @@ namespace PackageExplorerViewModel
             _package = package;
             _packageViewModel.PropertyChanged += _packageViewModel_PropertyChanged;
 
-            Result = SymbolValidationResult.Pending;
+            SourceLinkResult = SymbolValidationResult.Pending;
+            DeterministicResult = DeterministicResult.Pending;
 
             // NuGet signs all its packages and stamps on the service index. Look for that.
             if(package is ISignaturePackage sigPackage)
@@ -67,8 +120,11 @@ namespace PackageExplorerViewModel
         {
             if(e.PropertyName == null)
             {
-                Result = SymbolValidationResult.Pending;
-                ErrorMessage = null;
+                SourceLinkResult = SymbolValidationResult.Pending;
+                SourceLinkErrorMessage = null;
+                DeterministicResult = DeterministicResult.Pending;
+                DeterministicErrorMessage = null;
+
                 Refresh();
             }
         }
@@ -92,8 +148,10 @@ namespace PackageExplorerViewModel
             }
             finally
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Result)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(ErrorMessage)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceLinkResult)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceLinkErrorMessage)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicResult)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicErrorMessage)));
             }
         }
 
@@ -116,9 +174,9 @@ namespace PackageExplorerViewModel
             var noSourceLink = new List<PackageFile>();
             var noSymbols = new List<FileWithDebugData>();
             var untrackedSources = new List<FileWithDebugData>();
+            var nonDeterministic = new List<PackageFile>();
 
             var allFilePaths = filesWithPdb.ToDictionary(pf => pf.Primary.Path);
-
 
             var pdbChecksumValid = true;
 
@@ -136,7 +194,7 @@ namespace PackageExplorerViewModel
                 if(file.Pdb != null)
                 {
                     var filePair = new FileWithDebugData(file.Primary, null);
-                    if (!ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources))
+                    if (!ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic))
                     {
                         pdbChecksumValid = false;
                         noSymbols.Add(filePair);
@@ -171,6 +229,12 @@ namespace PackageExplorerViewModel
                             {
                                 var filePair = new FileWithDebugData(file.Primary, assemblyMetadata.DebugData);
                                 untrackedSources.Add(filePair);
+                            }
+
+                            // Check for deterministic sources
+                            if(!assemblyMetadata.DebugData.SourcesAreDeterministic)
+                            {
+                                nonDeterministic.Add(file.Primary);
                             }
                         }
                         else // no embedded pdb, try to look for it elsewhere
@@ -220,7 +284,7 @@ namespace PackageExplorerViewModel
                             if(dict.TryGetValue(pdbpath, out var pdbfile))
                             {
                                 // Validate
-                                if (ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources))
+                                if (ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic))
                                 {
                                     noSymbols.Remove(file);
                                 }
@@ -250,7 +314,7 @@ namespace PackageExplorerViewModel
                         requireExternal = true;
                         
                         // Found a PDB for it
-                        if(ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors, untrackedSources))
+                        if(ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic))
                         {
                             noSymbols.Remove(file);
                         }
@@ -267,7 +331,7 @@ namespace PackageExplorerViewModel
             {
                 if(untrackedSources.Count > 0)
                 {
-                    Result = SymbolValidationResult.HasUntrackedSources;
+                    SourceLinkResult = SymbolValidationResult.HasUntrackedSources;
 
                     var sb = new StringBuilder("Contains untracked sources:\n");
                     sb.AppendLine("To Fix:");
@@ -285,22 +349,22 @@ namespace PackageExplorerViewModel
                         sb.AppendLine();
                     }
 
-                    ErrorMessage = sb.ToString();
+                    SourceLinkErrorMessage = sb.ToString();
                 }
                 else if(filesWithPdb.Count == 0)
                 {
-                    Result = SymbolValidationResult.NothingToValidate;
-                    ErrorMessage = "No files found to validate";
+                    SourceLinkResult = SymbolValidationResult.NothingToValidate;
+                    SourceLinkErrorMessage = "No files found to validate";
                 }
                 else if(requireExternal)
                 {
-                    Result = SymbolValidationResult.ValidExternal;
-                    ErrorMessage = null;
+                    SourceLinkResult = SymbolValidationResult.ValidExternal;
+                    SourceLinkErrorMessage = null;
                 }
                 else
                 {
-                    Result = SymbolValidationResult.Valid;
-                    ErrorMessage = null;
+                    SourceLinkResult = SymbolValidationResult.Valid;
+                    SourceLinkErrorMessage = null;
                 }
             }
             else
@@ -309,7 +373,7 @@ namespace PackageExplorerViewModel
                 var sb = new StringBuilder();
                 if (noSourceLink.Count > 0)
                 {                    
-                    Result = SymbolValidationResult.NoSourceLink;
+                    SourceLinkResult = SymbolValidationResult.NoSourceLink;
 
                     sb.AppendLine($"Missing Source Link for:\n{string.Join("\n", noSourceLink.Select(p => p.Path)) }");
                     found = true;
@@ -317,7 +381,7 @@ namespace PackageExplorerViewModel
 
                 if(sourceLinkErrors.Count > 0)
                 {
-                    Result = SymbolValidationResult.InvalidSourceLink;
+                    SourceLinkResult = SymbolValidationResult.InvalidSourceLink;
 
                     if (found)
                         sb.AppendLine();
@@ -332,7 +396,7 @@ namespace PackageExplorerViewModel
 
                 if (noSymbols.Count > 0) // No symbols "wins" as it's more severe
                 {
-                    Result = SymbolValidationResult.NoSymbols;
+                    SourceLinkResult = SymbolValidationResult.NoSymbols;
 
                     if (found)
                         sb.AppendLine();
@@ -345,7 +409,41 @@ namespace PackageExplorerViewModel
                     sb.AppendLine($"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.File.Path)) }");
                 }
 
-                ErrorMessage = sb.ToString();
+                SourceLinkErrorMessage = sb.ToString();
+            }
+
+            if(SourceLinkResult == SymbolValidationResult.NothingToValidate)
+            {
+                DeterministicResult = DeterministicResult.NothingToValidate;
+                DeterministicErrorMessage = null;
+            }
+            else if(SourceLinkResult == SymbolValidationResult.NoSymbols)
+            {
+                DeterministicResult = DeterministicResult.NonDeterministic;
+                DeterministicErrorMessage = "Missing Symbols";
+            }
+            else if(nonDeterministic.Count > 0)
+            {
+                DeterministicResult = DeterministicResult.NonDeterministic;
+
+                var sb = new StringBuilder();
+                sb.AppendLine("Ensure that the following properties are enabled for CI builds\nand you're using at least the 2.1.300 SDK:");
+                sb.AppendLine("<Deterministic>true</Deterministic>");
+                sb.AppendLine("<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>");
+                sb.AppendLine();
+                sb.AppendLine("The following assemblies have not been compiled with deterministic settings:");
+
+                foreach(var file in nonDeterministic)
+                {
+                    sb.AppendLine(file.Path);
+                }
+
+                DeterministicErrorMessage = sb.ToString();
+            }
+            else
+            {
+                DeterministicResult = DeterministicResult.Valid;
+                DeterministicErrorMessage = null;
             }
             
         }
@@ -371,7 +469,12 @@ namespace PackageExplorerViewModel
             return false;
         }
 
-        private static bool ValidatePdb(FileWithDebugData input, Stream pdbStream, List<PackageFile> noSourceLink, List<(PackageFile file, string errors)> sourceLinkErrors, List<FileWithDebugData> untrackedSources)
+        private static bool ValidatePdb(FileWithDebugData input,
+                                        Stream pdbStream,
+                                        List<PackageFile> noSourceLink,
+                                        List<(PackageFile file, string errors)> sourceLinkErrors,
+                                        List<FileWithDebugData> untrackedSources,
+                                        List<PackageFile> nonDeterministic)
         {
             var peStream = MakeSeekable(input.File.GetStream(), true);
             try
@@ -410,6 +513,12 @@ namespace PackageExplorerViewModel
                     if(input.DebugData.UntrackedSources.Count > 0)
                     {
                         untrackedSources.Add(input);
+                    }
+
+                    // Check for deterministic sources
+                    if (!input.DebugData.SourcesAreDeterministic)
+                    {
+                        nonDeterministic.Add(input.File);
                     }
 
                 }
@@ -491,12 +600,22 @@ namespace PackageExplorerViewModel
             return null;
         }
 
-        public SymbolValidationResult Result
+        public SymbolValidationResult SourceLinkResult
         {
             get; private set;
         }
 
-        public string? ErrorMessage
+        public string? SourceLinkErrorMessage
+        {
+            get; private set;
+        }
+
+        public DeterministicResult DeterministicResult
+        {
+            get; private set;
+        }
+
+        public string? DeterministicErrorMessage
         {
             get; private set;
         }
