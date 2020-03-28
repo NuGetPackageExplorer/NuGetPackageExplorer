@@ -711,6 +711,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contains untracked sources (obj).
+        /// </summary>
+        public static string Validation_HasUntrackedSources {
+            get {
+                return ResourceManager.GetString("Validation_HasUntrackedSources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Source Link.
         /// </summary>
         public static string Validation_InvalidSourceLink {
