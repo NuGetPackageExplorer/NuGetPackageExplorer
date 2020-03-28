@@ -77,6 +77,12 @@
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding Result}" Value="HasUntrackedSources">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_HasUntrackedSources}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding Result}" Value="InvalidSourceLink">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_InvalidSourceLink}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />

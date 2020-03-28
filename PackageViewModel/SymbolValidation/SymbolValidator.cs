@@ -31,7 +31,8 @@ namespace PackageExplorerViewModel
         NoSourceLink,
         NoSymbols,
         Pending,
-        NothingToValidate
+        NothingToValidate,
+        HasUntrackedSources
     }
 
 #pragma warning disable CA1001 // Types that own disposable fields should be disposable
@@ -114,6 +115,7 @@ namespace PackageExplorerViewModel
             var sourceLinkErrors = new List<(PackageFile file, string errors)>();
             var noSourceLink = new List<PackageFile>();
             var noSymbols = new List<FileWithDebugData>();
+            var untrackedSources = new List<FileWithDebugData>();
 
             var allFilePaths = filesWithPdb.ToDictionary(pf => pf.Primary.Path);
 
@@ -134,7 +136,7 @@ namespace PackageExplorerViewModel
                 if(file.Pdb != null)
                 {
                     var filePair = new FileWithDebugData(file.Primary, null);
-                    if (!ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors))
+                    if (!ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources))
                     {
                         pdbChecksumValid = false;
                         noSymbols.Add(filePair);
@@ -162,6 +164,13 @@ namespace PackageExplorerViewModel
                             {
                                 // Has source link errors
                                 sourceLinkErrors.Add((file.Primary, string.Join("\n", assemblyMetadata.DebugData.SourceLinkErrors)));
+                            }
+
+                            // Check for non-embedded sources
+                            if (assemblyMetadata.DebugData.UntrackedSources.Count > 0)
+                            {
+                                var filePair = new FileWithDebugData(file.Primary, assemblyMetadata.DebugData);
+                                untrackedSources.Add(filePair);
                             }
                         }
                         else // no embedded pdb, try to look for it elsewhere
@@ -211,7 +220,7 @@ namespace PackageExplorerViewModel
                             if(dict.TryGetValue(pdbpath, out var pdbfile))
                             {
                                 // Validate
-                                if (ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors))
+                                if (ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources))
                                 {
                                     noSymbols.Remove(file);
                                 }
@@ -241,7 +250,7 @@ namespace PackageExplorerViewModel
                         requireExternal = true;
                         
                         // Found a PDB for it
-                        if(ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors))
+                        if(ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors, untrackedSources))
                         {
                             noSymbols.Remove(file);
                         }
@@ -256,7 +265,29 @@ namespace PackageExplorerViewModel
 
             if (noSymbols.Count == 0 && noSourceLink.Count == 0 && sourceLinkErrors.Count == 0)
             {
-                if(filesWithPdb.Count == 0)
+                if(untrackedSources.Count > 0)
+                {
+                    Result = SymbolValidationResult.HasUntrackedSources;
+
+                    var sb = new StringBuilder("Contains untracked sources:\n");
+                    sb.AppendLine("To Fix:");
+                    sb.AppendLine("<EmbedUntrackedSources>true</EmbedUntrackedSources>");
+
+                    foreach(var untracked in untrackedSources)
+                    {
+                        sb.AppendLine($"Assembly: {untracked.File.Path}");
+
+                        foreach(var source in untracked.DebugData!.UntrackedSources)
+                        {
+                            sb.AppendLine($"  {source}");
+                        }
+
+                        sb.AppendLine();
+                    }
+
+                    ErrorMessage = sb.ToString();
+                }
+                else if(filesWithPdb.Count == 0)
                 {
                     Result = SymbolValidationResult.NothingToValidate;
                     ErrorMessage = "No files found to validate";
@@ -340,7 +371,7 @@ namespace PackageExplorerViewModel
             return false;
         }
 
-        private static bool ValidatePdb(FileWithDebugData input, Stream pdbStream, List<PackageFile> noSourceLink, List<(PackageFile file, string errors)> sourceLinkErrors)
+        private static bool ValidatePdb(FileWithDebugData input, Stream pdbStream, List<PackageFile> noSourceLink, List<(PackageFile file, string errors)> sourceLinkErrors, List<FileWithDebugData> untrackedSources)
         {
             var peStream = MakeSeekable(input.File.GetStream(), true);
             try
@@ -373,6 +404,12 @@ namespace PackageExplorerViewModel
                     {
                         // Has source link errors
                         sourceLinkErrors.Add((input.File, string.Join("\n", input.DebugData.SourceLinkErrors)));
+                    }
+
+                    // Check for non-embedded sources
+                    if(input.DebugData.UntrackedSources.Count > 0)
+                    {
+                        untrackedSources.Add(input);
                     }
 
                 }
@@ -419,7 +456,6 @@ namespace PackageExplorerViewModel
             // Satellite assemblies may not be in the same package as their main dll
            // return match.Success && dlls.Contains($"{match.Groups[1]}\\{match.Groups[2]}.dll");
         }
-
 
         private async Task<Stream?> GetSymbolsAsync(IReadOnlyList<SymbolKey> symbolKeys, CancellationToken cancellationToken = default)
         {
