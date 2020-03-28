@@ -118,7 +118,7 @@
                     </DataTrigger>
                     <DataTrigger Binding="{Binding DeterministicResult}" Value="NonDeterministic">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NonDeterministic}" />
-                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
