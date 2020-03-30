@@ -53,7 +53,7 @@ namespace NuGetPe.AssemblyMetadata
 
         private bool CalculateSourcesDeterministic()
         {
-            return Sources.All(doc => doc.Name.StartsWith("/_/", StringComparison.OrdinalIgnoreCase));
+            return Sources.All(doc => doc.Name.StartsWith("/_", StringComparison.OrdinalIgnoreCase));
         }
 
     }
