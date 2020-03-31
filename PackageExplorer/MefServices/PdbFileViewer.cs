@@ -64,7 +64,7 @@ namespace PackageExplorer
 
             return new TextBlock()
             {
-                Text = "Full PDB files rquired the EXE or DLL to be alongside."
+                Text = "Full PDB files requires the EXE or DLL to be alongside."
             };
 
         }
