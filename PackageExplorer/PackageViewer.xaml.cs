@@ -632,16 +632,16 @@ namespace PackageExplorer
           
 
 
-            foreach (var pair in FrameworkFolders)
+            foreach (var (displayName, tfms) in FrameworkFolders)
             {
                 var item = new MenuItem
                 {
-                    Header = string.Format(CultureInfo.CurrentCulture, "Add {0} folder", pair.displayName),
+                    Header = string.Format(CultureInfo.CurrentCulture, "Add {0} folder", displayName),
                     Visibility = Visibility.Collapsed
                 };
                 item.SetBinding(VisibilityProperty, visibilityBinding);
 
-                var tfm = pair.tfms;
+                var tfm = tfms;
                 if (tfm.Length > 2)
                 {
                     for (var i = 0; i < tfm.Length; i += 2)

@@ -67,14 +67,14 @@ namespace PackageExplorer
             InitCredentialService();
             HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>
             {
-                Container.GetExportedValue<ICredentialManager>().Add(credentials, uri);
+                Container.GetExportedValue<ICredentialManager>()!.Add(credentials, uri);
                 InitCredentialService();
             };
 
             MigrateSettings();
 
-            var window = Container.GetExportedValue<MainWindow>();
-            var uiServices = Container.GetExportedValue<IUIServices>();
+            var window = Container.GetExportedValue<MainWindow>()!;
+            var uiServices = Container.GetExportedValue<IUIServices>()!;
             uiServices.Initialize();
 
             window.Show();
@@ -96,9 +96,9 @@ namespace PackageExplorer
             {
                 return Task.FromResult<IEnumerable<ICredentialProvider>>(new ICredentialProvider[]
                 {
-                    Container.GetExportedValue<CredentialManagerProvider>(),
-                    Container.GetExportedValue<CredentialPublishProvider>(),
-                    Container.GetExportedValue<CredentialDialogProvider>()
+                    Container.GetExportedValue<CredentialManagerProvider>()!,
+                    Container.GetExportedValue<CredentialPublishProvider>()!,
+                    Container.GetExportedValue<CredentialDialogProvider>()!
                 });
             };
 
