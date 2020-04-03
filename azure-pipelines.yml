@@ -80,13 +80,13 @@ stages:
         AppInsightsKey: $(AppInsightsKey)
       condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['AppInsightsKey'], '')))
 
-    - task: MSBuild@1
-      displayName: Build NuGet Package Explorer for $(ReleaseChannel)
+    - task: DotNetCoreCLI@2
       inputs:
-        solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-        msbuildArguments: /restore
-        configuration: $(BuildConfiguration)
-        maximumCpuCount: true
+        command: build
+        projects: PackageExplorer/NuGetPackageExplorer.csproj
+        arguments: -m -c $(BuildConfiguration)
+      displayName: Build NuGet Package Explorer for $(ReleaseChannel)
+
 
     - task: MSBuild@1
       displayName: Build Package
