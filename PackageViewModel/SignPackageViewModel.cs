@@ -296,6 +296,10 @@ namespace PackageExplorerViewModel
 
             try
             {
+
+                if (Certificate == null)
+                    return null;
+
                 using var tempCertificate = new X509Certificate2(Certificate);
                 using var signRequest = new AuthorSignPackageRequest(tempCertificate, HashAlgorithmName);
                 var packagePath = _packageViewModel.GetCurrentPackageTempFile();
