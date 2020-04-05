@@ -258,51 +258,69 @@ namespace PackageExplorerViewModel
 
             var requireExternal = false;
             // See if any pdb's are missing and check for a snupkg on NuGet.org. 
-            if (noSymbols.Count > 0 && _publishedOnNuGetOrg)
+            if (noSymbols.Count > 0)
             {
-                // try to get on NuGet.org
-                // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect               
-
-                
                 try
                 {
+                    // try to find a sibling snupkg file locally
+                    var snupkgFilePath = Path.ChangeExtension(_packageViewModel.PackagePath, ".snupkg");
+                    var symbolsFilePath = Path.ChangeExtension(_packageViewModel.PackagePath, ".symbols.nupkg");
+                    if (File.Exists(snupkgFilePath))
+                    {
+                        ReadSnupkgFile(snupkgFilePath);
+                    }
+                    else if (File.Exists(symbolsFilePath))
+                    {
+                        ReadSnupkgFile(symbolsFilePath);
+                    }
+                    else if (_publishedOnNuGetOrg)
+                    {
+                        // try to get on NuGet.org
+                        // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect
+
 #pragma warning disable CA2234 // Pass system uri objects instead of strings
-                    var response = await _httpClient.GetAsync($"https://www.nuget.org/api/v2/symbolpackage/{_package.Id}/{_package.Version.ToNormalizedString()}").ConfigureAwait(false);
+                        var response = await _httpClient.GetAsync($"https://www.nuget.org/api/v2/symbolpackage/{_package.Id}/{_package.Version.ToNormalizedString()}").ConfigureAwait(false);
 #pragma warning restore CA2234 // Pass system uri objects instead of strings
 
-                    if (response.IsSuccessStatusCode) // we'll get a 404 if none
-                    {
-                        requireExternal = true;
-
-                        using var getStream = await response.Content.ReadAsStreamAsync();
-                        using var tempFile = new TemporaryFile(getStream, ".snupkg");
-                        using var package = new ZipPackage(tempFile.FileName);
-
-                        // Look for pdb's for the missing files
-                        var dict = package.GetFiles().ToDictionary(k => k.Path);
-
-                        foreach(var file in noSymbols.ToArray()) // from a copy so we can remove as we go
+                        if (response.IsSuccessStatusCode) // we'll get a 404 if none
                         {
-                            // file to look for                            
-                            var pdbpath = Path.ChangeExtension(file.File.Path, ".pdb");
-
-                            if(dict.TryGetValue(pdbpath, out var pdbfile))
-                            {
-                                // Validate
-                                if (ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic))
-                                {
-                                    noSymbols.Remove(file);
-                                }
-                                else
-                                {
-                                    pdbChecksumValid = false;
-                                }
-                            }
+                            using var getStream = await response.Content.ReadAsStreamAsync();
+                            using var tempFile = new TemporaryFile(getStream, ".snupkg");
+                            ReadSnupkgFile(tempFile.FileName);
                         }
-                    }                    
+                    }
                 }
                 catch // Could not check, leave status as-is
                 {
+                }
+
+                void ReadSnupkgFile(string snupkgFilePath)
+                {
+                    requireExternal = true;
+
+                    using var package = new ZipPackage(snupkgFilePath);
+
+                    // Look for pdb's for the missing files
+                    var dict = package.GetFiles().ToDictionary(k => k.Path);
+
+                    foreach (var file in noSymbols.ToArray()) // from a copy so we can remove as we go
+                    {
+                        // file to look for
+                        var pdbpath = Path.ChangeExtension(file.File.Path, ".pdb");
+
+                        if (dict.TryGetValue(pdbpath, out var pdbfile))
+                        {
+                            // Validate
+                            if (ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic))
+                            {
+                                noSymbols.Remove(file);
+                            }
+                            else
+                            {
+                                pdbChecksumValid = false;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -534,7 +552,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (ArgumentNullException)
                 {
-                    // Have a PDB, but ithere's an error with the source link data
+                    // Have a PDB, but there's an error with the source link data
                     noSourceLink.Add(input.File);
                 }
             }
