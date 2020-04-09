@@ -359,6 +359,8 @@ namespace PackageExplorerViewModel
                     var sb = new StringBuilder("Contains untracked sources:\n");
                     sb.AppendLine("To Fix:");
                     sb.AppendLine("<EmbedUntrackedSources>true</EmbedUntrackedSources>");
+                    sb.AppendLine("");
+                    sb.AppendLine("Also, workaround in: https://github.com/dotnet/sourcelink/issues/572");
 
                     foreach(var untracked in untrackedSources)
                     {
@@ -450,8 +452,8 @@ namespace PackageExplorerViewModel
                 DeterministicResult = DeterministicResult.NonDeterministic;
 
                 var sb = new StringBuilder();
-                sb.AppendLine("Ensure that the following properties are enabled for CI builds\nand you're using at least the 2.1.300 SDK:");
-                sb.AppendLine("<Deterministic>true</Deterministic>");
+                sb.AppendLine("Ensure that the following property is enabled for CI builds\nand you're using at least the 2.1.300 SDK:");                
+                sb.AppendLine();
                 sb.AppendLine("<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>");
                 sb.AppendLine();
                 sb.AppendLine("The following assemblies have not been compiled with deterministic settings:");
