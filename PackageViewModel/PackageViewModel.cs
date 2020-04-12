@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -41,6 +41,8 @@ namespace PackageExplorerViewModel
         private ICommand? _editFileCommand;
         private ICommand? _editMetadataSourceCommand;
         private ICommand? _executePackageCommand;
+        private ICommand? _expandAllCommand;
+        private ICommand? _collapseAllCommand;
         private RelayCommand? _exportCommand;
         private FileEditorViewModel? _fileEditorViewModel;
         private bool _hasEdit;
@@ -1282,6 +1284,44 @@ namespace PackageExplorerViewModel
                 {
                     EditFileCommandExecute(file);
                 }
+            }
+        }
+
+        #endregion
+
+        #region ExpandAllCommand
+
+        public ICommand ExpandAllCommand => _expandAllCommand ??= new RelayCommand(ExpandAllCommandExecute, ExpandAllCommandCanExecute);
+
+        private bool ExpandAllCommandCanExecute()
+        {
+            return PackageParts.Count != 0;
+        }
+
+        private void ExpandAllCommandExecute()
+        {
+            foreach (var folder in RootFolder.GetPackageParts().OfType<PackageFolder>())
+            {
+                folder.IsExpanded = true;
+            }
+        }
+
+        #endregion
+
+        #region CollapseAllCommand
+
+        public ICommand CollapseAllCommand => _collapseAllCommand ??= new RelayCommand(CollapseAllCommandExecute, CollapseAllCommandCanExecute);
+
+        private bool CollapseAllCommandCanExecute()
+        {
+            return PackageParts.Count != 0;
+        }
+
+        private void CollapseAllCommandExecute()
+        {
+            foreach (var folder in RootFolder.GetPackageParts().OfType<PackageFolder>())
+            {
+                folder.IsExpanded = false;
             }
         }
 
