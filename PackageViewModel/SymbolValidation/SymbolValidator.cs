@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -142,7 +142,7 @@ namespace PackageExplorerViewModel
             {
                 // Get relevant files to check
                 var libFiles = _packageViewModel.RootFolder["lib"]?.GetFiles() ?? Enumerable.Empty<IPackageFile>();
-                var runtimeFiles = _packageViewModel.RootFolder["runtimes"]?.GetFiles() ?? Enumerable.Empty<IPackageFile>();
+                var runtimeFiles = _packageViewModel.RootFolder["runtimes"]?.GetFiles().Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IPackageFile>();
                 var files = libFiles.Union(runtimeFiles).Where(pf => pf is PackageFile).Cast<PackageFile>().ToList();
 
                 await Task.Run(async () => await CalculateValidity(files));
@@ -158,6 +158,9 @@ namespace PackageExplorerViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicResult)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicErrorMessage)));
             }
+
+            static bool IsNativeRuntimeFilePath(string path)
+                => path.Split('\\').Skip(2).FirstOrDefault() == "native";
         }
 
         private async Task CalculateValidity(IReadOnlyList<PackageFile> files)
