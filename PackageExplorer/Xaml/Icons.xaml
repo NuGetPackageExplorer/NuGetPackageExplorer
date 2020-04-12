@@ -1,4 +1,4 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Viewbox x:Key="FolderIcon" x:Shared="false" Width="16" Height="16">
         <Rectangle Width="16" Height="16">
@@ -903,4 +903,41 @@
             <Path StrokeThickness="0.8" Stroke="#ff204e8e" StrokeMiterLimit="1.0" Fill="#ff204e8e" Data="F1 M 15.396,0.877 L 34.400,17.384 L 15.396,33.807 L 15.396,25.937 L 0.400,25.937 L 0.400,8.881 L 15.396,8.881 L 15.396,0.877 Z"/>
         </Canvas>
     </Viewbox>
+
+    <Viewbox x:Key="ExpandDownGroupIcon" Width="16" Height="16" x:Shared="false">
+        <Rectangle Width="16" Height="16" Margin="2">
+            <Rectangle.Fill>
+                <DrawingBrush>
+                    <DrawingBrush.Drawing>
+                        <DrawingGroup>
+                            <DrawingGroup.Children>
+                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M8.0001,5.5861L3.0001,0.5861 0.5861,3.0001 2.5861,5.0001 0.5861,7.0001 8.0001,14.4141 15.4141,7.0001 13.4141,5.0001 15.4141,3.0001 12.9991,0.5861z" />
+                                <GeometryDrawing Brush="#FF424242" Geometry="F1M3,2L2,3 8,9 14,3 13,2 8,7z M3,6L2,7 8,13 14,7 13,6 8,11z" />
+                            </DrawingGroup.Children>
+                        </DrawingGroup>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+    </Viewbox>
+
+    <Viewbox x:Key="CollapseUpGroupIcon" Width="16" Height="16" x:Shared="false">
+        <Rectangle Width="16" Height="16" Margin="2">
+            <Rectangle.Fill>
+                <DrawingBrush>
+                    <DrawingBrush.Drawing>
+                        <DrawingGroup>
+                            <DrawingGroup.Children>
+                                <GeometryDrawing Brush="#00FFFFFF" Geometry="F1M16,16L0,16 0,0 16,0z" />
+                                <GeometryDrawing Brush="#FFF6F6F6" Geometry="F1M0.5859,7.9999L2.5859,9.9999 0.5859,12.0009 2.9999,14.4139 7.9999,9.4139 12.9999,14.4139 15.4139,12.0009 13.4149,9.9999 15.4139,7.9999 7.9999,0.585900000000001z" />
+                                <GeometryDrawing Brush="#FF424242" Geometry="F1M8,8L13,13 14,12 8,6 2,12 3,13z M8,4L13,9 14,8 8,2 2,8 3,9z" />
+                            </DrawingGroup.Children>
+                        </DrawingGroup>
+                    </DrawingBrush.Drawing>
+                </DrawingBrush>
+            </Rectangle.Fill>
+        </Rectangle>
+    </Viewbox>
+
 </ResourceDictionary>
