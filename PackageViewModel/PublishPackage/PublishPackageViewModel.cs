@@ -251,7 +251,8 @@ namespace PackageExplorerViewModel
                 var repository = PackageRepositoryFactory.CreateRepository(PublishUrl);
                 var updateResource = await repository.GetResourceAsync<PackageUpdateResource>();
 
-                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, AppendV2ApiToUrl != true, NullLogger.Instance);
+                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, AppendV2ApiToUrl != true, false, null, NullLogger.Instance);
+                
 
                 if (PublishAsUnlisted == true)
                 {
