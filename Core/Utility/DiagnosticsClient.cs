@@ -13,11 +13,15 @@ namespace NuGetPe
 
         public static void Initialize()
         {
-            TelemetryConfiguration.Active.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
-            TelemetryConfiguration.Active.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
+#pragma warning disable CA2000 // Dispose objects before losing scope
+            var config = TelemetryConfiguration.CreateDefault();
+#pragma warning restore CA2000 // Dispose objects before losing scope
+
+            config.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
+            config.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
             
             Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
-            _client = new TelemetryClient();
+            _client = new TelemetryClient(config);
         }
 
         public static void OnExit()
@@ -26,7 +30,7 @@ namespace NuGetPe
             _client.Flush();
 
             // Allow time for flushing and sending:
-            System.Threading.Thread.Sleep(1000);
+            System.Threading.Thread.Sleep(2000);
         }
 
         private static void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
