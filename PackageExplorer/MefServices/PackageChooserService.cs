@@ -131,7 +131,7 @@ namespace PackageExplorer
             return _pluginViewModel?.SelectedPackage;
         }
 
-        private void ReCenterPackageChooserDialog(StandardDialog dialog)
+        private static void ReCenterPackageChooserDialog(StandardDialog dialog)
         {
             if (dialog.Owner == null)
             {

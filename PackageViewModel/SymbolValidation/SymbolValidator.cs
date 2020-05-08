@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -287,7 +287,7 @@ namespace PackageExplorerViewModel
 
                         if (response.IsSuccessStatusCode) // we'll get a 404 if none
                         {
-                            using var getStream = await response.Content.ReadAsStreamAsync();
+                            using var getStream = await response.Content!.ReadAsStreamAsync();
                             using var tempFile = new TemporaryFile(getStream, ".snupkg");
                             ReadSnupkgFile(tempFile.FileName);
                         }
@@ -624,7 +624,7 @@ namespace PackageExplorerViewModel
                 }
 
                 var pdbStream = new MemoryStream();
-                await response.Content.CopyToAsync(pdbStream);
+                await response.Content!.CopyToAsync(pdbStream);
                 pdbStream.Position = 0;
 
                 return pdbStream;

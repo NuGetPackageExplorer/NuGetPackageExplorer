@@ -16,13 +16,17 @@
     <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.2" /> 
     <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="System.Windows.Extensions" Version="5.0.0-preview.2.20160.6" />
+    <PackageReference Include="System.Windows.Extensions" Version="5.0.0-preview.3.20214.6" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Update="Resources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Resources.resx" />
     <EmbeddedResource Update="Resources.resx" Generator="PublicResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0" />
   </ItemGroup>
 
 </Project>
