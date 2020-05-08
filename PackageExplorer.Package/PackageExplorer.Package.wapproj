@@ -30,7 +30,7 @@
     <ProjectGuid>452579bf-ff89-46fd-953d-e9d02d71efdd</ProjectGuid>
     <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>    
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>    
     <DefaultLanguage>en-US</DefaultLanguage>
     <DebuggerType>ManagedOnly</DebuggerType>
     <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
@@ -73,6 +73,9 @@
       <PublishProfile Condition="'$(Platform)'=='x64'">Properties\PublishProfiles\WinX64.pubxml</PublishProfile>
       <PublishProfile Condition="'$(Platform)'=='x86'">Properties\PublishProfiles\WinX86.pubxml</PublishProfile>
     </ProjectReference>
+  </ItemGroup>    
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="all" />
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
 </Project>
