@@ -272,7 +272,9 @@ namespace PackageExplorerViewModel
             /// <summary>
             /// The handle that identifies a directory.
             /// </summary>
+#pragma warning disable CA1069 // Enums values should not be duplicated
             FILE_ATTRIBUTE_DIRECTORY = 0x10,
+#pragma warning restore CA1069 // Enums values should not be duplicated
         }
 
         /// <summary>
