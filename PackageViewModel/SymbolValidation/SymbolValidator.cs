@@ -145,7 +145,7 @@ namespace PackageExplorerViewModel
                 var runtimeFiles = _packageViewModel.RootFolder["runtimes"]?.GetFiles().Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IPackageFile>();
                 var files = libFiles.Union(runtimeFiles).Where(pf => pf is PackageFile).Cast<PackageFile>().ToList();
 
-                await Task.Run(async () => await CalculateValidity(files));
+                await Task.Run(async () => await CalculateValidity(files).ConfigureAwait(false));
             }
             catch(Exception e)
             {
@@ -202,7 +202,7 @@ namespace PackageExplorerViewModel
                 if(file.Pdb != null)
                 {
                     var filePair = new FileWithDebugData(file.Primary, null);
-                    if (!ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic))
+                    if (! await ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic).ConfigureAwait(false))
                     {
                         pdbChecksumValid = false;
                         noSymbols.Add(filePair);
@@ -270,11 +270,11 @@ namespace PackageExplorerViewModel
                     var symbolsFilePath = Path.ChangeExtension(_packageViewModel.PackagePath, ".symbols.nupkg");
                     if (File.Exists(snupkgFilePath))
                     {
-                        ReadSnupkgFile(snupkgFilePath);
+                        await ReadSnupkgFile(snupkgFilePath).ConfigureAwait(false);
                     }
                     else if (File.Exists(symbolsFilePath))
                     {
-                        ReadSnupkgFile(symbolsFilePath);
+                        await ReadSnupkgFile(symbolsFilePath).ConfigureAwait(false);
                     }
                     else if (_publishedOnNuGetOrg)
                     {
@@ -289,7 +289,7 @@ namespace PackageExplorerViewModel
                         {
                             using var getStream = await response.Content!.ReadAsStreamAsync();
                             using var tempFile = new TemporaryFile(getStream, ".snupkg");
-                            ReadSnupkgFile(tempFile.FileName);
+                            await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
                         }
                     }
                 }
@@ -297,7 +297,7 @@ namespace PackageExplorerViewModel
                 {
                 }
 
-                void ReadSnupkgFile(string snupkgFilePath)
+                async Task ReadSnupkgFile(string snupkgFilePath)
                 {
                     requireExternal = true;
 
@@ -314,7 +314,7 @@ namespace PackageExplorerViewModel
                         if (dict.TryGetValue(pdbpath, out var pdbfile))
                         {
                             // Validate
-                            if (ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic))
+                            if (await ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic).ConfigureAwait(false))
                             {
                                 noSymbols.Remove(file);
                             }
@@ -340,7 +340,7 @@ namespace PackageExplorerViewModel
                         requireExternal = true;
                         
                         // Found a PDB for it
-                        if(ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic))
+                        if(await ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic).ConfigureAwait(false))
                         {
                             noSymbols.Remove(file);
                         }
@@ -502,7 +502,7 @@ namespace PackageExplorerViewModel
             return false;
         }
 
-        private static bool ValidatePdb(FileWithDebugData input,
+        private static async Task<bool> ValidatePdb(FileWithDebugData input,
                                         Stream pdbStream,
                                         List<PackageFile> noSourceLink,
                                         List<(PackageFile file, string errors)> sourceLinkErrors,
@@ -521,7 +521,7 @@ namespace PackageExplorerViewModel
                     if(input.DebugData == null || !input.DebugData.HasDebugInfo) // get it again if this is a shell with keys
                     {
                         using var stream = MakeSeekable(pdbStream, true);
-                        input.DebugData = AssemblyMetadataReader.ReadDebugData(peStream, stream);
+                        input.DebugData = await AssemblyMetadataReader.ReadDebugData(peStream, stream).ConfigureAwait(false);
                     }
 
                     // Check to see if the PDB is valid

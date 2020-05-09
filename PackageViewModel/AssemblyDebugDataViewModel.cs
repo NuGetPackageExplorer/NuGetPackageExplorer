@@ -7,19 +7,40 @@ using NuGetPe.AssemblyMetadata;
 
 namespace PackageExplorerViewModel
 {
-    public class AssemblyDebugDataViewModel
+    public class AssemblyDebugDataViewModel : ViewModelBase
     {
-        private readonly AssemblyDebugData _debugData;
+        private readonly Task<AssemblyDebugData> _debugData;
 
-        public AssemblyDebugDataViewModel(AssemblyDebugData debugData)
+        public AssemblyDebugDataViewModel(Task<AssemblyDebugData> debugData)
         {
             _debugData = debugData ?? throw new ArgumentNullException(nameof(debugData));
-            Sources = CreateSourcesViewModels(debugData);
+            WaitForData();
         }
 
-        public PdbType PdbType => _debugData.PdbType;
+        private async void WaitForData()
+        {
+            try
+            {
+                var debugData = await _debugData;
+                if (debugData != null)
+                {
+                    Sources = CreateSourcesViewModels(debugData);
+                    PdbType = debugData.PdbType;
+                }
 
-        public IReadOnlyList<AssemblyDebugSourceDocumentViewModel> Sources { get; }
+                OnPropertyChanged(nameof(PdbType));
+                OnPropertyChanged(nameof(Sources));
+            }
+            catch
+            {
+
+            }
+            
+        }
+
+        public PdbType PdbType { get; private set; }
+
+        public IReadOnlyList<AssemblyDebugSourceDocumentViewModel>? Sources { get; private set; }
 
         private static IReadOnlyList<AssemblyDebugSourceDocumentViewModel> CreateSourcesViewModels(AssemblyDebugData debugData)
         {
