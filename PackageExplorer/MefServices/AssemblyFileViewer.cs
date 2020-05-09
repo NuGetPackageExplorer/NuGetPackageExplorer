@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using NuGetPackageExplorer.Types;
@@ -28,7 +29,7 @@ namespace PackageExplorer
                 var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
                 AssemblyDebugDataViewModel? debugDataViewModel = null;
                 if (assemblyMetadata?.DebugData.HasDebugInfo == true)
-                    debugDataViewModel = new AssemblyDebugDataViewModel(assemblyMetadata.DebugData);
+                    debugDataViewModel = new AssemblyDebugDataViewModel(Task.FromResult(assemblyMetadata.DebugData));
 
                 // No debug data to display
                 if (assemblyMetadata != null && debugDataViewModel == null)

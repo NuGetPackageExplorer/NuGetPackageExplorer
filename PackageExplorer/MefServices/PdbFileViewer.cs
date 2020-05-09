@@ -24,44 +24,38 @@ namespace PackageExplorer
                                                      ".exe".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) ||
                                                      ".winmd".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) );
 
+#pragma warning disable CA2000 // Dispose objects before losing scope -- ReadDebugData will dispose
             Stream? peStream = null;
+            
+            if (pe != null) // we have a matching file
+            {
+                peStream = StreamUtility.MakeSeekable(pe.GetStream(), true);
+            }
+
+
+            // This might throw an exception because we don't know if it's a full PDB or portable
+            // Try anyway in case it succeeds as a ppdb
             try
             {
-                if (pe != null) // we have a matching file
-                {
-                    peStream = StreamUtility.MakeSeekable(pe.GetStream(), true);
-                }
+                var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true);
+                data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));
+                    
 
-
-                // This might throw an exception because we don't know if it's a full PDB or portable
-                // Try anyway in case it succeeds as a ppdb
-                try
+                return new ScrollViewer
                 {
-                    using (var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true))
+                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                    Content = new Controls.PdbFileViewer
                     {
-                        data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));
+                        DataContext = data
                     }
-
-                    return new ScrollViewer
-                    {
-                        HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                        Content = new Controls.PdbFileViewer
-                        {
-                            DataContext = data
-                        }
-                    };
-                }
-                catch (ArgumentNullException)
-                {
-
-                }
+                };
             }
-            finally
+            catch (ArgumentNullException)
             {
-                peStream?.Dispose();
-            }
 
+            }
+#pragma warning restore CA2000 // Dispose objects before losing scope
             return new TextBlock()
             {
                 Text = "Full PDB files requires the EXE or DLL to be alongside."
