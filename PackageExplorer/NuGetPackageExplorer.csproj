@@ -20,7 +20,7 @@
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="1.1.0" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0-preview.3.20214.6" />
-    <PackageReference Include="System.Runtime.Caching" Version="5.0.0-preview.3.20214.6" />
+    <PackageReference Include="System.Runtime.Caching" Version="5.0.0-preview.5.20224.4" />
 
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
   </ItemGroup>
