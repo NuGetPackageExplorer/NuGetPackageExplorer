@@ -464,6 +464,7 @@ namespace PackageExplorerViewModel
             _certificateValidationTimer?.Dispose();
             _certificateValidationSemaphore?.Dispose();
             _certificate?.Dispose();
+            _certificate = null;
         }
     }
 }
