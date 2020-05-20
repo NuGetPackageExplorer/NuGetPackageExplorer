@@ -81,14 +81,6 @@ stages:
       condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['AppInsightsKey'], '')))
 
     - task: MSBuild@1
-      displayName: Build NuGet Package Explorer for $(ReleaseChannel)
-      inputs:
-        solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-        msbuildArguments: /restore
-        configuration: $(BuildConfiguration)
-        maximumCpuCount: true
-
-    - task: MSBuild@1
       displayName: Build Package
       inputs:
         solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
@@ -97,22 +89,24 @@ stages:
         maximumCpuCount: true
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'Store')))
 
-    - task: MSBuild@1
+    - task: DotNetCoreCLI@2
       displayName: Build for Zip and Choco
       inputs:
-        solution: 'PackageExplorer/NuGetPackageExplorer.csproj'
-        msbuildArguments: /t:publish /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml
-        configuration: $(BuildConfiguration)
-        maximumCpuCount: true
+        command: publish
+        projects: 'PackageExplorer/NuGetPackageExplorer.csproj'
+        arguments: -c $(BuildConfiguration) /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml
+        zipAfterPublish: false
+        modifyOutputPath: false
+        publishWebProjects: false
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
 
-    - task: MSBuild@1
+    - task: DotNetCoreCLI@2
       displayName: Pack Types Package
       inputs:
-        solution: Types/Types.csproj
-        msbuildArguments: /t:pack /p:PackageOutputPath=$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
+        command: pack
+        packagesToPack: Types/Types.csproj
         configuration: $(BuildConfiguration)
-        maximumCpuCount: true
+        packDirectory: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
     - powershell: |
@@ -125,7 +119,7 @@ stages:
       displayName: Zip PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/netcoreapp5.0/win-x64/publish
+        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net5.0/win-x64/publish
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
