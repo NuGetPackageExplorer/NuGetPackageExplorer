@@ -19,7 +19,7 @@
     <PackageReference Include="Microsoft.SymbolStore" Version="1.0.126801" />
     <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.19041.1" />
     <PackageReference Include="OSVersionHelper" Version="1.0.11" />
-    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0-preview.3.20214.6" />
+    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0-preview.4.20251.6" />
     <Reference Include="Windows" />
   </ItemGroup>
 
