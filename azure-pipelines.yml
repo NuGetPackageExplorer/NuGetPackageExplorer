@@ -103,6 +103,7 @@ stages:
     - task: DotNetCoreCLI@2
       displayName: Pack Types Package
       inputs:
+        command: pack
         packagesToPack: Types/Types.csproj
         configuration: $(BuildConfiguration)
         packDirectory: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
