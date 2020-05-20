@@ -97,6 +97,7 @@ stages:
         arguments: -c $(BuildConfiguration) /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml
         zipAfterPublish: false
         modifyOutputPath: false
+        publishWebProjects: false
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
 
     - task: DotNetCoreCLI@2
