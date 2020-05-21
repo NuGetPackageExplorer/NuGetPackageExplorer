@@ -40,7 +40,9 @@
     <UapAppxPackageBuildMode>SideLoadOnly</UapAppxPackageBuildMode>
     <UapAppxPackageBuildMode Condition="'$(ReleaseChannel)' == 'Store'">CI</UapAppxPackageBuildMode>
     <EntryPointExe Condition="'$(BuildingInsideVisualStudio)' != 'true' ">NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
-    <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
+    <EntryPointProjectUniqueName Condition="'$(BuildingInsideVisualStudio)' == 'true' ">..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
+
+    <GetPackagingOutputsDependsOn Condition="'$(BuildingInsideVisualStudio)' != 'true' ">$(GetPackagingOutputsDependsOn);BuildRefsOutputGroup</GetPackagingOutputsDependsOn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(ReleaseChannel)' == 'Nightly'">
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
@@ -85,9 +87,16 @@
     <ItemGroup>
       <TheFiles Include="..\PackageExplorer\bin\$(Configuration)\net5.0\win-$(Platform)\publish\**\*.*" />
       <TheFiles TargetPath="NuGetPackageExplorer\%(RecursiveDir)%(Filename)%(Extension)" />
-      <File Include="@(TheFiles)">
+      <BuiltRef Include="@(TheFiles)">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </File>
+      </BuiltRef>
     </ItemGroup>
   </Target>
+
+  <Target Name="BuildRefsOutputGroup" Returns="@(BuiltRefsOutput)">
+    <ItemGroup>
+      <_PackagingOutputsUnexpanded Include="@(BuiltRef)" OutputGroup="BuildRefsOutputGroup"  ProjectName="$(ProjectName)"  />
+    </ItemGroup>
+  </Target>
+
 </Project>
