@@ -79,7 +79,8 @@ namespace NuGetPe.AssemblyMetadata
             foreach (var attributeHandle in _metadataReader.CustomAttributes)
             {
                 var customAttribute = _metadataReader.GetCustomAttribute(attributeHandle);
-                if (customAttribute.Parent.Kind != HandleKind.AssemblyDefinition)
+                if (customAttribute.Constructor.Kind != HandleKind.MemberReference ||
+                    customAttribute.Parent.Kind != HandleKind.AssemblyDefinition)
                 {
                     continue;
                 }
