@@ -233,7 +233,7 @@ namespace PackageExplorerViewModel
                             }
 
                             // Check for non-embedded sources
-                            if (assemblyMetadata.DebugData.UntrackedSources.Count > 0)
+                            if (assemblyMetadata.DebugData.UntrackedSources.Count > 0 || !assemblyMetadata.DebugData.AllSourceLink)
                             {
                                 var filePair = new FileWithDebugData(file.Primary, assemblyMetadata.DebugData);
                                 untrackedSources.Add(filePair);
@@ -363,7 +363,7 @@ namespace PackageExplorerViewModel
                     sb.AppendLine("To Fix:");
                     sb.AppendLine("<EmbedUntrackedSources>true</EmbedUntrackedSources>");
                     sb.AppendLine("");
-                    sb.AppendLine("Also, workaround in: https://github.com/dotnet/sourcelink/issues/572");
+                    sb.AppendLine("Also, use 3.1.300 SDK to build or\nworkaround in: https://github.com/dotnet/sourcelink/issues/572");
 
                     foreach(var untracked in untrackedSources)
                     {
@@ -543,7 +543,7 @@ namespace PackageExplorerViewModel
                     }
 
                     // Check for non-embedded sources
-                    if(input.DebugData.UntrackedSources.Count > 0)
+                    if(input.DebugData.UntrackedSources.Count > 0 || !input.DebugData.AllSourceLink)
                     {
                         untrackedSources.Add(input);
                     }
