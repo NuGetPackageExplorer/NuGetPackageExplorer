@@ -41,7 +41,6 @@
     <UapAppxPackageBuildMode Condition="'$(ReleaseChannel)' == 'Store'">CI</UapAppxPackageBuildMode>
     <EntryPointExe Condition="'$(BuildingInsideVisualStudio)' != 'true' ">NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
     <EntryPointProjectUniqueName Condition="'$(BuildingInsideVisualStudio)' == 'true' ">..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
-
     <GetPackagingOutputsDependsOn Condition="'$(BuildingInsideVisualStudio)' != 'true' ">$(GetPackagingOutputsDependsOn);BuildRefsOutputGroup</GetPackagingOutputsDependsOn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(ReleaseChannel)' == 'Nightly'">
