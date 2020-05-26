@@ -30,7 +30,9 @@ namespace NuGetPe.AssemblyMetadata
 
         public bool PdbChecksumIsValid { get; internal set; }
 
-        public bool HasSourceLink => Sources.All(doc => doc.HasSourceLink);
+        public bool HasSourceLink => Sources.Any(doc => doc.HasSourceLink);
+
+        public bool AllSourceLink => Sources.All(doc => doc.HasSourceLink);
 
         public bool HasDebugInfo { get; internal set; }
 
@@ -45,7 +47,9 @@ namespace NuGetPe.AssemblyMetadata
 
             var docs = (from doc in Sources
                         let path = doc.Name.Replace('\\', '/')
-                        where path.Contains("/obj/", StringComparison.OrdinalIgnoreCase) && !doc.IsEmbedded
+                        where (path.Contains("/obj/", StringComparison.OrdinalIgnoreCase) ||
+                               path.Contains("/temp/", StringComparison.OrdinalIgnoreCase) ||
+                               path.Contains("/tmp/", StringComparison.OrdinalIgnoreCase) ) && !doc.IsEmbedded
                         select doc.Name).ToList();
 
             return docs;
