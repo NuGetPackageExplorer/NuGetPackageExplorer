@@ -237,7 +237,7 @@
                 </StackPanel>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type core:RepositoryMetadata}">
+            <DataTemplate DataType="{x:Type viewmodel:RepositoryMetadataViewModel}">
                 <StackPanel>
                     <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding Type, Converter={StaticResource NullToVisibilityConverter}}">
                         <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryType}" Style="{StaticResource DetailMetadataLabelStyle}" />
