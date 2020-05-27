@@ -78,7 +78,12 @@ namespace PackageExplorerViewModel
             ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
             _frameworkReferenceGroups = new ObservableCollection<FrameworkReferenceGroup>(source.FrameworkReferenceGroups);
 
-            Repository = source.Repository;
+            if(source.Repository != null)
+            {
+                Repository = new RepositoryMetadataViewModel(source.Repository);
+                _underlyingRepository = source.Repository;
+            }
+
             LicenseMetadata = source.LicenseMetadata;
             LicenseUrl = LicenseMetadata != null ? null : source.LicenseUrl; // This will be set for back compat, but should show up as null here
 
@@ -284,7 +289,8 @@ namespace PackageExplorerViewModel
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private bool _developmentDependency;
-        private RepositoryMetadata? _repository;
+        private RepositoryMetadataViewModel? _repository;
+        private RepositoryMetadata? _underlyingRepository;
         private LicenseMetadata? _licenseMetadata;
         private SignatureInfo? _publisherCertificate;
         private ValidationResultViewModel? _validationResult;
@@ -572,6 +578,8 @@ namespace PackageExplorerViewModel
             }
         }
 
+        RepositoryMetadata? IPackageMetadata.Repository => _underlyingRepository;
+
         IEnumerable<string> IPackageMetadata.Authors
         {
             get { return SplitString(Authors); }
@@ -604,7 +612,7 @@ namespace PackageExplorerViewModel
         IEnumerable<PackageType> IPackageMetadata.PackageTypes => PackageTypes;
         public ICollection<PackageType> PackageTypes { get; }
 
-        public RepositoryMetadata? Repository
+        public RepositoryMetadataViewModel? Repository
         {
             get { return _repository; }
             set
