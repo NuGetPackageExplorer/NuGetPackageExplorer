@@ -364,7 +364,7 @@
 
             <ContextMenu x:Key="SharedContextMenu" DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
                 <MenuItem Header="_View Content" InputGestureText="Enter" Command="{Binding ViewCommand}" CommandParameter="{Binding}" FontWeight="SemiBold" />
-                <MenuItem Header="_Open in Windows shell..." Command="{Binding OpenCommand}" CommandParameter="{Binding}" />
+                <MenuItem Header="_Open in Windows shell..." InputGestureText="Shift+Enter"  Command="{Binding OpenCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="Open _with..." Command="{Binding OpenWithCommand}" CommandParameter="{Binding}" />
                 <MenuItem Header="_Save As..." Command="{Binding SaveCommand}" CommandParameter="{Binding}" Icon="{StaticResource SaveAsIcon}" />
                 <MenuItem Header="Copy" Command="Copy" Icon="{StaticResource CopyIcon}" />
