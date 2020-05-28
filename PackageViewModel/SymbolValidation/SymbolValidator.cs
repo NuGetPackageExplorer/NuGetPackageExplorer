@@ -202,7 +202,7 @@ namespace PackageExplorerViewModel
                 if(file.Pdb != null)
                 {
                     var filePair = new FileWithDebugData(file.Primary, null);
-                    if (! await ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic).ConfigureAwait(false))
+                    if (! await ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic, false).ConfigureAwait(false))
                     {
                         pdbChecksumValid = false;
                         noSymbols.Add(filePair);
@@ -314,7 +314,7 @@ namespace PackageExplorerViewModel
                         if (dict.TryGetValue(pdbpath, out var pdbfile))
                         {
                             // Validate
-                            if (await ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic).ConfigureAwait(false))
+                            if (await ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic, true).ConfigureAwait(false))
                             {
                                 noSymbols.Remove(file);
                             }
@@ -340,7 +340,7 @@ namespace PackageExplorerViewModel
                         requireExternal = true;
                         
                         // Found a PDB for it
-                        if(await ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic).ConfigureAwait(false))
+                        if(await ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic, true).ConfigureAwait(false))
                         {
                             noSymbols.Remove(file);
                         }
@@ -507,7 +507,8 @@ namespace PackageExplorerViewModel
                                         List<PackageFile> noSourceLink,
                                         List<(PackageFile file, string errors)> sourceLinkErrors,
                                         List<FileWithDebugData> untrackedSources,
-                                        List<PackageFile> nonDeterministic)
+                                        List<PackageFile> nonDeterministic,
+                                        bool validateChecksum)
         {
             var peStream = MakeSeekable(input.File.GetStream(), true);
             try
@@ -524,8 +525,8 @@ namespace PackageExplorerViewModel
                         input.DebugData = await AssemblyMetadataReader.ReadDebugData(peStream, stream).ConfigureAwait(false);
                     }
 
-                    // Check to see if the PDB is valid
-                    if(!input.DebugData.PdbChecksumIsValid)
+                    // Check to see if the PDB is valid, but only for pdb's that aren't alongside the PE file                    
+                    if(validateChecksum && !input.DebugData.PdbChecksumIsValid)
                     {
                         return false;
                     }
