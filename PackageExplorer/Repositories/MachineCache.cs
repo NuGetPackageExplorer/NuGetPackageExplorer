@@ -5,9 +5,10 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using Windows.Storage;
 using NuGet.Versioning;
+using NuGetPe;
 using OSVersionHelper;
 
-namespace NuGetPe
+namespace PackageExplorer
 {
     /// <summary>
     /// The machine cache represents a location on the machine where packages are cached. It is a specific implementation of a local repository and can be used as such.
@@ -164,7 +165,7 @@ namespace NuGetPe
             }
             else
             {
-                var localAppDataPath = getFolderPath(Environment.SpecialFolder.LocalApplicationData);                
+                var localAppDataPath = getFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 return Path.Combine(localAppDataPath, "NuGet", "Cache");
             }
         }
