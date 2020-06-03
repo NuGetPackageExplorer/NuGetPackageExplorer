@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -7,7 +7,6 @@ using NuGetPackageExplorer.Types;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
-using PackageExplorerViewModel.Utilities;
 
 namespace PackageExplorer
 {

@@ -46,7 +46,7 @@
                 </TextBlock>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewmodel:SymbolValidator}" x:Key="SourceLinkValidation">
+            <DataTemplate DataType="{x:Type viewmodel:SymbolValidatorViewModel}" x:Key="SourceLinkValidation">
                 <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{Binding SourceLinkErrorMessage, Mode=OneWay}">
                     <TextBlock Name="isValid" Text="{x:Static self:Resources.Validation_Pending}" />
                     <ContentControl Name="icon" Margin="3,0,0,0" Width="16" Height="16" Visibility="Collapsed"  />
@@ -103,7 +103,7 @@
                 </DataTemplate.Triggers>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewmodel:SymbolValidator}" x:Key="DeterministicValidation">
+            <DataTemplate DataType="{x:Type viewmodel:SymbolValidatorViewModel}" x:Key="DeterministicValidation">
                 <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{Binding DeterministicErrorMessage, Mode=OneWay}">
                     <TextBlock Name="isValid" Text="{x:Static self:Resources.Validation_Pending}" />
                     <ContentControl Name="icon" Margin="3,0,0,0" Width="16" Height="16" Visibility="Collapsed"  />
@@ -473,14 +473,14 @@
                                 <StackPanel Style="{StaticResource DetailMetadataStyle}">
                                     <TextBlock Text="{x:Static self:Resources.Dialog_SourceLinkValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource SourceLinkValidation}" Margin="3,0,0,0" />
+                                    <ContentPresenter Content="{Binding SymbolValidatorViewModel, Mode=OneWay}" ContentTemplate="{StaticResource SourceLinkValidation}" Margin="3,0,0,0" />
                                 </StackPanel>
 
                                 <!-- Deterministic Validation -->
                                 <StackPanel Style="{StaticResource DetailMetadataStyle}">
                                     <TextBlock Text="{x:Static self:Resources.Dialog_DeterministicValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource DeterministicValidation}" Margin="3,0,0,0" />
+                                    <ContentPresenter Content="{Binding SymbolValidatorViewModel, Mode=OneWay}" ContentTemplate="{StaticResource DeterministicValidation}" Margin="3,0,0,0" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>                       

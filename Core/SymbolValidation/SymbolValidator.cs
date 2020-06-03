@@ -1,27 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-
 using AuthenticodeExaminer;
-
 using NuGet.Packaging;
-
-using NuGetPackageExplorer.Types;
-
-using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 
-using PackageExplorerViewModel.Utilities;
-
-namespace PackageExplorerViewModel
+namespace NuGetPe
 {
     public enum SymbolValidationResult
     {
@@ -55,7 +45,7 @@ namespace PackageExplorerViewModel
         Pending,
 
         /// <summary>
-        /// No relevant files to validate. 
+        /// No relevant files to validate.
         /// </summary>
         NothingToValidate,
 
@@ -82,7 +72,7 @@ namespace PackageExplorerViewModel
         NonDeterministic,
 
         /// <summary>
-        /// No relevant files to validate. 
+        /// No relevant files to validate.
         /// </summary>
         NothingToValidate,
 
@@ -92,24 +82,42 @@ namespace PackageExplorerViewModel
         HasUntrackedSources
     }
 
-#pragma warning disable CA1001 // Types that own disposable fields should be disposable
-    public class SymbolValidator : INotifyPropertyChanged
-#pragma warning restore CA1001 // Types that own disposable fields should be disposable
+    public class SymbolValidatorResult
     {
-        private readonly PackageViewModel _packageViewModel;
+        public SymbolValidatorResult(SymbolValidationResult sourceLinkResult, string? sourceLinkErrorMessage, DeterministicResult deterministicResult, string? deterministicErrorMessage)
+        {
+            SourceLinkResult = sourceLinkResult;
+            SourceLinkErrorMessage = sourceLinkErrorMessage;
+            DeterministicResult = deterministicResult;
+            DeterministicErrorMessage = deterministicErrorMessage;
+        }
+
+        public void Deconstruct(out SymbolValidationResult sourceLinkResult, out string? sourceLinkErrorMessage, out DeterministicResult deterministicResult, out string? deterministicErrorMessage)
+        {
+            sourceLinkResult = SourceLinkResult;
+            sourceLinkErrorMessage = SourceLinkErrorMessage;
+            deterministicResult = DeterministicResult;
+            deterministicErrorMessage = DeterministicErrorMessage;
+        }
+
+        public SymbolValidationResult SourceLinkResult { get; }
+        public string? SourceLinkErrorMessage { get; }
+        public DeterministicResult DeterministicResult { get; }
+        public string? DeterministicErrorMessage { get; }
+    }
+
+    public class SymbolValidator : IDisposable
+    {
         private readonly IPackage _package;
+        private readonly string _packagePath;
         private readonly bool _publishedOnNuGetOrg;
         private readonly HttpClient _httpClient = new HttpClient();
 
 
-        public SymbolValidator(PackageViewModel packageViewModel, IPackage package)
+        public SymbolValidator(IPackage package, string packagePath)
         {
-            _packageViewModel = packageViewModel ?? throw new ArgumentNullException(nameof(packageViewModel));
-            _package = package;
-            _packageViewModel.PropertyChanged += _packageViewModel_PropertyChanged;
-
-            SourceLinkResult = SymbolValidationResult.Pending;
-            DeterministicResult = DeterministicResult.Pending;
+            _package = package ?? throw new ArgumentNullException(nameof(package));
+            _packagePath = packagePath ?? throw new ArgumentNullException(nameof(packagePath));
 
             // NuGet signs all its packages and stamps on the service index. Look for that.
             if(package is ISignaturePackage sigPackage)
@@ -118,53 +126,18 @@ namespace PackageExplorerViewModel
                 {
                     _publishedOnNuGetOrg = true;
                 }
-            }            
-        }
-
-        private void _packageViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
-        {
-            if(e.PropertyName == null)
-            {
-                SourceLinkResult = SymbolValidationResult.Pending;
-                SourceLinkErrorMessage = null;
-                DeterministicResult = DeterministicResult.Pending;
-                DeterministicErrorMessage = null;
-
-                Refresh();
             }
         }
 
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        public async void Refresh()
+        public async Task<SymbolValidatorResult> Validate()
         {
-            try
-            {
-                // Get relevant files to check
-                var libFiles = _packageViewModel.RootFolder["lib"]?.GetFiles() ?? Enumerable.Empty<IPackageFile>();
-                var runtimeFiles = _packageViewModel.RootFolder["runtimes"]?.GetFiles().Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IPackageFile>();
-                var files = libFiles.Union(runtimeFiles).Where(pf => pf is PackageFile).Cast<PackageFile>().ToList();
-
-                await Task.Run(async () => await CalculateValidity(files).ConfigureAwait(false));
-            }
-            catch(Exception e)
-            {
-                DiagnosticsClient.TrackException(e);
-            }
-            finally
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceLinkResult)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceLinkErrorMessage)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicResult)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicErrorMessage)));
-            }
-
             static bool IsNativeRuntimeFilePath(string path)
                 => path.Split('\\').Skip(2).FirstOrDefault() == "native";
-        }
 
-        private async Task CalculateValidity(IReadOnlyList<PackageFile> files)
-        {
+            var libFiles = _package.GetFiles().Where(e => e.Path.StartsWith("lib", StringComparison.InvariantCultureIgnoreCase)) ?? Enumerable.Empty<IPackageFile>();
+            var runtimeFiles = _package.GetFiles().Where(e => e.Path.StartsWith("runtimes", StringComparison.InvariantCultureIgnoreCase)).Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IPackageFile>();
+            var files = libFiles.Union(runtimeFiles).ToList();
+
             var filesWithPdb = (from pf in files
                                 let ext = Path.GetExtension(pf.Path)
                                 where ".dll".Equals(ext, StringComparison.OrdinalIgnoreCase) ||
@@ -173,16 +146,17 @@ namespace PackageExplorerViewModel
                                 select new FileWithPdb
                                 {
                                     Primary = pf,
-                                    Pdb = pf.GetAssociatedFiles().FirstOrDefault(af => ".pdb".Equals(Path.GetExtension(af.Path), StringComparison.OrdinalIgnoreCase))
+                                    // TODO 0xced: GetAssociatedFiles
+                                    //Pdb = pf.GetAssociatedFiles().FirstOrDefault(af => ".pdb".Equals(Path.GetExtension(af.Path), StringComparison.OrdinalIgnoreCase))
                                 })
                                 .ToList();
 
 
-            var sourceLinkErrors = new List<(PackageFile file, string errors)>();
-            var noSourceLink = new List<PackageFile>();
+            var sourceLinkErrors = new List<(IPackageFile file, string errors)>();
+            var noSourceLink = new List<IPackageFile>();
             var noSymbols = new List<FileWithDebugData>();
             var untrackedSources = new List<FileWithDebugData>();
-            var nonDeterministic = new List<PackageFile>();
+            var nonDeterministic = new List<IPackageFile>();
 
             var allFilePaths = filesWithPdb.ToDictionary(pf => pf.Primary.Path);
 
@@ -197,7 +171,7 @@ namespace PackageExplorerViewModel
                     continue;
                 }
 
-                // If we have a PDB, try loading that first. If not, may be embedded. 
+                // If we have a PDB, try loading that first. If not, may be embedded.
                 // Local checks first
                 if(file.Pdb != null)
                 {
@@ -260,14 +234,14 @@ namespace PackageExplorerViewModel
 
 
             var requireExternal = false;
-            // See if any pdb's are missing and check for a snupkg on NuGet.org. 
+            // See if any pdb's are missing and check for a snupkg on NuGet.org.
             if (noSymbols.Count > 0)
             {
                 try
                 {
                     // try to find a sibling snupkg file locally
-                    var snupkgFilePath = Path.ChangeExtension(_packageViewModel.PackagePath, ".snupkg");
-                    var symbolsFilePath = Path.ChangeExtension(_packageViewModel.PackagePath, ".symbols.nupkg");
+                    var snupkgFilePath = Path.ChangeExtension(_packagePath, ".snupkg");
+                    var symbolsFilePath = Path.ChangeExtension(_packagePath, ".symbols.nupkg");
                     if (File.Exists(snupkgFilePath))
                     {
                         await ReadSnupkgFile(snupkgFilePath).ConfigureAwait(false);
@@ -338,7 +312,7 @@ namespace PackageExplorerViewModel
                     if(pdbStream != null)
                     {
                         requireExternal = true;
-                        
+
                         // Found a PDB for it
                         if(await ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic, true).ConfigureAwait(false))
                         {
@@ -353,6 +327,10 @@ namespace PackageExplorerViewModel
 
             }
 
+            SymbolValidationResult SourceLinkResult = SymbolValidationResult.Pending;
+            string? SourceLinkErrorMessage;
+            DeterministicResult DeterministicResult;
+            string? DeterministicErrorMessage;
             if (noSymbols.Count == 0 && noSourceLink.Count == 0 && sourceLinkErrors.Count == 0)
             {
                 if(untrackedSources.Count > 0)
@@ -400,7 +378,7 @@ namespace PackageExplorerViewModel
                 var found = false;
                 var sb = new StringBuilder();
                 if (noSourceLink.Count > 0)
-                {                    
+                {
                     SourceLinkResult = SymbolValidationResult.NoSourceLink;
 
                     sb.AppendLine($"Missing Source Link for:\n{string.Join("\n", noSourceLink.Select(p => p.Path)) }");
@@ -417,7 +395,7 @@ namespace PackageExplorerViewModel
                     foreach(var (file, errors) in sourceLinkErrors)
                     {
                         sb.AppendLine($"Source Link errors for {file.Path}:\n{string.Join("\n", errors) }");
-                    }                    
+                    }
 
                     found = true;
                 }
@@ -455,7 +433,7 @@ namespace PackageExplorerViewModel
                 DeterministicResult = DeterministicResult.NonDeterministic;
 
                 var sb = new StringBuilder();
-                sb.AppendLine("Ensure that the following property is enabled for CI builds\nand you're using at least the 2.1.300 SDK:");                
+                sb.AppendLine("Ensure that the following property is enabled for CI builds\nand you're using at least the 2.1.300 SDK:");
                 sb.AppendLine();
                 sb.AppendLine("<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>");
                 sb.AppendLine();
@@ -478,15 +456,15 @@ namespace PackageExplorerViewModel
                 DeterministicResult = DeterministicResult.Valid;
                 DeterministicErrorMessage = null;
             }
-            
+            return new SymbolValidatorResult(SourceLinkResult, SourceLinkErrorMessage, DeterministicResult, DeterministicErrorMessage);
         }
 
-        private static bool IsMicrosoftFile(PackageFile file)
+        private static bool IsMicrosoftFile(IPackageFile file)
         {
             IReadOnlyList<AuthenticodeSignature> sigs;
             SignatureCheckResult isValidSig;
             using (var str = file.GetStream())
-            using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Name)))
+            using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Path)))
             {
                 var extractor = new FileInspector(tempFile.FileName);
 
@@ -504,10 +482,10 @@ namespace PackageExplorerViewModel
 
         private static async Task<bool> ValidatePdb(FileWithDebugData input,
                                         Stream pdbStream,
-                                        List<PackageFile> noSourceLink,
-                                        List<(PackageFile file, string errors)> sourceLinkErrors,
+                                        List<IPackageFile> noSourceLink,
+                                        List<(IPackageFile file, string errors)> sourceLinkErrors,
                                         List<FileWithDebugData> untrackedSources,
-                                        List<PackageFile> nonDeterministic,
+                                        List<IPackageFile> nonDeterministic,
                                         bool validateChecksum)
         {
             var peStream = MakeSeekable(input.File.GetStream(), true);
@@ -525,7 +503,7 @@ namespace PackageExplorerViewModel
                         input.DebugData = await AssemblyMetadataReader.ReadDebugData(peStream, stream).ConfigureAwait(false);
                     }
 
-                    // Check to see if the PDB is valid, but only for pdb's that aren't alongside the PE file                    
+                    // Check to see if the PDB is valid, but only for pdb's that aren't alongside the PE file
                     if(validateChecksum && !input.DebugData.PdbChecksumIsValid)
                     {
                         return false;
@@ -634,44 +612,29 @@ namespace PackageExplorerViewModel
             return null;
         }
 
-        public SymbolValidationResult SourceLinkResult
-        {
-            get; private set;
-        }
-
-        public string? SourceLinkErrorMessage
-        {
-            get; private set;
-        }
-
-        public DeterministicResult DeterministicResult
-        {
-            get; private set;
-        }
-
-        public string? DeterministicErrorMessage
-        {
-            get; private set;
-        }
-
         private class FileWithPdb
         {
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-            public PackageFile Primary { get; set; }
+            public IPackageFile Primary { get; set; }
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
-            public PackageFile? Pdb { get; set; }
+            public IPackageFile? Pdb { get; set; }
         }
 
         private class FileWithDebugData
         {
-            public FileWithDebugData(PackageFile file, AssemblyDebugData? debugData)
+            public FileWithDebugData(IPackageFile file, AssemblyDebugData? debugData)
             {
                 File = file;
                 DebugData = debugData;
             }
 
-            public PackageFile File { get; }
+            public IPackageFile File { get; }
             public AssemblyDebugData? DebugData { get; set; }
+        }
+
+        public void Dispose()
+        {
+            _package.Dispose();
         }
     }
 }

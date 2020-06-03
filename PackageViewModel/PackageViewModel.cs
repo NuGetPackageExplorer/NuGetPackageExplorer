@@ -93,15 +93,16 @@ namespace PackageExplorerViewModel
             PackagePath = path;
             PackageSource = source;
 
-            
+
             RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
 
-            SymbolValidator = new SymbolValidator(this, _package);
-            SymbolValidator.Refresh();
+            var symbolValidator = new SymbolValidator(_package, path);
+            SymbolValidatorViewModel = new SymbolValidatorViewModel(this, symbolValidator);
+            SymbolValidatorViewModel.Refresh();
 
 
 
-            _packageMetadata = new EditablePackageMetadata(_package, UIServices, SymbolValidator);
+            _packageMetadata = new EditablePackageMetadata(_package, UIServices, SymbolValidatorViewModel);
             _isSigned = _packageMetadata.IsSigned;
         }
 
@@ -167,7 +168,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public SymbolValidator SymbolValidator { get; } 
+        public SymbolValidatorViewModel SymbolValidatorViewModel { get; }
 
         public string WindowTitle
         {
@@ -1184,7 +1185,7 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-        #region AddScriptCommand 
+        #region AddScriptCommand
 
         public ICommand AddScriptCommand
         {
@@ -1385,7 +1386,7 @@ namespace PackageExplorerViewModel
 
         public void BeginEdit()
         {
-            // raise the property change event here to force the edit form to rebind 
+            // raise the property change event here to force the edit form to rebind
             // all controls, which will erase all error states, if any, left over from the previous edit
             OnPropertyChanged(nameof(PackageMetadata));
             IsInEditMetadataMode = true;
@@ -1674,7 +1675,7 @@ namespace PackageExplorerViewModel
             {
                 using var str = ManifestUtility.ReadManifest(metadataFileStream);
                 var manifest = Manifest.ReadFrom(str, true);
-                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices, SymbolValidator);
+                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices, SymbolValidatorViewModel);
                 PackageMetadata = newMetadata;
 
                 return true;
