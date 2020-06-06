@@ -39,17 +39,42 @@ namespace PackageExplorer
             {
                 var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true);
                 data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));
-                    
 
-                return new ScrollViewer
+                // Tab control with two pages
+                var tc = new TabControl()
                 {
-                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                    Content = new Controls.PdbSourcesViewer
-                    {
-                        DataContext = data
-                    }
+                    Items =
+                        {
+                            new TabItem
+                            {
+                                Header = "PDB Info",
+                                Content = new ScrollViewer
+                                {
+                                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    Content = new Controls.PdbInfoViewer
+                                    {
+                                        DataContext = data
+                                    }
+                                }
+                            },
+                            new TabItem
+                            {
+                                Header = "PDB Sources",
+                                Content = new ScrollViewer
+                                {
+                                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    Content = new Controls.PdbSourcesViewer
+                                    {
+                                        DataContext = data
+                                    }
+                                }
+                            }
+                        }
                 };
+
+                return tc;
             }
             catch (ArgumentNullException)
             {

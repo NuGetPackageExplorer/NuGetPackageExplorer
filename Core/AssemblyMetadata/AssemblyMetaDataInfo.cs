@@ -10,10 +10,11 @@ namespace NuGetPe.AssemblyMetadata
     /// </summary>
     public class AssemblyMetaDataInfo
     {
-        private Dictionary<string, string> MetadataEntries { get; } = new Dictionary<string, string>();
-        private string FullName { get; set; }
-        private string StrongName { get; set; }
-        private IEnumerable<AssemblyName> ReferencedAsseblies { get; set; } = Enumerable.Empty<AssemblyName>();
+        private readonly Dictionary<string, string> _metadataEntries = new Dictionary<string, string>();
+        public IReadOnlyDictionary<string, string> MetadataEntries => _metadataEntries;
+        public string FullName { get; internal set; }
+        public string StrongName { get; internal set; }
+        public IEnumerable<AssemblyName> ReferencedAsseblies { get; private set; } = Enumerable.Empty<AssemblyName>();
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public AssemblyDebugData DebugData { get; internal set; }
@@ -54,7 +55,7 @@ namespace NuGetPe.AssemblyMetadata
         /// <summary>
         /// Set list of referenced assembly names.
         /// </summary>
-        public void SetReferencedAssemblyNames(IEnumerable<AssemblyName> referencedAssemblyNames)
+        internal void SetReferencedAssemblyNames(IEnumerable<AssemblyName> referencedAssemblyNames)
         {
             ReferencedAsseblies = referencedAssemblyNames ?? throw new ArgumentNullException(nameof(referencedAssemblyNames));
         }
@@ -62,50 +63,14 @@ namespace NuGetPe.AssemblyMetadata
         /// <summary>
         /// Add arbitrary metadata information.
         /// </summary>
-        public void AddMetadata(string displayName, string value)
+        internal void AddMetadata(string displayName, string value)
         {
             if (string.IsNullOrEmpty(displayName))
             {
                 throw new ArgumentNullException(nameof(displayName));
             }
 
-            MetadataEntries[displayName] = value;
-        }
-
-        /// <summary>
-        /// Gets all the metadata entries sorted by importance
-        /// </summary>
-        public IEnumerable<KeyValuePair<string, string>> GetMetadataEntriesOrderedByImportance()
-        {
-            if (FullName != null)
-            {
-                yield return MakePair("Full Name", FullName);
-            }
-            if (StrongName != null)
-            {
-                yield return MakePair("Strong Name", StrongName);
-            }
-
-            foreach (var entry in MetadataEntries.OrderBy(kv => kv.Key))
-            {
-                yield return entry;
-            }
-
-            if (ReferencedAsseblies != null)
-            {
-                var assemblyNamesDelimitedByLineBreak = string.Join(
-                    Environment.NewLine,
-                    ReferencedAsseblies
-                        .OrderBy(assName => assName.Name)
-                        .Select(assName => assName.FullName));
-
-                yield return MakePair("Referenced assemblies", assemblyNamesDelimitedByLineBreak);
-            }
-        }
-
-        private static KeyValuePair<string, string> MakePair(string displayName, string value)
-        {
-            return new KeyValuePair<string, string>(displayName, value);
+            _metadataEntries[displayName] = value;
         }
     }
 }
