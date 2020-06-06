@@ -377,17 +377,9 @@ namespace PackageExplorerViewModel
 
                     // add the new source to MRU list, after the load succeeds, in case there's an error with the source
                     _packageSourceManager!.NotifyPackageSourceAdded(source);
-                }
-                catch (Exception e)
-                {
-                    _uIServices.Show(e.Message, MessageLevel.Error);
-                }
-            }
-            else
-            {
-                try
-                {
-                    await LoadPackages();
+
+                    // this is to make sure the combo box doesn't goes blank after adding sources
+                    PackageSource = source;
                 }
                 catch (Exception e)
                 {
