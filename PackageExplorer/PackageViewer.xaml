@@ -22,8 +22,7 @@
                 <ResourceDictionary Source="Xaml/TemplateStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <self:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
-            <self:CountToVisibilityConverter Inverted="True" x:Key="invertedCountConverter" />
-            <self:StringCollectionsToStringConverter x:Key="authorNamesConverter" />
+            <self:CountToVisibilityConverter Inverted="True" x:Key="invertedCountConverter" />            
             <self:UppercaseConverter x:Key="upperCaseConverter" />
             <self:FrameworkNameConverter x:Key="frameworkConverter" />
             <self:NormalizeTextConverter x:Key="NormalizeTextConverter" />
@@ -494,13 +493,13 @@
                         <!-- Authors -->
                         <DockPanel Margin="0,3,0,0">
                             <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_CreatedByLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                            <TextBlock Text="{Binding Authors, Converter={StaticResource authorNamesConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Authors, Converter={StaticResource StringCollectionsToStringConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
                         </DockPanel>
 
                         <!-- Owners -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Owners, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_OwnersLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                            <TextBlock Text="{Binding Owners, Converter={StaticResource authorNamesConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Owners, Converter={StaticResource StringCollectionsToStringConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
                         </DockPanel>
 
                         <!-- Min client version -->

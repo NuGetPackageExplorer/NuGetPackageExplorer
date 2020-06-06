@@ -30,7 +30,7 @@ namespace PackageExplorerViewModel
                     HasReproducibleData = debugData.HasReproducibleData;
                 }
 
-               // OnPropertyChanged(null); // refresh all properties
+                OnPropertyChanged(null); // refresh all properties
             }
             catch
             {
@@ -45,6 +45,8 @@ namespace PackageExplorerViewModel
 
         public IReadOnlyCollection<MetadataReference>? MetadataReferences { get; private set; }
         public IReadOnlyCollection<CompilerFlag>? CompilerFlags { get; private set; }
+
+
 
         public bool HasReproducibleData { get; private set; }
 

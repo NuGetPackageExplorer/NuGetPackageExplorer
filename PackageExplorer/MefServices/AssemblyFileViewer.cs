@@ -104,7 +104,7 @@ namespace PackageExplorer
         }
 
 
-        private static Grid CreateAssemblyMetadataGrid(IEnumerable<KeyValuePair<string, string>> orderedAssemblyDataEntries)
+        internal static Grid CreateAssemblyMetadataGrid(IEnumerable<KeyValuePair<string, string>> orderedAssemblyDataEntries)
         {
 
             var grid = new Grid();
