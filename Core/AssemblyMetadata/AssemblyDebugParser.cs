@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -211,7 +212,7 @@ namespace NuGetPe.AssemblyMetadata
                         references.Add(new MetadataReference
                         {
                             Name = name,
-                            ExternAliases = externAliases,
+                            ExternAliases = string.IsNullOrEmpty(externAliases) ? ImmutableArray<string>.Empty : externAliases.Split(',').ToImmutableArray(),
                             EmbedInteropTypes = embedInteropTypes,
                             MetadataImageKind = kind,
                             Timestamp = DateTimeOffset.FromUnixTimeSeconds(timestamp),
@@ -221,7 +222,6 @@ namespace NuGetPe.AssemblyMetadata
 
                     }
                 }
-
             }
             return references;
         }
