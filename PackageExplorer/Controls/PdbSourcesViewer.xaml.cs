@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace PackageExplorer.Controls
 {
     /// <summary>
-    /// Interaction logic for PdbFileViewer.xaml
+    /// Interaction logic for PdbSourcesViewer.xaml
     /// </summary>
-    public partial class PdbFileViewer : UserControl
+    public partial class PdbSourcesViewer : UserControl
     {
-        public PdbFileViewer()
+        public PdbSourcesViewer()
         {
             InitializeComponent();
         }

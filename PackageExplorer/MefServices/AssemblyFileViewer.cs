@@ -71,7 +71,7 @@ namespace PackageExplorer
                                 {
                                     HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                                    Content = new Controls.PdbFileViewer
+                                    Content = new Controls.PdbSourcesViewer
                                     {
                                         DataContext = debugDataViewModel
                                     }
