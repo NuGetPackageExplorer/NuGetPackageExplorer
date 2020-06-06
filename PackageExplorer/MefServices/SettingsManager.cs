@@ -45,7 +45,7 @@ namespace PackageExplorer
                         value = NpeSettings.Default[name];
                         if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
                         {
-                            value = sc.Cast<string>().ToArray();
+                            value = sc.Cast<string>().ToList();
                         }
                     }
 
@@ -63,7 +63,7 @@ namespace PackageExplorer
                     value = NpeSettings.Default[name];
                     if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
                     {
-                        value = sc.Cast<string>().ToArray();
+                        value = sc.Cast<string>().ToList();
                     }
 
                     if (value is T t)
