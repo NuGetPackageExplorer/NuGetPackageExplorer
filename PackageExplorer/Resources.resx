@@ -138,6 +138,9 @@
   <data name="Dialog_FrameworkAssembliesLabel" xml:space="preserve">
     <value>Framework Assembly References:</value>
   </data>
+  <data name="Dialog_HasReproducibleDataValidation" xml:space="preserve">
+    <value>Has Reprodicuble Data:</value>
+  </data>
   <data name="Dialog_Health" xml:space="preserve">
     <value>Health:</value>
   </data>
@@ -346,6 +349,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="Validation_InvalidSourceLink" xml:space="preserve">
     <value>Invalid Source Link</value>
+  </data>
+  <data name="Validation_MissingReproducibleData" xml:space="preserve">
+    <value>Missing reproducible data in pdb</value>
   </data>
   <data name="Validation_MissingSourceLink" xml:space="preserve">
     <value>Has Symbols, No Source Link</value>
