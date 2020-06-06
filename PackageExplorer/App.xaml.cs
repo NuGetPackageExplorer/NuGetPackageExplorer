@@ -92,6 +92,7 @@ namespace PackageExplorer
             {
                 return Task.FromResult<IEnumerable<ICredentialProvider>>(new ICredentialProvider[]
                 {
+                    Container.GetExportedValue<CredentialConfigProvider>()!,
                     Container.GetExportedValue<CredentialManagerProvider>()!,
                     Container.GetExportedValue<CredentialPublishProvider>()!,
                     Container.GetExportedValue<CredentialDialogProvider>()!
