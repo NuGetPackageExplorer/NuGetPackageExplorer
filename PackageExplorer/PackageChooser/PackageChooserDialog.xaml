@@ -87,6 +87,10 @@
                     <self:GrayscaleContentPresenter Content="{StaticResource CloseIcon}" />
                 </self:GrayscaleButton>
 
+                <self:GrayscaleButton x:Name="RefreshButton" Margin="10,0,0,0" ToolTip="{x:Static self:Resources.PackageChooser_RefreshButtonTooltip}" VerticalAlignment="Center" Style="{StaticResource {x:Static ToolBar.ButtonStyleKey}}" Command="{Binding RefreshCommand}">
+                    <self:GrayscaleContentPresenter Content="{StaticResource RefreshIcon}" />
+                </self:GrayscaleButton>
+
                 <!-- Checkbox: Show pre-release version of each package -->
                 <CheckBox Margin="10,0,0,0" VerticalAlignment="Center" 
                           IsEnabled="{Binding IsEditable}" 

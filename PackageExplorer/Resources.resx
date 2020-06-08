@@ -314,6 +314,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="PackageChooser_PackageSource" xml:space="preserve">
     <value>_Package source:</value>
   </data>
+  <data name="PackageChooser_RefreshButtonTooltip" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
   <data name="PackageChooser_SearchBoxTooltip" xml:space="preserve">
     <value>Search for package</value>
   </data>
