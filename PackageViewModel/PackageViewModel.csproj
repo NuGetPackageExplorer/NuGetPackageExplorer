@@ -10,12 +10,12 @@
   
   <ItemGroup>
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
-    <PackageReference Include="NuGet.Credentials" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />
+    <PackageReference Include="NuGet.Credentials" Version="5.7.0-xprivate.60022" />
+    <PackageReference Include="NuGet.PackageManagement" Version="5.7.0-xprivate.60022" />
     <!-- Needs 2.1.2 explicitly until https://github.com/NuGet/Home/issues/5957 is fixed -->
     <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.2" /> 
-    <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />
+    <PackageReference Include="NuGet.Commands" Version="5.7.0-xprivate.60022" />
+    <PackageReference Include="NuGet.Resolver" Version="5.7.0-xprivate.60022" />
     <PackageReference Include="System.Windows.Extensions" Version="5.0.0-preview.4.20251.6" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
