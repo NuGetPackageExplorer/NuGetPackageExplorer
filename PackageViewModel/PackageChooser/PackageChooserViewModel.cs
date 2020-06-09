@@ -35,6 +35,7 @@ namespace PackageExplorerViewModel
             _defaultPackageSourceUrl = defaultPackageSourceUrl;
             Packages = new ObservableCollection<object>();
 
+            RefreshCommand = new RelayCommand(RefreshCommandExecute);
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
             ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
             LoadMoreCommand = new RelayCommand(async () => await LoadMore(CancellationToken.None), CanLoadMore);
@@ -206,6 +207,7 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public ICommand RefreshCommand { get; private set; }
         public ICommand SearchCommand { get; private set; }
         public ICommand ClearSearchCommand { get; private set; }
         public ICommand LoadMoreCommand { get; private set; }
@@ -327,6 +329,11 @@ namespace PackageExplorerViewModel
 
             IsEditable = true;
             CurrentCancellationTokenSource = null;
+        }
+
+        private async void RefreshCommandExecute()
+        {
+            await LoadPackages();
         }
 
         #region Search

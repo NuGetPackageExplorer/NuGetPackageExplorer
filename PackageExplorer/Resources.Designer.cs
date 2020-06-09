@@ -648,6 +648,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string PackageChooser_RefreshButtonTooltip {
+            get {
+                return ResourceManager.GetString("PackageChooser_RefreshButtonTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Search for package.
         /// </summary>
         public static string PackageChooser_SearchBoxTooltip {
