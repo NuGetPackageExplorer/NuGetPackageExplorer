@@ -547,10 +547,8 @@ namespace PackageExplorerViewModel
                     HasReproducibleDataResult = HasReproducibleDataResult.Missing;
 
                     var sb = new StringBuilder();
-                    sb.AppendLine("Ensure that the following property is enabled\nand you're using at least the 3.1.TBD SDK:");
-                    sb.AppendLine();
-                    sb.AppendLine("<TBD>true</TBD>");
-                    sb.AppendLine();
+                    sb.AppendLine("Ensure you're using at least the 3.1.TBD SDK or MSBuild 16.7p3+:");
+                    
                     sb.AppendLine("The following assemblies have not been compiled with reproducible settings:");
 
                     foreach (var file in nonDeterministic)

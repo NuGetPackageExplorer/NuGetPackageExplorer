@@ -509,7 +509,6 @@
                                 </StackPanel>
 
                                 <!-- Deterministic Validation -->
-                                <!-- Hidden until we have this shipping in an SDK somewhere -->
                                 <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="Collapsed">
                                     <TextBlock Text="{x:Static self:Resources.Dialog_HasReproducibleDataValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
@@ -520,7 +519,7 @@
                                 <StackPanel Style="{StaticResource DetailMetadataStyle}">
                                     <TextBlock Text="{x:Static self:Resources.Dialog_DeterministicValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource }" Margin="3,0,0,0" />
+                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource ReproducibleDataValidation}" Margin="3,0,0,0" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>                       
