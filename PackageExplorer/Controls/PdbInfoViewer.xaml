@@ -24,9 +24,10 @@
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -83,96 +84,24 @@
             Visibility="{Binding MetadataReferences, Converter={StaticResource NullToVisibilityConverter}}"
             Text="Metadata References:"
             Style="{StaticResource Key}" />
-        <ItemsControl Grid.IsSharedSizeScope="True"
-            Grid.Row="3"
-            Grid.Column="1"
-            Visibility="{Binding MetadataReferences, Converter={StaticResource NullToVisibilityConverter}}"
-            ItemsSource="{Binding MetadataReferences}" >
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="{x:Type core:MetadataReference}">
-                    <StackPanel>
-                        <TextBox Text="{Binding Name, Mode=OneWay}" Style="{StaticResource Key}" FontSize="14" />
-                        <Grid Margin="12, 3,0,0" >
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" SharedSizeGroup="refLabel"  />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto"  />
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-                          
-                            <TextBox
-                                Grid.Row="0" Grid.Column="0"
-                                Visibility="{Binding ExternAliases, Converter={StaticResource NullToVisibilityConverter}}"
-                                Text="Extern Aliases: "
-                                Style="{StaticResource Key}"
-                                 />
-                            <TextBox
-                                Grid.Row="0" Grid.Column="1"
-                                Visibility="{Binding ExternAliases, Converter={StaticResource NullToVisibilityConverter}}"
-                                Text="{Binding ExternAliases, Mode=OneWay, Converter={StaticResource StringCollectionsToStringConverter}}"
-                                Style="{StaticResource Value}"
-                                />
-              
-                            
-                            <TextBox
-                                Grid.Row="1" Grid.Column="0"
-                                Text="Metadata Image Kind: "
-                                Style="{StaticResource Key}" />
-                            <TextBox
-                                Grid.Row="1" Grid.Column="1"
-                                Text="{Binding MetadataImageKind, Mode=OneWay}"
-                                Style="{StaticResource Value}" />
-                       
-                            
-                            <TextBox
-                                Grid.Row="2" Grid.Column="0"
-                                Text="Embed Interop Types: "
-                                Style="{StaticResource Key}" />
-                            <TextBox
-                                Grid.Row="2" Grid.Column="1"
-                                Text="{Binding EmbedInteropTypes, Mode=OneWay}"
-                                Style="{StaticResource Value}" />
-                        
-                            
-                            <TextBox
-                                Grid.Row="3" Grid.Column="0"
-                                Text="Timestamp: "
-                                Style="{StaticResource Key}" />
-                            <TextBox
-                                Grid.Row="3" Grid.Column="1"
-                                Text="{Binding Timestamp, Mode=OneWay, StringFormat=0x{0:X}}"
-                                Style="{StaticResource Value}" />
-                          
-                     
-                            <TextBox
-                                Grid.Row="4" Grid.Column="0"
-                                Text="Image Size: "
-                                Style="{StaticResource Key}" />
-                            <TextBox
-                                Grid.Row="4" Grid.Column="1"
-                                Text="{Binding ImageSize, Mode=OneWay, StringFormat={}{0:#,#} bytes}"
-                                Style="{StaticResource Value}" />
-                        
-                         
-                            <TextBox
-                                Grid.Row="5" Grid.Column="0"
-                                Text="MVID: "
-                                Style="{StaticResource Key}" />
-                            <TextBox
-                                Grid.Row="5" Grid.Column="1"
-                                Text="{Binding Mvid, Mode=OneWay}"
-                                Style="{StaticResource Value}" />
-                         
-                        </Grid>
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+
+        <DataGrid
+                Grid.Row="4"
+                Grid.ColumnSpan="2"
+                Visibility="{Binding MetadataReferences, Converter={StaticResource NullToVisibilityConverter}}"
+                ItemsSource="{Binding MetadataReferences}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+            >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}"  />
+                <DataGridTextColumn Header="Extern Aliases" Binding="{Binding ExternAliases, Mode=OneWay, Converter={StaticResource StringCollectionsToStringConverter}}"  />
+                <DataGridTextColumn Header="Metadata Image Kind" Binding="{Binding MetadataImageKind, Mode=OneWay}"  />
+                <DataGridTextColumn Header="Embed Interop Types" Binding="{Binding EmbedInteropTypes, Mode=OneWay}"  />
+                <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, Mode=OneWay, StringFormat=0x{0:X}}"  />
+                <DataGridTextColumn Header="Image Size (bytes)" Binding="{Binding ImageSize, Mode=OneWay, StringFormat={}{0:#,#}}"  />
+                <DataGridTextColumn Header="MVID" Binding="{Binding Mvid, Mode=OneWay}"  />
+            </DataGrid.Columns>
+        </DataGrid>      
     </Grid>
 </UserControl>
