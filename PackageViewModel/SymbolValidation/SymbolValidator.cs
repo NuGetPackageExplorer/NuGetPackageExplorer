@@ -549,9 +549,9 @@ namespace PackageExplorerViewModel
                     var sb = new StringBuilder();
                     sb.AppendLine("Ensure you're using at least the 3.1.TBD SDK or MSBuild 16.7p3+:");
                     
-                    sb.AppendLine("The following assemblies have not been compiled with reproducible settings:");
+                    sb.AppendLine("The following assemblies have not been compiled with a new enough compiler:");
 
-                    foreach (var file in nonDeterministic)
+                    foreach (var file in nonReproducible)
                     {
                         sb.AppendLine(file.Path);
                     }

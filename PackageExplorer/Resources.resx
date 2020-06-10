@@ -351,7 +351,7 @@ Do you want to add '{0}' to the list of package publish sources?</value>
     <value>Invalid Source Link</value>
   </data>
   <data name="Validation_MissingReproducibleData" xml:space="preserve">
-    <value>Missing reproducible data in pdb</value>
+    <value>Missing</value>
   </data>
   <data name="Validation_MissingSourceLink" xml:space="preserve">
     <value>Has Symbols, No Source Link</value>

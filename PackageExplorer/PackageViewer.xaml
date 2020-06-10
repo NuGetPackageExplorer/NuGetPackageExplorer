@@ -127,7 +127,7 @@
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="NothingToValidate">
+                    <DataTrigger Binding="{Binding DeterministicResult}" Value="NothingToValidate">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NothingToValidate}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
@@ -154,19 +154,19 @@
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding DeterministicResult}" Value="Missing">
+                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="Missing">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_MissingReproducibleData}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="NothingToValidate">
+                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="NothingToValidate">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NothingToValidate}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding DeterministicResult}" Value="Pending">
+                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="Pending">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Pending}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Collapsed"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Visible"/>
@@ -509,15 +509,15 @@
                                 </StackPanel>
 
                                 <!-- Deterministic Validation -->
-                                <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="Collapsed">
-                                    <TextBlock Text="{x:Static self:Resources.Dialog_HasReproducibleDataValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                                <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                                    <TextBlock Text="{x:Static self:Resources.Dialog_DeterministicValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource ReproducibleDataValidation}" Margin="3,0,0,0" />
+                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource DeterministicValidation}" Margin="3,0,0,0" />
                                 </StackPanel>
 
                                 <!-- Has Reproducible Data Validation -->
                                 <StackPanel Style="{StaticResource DetailMetadataStyle}">
-                                    <TextBlock Text="{x:Static self:Resources.Dialog_DeterministicValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                                    <TextBlock Text="{x:Static self:Resources.Dialog_HasReproducibleDataValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
                                     <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource ReproducibleDataValidation}" Margin="3,0,0,0" />
                                 </StackPanel>

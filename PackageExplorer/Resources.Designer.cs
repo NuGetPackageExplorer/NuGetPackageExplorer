@@ -756,7 +756,7 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing reproducible data in pdb.
+        ///   Looks up a localized string similar to Missing.
         /// </summary>
         public static string Validation_MissingReproducibleData {
             get {
