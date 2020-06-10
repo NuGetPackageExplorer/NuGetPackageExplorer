@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using NuGetPe.AssemblyMetadata;
 
@@ -25,8 +26,8 @@ namespace PackageExplorerViewModel
                     Sources = CreateSourcesViewModels(debugData);
                     PdbType = debugData.PdbType;
 
-                    MetadataReferences = debugData.MetadataReferences;
-                    CompilerFlags = debugData.CompilerFlags;
+                    MetadataReferences = debugData.MetadataReferences.OrderBy(r => r.Name).ToList();
+                    CompilerFlags = debugData.CompilerFlags.OrderBy(f => f.Key).ToList();
                     HasReproducibleData = debugData.HasReproducibleData;
                 }
 

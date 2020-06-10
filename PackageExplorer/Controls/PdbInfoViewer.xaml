@@ -56,7 +56,7 @@
             Text="Compiler Flags:"
             Style="{StaticResource Key}" />
 
-        <ItemsControl
+        <ItemsControl Grid.IsSharedSizeScope="True"
             Grid.Row="2"
             Grid.Column="1"
             Visibility="{Binding CompilerFlags, Converter={StaticResource NullToVisibilityConverter}}"
@@ -64,7 +64,16 @@
             MaxHeight="250">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type core:CompilerFlag}">
-                    <TextBlock><Run Text="{Binding Key, Mode=OneWay}"/> <Run Text="{Binding Value, Mode=OneWay}"/></TextBlock>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="flagLabel" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+
+                        <TextBox Text="{Binding Key, Mode=OneWay}" Style="{StaticResource Key}" />
+                        <TextBox Text="{Binding Value, Mode=OneWay}" Grid.Column="1" Style="{StaticResource Value}" />
+                    </Grid>                    
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
@@ -74,7 +83,7 @@
             Visibility="{Binding MetadataReferences, Converter={StaticResource NullToVisibilityConverter}}"
             Text="Metadata References:"
             Style="{StaticResource Key}" />
-        <ItemsControl
+        <ItemsControl Grid.IsSharedSizeScope="True"
             Grid.Row="3"
             Grid.Column="1"
             Visibility="{Binding MetadataReferences, Converter={StaticResource NullToVisibilityConverter}}"
@@ -83,36 +92,84 @@
                 <DataTemplate DataType="{x:Type core:MetadataReference}">
                     <StackPanel>
                         <TextBox Text="{Binding Name, Mode=OneWay}" Style="{StaticResource Key}" FontSize="14" />
-                        <StackPanel Margin="12, 3,0,0">
-                            <StackPanel Orientation="Horizontal"
-                                        Visibility="{Binding ExternAliases, Converter={StaticResource NullToVisibilityConverter}}">
-                                <TextBox Text="Extern Aliases: " Style="{StaticResource Key}" />
-                                <TextBox Text="{Binding ExternAliases, Mode=OneWay, Converter={StaticResource StringCollectionsToStringConverter}}" Style="{StaticResource Value}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Text="Metadata Image Kind: " Style="{StaticResource Key}" />
-                                <TextBox Text="{Binding MetadataImageKind, Mode=OneWay}" Style="{StaticResource Value}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Text="Embed Interop Types: " Style="{StaticResource Key}" />
-                                <TextBox Text="{Binding EmbedInteropTypes, Mode=OneWay}" Style="{StaticResource Value}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Text="Timestamp: " Style="{StaticResource Key}" />
-                                <TextBox Text="{Binding Timestamp, Mode=OneWay, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F}" Style="{StaticResource Value}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Text="Image Size: " Style="{StaticResource Key}" />
-                                <TextBox Text="{Binding ImageSize, Mode=OneWay}" Style="{StaticResource Value}" />
-                            </StackPanel>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBox Text="MVID: " Style="{StaticResource Key}" />
-                                <TextBox Text="{Binding Mvid, Mode=OneWay}" Style="{StaticResource Value}" />
-                            </StackPanel>
-                        </StackPanel>
-
-                        <TextBlock><Run Text="{Binding Key, Mode=OneWay}" Style="{StaticResource Key}" /> <Run Text="{Binding Value, Mode=OneWay}"/></TextBlock>
-
+                        <Grid Margin="12, 3,0,0" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" SharedSizeGroup="refLabel"  />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto"  />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                          
+                            <TextBox
+                                Grid.Row="0" Grid.Column="0"
+                                Visibility="{Binding ExternAliases, Converter={StaticResource NullToVisibilityConverter}}"
+                                Text="Extern Aliases: "
+                                Style="{StaticResource Key}"
+                                 />
+                            <TextBox
+                                Grid.Row="0" Grid.Column="1"
+                                Visibility="{Binding ExternAliases, Converter={StaticResource NullToVisibilityConverter}}"
+                                Text="{Binding ExternAliases, Mode=OneWay, Converter={StaticResource StringCollectionsToStringConverter}}"
+                                Style="{StaticResource Value}"
+                                />
+              
+                            
+                            <TextBox
+                                Grid.Row="1" Grid.Column="0"
+                                Text="Metadata Image Kind: "
+                                Style="{StaticResource Key}" />
+                            <TextBox
+                                Grid.Row="1" Grid.Column="1"
+                                Text="{Binding MetadataImageKind, Mode=OneWay}"
+                                Style="{StaticResource Value}" />
+                       
+                            
+                            <TextBox
+                                Grid.Row="2" Grid.Column="0"
+                                Text="Embed Interop Types: "
+                                Style="{StaticResource Key}" />
+                            <TextBox
+                                Grid.Row="2" Grid.Column="1"
+                                Text="{Binding EmbedInteropTypes, Mode=OneWay}"
+                                Style="{StaticResource Value}" />
+                        
+                            
+                            <TextBox
+                                Grid.Row="3" Grid.Column="0"
+                                Text="Timestamp: "
+                                Style="{StaticResource Key}" />
+                            <TextBox
+                                Grid.Row="3" Grid.Column="1"
+                                Text="{Binding Timestamp, Mode=OneWay, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F}"
+                                Style="{StaticResource Value}" />
+                          
+                     
+                            <TextBox
+                                Grid.Row="4" Grid.Column="0"
+                                Text="Image Size: "
+                                Style="{StaticResource Key}" />
+                            <TextBox
+                                Grid.Row="4" Grid.Column="1"
+                                Text="{Binding ImageSize, Mode=OneWay, StringFormat={}{0:#,#} bytes}"
+                                Style="{StaticResource Value}" />
+                        
+                         
+                            <TextBox
+                                Grid.Row="5" Grid.Column="0"
+                                Text="MVID: "
+                                Style="{StaticResource Key}" />
+                            <TextBox
+                                Grid.Row="5" Grid.Column="1"
+                                Text="{Binding Mvid, Mode=OneWay}"
+                                Style="{StaticResource Value}" />
+                         
+                        </Grid>
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
