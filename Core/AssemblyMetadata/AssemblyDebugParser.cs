@@ -204,8 +204,7 @@ namespace NuGetPe.AssemblyMetadata
                             ? MetadataImageKind.Assembly
                             : MetadataImageKind.Module;
 
-                        // seconds since 00:00 UTC Jan 1 1970 (Unix epoch)
-                        var timestamp = blobReader.ReadInt32();
+                        var timestamp = blobReader.ReadInt32(); // 4B hash (part of SHA256) for deterministic builds
                         var imageSize = blobReader.ReadInt32();
                         var mvid = blobReader.ReadGuid();
 
@@ -215,7 +214,7 @@ namespace NuGetPe.AssemblyMetadata
                             ExternAliases = string.IsNullOrEmpty(externAliases) ? ImmutableArray<string>.Empty : externAliases.Split(',').ToImmutableArray(),
                             EmbedInteropTypes = embedInteropTypes,
                             MetadataImageKind = kind,
-                            Timestamp = DateTimeOffset.FromUnixTimeSeconds(timestamp),
+                            Timestamp = timestamp,
                             ImageSize = imageSize,
                             Mvid = mvid
                         });

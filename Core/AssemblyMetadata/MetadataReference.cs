@@ -16,7 +16,7 @@ namespace NuGetPe.AssemblyMetadata
         public ImmutableArray<string> ExternAliases { get; set; }
         public MetadataImageKind MetadataImageKind { get; set; }
         public bool EmbedInteropTypes { get; set; }
-        public DateTimeOffset Timestamp { get; set; }
+        public int Timestamp { get; set; }
         public int ImageSize { get; set; }
         public Guid Mvid { get; set; }
 

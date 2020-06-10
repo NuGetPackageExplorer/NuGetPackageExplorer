@@ -146,7 +146,7 @@
                                 Style="{StaticResource Key}" />
                             <TextBox
                                 Grid.Row="3" Grid.Column="1"
-                                Text="{Binding Timestamp, Mode=OneWay, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F}"
+                                Text="{Binding Timestamp, Mode=OneWay, StringFormat=0x{0:X}}"
                                 Style="{StaticResource Value}" />
                           
                      
