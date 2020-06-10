@@ -14,6 +14,8 @@ namespace NuGetPe.AssemblyMetadata
             SourceLinkErrors = new List<string>();
             Sources = new List<AssemblyDebugSourceDocument>();
             SymbolKeys = new List<SymbolKey>();
+            MetadataReferences = new List<MetadataReference>();
+            CompilerFlags = new List<CompilerFlag>();
 
             _untrackedSources = new Lazy<IReadOnlyList<string>>(() => GetNonEmbeddedSourcesInObjDir());
             _sourcesAreDeterministic = new Lazy<bool>(CalculateSourcesDeterministic);
@@ -28,13 +30,21 @@ namespace NuGetPe.AssemblyMetadata
         public IReadOnlyList<string> SourceLinkErrors { get; internal set; }
         public IReadOnlyList<SymbolKey> SymbolKeys { get; internal set; }
 
+        public IReadOnlyCollection<MetadataReference> MetadataReferences { get; internal set;}
+        public IReadOnlyCollection<CompilerFlag> CompilerFlags { get; internal set;}
+
         public bool PdbChecksumIsValid { get; internal set; }
 
         public bool HasSourceLink => Sources.Any(doc => doc.HasSourceLink);
 
         public bool AllSourceLink => Sources.All(doc => doc.HasSourceLink);
 
+        /// <summary>
+        /// True if we hae PDB data loaded
+        /// </summary>
         public bool HasDebugInfo { get; internal set; }
+
+        public bool HasReproducibleData => CompilerFlags.Count > 0 && MetadataReferences.Count > 0;
 
         public IReadOnlyList<string> UntrackedSources => _untrackedSources.Value;
 

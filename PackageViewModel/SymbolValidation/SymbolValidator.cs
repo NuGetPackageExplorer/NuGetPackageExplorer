@@ -92,6 +92,27 @@ namespace PackageExplorerViewModel
         HasUntrackedSources
     }
 
+    public enum HasReproducibleDataResult
+    {
+        /// <summary>
+        /// Symbols have reproducible data
+        /// </summary>
+        Present,
+
+        /// <summary>
+        /// In Progress
+        /// </summary>
+        Pending,
+        /// <summary>
+        /// Symbols do not have reproducible data
+        /// </summary>
+        Missing,
+        /// <summary>
+        /// No relevant files to validate. 
+        /// </summary>
+        NothingToValidate
+    }
+
 #pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public class SymbolValidator : INotifyPropertyChanged
 #pragma warning restore CA1001 // Types that own disposable fields should be disposable
@@ -110,6 +131,7 @@ namespace PackageExplorerViewModel
 
             SourceLinkResult = SymbolValidationResult.Pending;
             DeterministicResult = DeterministicResult.Pending;
+            HasReproducibleDataResult = HasReproducibleDataResult.Pending;
 
             // NuGet signs all its packages and stamps on the service index. Look for that.
             if(package is ISignaturePackage sigPackage)
@@ -129,6 +151,8 @@ namespace PackageExplorerViewModel
                 SourceLinkErrorMessage = null;
                 DeterministicResult = DeterministicResult.Pending;
                 DeterministicErrorMessage = null;
+                HasReproducibleDataResult = HasReproducibleDataResult.Pending;
+                HasReproducibleDataMessage = null;
 
                 Refresh();
             }
@@ -157,6 +181,8 @@ namespace PackageExplorerViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceLinkErrorMessage)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicResult)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicErrorMessage)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasReproducibleDataResult)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasReproducibleDataMessage)));
             }
 
             static bool IsNativeRuntimeFilePath(string path)
@@ -183,6 +209,7 @@ namespace PackageExplorerViewModel
             var noSymbols = new List<FileWithDebugData>();
             var untrackedSources = new List<FileWithDebugData>();
             var nonDeterministic = new List<PackageFile>();
+            var nonReproducible = new List<PackageFile>();
 
             var allFilePaths = filesWithPdb.ToDictionary(pf => pf.Primary.Path);
 
@@ -202,7 +229,13 @@ namespace PackageExplorerViewModel
                 if(file.Pdb != null)
                 {
                     var filePair = new FileWithDebugData(file.Primary, null);
-                    if (! await ValidatePdb(filePair, file.Pdb.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic, false).ConfigureAwait(false))
+                    if (! await ValidatePdb(filePair, file.Pdb.GetStream(),
+                                            noSourceLink,
+                                            sourceLinkErrors,
+                                            untrackedSources,
+                                            nonDeterministic,
+                                            nonReproducible,
+                                            false).ConfigureAwait(false))
                     {
                         pdbChecksumValid = false;
                         noSymbols.Add(filePair);
@@ -243,6 +276,12 @@ namespace PackageExplorerViewModel
                             if(!assemblyMetadata.DebugData.SourcesAreDeterministic)
                             {
                                 nonDeterministic.Add(file.Primary);
+                            }
+
+                            // Check for reproducible build settings
+                            if(!assemblyMetadata.DebugData.HasReproducibleData)
+                            {
+                                nonReproducible.Add(file.Primary);
                             }
                         }
                         else // no embedded pdb, try to look for it elsewhere
@@ -314,7 +353,13 @@ namespace PackageExplorerViewModel
                         if (dict.TryGetValue(pdbpath, out var pdbfile))
                         {
                             // Validate
-                            if (await ValidatePdb(file, pdbfile.GetStream(), noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic, true).ConfigureAwait(false))
+                            if (await ValidatePdb(file, pdbfile.GetStream(),
+                                noSourceLink,
+                                sourceLinkErrors,
+                                untrackedSources,
+                                nonDeterministic,
+                                nonReproducible,
+                                true).ConfigureAwait(false))
                             {
                                 noSymbols.Remove(file);
                             }
@@ -340,7 +385,13 @@ namespace PackageExplorerViewModel
                         requireExternal = true;
                         
                         // Found a PDB for it
-                        if(await ValidatePdb(file, pdbStream, noSourceLink, sourceLinkErrors, untrackedSources, nonDeterministic, true).ConfigureAwait(false))
+                        if(await ValidatePdb(file, pdbStream,
+                            noSourceLink,
+                            sourceLinkErrors,
+                            untrackedSources,
+                            nonDeterministic,
+                            nonReproducible,
+                            true).ConfigureAwait(false))
                         {
                             noSymbols.Remove(file);
                         }
@@ -444,11 +495,17 @@ namespace PackageExplorerViewModel
             {
                 DeterministicResult = DeterministicResult.NothingToValidate;
                 DeterministicErrorMessage = null;
+
+                HasReproducibleDataResult = HasReproducibleDataResult.NothingToValidate;
+                HasReproducibleDataMessage = null;
             }
             else if(SourceLinkResult == SymbolValidationResult.NoSymbols)
             {
                 DeterministicResult = DeterministicResult.NonDeterministic;
                 DeterministicErrorMessage = "Missing Symbols";
+
+                HasReproducibleDataResult = HasReproducibleDataResult.Missing;
+                HasReproducibleDataMessage = "Missing Symbols";
             }
             else if(nonDeterministic.Count > 0)
             {
@@ -467,18 +524,46 @@ namespace PackageExplorerViewModel
                 }
 
                 DeterministicErrorMessage = sb.ToString();
+
+
+                HasReproducibleDataResult = HasReproducibleDataResult.Missing;
+                HasReproducibleDataMessage = "Reproducible builds must be deterministic.";
             }
             else if(SourceLinkResult == SymbolValidationResult.HasUntrackedSources)
             {
                 DeterministicResult = DeterministicResult.HasUntrackedSources;
                 DeterministicErrorMessage = null;
+
+                HasReproducibleDataResult = HasReproducibleDataResult.Missing;
+                HasReproducibleDataMessage = "Reproducible builds must be deterministic and have all sources available via Source Link or embedded in the PDB for generated files.";
             }
             else
             {
                 DeterministicResult = DeterministicResult.Valid;
                 DeterministicErrorMessage = null;
+
+                if(nonReproducible.Count > 0)
+                {
+                    HasReproducibleDataResult = HasReproducibleDataResult.Missing;
+
+                    var sb = new StringBuilder();
+                    sb.AppendLine("Ensure you're using at least the 3.1.TBD SDK or MSBuild 16.7p3+:");
+                    
+                    sb.AppendLine("The following assemblies have not been compiled with a new enough compiler:");
+
+                    foreach (var file in nonReproducible)
+                    {
+                        sb.AppendLine(file.Path);
+                    }
+
+                    HasReproducibleDataMessage = sb.ToString();
+                }
+                else
+                {
+                    HasReproducibleDataResult = HasReproducibleDataResult.Present;
+                    HasReproducibleDataMessage = null;
+                }
             }
-            
         }
 
         private static bool IsMicrosoftFile(PackageFile file)
@@ -508,6 +593,7 @@ namespace PackageExplorerViewModel
                                         List<(PackageFile file, string errors)> sourceLinkErrors,
                                         List<FileWithDebugData> untrackedSources,
                                         List<PackageFile> nonDeterministic,
+                                        List<PackageFile> nonReproducible,
                                         bool validateChecksum)
         {
             var peStream = MakeSeekable(input.File.GetStream(), true);
@@ -553,6 +639,11 @@ namespace PackageExplorerViewModel
                     if (!input.DebugData.SourcesAreDeterministic)
                     {
                         nonDeterministic.Add(input.File);
+                    }
+
+                    if(!input.DebugData.HasReproducibleData)
+                    {
+                        nonReproducible.Add(input.File);
                     }
 
                 }
@@ -648,6 +739,9 @@ namespace PackageExplorerViewModel
         {
             get; private set;
         }
+
+        public HasReproducibleDataResult HasReproducibleDataResult { get; private set; }
+        public string? HasReproducibleDataMessage { get; private set; }
 
         public string? DeterministicErrorMessage
         {

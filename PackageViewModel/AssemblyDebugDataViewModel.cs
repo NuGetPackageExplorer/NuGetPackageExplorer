@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using NuGetPe.AssemblyMetadata;
 
@@ -26,10 +25,13 @@ namespace PackageExplorerViewModel
                 {
                     Sources = CreateSourcesViewModels(debugData);
                     PdbType = debugData.PdbType;
+
+                    MetadataReferences = debugData.MetadataReferences.OrderBy(r => r.Name).ToList();
+                    CompilerFlags = debugData.CompilerFlags.OrderBy(f => f.Key).ToList();
+                    HasReproducibleData = debugData.HasReproducibleData;
                 }
 
-                OnPropertyChanged(nameof(PdbType));
-                OnPropertyChanged(nameof(Sources));
+                OnPropertyChanged(null); // refresh all properties
             }
             catch
             {
@@ -41,6 +43,13 @@ namespace PackageExplorerViewModel
         public PdbType PdbType { get; private set; }
 
         public IReadOnlyList<AssemblyDebugSourceDocumentViewModel>? Sources { get; private set; }
+
+        public IReadOnlyCollection<MetadataReference>? MetadataReferences { get; private set; }
+        public IReadOnlyCollection<CompilerFlag>? CompilerFlags { get; private set; }
+
+
+
+        public bool HasReproducibleData { get; private set; }
 
         private static IReadOnlyList<AssemblyDebugSourceDocumentViewModel> CreateSourcesViewModels(AssemblyDebugData debugData)
         {

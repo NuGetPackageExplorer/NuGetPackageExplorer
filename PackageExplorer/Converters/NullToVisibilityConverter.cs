@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 
@@ -20,6 +22,14 @@ namespace PackageExplorer
                 if (value is string stringValue)
                 {
                     returnValue = string.IsNullOrEmpty(stringValue) ? Visibility.Collapsed : Visibility.Visible;
+                }
+                else if(value is ICollection collection)
+                {
+                    returnValue = collection.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+                }
+                else if (value is IEnumerable enu)
+                {
+                    returnValue = enu.Cast<object>().Any() ? Visibility.Visible : Visibility.Collapsed;
                 }
                 else
                 {

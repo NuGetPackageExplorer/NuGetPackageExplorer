@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -19,7 +21,7 @@ namespace PackageExplorer
         {
             DiagnosticsClient.TrackEvent("AssemblyFileViewer");
 
-            
+
 
             try
             {
@@ -34,7 +36,7 @@ namespace PackageExplorer
                 // No debug data to display
                 if (assemblyMetadata != null && debugDataViewModel == null)
                 {
-                    var orderedAssemblyDataEntries = assemblyMetadata.GetMetadataEntriesOrderedByImportance();
+                    var orderedAssemblyDataEntries = GetMetadataEntriesOrderedByImportance(assemblyMetadata);
 
                     var grid = CreateAssemblyMetadataGrid(orderedAssemblyDataEntries);
 
@@ -47,9 +49,9 @@ namespace PackageExplorer
                 }
                 else if (assemblyMetadata != null && debugDataViewModel != null)
                 {
-                    var orderedAssemblyDataEntries = assemblyMetadata.GetMetadataEntriesOrderedByImportance();
+                    var orderedAssemblyDataEntries = GetMetadataEntriesOrderedByImportance(assemblyMetadata);
 
-                    // Tab control with two pages
+                    // Tab control with three pages
                     var tc = new TabControl()
                     {
                         Items =
@@ -66,12 +68,25 @@ namespace PackageExplorer
                             },
                             new TabItem
                             {
-                                Header = "Embedded PDB Data",
+                                Header = "Embedded PDB Info",
                                 Content = new ScrollViewer
                                 {
                                     HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                                    Content = new Controls.PdbFileViewer
+                                    Content = new Controls.PdbInfoViewer
+                                    {
+                                        DataContext = debugDataViewModel
+                                    }
+                                }
+                            },
+                            new TabItem
+                            {
+                                Header = "Embedded PDB Sources",
+                                Content = new ScrollViewer
+                                {
+                                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    Content = new Controls.PdbSourcesViewer
                                     {
                                         DataContext = debugDataViewModel
                                     }
@@ -89,14 +104,14 @@ namespace PackageExplorer
         }
 
 
-        private static Grid CreateAssemblyMetadataGrid(IEnumerable<KeyValuePair<string, string>> orderedAssemblyDataEntries)
+        internal static Grid CreateAssemblyMetadataGrid(IEnumerable<KeyValuePair<string, string>> orderedAssemblyDataEntries)
         {
 
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
 
-            var style =  Application.Current.FindResource("SelectableTextBlockLikeStyleWithoutTriggers") as Style;
+            var style = Application.Current.FindResource("SelectableTextBlockLikeStyleWithoutTriggers") as Style;
 
             foreach (var data in orderedAssemblyDataEntries)
             {
@@ -125,6 +140,38 @@ namespace PackageExplorer
             }
 
             return grid;
+        }
+
+
+        /// <summary>
+        /// Gets all the metadata entries sorted by importance
+        /// </summary>
+        private static IEnumerable<KeyValuePair<string, string>> GetMetadataEntriesOrderedByImportance(AssemblyMetaDataInfo assemblyMetaData)
+        {
+            if (assemblyMetaData.FullName != null)
+            {
+                yield return KeyValuePair.Create("Full Name", assemblyMetaData.FullName);
+            }
+            if (assemblyMetaData.StrongName != null)
+            {
+                yield return KeyValuePair.Create("Strong Name", assemblyMetaData.StrongName);
+            }
+
+            foreach (var entry in assemblyMetaData.MetadataEntries.OrderBy(kv => kv.Key))
+            {
+                yield return entry;
+            }
+
+            if (assemblyMetaData.ReferencedAsseblies != null)
+            {
+                var assemblyNamesDelimitedByLineBreak = string.Join(
+                    Environment.NewLine,
+                    assemblyMetaData.ReferencedAsseblies
+                        .OrderBy(assName => assName.Name)
+                        .Select(assName => assName.FullName));
+
+                yield return KeyValuePair.Create("Referenced assemblies", assemblyNamesDelimitedByLineBreak);
+            }
         }
     }
 }

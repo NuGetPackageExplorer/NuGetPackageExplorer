@@ -22,8 +22,7 @@
                 <ResourceDictionary Source="Xaml/TemplateStyles.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <self:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
-            <self:CountToVisibilityConverter Inverted="True" x:Key="invertedCountConverter" />
-            <self:StringCollectionsToStringConverter x:Key="authorNamesConverter" />
+            <self:CountToVisibilityConverter Inverted="True" x:Key="invertedCountConverter" />            
             <self:UppercaseConverter x:Key="upperCaseConverter" />
             <self:FrameworkNameConverter x:Key="frameworkConverter" />
             <self:NormalizeTextConverter x:Key="NormalizeTextConverter" />
@@ -128,13 +127,46 @@
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding SourceLinkResult}" Value="NothingToValidate">
+                    <DataTrigger Binding="{Binding DeterministicResult}" Value="NothingToValidate">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NothingToValidate}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding DeterministicResult}" Value="Pending">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Pending}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Collapsed"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Visible"/>
+                    </DataTrigger>
+                </DataTemplate.Triggers>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodel:SymbolValidator}" x:Key="ReproducibleDataValidation">
+                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{Binding HasReproducibleDataMessage, Mode=OneWay}">
+                    <TextBlock Name="isValid" Text="{x:Static self:Resources.Validation_Pending}" />
+                    <ContentControl Name="icon" Margin="3,0,0,0" Width="16" Height="16" Visibility="Collapsed"  />
+                    <controls:Spinner x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" />
+                </StackPanel>
+                <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="Present">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="Missing">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_MissingReproducibleData}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="NothingToValidate">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NothingToValidate}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="Pending">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Pending}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Collapsed"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Visible"/>
@@ -482,6 +514,13 @@
 
                                     <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource DeterministicValidation}" Margin="3,0,0,0" />
                                 </StackPanel>
+
+                                <!-- Has Reproducible Data Validation -->
+                                <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                                    <TextBlock Text="{x:Static self:Resources.Dialog_HasReproducibleDataValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+
+                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource ReproducibleDataValidation}" Margin="3,0,0,0" />
+                                </StackPanel>
                             </StackPanel>
                         </StackPanel>                       
 
@@ -494,13 +533,13 @@
                         <!-- Authors -->
                         <DockPanel Margin="0,3,0,0">
                             <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_CreatedByLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                            <TextBlock Text="{Binding Authors, Converter={StaticResource authorNamesConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Authors, Converter={StaticResource StringCollectionsToStringConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
                         </DockPanel>
 
                         <!-- Owners -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Owners, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_OwnersLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                            <TextBlock Text="{Binding Owners, Converter={StaticResource authorNamesConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
+                            <TextBlock Text="{Binding Owners, Converter={StaticResource StringCollectionsToStringConverter}}" Style="{StaticResource DetailMetadataValueStyle}" TextWrapping="Wrap" />
                         </DockPanel>
 
                         <!-- Min client version -->

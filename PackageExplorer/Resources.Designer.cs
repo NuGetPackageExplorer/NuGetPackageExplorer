@@ -124,6 +124,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Has Reprodicuble Data:.
+        /// </summary>
+        public static string Dialog_HasReproducibleDataValidation {
+            get {
+                return ResourceManager.GetString("Dialog_HasReproducibleDataValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Health:.
         /// </summary>
         public static string Dialog_Health {
@@ -752,6 +761,15 @@ namespace PackageExplorer {
         public static string Validation_InvalidSourceLink {
             get {
                 return ResourceManager.GetString("Validation_InvalidSourceLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing.
+        /// </summary>
+        public static string Validation_MissingReproducibleData {
+            get {
+                return ResourceManager.GetString("Validation_MissingReproducibleData", resourceCulture);
             }
         }
         
