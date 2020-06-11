@@ -124,7 +124,7 @@
     <value>Dependencies:</value>
   </data>
   <data name="Dialog_DeterministicValidation" xml:space="preserve">
-    <value>Deterministic:</value>
+    <value>Deterministic (dll/exe):</value>
   </data>
   <data name="Dialog_DevelopmentDependencyLabel" xml:space="preserve">
     <value>Development Dependency:</value>
@@ -138,8 +138,8 @@
   <data name="Dialog_FrameworkAssembliesLabel" xml:space="preserve">
     <value>Framework Assembly References:</value>
   </data>
-  <data name="Dialog_HasReproducibleDataValidation" xml:space="preserve">
-    <value>Has Reprodicuble Data:</value>
+  <data name="Dialog_HasCompilerFlags" xml:space="preserve">
+    <value>Has Compiler Flags:</value>
   </data>
   <data name="Dialog_Health" xml:space="preserve">
     <value>Health:</value>
@@ -353,7 +353,7 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="Validation_InvalidSourceLink" xml:space="preserve">
     <value>Invalid Source Link</value>
   </data>
-  <data name="Validation_MissingReproducibleData" xml:space="preserve">
+  <data name="Validation_MissingCompilerFlags" xml:space="preserve">
     <value>Missing</value>
   </data>
   <data name="Validation_MissingSourceLink" xml:space="preserve">
@@ -370,6 +370,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="Validation_Pending" xml:space="preserve">
     <value>Pending</value>
+  </data>
+  <data name="Validation_Present" xml:space="preserve">
+    <value>Present</value>
   </data>
   <data name="Validation_Suspect" xml:space="preserve">
     <value>Suspect</value>

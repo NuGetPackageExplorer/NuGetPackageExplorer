@@ -141,32 +141,32 @@
                 </DataTemplate.Triggers>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewmodel:SymbolValidator}" x:Key="ReproducibleDataValidation">
-                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{Binding HasReproducibleDataMessage, Mode=OneWay}">
+            <DataTemplate DataType="{x:Type viewmodel:SymbolValidator}" x:Key="CompilerFlagsValidation">
+                <StackPanel Orientation="Horizontal" Cursor="Hand" ToolTip="{Binding HasCompilerFlagsMessage, Mode=OneWay}">
                     <TextBlock Name="isValid" Text="{x:Static self:Resources.Validation_Pending}" />
                     <ContentControl Name="icon" Margin="3,0,0,0" Width="16" Height="16" Visibility="Collapsed"  />
                     <controls:Spinner x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" />
                 </StackPanel>
                 <DataTemplate.Triggers>
-                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="Present">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
+                    <DataTrigger Binding="{Binding CompilerFlagsResult}" Value="Present">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Present}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="Missing">
-                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_MissingReproducibleData}" />
+                    <DataTrigger Binding="{Binding CompilerFlagsResult}" Value="Missing">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_MissingCompilerFlags}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="NothingToValidate">
+                    <DataTrigger Binding="{Binding CompilerFlagsResult}" Value="NothingToValidate">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_NothingToValidate}" />
                         <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding HasReproducibleDataResult}" Value="Pending">
+                    <DataTrigger Binding="{Binding CompilerFlagsResult}" Value="Pending">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Pending}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Collapsed"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Visible"/>
@@ -515,11 +515,11 @@
                                     <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource DeterministicValidation}" Margin="3,0,0,0" />
                                 </StackPanel>
 
-                                <!-- Has Reproducible Data Validation -->
+                                <!-- Has Compiler Flag Data Validation -->
                                 <StackPanel Style="{StaticResource DetailMetadataStyle}">
-                                    <TextBlock Text="{x:Static self:Resources.Dialog_HasReproducibleDataValidation}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                                    <TextBlock Text="{x:Static self:Resources.Dialog_HasCompilerFlags}" Style="{StaticResource DetailMetadataLabelStyle}" />
 
-                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource ReproducibleDataValidation}" Margin="3,0,0,0" />
+                                    <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource CompilerFlagsValidation}" Margin="3,0,0,0" />
                                 </StackPanel>
                             </StackPanel>
                         </StackPanel>                       

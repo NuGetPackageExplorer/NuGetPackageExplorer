@@ -42,12 +42,12 @@
 
         <TextBox
             Grid.Row="1"
-            Text="Has Reproducible Data:"
+            Text="Has Compiler Flags:"
             Style="{StaticResource Key}" />
         <TextBox
             Grid.Row="1"
             Grid.Column="1"            
-            Text="{Binding HasReproducibleData, Mode=OneWay}"
+            Text="{Binding HasCompilerFlags, Mode=OneWay}"
             Style="{StaticResource Value}"  />
 
 

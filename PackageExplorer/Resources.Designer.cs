@@ -79,7 +79,7 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Deterministic:.
+        ///   Looks up a localized string similar to Deterministic (dll/exe):.
         /// </summary>
         public static string Dialog_DeterministicValidation {
             get {
@@ -124,11 +124,11 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Has Reprodicuble Data:.
+        ///   Looks up a localized string similar to Has Compiler Flags:.
         /// </summary>
-        public static string Dialog_HasReproducibleDataValidation {
+        public static string Dialog_HasCompilerFlags {
             get {
-                return ResourceManager.GetString("Dialog_HasReproducibleDataValidation", resourceCulture);
+                return ResourceManager.GetString("Dialog_HasCompilerFlags", resourceCulture);
             }
         }
         
@@ -767,9 +767,9 @@ namespace PackageExplorer {
         /// <summary>
         ///   Looks up a localized string similar to Missing.
         /// </summary>
-        public static string Validation_MissingReproducibleData {
+        public static string Validation_MissingCompilerFlags {
             get {
-                return ResourceManager.GetString("Validation_MissingReproducibleData", resourceCulture);
+                return ResourceManager.GetString("Validation_MissingCompilerFlags", resourceCulture);
             }
         }
         
@@ -815,6 +815,15 @@ namespace PackageExplorer {
         public static string Validation_Pending {
             get {
                 return ResourceManager.GetString("Validation_Pending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Present.
+        /// </summary>
+        public static string Validation_Present {
+            get {
+                return ResourceManager.GetString("Validation_Present", resourceCulture);
             }
         }
         
