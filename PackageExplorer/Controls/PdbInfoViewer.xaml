@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PackageExplorer.Controls"
+             xmlns:self="clr-namespace:PackageExplorer" 
              xmlns:vm="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"
              xmlns:core="clr-namespace:NuGetPe.AssemblyMetadata;assembly=Core"
              mc:Ignorable="d"
@@ -42,7 +43,7 @@
 
         <TextBox
             Grid.Row="1"
-            Text="Has Compiler Flags:"
+            Text="Compiler Flags Present:"
             Style="{StaticResource Key}" />
         <TextBox
             Grid.Row="1"

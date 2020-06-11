@@ -139,7 +139,7 @@
     <value>Framework Assembly References:</value>
   </data>
   <data name="Dialog_HasCompilerFlags" xml:space="preserve">
-    <value>Has Compiler Flags:</value>
+    <value>Compiler Flags:</value>
   </data>
   <data name="Dialog_Health" xml:space="preserve">
     <value>Health:</value>

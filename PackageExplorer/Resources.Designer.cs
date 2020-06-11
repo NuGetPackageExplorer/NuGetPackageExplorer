@@ -124,7 +124,7 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Has Compiler Flags:.
+        ///   Looks up a localized string similar to Compiler Flags:.
         /// </summary>
         public static string Dialog_HasCompilerFlags {
             get {
