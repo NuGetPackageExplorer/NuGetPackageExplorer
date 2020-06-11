@@ -503,9 +503,6 @@ namespace PackageExplorerViewModel
             {
                 DeterministicResult = DeterministicResult.NonDeterministic;
                 DeterministicErrorMessage = "Missing Symbols";
-
-                HasReproducibleDataResult = HasReproducibleDataResult.Missing;
-                HasReproducibleDataMessage = "Missing Symbols";
             }
             else if(nonDeterministic.Count > 0)
             {
@@ -525,44 +522,45 @@ namespace PackageExplorerViewModel
 
                 DeterministicErrorMessage = sb.ToString();
 
-
-                HasReproducibleDataResult = HasReproducibleDataResult.Missing;
-                HasReproducibleDataMessage = "Reproducible builds must be deterministic.";
             }
             else if(SourceLinkResult == SymbolValidationResult.HasUntrackedSources)
             {
                 DeterministicResult = DeterministicResult.HasUntrackedSources;
                 DeterministicErrorMessage = null;
-
-                HasReproducibleDataResult = HasReproducibleDataResult.Missing;
-                HasReproducibleDataMessage = "Reproducible builds must be deterministic and have all sources available via Source Link or embedded in the PDB for generated files.";
             }
             else
             {
                 DeterministicResult = DeterministicResult.Valid;
                 DeterministicErrorMessage = null;
+            }
 
-                if(nonReproducible.Count > 0)
+            if (nonReproducible.Count > 0)
+            {
+                HasReproducibleDataResult = HasReproducibleDataResult.Missing;
+
+                var sb = new StringBuilder();
+                sb.AppendLine("Ensure you're using at least the 3.1.TBD SDK or MSBuild 16.7p3+:");
+
+                if(SourceLinkResult == SymbolValidationResult.NoSymbols)
                 {
-                    HasReproducibleDataResult = HasReproducibleDataResult.Missing;
-
-                    var sb = new StringBuilder();
-                    sb.AppendLine("Ensure you're using at least the 3.1.TBD SDK or MSBuild 16.7p3+:");
-                    
-                    sb.AppendLine("The following assemblies have not been compiled with a new enough compiler:");
-
-                    foreach (var file in nonReproducible)
-                    {
-                        sb.AppendLine(file.Path);
-                    }
-
-                    HasReproducibleDataMessage = sb.ToString();
+                    sb.AppendLine("Assemblies must have symbols:");
                 }
                 else
                 {
-                    HasReproducibleDataResult = HasReproducibleDataResult.Present;
-                    HasReproducibleDataMessage = null;
+                    sb.AppendLine("The following assemblies have not been compiled with a new enough compiler:");
+                }                
+
+                foreach (var file in nonReproducible)
+                {
+                    sb.AppendLine(file.Path);
                 }
+
+                HasReproducibleDataMessage = sb.ToString();
+            }
+            else
+            {
+                HasReproducibleDataResult = HasReproducibleDataResult.Present;
+                HasReproducibleDataMessage = null;
             }
         }
 
