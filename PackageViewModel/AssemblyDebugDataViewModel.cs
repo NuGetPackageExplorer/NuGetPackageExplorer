@@ -28,7 +28,7 @@ namespace PackageExplorerViewModel
 
                     MetadataReferences = debugData.MetadataReferences.OrderBy(r => r.Name).ToList();
                     CompilerFlags = debugData.CompilerFlags.OrderBy(f => f.Key).ToList();
-                    HasReproducibleData = debugData.HasReproducibleData;
+                    HasCompilerFlags = debugData.HasCompilerFlags;
                 }
 
                 OnPropertyChanged(null); // refresh all properties
@@ -48,8 +48,7 @@ namespace PackageExplorerViewModel
         public IReadOnlyCollection<CompilerFlag>? CompilerFlags { get; private set; }
 
 
-
-        public bool HasReproducibleData { get; private set; }
+        public bool HasCompilerFlags { get; private set; }
 
         private static IReadOnlyList<AssemblyDebugSourceDocumentViewModel> CreateSourcesViewModels(AssemblyDebugData debugData)
         {

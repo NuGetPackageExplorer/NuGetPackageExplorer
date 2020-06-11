@@ -44,7 +44,7 @@ namespace NuGetPe.AssemblyMetadata
         /// </summary>
         public bool HasDebugInfo { get; internal set; }
 
-        public bool HasReproducibleData => CompilerFlags.Count > 0 && MetadataReferences.Count > 0;
+        public bool HasCompilerFlags => CompilerFlags.Count > 0 && MetadataReferences.Count > 0;
 
         public IReadOnlyList<string> UntrackedSources => _untrackedSources.Value;
 

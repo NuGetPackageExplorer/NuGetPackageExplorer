@@ -92,10 +92,10 @@ namespace PackageExplorerViewModel
         HasUntrackedSources
     }
 
-    public enum HasReproducibleDataResult
+    public enum HasCompilerFlagsResult
     {
         /// <summary>
-        /// Symbols have reproducible data
+        /// Symbols have compiler flag data
         /// </summary>
         Present,
 
@@ -104,7 +104,7 @@ namespace PackageExplorerViewModel
         /// </summary>
         Pending,
         /// <summary>
-        /// Symbols do not have reproducible data
+        /// Symbols do not have compiler flag data
         /// </summary>
         Missing,
         /// <summary>
@@ -131,7 +131,7 @@ namespace PackageExplorerViewModel
 
             SourceLinkResult = SymbolValidationResult.Pending;
             DeterministicResult = DeterministicResult.Pending;
-            HasReproducibleDataResult = HasReproducibleDataResult.Pending;
+            CompilerFlagsResult = HasCompilerFlagsResult.Pending;
 
             // NuGet signs all its packages and stamps on the service index. Look for that.
             if(package is ISignaturePackage sigPackage)
@@ -151,8 +151,8 @@ namespace PackageExplorerViewModel
                 SourceLinkErrorMessage = null;
                 DeterministicResult = DeterministicResult.Pending;
                 DeterministicErrorMessage = null;
-                HasReproducibleDataResult = HasReproducibleDataResult.Pending;
-                HasReproducibleDataMessage = null;
+                CompilerFlagsResult = HasCompilerFlagsResult.Pending;
+                HasCompilerFlagsMessage = null;
 
                 Refresh();
             }
@@ -181,8 +181,8 @@ namespace PackageExplorerViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SourceLinkErrorMessage)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicResult)));
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(DeterministicErrorMessage)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasReproducibleDataResult)));
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasReproducibleDataMessage)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CompilerFlagsResult)));
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasCompilerFlagsMessage)));
             }
 
             static bool IsNativeRuntimeFilePath(string path)
@@ -279,7 +279,7 @@ namespace PackageExplorerViewModel
                             }
 
                             // Check for reproducible build settings
-                            if(!assemblyMetadata.DebugData.HasReproducibleData)
+                            if(!assemblyMetadata.DebugData.HasCompilerFlags)
                             {
                                 nonReproducible.Add(file.Primary);
                             }
@@ -496,8 +496,8 @@ namespace PackageExplorerViewModel
                 DeterministicResult = DeterministicResult.NothingToValidate;
                 DeterministicErrorMessage = null;
 
-                HasReproducibleDataResult = HasReproducibleDataResult.NothingToValidate;
-                HasReproducibleDataMessage = null;
+                CompilerFlagsResult = HasCompilerFlagsResult.NothingToValidate;
+                HasCompilerFlagsMessage = null;
             }
             else if(SourceLinkResult == SymbolValidationResult.NoSymbols)
             {
@@ -536,7 +536,7 @@ namespace PackageExplorerViewModel
 
             if (nonReproducible.Count > 0)
             {
-                HasReproducibleDataResult = HasReproducibleDataResult.Missing;
+                CompilerFlagsResult = HasCompilerFlagsResult.Missing;
 
                 var sb = new StringBuilder();
                 sb.AppendLine("Ensure you're using at least the 3.1.TBD SDK or MSBuild 16.7p3+:");
@@ -555,12 +555,12 @@ namespace PackageExplorerViewModel
                     sb.AppendLine(file.Path);
                 }
 
-                HasReproducibleDataMessage = sb.ToString();
+                HasCompilerFlagsMessage = sb.ToString();
             }
             else
             {
-                HasReproducibleDataResult = HasReproducibleDataResult.Present;
-                HasReproducibleDataMessage = null;
+                CompilerFlagsResult = HasCompilerFlagsResult.Present;
+                HasCompilerFlagsMessage = null;
             }
         }
 
@@ -639,7 +639,7 @@ namespace PackageExplorerViewModel
                         nonDeterministic.Add(input.File);
                     }
 
-                    if(!input.DebugData.HasReproducibleData)
+                    if(!input.DebugData.HasCompilerFlags)
                     {
                         nonReproducible.Add(input.File);
                     }
@@ -738,8 +738,8 @@ namespace PackageExplorerViewModel
             get; private set;
         }
 
-        public HasReproducibleDataResult HasReproducibleDataResult { get; private set; }
-        public string? HasReproducibleDataMessage { get; private set; }
+        public HasCompilerFlagsResult CompilerFlagsResult { get; private set; }
+        public string? HasCompilerFlagsMessage { get; private set; }
 
         public string? DeterministicErrorMessage
         {
