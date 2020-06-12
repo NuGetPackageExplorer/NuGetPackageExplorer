@@ -1,17 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace PackageExplorer.Controls
 {
@@ -23,6 +12,19 @@ namespace PackageExplorer.Controls
         public PdbInfoViewer()
         {
             InitializeComponent();
+        }
+
+        // let the parent scroll viewer handle mouse wheel events instead (https://stackoverflow.com/a/3498927)
+        private void DataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (!e.Handled)
+            {
+                e.Handled = true;
+                var eventArgs = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
+                eventArgs.RoutedEvent = UIElement.MouseWheelEvent;
+                eventArgs.Source = sender;
+                RaiseEvent(eventArgs);
+            }
         }
     }
 }
