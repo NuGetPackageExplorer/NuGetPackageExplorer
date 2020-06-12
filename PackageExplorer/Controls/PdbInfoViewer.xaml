@@ -35,7 +35,8 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBox Text="Type:" Style="{StaticResource Key}" />
+        <!-- IsTabStop="True" here is to prevent scrolling down to the first focusable element which would be the first cell in the DataGrid -->
+        <TextBox Text="Type:" Style="{StaticResource Key}" IsTabStop="True" />
         <TextBox
             Grid.Column="1"            
             Text="{Binding PdbType, Mode=OneWay}"
@@ -63,7 +64,7 @@
             Grid.Column="1"
             Visibility="{Binding CompilerFlags, Converter={StaticResource NullToVisibilityConverter}}"
             ItemsSource="{Binding CompilerFlags}"
-            MaxHeight="250">
+            IsTabStop="False">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type core:CompilerFlag}">
                     <Grid>
