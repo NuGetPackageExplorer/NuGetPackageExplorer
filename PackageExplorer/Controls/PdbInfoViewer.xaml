@@ -35,6 +35,7 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
+        <!-- IsTabStop="True" here is to prevent scrolling down to the first focusable element which would be the first cell in the DataGrid -->
         <TextBox Text="Type:" Style="{StaticResource Key}" IsTabStop="True" />
         <TextBox
             Grid.Column="1"            
