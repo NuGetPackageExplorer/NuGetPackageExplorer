@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+using NuGetPe.AssemblyMetadata;
 
 namespace PackageExplorerViewModel
 {
@@ -59,6 +60,11 @@ namespace PackageExplorerViewModel
                 }
             }
         }
+
+        /// <summary>
+        /// Stores any debug data gathered for this PE file. Not set or null if not available
+        /// </summary>
+        public AssemblyDebugData? DebugData { get; internal set; }
 
         /// <summary>
         /// Returns the path on disk if this file is a PhysicalPackageFile. Otherwise, returns null;
