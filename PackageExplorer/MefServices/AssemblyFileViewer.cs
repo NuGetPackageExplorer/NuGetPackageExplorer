@@ -28,10 +28,21 @@ namespace PackageExplorer
                 using var str = selectedFile.GetStream();
                 using var tempFile = new TemporaryFile(str);
 
+                var debugData = (selectedFile as PackageFile)?.DebugData;
                 var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
+
+                if (debugData == null)
+                {
+                    if (assemblyMetadata?.DebugData.HasDebugInfo == true)
+                    {
+                        debugData = assemblyMetadata.DebugData;
+                    }
+                }
+                
                 AssemblyDebugDataViewModel? debugDataViewModel = null;
-                if (assemblyMetadata?.DebugData.HasDebugInfo == true)
-                    debugDataViewModel = new AssemblyDebugDataViewModel(Task.FromResult(assemblyMetadata.DebugData));
+
+                if(debugData != null)
+                    debugDataViewModel = new AssemblyDebugDataViewModel(Task.FromResult(debugData));
 
                 // No debug data to display
                 if (assemblyMetadata != null && debugDataViewModel == null)
@@ -68,7 +79,7 @@ namespace PackageExplorer
                             },
                             new TabItem
                             {
-                                Header = "Embedded PDB Info",
+                                Header = "PDB Info",
                                 Content = new ScrollViewer
                                 {
                                     HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
@@ -81,7 +92,7 @@ namespace PackageExplorer
                             },
                             new TabItem
                             {
-                                Header = "Embedded PDB Sources",
+                                Header = "PDB Sources",
                                 Content = new ScrollViewer
                                 {
                                     HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,

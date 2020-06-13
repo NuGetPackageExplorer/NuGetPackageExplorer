@@ -253,6 +253,8 @@ namespace PackageExplorerViewModel
 
                         if(assemblyMetadata?.DebugData.HasDebugInfo == true)
                         {
+                            file.Primary.DebugData = assemblyMetadata.DebugData;
+
                             // we have an embedded pdb
                             if(!assemblyMetadata.DebugData.HasSourceLink)
                             {
@@ -614,6 +616,9 @@ namespace PackageExplorerViewModel
                     {
                         return false;
                     }
+
+                    // Store in the PackageFile
+                    input.File.DebugData = input.DebugData;
 
                     if (!input.DebugData.HasSourceLink)
                     {
