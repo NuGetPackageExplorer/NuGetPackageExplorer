@@ -8,7 +8,7 @@
     <owners>Matt Wrock,Julian Verdurmen,Claire Novotny</owners>
     <licenseUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/blob/main/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/nuget.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/main/nuget.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
       NuGet Package Explorer is an application which allows creating and exploring NuGet packages easily.
