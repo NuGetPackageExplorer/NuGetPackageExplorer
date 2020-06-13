@@ -6,7 +6,7 @@
     <title>NuGet Package Explorer</title>
     <authors>Luan Nguyen</authors>
     <owners>Matt Wrock,Julian Verdurmen,Claire Novotny</owners>
-    <licenseUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/blob/master/LICENSE.txt</licenseUrl>
+    <licenseUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/blob/main/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/nuget.png</iconUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
