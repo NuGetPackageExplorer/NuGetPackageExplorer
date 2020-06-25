@@ -14,6 +14,11 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>    
   </PropertyGroup>
 
+  <PropertyGroup>
+    <!-- Until https://github.com/dotnet/wpf/issues/1718 is fixed -->
+    <ContinuousIntegrationBuild>false</ContinuousIntegrationBuild>
+  </PropertyGroup>
+  
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.0.1" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
