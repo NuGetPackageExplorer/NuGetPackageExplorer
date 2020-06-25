@@ -156,7 +156,7 @@
                     </DataTrigger>
                     <DataTrigger Binding="{Binding CompilerFlagsResult}" Value="Missing">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_MissingCompilerFlags}" />
-                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
