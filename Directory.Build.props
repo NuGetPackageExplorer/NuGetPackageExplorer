@@ -44,7 +44,7 @@
     <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
     
-    <NuGetDependencyVersion>5.7.0-rtm.6672</NuGetDependencyVersion>
+    <NuGetDependencyVersion>5.7.0-rtm.6677+088004379cb99890f766e9b7a0a29f7b080f888b</NuGetDependencyVersion>
   </PropertyGroup>
 
   <ItemGroup>
