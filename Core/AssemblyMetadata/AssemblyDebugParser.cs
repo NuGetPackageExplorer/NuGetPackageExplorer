@@ -48,14 +48,16 @@ namespace NuGetPe.AssemblyMetadata
                 pdbStream.Position = 0;
             }
 
-            
 
-            _readerProvider = MetadataReaderProvider.FromPortablePdbStream(inputStream);            
+
+            _readerProvider = MetadataReaderProvider.FromPortablePdbStream(inputStream);
             _reader = _readerProvider.GetMetadataReader();
-            
-            _peReader = new PEReader(peStream!);
-            //_peReader.
-            _ownPeReader = true;
+
+            if (peStream != null)
+            {
+                _peReader = new PEReader(peStream);
+                _ownPeReader = true;
+            }
         }
 
         public AssemblyDebugParser(PEReader peReader, MetadataReaderProvider readerProvider, PdbType pdbType)
@@ -74,7 +76,7 @@ namespace NuGetPe.AssemblyMetadata
         private bool _disposedValue = false;
         private readonly MetadataReaderProvider _readerProvider;
         private readonly MetadataReader _reader;
-        private readonly PEReader _peReader;
+        private readonly PEReader? _peReader;
         private readonly bool _ownPeReader;
         private readonly Stream? _temporaryPdbStream;
         private readonly byte[]? _pdbBytes;
@@ -100,12 +102,15 @@ namespace NuGetPe.AssemblyMetadata
                 PdbType = _pdbType,
                 Sources = documents,
                 SourceLinkErrors = errors,
-                SymbolKeys = GetSymbolKeys(_peReader),
                 PdbChecksumIsValid = VerifyPdbChecksums(),
                 CompilerFlags = GetCompilerFlags(),
                 MetadataReferences = GetMetadataReferences(),
                 HasDebugInfo = true
             };
+            if (_peReader != null)
+            {
+                debugData.SymbolKeys = GetSymbolKeys(_peReader);
+            }
 
             return debugData;
         }
@@ -246,8 +251,13 @@ namespace NuGetPe.AssemblyMetadata
             if (_pdbType == PdbType.Embedded)
                 return true;
 
-            if(_pdbType == PdbType.Portable)
+            if (_pdbType == PdbType.Portable)
             {
+                if (_peReader == null)
+                {
+                    return false;
+                }
+
                 var checksumRecords = _peReader.ReadDebugDirectory()
                                                .Where(entry => entry.Type == DebugDirectoryEntryType.PdbChecksum)
                                                .Select(_peReader.ReadPdbChecksumDebugDirectoryData)
@@ -302,12 +312,12 @@ namespace NuGetPe.AssemblyMetadata
 
             var pdb = peFile.Pdbs.FirstOrDefault(p => p.Signature == pdbFile.Signature && p.Age == pdbFile.Age);
 
-            if(pdb != null)
+            if (pdb != null)
             {
                 return true;
             }
 
-            return false;       
+            return false;
         }
 
         public static IReadOnlyList<SymbolKey> GetSymbolKeys(PEReader peReader)
@@ -379,7 +389,7 @@ namespace NuGetPe.AssemblyMetadata
                     hashAlgorithm,
                     isEmbedded
                 );
-               
+
                 if (doc.Language == SymbolLanguage.Unknown)
                 {
                     DiagnosticsClient.TrackEvent("Unknown language Guid", new Dictionary<string, string>
@@ -425,8 +435,8 @@ namespace NuGetPe.AssemblyMetadata
                 _readerProvider.Dispose();
                 _temporaryPdbStream?.Dispose();
 
-                if(_ownPeReader)
-                    _peReader.Dispose();
+                if (_ownPeReader)
+                    _peReader?.Dispose();
 
                 _disposedValue = true;
             }
