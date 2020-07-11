@@ -1,7 +1,21 @@
 
-    $drop = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-    $exe = "$drop\NugetPackageExplorer.exe"
+    $drop = Join-Path (Split-Path -parent $MyInvocation.MyCommand.Definition) "tools"
+    $exeName = "NugetPackageExplorer.exe"
+    $exe = Join-Path $drop $exeName
+    
+    New-Item "$exe.gui" -Type File -Force | Out-Null
+
     Install-ChocolateyDesktopLink $exe
+
+    # Generate ignore files for all exe files except "NugetPackageExplorer.exe".
+    # This prevents chocolatey from generating shims for them.
+    $exeFiles = Get-ChildItem $installDir -Include *.exe -Recurse -Exclude $exeName
+
+    foreach ($exeFile in $exeFiles) {
+        # generate an ignore file
+        New-Item "$exeFile.ignore" -Type File -Force | Out-Null
+    }    
+
     $allTypes = (cmd /c assoc)
     $testType1 = $allTypes | ? { $_.StartsWith('.nupkg') }
     if($testType1 -ne $null) {
