@@ -18,7 +18,8 @@ namespace NuGetPe
 
             try
             {
-                TargetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
+                NuGetFramework = NuGetFramework.Parse(effectivePath);
+                TargetFramework = new FrameworkName(NuGetFramework.DotNetFrameworkName);                
             }
             catch (ArgumentException) // could be an invalid framework/version
             {
@@ -49,19 +50,22 @@ namespace NuGetPe
         }
 
         public FrameworkName? TargetFramework { get; }
+        public NuGetFramework? NuGetFramework { get; }
 
-        public IEnumerable<FrameworkName> SupportedFrameworks
+        public IEnumerable<NuGetFramework> SupportedFrameworks
         {
             get
             {
-                if (TargetFramework != null)
+                if (NuGetFramework != null)
                 {
-                    yield return TargetFramework;
+                    yield return NuGetFramework;
                 }
                 yield break;
             }
         }
 
         public virtual DateTimeOffset LastWriteTime { get; } = DateTimeOffset.MinValue;
+
+        
     }
 }

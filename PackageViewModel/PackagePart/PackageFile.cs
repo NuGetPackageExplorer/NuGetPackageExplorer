@@ -10,6 +10,8 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+
+using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
@@ -83,6 +85,7 @@ namespace PackageExplorerViewModel
         {
             get { return _file.TargetFramework; }
         }
+        public NuGetFramework NuGetFramework => _file.NuGetFramework;
 
         public Stream GetStream()
         {
@@ -138,6 +141,7 @@ namespace PackageExplorerViewModel
                 return _fileIcon;
             }
         }
+
 
         private void WatchPhysicalFile(DiskPackageFile physicalFile)
         {

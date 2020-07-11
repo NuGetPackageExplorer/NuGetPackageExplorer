@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Runtime.Versioning;
 
+using NuGet.Frameworks;
+
 namespace PackageExplorerViewModel
 {
     internal class PackageMetadataFile : IEditablePackageFile
@@ -58,5 +60,7 @@ namespace PackageExplorerViewModel
         }
 
         public DateTimeOffset LastWriteTime => DateTimeOffset.MinValue;
+
+        public NuGetFramework? NuGetFramework => null;
     }
 }
