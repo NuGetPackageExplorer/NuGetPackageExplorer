@@ -9,7 +9,7 @@
 
     # Generate ignore files for all exe files except "NugetPackageExplorer.exe".
     # This prevents chocolatey from generating shims for them.
-    $exeFiles = Get-ChildItem $installDir -Include *.exe -Recurse -Exclude $exeName
+    $exeFiles = Get-ChildItem $drop -Include *.exe -Recurse -Exclude $exeName
 
     foreach ($exeFile in $exeFiles) {
         # generate an ignore file
