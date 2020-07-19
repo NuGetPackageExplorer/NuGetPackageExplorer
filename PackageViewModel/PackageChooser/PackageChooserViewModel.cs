@@ -300,6 +300,9 @@ namespace PackageExplorerViewModel
                 if (firstLoad)
                 {
                     SelectedPackageViewModel = Packages.OfType<PackageInfoViewModel>().FirstOrDefault();
+
+                    // add the new source to MRU list, after the load succeeds, in case there's an error with the source
+                    _packageSourceManager!.NotifyPackageSourceAdded(PackageSource);
                 }
             }
             catch (OperationCanceledException)
@@ -381,9 +384,6 @@ namespace PackageExplorerViewModel
                 try
                 {
                     await LoadPackages();
-
-                    // add the new source to MRU list, after the load succeeds, in case there's an error with the source
-                    _packageSourceManager!.NotifyPackageSourceAdded(source);
 
                     // this is to make sure the combo box doesn't goes blank after adding sources
                     PackageSource = source;
