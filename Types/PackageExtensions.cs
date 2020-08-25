@@ -23,7 +23,7 @@ namespace NuGetPackageExplorer.Types
             {
                 // return files at the root
                 return from s in package.GetFiles()
-                       where !s.Path.Contains(Path.DirectorySeparatorChar)
+                       where !s.Path.Contains(Path.DirectorySeparatorChar, StringComparison.OrdinalIgnoreCase)
                        select s.Path;
             }
             else
