@@ -42,7 +42,7 @@
 
   <PropertyGroup>
     <!--<TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>-->
-    <!--<TargetPlatformVersion>10.0.18362</TargetPlatformVersion>-->
+    <!--<TargetPlatformVersion>10.0.19041</TargetPlatformVersion>-->
     
     <NuGetDependencyVersion>5.7.0</NuGetDependencyVersion>
   </PropertyGroup>
