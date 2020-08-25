@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.19041</TargetFramework>
     <AssetTargetFallback>net472</AssetTargetFallback>
     <OutputType>WinExe</OutputType>
     <AssemblyName>NuGetPackageExplorer</AssemblyName>
@@ -25,8 +25,8 @@
     <PackageReference Include="Humanizer" Version="2.8.26" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="1.1.0" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0-preview.6.20305.6" />
-    <PackageReference Include="System.Runtime.Caching" Version="5.0.0-preview.6.20305.6" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0-preview.8.20407.11" />
+    <PackageReference Include="System.Runtime.Caching" Version="5.0.0-preview.8.20407.11" />
 
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
   </ItemGroup>

@@ -228,7 +228,7 @@ namespace PackageExplorer
             if (IsBinaryMediaType(response.Content?.Headers.ContentType?.MediaType))
             {
                 var totalSize = response.Content!.Headers.ContentLength;
-                var innerStream = await response.Content.ReadAsStreamAsync();
+                var innerStream = await response.Content.ReadAsStreamAsync(cancellationToken);
 
                 response.Content = new StreamContent(new ProgressStream(innerStream, size => _progressAction(size, totalSize)));
             }
@@ -284,7 +284,7 @@ namespace PackageExplorer
 
         public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
-            var result = await _inner.ReadAsync(buffer, offset, count, cancellationToken).ConfigureAwait(false);
+            var result = await _inner.ReadAsync(buffer.AsMemory(offset, count), cancellationToken).ConfigureAwait(false);
 
             if (result > 0)
             {

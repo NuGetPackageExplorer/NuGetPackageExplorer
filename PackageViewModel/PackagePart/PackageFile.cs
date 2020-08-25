@@ -85,7 +85,7 @@ namespace PackageExplorerViewModel
         {
             get { return _file.TargetFramework; }
         }
-        public NuGetFramework NuGetFramework => _file.NuGetFramework;
+       // public NuGetFramework NuGetFramework => _file.NuGetFramework;
 
         public Stream GetStream()
         {

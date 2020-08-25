@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net5.0-windows10.0.19041</TargetFramework>
     <Description>Contains types to enable the plugin architecture in NuGet Package Explorer.</Description>
     <Product>NuGet Package Explorer</Product>
     <SignAssembly>true</SignAssembly>
@@ -13,7 +13,7 @@
   <ItemGroup>
     <!--<PackageReference Include="Microsoft.Web.Xdt" Version="3.0.0" />-->
     <PackageReference Include="NuGet.Packaging" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0-preview.6.20305.6" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0-preview.8.20407.11" />
   </ItemGroup>
 
   <ItemGroup>

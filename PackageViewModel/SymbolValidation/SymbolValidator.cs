@@ -719,7 +719,7 @@ namespace PackageExplorerViewModel
                 }
 
                 var pdbStream = new MemoryStream();
-                await response.Content!.CopyToAsync(pdbStream);
+                await response.Content!.CopyToAsync(pdbStream, cancellationToken);
                 pdbStream.Position = 0;
 
                 return pdbStream;

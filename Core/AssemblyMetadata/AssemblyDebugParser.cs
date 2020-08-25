@@ -73,7 +73,7 @@ namespace NuGetPe.AssemblyMetadata
         }
 
         private readonly PdbType _pdbType;
-        private bool _disposedValue = false;
+        private bool _disposedValue;
         private readonly MetadataReaderProvider _readerProvider;
         private readonly MetadataReader _reader;
         private readonly PEReader? _peReader;

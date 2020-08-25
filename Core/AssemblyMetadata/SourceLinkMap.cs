@@ -129,7 +129,7 @@ namespace Microsoft.SourceLink.Tools
             {
                 key = key.Substring(0, filePathStar);
 
-                if (key.IndexOf('*', StringComparison.OrdinalIgnoreCase) >= 0)
+                if (key.Contains('*', StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }
@@ -151,7 +151,7 @@ namespace Microsoft.SourceLink.Tools
                 uriPrefix = value.Substring(0, uriStar);
                 uriSuffix = value.Substring(uriStar + 1);
 
-                if (uriSuffix.IndexOf('*', StringComparison.OrdinalIgnoreCase) >= 0)
+                if (uriSuffix.Contains('*', StringComparison.OrdinalIgnoreCase))
                 {
                     return false;
                 }
@@ -173,7 +173,7 @@ namespace Microsoft.SourceLink.Tools
             if (path is null)
                 throw new ArgumentNullException(nameof(path));
 
-            if (path.IndexOf('*', StringComparison.OrdinalIgnoreCase) >= 0)
+            if (path.Contains('*', StringComparison.OrdinalIgnoreCase))
             {
                 return null;
             }
