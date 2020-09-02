@@ -12,8 +12,8 @@ the release version with no interference and will automatically update.
 
 | Build Number | Link |
 | ------------ | ---- |
-| [![Nightly build number](https://nugetpackageexplorer.blob.core.windows.net/nightly/ci_badge.svg)](https://nugetpackageexplorer.blob.core.windows.net/nightly/install.html)| [Install](https://nugetpackageexplorer.blob.core.windows.net/nightly/install.html)
-| [![Stable build number](https://nugetpackageexplorer.blob.core.windows.net/store/stable_badge.svg)](https://www.microsoft.com/store/apps/9wzdncrdmdm3) | [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) |
+| [![Nightly build number](https://npenightly.blob.core.windows.net/nightly/ci_badge.svg)](https://npenightly.blob.core.windows.net/nightly/install.html)| [Install](https://npenightly.blob.core.windows.net/nightly/install.html)
+| [![Stable build number](https://npenightly.blob.core.windows.net/store/stable_badge.svg)](https://www.microsoft.com/store/apps/9wzdncrdmdm3) | [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) |
 | [![Chocolatey build number](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg)](https://chocolatey.org/packages/NugetPackageExplorer) | [Chocolatey](https://chocolatey.org/packages/NugetPackageExplorer) |
 
 ### Microsoft Store (recommended)
