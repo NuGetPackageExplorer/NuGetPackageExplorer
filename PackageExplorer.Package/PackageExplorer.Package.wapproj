@@ -45,7 +45,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(ReleaseChannel)' == 'Nightly'">
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
-    <AppInstallerUri>https://nugetpackageexplorer.blob.core.windows.net/nightly</AppInstallerUri>
+    <AppInstallerUri>https://npenightly.blob.core.windows.net/nightly</AppInstallerUri>
     <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
