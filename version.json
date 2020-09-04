@@ -1,5 +1,5 @@
 {
-  "version": "5.7",
+  "version": "5.8",
   "publicReleaseRefSpec": [
     "^refs/heads/main$", // we release out of main
     "^refs/tags/v\\d+\\.\\d+", // we also release tags starting with vN.N
