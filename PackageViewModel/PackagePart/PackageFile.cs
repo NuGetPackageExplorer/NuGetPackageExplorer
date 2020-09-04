@@ -142,6 +142,7 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public NuGetFramework NuGetFramework => _file.NuGetFramework;
 
         private void WatchPhysicalFile(DiskPackageFile physicalFile)
         {

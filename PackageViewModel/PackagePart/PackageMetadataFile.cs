@@ -60,5 +60,7 @@ namespace PackageExplorerViewModel
         }
 
         public DateTimeOffset LastWriteTime => DateTimeOffset.MinValue;
+
+        public NuGetFramework? NuGetFramework => null;
     }
 }
