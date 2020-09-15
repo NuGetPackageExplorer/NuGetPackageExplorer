@@ -541,7 +541,7 @@ namespace PackageExplorerViewModel
                 CompilerFlagsResult = HasCompilerFlagsResult.Missing;
 
                 var sb = new StringBuilder();
-                sb.AppendLine("Ensure you're using at least the 3.1.400-preview SDK or MSBuild 16.7p3+:");
+                sb.AppendLine("Ensure you're using at least the 3.1.400 SDK or MSBuild 16.7:");
 
                 if(SourceLinkResult == SymbolValidationResult.NoSymbols)
                 {
