@@ -53,7 +53,7 @@ namespace PackageExplorerViewModel
 
             foreach (var file in Parent!.GetFiles().Where(pf => pf is PackageFile).Cast<PackageFile>())
             {
-                if(file.Path != Path)
+                if(file!.Path != Path)
                 {
                     if(System.IO.Path.GetFileNameWithoutExtension(file.Path)!.Equals(filename, StringComparison.OrdinalIgnoreCase))
                     {
@@ -83,7 +83,9 @@ namespace PackageExplorerViewModel
 
         public FrameworkName TargetFramework
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             get { return _file.TargetFramework; }
+#pragma warning restore CS0618 // Type or member is obsolete
         }
        // public NuGetFramework NuGetFramework => _file.NuGetFramework;
 

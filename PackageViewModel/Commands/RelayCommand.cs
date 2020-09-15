@@ -42,7 +42,7 @@ namespace PackageExplorerViewModel
             return _canExecute == null || _canExecute((T)parameter!);
         }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add
             {
@@ -110,7 +110,7 @@ namespace PackageExplorerViewModel
             return _canExecute == null || _canExecute();
         }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add
             {

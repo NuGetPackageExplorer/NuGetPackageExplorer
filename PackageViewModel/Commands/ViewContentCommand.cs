@@ -21,7 +21,7 @@ namespace PackageExplorerViewModel
 
         #region ICommand Members
 
-        public event EventHandler CanExecuteChanged = delegate { };
+        public event EventHandler? CanExecuteChanged = delegate { };
 
         public bool CanExecute(object? parameter)
         {
@@ -74,7 +74,7 @@ namespace PackageExplorerViewModel
 
         public void RaiseCanExecuteChanged()
         {
-            CanExecuteChanged(this, EventArgs.Empty);
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
         [SuppressMessage(
