@@ -19,7 +19,11 @@ namespace PackageExplorerViewModel
         private readonly PackageListCache<T> _packageListCache;
         private readonly LocalPackageSearcher<T> _localPackageSearcher;
         private PackageSearchResource? _packageSearchResouce;
+
+#pragma warning disable CS0618 // Type or member is obsolete
         private RawSearchResourceV3? _rawPackageSearchResouce;
+#pragma warning restore CS0618 // Type or member is obsolete
+
         private int? _lastPageIndex;
 
         public ShowLatestVersionQueryContext(SourceRepository sourceRepository, string? search, bool showPreReleasePackages, int pageSize, PackageListCache<T> packageListCache)
@@ -99,7 +103,9 @@ namespace PackageExplorerViewModel
             {
                 if (_packageSearchResouce == null && _rawPackageSearchResouce == null)
                 {
+#pragma warning disable CS0618 // Type or member is obsolete
                     _rawPackageSearchResouce = await _sourceRepository.GetResourceAsync<RawSearchResourceV3>(token);
+#pragma warning restore CS0618 // Type or member is obsolete
                 }
 
                 if (_rawPackageSearchResouce != null)
@@ -107,7 +113,9 @@ namespace PackageExplorerViewModel
                     // Don't run the cpu-bound operations on GUI thread
                     result = await Task.Run(async () =>
                     {
+#pragma warning disable CS0618 // Type or member is obsolete
                         var json = await _rawPackageSearchResouce.Search(searchText, _searchContext.Filter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
+#pragma warning restore CS0618 // Type or member is obsolete
                         return json.Select(s => s.FromJToken<PackageSearchMetadata>()).ToList();
                     }, token);
                 }
@@ -126,7 +134,7 @@ namespace PackageExplorerViewModel
             token.ThrowIfCancellationRequested();
 
             var list = result.Cast<T>().ToList();
-            return list;
+            return list!;
         }
 
         #endregion

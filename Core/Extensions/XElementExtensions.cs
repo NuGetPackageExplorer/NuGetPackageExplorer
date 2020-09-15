@@ -16,10 +16,11 @@ namespace NuGetPe
         {
             if (element is null)
                 throw new ArgumentNullException(nameof(element));
-            XAttribute attr;
+
+            XAttribute? attr;
             if (string.IsNullOrEmpty(namespaceName))
             {
-                attr = element.Attribute(localName);
+                attr = element.Attribute(localName!);
             }
             else
             {
@@ -35,10 +36,10 @@ namespace NuGetPe
         {
             if (element is null)
                 throw new ArgumentNullException(nameof(element));
-            XElement child;
+            XElement? child;
             if (string.IsNullOrEmpty(namespaceName))
             {
-                child = element.Element(localName);
+                child = element.Element(localName!);
             }
             else
             {
@@ -64,7 +65,7 @@ namespace NuGetPe
         {
             if (source is null)
                 throw new ArgumentNullException(nameof(source));
-            if (target == null)
+            if (target is null)
             {
                 return source;
             }
@@ -222,14 +223,14 @@ namespace NuGetPe
                 .ForEach(e => RemoveAttributes(e, condition));
         }
 
-        private static bool AttributeEquals(XAttribute source, XAttribute target)
+        private static bool AttributeEquals(XAttribute? source, XAttribute? target)
         {
-            if (source == null && target == null)
+            if (source is null && target is null)
             {
                 return true;
             }
 
-            if (source == null || target == null)
+            if (source is null || target is null)
             {
                 return false;
             }

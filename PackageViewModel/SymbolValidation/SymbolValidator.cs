@@ -169,7 +169,7 @@ namespace PackageExplorerViewModel
                 var runtimeFiles = _packageViewModel.RootFolder["runtimes"]?.GetFiles().Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IPackageFile>();
                 var files = libFiles.Union(runtimeFiles).Where(pf => pf is PackageFile).Cast<PackageFile>().ToList();
 
-                await Task.Run(async () => await CalculateValidity(files).ConfigureAwait(false));
+                await Task.Run(async () => await CalculateValidity(files!).ConfigureAwait(false));
             }
             catch(Exception e)
             {

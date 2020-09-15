@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0-windows10.0.19041</TargetFramework>
@@ -16,7 +16,7 @@
     <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.2" /> 
     <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="System.Windows.Extensions" Version="5.0.0-preview.8.20407.11" />
+    <PackageReference Include="System.Windows.Extensions" Version="5.0.0-rc.1.20451.14" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 

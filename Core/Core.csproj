@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0-windows10.0.19041</TargetFramework>
@@ -17,8 +17,8 @@
     <PackageReference Include="AppInsights.WindowsDesktop" Version="2.13.1" />
     <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-20370-01" />
     <PackageReference Include="Microsoft.SymbolStore" Version="1.0.143102" />    
-    <PackageReference Include="OSVersionHelper" Version="1.1.14-preview" />
-    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0-preview.8.20407.11" />
+    <PackageReference Include="OSVersionHelper" Version="1.1.18-preview" />
+    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0-rc.1.20451.14" />
   </ItemGroup>
 
   <ItemGroup>
