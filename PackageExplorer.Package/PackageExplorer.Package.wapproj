@@ -39,9 +39,7 @@
     <AppxPackageIncludePrivateSymbols>true</AppxPackageIncludePrivateSymbols>
     <UapAppxPackageBuildMode>SideLoadOnly</UapAppxPackageBuildMode>
     <UapAppxPackageBuildMode Condition="'$(ReleaseChannel)' == 'Store'">CI</UapAppxPackageBuildMode>
-    <EntryPointExe Condition="'$(BuildingInsideVisualStudio)' != 'true' ">NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
-    <EntryPointProjectUniqueName Condition="'$(BuildingInsideVisualStudio)' == 'true' ">..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
-    <GetPackagingOutputsDependsOn Condition="'$(BuildingInsideVisualStudio)' != 'true' ">$(GetPackagingOutputsDependsOn);BuildRefsOutputGroup</GetPackagingOutputsDependsOn>
+    <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(ReleaseChannel)' == 'Nightly'">
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
@@ -68,7 +66,7 @@
     <None Include="Package.xml" />
     <None Include="Assets\*.png" Condition="'$(ReleaseChannel)' != 'Store'" />
   </ItemGroup>
-  <ItemGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
+  <ItemGroup>
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj">
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
       <PublishProfile Condition="'$(Platform)'=='x64'">Properties\PublishProfiles\WinX64.pubxml</PublishProfile>
@@ -76,26 +74,4 @@
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
-  <Target Name="BuildRef" Condition="'$(BuildingInsideVisualStudio)' != 'true' " BeforeTargets="BeforeBuild">
-    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-      <NpeExecCmd>dotnet publish -c $(Configuration) "$(MSBuildThisFileDirectory)..\PackageExplorer\NuGetPackageExplorer.csproj" /p:PublishProfile=Properties\PublishProfiles\Win$(Platform).pubxml</NpeExecCmd>
-    </PropertyGroup>
-    <Message Text="Executing: $(NpeExecCmd)" Importance="High" />
-    <Exec Command="$(NpeExecCmd)" />
-    <Message Text="Built ref " />
-    <ItemGroup>
-      <TheFiles Include="..\PackageExplorer\bin\$(Configuration)\net5.0-windows10.0.19041\win-$(Platform)\publish\**\*.*" />
-      <TheFiles TargetPath="NuGetPackageExplorer\%(RecursiveDir)%(Filename)%(Extension)" />
-      <BuiltRef Include="@(TheFiles)">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </BuiltRef>
-    </ItemGroup>
-  </Target>
-
-  <Target Name="BuildRefsOutputGroup" Returns="@(BuiltRefsOutput)">
-    <ItemGroup>
-      <_PackagingOutputsUnexpanded Include="@(BuiltRef)" OutputGroup="BuildRefsOutputGroup"  ProjectName="$(ProjectName)"  />
-    </ItemGroup>
-  </Target>
-
 </Project>
