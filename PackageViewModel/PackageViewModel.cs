@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -97,11 +97,11 @@ namespace PackageExplorerViewModel
             RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
 
             SymbolValidator = new SymbolValidator(this, _package);
-            SymbolValidator.Refresh();
-
-
 
             _packageMetadata = new EditablePackageMetadata(_package, UIServices, SymbolValidator);
+
+            SymbolValidator.Refresh();
+
             _isSigned = _packageMetadata.IsSigned;
         }
 

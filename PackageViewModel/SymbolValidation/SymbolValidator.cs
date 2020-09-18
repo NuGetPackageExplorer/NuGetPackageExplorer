@@ -5,12 +5,16 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Runtime.Loader;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
 using AuthenticodeExaminer;
+
+using Microsoft.Extensions.DependencyModel;
 
 using NuGet.Packaging;
 
@@ -165,9 +169,7 @@ namespace PackageExplorerViewModel
             try
             {
                 // Get relevant files to check
-                var libFiles = _packageViewModel.RootFolder["lib"]?.GetFiles() ?? Enumerable.Empty<IPackageFile>();
-                var runtimeFiles = _packageViewModel.RootFolder["runtimes"]?.GetFiles().Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IPackageFile>();
-                var files = libFiles.Union(runtimeFiles).Where(pf => pf is PackageFile).Cast<PackageFile>().ToList();
+                var files = GetFilesToCheck(_packageViewModel);
 
                 await Task.Run(async () => await CalculateValidity(files!).ConfigureAwait(false));
             }
@@ -185,8 +187,62 @@ namespace PackageExplorerViewModel
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(HasCompilerFlagsMessage)));
             }
 
+        }
+
+
+
+        private static IReadOnlyList<PackageFile> GetFilesToCheck(PackageViewModel packageViewModel)
+        {
+            if(packageViewModel.PackageMetadata.PackageTypes.Any(pt => "DotnetTool".Equals(pt.Name, StringComparison.OrdinalIgnoreCase)))
+            {
+                return GetToolFiles(packageViewModel);
+            }
+
+            return GetLibraryFiles(packageViewModel);
+        }
+
+        private static IReadOnlyList<PackageFile> GetToolFiles(PackageViewModel packageViewModel)
+        {
+
+            var files = new List<PackageFile>();
+            // For tool packages, we look in the tools folder for projects the user built
+            // We will look for *.deps.json and read the libraries node for type: project.
+            // Then we return the matching files in the same directory
+
+            var depsFiles = packageViewModel.RootFolder["tools"]?.GetFiles().Where(f => f.Path.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase)) ?? Enumerable.Empty<IPackageFile>();
+
+            foreach(PackageFile depFile in depsFiles)
+            {
+                using var reader = new DependencyContextJsonReader();
+                var context = reader.Read(depFile.GetStream());
+
+                var runtimeLibs = context.RuntimeLibraries.Where(rl => "project".Equals(rl.Type, StringComparison.OrdinalIgnoreCase)).ToList();
+
+
+                var userFiles = (from rl in runtimeLibs
+                                join f in depFile.Parent!.GetFiles().Where(pf => pf is PackageFile).Cast<PackageFile>() on $"{rl.Name}.dll".ToUpperInvariant() equals Path.GetFileName(f.Path).ToUpperInvariant()
+                                select f).ToList();
+
+
+                files.AddRange(userFiles);
+            }
+
+            return files;            
+        }
+
+        private static IReadOnlyList<PackageFile> GetLibraryFiles(PackageViewModel packageViewModel)
+        {
+            // For library packages, we look in lib and runtimes for files to check
+
+            var libFiles = packageViewModel.RootFolder["lib"]?.GetFiles() ?? Enumerable.Empty<IPackageFile>();
+            var runtimeFiles = packageViewModel.RootFolder["runtimes"]?.GetFiles().Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IPackageFile>();
+            var files = libFiles.Union(runtimeFiles).Where(pf => pf is PackageFile).Cast<PackageFile>().ToList();
+
+
             static bool IsNativeRuntimeFilePath(string path)
                 => path.Split('\\').Skip(2).FirstOrDefault() == "native";
+
+            return files!;
         }
 
         private async Task CalculateValidity(IReadOnlyList<PackageFile> files)
