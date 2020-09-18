@@ -233,6 +233,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="Dialog_TitleLabel" xml:space="preserve">
     <value>Title:</value>
   </data>
+  <data name="Dialog_ValidationNote" xml:space="preserve">
+    <value>Note: Dependencies are not checked by this tool.</value>
+  </data>
   <data name="Dialog_ValidationResult" xml:space="preserve">
     <value>Validation Results:</value>
   </data>

@@ -521,6 +521,7 @@
 
                                     <ContentPresenter Content="{Binding SymbolValidator, Mode=OneWay}" ContentTemplate="{StaticResource CompilerFlagsValidation}" Margin="3,0,0,0" />
                                 </StackPanel>
+                                <TextBlock Text="{x:Static self:Resources.Dialog_ValidationNote}" FontStyle="Italic"  />
                             </StackPanel>
                         </StackPanel>                       
 
