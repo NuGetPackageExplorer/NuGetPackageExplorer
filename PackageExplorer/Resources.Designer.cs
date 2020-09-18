@@ -405,6 +405,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Note: Dependencies are not checked by this tool..
+        /// </summary>
+        public static string Dialog_ValidationNote {
+            get {
+                return ResourceManager.GetString("Dialog_ValidationNote", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Validation Results:.
         /// </summary>
         public static string Dialog_ValidationResult {
