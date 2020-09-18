@@ -462,6 +462,11 @@ namespace PackageExplorerViewModel
 
             }
 
+            // Clear out result status
+            CompilerFlagsResult = HasCompilerFlagsResult.Present;
+            HasCompilerFlagsMessage = null;
+
+
             if (noSymbols.Count == 0 && noSourceLink.Count == 0 && sourceLinkErrors.Count == 0)
             {
                 if(untrackedSources.Count > 0)
@@ -561,6 +566,9 @@ namespace PackageExplorerViewModel
             {
                 DeterministicResult = DeterministicResult.NonDeterministic;
                 DeterministicErrorMessage = "Missing Symbols";
+
+                CompilerFlagsResult = HasCompilerFlagsResult.Missing;
+                HasCompilerFlagsMessage = "Missing Symbols";
             }
             else if(nonDeterministic.Count > 0)
             {
@@ -614,11 +622,6 @@ namespace PackageExplorerViewModel
                 }
 
                 HasCompilerFlagsMessage = sb.ToString();
-            }
-            else
-            {
-                CompilerFlagsResult = HasCompilerFlagsResult.Present;
-                HasCompilerFlagsMessage = null;
             }
         }
 
