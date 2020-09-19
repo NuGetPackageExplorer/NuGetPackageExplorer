@@ -28,9 +28,12 @@ Includes:
 
 ## Package Sources
 
+### NuGet.org
+* Package Id and Package Version for packages published on NuGet.org.
+
 **OS information and IP address**
 
-When NuGet Package Explorer makes web requests to http://nuget.org to retrieve NuGet packages data, it includes user's machine's OS information in the User-Agent header. The author of NuGet Package Explorer does not have access to this information, but the website http://nuget.org does and it logs this information.
+When NuGet Package Explorer makes web requests to https://nuget.org to retrieve NuGet packages data, it includes user's machine's OS information in the User-Agent header. The author of NuGet Package Explorer does not have access to this information, but the website https://nuget.org does and it logs this information.
 The website will also log user's IP address. Again, the author of NuGet Package Explorer does not have access to this data.
 
 **3rd-party package source**

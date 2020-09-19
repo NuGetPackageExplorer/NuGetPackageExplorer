@@ -18,11 +18,8 @@ namespace PackageExplorerViewModel
 {
     public sealed class PackageViewModel : ViewModelBase, IDisposable
     {
-
-        #region private fields
         private readonly IPackageEditorService _editorService;
         private readonly IMruManager _mruManager;
-        private readonly IPackage _package;
         private EditablePackageMetadata _packageMetadata;
         private readonly IList<Lazy<IPackageRule>> _packageRules;
         private readonly CredentialPublishProvider _credentialPublishProvider;
@@ -63,8 +60,6 @@ namespace PackageExplorerViewModel
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
 
-        #endregion
-
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         internal PackageViewModel(
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
@@ -85,7 +80,7 @@ namespace PackageExplorerViewModel
             UIServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
             _mruManager = mruManager ?? throw new ArgumentNullException(nameof(mruManager));
             _credentialPublishProvider = credentialPublishProvider ?? throw new ArgumentNullException(nameof(credentialPublishProvider));
-            _package = package ?? throw new ArgumentNullException(nameof(package));
+            Package = package ?? throw new ArgumentNullException(nameof(package));
             ContentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
@@ -93,12 +88,20 @@ namespace PackageExplorerViewModel
             PackagePath = path;
             PackageSource = source;
 
-            
-            RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
+            // NuGet signs all its packages and stamps on the service index. Look for that.
+            if (Package is ISignaturePackage sigPackage)
+            {
+                if (sigPackage.RepositorySignature?.V3ServiceIndexUrl?.AbsoluteUri.Contains(".nuget.org/", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    PublishedOnNuGetOrg = true;
+                }
+            }
 
-            SymbolValidator = new SymbolValidator(this, _package);
+            RootFolder = PathToTreeConverter.Convert(Package.GetFiles().ToList(), this);
 
-            _packageMetadata = new EditablePackageMetadata(_package, UIServices, SymbolValidator);
+            SymbolValidator = new SymbolValidator(this, Package);
+
+            _packageMetadata = new EditablePackageMetadata(Package, UIServices, SymbolValidator);
 
             SymbolValidator.Refresh();
 
@@ -167,7 +170,11 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public SymbolValidator SymbolValidator { get; } 
+        public SymbolValidator SymbolValidator { get; }
+
+        public bool PublishedOnNuGetOrg { get; }
+
+        public IPackage Package { get; }
 
         public string WindowTitle
         {
@@ -345,7 +352,7 @@ namespace PackageExplorerViewModel
             IsDisposed = true;
 
             RootFolder.Dispose();
-            _package.Dispose();
+            Package.Dispose();
 
             if (_watcher != null)
             {
@@ -907,7 +914,7 @@ namespace PackageExplorerViewModel
                 {
                     if (!(ex is IOException) && !(ex is ArgumentException) && !(ex is UnauthorizedAccessException))
                     {
-                        DiagnosticsClient.TrackException(ex);
+                        DiagnosticsClient.TrackException(ex, Package, PublishedOnNuGetOrg);
                     }
                     UIServices.Show(ex.Message, MessageLevel.Error);
                 }
@@ -951,7 +958,7 @@ namespace PackageExplorerViewModel
             }
             catch (Exception ex)
             {
-                DiagnosticsClient.TrackException(ex);
+                DiagnosticsClient.TrackException(ex, Package, PublishedOnNuGetOrg);
                 UIServices.Show("The command failed with this error message:" +
                                 Environment.NewLine +
                                 Environment.NewLine +
@@ -1370,7 +1377,7 @@ namespace PackageExplorerViewModel
             {
                 if (!(e is ArgumentException))
                 {
-                    DiagnosticsClient.TrackException(e);
+                    DiagnosticsClient.TrackException(e, Package, PublishedOnNuGetOrg);
                 }
                 UIServices.Show(e.Message, MessageLevel.Error);
             }

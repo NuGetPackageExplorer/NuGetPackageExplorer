@@ -4,25 +4,15 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
-using System.Runtime.Loader;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-
 using AuthenticodeExaminer;
-
 using Microsoft.Extensions.DependencyModel;
-
 using NuGet.Packaging;
-
-using NuGetPackageExplorer.Types;
-
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
-
 using PackageExplorerViewModel.Utilities;
 
 namespace PackageExplorerViewModel
@@ -123,7 +113,6 @@ namespace PackageExplorerViewModel
     {
         private readonly PackageViewModel _packageViewModel;
         private readonly IPackage _package;
-        private readonly bool _publishedOnNuGetOrg;
         private readonly HttpClient _httpClient = new HttpClient();
 
 
@@ -135,16 +124,7 @@ namespace PackageExplorerViewModel
 
             SourceLinkResult = SymbolValidationResult.Pending;
             DeterministicResult = DeterministicResult.Pending;
-            CompilerFlagsResult = HasCompilerFlagsResult.Pending;
-
-            // NuGet signs all its packages and stamps on the service index. Look for that.
-            if(package is ISignaturePackage sigPackage)
-            {
-                if (sigPackage.RepositorySignature?.V3ServiceIndexUrl?.AbsoluteUri.Contains(".nuget.org/", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    _publishedOnNuGetOrg = true;
-                }
-            }            
+            CompilerFlagsResult = HasCompilerFlagsResult.Pending;               
         }
 
         private void _packageViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -175,7 +155,7 @@ namespace PackageExplorerViewModel
             }
             catch(Exception e)
             {
-                DiagnosticsClient.TrackException(e);
+                DiagnosticsClient.TrackException(e, _package, _packageViewModel.PublishedOnNuGetOrg);
             }
             finally
             {
@@ -373,7 +353,7 @@ namespace PackageExplorerViewModel
                     {
                         await ReadSnupkgFile(symbolsFilePath).ConfigureAwait(false);
                     }
-                    else if (_publishedOnNuGetOrg)
+                    else if (_packageViewModel.PublishedOnNuGetOrg)
                     {
                         // try to get on NuGet.org
                         // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect
