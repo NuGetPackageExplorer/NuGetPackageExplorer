@@ -65,6 +65,9 @@ namespace PackageExplorer
             // Only need to set this on one dimension, to preserve aspect ratio
             iconBitmapImage.DecodePixelWidth = DecodePixelWidth;
 
+            // Workaround for https://github.com/dotnet/wpf/issues/3503
+            iconBitmapImage.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
+
             iconBitmapImage.DecodeFailed += IconBitmapImage_DownloadOrDecodeFailed;
             iconBitmapImage.DownloadFailed += IconBitmapImage_DownloadOrDecodeFailed;
             iconBitmapImage.DownloadCompleted += IconBitmapImage_DownloadCompleted;
