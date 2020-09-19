@@ -216,7 +216,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex)
                 {
-                    DiagnosticsClient.TrackException(ex);
+                    DiagnosticsClient.TrackException(ex, ViewModel.Package, ViewModel.PublishedOnNuGetOrg);
                     ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
                 }
             }
@@ -275,7 +275,7 @@ namespace PackageExplorerViewModel
                     }
                     catch (Exception ex)
                     {
-                        DiagnosticsClient.TrackException(ex);
+                        DiagnosticsClient.TrackException(ex, ViewModel.Package, ViewModel.PublishedOnNuGetOrg);
                         ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
                     }
                 }

@@ -44,6 +44,21 @@ namespace NuGetPe
             _client.TrackEvent(eventName, properties, metrics);
         }
 
+        public static void TrackEvent(string eventName, IPackage package, bool packageIsPublic, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
+        {
+            if (_client == null) return;
+
+            if(packageIsPublic && package != null)
+            {
+                properties??= new Dictionary<string, string>();
+
+                properties.Add("packageId", package.Id);
+                properties.Add("packageVersion", package.Version.ToNormalizedString());
+            }
+
+            _client.TrackEvent(eventName, properties, metrics);
+        }
+
         public static void TrackTrace(string evt, IDictionary<string, string>? properties = null)
         {
             if (_client == null) return;
@@ -53,6 +68,22 @@ namespace NuGetPe
         public static void TrackException(Exception exception, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
         {
             if (_client == null) return;
+            _client.TrackException(exception, properties, metrics);
+        }
+
+        public static void TrackException(Exception exception, IPackage package, bool packageIsPublic, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
+        {
+            if (_client == null) return;
+
+
+            if (packageIsPublic && package != null)
+            {
+                properties ??= new Dictionary<string, string>();
+
+                properties.Add("packageId", package.Id);
+                properties.Add("packageVersion", package.Version.ToNormalizedString());
+            }
+
             _client.TrackException(exception, properties, metrics);
         }
 
