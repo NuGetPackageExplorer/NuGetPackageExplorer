@@ -68,7 +68,7 @@ namespace PackageExplorerViewModel
                 await zip.LoadSignatureDataAsync();
             }
 
-            return new PackageViewModel(
+            var pvm = new PackageViewModel(
                 package,
                 packagePath,
                 packageSource,
@@ -79,6 +79,10 @@ namespace PackageExplorerViewModel
                 CredentialPublishProvider,
                 ContentViewerMetadata,
                 PackageRules);
+
+            DiagnosticsClient.TrackEvent("PackageViewModelFactory_CreateViewModel", package, pvm.PublishedOnNuGetOrg);
+
+            return pvm;
         }
 
         public PackageChooserViewModel CreatePackageChooserViewModel(string? fixedPackageSource)
