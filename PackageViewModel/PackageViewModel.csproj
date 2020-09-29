@@ -5,7 +5,7 @@
     <AssetTargetFallback>net472</AssetTargetFallback>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
-    <ExtrasEmbeddedResourceGeneratedCodeIsPublic>true</ExtrasEmbeddedResourceGeneratedCodeIsPublic>
+    <AssemblyName>NuGetPackageExplorer.PackageViewModel</AssemblyName>    
   </PropertyGroup>
   
   <ItemGroup>
