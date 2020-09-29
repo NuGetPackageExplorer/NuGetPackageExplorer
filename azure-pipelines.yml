@@ -101,10 +101,10 @@ stages:
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Zip'), eq(variables['ReleaseChannel'], 'Choco')))
 
     - task: DotNetCoreCLI@2
-      displayName: Pack Types Package
+      displayName: Pack Libraries as Package
       inputs:
         command: pack
-        packagesToPack: Types/Types.csproj
+        packagesToPack: '**/*.csproj;!**/NuGetPackageExplorer.csproj'
         configuration: $(BuildConfiguration)
         packDirectory: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
