@@ -113,12 +113,28 @@ namespace PackageExplorerViewModel
     {
         private readonly IPackage _package;
         private readonly HttpClient _httpClient = new HttpClient();
+        private readonly PackageFolder _rootFolder;
+        private readonly string _packagePath;
 
 
-        public SymbolValidator(PackageViewModel packageViewModel, IPackage package)
+        public SymbolValidator(IPackage package, string packagePath, PackageFolder? rootFolder)
         {
-            _packageViewModel = packageViewModel ?? throw new ArgumentNullException(nameof(packageViewModel));
-            _package = package;
+            if (string.IsNullOrWhiteSpace(packagePath))
+                throw new ArgumentException($"'{nameof(packagePath)}' cannot be null or whitespace", nameof(packagePath));
+            _package = package ?? throw new ArgumentNullException(nameof(package));
+            _packagePath = packagePath;
+
+            // NuGet signs all its packages and stamps on the service index. Look for that.
+            if (package is ISignaturePackage sigPackage)
+            {
+                if (sigPackage.RepositorySignature?.V3ServiceIndexUrl?.AbsoluteUri.Contains(".nuget.org/", StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    IsPublicPackage = true;
+                }
+            }
+
+            _rootFolder = rootFolder ?? PathToTreeConverter.Convert(package.GetFiles().ToList(), null);
+
 
             SourceLinkResult = SymbolValidationResult.Pending;
             DeterministicResult = DeterministicResult.Pending;
@@ -134,23 +150,23 @@ namespace PackageExplorerViewModel
             CompilerFlagsResult = HasCompilerFlagsResult.Pending;
             HasCompilerFlagsMessage = null;
 
-            await Refresh().ConfigureAwait(false);
+            await Validate().ConfigureAwait(false);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public async Task Refresh()
+        public async Task Validate()
         {
             try
             {
                 // Get relevant files to check
-                var files = GetFilesToCheck(_packageViewModel);
+                var files = GetFilesToCheck();
 
                 await Task.Run(async () => await CalculateValidity(files!).ConfigureAwait(false));
             }
             catch(Exception e)
             {
-                DiagnosticsClient.TrackException(e, _package, _packageViewModel.PublishedOnNuGetOrg);
+                DiagnosticsClient.TrackException(e, _package, IsPublicPackage);
             }
             finally
             {
@@ -164,19 +180,17 @@ namespace PackageExplorerViewModel
 
         }
 
-
-
-        private static IReadOnlyList<PackageFile> GetFilesToCheck(PackageViewModel packageViewModel)
+        private IReadOnlyList<PackageFile> GetFilesToCheck()
         {
-            if(packageViewModel.PackageMetadata.PackageTypes.Any(pt => "DotnetTool".Equals(pt.Name, StringComparison.OrdinalIgnoreCase)))
+            if(_package.PackageTypes.Any(pt => "DotnetTool".Equals(pt.Name, StringComparison.OrdinalIgnoreCase)))
             {
-                return GetToolFiles(packageViewModel);
+                return GetToolFiles();
             }
 
-            return GetLibraryFiles(packageViewModel);
+            return GetLibraryFiles();
         }
 
-        private static IReadOnlyList<PackageFile> GetToolFiles(PackageViewModel packageViewModel)
+        private IReadOnlyList<PackageFile> GetToolFiles()
         {
 
             var files = new List<PackageFile>();
@@ -184,7 +198,7 @@ namespace PackageExplorerViewModel
             // We will look for *.deps.json and read the libraries node for type: project.
             // Then we return the matching files in the same directory
 
-            var depsFiles = packageViewModel.RootFolder["tools"]?.GetFiles().Where(f => f.Path.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase)) ?? Enumerable.Empty<IPackageFile>();
+            var depsFiles = _rootFolder["tools"]?.GetFiles().Where(f => f.Path.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase)) ?? Enumerable.Empty<IPackageFile>();
 
             foreach(PackageFile depFile in depsFiles)
             {
@@ -205,12 +219,12 @@ namespace PackageExplorerViewModel
             return files;            
         }
 
-        private static IReadOnlyList<PackageFile> GetLibraryFiles(PackageViewModel packageViewModel)
+        private IReadOnlyList<PackageFile> GetLibraryFiles()
         {
             // For library packages, we look in lib and runtimes for files to check
 
-            var libFiles = packageViewModel.RootFolder["lib"]?.GetFiles() ?? Enumerable.Empty<IPackageFile>();
-            var runtimeFiles = packageViewModel.RootFolder["runtimes"]?.GetFiles().Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IPackageFile>();
+            var libFiles = _rootFolder["lib"]?.GetFiles() ?? Enumerable.Empty<IPackageFile>();
+            var runtimeFiles = _rootFolder["runtimes"]?.GetFiles().Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IPackageFile>();
             var files = libFiles.Union(runtimeFiles).Where(pf => pf is PackageFile).Cast<PackageFile>().ToList();
 
 
@@ -338,8 +352,8 @@ namespace PackageExplorerViewModel
                 try
                 {
                     // try to find a sibling snupkg file locally
-                    var snupkgFilePath = Path.ChangeExtension(_packageViewModel.PackagePath, ".snupkg");
-                    var symbolsFilePath = Path.ChangeExtension(_packageViewModel.PackagePath, ".symbols.nupkg");
+                    var snupkgFilePath = Path.ChangeExtension(_packagePath, ".snupkg");
+                    var symbolsFilePath = Path.ChangeExtension(_packagePath, ".symbols.nupkg");
                     if (File.Exists(snupkgFilePath))
                     {
                         await ReadSnupkgFile(snupkgFilePath).ConfigureAwait(false);
@@ -348,7 +362,7 @@ namespace PackageExplorerViewModel
                     {
                         await ReadSnupkgFile(symbolsFilePath).ConfigureAwait(false);
                     }
-                    else if (_packageViewModel.PublishedOnNuGetOrg)
+                    else if (IsPublicPackage)
                     {
                         // try to get on NuGet.org
                         // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect
@@ -784,6 +798,11 @@ namespace PackageExplorerViewModel
         {
             get; private set;
         }
+
+        /// <summary>
+        /// Package is available from a public feed
+        /// </summary>
+        public bool IsPublicPackage { get; }
 
         private class FileWithPdb
         {

@@ -60,6 +60,7 @@ namespace PackageExplorerViewModel
         private ICommand? _viewPackageAnalysisCommand;
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
+        private bool _initialized;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         internal PackageViewModel(
@@ -89,27 +90,20 @@ namespace PackageExplorerViewModel
             PackagePath = path;
             PackageSource = source;
 
-            // NuGet signs all its packages and stamps on the service index. Look for that.
-            if (Package is ISignaturePackage sigPackage)
-            {
-                if (sigPackage.RepositorySignature?.V3ServiceIndexUrl?.AbsoluteUri.Contains(".nuget.org/", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    PublishedOnNuGetOrg = true;
-                }
-            }
-
+            
             RootFolder = PathToTreeConverter.Convert(Package.GetFiles().ToList(), this);
 
-            SymbolValidator = new SymbolValidator(this, Package);
+            SymbolValidator = new SymbolValidator(Package, PackagePath, RootFolder); 
 
             _packageMetadata = new EditablePackageMetadata(Package, UIServices, SymbolValidator);
 
-            SymbolValidator.Refresh();
-
             _isSigned = _packageMetadata.IsSigned;
+
+            _initialized = true;
+
+            // Forces the symbol validator to kick off
+            OnPropertyChanged(null);
         }
-
-
 
         internal IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata { get; }
 
@@ -173,7 +167,7 @@ namespace PackageExplorerViewModel
 
         public SymbolValidator SymbolValidator { get; }
 
-        public bool PublishedOnNuGetOrg { get; }
+        public bool PublishedOnNuGetOrg => SymbolValidator!.IsPublicPackage;
 
         public IPackage Package { get; }
 
@@ -1461,6 +1455,8 @@ namespace PackageExplorerViewModel
         protected override async void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {
             base.OnPropertyChanged(propertyName);
+
+            if (!_initialized) return;
 
             // Refresh the symbol validator
             await SymbolValidator!.ResetToDefault();

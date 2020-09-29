@@ -23,7 +23,7 @@ namespace PackageExplorerViewModel
             Children = new SortedCollection<PackagePart>();
         }
 
-        public PackageFolder(string name, PackageViewModel viewModel)
+        public PackageFolder(string name, PackageViewModel? viewModel)
             : base(name, null, viewModel)
         {
             Children = new SortedCollection<PackagePart>();
