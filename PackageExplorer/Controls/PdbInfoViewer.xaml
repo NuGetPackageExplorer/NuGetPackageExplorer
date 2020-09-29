@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:PackageExplorer.Controls"
              xmlns:self="clr-namespace:PackageExplorer" 
-             xmlns:vm="clr-namespace:PackageExplorerViewModel;assembly=PackageViewModel"
-             xmlns:core="clr-namespace:NuGetPe.AssemblyMetadata;assembly=Core"
+             xmlns:vm="clr-namespace:PackageExplorerViewModel;assembly=NuGetPackageExplorer.PackageViewModel"
+             xmlns:core="clr-namespace:NuGetPe.AssemblyMetadata;assembly=NuGetPackageExplorer.Core"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type vm:AssemblyDebugDataViewModel}, IsDesignTimeCreatable=False}"
              d:DesignHeight="450" d:DesignWidth="800">
