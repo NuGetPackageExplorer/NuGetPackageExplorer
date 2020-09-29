@@ -111,7 +111,6 @@ namespace PackageExplorerViewModel
     public class SymbolValidator : INotifyPropertyChanged
 #pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
-        private readonly PackageViewModel _packageViewModel;
         private readonly IPackage _package;
         private readonly HttpClient _httpClient = new HttpClient();
 
@@ -120,31 +119,27 @@ namespace PackageExplorerViewModel
         {
             _packageViewModel = packageViewModel ?? throw new ArgumentNullException(nameof(packageViewModel));
             _package = package;
-            _packageViewModel.PropertyChanged += _packageViewModel_PropertyChanged;
 
             SourceLinkResult = SymbolValidationResult.Pending;
             DeterministicResult = DeterministicResult.Pending;
             CompilerFlagsResult = HasCompilerFlagsResult.Pending;               
-        }
+        }  
 
-        private void _packageViewModel_PropertyChanged(object? sender, PropertyChangedEventArgs e)
+        public async Task ResetToDefault()
         {
-            if(e.PropertyName == null)
-            {
-                SourceLinkResult = SymbolValidationResult.Pending;
-                SourceLinkErrorMessage = null;
-                DeterministicResult = DeterministicResult.Pending;
-                DeterministicErrorMessage = null;
-                CompilerFlagsResult = HasCompilerFlagsResult.Pending;
-                HasCompilerFlagsMessage = null;
+            SourceLinkResult = SymbolValidationResult.Pending;
+            SourceLinkErrorMessage = null;
+            DeterministicResult = DeterministicResult.Pending;
+            DeterministicErrorMessage = null;
+            CompilerFlagsResult = HasCompilerFlagsResult.Pending;
+            HasCompilerFlagsMessage = null;
 
-                Refresh();
-            }
+            await Refresh().ConfigureAwait(false);
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public async void Refresh()
+        public async Task Refresh()
         {
             try
             {
