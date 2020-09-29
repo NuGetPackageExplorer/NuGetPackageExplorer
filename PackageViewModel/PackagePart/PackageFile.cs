@@ -31,7 +31,7 @@ namespace PackageExplorerViewModel
         {
         }
 
-        private PackageFile(IPackageFile file, string name, PackageFolder parent, PackageViewModel viewModel)
+        private PackageFile(IPackageFile file, string name, PackageFolder parent, PackageViewModel? viewModel)
             : base(name, parent, viewModel)
         {
             _file = file ?? throw new ArgumentNullException(nameof(file));
@@ -40,7 +40,7 @@ namespace PackageExplorerViewModel
             {
                 WatchPhysicalFile(physicalFile);
             }
-            ReplaceCommand = new RelayCommand(Replace, () => !viewModel.IsSigned && !viewModel.IsInEditFileMode);
+            ReplaceCommand = new RelayCommand(Replace, () => !(viewModel?.IsSigned == true) && !(viewModel?.IsInEditFileMode == true));
         }
 
         /// <summary>
@@ -95,29 +95,29 @@ namespace PackageExplorerViewModel
         }
 
 
-        public ICommand ViewCommand
+        public ICommand? ViewCommand
         {
-            get { return PackageViewModel.ViewContentCommand; }
+            get { return PackageViewModel?.ViewContentCommand; }
         }
 
-        public ICommand SaveCommand
+        public ICommand? SaveCommand
         {
-            get { return PackageViewModel.SaveContentCommand; }
+            get { return PackageViewModel?.SaveContentCommand; }
         }
 
-        public ICommand OpenCommand
+        public ICommand? OpenCommand
         {
-            get { return PackageViewModel.OpenContentFileCommand; }
+            get { return PackageViewModel?.OpenContentFileCommand; }
         }
 
-        public ICommand OpenWithCommand
+        public ICommand? OpenWithCommand
         {
-            get { return PackageViewModel.OpenWithContentFileCommand; }
+            get { return PackageViewModel?.OpenWithContentFileCommand; }
         }
 
-        public ICommand EditCommand
+        public ICommand? EditCommand
         {
-            get { return PackageViewModel.EditFileCommand; }
+            get { return PackageViewModel?.EditFileCommand; }
         }
 
         public RelayCommand ReplaceCommand
@@ -168,7 +168,8 @@ namespace PackageExplorerViewModel
 
         private async void OnFileChanged(object sender, FileSystemEventArgs e)
         {
-            await PackageViewModel.UIServices.BeginInvoke(PackageViewModel.NotifyChanges);
+            if (PackageViewModel != null)
+                await PackageViewModel.UIServices.BeginInvoke(PackageViewModel.NotifyChanges);
         }
 
         /// <summary>
@@ -176,12 +177,13 @@ namespace PackageExplorerViewModel
         /// </summary>
         private async void OnFileDeleted(object sender, FileSystemEventArgs e)
         {
-            await PackageViewModel.UIServices.BeginInvoke(ShowMessageAndDeleteFile);
+            if(PackageViewModel != null)
+                await PackageViewModel.UIServices.BeginInvoke(ShowMessageAndDeleteFile);
         }
 
         private void ShowMessageAndDeleteFile()
         {
-            PackageViewModel.UIServices.Show(
+            PackageViewModel?.UIServices.Show(
                 string.Format(CultureInfo.CurrentCulture, Resources.PhysicalFileMissing, Path),
                 MessageLevel.Warning);
             Delete(false);
@@ -218,9 +220,9 @@ namespace PackageExplorerViewModel
             var fullPath = System.IO.Path.Combine(rootPath, Path);
             if (File.Exists(fullPath))
             {
-                var confirmed = PackageViewModel.UIServices.Confirm(
+                var confirmed = PackageViewModel?.UIServices.Confirm(
                     Resources.ConfirmToReplaceFile_Title,
-                    string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullPath));
+                    string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceFile, fullPath)) ?? true;
                 if (!confirmed)
                 {
                     return;
@@ -241,10 +243,10 @@ namespace PackageExplorerViewModel
             {
                 ReplaceWith(editedFilePath);
             }
-            else if (PackageViewModel.IsShowingFileContent(this))
+            else if (PackageViewModel?.IsShowingFileContent(this) == true)
             {
                 // force a refresh to show new content
-                PackageViewModel.ShowFileContent(this);
+                PackageViewModel?.ShowFileContent(this);
             }
 
             return true;
