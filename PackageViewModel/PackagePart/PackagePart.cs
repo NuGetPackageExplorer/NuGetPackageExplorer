@@ -20,7 +20,7 @@ namespace PackageExplorerViewModel
         private string? _extension;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
-        protected PackagePart(string name, PackageFolder? parent, PackageViewModel viewModel)
+        protected PackagePart(string name, PackageFolder? parent, PackageViewModel? viewModel)
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
             if (name == null)
@@ -28,14 +28,14 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException(nameof(name));
             }
 
-            PackageViewModel = viewModel ?? throw new ArgumentNullException(nameof(viewModel));
+            PackageViewModel = viewModel;
             _parent = parent;
 
             OnNameChange(name);
             RecalculatePath();
         }
 
-        public PackageViewModel PackageViewModel { get; }
+        public PackageViewModel? PackageViewModel { get; }
 
         public PackageFolder? Parent
         {
@@ -116,14 +116,14 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public ICommand DeleteCommand
+        public ICommand? DeleteCommand
         {
-            get { return PackageViewModel.DeleteContentCommand; }
+            get { return PackageViewModel?.DeleteContentCommand; }
         }
 
-        public ICommand RenameCommand
+        public ICommand? RenameCommand
         {
-            get { return PackageViewModel.RenameContentCommand; }
+            get { return PackageViewModel?.RenameContentCommand; }
         }
 
       
@@ -175,7 +175,7 @@ namespace PackageExplorerViewModel
                     if (!Name.Equals(newName, StringComparison.OrdinalIgnoreCase) &&
                         (Parent.ContainsFile(newName) || Parent.ContainsFolder(newName)))
                     {
-                        PackageViewModel.UIServices.Show(
+                        PackageViewModel?.UIServices.Show(
                             string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, newName),
                             MessageLevel.Error);
                         return;
@@ -183,7 +183,7 @@ namespace PackageExplorerViewModel
                 }
 
                 Name = newName;
-                PackageViewModel.NotifyContentRenamed(this);
+                PackageViewModel?.NotifyContentRenamed(this);
             }
         }
 
@@ -191,10 +191,10 @@ namespace PackageExplorerViewModel
         {
             if (requireConfirmation)
             {
-                var confirm = PackageViewModel.UIServices.Confirm(
+                var confirm = PackageViewModel?.UIServices.Confirm(
                     Resources.ConfirmToDeleteContent_Title,
                     string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToDeleteContent, Name),
-                    isWarning: true);
+                    isWarning: true) ?? true; // no confirm of non-UI code
 
                 if (!confirm)
                 {
@@ -205,7 +205,7 @@ namespace PackageExplorerViewModel
             if (Parent != null)
             {
                 Parent.RemoveChild(this);
-                PackageViewModel.NotifyContentDeleted(this);
+                PackageViewModel?.NotifyContentDeleted(this);
             }
         }
 
@@ -276,7 +276,7 @@ namespace PackageExplorerViewModel
         }
 
         protected virtual void Dispose(bool disposing)
-        {
+        {            
         }
 
         ~PackagePart()

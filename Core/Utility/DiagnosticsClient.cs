@@ -11,16 +11,20 @@ namespace NuGetPe
     {
         private static TelemetryClient?  _client;
 
-        public static void Initialize()
+        public static void Initialize(bool forLibrary = false)
         {
 #pragma warning disable CA2000 // Dispose objects before losing scope
             var config = TelemetryConfiguration.CreateDefault();
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
-            config.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
-            config.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
+            if(!forLibrary)
+            {
+                config.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
+                config.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
+
+                Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+            }
             
-            Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
             _client = new TelemetryClient(config);
         }
 
