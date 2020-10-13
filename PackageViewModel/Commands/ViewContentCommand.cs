@@ -77,10 +77,6 @@ namespace PackageExplorerViewModel
             CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1031:DoNotCatchGeneralExceptionTypes",
-            Justification = "We don't want plugin to crash the app.")]
         private void ShowFile(PackageFile file)
         {
             object? content = null;

@@ -18,12 +18,8 @@ namespace NuGetPe
 
         DateTimeOffset? Published { get; }
 
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
-            Justification = "This might be expensive")]
         IEnumerable<IPackageFile> GetFiles();
 
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate",
-            Justification = "This might be expensive")]
         Stream GetStream();
     }
 }

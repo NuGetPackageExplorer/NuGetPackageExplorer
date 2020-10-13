@@ -11,10 +11,6 @@ namespace PackageExplorerViewModel
 {
     internal static class PackageHelper
     {
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1031:DoNotCatchGeneralExceptionTypes",
-            Justification = "We don't really care of deleting temp file fails.")]
         public static void SavePackage(IPackageMetadata packageMetadata, IEnumerable<IPackageFile> files,
                                        string targetFilePath, bool useTempFile)
         {

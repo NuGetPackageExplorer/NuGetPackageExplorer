@@ -233,16 +233,8 @@ namespace PackageExplorerViewModel
             return false;
         }
 
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1024:UsePropertiesWhereAppropriate",
-            Justification = "This method is potentially expensive.")]
         public abstract IEnumerable<IPackageFile> GetFiles();
 
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1024:UsePropertiesWhereAppropriate",
-            Justification = "This method is potentially expensive.")]
         public abstract IEnumerable<PackagePart> GetPackageParts();
 
         protected void OnPropertyChanged(string propertyName)

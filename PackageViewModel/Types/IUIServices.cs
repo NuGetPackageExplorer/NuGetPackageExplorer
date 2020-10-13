@@ -36,7 +36,6 @@ namespace NuGetPackageExplorer.Types
         bool? ConfirmWithCancel(string title, string message);
         void Show(string message, MessageLevel messageLevel);
 
-        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft);
 
         bool TrySelectPortableFramework(out string portableFramework);

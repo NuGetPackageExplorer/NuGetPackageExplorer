@@ -22,7 +22,7 @@ namespace PackageExplorer
     [Export(typeof(INuGetPackageDownloader))]
     internal class PackageDownloader : INuGetPackageDownloader
     {
-        private static readonly FileSizeConverter FileSizeConverter = new FileSizeConverter();
+        private static readonly FileSizeConverter FileSizeConverter = new();
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         [Import]

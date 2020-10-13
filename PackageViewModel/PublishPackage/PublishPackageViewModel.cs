@@ -60,7 +60,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string PublishUrl
         {
             get { return _mruSourceManager.ActivePackageSource; }
