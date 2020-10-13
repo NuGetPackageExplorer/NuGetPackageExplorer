@@ -34,8 +34,8 @@ stages:
     #    includePreviewVersions: true
 
     - powershell: |
-        Invoke-WebRequest -OutFile ./dotnet-install.ps1 https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1
-        ./dotnet-install.ps1 -Channel release/5.0.1xx
+        Invoke-WebRequest -OutFile $env:AGENT_TOOLSDIRECTORY/dotnet-install.ps1 https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1
+        $env:AGENT_TOOLSDIRECTORY/dotnet-install.ps1 -Channel release/5.0.1xx
 
         $installationPath = Join-Path $env:AGENT_TOOLSDIRECTORY dotnet
 
@@ -47,8 +47,9 @@ stages:
         # Make sure the new path is propagated back to the main host process 
         Write-Host "##vso[task.setvariable variable=PATH]$env:PATH"
 
-        # Add the nightly NuGet feed to the nuget config
+        # Add the nightly NuGet feeds to the nuget config
         dotnet nuget add source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json -n dotnet5
+        dotnet nuget add source https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json -n dotnet-core
 
       displayName: Intall .NET 5.0 SDK
 
