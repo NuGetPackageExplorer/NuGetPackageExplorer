@@ -34,10 +34,21 @@ stages:
     #    includePreviewVersions: true
 
     - powershell: |
-
+        $branch = "release/5.0.1xx"
         $scriptPath = Join-Path $env:AGENT_TOOLSDIRECTORY dotnet-install.ps1
-        Invoke-WebRequest -OutFile $scriptPath https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1        
-        &"$scriptPath" -Channel release/5.0.1xx
+        Invoke-WebRequest -OutFile $scriptPath https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1
+        &"$scriptPath" -Channel $branch
+
+        $configFile = Join-Path $env:AGENT_TOOLSDIRECTORY NuGet-darc.config
+        # Get the darc feeds needed
+        Invoke-WebRequest -OutFile $configFile "https://raw.githubusercontent.com/dotnet/installer/$branch/NuGet.config"
+
+
+        [xml]$nugetConfig = Get-Content $configFile
+
+        $darcdesktop = $nugetConfig.configuration.packageSources.add[0].value
+        $darcruntime = $nugetConfig.configuration.packageSources.add[1].value
+
 
         $installationPath = Join-Path $env:AGENT_TOOLSDIRECTORY dotnet
 
@@ -50,6 +61,8 @@ stages:
         Write-Host "##vso[task.setvariable variable=PATH]$env:PATH"
 
         # Add the nightly NuGet feeds to the nuget config
+        dotnet nuget add source $darcdesktop -n darc-desktop        
+        dotnet nuget add source $darcruntime -n darc-runtime        
         dotnet nuget add source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json -n dotnet5        
 
       displayName: Intall .NET 5.0 SDK
