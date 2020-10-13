@@ -34,13 +34,23 @@ stages:
     #    includePreviewVersions: true
 
     - powershell: |
-        iwr -outf ./dotnet-install.ps1 https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1
+        Invoke-WebRequest -OutFile ./dotnet-install.ps1 https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1
         ./dotnet-install.ps1 -Channel release/5.0.1xx
 
-        $installationPath = "$env:AGENT_TOOLSDIRECTORY\dotnet"
+        $installationPath = Join-Path $env:AGENT_TOOLSDIRECTORY dotnet
 
         Write-Host "##vso[task.setvariable variable=DOTNET_ROOT]$installationPath"
+
+        # Enable multi-level lookup to fall back to the built-in SDK's for older versions. Set to 0 to disable
+        Write-Host "##vso[task.setvariable variable=DOTNET_MULTILEVEL_LOOKUP]1"
+
+        # Make sure the new path is propagated back to the main host process 
         Write-Host "##vso[task.setvariable variable=PATH]$env:PATH"
+
+        # Add the nightly NuGet feed to the nuget config
+        dotnet nuget add source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json -n dotnet5
+
+      displayName: Intall .NET 5.0 SDK
 
     - task: DotNetCoreCLI@2
       inputs:
