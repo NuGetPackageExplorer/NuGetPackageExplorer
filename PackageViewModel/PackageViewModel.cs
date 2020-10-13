@@ -60,7 +60,7 @@ namespace PackageExplorerViewModel
         private ICommand? _viewPackageAnalysisCommand;
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
-        private bool _initialized;
+        private readonly bool _initialized;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         internal PackageViewModel(
