@@ -48,8 +48,7 @@ stages:
         Write-Host "##vso[task.setvariable variable=PATH]$env:PATH"
 
         # Add the nightly NuGet feeds to the nuget config
-        dotnet nuget add source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json -n dotnet5
-        dotnet nuget add source https://dotnetfeed.blob.core.windows.net/dotnet-core/index.json -n dotnet-core
+        dotnet nuget add source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json -n dotnet5        
 
       displayName: Intall .NET 5.0 SDK
 
