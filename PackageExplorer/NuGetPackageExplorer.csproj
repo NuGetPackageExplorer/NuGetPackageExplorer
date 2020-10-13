@@ -25,8 +25,8 @@
     <PackageReference Include="Humanizer" Version="2.8.26" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="1.1.0" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0-preview.8.20407.11" />
-    <PackageReference Include="System.Runtime.Caching" Version="5.0.0-rc.1.20451.14" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="5.0.0-rc.2.20475.5" />
+    <PackageReference Include="System.Runtime.Caching" Version="5.0.0-rc.2.20475.5" />
 
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
   </ItemGroup>
