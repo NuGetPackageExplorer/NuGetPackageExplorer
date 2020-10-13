@@ -27,11 +27,15 @@ stages:
           ReleaseChannel: Choco
 
     steps:
-    - task: UseDotNet@2
-      displayName: 'Use .NET Core SDK 5.0.x'
-      inputs:
-        version: 5.0.x
-        includePreviewVersions: true
+    #- task: UseDotNet@2
+    #  displayName: 'Use .NET Core SDK 5.0.x'
+    #  inputs:
+    #    version: 5.0.x
+    #    includePreviewVersions: true
+
+    - powershell: |
+        iwr -outf ./dotnet-install.ps1 https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1
+        ./dotnet-install.ps1 -Channel release/5.0.1xx
 
     - task: DotNetCoreCLI@2
       inputs:
