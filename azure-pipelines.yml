@@ -33,7 +33,7 @@ stages:
     #    version: 5.0.x
     #    includePreviewVersions: true
 
-    - powershell: |
+    - pwsh: |
         $branch = "release/5.0.1xx"
         $scriptPath = Join-Path $env:AGENT_TOOLSDIRECTORY dotnet-install.ps1
         Invoke-WebRequest -OutFile $scriptPath https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1
@@ -43,12 +43,10 @@ stages:
         # Get the darc feeds needed
         Invoke-WebRequest -OutFile $configFile "https://raw.githubusercontent.com/dotnet/installer/$branch/NuGet.config"
 
-
         [xml]$nugetConfig = Get-Content $configFile
 
         $darcdesktop = $nugetConfig.configuration.packageSources.add[0].value
         $darcruntime = $nugetConfig.configuration.packageSources.add[1].value
-
 
         $installationPath = Join-Path $env:AGENT_TOOLSDIRECTORY dotnet
 
