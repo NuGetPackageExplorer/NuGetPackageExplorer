@@ -17,10 +17,6 @@ namespace PackageExplorerViewModel
         private const int MaxFile = 10;
         private readonly ISettingsManager _settingsManager;
 
-        [SuppressMessage(
-            "Microsoft.Performance",
-            "CA1811:AvoidUncalledPrivateCode",
-            Justification = "Called by MEF")]
         [ImportingConstructor]
         public MruManager(ISettingsManager settingsManager)
         {
@@ -57,10 +53,6 @@ namespace PackageExplorerViewModel
 
         public ObservableCollection<MruItem> Files { get; }
 
-        [SuppressMessage(
-            "Microsoft.Globalization",
-            "CA1308:NormalizeStringsToUppercase",
-            Justification = "We don't want to show upper case path.")]
         public void NotifyFileAdded(IPackageMetadata package, string filepath, PackageType packageType)
         {
             var item = new MruItem
@@ -120,10 +112,6 @@ namespace PackageExplorerViewModel
                                  item.PackageType);
         }
 
-        [SuppressMessage(
-            "Microsoft.Performance",
-            "CA1811:AvoidUncalledPrivateCode",
-            Justification = "Called by MEF.")]
         private static MruItem? ConvertStringToMruItem(string s)
         {
             if (string.IsNullOrEmpty(s))
@@ -148,14 +136,6 @@ namespace PackageExplorerViewModel
             return ParseMruItem(parts);
         }
 
-        [SuppressMessage(
-            "Microsoft.Globalization",
-            "CA1308:NormalizeStringsToUppercase",
-            Justification = "We don't want to show upper case path.")]
-        [SuppressMessage(
-            "Microsoft.Performance",
-            "CA1811:AvoidUncalledPrivateCode",
-            Justification = "Called by MEF.")]
         private static MruItem? ParseMruItem(string[] parts)
         {
             // v1.1 onwards

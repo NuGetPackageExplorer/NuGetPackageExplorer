@@ -60,7 +60,7 @@ namespace PackageExplorerViewModel
         private ICommand? _viewPackageAnalysisCommand;
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
-        private bool _initialized;
+        private readonly bool _initialized;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         internal PackageViewModel(
@@ -893,7 +893,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void ExportExecute()
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_ExportExecute");
@@ -940,10 +939,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes"),
-         SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
-             MessageId =
-                 "NuGetPackageExplorer.Types.IUIServices.Show(System.String,NuGetPackageExplorer.Types.MessageLevel)")]
         private void PackageCommandExecute(LazyPackageCommand packageCommand)
         {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
@@ -1346,13 +1341,11 @@ namespace PackageExplorerViewModel
             CurrentFileInfo = fileInfo;
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         internal IEnumerable<IPackageFile> GetFiles()
         {
             return RootFolder.GetFiles();
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public string? GetCurrentPackageTempFile()
         {
             var tempFile = Path.GetTempFileName();
@@ -1673,7 +1666,6 @@ namespace PackageExplorerViewModel
             ViewContentCommand.Execute(file);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.ConfirmCloseEditor(System.String,System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         internal bool SaveMetadataAfterEditSource(string editedFilePath)
         {
             if (!File.Exists(editedFilePath))

@@ -107,12 +107,10 @@ namespace PackageExplorerViewModel
         NothingToValidate
     }
 
-#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public class SymbolValidator : INotifyPropertyChanged
-#pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
         private readonly IPackage _package;
-        private readonly HttpClient _httpClient = new HttpClient();
+        private readonly HttpClient _httpClient = new();
         private readonly PackageFolder _rootFolder;
         private readonly string _packagePath;
 

@@ -46,15 +46,11 @@ namespace PackageExplorerViewModel
         [Import(typeof(INuGetPackageDownloader))]
         public INuGetPackageDownloader PackageDownloader { get; set; }
 
-        [SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"),
-         SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly"),
-         SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [ImportMany(AllowRecomposition = true)]
         public List<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata { get; set; }
 
-        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures"),
-         SuppressMessage("Microsoft.Design", "CA1002:DoNotExposeGenericLists"),
-         SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        [SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         [ImportMany(AllowRecomposition = true)]
         public List<Lazy<IPackageRule>> PackageRules { get; set; }
 
