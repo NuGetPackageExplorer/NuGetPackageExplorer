@@ -117,10 +117,8 @@ namespace PackageExplorerViewModel
 
         public SymbolValidator(IPackage package, string packagePath, PackageFolder? rootFolder)
         {
-            if (string.IsNullOrWhiteSpace(packagePath))
-                throw new ArgumentException($"'{nameof(packagePath)}' cannot be null or whitespace", nameof(packagePath));
             _package = package ?? throw new ArgumentNullException(nameof(package));
-            _packagePath = packagePath;
+            _packagePath = packagePath ?? throw new ArgumentNullException(nameof(packagePath));
 
             // NuGet signs all its packages and stamps on the service index. Look for that.
             if (package is ISignaturePackage sigPackage)
