@@ -176,6 +176,8 @@ namespace PackageExplorerViewModel
 
         }
 
+        public IReadOnlyList<PackageFile> GetAllFiles() => GetFilesToCheck();
+
         private IReadOnlyList<PackageFile> GetFilesToCheck()
         {
             if(_package.PackageTypes.Any(pt => "DotnetTool".Equals(pt.Name, StringComparison.OrdinalIgnoreCase)))
