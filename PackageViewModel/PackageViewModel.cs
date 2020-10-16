@@ -1454,6 +1454,11 @@ namespace PackageExplorerViewModel
             if (!_initialized) return;
 
             // Refresh the symbol validator
+            // No need to refresh for certain properties that don't affect the data
+            if (propertyName == nameof(SelectedItem) ||
+                propertyName == nameof(CurrentFileInfo))
+                return;
+
             await SymbolValidator!.ResetToDefault();
         }
         internal void ExportManifest(string fullpath, bool askForConfirmation = true, bool includeFilesSection = true)
