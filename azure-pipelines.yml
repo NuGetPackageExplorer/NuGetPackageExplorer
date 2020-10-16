@@ -36,7 +36,7 @@ stages:
     - pwsh: |
         $branch = "release/5.0.1xx"
         $scriptPath = Join-Path $env:AGENT_TOOLSDIRECTORY dotnet-install.ps1
-        Invoke-WebRequest -OutFile $scriptPath https://dotnet.microsoft.com/download/dotnet-core/scripts/v1/dotnet-install.ps1
+        Invoke-WebRequest -OutFile $scriptPath https://raw.githubusercontent.com/dotnet/install-scripts/master/src/dotnet-install.ps1
         &"$scriptPath" -Channel $branch
 
         $configFile = Join-Path $env:AGENT_TOOLSDIRECTORY NuGet-darc.config
