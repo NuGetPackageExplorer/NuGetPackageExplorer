@@ -17,7 +17,7 @@ namespace PackageExplorerViewModel
 {
     public sealed class EditablePackageMetadata : IPackageMetadata, IDataErrorInfo, INotifyPropertyChanged
     {
-        private readonly Dictionary<string, string?> _propertyErrors = new Dictionary<string, string?>();
+        private readonly Dictionary<string, string?> _propertyErrors = new();
         private readonly IUIServices _uiServices;
         private string? _authors;
         private string? _copyright;
@@ -290,7 +290,7 @@ namespace PackageExplorerViewModel
         public event PropertyChangedEventHandler? PropertyChanged;
         private bool _developmentDependency;
         private RepositoryMetadataViewModel? _repository;
-        private RepositoryMetadata? _underlyingRepository;
+        private readonly RepositoryMetadata? _underlyingRepository;
         private LicenseMetadata? _licenseMetadata;
         private SignatureInfo? _publisherCertificate;
         private ValidationResultViewModel? _validationResult;
@@ -646,7 +646,7 @@ namespace PackageExplorerViewModel
             var path = uri.OriginalString;
             if (path.StartsWith("//", StringComparison.Ordinal))
             {
-                path = path.Substring(1);
+                path = path[1..];
             }
 
             var builder = new UriBuilder

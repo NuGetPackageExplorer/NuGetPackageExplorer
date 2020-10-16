@@ -87,15 +87,14 @@ namespace PackageExplorerViewModel
             _packageRules = packageRules;
 
 
-            PackagePath = path;
-            PackageSource = source;
+        
 
             
             RootFolder = PathToTreeConverter.Convert(Package.GetFiles().ToList(), this);
+            PackagePath = path; // also sets symbol validator
+            PackageSource = source;            
 
-            SymbolValidator = new SymbolValidator(Package, PackagePath, RootFolder); 
-
-            _packageMetadata = new EditablePackageMetadata(Package, UIServices, SymbolValidator);
+            _packageMetadata = new EditablePackageMetadata(Package, UIServices, SymbolValidator!);
 
             _isSigned = _packageMetadata.IsSigned;
 
@@ -165,7 +164,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public SymbolValidator SymbolValidator { get; }
+        public SymbolValidator SymbolValidator { get; private set; }
 
         public bool PublishedOnNuGetOrg => SymbolValidator!.IsPublicPackage;
 
@@ -257,7 +256,10 @@ namespace PackageExplorerViewModel
                 if (_packagePath != value)
                 {
                     _packagePath = value;
+
+                    SymbolValidator = new SymbolValidator(Package, PackagePath, RootFolder);
                     OnPropertyChanged(nameof(PackageSource));
+                    OnPropertyChanged(nameof(SymbolValidator));
 
                     // This may be a URI or a file
                     if (Uri.TryCreate(value, UriKind.Absolute, out var result))
