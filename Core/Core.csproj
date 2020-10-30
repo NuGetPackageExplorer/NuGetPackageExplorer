@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0-windows10.0.19041</TargetFramework>
+    <TargetFrameworks>net5.0-windows10.0.19041;net5.0</TargetFrameworks>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />
-    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.13.1" />
+    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.15.4-preview" />
     <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-20501-01" />
     <PackageReference Include="Microsoft.SymbolStore" Version="1.0.152902" />    
     <PackageReference Include="OSVersionHelper" Version="1.1.21-preview" />
