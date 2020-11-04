@@ -8,12 +8,15 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using AuthenticodeExaminer;
 using Microsoft.Extensions.DependencyModel;
 using NuGet.Packaging;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel.Utilities;
+
+#if WINDOWS
+using AuthenticodeExaminer;
+#endif
 
 namespace PackageExplorerViewModel
 {
@@ -614,6 +617,7 @@ namespace PackageExplorerViewModel
 
         private static bool IsMicrosoftFile(PackageFile file)
         {
+#if WINDOWS
             IReadOnlyList<AuthenticodeSignature> sigs;
             SignatureCheckResult isValidSig;
             using (var str = file.GetStream())
@@ -631,6 +635,9 @@ namespace PackageExplorerViewModel
             }
 
             return false;
+#else
+            return true; // we lie here as this will cause the symbols to be checked in MSDL for all types. Less efficient but will still work.
+#endif
         }
 
         private static async Task<bool> ValidatePdb(FileWithDebugData input,

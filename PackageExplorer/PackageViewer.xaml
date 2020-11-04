@@ -36,6 +36,7 @@
             <self:NuGetVersionPreReleaseConverter x:Key="NuGetVersionPreReleaseConverter" />
             <self:ListToStringConverter x:Key="ListToStringConverter" />
             <self:PackageIconConverter x:Key="PackageIconConverter" />
+            <self:FileTypeToImageSourceConverter x:Key="FileTypeToImageSourceConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
@@ -673,7 +674,7 @@
 
             <DataTemplate DataType="{x:Type viewmodel:PackageFile}">
                 <StackPanel Background="Transparent" Orientation="Horizontal" ContextMenu="{StaticResource SharedContextMenu}">
-                    <Image x:Name="ItemIcon" Source="{Binding FileIcon, Mode=OneTime}" Margin="0,0,2,0" />
+                    <Image x:Name="ItemIcon" Source="{Binding Path, Converter={StaticResource FileTypeToImageSourceConverter}, Mode=OneTime}" Margin="0,0,2,0" />
                     <TextBlock x:Name="Header" Text="{Binding Name}"></TextBlock>
                 </StackPanel>
             </DataTemplate>

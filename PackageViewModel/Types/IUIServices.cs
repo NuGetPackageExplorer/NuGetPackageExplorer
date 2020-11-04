@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace NuGetPackageExplorer.Types
 {
@@ -42,6 +41,6 @@ namespace NuGetPackageExplorer.Types
 
         bool ConfirmCloseEditor(string title, string message);
 
-        DispatcherOperation BeginInvoke(Action action);
+        Task BeginInvoke(Action action);
     }
 }

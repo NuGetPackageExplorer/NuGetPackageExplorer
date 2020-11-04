@@ -3,8 +3,8 @@ using System.ComponentModel.Composition;
 using System.Globalization;
 using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 using Microsoft.Win32;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
@@ -277,9 +277,9 @@ namespace PackageExplorer
             
         }
 
-        public DispatcherOperation BeginInvoke(Action action)
+        public Task BeginInvoke(Action action)
         {
-            return Window.Value.Dispatcher.BeginInvoke(action);
+            return Window.Value.Dispatcher.BeginInvoke(action).Task;
         }
 
         public Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft)

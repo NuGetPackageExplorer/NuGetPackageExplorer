@@ -10,7 +10,7 @@ using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    internal static class FileHelper
+    public static class FileHelper
     {
         private static readonly string[] ExecutableScriptsExtensions = new[]
                                                                         {

@@ -22,7 +22,9 @@ namespace NuGetPe
                 config.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
                 config.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
 
+#if WINDOWS
                 Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+#endif
             }
             
             _client = new TelemetryClient(config);
@@ -37,10 +39,12 @@ namespace NuGetPe
             System.Threading.Thread.Sleep(2000);
         }
 
+#if WINDOWS
         private static void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             TrackException(e.Exception);
         }
+#endif
 
         public static void TrackEvent(string eventName, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
         {
