@@ -10,7 +10,7 @@
   
   <ItemGroup>
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0-rc.2.20475.5" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
     <PackageReference Include="NuGet.Credentials" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />
     <!-- Needs 2.1.2 explicitly until https://github.com/NuGet/Home/issues/5957 is fixed -->
