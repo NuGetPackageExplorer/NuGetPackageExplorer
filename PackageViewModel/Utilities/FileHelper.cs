@@ -39,6 +39,11 @@ namespace PackageExplorerViewModel
 
         public static void OpenFileInShell(PackageFile file, IUIServices uiServices)
         {
+            if (file is null)
+                throw new ArgumentNullException(nameof(file));
+            if (uiServices is null)
+                throw new ArgumentNullException(nameof(uiServices));
+
             if (IsExecutableScript(file.Name))
             {
                 var confirm = uiServices.Confirm(
@@ -80,8 +85,11 @@ namespace PackageExplorerViewModel
         }
 
         public static void OpenFileInShellWith(PackageFile file)
-        {
+        {            
             DiagnosticsClient.TrackEvent("FileHelper_OpenFileInShellWith");
+
+            if (file is null)
+                throw new ArgumentNullException(nameof(file));
 
             // copy to temporary file
             // create package in the temprary file first in case the operation fails which would
@@ -161,6 +169,9 @@ namespace PackageExplorerViewModel
                 throw new ArgumentException("Argument is null or empty", nameof(fileName));
             }
 
+            if (content is null)
+                throw new ArgumentNullException(nameof(content));
+
             var filePath = Path.Combine(GetTempFilePath(), fileName);
             using (Stream targetStream = File.Create(filePath))
             {
@@ -171,6 +182,9 @@ namespace PackageExplorerViewModel
 
         public static bool IsAssembly(string path)
         {
+            if (path is null)
+                throw new ArgumentNullException(nameof(path));
+
             return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
                    path.EndsWith(".winmd", StringComparison.OrdinalIgnoreCase) ||
                    path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);

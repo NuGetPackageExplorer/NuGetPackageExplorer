@@ -615,6 +615,8 @@ namespace PackageExplorerViewModel
             }
         }
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression
+#pragma warning disable CA1801 // Review unused parameters
         private static bool IsMicrosoftFile(PackageFile file)
         {
 #if WINDOWS
@@ -639,6 +641,8 @@ namespace PackageExplorerViewModel
             return true; // we lie here as this will cause the symbols to be checked in MSDL for all types. Less efficient but will still work.
 #endif
         }
+#pragma warning restore CA1801 // Review unused parameters
+#pragma warning restore IDE0079 // Remove unnecessary suppression
 
         private static async Task<bool> ValidatePdb(FileWithDebugData input,
                                         Stream pdbStream,
