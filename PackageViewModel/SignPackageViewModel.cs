@@ -226,6 +226,7 @@ namespace PackageExplorerViewModel
         {
             DiagnosticsClient.TrackEvent("SignPackageViewModel_SelectCertificateFileCommandExecute");
 
+#if WINDOWS
             try
             {
                 using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
@@ -259,14 +260,19 @@ namespace PackageExplorerViewModel
             {
                 OnError(ex);
             }
+#else
+            throw new PlatformNotSupportedException();
+#endif
         }
 
+#if WINDOWS
         private static bool IsCertificateValidForNuGet(X509Certificate2 certificate) =>
             CertificateUtility.IsValidForPurposeFast(certificate, Oids.CodeSigningEku) &&
             CertificateUtility.IsCertificatePublicKeyValid(certificate) &&
             CertificateUtility.IsSignatureAlgorithmSupported(certificate) &&
             !CertificateUtility.HasExtendedKeyUsage(certificate, Oids.LifetimeSigningEku) &&
             !CertificateUtility.IsCertificateValidityPeriodInTheFuture(certificate);
+#endif
 
         private void ShowCertificateCommandExecute()
         {
@@ -277,7 +283,9 @@ namespace PackageExplorerViewModel
             {
                 try
                 {
+#if WINDOWS
                     X509Certificate2UI.DisplayCertificate(certificate);
+#endif
                 }
                 catch { }
             }
