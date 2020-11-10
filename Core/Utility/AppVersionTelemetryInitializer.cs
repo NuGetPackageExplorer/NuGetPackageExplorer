@@ -10,20 +10,26 @@ namespace NuGetPe.Utility
 {
     internal class AppVersionTelemetryInitializer : ITelemetryInitializer
     {
-        private readonly string _wpfVersion;        
+#if WINDOWS
+        private readonly string _wpfVersion;
+#endif
         private readonly string _appVersion;
 
         public AppVersionTelemetryInitializer()
         {
-            _wpfVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;            
+#if WINDOWS
+            _wpfVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+#endif
             _appVersion = typeof(DiagnosticsClient).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                                                             .First(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
                                                             .Value!;
         }
 
         public void Initialize(ITelemetry telemetry)
-        {            
-            telemetry.Context.GlobalProperties["WPF version"] = _wpfVersion;            
+        {
+#if WINDOWS
+            telemetry.Context.GlobalProperties["WPF version"] = _wpfVersion;
+#endif
             telemetry.Context.Component.Version = _appVersion;
         }
     }

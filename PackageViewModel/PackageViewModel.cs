@@ -243,7 +243,9 @@ namespace PackageExplorerViewModel
                     _selectedItem = value;
                     OnPropertyChanged(nameof(SelectedItem));
                     ((ViewContentCommand)ViewContentCommand).RaiseCanExecuteChanged();
+#if WINDOWS
                     CommandManager.InvalidateRequerySuggested();
+#endif
                 }
             }
         }

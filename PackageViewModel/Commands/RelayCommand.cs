@@ -33,7 +33,9 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
         public void RaiseCanExecuteChanged()
         {
+#if WINDOWS
             CommandManager.InvalidateRequerySuggested();
+#endif
         }
 
         [DebuggerStepThrough]
@@ -46,17 +48,21 @@ namespace PackageExplorerViewModel
         {
             add
             {
+#if WINDOWS
                 if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested += value;
                 }
+#endif
             }
             remove
             {
+#if WINDOWS
                 if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested -= value;
                 }
+#endif
             }
         }
 
@@ -114,17 +120,21 @@ namespace PackageExplorerViewModel
         {
             add
             {
+#if WINDOWS
                 if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested += value;
                 }
+#endif
             }
             remove
             {
+#if WINDOWS
                 if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested -= value;
                 }
+#endif
             }
         }
 
@@ -146,7 +156,9 @@ namespace PackageExplorerViewModel
          SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public void RaiseCanExecuteChanged()
         {
+#if WINDOWS
             CommandManager.InvalidateRequerySuggested();
+#endif
         }
     }
 }
