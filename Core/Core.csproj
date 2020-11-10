@@ -18,7 +18,7 @@
     <PackageReference Include="AppInsights.WindowsDesktop" Version="2.15.8-preview" />
     <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-20501-01" />
     <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" Version="1.1.21-preview" />
-    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0-rc.2.20475.5" />
+    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>
