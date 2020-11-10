@@ -3,9 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security;
-using Windows.Storage;
 using NuGet.Versioning;
+
+#if WINDOWS
 using OSVersionHelper;
+using Windows.Storage;
+#endif
 
 namespace NuGetPe
 {
@@ -130,6 +133,7 @@ namespace NuGetPe
         /// </summary>
         private static string GetCachePath()
         {
+#if WINDOWS
             // Try getting it from the app model first
             if (WindowsVersionHelper.HasPackageIdentity)
             {
@@ -142,10 +146,12 @@ namespace NuGetPe
                     // Don't care here, not on Win7 or running in an app model context
                 }
             }
+#endif
 
             return GetCachePath(Environment.GetEnvironmentVariable, Environment.GetFolderPath);
         }
 
+#if WINDOWS
         // Don't load these types inline
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static string GetCachePathFromLocalCache()
@@ -154,6 +160,7 @@ namespace NuGetPe
             var local = new DirectoryInfo(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)).Name;
             return GetCachePath(Environment.GetEnvironmentVariable, _ => Path.Combine(ApplicationData.Current.LocalCacheFolder.Path, local));
         }
+#endif
 
         private static string GetCachePath(Func<string, string?> getEnvironmentVariable, Func<Environment.SpecialFolder, string> getFolderPath)
         {
