@@ -12,7 +12,6 @@ using Microsoft.Extensions.DependencyModel;
 using NuGet.Packaging;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
-using PackageExplorerViewModel.Utilities;
 using NuGet.Protocol.Core.Types;
 
 #if WINDOWS
@@ -53,7 +52,7 @@ namespace PackageExplorerViewModel
         Pending,
 
         /// <summary>
-        /// No relevant files to validate. 
+        /// No relevant files to validate.
         /// </summary>
         NothingToValidate,
 
@@ -80,7 +79,7 @@ namespace PackageExplorerViewModel
         NonDeterministic,
 
         /// <summary>
-        /// No relevant files to validate. 
+        /// No relevant files to validate.
         /// </summary>
         NothingToValidate,
 
@@ -106,7 +105,7 @@ namespace PackageExplorerViewModel
         /// </summary>
         Missing,
         /// <summary>
-        /// No relevant files to validate. 
+        /// No relevant files to validate.
         /// </summary>
         NothingToValidate
     }
@@ -220,7 +219,7 @@ namespace PackageExplorerViewModel
                 files.AddRange(userFiles);
             }
 
-            return files;            
+            return files;
         }
 
         private IReadOnlyList<PackageFile> GetLibraryFiles()
@@ -273,7 +272,7 @@ namespace PackageExplorerViewModel
                     continue;
                 }
 
-                // If we have a PDB, try loading that first. If not, may be embedded. 
+                // If we have a PDB, try loading that first. If not, may be embedded.
                 // Local checks first
                 if(file.Pdb != null)
                 {
@@ -350,7 +349,7 @@ namespace PackageExplorerViewModel
 
 
             var requireExternal = false;
-            // See if any pdb's are missing and check for a snupkg on NuGet.org. 
+            // See if any pdb's are missing and check for a snupkg on NuGet.org.
             if (noSymbols.Count > 0)
             {
                 try
@@ -434,7 +433,7 @@ namespace PackageExplorerViewModel
                     if(pdbStream != null)
                     {
                         requireExternal = true;
-                        
+
                         // Found a PDB for it
                         if(await ValidatePdb(file, pdbStream,
                             noSourceLink,
@@ -507,7 +506,7 @@ namespace PackageExplorerViewModel
                 var found = false;
                 var sb = new StringBuilder();
                 if (noSourceLink.Count > 0)
-                {                    
+                {
                     SourceLinkResult = SymbolValidationResult.NoSourceLink;
 
                     sb.AppendLine($"Missing Source Link for:\n{string.Join("\n", noSourceLink.Select(p => p.Path)) }");
@@ -524,7 +523,7 @@ namespace PackageExplorerViewModel
                     foreach(var (file, errors) in sourceLinkErrors)
                     {
                         sb.AppendLine($"Source Link errors for {file.Path}:\n{string.Join("\n", errors) }");
-                    }                    
+                    }
 
                     found = true;
                 }
@@ -568,7 +567,7 @@ namespace PackageExplorerViewModel
                 DeterministicResult = DeterministicResult.NonDeterministic;
 
                 var sb = new StringBuilder();
-                sb.AppendLine("Ensure that the following property is enabled for CI builds\nand you're using at least the 2.1.300 SDK:");                
+                sb.AppendLine("Ensure that the following property is enabled for CI builds\nand you're using at least the 2.1.300 SDK:");
                 sb.AppendLine();
                 sb.AppendLine("<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>");
                 sb.AppendLine();
@@ -607,7 +606,7 @@ namespace PackageExplorerViewModel
                 else
                 {
                     sb.AppendLine("The following assemblies have not been compiled with a new enough compiler:");
-                }                
+                }
 
                 foreach (var file in nonReproducible)
                 {
@@ -671,7 +670,7 @@ namespace PackageExplorerViewModel
                         input.DebugData = await AssemblyMetadataReader.ReadDebugData(peStream, stream).ConfigureAwait(false);
                     }
 
-                    // Check to see if the PDB is valid, but only for pdb's that aren't alongside the PE file                    
+                    // Check to see if the PDB is valid, but only for pdb's that aren't alongside the PE file
                     if(validateChecksum && !input.DebugData.PdbChecksumIsValid)
                     {
                         return false;

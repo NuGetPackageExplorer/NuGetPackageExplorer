@@ -9,7 +9,6 @@ using NuGetPackageExplorer.Types;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
-using PackageExplorerViewModel.Utilities;
 
 namespace PackageExplorer
 {
@@ -38,7 +37,7 @@ namespace PackageExplorer
                         debugData = assemblyMetadata.DebugData;
                     }
                 }
-                
+
                 AssemblyDebugDataViewModel? debugDataViewModel = null;
 
                 if(debugData != null)

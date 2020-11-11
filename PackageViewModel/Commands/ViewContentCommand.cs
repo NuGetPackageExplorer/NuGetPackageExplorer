@@ -8,7 +8,6 @@ using System.Windows.Input;
 using AuthenticodeExaminer;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
-using PackageExplorerViewModel.Utilities;
 
 namespace PackageExplorerViewModel
 {

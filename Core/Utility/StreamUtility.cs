@@ -1,9 +1,9 @@
 ﻿using System.IO;
 using System.Text;
 
-namespace PackageExplorer
+namespace NuGetPe
 {
-    internal static class StreamUtility
+    public static class StreamUtility
     {
         public static Stream ToStream(string content)
         {
