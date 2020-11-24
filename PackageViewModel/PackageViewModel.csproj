@@ -9,7 +9,6 @@
   
   <ItemGroup>
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
     <PackageReference Include="NuGet.Credentials" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />    
     <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
