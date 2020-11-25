@@ -7,17 +7,19 @@ using System.Windows.Input;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
 
+using NuGetPe;
+
 namespace PackageExplorerViewModel
 {
     [SuppressMessage("Microsoft.Design", "CA1036:OverrideMethodsOnComparableTypes")]
-    public abstract class PackagePart : IComparable<PackagePart>, INotifyPropertyChanged, IDisposable
+    public abstract class PackagePart : IPart, IComparable<PackagePart>, INotifyPropertyChanged, IDisposable
     {
         private int _hashCode;
         private bool _isSelected;
         private string? _name;
-        private PackageFolder? _parent;
         private string _path;
         private string? _extension;
+        protected PackageFolder? _parent;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         protected PackagePart(string name, PackageFolder? parent, PackageViewModel? viewModel)
@@ -37,14 +39,14 @@ namespace PackageExplorerViewModel
 
         public PackageViewModel? PackageViewModel { get; }
 
-        public PackageFolder? Parent
+        public IFolder? Parent
         {
             get { return _parent; }
             internal set
             {
                 if (_parent != value)
                 {
-                    _parent = value;
+                    _parent = (PackageFolder?) value;
                     UpdatePath();
                 }
             }
@@ -126,7 +128,7 @@ namespace PackageExplorerViewModel
             get { return PackageViewModel?.RenameContentCommand; }
         }
 
-      
+
         public int CompareTo(PackagePart? other)
         {
             if (this == other)
@@ -152,15 +154,15 @@ namespace PackageExplorerViewModel
 
             return string.Compare(Path, other.Path, StringComparison.OrdinalIgnoreCase);
         }
-        
-       
+
+
         public void Dispose()
         {
-            Dispose(true);            
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 
-     
+
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -170,10 +172,10 @@ namespace PackageExplorerViewModel
         {
             if (!Name.Equals(newName, StringComparison.Ordinal))
             {
-                if (Parent != null)
+                if (_parent != null)
                 {
                     if (!Name.Equals(newName, StringComparison.OrdinalIgnoreCase) &&
-                        (Parent.ContainsFile(newName) || Parent.ContainsFolder(newName)))
+                        (_parent.ContainsFile(newName) || _parent.ContainsFolder(newName)))
                     {
                         PackageViewModel?.UIServices.Show(
                             string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, newName),
@@ -202,9 +204,9 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            if (Parent != null)
+            if (_parent != null)
             {
-                Parent.RemoveChild(this);
+                _parent.RemoveChild(this);
                 PackageViewModel?.NotifyContentDeleted(this);
             }
         }
@@ -222,7 +224,7 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            for (PackagePart? cursor = this; cursor != null; cursor = cursor.Parent)
+            for (PackagePart? cursor = this; cursor != null; cursor = cursor._parent)
             {
                 if (cursor == container)
                 {
@@ -233,7 +235,9 @@ namespace PackageExplorerViewModel
             return false;
         }
 
-        public abstract IEnumerable<IPackageFile> GetFiles();
+        public abstract IEnumerable<IFile> GetFiles();
+
+        public abstract IEnumerable<IPackageFile> GetPackageFiles();
 
         public abstract IEnumerable<PackagePart> GetPackageParts();
 
@@ -268,7 +272,7 @@ namespace PackageExplorerViewModel
         }
 
         protected virtual void Dispose(bool disposing)
-        {            
+        {
         }
 
         ~PackagePart()

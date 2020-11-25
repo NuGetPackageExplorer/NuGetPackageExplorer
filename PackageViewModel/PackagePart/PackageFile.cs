@@ -17,7 +17,7 @@ using NuGetPe.AssemblyMetadata;
 namespace PackageExplorerViewModel
 {
     [DebuggerDisplay("{Path}")]
-    public class PackageFile : PackagePart, IPackageFile, IEditablePackageFile, IPackageContent
+    public class PackageFile : PackagePart, IFile, IEditablePackageFile, IPackageContent
     {
         private readonly IPackageFile _file;
         private FileSystemWatcher? _watcher;
@@ -44,26 +44,34 @@ namespace PackageExplorerViewModel
         /// Gets files in the same directory that end with PDB, XML, or PRI
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<PackageFile> GetAssociatedFiles()
+        public IEnumerable<IFile> GetAssociatedFiles()
         {
             var filename = System.IO.Path.GetFileNameWithoutExtension(Name);
 
-            foreach (var file in Parent!.GetFiles().Where(pf => pf is PackageFile).Cast<PackageFile>())
-            {
-                if(file!.Path != Path)
-                {
-                    if(System.IO.Path.GetFileNameWithoutExtension(file.Path)!.Equals(filename, StringComparison.OrdinalIgnoreCase))
-                    {
-                        yield return file;
-                    }
-                }
-            }
+            static bool HasSameName(IPart packagePart, string name) =>
+                System.IO.Path.GetFileNameWithoutExtension(packagePart.Name).Equals(name, StringComparison.OrdinalIgnoreCase);
+
+            return Parent!.GetFiles().Where(f => f.Path != Path && HasSameName(f, filename));
+        }
+
+        /// <summary>
+        /// Gets files in the same directory that end with PDB, XML, or PRI
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<PackageFile> GetAssociatedPackageFiles()
+        {
+            var filename = System.IO.Path.GetFileNameWithoutExtension(Name);
+
+            static bool HasSameName(IPart packagePart, string name) =>
+                System.IO.Path.GetFileNameWithoutExtension(packagePart.Name).Equals(name, StringComparison.OrdinalIgnoreCase);
+
+            return _parent!.GetFiles().OfType<PackageFile>().Where(f => f.Path != Path && HasSameName(f, filename));
         }
 
         /// <summary>
         /// Stores any debug data gathered for this PE file. Not set or null if not available
         /// </summary>
-        public AssemblyDebugData? DebugData { get; internal set; }
+        public AssemblyDebugData? DebugData { get; set; }
 
         /// <summary>
         /// Returns the path on disk if this file is a PhysicalPackageFile. Otherwise, returns null;
@@ -139,7 +147,7 @@ namespace PackageExplorerViewModel
                     IncludeSubdirectories = false,
                     EnableRaisingEvents = true
                 };
-            
+
                 _watcher.Changed += OnFileChanged;
                 _watcher.Deleted += OnFileDeleted;
                 _watcher.Renamed += OnFileDeleted;
@@ -170,7 +178,12 @@ namespace PackageExplorerViewModel
             Delete(false);
         }
 
-        public override IEnumerable<IPackageFile> GetFiles()
+        public override IEnumerable<IFile> GetFiles()
+        {
+            yield return this;
+        }
+
+        public override IEnumerable<IPackageFile> GetPackageFiles()
         {
             yield return this;
         }
@@ -182,18 +195,12 @@ namespace PackageExplorerViewModel
 
         public void Replace()
         {
-            if (Parent != null)
-            {
-                Parent.ReplaceFile(this);
-            }
+            _parent?.ReplaceFile(this);
         }
 
         public void ReplaceWith(string filePath)
         {
-            if (Parent != null)
-            {
-                Parent.ReplaceFile(this, filePath);
-            }
+            _parent?.ReplaceFile(this, filePath);
         }
 
         public override void Export(string rootPath)

@@ -11,7 +11,7 @@ using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    public class PackageFolder : PackagePart
+    public class PackageFolder : PackagePart, IFolder
     {
         private ICommand? _addContentFolderCommand;
         private bool _isExpanded;
@@ -83,7 +83,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public PackagePart? this[string name]
+        public IPart? this[string name]
         {
             get { return Children.SingleOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)); }
         }
@@ -98,7 +98,12 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public override IEnumerable<IPackageFile> GetFiles()
+        public override IEnumerable<IFile> GetFiles()
+        {
+            return Children.Count == 0 ? Array.Empty<IFile>() : Children.SelectMany(p => p.GetFiles());
+        }
+
+        public override IEnumerable<IPackageFile> GetPackageFiles()
         {
             if (Children.Count == 0)
             {
@@ -114,7 +119,7 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                return Children.SelectMany(p => p.GetFiles());
+                return Children.SelectMany(p => p.GetPackageFiles());
             }
         }
 
@@ -252,10 +257,7 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                if (childFolder.Parent != null)
-                {
-                    childFolder.Parent.Detach(childFolder);
-                }
+                childFolder._parent?.Detach(childFolder);
 
                 newFolder = childFolder;
             }
@@ -355,10 +357,8 @@ namespace PackageExplorerViewModel
             else
             {
                 // detach from current parent
-                if (file.Parent != null)
-                {
-                    file.Parent.Detach(file);
-                }
+                // FIXME
+                // file._parent?.Detach(file);
 
                 newFile = file;
             }
