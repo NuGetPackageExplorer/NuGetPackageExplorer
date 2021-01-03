@@ -173,11 +173,11 @@ namespace PackageExplorer
                 yield return entry;
             }
 
-            if (assemblyMetaData.ReferencedAsseblies != null)
+            if (assemblyMetaData.ReferencedAssemblies != null)
             {
                 var assemblyNamesDelimitedByLineBreak = string.Join(
                     Environment.NewLine,
-                    assemblyMetaData.ReferencedAsseblies
+                    assemblyMetaData.ReferencedAssemblies
                         .OrderBy(assName => assName.Name)
                         .Select(assName => assName.FullName));
 
