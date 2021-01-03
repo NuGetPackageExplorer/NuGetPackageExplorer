@@ -14,7 +14,7 @@ namespace NuGetPe.AssemblyMetadata
         public IReadOnlyDictionary<string, string> MetadataEntries => _metadataEntries;
         public string FullName { get; internal set; }
         public string StrongName { get; internal set; }
-        public IEnumerable<AssemblyName> ReferencedAsseblies { get; private set; } = Enumerable.Empty<AssemblyName>();
+        public IEnumerable<AssemblyName> ReferencedAssemblies { get; private set; } = Enumerable.Empty<AssemblyName>();
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public AssemblyDebugData DebugData { get; internal set; }
@@ -57,7 +57,7 @@ namespace NuGetPe.AssemblyMetadata
         /// </summary>
         internal void SetReferencedAssemblyNames(IEnumerable<AssemblyName> referencedAssemblyNames)
         {
-            ReferencedAsseblies = referencedAssemblyNames ?? throw new ArgumentNullException(nameof(referencedAssemblyNames));
+            ReferencedAssemblies = referencedAssemblyNames ?? throw new ArgumentNullException(nameof(referencedAssemblyNames));
         }
 
         /// <summary>
