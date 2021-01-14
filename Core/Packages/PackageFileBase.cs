@@ -12,14 +12,18 @@ namespace NuGetPe
         protected PackageFileBase(string path)
         {
             Path = path;
-
-            FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out var effectivePath);
-            EffectivePath = effectivePath;
-
+            
             try
             {
-                NuGetFramework = NuGetFramework.Parse(effectivePath);
-                TargetFramework = new FrameworkName(NuGetFramework.DotNetFrameworkName);                
+                var nuf = FrameworkNameUtility.ParseNuGetFrameworkFromFilePath(path, out var effectivePath);
+
+                EffectivePath = effectivePath;
+
+                NuGetFramework = nuf;
+                if(nuf != null)
+                {
+                    TargetFramework = new FrameworkName(NuGetFramework.DotNetFrameworkName);
+                }                
             }
             catch (ArgumentException) // could be an invalid framework/version
             {
