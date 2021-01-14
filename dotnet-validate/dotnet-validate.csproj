@@ -3,11 +3,6 @@
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <RootNamespace>NuGetPe</RootNamespace>
-    <Version>0.0.1</Version>
   </PropertyGroup>
-
-
-  <ItemGroup>
-    <PackageReference Remove="Nerdbank.GitVersioning" />
-  </ItemGroup>
+  
 </Project>
