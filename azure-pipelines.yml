@@ -28,9 +28,9 @@ stages:
 
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .NET Core SDK 5.0.x'
+      displayName: 'Use .NET Core SDK 5.x'
       inputs:
-        version: 5.0.x
+        version: 5.x
         includePreviewVersions: false
 
     #- pwsh: |
@@ -120,7 +120,7 @@ stages:
       displayName: Build Package
       inputs:
         solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-        msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\"
+        msbuildArguments: /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\" /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
         configuration: $(BuildConfiguration)
         maximumCpuCount: true
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'Store')))
@@ -130,7 +130,7 @@ stages:
       inputs:
         command: publish
         projects: 'PackageExplorer/NuGetPackageExplorer.csproj'
-        arguments: -c $(BuildConfiguration) /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml
+        arguments: -c $(BuildConfiguration) /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
         zipAfterPublish: false
         modifyOutputPath: false
         publishWebProjects: false
@@ -140,6 +140,7 @@ stages:
       displayName: Pack Libraries as Package
       inputs:
         command: pack
+        arguments: /bl:$(Build.ArtifactStagingDirectory)\Logs\Libraries.binlog
         packagesToPack: '**/*.csproj;!**/NuGetPackageExplorer.csproj'
         configuration: $(BuildConfiguration)
         packDirectory: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
@@ -163,6 +164,11 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
       displayName: Publish Build Packages
       artifact: $(ReleaseChannel)
+
+    - publish: $(Build.ArtifactStagingDirectory)\Logs
+      displayName: Publish Build Logs
+      artifact: Logs
+      condition: always()
 
     - publish: Build
       displayName: Publish signing scripts
