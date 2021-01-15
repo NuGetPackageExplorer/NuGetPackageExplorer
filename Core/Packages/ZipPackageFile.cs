@@ -11,7 +11,7 @@ namespace NuGetPe
         private readonly Func<Stream> _streamFactory;
 
         public ZipPackageFile(PackageArchiveReader reader, ZipArchiveEntry entry)
-            : base(UnescapePath(entry.FullName.Replace('/', System.IO.Path.DirectorySeparatorChar)))
+            : base(UnescapePath(entry.FullName.Replace('/', '\\')))
         {
             Debug.Assert(reader != null, "reader should not be null");
             LastWriteTime = entry.LastWriteTime;

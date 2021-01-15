@@ -15,7 +15,8 @@ namespace NuGetPe
             
             try
             {
-                var nuf = FrameworkNameUtility.ParseNuGetFrameworkFromFilePath(path, out var effectivePath);
+                // make sure we switch to the directory char per platform for this check as ParseNuGetFrameworkFromFilePath looks for that
+                var nuf = FrameworkNameUtility.ParseNuGetFrameworkFromFilePath(path?.Replace('\\', System.IO.Path.DirectorySeparatorChar), out var effectivePath);
 
                 EffectivePath = effectivePath;
 
