@@ -14,7 +14,7 @@ using PackageExplorerViewModel;
 namespace PackageExplorer
 {
 
-    public partial class PackageMetadataEditor : UserControl, IPackageEditorService
+    public sealed partial class PackageMetadataEditor : UserControl, IPackageEditorService
     {
         private ObservableCollection<FrameworkAssemblyReference> _frameworkAssemblies;
         private EditableFrameworkAssemblyReference _newFrameworkAssembly;

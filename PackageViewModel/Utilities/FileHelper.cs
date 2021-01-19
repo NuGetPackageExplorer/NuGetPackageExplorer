@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
 
+[assembly: DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
+
 namespace PackageExplorerViewModel
 {
     public static class FileHelper
@@ -34,7 +36,7 @@ namespace PackageExplorerViewModel
         {
             // TODO: check for content type of the file here
             var extension = Path.GetExtension(path);
-            return !string.IsNullOrEmpty(extension) && BinaryFileExtensions.Any(p => p.Equals(extension, StringComparison.InvariantCultureIgnoreCase));
+            return !string.IsNullOrEmpty(extension) && BinaryFileExtensions.Any(p => p.Equals(extension, StringComparison.OrdinalIgnoreCase));
         }
 
         public static void OpenFileInShell(PackageFile file, IUIServices uiServices)

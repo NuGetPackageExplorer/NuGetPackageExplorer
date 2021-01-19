@@ -144,7 +144,7 @@ namespace PackageExplorer
                         throw new OperationCanceledException();
 
                     if (result.Status == DownloadResourceResultStatus.NotFound)
-                        throw new Exception($"Package '{packageIdentity.Id} {packageIdentity.Version}' not found");
+                        throw new PackageNotFoundException($"Package '{packageIdentity.Id} {packageIdentity.Version}' not found");
 
                     var tempFilePath = Path.GetTempFileName();
                     using (var fileStream = File.OpenWrite(tempFilePath))
@@ -241,6 +241,18 @@ namespace PackageExplorer
             return mediaType == "application/octet-stream" || // NuGet Protocol v3
                 mediaType == "binary/octet-stream"; // NuGet Protocol v2
         }
+    }
+
+
+    [Serializable]
+    public class PackageNotFoundException : Exception
+    {
+        public PackageNotFoundException() { }
+        public PackageNotFoundException(string message) : base(message) { }
+        public PackageNotFoundException(string message, Exception inner) : base(message, inner) { }
+        protected PackageNotFoundException(
+          System.Runtime.Serialization.SerializationInfo info,
+          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
     internal class ProgressStream : Stream

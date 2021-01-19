@@ -12,7 +12,7 @@ using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
-    public partial class FileEditor : UserControl, IFileEditorService
+    public sealed partial class FileEditor : UserControl, IFileEditorService
     {
         private static readonly FontFamily ConsolasFont = new FontFamily("Consolas");
 
