@@ -412,12 +412,12 @@ namespace PackageExplorerViewModel
 
                 if (!ShowPassword)
                 {
-                    OnError(new Exception(Resources.PasswordRequired));
+                    OnError(new ArgumentException(Resources.PasswordRequired));
                     ShowPassword = true;
                 }
                 else
                 {
-                    OnError(new Exception(Resources.PasswordIncorrect));
+                    OnError(new ArgumentOutOfRangeException(Resources.PasswordIncorrect));
                 }
             }
             catch (Exception ex)

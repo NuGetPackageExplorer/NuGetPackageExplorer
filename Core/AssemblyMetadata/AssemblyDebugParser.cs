@@ -410,19 +410,38 @@ namespace NuGetPe.AssemblyMetadata
             SourceLinkMap? map = null;
 
             var errors = new List<string>();
+            var list = new List<AssemblyDebugSourceDocument>();
+
             if (bytes != null && bytes.Length > 0)
             {
                 var text = Encoding.UTF8.GetString(bytes);
-                map = SourceLinkMap.Parse(text, errors.Add);
-            }
 
-            var list = new List<AssemblyDebugSourceDocument>();
+                try
+                {
+                    map = SourceLinkMap.Parse(text);
+                }
+                catch(InvalidDataException)
+                {
+                    errors.Add("Source Link data is invalid.");
+                }
+            }
 
             foreach (var doc in GetSourceDocuments())
             {
-                if (!doc.IsEmbedded)
-                    doc.Url = map?.GetUri(doc.Name);
-                list.Add(doc);
+                if(doc.IsEmbedded)
+                {
+                    list.Add(doc);
+                }
+                else
+                {
+                    string? uri = default;
+                    if (map?.TryGetUri(doc.Name, out uri) == true)
+                    {
+                        doc.Url = uri!;
+                        list.Add(doc);
+                    }
+                }
+                    
             }
 
             return (list, errors);
