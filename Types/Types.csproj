@@ -15,9 +15,5 @@
     <PackageReference Include="NuGet.Packaging" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="System.ComponentModel.Composition" Version="5.0.0" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Update="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.2" />
-  </ItemGroup>
   
 </Project>
