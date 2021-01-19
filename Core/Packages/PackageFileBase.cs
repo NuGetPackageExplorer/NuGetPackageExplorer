@@ -11,25 +11,18 @@ namespace NuGetPe
     {
         protected PackageFileBase(string path)
         {
-            Path = path;
-            
-            try
+            Path = path;            
+          
+            // make sure we switch to the directory char per platform for this check as ParseNuGetFrameworkFromFilePath looks for that
+            var nuf = FrameworkNameUtility.ParseNuGetFrameworkFromFilePath(path?.Replace('\\', System.IO.Path.DirectorySeparatorChar), out var effectivePath);
+
+            EffectivePath = effectivePath;
+
+            NuGetFramework = nuf;
+            if(nuf != null)
             {
-                // make sure we switch to the directory char per platform for this check as ParseNuGetFrameworkFromFilePath looks for that
-                var nuf = FrameworkNameUtility.ParseNuGetFrameworkFromFilePath(path?.Replace('\\', System.IO.Path.DirectorySeparatorChar), out var effectivePath);
-
-                EffectivePath = effectivePath;
-
-                NuGetFramework = nuf;
-                if(nuf != null)
-                {
-                    TargetFramework = new FrameworkName(NuGetFramework.DotNetFrameworkName);
-                }                
-            }
-            catch (ArgumentException) // could be an invalid framework/version
-            {
-
-            }
+                TargetFramework = new FrameworkName(NuGetFramework.DotNetFrameworkName);
+            }                           
         }
 
         public string Path
