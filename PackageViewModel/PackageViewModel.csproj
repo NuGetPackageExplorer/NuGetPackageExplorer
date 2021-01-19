@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <TargetFrameworks>net5.0-windows10.0.19041;net5.0</TargetFrameworks>
-    <AssetTargetFallback>net472</AssetTargetFallback>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
     <AssemblyName>NuGetPackageExplorer.PackageViewModel</AssemblyName>    
@@ -12,9 +11,7 @@
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
     <PackageReference Include="NuGet.Credentials" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />
-    <!-- Needs 2.1.2 explicitly until https://github.com/NuGet/Home/issues/5957 is fixed -->
-    <PackageReference Include="Microsoft.Web.Xdt" Version="2.1.2" /> 
+    <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />    
     <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="System.Windows.Extensions" Version="5.0.0" />
