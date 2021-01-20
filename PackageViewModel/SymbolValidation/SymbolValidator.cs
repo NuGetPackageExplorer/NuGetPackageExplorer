@@ -13,6 +13,7 @@ using NuGet.Packaging;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel.Utilities;
+using NuGet.Protocol.Core.Types;
 
 #if WINDOWS
 using AuthenticodeExaminer;
@@ -137,7 +138,9 @@ namespace PackageExplorerViewModel
 
             SourceLinkResult = SymbolValidationResult.Pending;
             DeterministicResult = DeterministicResult.Pending;
-            CompilerFlagsResult = HasCompilerFlagsResult.Pending;               
+            CompilerFlagsResult = HasCompilerFlagsResult.Pending;
+
+            UserAgent.SetUserAgent(_httpClient);
         }  
 
         public async Task ResetToDefault()
