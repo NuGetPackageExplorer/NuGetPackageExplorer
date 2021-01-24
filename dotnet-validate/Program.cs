@@ -17,7 +17,6 @@ namespace NuGetPe
         
         private const int EXIT_SUCCESS   =  0;
         private const int EXIT_FAILURE   =  1;
-        private const int EX_USAGE       = 64; // The command was used incorrectly, e.g., with the wrong number of arguments, a bad flag, bad syntax in a parameter, or whatever.
         private const int EX_UNAVAILABLE = 69; // A service is unavailable. This can occur if a support program or file does not exist. This can also be used as a catch-all message when something you wanted to do doesn't work, but you don't know why.
         private const int EX_SOFTWARE    = 70; // An internal software error has been detected. This should be limited to non-operating system related errors if possible.
         
