@@ -12,7 +12,7 @@ using NuGet.Versioning;
 
 namespace NuGetPe
 {
-    public class NuGetPackageDownloader : IDisposable
+    internal sealed class NuGetPackageDownloader : IDisposable
     {
         private readonly ILogger _logger;
         private readonly ISettings _settings;
@@ -27,13 +27,13 @@ namespace NuGetPe
 
         private async Task<PackageIdentity> GetPackageIdentityAsync(string packageId, SourceRepository sourceRepository, CancellationToken cancellationToken)
         {
-            var metadataResource = await sourceRepository.GetResourceAsync<MetadataResource>(cancellationToken);
-            var latestReleaseVersion = await metadataResource.GetLatestVersion(packageId, includePrerelease: false, includeUnlisted: false, _sourceCacheContext, _logger, cancellationToken);
+            var metadataResource = await sourceRepository.GetResourceAsync<MetadataResource>(cancellationToken).ConfigureAwait(false);
+            var latestReleaseVersion = await metadataResource.GetLatestVersion(packageId, includePrerelease: false, includeUnlisted: false, _sourceCacheContext, _logger, cancellationToken).ConfigureAwait(false);
             if (latestReleaseVersion != null)
             {
                 return new PackageIdentity(packageId, latestReleaseVersion);
             }
-            var latestPrereleaseVersion = await metadataResource.GetLatestVersion(packageId, includePrerelease: true, includeUnlisted: false, _sourceCacheContext, _logger, cancellationToken);
+            var latestPrereleaseVersion = await metadataResource.GetLatestVersion(packageId, includePrerelease: true, includeUnlisted: false, _sourceCacheContext, _logger, cancellationToken).ConfigureAwait(false);
             if (latestPrereleaseVersion != null)
             {
                 return new PackageIdentity(packageId, latestPrereleaseVersion);
@@ -49,10 +49,10 @@ namespace NuGetPe
             if (packageVersion != null)
                 packageIdentity = new PackageIdentity(packageId, packageVersion);
             else
-                packageIdentity = await GetPackageIdentityAsync(packageId, sourceRepository, cancellationToken);
+                packageIdentity = await GetPackageIdentityAsync(packageId, sourceRepository, cancellationToken).ConfigureAwait(false);
             var globalPackagesFolder = SettingsUtility.GetGlobalPackagesFolder(_settings);
-            var downloadResource = await sourceRepository.GetResourceAsync<DownloadResource>(cancellationToken);
-            var result = await downloadResource.GetDownloadResourceResultAsync(packageIdentity, new PackageDownloadContext(_sourceCacheContext), globalPackagesFolder, _logger, cancellationToken);
+            var downloadResource = await sourceRepository.GetResourceAsync<DownloadResource>(cancellationToken).ConfigureAwait(false);
+            var result = await downloadResource.GetDownloadResourceResultAsync(packageIdentity, new PackageDownloadContext(_sourceCacheContext), globalPackagesFolder, _logger, cancellationToken).ConfigureAwait(false);
             if (result.Status != DownloadResourceResultStatus.Available)
             {
                 throw new UnavailableException($"The package {packageIdentity} was not found on {sourceRepository.PackageSource}.");
@@ -61,7 +61,7 @@ namespace NuGetPe
             {
                 throw new InvalidOperationException($"The package stream is expected to be a {nameof(FileStream)} but is a {result.PackageStream?.GetType()}.");
             }
-            await result.PackageStream.DisposeAsync();
+            await result.PackageStream.DisposeAsync().ConfigureAwait(false);
             return new FileInfo(fileStream.Name);
         }
 

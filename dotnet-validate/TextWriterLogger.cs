@@ -24,7 +24,7 @@ namespace NuGetPe
         public override async Task LogAsync(ILogMessage message)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
-            await _textWriter.WriteLineAsync(FormatMessage(message));
+            await _textWriter.WriteLineAsync(FormatMessage(message)).ConfigureAwait(false);
         }
 
         private static string FormatMessage(ILogMessage message)

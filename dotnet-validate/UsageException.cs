@@ -7,5 +7,13 @@ namespace NuGetPe
         public UsageException(string message) : base(message)
         {
         }
+
+        public UsageException()
+        {
+        }
+
+        public UsageException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
     }
 }
