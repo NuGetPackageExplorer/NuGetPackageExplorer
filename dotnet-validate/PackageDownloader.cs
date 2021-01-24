@@ -43,6 +43,7 @@ namespace NuGetPe
 
         public async Task<FileInfo> DownloadAsync(string packageId, NuGetVersion? packageVersion, CancellationToken cancellationToken)
         {
+            // TODO: Support multiple package sources
             var defaultSource = new PackageSource(NuGet.Configuration.NuGetConstants.V3FeedUrl, NuGet.Configuration.NuGetConstants.FeedName);
             var sourceRepository = Repository.Factory.GetCoreV3(defaultSource);
             PackageIdentity packageIdentity;
