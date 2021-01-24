@@ -1,15 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0-windows10.0.19041;net5.0</TargetFrameworks>
+    <TargetFrameworks>net5.0-windows10.0.19041</TargetFrameworks>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
-    <AssemblyName>NuGetPackageExplorer.PackageViewModel</AssemblyName>    
+    <AssemblyName>NuGetPackageExplorer.PackageViewModel</AssemblyName>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
     <PackageReference Include="NuGet.Credentials" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />    
     <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />

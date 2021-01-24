@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 
-namespace PackageExplorerViewModel
+namespace NuGetPe
 {
     public class SortedCollection<T> : ICollection<T>, INotifyCollectionChanged, INotifyPropertyChanged
     {

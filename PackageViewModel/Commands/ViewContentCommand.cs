@@ -8,7 +8,6 @@ using System.Windows.Input;
 using AuthenticodeExaminer;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
-using PackageExplorerViewModel.Utilities;
 
 namespace PackageExplorerViewModel
 {
@@ -93,7 +92,7 @@ namespace PackageExplorerViewModel
                     foreach (var viewer in contentViewers)
                     {
 
-                        var files = file.GetAssociatedFiles().ToList();
+                        var files = file.GetAssociatedPackageFiles().ToList();
 
                         content = viewer.GetView(file, files);
                         if (content != null)

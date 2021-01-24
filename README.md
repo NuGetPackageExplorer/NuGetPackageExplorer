@@ -15,10 +15,61 @@ the release version with no interference and will automatically update.
 | [![Nightly build number](https://npenightly.blob.core.windows.net/nightly/ci_badge.svg?q=1)](https://npenightly.blob.core.windows.net/nightly/install.html)| [Install](https://npenightly.blob.core.windows.net/nightly/install.html)
 | [![Stable build number](https://npenightly.blob.core.windows.net/store/stable_badge.svg?q=1)](https://www.microsoft.com/store/apps/9wzdncrdmdm3) | [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) |
 | [![Chocolatey build number](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg)](https://chocolatey.org/packages/NugetPackageExplorer) | [Chocolatey](https://chocolatey.org/packages/NugetPackageExplorer) |
+| ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/dotnet-validate) | [dotnet-validate CLI](https://www.nuget.org/packages/dotnet-validate) |
 
 ### Microsoft Store (recommended)
 
 <a href='//www.microsoft.com/store/apps/9wzdncrdmdm3?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='English badge' width="284" height="104" /></a>
+
+### .NET CLI Tool
+
+A subset of functionality for checking package health is now availabe as a cross-platform CLI tool. Install with:
+
+`dotnet tool install -g dotnet-validate --version 0.0.1-preview.*`
+
+*Note: Use the latest version*
+
+There is one command and two subcommands:
+
+The main command is `package`. This is so `dotnet validate ...` can be used for additional things later.
+
+Usage:
+
+```
+Usage:
+  dotnet validate package local [options] <file>
+
+Arguments:
+  <file>    Package to validate.
+
+Options:
+  -?, -h, --help    Show help and usage information
+
+```
+
+```
+Usage:
+  dotnet validate package remote [options] <packageId>
+
+Arguments:
+  <packageId>    Package Id
+
+Options:
+  -v, --version <version>            Package version. Defaults to latest.
+  -s, --feed-source <feed-source>    V3 NuGet Feed Source. [default: https://api.nuget.org/v3/index.json]
+  -?, -h, --help                     Show help and usage information
+
+```
+
+Return codes:
+Tool will return `-1` if the package is no full valid. Details will be printed to the console.
+
+#### To Do
+
+A lot! The tool should emit the results in a machine-parsable way (json).
+
+*Known Issue:* Exact versions for remote packages isn't working. Only the latest is checked. Will be fixed shortly.
+
 
 ### Chocolatey
 

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
@@ -43,6 +44,7 @@ namespace PackageExplorerViewModel
         private ICommand? _collapseAllCommand;
         private RelayCommand? _exportCommand;
         private FileEditorViewModel? _fileEditorViewModel;
+        private SymbolValidatorResultViewModel? _symbolValidatorResultViewModel;
         private bool _hasEdit;
         private bool _isInEditMode;
         private RelayCommand<object>? _openContentFileCommand;
@@ -87,14 +89,14 @@ namespace PackageExplorerViewModel
             _packageRules = packageRules;
 
 
-        
 
-            
+
+
             RootFolder = PathToTreeConverter.Convert(Package.GetFiles().ToList(), this);
             PackagePath = path; // also sets symbol validator
-            PackageSource = source;            
+            PackageSource = source;
 
-            _packageMetadata = new EditablePackageMetadata(Package, UIServices, SymbolValidator!);
+            _packageMetadata = new EditablePackageMetadata(Package, UIServices, this);
 
             _isSigned = _packageMetadata.IsSigned;
 
@@ -165,6 +167,19 @@ namespace PackageExplorerViewModel
         }
 
         public SymbolValidator SymbolValidator { get; private set; }
+
+        public SymbolValidatorResultViewModel? SymbolValidatorResultViewModel
+        {
+            get { return _symbolValidatorResultViewModel; }
+            set
+            {
+                if (_symbolValidatorResultViewModel != value)
+                {
+                    _symbolValidatorResultViewModel = value;
+                    OnPropertyChanged(nameof(SymbolValidatorResultViewModel));
+                }
+            }
+        }
 
         public bool PublishedOnNuGetOrg => SymbolValidator!.IsPublicPackage;
 
@@ -1185,7 +1200,7 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-        #region AddScriptCommand 
+        #region AddScriptCommand
 
         public ICommand AddScriptCommand
         {
@@ -1347,7 +1362,7 @@ namespace PackageExplorerViewModel
 
         internal IEnumerable<IPackageFile> GetFiles()
         {
-            return RootFolder.GetFiles();
+            return RootFolder.GetPackageFiles();
         }
 
         public string? GetCurrentPackageTempFile()
@@ -1384,7 +1399,7 @@ namespace PackageExplorerViewModel
 
         public void BeginEdit()
         {
-            // raise the property change event here to force the edit form to rebind 
+            // raise the property change event here to force the edit form to rebind
             // all controls, which will erase all error states, if any, left over from the previous edit
             OnPropertyChanged(nameof(PackageMetadata));
             IsInEditMetadataMode = true;
@@ -1458,10 +1473,12 @@ namespace PackageExplorerViewModel
             // Refresh the symbol validator
             // No need to refresh for certain properties that don't affect the data
             if (propertyName == nameof(SelectedItem) ||
-                propertyName == nameof(CurrentFileInfo))
+                propertyName == nameof(CurrentFileInfo) ||
+                propertyName == nameof(SymbolValidatorResultViewModel))
                 return;
 
-            await SymbolValidator!.ResetToDefault();
+            var result = await Task.Run(async () => await SymbolValidator.Validate().ConfigureAwait(false)).ConfigureAwait(true);
+            SymbolValidatorResultViewModel = new SymbolValidatorResultViewModel(result);
         }
         internal void ExportManifest(string fullpath, bool askForConfirmation = true, bool includeFilesSection = true)
         {
@@ -1485,7 +1502,7 @@ namespace PackageExplorerViewModel
             {
                 var tempPath = Path.GetTempPath();
 
-                manifest.Files.AddRange(RootFolder.GetFiles().Select(
+                manifest.Files.AddRange(RootFolder.GetPackageFiles().Select(
                     f => new ManifestFile
                     {
 
@@ -1687,7 +1704,7 @@ namespace PackageExplorerViewModel
             {
                 using var str = ManifestUtility.ReadManifest(metadataFileStream);
                 var manifest = Manifest.ReadFrom(str, true);
-                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices, SymbolValidator);
+                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices, this);
                 PackageMetadata = newMetadata;
 
                 return true;
