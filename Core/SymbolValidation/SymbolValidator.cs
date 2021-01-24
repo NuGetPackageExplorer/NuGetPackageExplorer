@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyModel;
 
+using NuGet.Protocol.Core.Types;
+
 using NuGetPe.AssemblyMetadata;
 
 namespace NuGetPe
@@ -35,13 +37,24 @@ namespace NuGetPe
                     IsPublicPackage = true;
                 }
             }
+
+            UserAgent.SetUserAgent(_httpClient);
         }
 
         public async Task<SymbolValidatorResult> Validate(CancellationToken cancellationToken = default)
         {
-            // Get relevant files to check
-            var files = GetFilesToCheck();
-            return await CalculateValidity(files, cancellationToken).ConfigureAwait(false);
+            try
+            {
+                // Get relevant files to check
+                var files = GetFilesToCheck();
+                return await CalculateValidity(files, cancellationToken).ConfigureAwait(false);
+            }
+            catch(Exception e)
+            {
+                DiagnosticsClient.TrackException(e, _package, IsPublicPackage);
+
+                return new SymbolValidatorResult(SymbolValidationResult.NoSymbols, $"Validation Exception: {e.Message}", DeterministicResult.NonDeterministic, null, HasCompilerFlagsResult.Missing, null);
+            }            
         }
 
         public IReadOnlyList<IFile> GetAllFiles() => GetFilesToCheck();
@@ -66,7 +79,7 @@ namespace NuGetPe
 
             var depsFiles = _rootFolder["tools"]?.GetFiles().Where(f => f.Path.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase)) ?? Enumerable.Empty<IFile>();
 
-            foreach(IFile depFile in depsFiles)
+            foreach(var depFile in depsFiles)
             {
                 using var reader = new DependencyContextJsonReader();
                 var context = reader.Read(depFile.GetStream());
