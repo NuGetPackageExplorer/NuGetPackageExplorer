@@ -8,6 +8,7 @@ using System.Linq;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
@@ -1476,7 +1477,7 @@ namespace PackageExplorerViewModel
                 propertyName == nameof(SymbolValidatorResultViewModel))
                 return;
 
-            var result = await SymbolValidator.Validate();
+            var result = await Task.Run(async () => await SymbolValidator.Validate().ConfigureAwait(false)).ConfigureAwait(true);
             SymbolValidatorResultViewModel = new SymbolValidatorResultViewModel(result);
         }
         internal void ExportManifest(string fullpath, bool askForConfirmation = true, bool includeFilesSection = true)
