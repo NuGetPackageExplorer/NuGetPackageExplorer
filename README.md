@@ -62,7 +62,7 @@ Options:
 ```
 
 Return codes:
-Tool will return `-1` if the package is no full valid. Details will be printed to the console.
+Tool will return `-1` if the package is not fully valid. Details will be printed to the console.
 
 #### To Do
 
