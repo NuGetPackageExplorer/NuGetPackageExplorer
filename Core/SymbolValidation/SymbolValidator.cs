@@ -158,8 +158,7 @@ namespace NuGetPe
                                             untrackedSources,
                                             nonDeterministic,
                                             nonReproducible,
-                                            false,
-                                            cancellationToken).ConfigureAwait(false))
+                                            false).ConfigureAwait(false))
                     {
                         pdbChecksumValid = false;
                         noSymbols.Add(file.Primary);
@@ -283,8 +282,7 @@ namespace NuGetPe
                                 untrackedSources,
                                 nonDeterministic,
                                 nonReproducible,
-                                true,
-                                cancellationToken).ConfigureAwait(false))
+                                true).ConfigureAwait(false))
                             {
                                 noSymbols.Remove(file);
                             }
@@ -316,8 +314,7 @@ namespace NuGetPe
                             untrackedSources,
                             nonDeterministic,
                             nonReproducible,
-                            true,
-                            cancellationToken).ConfigureAwait(false))
+                            true).ConfigureAwait(false))
                         {
                             noSymbols.Remove(file);
                         }
@@ -520,8 +517,7 @@ namespace NuGetPe
             List<IFile> untrackedSources,
             List<IFile> nonDeterministic,
             List<IFile> nonReproducible,
-            bool validateChecksum,
-            CancellationToken cancellationToken)
+            bool validateChecksum)
         {
             var peStream = MakeSeekable(input.GetStream(), true);
             try
