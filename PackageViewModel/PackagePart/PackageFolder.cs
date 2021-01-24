@@ -356,9 +356,7 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                // detach from current parent
-                // FIXME
-                // file._parent?.Detach(file);
+                ((PackageFolder?)file.Parent)?.Detach(file);
 
                 newFile = file;
             }
