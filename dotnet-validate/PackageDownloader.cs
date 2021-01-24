@@ -41,11 +41,13 @@ namespace NuGetPe
             throw new UnavailableException($"The package {packageId} was not found on {sourceRepository.PackageSource}.");
         }
 
-        public async Task<FileInfo> DownloadAsync(string packageId, NuGetVersion? packageVersion, CancellationToken cancellationToken)
+        public async Task<FileInfo> DownloadAsync(string packageId, NuGetVersion? packageVersion, Uri feedUrl, CancellationToken cancellationToken)
         {
-            // TODO: Support multiple package sources
-            var defaultSource = new PackageSource(NuGet.Configuration.NuGetConstants.V3FeedUrl, NuGet.Configuration.NuGetConstants.FeedName);
-            var sourceRepository = Repository.Factory.GetCoreV3(defaultSource);
+            if (feedUrl is null)
+                throw new ArgumentNullException(nameof(feedUrl));
+
+            var packageSource = new PackageSource(feedUrl.ToString());
+            var sourceRepository = Repository.Factory.GetCoreV3(packageSource);
             PackageIdentity packageIdentity;
             if (packageVersion != null)
                 packageIdentity = new PackageIdentity(packageId, packageVersion);

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -21,6 +24,35 @@ namespace NuGetPe
 
         private static async Task<int> Main(string[] args)
         {
+            var localComand = new Command("local", "A local package")
+            {
+                new Argument<string>("file", "Package to validate.")
+            };
+            
+            var remoteCommand = new Command("remote", "A package on a NuGet Feed")
+            {
+                new Argument<string>("packageId", "Package Id"),
+                new Option<NuGetVersion?>(new[] { "--version", "-v" }, "Package version. Defaults to latest."),   
+                new Option<Uri>(new []{"--feed-source", "-s"}, () => new Uri(NuGet.Configuration.NuGetConstants.V3FeedUrl), $"V3 NuGet Feed Source.")
+            };
+
+            var rootCommand = new RootCommand()
+            {
+                new Command("package", "Validates NuGet package health. Ensures your package meets the .NET Foundation's guidelines for secure packages.")
+                {
+                      localComand,
+                      remoteCommand
+                }
+            };
+
+            localComand.Handler = CommandHandler.Create<string>(RunLocalCommand);
+            remoteCommand.Handler = CommandHandler.Create<string, NuGetVersion?, Uri>(RunRemoteCommand);
+
+            return await rootCommand.InvokeAsync(args).ConfigureAwait(false);
+        }
+
+        private static async Task<int> RunLocalCommand(string file)
+        {
             try
             {
                 using var cancellationTokenSource = new CancellationTokenSource();
@@ -30,29 +62,15 @@ namespace NuGetPe
                     cancellationTokenSource.Cancel();
                 };
 
-                var (packageId, packageVersion) = ParseArguments(args);
-
-                var packageFile = new FileInfo(packageId);
+                var packageFile = new FileInfo(file);
                 if (packageFile.Exists)
                 {
                     await Console.Out.WriteLineAsync($"Validating {packageFile.FullName}").ConfigureAwait(false);
-                }
-                else
-                {
-                    using var downloader = new NuGetPackageDownloader(Console.Out);
-                    packageFile = await downloader.DownloadAsync(packageId, packageVersion, cancellationTokenSource.Token).ConfigureAwait(false);
-                    var versionString = packageVersion == null ? "" : packageVersion.ToFullString() + " ";
-                    await Console.Out.WriteLineAsync($"Validating {packageId} {versionString}from {packageFile.FullName}").ConfigureAwait(false);
                 }
 
                 var isValid = await RunAsync(packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
 
                 return isValid ? EXIT_SUCCESS : EXIT_FAILURE;
-            }
-            catch (UsageException exception)
-            {
-                await Console.Error.WriteLineAsync(exception.Message).ConfigureAwait(false);
-                return EX_USAGE;
             }
             catch (UnavailableException exception)
             {
@@ -66,26 +84,46 @@ namespace NuGetPe
             }
         }
 
-        private static (string packageId, NuGetVersion? packageVersion) ParseArguments(string[] args)
+        private static async Task<int> RunRemoteCommand(string packageId, NuGetVersion? version, Uri feedSource)
         {
-            if (!args.Any())
+            try
             {
-                throw new UsageException("usage: nuget-package-validate package-id [package-version]");
-            }
 
-            var packageId = args[0];
-            if (args.Length < 2)
+                // null is getting passed in as 0.0.0 for some reason
+                if(version != null && version.Major == 0 && version.Minor == 0 && version.Patch == 0)
+                {
+                    version = null;
+                }
+
+                using var cancellationTokenSource = new CancellationTokenSource();
+                Console.CancelKeyPress += (_, eventArgs) =>
+                {
+                    eventArgs.Cancel = !cancellationTokenSource.IsCancellationRequested;
+                    cancellationTokenSource.Cancel();
+                };
+                                
+                using var downloader = new NuGetPackageDownloader(Console.Out);
+                var packageFile = await downloader.DownloadAsync(packageId, version, feedSource, cancellationTokenSource.Token).ConfigureAwait(false);
+                var versionString = version == null ? "" : version.ToFullString() + " ";
+                await Console.Out.WriteLineAsync($"Validating {packageId} {versionString}from {packageFile.FullName}").ConfigureAwait(false);
+                
+
+                var isValid = await RunAsync(packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
+
+                return isValid ? EXIT_SUCCESS : EXIT_FAILURE;
+            }
+            catch (UnavailableException exception)
             {
-                return (packageId, null);
+                await Console.Error.WriteLineAsync(exception.Message).ConfigureAwait(false);
+                return EX_UNAVAILABLE;
             }
-
-            if (!(NuGetVersion.TryParse(args[1], out var packageVersion)))
+            catch (Exception exception)
             {
-                throw new UsageException($"The specified version ({args[1]}) is not a valid NuGet version. See https://docs.microsoft.com/en-us/nuget/concepts/package-versioning for more information.");
+                await Console.Error.WriteLineAsync(exception.ToString()).ConfigureAwait(false);
+                return EX_SOFTWARE;
             }
-
-            return (packageId, packageVersion);
         }
+
 
         private static async Task<bool> RunAsync(FileInfo packageFile, CancellationToken cancellationToken)
         {
