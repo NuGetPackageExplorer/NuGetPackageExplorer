@@ -25,7 +25,7 @@ the release version with no interference and will automatically update.
 
 A subset of functionality for checking package health is now availabe as a cross-platform CLI tool. Install with:
 
-`dotnet tool install -g dotnet-validate --version 0.0.1-preview.*`
+`dotnet tool install -g dotnet-validate --version 0.0.1-preview.42`
 
 *Note: Use the latest version*
 
