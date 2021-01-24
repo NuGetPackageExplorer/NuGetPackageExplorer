@@ -22,6 +22,7 @@ namespace NuGetPe
         // so we don't have to hold on to that resource
         private readonly Func<Stream> _streamFactory;
         private ManifestMetadata _metadata;
+        private bool _signatureLoaded;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public ZipPackage(string filePath)
@@ -300,6 +301,8 @@ namespace NuGetPe
         
         public async Task LoadSignatureDataAsync()
         {
+            if (_signatureLoaded) return;
+
             using var reader = new PackageArchiveReader(_streamFactory(), false);
             IsSigned = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
             if (IsSigned)
@@ -330,6 +333,8 @@ namespace NuGetPe
                 }
 
             }
+
+            _signatureLoaded = true;
         }
 
         public async Task VerifySignatureAsync()

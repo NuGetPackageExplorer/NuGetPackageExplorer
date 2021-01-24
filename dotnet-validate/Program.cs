@@ -92,9 +92,8 @@ namespace NuGetPe
         private static async Task<bool> RunAsync(FileInfo packageFile, CancellationToken cancellationToken)
         {
             using var package = new ZipPackage(packageFile.FullName);
-            // We need to load the signature before passing the package to the validator so that it can be properly identified as a public (nuget.org) package
-            await package.LoadSignatureDataAsync().ConfigureAwait(false);
-            var validator = new SymbolValidator(package, packageFile.FullName, PathToTreeConverter.Convert(package.GetFiles().ToList()));
+            
+            var validator = new SymbolValidator(package, packageFile.FullName);
             var result = await validator.Validate(cancellationToken).ConfigureAwait(false);
             await WriteResult("Source Link", result.SourceLinkResult, result.SourceLinkErrorMessage, SourceLinkDescription).ConfigureAwait(false);
             await WriteResult("Deterministic (dll/exe)", result.DeterministicResult, result.DeterministicErrorMessage, DeterministicDescription).ConfigureAwait(false);

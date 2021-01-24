@@ -23,20 +23,11 @@ namespace NuGetPe
         private readonly IFolder _rootFolder;
         private readonly HttpClient _httpClient = new();
 
-        public SymbolValidator(IPackage package, string packagePath, IFolder rootFolder)
+        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder = null)
         {
             _package = package ?? throw new ArgumentNullException(nameof(package));
             _packagePath = packagePath ?? throw new ArgumentNullException(nameof(packagePath));
-            _rootFolder = rootFolder ?? throw new ArgumentNullException(nameof(rootFolder));
-
-            // NuGet signs all its packages and stamps on the service index. Look for that.
-            if (package is ISignaturePackage sigPackage)
-            {
-                if (sigPackage.RepositorySignature?.V3ServiceIndexUrl.AbsoluteUri.Contains(".nuget.org/", StringComparison.OrdinalIgnoreCase) == true)
-                {
-                    IsPublicPackage = true;
-                }
-            }
+            _rootFolder = rootFolder ?? PathToTreeConverter.Convert(package.GetFiles().ToList());
 
             UserAgent.SetUserAgent(_httpClient);
         }
@@ -45,6 +36,16 @@ namespace NuGetPe
         {
             try
             {
+                // NuGet signs all its packages and stamps on the service index. Look for that.
+                if (_package is ISignaturePackage sigPackage)
+                {
+                    await sigPackage.LoadSignatureDataAsync().ConfigureAwait(false);
+                    if (sigPackage.RepositorySignature?.V3ServiceIndexUrl.AbsoluteUri.Contains(".nuget.org/", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        IsPublicPackage = true;
+                    }
+                }
+
                 // Get relevant files to check
                 var files = GetFilesToCheck();
                 return await CalculateValidity(files, cancellationToken).ConfigureAwait(false);
@@ -651,7 +652,7 @@ namespace NuGetPe
         /// <summary>
         /// Package is available from a public feed
         /// </summary>
-        public bool IsPublicPackage { get; }
+        public bool IsPublicPackage { get; private set; }
 
         private class FileWithPdb
         {
