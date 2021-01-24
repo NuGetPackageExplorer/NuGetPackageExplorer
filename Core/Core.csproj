@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework Condition="$([MSBuild]::IsOSPlatform('Windows'))">net5.0-windows10.0.19041</TargetFramework>
-    <TargetFramework Condition="!$([MSBuild]::IsOSPlatform('Windows'))">net5.0</TargetFramework>
+    <TargetFrameworks>net5.0;net5.0-windows10.0.19041</TargetFrameworks>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
