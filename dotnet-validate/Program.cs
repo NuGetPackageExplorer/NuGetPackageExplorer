@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -8,7 +8,7 @@ using NuGet.Versioning;
 
 namespace NuGetPe
 {
-    class Program
+    internal class Program
     {
         // Standard exit codes, see https://man.openbsd.org/sysexits and https://docs.microsoft.com/en-us/cpp/c-runtime-library/exit-success-exit-failure
         // ReSharper disable InconsistentNaming
@@ -37,33 +37,33 @@ namespace NuGetPe
                 var packageFile = new FileInfo(packageId);
                 if (packageFile.Exists)
                 {
-                    await Console.Out.WriteLineAsync($"Validating {packageFile.FullName}");
+                    await Console.Out.WriteLineAsync($"Validating {packageFile.FullName}").ConfigureAwait(false);
                 }
                 else
                 {
                     using var downloader = new NuGetPackageDownloader(Console.Out);
-                    packageFile = await downloader.DownloadAsync(packageId, packageVersion, cancellationTokenSource.Token);
+                    packageFile = await downloader.DownloadAsync(packageId, packageVersion, cancellationTokenSource.Token).ConfigureAwait(false);
                     var versionString = packageVersion == null ? "" : packageVersion.ToFullString() + " ";
-                    await Console.Out.WriteLineAsync($"Validating {packageId} {versionString}from {packageFile.FullName}");
+                    await Console.Out.WriteLineAsync($"Validating {packageId} {versionString}from {packageFile.FullName}").ConfigureAwait(false);
                 }
 
-                var isValid = await RunAsync(packageFile, cancellationTokenSource.Token);
+                var isValid = await RunAsync(packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
 
                 return isValid ? EXIT_SUCCESS : EXIT_FAILURE;
             }
             catch (UsageException exception)
             {
-                await Console.Error.WriteLineAsync(exception.Message);
+                await Console.Error.WriteLineAsync(exception.Message).ConfigureAwait(false);
                 return EX_USAGE;
             }
             catch (UnavailableException exception)
             {
-                await Console.Error.WriteLineAsync(exception.Message);
+                await Console.Error.WriteLineAsync(exception.Message).ConfigureAwait(false);
                 return EX_UNAVAILABLE;
             }
             catch (Exception exception)
             {
-                await Console.Error.WriteLineAsync(exception.ToString());
+                await Console.Error.WriteLineAsync(exception.ToString()).ConfigureAwait(false);
                 return EX_SOFTWARE;
             }
         }
@@ -93,12 +93,12 @@ namespace NuGetPe
         {
             using var package = new ZipPackage(packageFile.FullName);
             // We need to load the signature before passing the package to the validator so that it can be properly identified as a public (nuget.org) package
-            await package.LoadSignatureDataAsync();
+            await package.LoadSignatureDataAsync().ConfigureAwait(false);
             var validator = new SymbolValidator(package, packageFile.FullName, PathToTreeConverter.Convert(package.GetFiles().ToList()));
-            var result = await validator.Validate(cancellationToken);
-            await WriteResult("Source Link", result.SourceLinkResult, result.SourceLinkErrorMessage, SourceLinkDescription);
-            await WriteResult("Deterministic (dll/exe)", result.DeterministicResult, result.DeterministicErrorMessage, DeterministicDescription);
-            await WriteResult("Compiler Flags", result.CompilerFlagsResult, result.CompilerFlagsMessage, CompilerFlagsDescription);
+            var result = await validator.Validate(cancellationToken).ConfigureAwait(false);
+            await WriteResult("Source Link", result.SourceLinkResult, result.SourceLinkErrorMessage, SourceLinkDescription).ConfigureAwait(false);
+            await WriteResult("Deterministic (dll/exe)", result.DeterministicResult, result.DeterministicErrorMessage, DeterministicDescription).ConfigureAwait(false);
+            await WriteResult("Compiler Flags", result.CompilerFlagsResult, result.CompilerFlagsMessage, CompilerFlagsDescription).ConfigureAwait(false);
             var sourceLinkValid = result.SourceLinkResult is SymbolValidationResult.Valid or SymbolValidationResult.ValidExternal or SymbolValidationResult.NothingToValidate;
             var deterministicValid = result.DeterministicResult is DeterministicResult.Valid or DeterministicResult.NothingToValidate;
             var compilerFlagsValid = result.CompilerFlagsResult is HasCompilerFlagsResult.Present or HasCompilerFlagsResult.NothingToValidate;
@@ -117,7 +117,7 @@ namespace NuGetPe
             {
                 errorString = "";
             }
-            await Console.Out.WriteLineAsync($"• {description}: {enumDescription?.Invoke(value) ?? value?.ToString()}{errorString}{Environment.NewLine}");
+            await Console.Out.WriteLineAsync($"• {description}: {enumDescription?.Invoke(value) ?? value?.ToString()}{errorString}{Environment.NewLine}").ConfigureAwait(false);
         }
 
         private static string SourceLinkDescription(SymbolValidationResult result)

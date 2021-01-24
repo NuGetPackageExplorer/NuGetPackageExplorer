@@ -570,7 +570,7 @@ namespace NuGetPe
             }
             finally
             {
-                await peStream.DisposeAsync();
+                await peStream.DisposeAsync().ConfigureAwait(false);
             }
 
             return true;
