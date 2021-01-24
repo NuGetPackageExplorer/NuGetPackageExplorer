@@ -175,10 +175,9 @@ namespace NuGetPe
 
                         var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
 
-                        if(assemblyMetadata?.DebugData.HasDebugInfo == true)
+                        file.Primary.DebugData = assemblyMetadata?.DebugData;
+                        if (assemblyMetadata?.DebugData.HasDebugInfo == true)
                         {
-                            file.Primary.DebugData = assemblyMetadata.DebugData;
-
                             // we have an embedded pdb
                             if(!assemblyMetadata.DebugData.HasSourceLink)
                             {
