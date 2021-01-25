@@ -68,17 +68,20 @@ namespace NuGetPe
             if (!files.HasMatches)
                 return EXIT_FAILURE;
 
+            using var cancellationTokenSource = new CancellationTokenSource();
+            Console.CancelKeyPress += (_, eventArgs) =>
+            {
+                eventArgs.Cancel = !cancellationTokenSource.IsCancellationRequested;
+                cancellationTokenSource.Cancel();
+            };
+
             foreach (var actualFile in files.Files)
             {
+                cancellationTokenSource.Token
+                    .ThrowIfCancellationRequested();
+
                 try
                 {
-                    using var cancellationTokenSource = new CancellationTokenSource();
-                    Console.CancelKeyPress += (_, eventArgs) =>
-                    {
-                        eventArgs.Cancel = !cancellationTokenSource.IsCancellationRequested;
-                        cancellationTokenSource.Cancel();
-                    };
-
                     var packageFile = new FileInfo(actualFile.Path);
                     if (packageFile.Exists)
                     {
