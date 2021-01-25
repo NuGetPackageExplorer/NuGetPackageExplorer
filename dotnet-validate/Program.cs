@@ -6,7 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using Microsoft.Extensions.FileSystemGlobbing;
+using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
 using NuGet.Versioning;
 
 namespace NuGetPe
@@ -52,35 +53,56 @@ namespace NuGetPe
 
         private static async Task<int> RunLocalCommand(string file)
         {
-            try
-            {
-                using var cancellationTokenSource = new CancellationTokenSource();
-                Console.CancelKeyPress += (_, eventArgs) =>
-                {
-                    eventArgs.Cancel = !cancellationTokenSource.IsCancellationRequested;
-                    cancellationTokenSource.Cancel();
-                };
+            var directory = Directory.GetCurrentDirectory();
 
-                var packageFile = new FileInfo(file);
-                if (packageFile.Exists)
+            if (Path.GetPathRoot(file) is { } root && !string.IsNullOrEmpty(root))
+            {
+                directory = root;
+                file = Path.GetRelativePath(root, file);
+            }
+
+            var files = new Matcher(StringComparison.Ordinal)
+                .AddInclude(file)
+                .Execute(new DirectoryInfoWrapper(new DirectoryInfo(directory)));
+
+            if (!files.HasMatches)
+                return EXIT_FAILURE;
+
+            foreach (var actualFile in files.Files)
+            {
+                try
                 {
-                    await Console.Out.WriteLineAsync($"Validating {packageFile.FullName}").ConfigureAwait(false);
+                    using var cancellationTokenSource = new CancellationTokenSource();
+                    Console.CancelKeyPress += (_, eventArgs) =>
+                    {
+                        eventArgs.Cancel = !cancellationTokenSource.IsCancellationRequested;
+                        cancellationTokenSource.Cancel();
+                    };
+
+                    var packageFile = new FileInfo(actualFile.Path);
+                    if (packageFile.Exists)
+                    {
+                        await Console.Out.WriteLineAsync($"Validating {packageFile.FullName}").ConfigureAwait(false);
+                    }
+
+                    var isValid = await RunAsync(packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
+
+                    if (!isValid)
+                        return EXIT_FAILURE;
                 }
+                catch (UnavailableException exception)
+                {
+                    await Console.Error.WriteLineAsync(exception.Message).ConfigureAwait(false);
+                    return EX_UNAVAILABLE;
+                }
+                catch (Exception exception)
+                {
+                    await Console.Error.WriteLineAsync(exception.ToString()).ConfigureAwait(false);
+                    return EX_SOFTWARE;
+                }
+            }
 
-                var isValid = await RunAsync(packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
-
-                return isValid ? EXIT_SUCCESS : EXIT_FAILURE;
-            }
-            catch (UnavailableException exception)
-            {
-                await Console.Error.WriteLineAsync(exception.Message).ConfigureAwait(false);
-                return EX_UNAVAILABLE;
-            }
-            catch (Exception exception)
-            {
-                await Console.Error.WriteLineAsync(exception.ToString()).ConfigureAwait(false);
-                return EX_SOFTWARE;
-            }
+            return EXIT_SUCCESS;
         }
 
         private static async Task<int> RunRemoteCommand(string packageId, NuGetVersion? version, Uri feedSource)
