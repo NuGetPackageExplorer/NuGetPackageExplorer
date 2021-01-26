@@ -30,7 +30,7 @@ namespace NuGetPe
         private static string FormatMessage(ILogMessage message)
         {
             if (message == null) throw new ArgumentNullException(nameof(message));
-            return $@"[{message.Time:T} {message.Level}] {message.Message}";
+            return $@"<NuGet> [{message.Level}] {message.Message}";
         }
     }
 }

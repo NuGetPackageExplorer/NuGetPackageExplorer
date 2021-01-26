@@ -18,9 +18,9 @@ namespace NuGetPe
         private readonly ISettings _settings;
         private readonly SourceCacheContext _sourceCacheContext;
 
-        public NuGetPackageDownloader(TextWriter logTextWriter)
+        public NuGetPackageDownloader(ILogger logger)
         {
-            _logger = new TextWriterLogger(logTextWriter);
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _settings = Settings.LoadDefaultSettings(".");
             _sourceCacheContext = new SourceCacheContext();
         }
