@@ -82,7 +82,7 @@ namespace NuGetPe
 
                 try
                 {
-                    var packageFile = new FileInfo(actualFile.Path);
+                    var packageFile = new FileInfo(Path.Combine(directory, actualFile.Path));
                     if (packageFile.Exists)
                     {
                         await Console.Out.WriteLineAsync($"Validating {packageFile.FullName}").ConfigureAwait(false);
