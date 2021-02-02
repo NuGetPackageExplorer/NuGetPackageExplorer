@@ -18,7 +18,7 @@
     <PackageReference Include="AppInsights.WindowsDesktop" Version="2.15.8-preview" />
     <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-21068-01" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
-    <PackageReference Include="Microsoft.SourceLink.Tools" Version="1.1.0-beta-21069-03" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.SourceLink.Tools" Version="1.1.0-beta-21101-02" PrivateAssets="all" />
     <PackageReference Include="Microsoft.SymbolStore" Version="1.0.210101" />
     <PackageReference Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />    
     <PackageReference Include="PeNet" Version="2.6.0" />
