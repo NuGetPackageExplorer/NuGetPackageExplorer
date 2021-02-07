@@ -440,6 +440,10 @@ namespace NuGetPe.AssemblyMetadata
                         doc.Url = uri!;
                         list.Add(doc);
                     }
+                    else
+                    {
+                        list.Add(doc);
+                    }
                 }
                     
             }
