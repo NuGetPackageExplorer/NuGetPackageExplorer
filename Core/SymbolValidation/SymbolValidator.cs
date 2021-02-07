@@ -328,7 +328,7 @@ namespace NuGetPe
 
             }
 
-            SymbolValidationResult sourceLinkResult;
+            SymbolValidationResult sourceLinkResult = SymbolValidationResult.NoSymbols;
             string? sourceLinkErrorMessage;
 
             DeterministicResult deterministicResult;
@@ -419,8 +419,9 @@ namespace NuGetPe
                     }
 
                     sb.AppendLine($"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.Path)) }");
+                    found = true;
                 }
-                else
+                else if(!found)
                 {
                     throw new InvalidOperationException("This branch of code should never be reached because either one of {noSymbols.Count, noSourceLink.Count, sourceLinkErrors.Count} must be > 0.");
                 }

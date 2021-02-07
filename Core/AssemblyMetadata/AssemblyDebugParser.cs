@@ -420,9 +420,9 @@ namespace NuGetPe.AssemblyMetadata
                 {
                     map = SourceLinkMap.Parse(text);
                 }
-                catch(InvalidDataException)
+                catch(Exception e)
                 {
-                    errors.Add("Source Link data is invalid.");
+                    errors.Add($"Source Link data is invalid. Error: '{e.Message}'");
                 }
             }
 
