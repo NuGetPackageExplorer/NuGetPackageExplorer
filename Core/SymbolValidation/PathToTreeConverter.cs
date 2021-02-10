@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Versioning;
 
 using NuGetPe.AssemblyMetadata;
 
@@ -78,6 +79,7 @@ namespace NuGetPe
                 Name = name ?? throw new ArgumentNullException(nameof(name));
                 Path = (parent?.Path ?? "") + (parent?.Parent == null ? "" : "\\") + name;
                 Parent = parent;
+                Extension = System.IO.Path.GetExtension(name);
             }
 
             public string Path { get; }
@@ -89,6 +91,15 @@ namespace NuGetPe
             public IEnumerable<IFile> GetFiles()
             {
                 yield return this;
+            }
+
+            public string? Extension { get; }
+
+            public FrameworkName TargetFramework
+            {
+#pragma warning disable CS0618 // Type or member is obsolete
+                get { return _packageFile.TargetFramework; }
+#pragma warning restore CS0618 // Type or member is obsolete
             }
 
             public IEnumerable<IFile> GetAssociatedFiles()
