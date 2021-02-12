@@ -203,7 +203,7 @@ namespace NuGetPe
                             }
 
                             // Check for reproducible build settings
-                            if(!assemblyMetadata.DebugData.HasCompilerFlags)
+                            if(!assemblyMetadata.DebugData.HasCompilerFlags || !assemblyMetadata.DebugData.CompilerVersionSupportsReproducible)
                             {
                                 nonReproducible.Add(file.Primary);
                             }
@@ -338,7 +338,7 @@ namespace NuGetPe
             DeterministicResult deterministicResult;
             string? deterministicErrorMessage;
 
-            var compilerFlagsResult = HasCompilerFlagsResult.Present;
+            var compilerFlagsResult = HasCompilerFlagsResult.Valid;
             string? compilerFlagsMessage = null;
 
             if (noSymbols.Count == 0 && noSourceLink.Count == 0 && sourceLinkErrors.Count == 0)
@@ -481,10 +481,13 @@ namespace NuGetPe
 
             if (nonReproducible.Count > 0)
             {
-                compilerFlagsResult = HasCompilerFlagsResult.Missing;
+                // See if they're here because they're missig or just too old
+                var first = nonReproducible.First();
+                compilerFlagsResult = (first.DebugData?.HasCompilerFlags == true &&
+                                       first.DebugData?.CompilerVersionSupportsReproducible == false) ? HasCompilerFlagsResult.Present : HasCompilerFlagsResult.Missing;
 
                 var sb = new StringBuilder();
-                sb.AppendLine("Ensure you're using at least the 3.1.400 SDK or MSBuild 16.7:");
+                sb.AppendLine("Ensure you're using at least the 5.0.200 SDK or MSBuild 16.9:");
 
                 if(sourceLinkResult == SymbolValidationResult.NoSymbols)
                 {
@@ -570,7 +573,7 @@ namespace NuGetPe
                         nonDeterministic.Add(input);
                     }
 
-                    if(!input.DebugData.HasCompilerFlags)
+                    if(!input.DebugData.HasCompilerFlags || !input.DebugData.CompilerVersionSupportsReproducible)
                     {
                         nonReproducible.Add(input);
                     }

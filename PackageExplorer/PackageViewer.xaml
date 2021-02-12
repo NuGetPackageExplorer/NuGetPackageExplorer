@@ -149,9 +149,15 @@
                     <controls:Spinner x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" />
                 </StackPanel>
                 <DataTemplate.Triggers>
+                    <DataTrigger Binding="{Binding CompilerFlagsResult}" Value="Valid">
+                        <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                        <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding CompilerFlagsResult}" Value="Present">
                         <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Present}" />
-                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                        <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
                         <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
                         <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
                     </DataTrigger>
