@@ -250,7 +250,11 @@ namespace NuGetPe
 
                         if (response.IsSuccessStatusCode) // we'll get a 404 if none
                         {
+#if NET5_0
                             await using var getStream = await response.Content!.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+#else
+                            await using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
+#endif
                             using var tempFile = new TemporaryFile(getStream, ".snupkg");
                             await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
                         }
@@ -641,7 +645,11 @@ namespace NuGetPe
                 }
 
                 var pdbStream = new MemoryStream();
+#if NET5_0
                 await response.Content!.CopyToAsync(pdbStream, cancellationToken).ConfigureAwait(false);
+#else
+                await response.Content!.CopyToAsync(pdbStream).ConfigureAwait(false);
+#endif
                 pdbStream.Position = 0;
 
                 return pdbStream;
