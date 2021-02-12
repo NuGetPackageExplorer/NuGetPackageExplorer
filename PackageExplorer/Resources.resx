@@ -375,7 +375,7 @@ Do you want to add '{0}' to the list of package publish sources?</value>
     <value>Pending</value>
   </data>
   <data name="Validation_Present" xml:space="preserve">
-    <value>Present</value>
+    <value>Present, not reproducible</value>
   </data>
   <data name="Validation_Suspect" xml:space="preserve">
     <value>Suspect</value>

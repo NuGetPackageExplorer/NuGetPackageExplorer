@@ -828,7 +828,7 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Present.
+        ///   Looks up a localized string similar to Present, not reproducible.
         /// </summary>
         public static string Validation_Present {
             get {
