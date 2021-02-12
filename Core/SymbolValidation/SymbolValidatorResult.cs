@@ -64,7 +64,7 @@
     public enum HasCompilerFlagsResult
     {
         /// <summary>
-        /// Symbols have compiler flag data
+        /// Symbols have compiler flag data, but too old to be reproducible
         /// </summary>
         Present,
 
@@ -72,6 +72,11 @@
         /// Symbols do not have compiler flag data
         /// </summary>
         Missing,
+
+        /// <summary>
+        /// Symbols have compiler flag data and are recent enough for reproducible builds
+        /// </summary>
+        Valid,
 
         /// <summary>
         /// No relevant files to validate.

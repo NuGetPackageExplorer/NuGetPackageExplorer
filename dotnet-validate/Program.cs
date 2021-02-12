@@ -160,7 +160,7 @@ namespace NuGetPe
             await WriteResult("Compiler Flags", result.CompilerFlagsResult, result.CompilerFlagsMessage, CompilerFlagsDescription).ConfigureAwait(false);
             var sourceLinkValid = result.SourceLinkResult is SymbolValidationResult.Valid or SymbolValidationResult.ValidExternal or SymbolValidationResult.NothingToValidate;
             var deterministicValid = result.DeterministicResult is DeterministicResult.Valid or DeterministicResult.NothingToValidate;
-            var compilerFlagsValid = result.CompilerFlagsResult is HasCompilerFlagsResult.Present or HasCompilerFlagsResult.NothingToValidate;
+            var compilerFlagsValid = result.CompilerFlagsResult is HasCompilerFlagsResult.Valid or HasCompilerFlagsResult.NothingToValidate;
             return sourceLinkValid && deterministicValid && compilerFlagsValid;
         }
 
@@ -210,7 +210,8 @@ namespace NuGetPe
         {
             return result switch
             {
-                HasCompilerFlagsResult.Present => "✅ Present",
+                HasCompilerFlagsResult.Present => "⚠️ Present, not reproducible",
+                HasCompilerFlagsResult.Valid => "✅ Valid",
                 HasCompilerFlagsResult.Missing => "❌ Missing",
                 HasCompilerFlagsResult.NothingToValidate => "✅ No files found to validate",
                 _ => throw new ArgumentOutOfRangeException(nameof(result), result, $@"The value of argument '{nameof(result)}' ({result}) is invalid for enum type '{nameof(HasCompilerFlagsResult)}'.")
