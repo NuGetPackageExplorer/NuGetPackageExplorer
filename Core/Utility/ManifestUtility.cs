@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -35,6 +36,7 @@ namespace NuGetPe
         {
             // This method needs to replace tokens in version fields with a sentinel value
             // since the NuGetVersion object model doesn't support it.
+            // Also needs to handle blank versions
             var xdoc = XDocument.Load(stream);
             var ns = xdoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
 
@@ -55,6 +57,11 @@ namespace NuGetPe
                     if (!string.IsNullOrWhiteSpace(val))
                     {
                         dep.SetAttributeValue("version"!, ReplaceTokenWithMetadata(val));
+                    }
+                    else
+                    {
+                        // Some packages (like Paket.Core have version="" in the dependencies. NuGet doesn't handle it, so remove it so we can load.
+                        dep.RemoveAttributes(a => string.Equals("version", a.Name.LocalName, StringComparison.OrdinalIgnoreCase));
                     }
                 }
             }            
