@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks>net6.0-windows10.0.19041</TargetFrameworks>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
     <AssemblyName>NuGetPackageExplorer.PackageViewModel</AssemblyName>
@@ -13,7 +13,7 @@
     <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />    
     <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="System.Windows.Extensions" Version="5.0.0" />
+    <PackageReference Include="System.Windows.Extensions" Version="6.0.0-preview.1.21102.12" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 

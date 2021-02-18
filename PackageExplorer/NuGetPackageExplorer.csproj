@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0-windows10.0.19041</TargetFramework>
-    <AssetTargetFallback>net472</AssetTargetFallback>
+    <TargetFramework>net6.0-windows10.0.19041</TargetFramework>
     <OutputType>WinExe</OutputType>
     <AssemblyName>NuGetPackageExplorer</AssemblyName>
     <ApplicationIcon>nupack.ico</ApplicationIcon>
