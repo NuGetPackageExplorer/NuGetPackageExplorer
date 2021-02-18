@@ -28,10 +28,10 @@ stages:
 
     steps:
     - task: UseDotNet@2
-      displayName: 'Use .NET Core SDK 5.x'
+      displayName: 'Use .NET 6 SDK'
       inputs:
-        version: 5.x
-        includePreviewVersions: false
+        version: 6.x
+        includePreviewVersions: true
 
     #- pwsh: |
     #    $branch = "release/5.0.1xx"
@@ -156,7 +156,7 @@ stages:
       displayName: Zip PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net5.0-windows10.0.19041/win-x64/publish
+        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net6.0-windows10.0.19041/win-x64/publish
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
