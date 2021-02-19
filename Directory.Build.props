@@ -22,8 +22,6 @@
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
 
-
-    <RuntimeIdentifiers>win-x64;win-x86</RuntimeIdentifiers>
     <!-- This suppresses the warning we get because of defining UseWpf/UseWindowsForms where it doesn't
          apply to all of our projects -->
     <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);NETSDK1107</MSBuildWarningsAsMessages>    
