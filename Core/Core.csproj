@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net6.0;net6.0-windows10.0.19041;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net5.0;net5.0-windows10.0.19041;netcoreapp3.1</TargetFrameworks>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
@@ -15,14 +15,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />
-    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.15.8-preview" />
+    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.17.1" />
     <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-21110-01" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0-preview.1.21102.12" />
-    <!--<PackageReference Include="Microsoft.SourceLink.Tools" Version="1.1.0-beta-21108-02" PrivateAssets="all" />-->
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
+    <!--<PackageReference Include="Microsoft.SourceLink.Tools" Version="1.1.0-beta-21115-02" PrivateAssets="all" />-->
     <PackageReference Include="Microsoft.SymbolStore" Version="1.0.211502" />
     <PackageReference Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />    
     <PackageReference Include="PeNet" Version="2.6.1" />
-    <PackageReference Include="System.Reflection.Metadata" Version="6.0.0-preview.1.21102.12" />
+    <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" />
     <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" Version="1.1.24" />
   </ItemGroup>
 
