@@ -26,4 +26,8 @@
     <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" Version="1.1.24" />
   </ItemGroup>
 
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Update="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-20501-01" />
+  </ItemGroup>
 </Project>
