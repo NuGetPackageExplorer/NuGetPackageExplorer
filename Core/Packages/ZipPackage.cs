@@ -278,7 +278,7 @@ namespace NuGetPe
         public VerifySignaturesResult VerificationResult { get; private set; }
 
         // Keep a list of open stream here, and close on dispose.
-        private readonly List<IDisposable> _danglingStreams = new List<IDisposable>();
+        private readonly List<IDisposable> _danglingStreams = new();
 
         public IEnumerable<IPackageFile> GetFiles()
         {
@@ -399,6 +399,16 @@ namespace NuGetPe
                 _zipArchive = new ZipArchive(stream, ZipArchiveMode.Read);
             }
             public ReadOnlyCollection<ZipArchiveEntry> GetZipEntries() => _zipArchive.Entries;
+
+            protected override void Dispose(bool disposing)
+            {
+                if(disposing)
+                {
+                    _zipArchive.Dispose();
+                }
+
+                base.Dispose(disposing);
+            }
         }
     }
 }

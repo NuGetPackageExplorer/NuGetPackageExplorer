@@ -245,9 +245,9 @@ namespace NuGetPe
                         // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect
 
 #pragma warning disable CA2234 // Pass system uri objects instead of strings
-                        var response = await _httpClient.GetAsync($"https://www.nuget.org/api/v2/symbolpackage/{_package.Id}/{_package.Version.ToNormalizedString()}", cancellationToken).ConfigureAwait(false);
+                        using var response = await _httpClient.GetAsync($"https://www.nuget.org/api/v2/symbolpackage/{_package.Id}/{_package.Version.ToNormalizedString()}", cancellationToken).ConfigureAwait(false);
 #pragma warning restore CA2234 // Pass system uri objects instead of strings
-
+                        
                         if (response.IsSuccessStatusCode) // we'll get a 404 if none
                         {
 #if NET5_0
