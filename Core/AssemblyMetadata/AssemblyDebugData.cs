@@ -92,7 +92,7 @@ namespace NuGetPe.AssemblyMetadata
                     return false;
 
                 // In the format of something like 3.7.0-6.20418.4+9b878f99b53dafab14e253210b5570e2a68d0010
-                if(versionString.Contains('-'))
+                if(versionString.Contains('-', StringComparison.OrdinalIgnoreCase))
                 {
                     if(Version.TryParse(versionString.Split('-')[0], out var version))
                     {
@@ -103,7 +103,7 @@ namespace NuGetPe.AssemblyMetadata
                 else
                 {
                     // see if it has build data and split, then only keep the numeric part
-                    if(versionString.Contains('+'))
+                    if(versionString.Contains('+', StringComparison.OrdinalIgnoreCase))
                     {
                         versionString = versionString.Split('+')[0];
                     }
