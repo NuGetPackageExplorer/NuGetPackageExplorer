@@ -245,9 +245,11 @@ namespace NuGetPe
                         // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect
 
 #pragma warning disable CA2234 // Pass system uri objects instead of strings
+#pragma warning disable CA1308 // Normalize strings to uppercase
                         using var response = await _httpClient.GetAsync($"https://globalcdn.nuget.org/symbol-packages/{_package.Id.ToLowerInvariant()}.{_package.Version.ToNormalizedString().ToLowerInvariant()}.snupkg", cancellationToken).ConfigureAwait(false);
+#pragma warning restore CA1308 // Normalize strings to uppercase
 #pragma warning restore CA2234 // Pass system uri objects instead of strings
-                        
+
                         if (response.IsSuccessStatusCode) // we'll get a 404 if none
                         {
 #if NET5_0
