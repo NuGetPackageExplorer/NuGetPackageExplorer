@@ -331,7 +331,7 @@ namespace NuGetPe.AssemblyMetadata
 
                 var data = peReader.ReadPdbChecksumDebugDirectoryData(entry);
                 var algorithm = data.AlgorithmName;
-                var checksum = data.Checksum.Select(b => b.ToString("x2", CultureInfo.InvariantCulture));
+                var checksum = string.Concat(data.Checksum.Select(b => b.ToString("x2", CultureInfo.InvariantCulture)));
 
                 checksums.Add($"{algorithm}:{checksum}");
             }
