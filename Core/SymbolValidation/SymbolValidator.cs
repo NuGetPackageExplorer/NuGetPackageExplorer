@@ -21,7 +21,7 @@ namespace NuGetPe
         private readonly IPackage _package;
         private readonly string _packagePath;
         private readonly IFolder _rootFolder;
-        private readonly HttpClient _httpClient = new();
+        private readonly HttpClient _httpClient;
 
         public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder = null)
             : this(package, packagePath, rootFolder, httpClient: null)
