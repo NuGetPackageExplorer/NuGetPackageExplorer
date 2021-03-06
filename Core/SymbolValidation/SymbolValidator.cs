@@ -21,15 +21,24 @@ namespace NuGetPe
         private readonly IPackage _package;
         private readonly string _packagePath;
         private readonly IFolder _rootFolder;
-        private readonly HttpClient _httpClient = new();
+        private readonly HttpClient _httpClient;
 
         public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder = null)
+            : this(package, packagePath, rootFolder, httpClient: null)
+        {
+        }
+
+        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder = null, HttpClient? httpClient = null)
         {
             _package = package ?? throw new ArgumentNullException(nameof(package));
             _packagePath = packagePath ?? throw new ArgumentNullException(nameof(packagePath));
             _rootFolder = rootFolder ?? PathToTreeConverter.Convert(package.GetFiles().ToList());
+            _httpClient = httpClient ?? new();
 
-            UserAgent.SetUserAgent(_httpClient);
+            if (httpClient == null)
+            {
+                UserAgent.SetUserAgent(_httpClient);
+            }
         }
 
         public async Task<SymbolValidatorResult> Validate(CancellationToken cancellationToken = default)
