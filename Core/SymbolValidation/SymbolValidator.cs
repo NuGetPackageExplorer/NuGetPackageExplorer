@@ -28,7 +28,7 @@ namespace NuGetPe
         {
         }
 
-        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder = null, HttpClient? httpClient = null)
+        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder, HttpClient? httpClient)
         {
             _package = package ?? throw new ArgumentNullException(nameof(package));
             _packagePath = packagePath ?? throw new ArgumentNullException(nameof(packagePath));
