@@ -32,7 +32,23 @@ namespace NuGetPe
             var remoteCommand = new Command("remote", "A package on a NuGet Feed")
             {
                 new Argument<string>("packageId", "Package Id"),
-                new Option<NuGetVersion?>(new[] { "--version", "-v" }, "Package version. Defaults to latest."),   
+                new Option<NuGetVersion?>(
+                    new[] { "--version", "-v" },
+                    parseArgument: arg =>
+                    {
+                        if (arg.Tokens.Count > 0 && NuGetVersion.TryParse(arg.Tokens[0].Value, out var version))
+                        {
+                            return version;
+                        }
+                        else
+                        {
+                            arg.ErrorMessage = "The provided version string could not be parsed." +
+                                Environment.NewLine +
+                                "See https://docs.microsoft.com/en-us/nuget/concepts/package-versioning";
+                            return null;
+                        }
+                    },
+                    description: "Package version. Defaults to latest."),
                 new Option<Uri>(new []{"--feed-source", "-s"}, () => new Uri(NuGet.Configuration.NuGetConstants.V3FeedUrl), $"V3 NuGet Feed Source.")
             };
 
@@ -46,7 +62,7 @@ namespace NuGetPe
             };
 
             localComand.Handler = CommandHandler.Create<string>(RunLocalCommand);
-            remoteCommand.Handler = CommandHandler.Create<string, NuGetVersion?, Uri>(RunRemoteCommand);
+            remoteCommand.Handler = CommandHandler.Create<string, Uri, NuGetVersion?>(RunRemoteCommand);
 
             return await rootCommand.InvokeAsync(args).ConfigureAwait(false);
         }
@@ -108,17 +124,10 @@ namespace NuGetPe
             return EXIT_SUCCESS;
         }
 
-        private static async Task<int> RunRemoteCommand(string packageId, NuGetVersion? version, Uri feedSource)
+        private static async Task<int> RunRemoteCommand(string packageId, Uri feedSource, NuGetVersion? version = null)
         {
             try
             {
-
-                // null is getting passed in as 0.0.0 for some reason
-                if(version != null && version.Major == 0 && version.Minor == 0 && version.Patch == 0)
-                {
-                    version = null;
-                }
-
                 using var cancellationTokenSource = new CancellationTokenSource();
                 Console.CancelKeyPress += (_, eventArgs) =>
                 {
