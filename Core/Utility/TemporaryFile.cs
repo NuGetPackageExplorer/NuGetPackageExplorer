@@ -12,10 +12,12 @@ namespace NuGetPe
 
             if (string.IsNullOrWhiteSpace(extension) || extension[0] != '.')
             {
-                extension = string.Empty;
+                FileName = Path.GetTempFileName();
             }
-
-            FileName = Path.GetTempFileName() + extension;
+            else
+            {
+                FileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + extension);
+            }
 
             using var fstream = File.Open(FileName, FileMode.Create);
             stream.CopyTo(fstream);
