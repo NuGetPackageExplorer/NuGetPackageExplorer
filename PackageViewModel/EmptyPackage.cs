@@ -57,6 +57,8 @@ namespace PackageExplorerViewModel
 
         public string? Icon => null;
 
+        public string? Readme => null;
+
         public Uri? LicenseUrl
         {
             get { return null; }

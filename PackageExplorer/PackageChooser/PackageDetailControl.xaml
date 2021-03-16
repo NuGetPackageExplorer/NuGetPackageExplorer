@@ -56,6 +56,7 @@
                         <RowDefinition/>
                         <RowDefinition/>
                         <RowDefinition/>
+                        <RowDefinition/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0.4*"/>
@@ -103,29 +104,37 @@
                         </Hyperlink>
                     </TextBlock>
 
+                    <!-- Readme URL -->
+                    <Label Grid.Row="4" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailReadme}" />
+                    <TextBlock Grid.Row="4" Grid.Column="1">
+                        <Hyperlink NavigateUri="{Binding SelectedPackage.ReadmeUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
+                            <Run Text="{Binding SelectedPackage.ReadmeUrl}"/>
+                        </Hyperlink>
+                    </TextBlock>
+
                     <!-- Published Date -->
-                    <Label Grid.Row="4" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailDatePublished}" Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
-                    <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding SelectedPackage.Published, Converter={StaticResource DateTimeOffsetLongDateConverter}}"  Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
+                    <Label Grid.Row="5" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailDatePublished}" Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
+                    <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding SelectedPackage.Published, Converter={StaticResource DateTimeOffsetLongDateConverter}}"  Visibility="{Binding SelectedPackage.Published, Converter={StaticResource NullToVisibilityConverter}}" />
 
                     <!-- Project URL --> 
-                    <Label Grid.Row="5" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailProjectUrl}" />
-                    <TextBlock Grid.Row="5" Grid.Column="1">
+                    <Label Grid.Row="6" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailProjectUrl}" />
+                    <TextBlock Grid.Row="6" Grid.Column="1">
                         <Hyperlink NavigateUri="{Binding SelectedPackage.ProjectUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
                             <Run Text="{Binding SelectedPackage.ProjectUrl}"/>
                         </Hyperlink>
                     </TextBlock>
 
                      <!-- Report Abuse URL -->
-                    <Label Grid.Row="6" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailReportAbuse}" />
-                    <TextBlock Grid.Row="6" Grid.Column="1">
+                    <Label Grid.Row="7" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailReportAbuse}" />
+                    <TextBlock Grid.Row="7" Grid.Column="1">
                         <Hyperlink NavigateUri="{Binding SelectedPackage.ReportAbuseUrl}" RequestNavigate="Hyperlink_OnRequestNavigate">
                             <Run Text="{Binding SelectedPackage.ReportAbuseUrl}" />
                         </Hyperlink>
                     </TextBlock>
 
                      <!-- Tags --> 
-                    <Label Grid.Row="7" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailTags}" />
-                    <TextBlock Grid.Row="7" Grid.Column="1" Text="{Binding SelectedPackage.Tags}" />
+                    <Label Grid.Row="8" Grid.Column="0" Content="{x:Static self:Resources.PackageChooser_DetailTags}" />
+                    <TextBlock Grid.Row="8" Grid.Column="1" Text="{Binding SelectedPackage.Tags}" />
                 </Grid>
             </StackPanel>
         </Border>

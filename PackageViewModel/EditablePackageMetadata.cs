@@ -24,6 +24,7 @@ namespace PackageExplorerViewModel
         private string? _description;
         private string? _icon;
         private Uri? _iconUrl;
+        private string? _readme;
         private string _id;
         private string? _language;
         private Uri? _licenseUrl;
@@ -61,7 +62,7 @@ namespace PackageExplorerViewModel
             Owners = ConvertToString(source.Owners);
             Icon = source.Icon;
             IconUrl = FixIconUrl(source.IconUrl);
-
+            Readme = source.Readme;
             ProjectUrl = source.ProjectUrl;
             RequireLicenseAcceptance = source.RequireLicenseAcceptance;
             DevelopmentDependency = source.DevelopmentDependency;
@@ -408,6 +409,19 @@ namespace PackageExplorerViewModel
                 {
                     _iconUrl = value;
                     RaisePropertyChange(nameof(IconUrl));
+                }
+            }
+        }
+
+        public string? Readme
+        {
+            get { return _readme; }
+            set
+            {
+                if (_readme != value)
+                {
+                    _readme = value;
+                    RaisePropertyChange(nameof(Readme));
                 }
             }
         }

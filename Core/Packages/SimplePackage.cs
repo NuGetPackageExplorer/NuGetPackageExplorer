@@ -27,6 +27,7 @@ namespace NuGetPe
             Owners = packageBuilder.Owners;
             Icon = packageBuilder.Icon;
             IconUrl = packageBuilder.IconUrl;
+            Readme = packageBuilder.Readme;
             LicenseUrl = packageBuilder.LicenseUrl;
             ProjectUrl = packageBuilder.ProjectUrl;
             RequireLicenseAcceptance = packageBuilder.RequireLicenseAcceptance;
@@ -75,6 +76,8 @@ namespace NuGetPe
         public string Icon { get; private set; }
 
         public Uri IconUrl { get; private set; }
+
+        public string Readme { get; private set; }
 
         public Uri LicenseUrl { get; private set; }
 

@@ -99,6 +99,12 @@ namespace NuGetPe
             set { _metadata.SetIconUrl(value?.ToString()); }
         }
 
+        public string? Readme
+        {
+            get { return _metadata.Readme; }
+            set { _metadata.Readme = value; }
+        }
+
         public Uri? LicenseUrl
         {
             get { return _metadata.LicenseUrl; }

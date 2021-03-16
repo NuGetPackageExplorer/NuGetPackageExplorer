@@ -257,6 +257,15 @@ namespace PackageExplorer {
                 return ResourceManager.GetString("Dialog_PublisherLabel", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Readme:.
+        /// </summary>
+        public static string Dialog_ReadmeLabel {
+            get {
+                return ResourceManager.GetString("Dialog_ReadmeLabel", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Report Abuse.
@@ -626,6 +635,15 @@ namespace PackageExplorer {
         public static string PackageChooser_DetailProjectUrl {
             get {
                 return ResourceManager.GetString("PackageChooser_DetailProjectUrl", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Readme:.
+        /// </summary>
+        public static string PackageChooser_DetailReadme {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailReadme", resourceCulture);
             }
         }
         
