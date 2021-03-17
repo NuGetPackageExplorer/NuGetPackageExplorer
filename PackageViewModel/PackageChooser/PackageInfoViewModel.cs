@@ -363,7 +363,8 @@ namespace PackageExplorerViewModel
                 LicenseUrl = packageSearchMetadata.LicenseUrl?.ToString() ?? string.Empty,
                 ProjectUrl = packageSearchMetadata.ProjectUrl?.ToString() ?? string.Empty,
                 ReportAbuseUrl = packageSearchMetadata.ReportAbuseUrl?.ToString() ?? string.Empty,
-                IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty
+                IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty,
+                ReadmeUrl = packageSearchMetadata.ReadmeUrl?.ToString() ?? string.Empty
             };
         }
 

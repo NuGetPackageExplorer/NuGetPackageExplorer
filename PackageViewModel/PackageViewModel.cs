@@ -348,8 +348,27 @@ namespace PackageExplorerViewModel
 
                 foreach (var file in RootFolder.GetFiles())
                 {
+                    // https://github.com/NuGet/NuGet.Client/blob/1919a94220568927813bde48f71427b5df1fbe92/src/NuGet.Core/NuGet.Packaging/PackageCreation/Authoring/PackageBuilder.cs#L748-L751
                     if (file.Path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                        file.Path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+                        file.Path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                        file.Path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return file.Path;
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<string> ReadmePaths
+        {
+            get
+            {
+                yield return "";
+
+                foreach (var file in RootFolder.GetFiles())
+                {
+                    // https://github.com/NuGet/NuGet.Client/blob/1919a94220568927813bde48f71427b5df1fbe92/src/NuGet.Core/NuGet.Packaging/PackageCreation/Authoring/PackageBuilder.cs#L875
+                    if (file.Path.EndsWith(NuGet.Configuration.NuGetConstants.ReadmeExtension, StringComparison.OrdinalIgnoreCase))
                     {
                         yield return file.Path;
                     }

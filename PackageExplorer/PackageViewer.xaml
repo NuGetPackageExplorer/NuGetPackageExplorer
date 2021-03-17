@@ -562,6 +562,12 @@
                             <TextBlock Text="{Binding DevelopmentDependency, Converter={StaticResource BooleanConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
                         </StackPanel>
 
+                        <!-- Readme -->
+                        <DockPanel Margin="0,3,0,0" Visibility="{Binding Readme, Converter={StaticResource NullToVisibilityConverter}}">
+                            <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_ReadmeLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                            <TextBlock Text="{Binding Readme}" Style="{StaticResource DetailMetadataValueStyle}" />
+                        </DockPanel>
+
                         <!-- Tags -->
                         <DockPanel Margin="0,3,0,0" Visibility="{Binding Tags, Converter={StaticResource NullToVisibilityConverter}}">
                             <TextBlock DockPanel.Dock="Left" Text="{x:Static self:Resources.Dialog_TagLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />

@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Dialog_CreatedByLabel" xml:space="preserve">
     <value>Authors:</value>
@@ -182,6 +182,9 @@
   </data>
   <data name="Dialog_PublisherLabel" xml:space="preserve">
     <value>Publisher:</value>
+  </data>
+  <data name="Dialog_ReadmeLabel" xml:space="preserve">
+    <value>Readme:</value>
   </data>
   <data name="Dialog_ReportAbuse" xml:space="preserve">
     <value>Report Abuse</value>
@@ -307,6 +310,9 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="PackageChooser_DetailProjectUrl" xml:space="preserve">
     <value>Project URL:</value>
+  </data>
+  <data name="PackageChooser_DetailReadme" xml:space="preserve">
+    <value>Readme:</value>
   </data>
   <data name="PackageChooser_DetailReportAbuse" xml:space="preserve">
     <value>Report Abuse:</value>

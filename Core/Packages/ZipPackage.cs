@@ -99,6 +99,14 @@ namespace NuGetPe
             set { _metadata.SetIconUrl(value?.ToString()); }
         }
 
+#if !NETCOREAPP3_1
+        public string? Readme
+        {
+            get { return _metadata.Readme; }
+            set { _metadata.Readme = value; }
+        }
+#endif
+
         public Uri? LicenseUrl
         {
             get { return _metadata.LicenseUrl; }

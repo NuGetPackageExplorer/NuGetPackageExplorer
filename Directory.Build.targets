@@ -8,7 +8,7 @@
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
     <NuGetDependencyVersion>5.10.0-xprivate.60024</NuGetDependencyVersion>
   </PropertyGroup>
-  
+
   <PropertyGroup>
     <Product Condition="'$(IsTypesProject)' != 'true'">$(Product) ($(Configuration)) ($(Platform))</Product>
   </PropertyGroup>
