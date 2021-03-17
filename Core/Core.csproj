@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net5.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks>net5.0;net5.0-windows10.0.19041;netcoreapp3.1</TargetFrameworks>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
