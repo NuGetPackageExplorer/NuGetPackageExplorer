@@ -64,18 +64,19 @@
             Grid.Column="1"
             Visibility="{Binding CompilerFlags, Converter={StaticResource NullToVisibilityConverter}}"
             ItemsSource="{Binding CompilerFlags}"
-            IsTabStop="False">
+            IsTabStop="False"
+            x:Name="flagItems">
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="{x:Type core:CompilerFlag}">
-                    <Grid>
+                    <Grid MaxWidth="{Binding ActualWidth, ElementName=flagItems}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" SharedSizeGroup="flagLabel" />
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
 
                         <TextBox Text="{Binding Key, Mode=OneWay}" Style="{StaticResource Key}" />
-                        <TextBox Text="{Binding Value, Mode=OneWay}" Grid.Column="1" Style="{StaticResource Value}" />
+                        <TextBox Text="{Binding Value, Mode=OneWay}" Grid.Column="1" Style="{StaticResource Value}" TextWrapping="Wrap" />
                     </Grid>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

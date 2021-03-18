@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
@@ -40,7 +40,7 @@ namespace PackageExplorer
 
                 AssemblyDebugDataViewModel? debugDataViewModel = null;
 
-                if(debugData != null)
+                if (debugData != null)
                     debugDataViewModel = new AssemblyDebugDataViewModel(Task.FromResult(debugData));
 
                 // No debug data to display
@@ -118,8 +118,9 @@ namespace PackageExplorer
         {
 
             var grid = new Grid();
+            grid.SetBinding(Grid.MaxWidthProperty, new Binding(nameof(ScrollViewer.ActualWidth)) { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(ScrollViewer), 1) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             var style = Application.Current.FindResource("SelectableTextBlockLikeStyleWithoutTriggers") as Style;
 
@@ -139,7 +140,8 @@ namespace PackageExplorer
                 {
                     Text = data.Value,
                     Margin = new Thickness(0, 3, 3, 0),
-                    Style = style
+                    Style = style,
+                    TextWrapping = TextWrapping.Wrap,
                 };
                 Grid.SetRow(value, grid.RowDefinitions.Count);
                 Grid.SetColumn(value, 1);
