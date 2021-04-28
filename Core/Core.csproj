@@ -21,7 +21,7 @@
     <!--<PackageReference Include="Microsoft.SourceLink.Tools" Version="1.1.0-beta-21115-02" PrivateAssets="all" />-->
     <PackageReference Include="Microsoft.SymbolStore" Version="1.0.215101" />
     <PackageReference Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />    
-    <PackageReference Include="PeNet" Version="2.6.2" />
+    <PackageReference Include="PeNet" Version="2.6.3" />
     <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" />
     <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" Version="1.1.24" />
   </ItemGroup>
