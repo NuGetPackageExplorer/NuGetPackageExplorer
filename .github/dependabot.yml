@@ -1,0 +1,72 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Microsoft.DiaSymReader.Converter
+    versions:
+    - "> 1.1.0.pre.beta2.pre.21110.pre.01, < 1.2"
+  - dependency-name: Microsoft.Web.Xdt
+    versions:
+    - "> 2.1.2"
+  - dependency-name: NuGet.Packaging
+    versions:
+    - 5.9.0-rc.7072
+    - 5.9.0-rc.7083
+    - 5.9.0-rc.7087
+    - 5.9.0-rc.7088
+    - 5.9.0-rc.7097
+    - 5.9.0-rc.7113
+    - 5.9.0-rc.7121
+  - dependency-name: NuGet.Protocol
+    versions:
+    - 5.9.0-rc.7072
+    - 5.9.0-rc.7083
+    - 5.9.0-rc.7087
+    - 5.9.0-rc.7088
+    - 5.9.0-rc.7097
+    - 5.9.0-rc.7113
+    - 5.9.0-rc.7121
+  - dependency-name: NuGet.Resolver
+    versions:
+    - 5.9.0-rc.7072
+    - 5.9.0-rc.7083
+    - 5.9.0-rc.7087
+    - 5.9.0-rc.7088
+    - 5.9.0-rc.7097
+    - 5.9.0-rc.7113
+    - 5.9.0-rc.7121
+  - dependency-name: NuGet.Commands
+    versions:
+    - 5.9.0-rc.7072
+    - 5.9.0-rc.7083
+    - 5.9.0-rc.7087
+    - 5.9.0-rc.7088
+    - 5.9.0-rc.7097
+    - 5.9.0-rc.7113
+    - 5.9.0-rc.7121
+  - dependency-name: NuGet.PackageManagement
+    versions:
+    - 5.9.0-rc.7072
+    - 5.9.0-rc.7083
+    - 5.9.0-rc.7087
+    - 5.9.0-rc.7088
+    - 5.9.0-rc.7097
+    - 5.9.0-rc.7113
+    - 5.9.0-rc.7121
+  - dependency-name: NuGet.Credentials
+    versions:
+    - 5.9.0-rc.7072
+    - 5.9.0-rc.7083
+    - 5.9.0-rc.7087
+    - 5.9.0-rc.7088
+    - 5.9.0-rc.7097
+    - 5.9.0-rc.7113
+    - 5.9.0-rc.7121
+  - dependency-name: Microsoft.SourceLink.Tools
+    versions:
+    - 1.1.0-beta-21075-02
+    - 1.1.0-beta-21109-02
