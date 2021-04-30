@@ -11,7 +11,7 @@ namespace NuGetPe.AssemblyMetadata
 {
     public class AssemblyDebugData
     {
-        private readonly static Version minVersionWithReproducible = new Version(3, 9, 0);
+        private const int MIN_COMPILER_METADATA_VERSION_FOR_REPRODUCIBLE_BUILDS = 2;
         public AssemblyDebugData()
         {
             SourceLinkErrors = new List<string>();
@@ -88,7 +88,12 @@ namespace NuGetPe.AssemblyMetadata
                 if (versionString == null)
                     return false;
 
-                return true;
+                if(!int.TryParse(versionString, out var version))
+                {
+                    return false; // could not parse version
+                }
+
+                return version >= MIN_COMPILER_METADATA_VERSION_FOR_REPRODUCIBLE_BUILDS;
             }
         }
 

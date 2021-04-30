@@ -498,7 +498,7 @@ namespace NuGetPe
                                        first.DebugData?.CompilerVersionSupportsReproducible == false) ? HasCompilerFlagsResult.Present : HasCompilerFlagsResult.Missing;
 
                 var sb = new StringBuilder();
-                sb.AppendLine("Ensure you're using at least the 5.0.200 SDK or MSBuild 16.9:");
+                sb.AppendLine("Ensure you're using at least the 5.0.300 SDK or MSBuild 16.10:");
 
                 if(sourceLinkResult == SymbolValidationResult.NoSymbols)
                 {
