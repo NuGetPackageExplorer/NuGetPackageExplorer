@@ -27,9 +27,7 @@ namespace NuGetPe
             Owners = packageBuilder.Owners;
             Icon = packageBuilder.Icon;
             IconUrl = packageBuilder.IconUrl;
-#if !NETCOREAPP3_1
             Readme = packageBuilder.Readme;
-#endif
             LicenseUrl = packageBuilder.LicenseUrl;
             ProjectUrl = packageBuilder.ProjectUrl;
             RequireLicenseAcceptance = packageBuilder.RequireLicenseAcceptance;

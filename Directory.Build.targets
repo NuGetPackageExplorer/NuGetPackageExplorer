@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <NuGetDependencyVersion>5.10.0-xprivate.60024</NuGetDependencyVersion>
+    <NuGetDependencyVersion>6.0.0-xprivate.60025</NuGetDependencyVersion>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -1,4 +1,4 @@
-// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
+﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
 #nullable enable
 
@@ -139,7 +139,7 @@ namespace Microsoft.SourceLink.Tools
                 return false;
             }
 
-            int filePathStar = key.IndexOf('*');
+            var filePathStar = key.IndexOf('*', StringComparison.Ordinal);
             if (filePathStar == key.Length - 1)
             {
                 key = key.Substring(0, filePathStar);
@@ -150,7 +150,7 @@ namespace Microsoft.SourceLink.Tools
             }
 
             string uriPrefix, uriSuffix;
-            int uriStar = value.IndexOf('*');
+            var uriStar = value.IndexOf('*', StringComparison.Ordinal);
             if (uriStar >= 0)
             {
                 if (filePathStar < 0)
@@ -159,9 +159,9 @@ namespace Microsoft.SourceLink.Tools
                 }
 
                 uriPrefix = value.Substring(0, uriStar);
-                uriSuffix = value.Substring(uriStar + 1);
+                uriSuffix = value[(uriStar + 1)..];
 
-                if (uriSuffix.IndexOf('*') >= 0)
+                if (uriSuffix.Contains('*', StringComparison.Ordinal))
                 {
                     return false;
                 }
@@ -195,7 +195,7 @@ namespace Microsoft.SourceLink.Tools
                 throw new ArgumentNullException(nameof(path));
             }
 
-            if (path.IndexOf('*') >= 0)
+            if (path.Contains('*', StringComparison.Ordinal))
             {
                 uri = null;
                 return false;
@@ -209,7 +209,7 @@ namespace Microsoft.SourceLink.Tools
                 {
                     if (path.StartsWith(file.Path, StringComparison.OrdinalIgnoreCase))
                     {
-                        var escapedPath = string.Join("/", path.Substring(file.Path.Length).Split(new[] { '/', '\\' }).Select(Uri.EscapeDataString));
+                        var escapedPath = string.Join("/", path[file.Path.Length..].Split(new[] { '/', '\\' }).Select(Uri.EscapeDataString));
                         uri = mappedUri.Prefix + escapedPath + mappedUri.Suffix;
                         return true;
                     }

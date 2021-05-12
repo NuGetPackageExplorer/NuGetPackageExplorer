@@ -343,7 +343,7 @@ namespace NuGetPe
 
             }
 
-            SymbolValidationResult sourceLinkResult = SymbolValidationResult.NoSymbols;
+            var sourceLinkResult = SymbolValidationResult.NoSymbols;
             string? sourceLinkErrorMessage;
 
             DeterministicResult deterministicResult;

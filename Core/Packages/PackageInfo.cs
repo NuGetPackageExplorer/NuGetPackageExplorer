@@ -73,7 +73,7 @@ namespace NuGetPe
         /// <summary>
         /// Gets or sets the url to the package readme.
         /// </summary>
-        public string ReadmeUrl { get; set; }
+        public string? ReadmeUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the url to the package license information.
