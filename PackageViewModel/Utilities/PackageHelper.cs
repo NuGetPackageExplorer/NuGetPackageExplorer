@@ -18,39 +18,6 @@ namespace PackageExplorerViewModel
             // set metadata
             CopyMetadata(packageMetadata, builder);
 
-            // workaround for https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/issues/869
-            string? tempIconFile = null;
-            if (!string.IsNullOrEmpty(packageMetadata.Icon))
-            {
-                var newFiles = new List<IPackageFile>();
-
-                // Normalize any directories to match what's the package
-                // We do this here instead of the metadata so that we round-trip
-                // whatever the user originally had when in edit view
-                var iconPath = packageMetadata.Icon.Replace('/', '\\');
-                foreach (var file in files)
-                {
-                    if (string.Equals(file.Path, iconPath, StringComparison.OrdinalIgnoreCase))
-                    {
-                        tempIconFile = Path.GetTempFileName();
-
-                        using (var stream = file.GetStream())
-                        using (var fileStream = File.OpenWrite(tempIconFile))
-                        {
-                            stream.CopyTo(fileStream);
-                        }
-
-                        newFiles.Add(new DiskPackageFile(file.Path, tempIconFile));
-                    }
-                    else
-                    {
-                        newFiles.Add(file);
-                    }
-                }
-
-                files = newFiles;
-            }
-
             // add files
             builder.Files.AddRange(files);
 
@@ -73,11 +40,6 @@ namespace PackageExplorerViewModel
             {
                 try
                 {
-                    if (tempIconFile != null)
-                    {
-                        File.Delete(tempIconFile);
-                    }
-
                     if (useTempFile && File.Exists(fileNameToUse))
                     {
                         File.Delete(fileNameToUse);
