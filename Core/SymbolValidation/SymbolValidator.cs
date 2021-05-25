@@ -261,10 +261,10 @@ namespace NuGetPe
 
                         if (response.IsSuccessStatusCode) // we'll get a 404 if none
                         {
-#if NET5_0
-                            await using var getStream = await response.Content!.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+#if NET5_0_OR_GREATER
+                            using var getStream = await response.Content!.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
 #else
-                            await using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
+                            using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
 #endif
                             using var tempFile = new TemporaryFile(getStream, ".snupkg");
                             await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
@@ -550,7 +550,7 @@ namespace NuGetPe
                 {
                     if(input.DebugData == null || !input.DebugData.HasDebugInfo) // get it again if this is a shell with keys
                     {
-                        await using var stream = MakeSeekable(pdbStream, true);
+                        using var stream = MakeSeekable(pdbStream, true);
                         input.DebugData = await AssemblyMetadataReader.ReadDebugData(peStream, stream).ConfigureAwait(false);
                     }
 
@@ -659,7 +659,7 @@ namespace NuGetPe
                 }
 
                 var pdbStream = new MemoryStream();
-#if NET5_0
+#if NET5_0_OR_GREATER
                 await response.Content!.CopyToAsync(pdbStream, cancellationToken).ConfigureAwait(false);
 #else
                 await response.Content!.CopyToAsync(pdbStream).ConfigureAwait(false);
