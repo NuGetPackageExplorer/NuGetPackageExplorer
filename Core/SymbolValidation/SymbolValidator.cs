@@ -539,7 +539,7 @@ namespace NuGetPe
             List<IFile> nonReproducible,
             bool validateChecksum)
         {
-            var peStream = MakeSeekable(input.GetStream(), true);
+            var peStream = StreamUtility.MakeSeekable(input.GetStream(), true);
             try
             {
                 // TODO: Verify that the PDB and DLL match
@@ -550,7 +550,7 @@ namespace NuGetPe
                 {
                     if(input.DebugData == null || !input.DebugData.HasDebugInfo) // get it again if this is a shell with keys
                     {
-                        using var stream = MakeSeekable(pdbStream, true);
+                        using var stream = StreamUtility.MakeSeekable(pdbStream, true);
                         input.DebugData = await AssemblyMetadataReader.ReadDebugData(peStream, stream).ConfigureAwait(false);
                     }
 
@@ -602,24 +602,6 @@ namespace NuGetPe
             }
 
             return true;
-        }
-
-        private static Stream MakeSeekable(Stream stream, bool disposeOriginal = false)
-        {
-            if (stream.CanSeek)
-            {
-                return stream;
-            }
-
-            var memoryStream = new MemoryStream();
-            stream.CopyTo(memoryStream);
-            memoryStream.Position = 0;
-
-            if (disposeOriginal)
-            {
-                stream.Dispose();
-            }
-            return memoryStream;
         }
 
 
