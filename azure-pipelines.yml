@@ -35,7 +35,7 @@ stages:
     - task: UseDotNet@2
       displayName: 'Use .NET 6 SDK'
       inputs:
-        version: 6.0.100-preview.3.21202.5
+        version: 6.x
         includePreviewVersions: true
 
     #- pwsh: |
