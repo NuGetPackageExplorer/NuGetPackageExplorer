@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -14,7 +15,18 @@ namespace NuGetPe
         public static void Initialize(bool forLibrary = false)
         {
 #pragma warning disable CA2000 // Dispose objects before losing scope
-            var config = TelemetryConfiguration.CreateDefault();
+
+            string? xmlData = null;
+            try
+            {
+                if (File.Exists("ApplicationInsights.config"))
+                {
+                    xmlData = File.ReadAllText("ApplicationInsights.config");
+                }
+            }
+            catch { }
+
+            var config = xmlData != null ? TelemetryConfiguration.CreateFromConfiguration(xmlData) : TelemetryConfiguration.CreateDefault();
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
             if(!forLibrary)
