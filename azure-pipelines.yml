@@ -113,7 +113,7 @@ stages:
     - powershell: |
         # Update App Insights key
         [xml]$doc = Get-Content ".\PackageExplorer\ApplicationInsights.config"
-        $doc.ApplicationInsights.InstrumentationKey = "$(AppInsightsKey)"
+        $doc.ApplicationInsights.ConnectionString = "$(AppInsightsKey)"
         $doc.Save(".\PackageExplorer\ApplicationInsights.config")
 
       displayName: Set AppInsights Config
