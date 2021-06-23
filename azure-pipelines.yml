@@ -162,7 +162,7 @@ stages:
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Choco'))
 
     - task: ArchiveFiles@1
-      displayName: Zip PackageExplorer files
+      displayName: Zip Windows PackageExplorer files
       inputs:
         archiveType: zip
         rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net6.0-windows10.0.19041/win-x64/publish
@@ -178,12 +178,13 @@ stages:
         maximumCpuCount: true
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly'), eq(variables['ReleaseChannel'], 'UnoSkia')))
 
-    - task: CopyFiles@2
-      displayName: Copy GTK Package
+    - task: ArchiveFiles@1
+      displayName: Zip Gtk PackageExplorer files
       inputs:
-        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Skia.Gtk/bin/Release/net5.0'
-        Contents: '**'
-        TargetFolder: $(build.artifactstagingdirectory)\$(ReleaseChannel)\Skia.Gtk
+        archiveType: zip
+        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Skia.Gtk/bin/Release/net5.0
+        archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Skia.Gtk.$(Build.BuildNumber).zip
+        includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
 
     - task: CopyFiles@2
