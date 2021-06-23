@@ -1,18 +1,29 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows;
-using System.Windows.Data;
 using NuGet.Versioning;
 using NuGetPe;
 
+#if HAS_UNO
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+using _CultureInfo = System.String;
+#else
+using System.Windows;
+using _CultureInfo = System.Globalization.CultureInfo;
+using System.Windows.Data;
+#endif
+
+
 namespace PackageExplorer
 {
+#if !HAS_UNO
     [ValueConversion(typeof(NuGetVersion), typeof(Visibility))]
+#endif
     public class NuGetVersionPreReleaseConverter : IValueConverter
     {
-        #region IValueConverter Members
+#region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             var version = value as NuGetVersion;
 
@@ -27,11 +38,11 @@ namespace PackageExplorer
             return Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
     }
 }

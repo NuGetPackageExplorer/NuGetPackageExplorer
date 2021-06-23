@@ -1,9 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Windows.Controls;
-using System.Windows.Media.Imaging;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
+
+#if HAS_UNO
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
+#else
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+#endif
 
 namespace PackageExplorer
 {
@@ -16,17 +22,22 @@ namespace PackageExplorer
 
             using var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true);
             var source = new BitmapImage();
+#if HAS_UNO
+            source.SetSource(stream);
+#else
             source.BeginInit();
             source.CacheOption = BitmapCacheOption.OnLoad;
             source.StreamSource = stream;
             source.EndInit();
+#endif
 
             var image = new Image
             {
                 Source = source,
+#if !HAS_UNO
                 Width = source.Width,
                 Height = source.Height,
-
+#endif
             };
 
             return new ScrollViewer

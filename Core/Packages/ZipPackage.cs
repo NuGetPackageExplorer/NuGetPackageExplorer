@@ -4,12 +4,18 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+
+using NuGet.Common;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
 using NuGet.Versioning;
+
+using NuGetPe.Utility;
 
 namespace NuGetPe
 {
@@ -304,7 +310,7 @@ namespace NuGetPe
         {
             return _streamFactory();
         }
-        
+
         public async Task LoadSignatureDataAsync()
         {
             if (_signatureLoaded) return;
@@ -315,29 +321,40 @@ namespace NuGetPe
             {
                 try
                 {
-                    var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None).ConfigureAwait(false);
-
-                    // Author signatures must be the primary, but they can contain
-                    // a repository counter signature
-                    if (sig.Type == SignatureType.Author)
+                    if (!AppCompat.IsSupported(RuntimeFeature.Cryptography))
                     {
-                        PublisherSignature = new SignatureInfo(sig);
-
-                        var counter = RepositoryCountersignature.GetRepositoryCountersignature(sig);
-                        if (counter != null)
+                        if (await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false))
                         {
-                            RepositorySignature = new RepositorySignatureInfo(counter);
+                            (PublisherSignature, RepositorySignature) = CryptoUtility.GetSignatures(reader);
                         }
                     }
-                    else if (sig.Type == SignatureType.Repository)
+                    else
                     {
-                        RepositorySignature = new RepositorySignatureInfo(sig);
+#if IS_SIGNING_SUPPORTED
+                        var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None).ConfigureAwait(false);
+
+                        // Author signatures must be the primary, but they can contain
+                        // a repository counter signature
+                        if (sig.Type == SignatureType.Author)
+                        {
+                            PublisherSignature = new PublisherSignatureInfo(sig);
+
+                            var counter = RepositoryCountersignature.GetRepositoryCountersignature(sig);
+                            if (counter != null)
+                            {
+                                RepositorySignature = new RepositorySignatureInfo(counter);
+                            }
+                        }
+                        else if (sig.Type == SignatureType.Repository)
+                        {
+                            RepositorySignature = new RepositorySignatureInfo(sig);
+                        }
+#endif
                     }
                 }
                 catch (SignatureException)
                 {
                 }
-
             }
 
             _signatureLoaded = true;
@@ -408,7 +425,7 @@ namespace NuGetPe
 
             protected override void Dispose(bool disposing)
             {
-                if(disposing)
+                if (disposing)
                 {
                     _zipArchive.Dispose();
                 }

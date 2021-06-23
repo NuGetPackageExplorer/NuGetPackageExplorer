@@ -58,11 +58,13 @@ namespace PackageExplorerViewModel
 
         public async Task<PackageViewModel> CreateViewModel(IPackage package, string packagePath, string packageSource)
         {
+#if !NETSTANDARD2_1 // UNO TODO: Use proper platform detection; wasm: System.Security.Cryptography.Encoding is not supported on this platform.
             // If it's a zip package, we need to load the verification data so it's ready for later
             if (package is ISignaturePackage zip)
             {
                 await zip.LoadSignatureDataAsync();
             }
+#endif
 
             var pvm = new PackageViewModel(
                 package,

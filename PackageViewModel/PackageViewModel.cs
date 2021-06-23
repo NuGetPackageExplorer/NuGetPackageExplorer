@@ -283,6 +283,7 @@ namespace PackageExplorerViewModel
                     {
                         if (result!.IsFile && File.Exists(value))
                         {
+#if !NETSTANDARD2_1 // UNO TODO: Use proper platform detection
                             // Clean up the old one since we can't reliably change the Filter without a race
                             if (_watcher != null)
                             {
@@ -302,6 +303,7 @@ namespace PackageExplorerViewModel
                             _watcher.Path = Path.GetDirectoryName(PackagePath)!;
                             _watcher.Filter = Path.GetFileName(PackagePath);
                             _watcher.EnableRaisingEvents = true;
+#endif
                         }
                     }
                 }

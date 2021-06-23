@@ -9,11 +9,14 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using NuGetPackageExplorer.Types;
-using OSVersionHelper;
 using Windows.Storage;
 using NuGet.Configuration;
 using NpeConstants = NuGetPe.NuGetConstants;
+
+#if !HAS_UNO
+using OSVersionHelper;
 using NpeSettings = PackageExplorer.Properties.Settings;
+#endif
 
 namespace PackageExplorer
 {
@@ -36,6 +39,7 @@ namespace PackageExplorer
                 object value;
                 try
                 {
+#if !HAS_UNO
                     if (WindowsVersionHelper.HasPackageIdentity)
                     {
                         value = GetValueFromLocalSettings<T>(name!)!;
@@ -48,12 +52,16 @@ namespace PackageExplorer
                             value = sc.Cast<string>().ToList();
                         }
                     }
+#else
+                    Windows.Storage.ApplicationData.Current.LocalSettings.Values.TryGetValue(name, out value!);
+#endif
 
                     if (value is T t)
                     {
                         return t;
                     }
                 }
+#if !HAS_UNO
                 catch (ConfigurationErrorsException)
                 {
                     // Corrupt settings file
@@ -71,6 +79,7 @@ namespace PackageExplorer
                         return t;
                     }
                 }
+#endif
                 catch (UnauthorizedAccessException)
                 { }
                 catch (IOException)
@@ -105,7 +114,8 @@ namespace PackageExplorer
             {
                 try
                 {
-                    if (WindowsVersionHelper.HasPackageIdentity)
+#if !HAS_UNO
+                   if (WindowsVersionHelper.HasPackageIdentity)
                     {
                         SetValueInLocalSettings(value, name!);
                     }
@@ -119,6 +129,9 @@ namespace PackageExplorer
                         }
                         NpeSettings.Default[name] = value;
                     }
+#else
+                    Windows.Storage.ApplicationData.Current.LocalSettings.Values[name] = value;
+#endif
                 }
                 catch (UnauthorizedAccessException)
                 { }

@@ -1,6 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Windows.Controls;
 using NuGetPackageExplorer.Types;
+
+#if HAS_UNO
+using Windows.UI.Xaml.Controls;
+#else
+using System.Windows.Controls;
+#endif
 
 namespace PackageExplorer
 {

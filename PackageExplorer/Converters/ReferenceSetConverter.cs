@@ -1,14 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Data;
 using NuGet.Packaging;
+
+#if HAS_UNO
+using Windows.UI.Xaml.Data;
+
+using _CultureInfo = System.String;
+#else
+using System.Windows.Data;
+
+using _CultureInfo = System.Globalization.CultureInfo;
+#endif
 
 namespace PackageExplorer
 {
     public class ReferenceSetConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             var referenceSets = (ICollection<PackageReferenceSet>)value;
             if (referenceSets.Any(d => d.TargetFramework != null))
@@ -22,7 +31,7 @@ namespace PackageExplorer
             return referenceSets.SelectMany(d => d.References);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             throw new NotImplementedException();
         }

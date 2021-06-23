@@ -1,4 +1,6 @@
-﻿namespace NuGetPe
+﻿using System;
+
+namespace NuGetPe
 {
     public enum SymbolValidationResult
     {
@@ -86,9 +88,11 @@
 
     public class SymbolValidatorResult
     {
-        public SymbolValidatorResult(SymbolValidationResult sourceLinkResult, string? sourceLinkErrorMessage,
+        public SymbolValidatorResult(
+            SymbolValidationResult sourceLinkResult, string? sourceLinkErrorMessage,
             DeterministicResult deterministicResult, string? deterministicErrorMessage,
-            HasCompilerFlagsResult compilerFlagsResult, string? compilerFlagsMessage)
+            HasCompilerFlagsResult compilerFlagsResult, string? compilerFlagsMessage,
+            Exception? exception = null)
         {
             SourceLinkResult = sourceLinkResult;
             SourceLinkErrorMessage = sourceLinkErrorMessage;
@@ -96,6 +100,8 @@
             DeterministicErrorMessage = deterministicErrorMessage;
             CompilerFlagsResult = compilerFlagsResult;
             CompilerFlagsMessage = compilerFlagsMessage;
+
+            Exception = exception;
         }
 
         public SymbolValidationResult SourceLinkResult { get; }
@@ -106,5 +112,7 @@
 
         public HasCompilerFlagsResult CompilerFlagsResult { get; }
         public string? CompilerFlagsMessage { get; }
+
+        public Exception? Exception { get; }
     }
 }

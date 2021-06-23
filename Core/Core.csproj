@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net5.0;net5.0-windows10.0.19041;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net5.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net5.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks Condition="$(UNO_BUILD_ONLY)!=''">netstandard2.1</TargetFrameworks>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
@@ -22,6 +24,7 @@
     <PackageReference Include="Microsoft.SymbolStore" Version="1.0.215101" />
     <PackageReference Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />    
     <PackageReference Include="PeNet" Version="2.6.3" />
+    <PackageReference Include="System.Formats.Asn1" Version="5.0.0" />
     <PackageReference Include="System.Reflection.Metadata" Version="5.0.0" />
     <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" Version="1.1.24" />
   </ItemGroup>
