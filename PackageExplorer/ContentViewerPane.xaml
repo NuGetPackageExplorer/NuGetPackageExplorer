@@ -8,13 +8,13 @@
              xmlns:authenticode="clr-namespace:AuthenticodeExaminer;assembly=AuthenticodeExaminer"
              mc:Ignorable="d" d:DesignHeight="200" d:DesignWidth="500" Loaded="UserControl_Loaded">
     <Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="*" />
-		</Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-		<!-- for binary file -->
+        <!-- for binary file -->
         <ContentControl Grid.Row="2"
                         Visibility="{Binding IsTextFile, Converter={StaticResource invertedBoolToVis}}"
                         VerticalAlignment="Stretch"
@@ -23,32 +23,39 @@
                         Content="{Binding Content}"
                         />
 
-		<!-- for built-in text file -->
-		
-		<ae:TextEditor x:Name="contentBox" FontFamily="Consolas" Grid.Row="2" Padding="3,5,3,2" BorderThickness="0" IsReadOnly="True" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" DataContextChanged="UserControl_DataContextChanged" SyntaxHighlighting="{Binding SelectedItem, ElementName=LanguageBox, Mode=OneWay}" />
+        <!-- for built-in text file -->
 
-		<!-- 
-			Note: the order of elements matter. This Border element has to come last. 
-			Otherwise, the content won't update properly. I know, this is lame. 
-		-->
-		<Border Grid.Row="1" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
-			<DockPanel>
-				<TextBlock 
-					Margin="5,0"
-					VerticalAlignment="Center"
-					DockPanel.Dock="Right" 
-					DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:MainWindow}}}">
-					<Hyperlink Command="{Binding EditFileCommand, Mode=OneWay}" CommandParameter="{Binding CurrentFileInfo.File}">
-						<Run Text="Edit" />
-					</Hyperlink>
-				</TextBlock>
-				<TextBlock DockPanel.Dock="Left" Text="{Binding Size, Converter={StaticResource FileSizeConverter}, StringFormat='Size: {0}'}" Margin="3,0" VerticalAlignment="Center"></TextBlock>
-				<StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}, ConverterParameter='hidden'}">
-					<Label Content="S_yntax scheme:" Target="{Binding ElementName=LanguageBox}" />
-					<ComboBox x:Name="LanguageBox" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}" Width="150" />
-				</StackPanel>
-			</DockPanel>
-		</Border>
+        <ae:TextEditor x:Name="contentBox" FontFamily="Consolas" Grid.Row="2" Padding="3,5,3,2" BorderThickness="0" IsReadOnly="True" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" DataContextChanged="UserControl_DataContextChanged" SyntaxHighlighting="{Binding SelectedItem, ElementName=LanguageBox, Mode=OneWay}" />
+
+        <!--
+            Note: the order of elements matter. This Border element has to come last.
+            Otherwise, the content won't update properly. I know, this is lame.
+        -->
+        <Border Grid.Row="1" Background="#BCC7D8" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0">
+            <DockPanel>
+                <TextBlock
+                    Margin="5,0"
+                    VerticalAlignment="Center"
+                    DockPanel.Dock="Right"
+                    DataContext="{Binding DataContext, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type self:MainWindow}}}">
+                    <Hyperlink Command="{Binding EditFileCommand, Mode=OneWay}" CommandParameter="{Binding CurrentFileInfo.File}">
+                        <Run Text="Edit" />
+                    </Hyperlink>
+                </TextBlock>
+                <TextBlock DockPanel.Dock="Left" Text="{Binding Size, Converter={StaticResource FileSizeConverter}, StringFormat='Size: {0}'}" Margin="3,0" VerticalAlignment="Center"></TextBlock>
+                <StackPanel DockPanel.Dock="Right" HorizontalAlignment="Right" Orientation="Horizontal" Visibility="{Binding IsTextFile, Converter={StaticResource boolToVis}, ConverterParameter='hidden'}">
+                    <Label Content="S_yntax scheme:" Target="{Binding ElementName=LanguageBox}" />
+                    <ComboBox x:Name="LanguageBox" Style="{StaticResource {x:Static ToolBar.ComboBoxStyleKey}}" Width="150" />
+                    <ToggleButton
+                        IsChecked="{Binding ElementName=contentBox, Path=WordWrap, Mode=TwoWay}"
+                        Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                        Margin="2,0,2,0"
+                        VerticalAlignment="Center"
+                        ToolTip="Word Wrap"
+                        Content="{StaticResource WordWrapIcon}" />
+                </StackPanel>
+            </DockPanel>
+        </Border>
         <Border Grid.Row="0" Background="LightYellow" BorderBrush="{StaticResource {x:Static SystemColors.ActiveBorderBrushKey}}" BorderThickness="0,1,0,0"
                 Visibility="{Binding Signatures.Count, Converter={StaticResource countConverter}}"
                 Padding="3">
@@ -134,5 +141,5 @@
                 </ItemsControl>
             </DockPanel>
         </Border>
-	</Grid>
+    </Grid>
 </UserControl>
