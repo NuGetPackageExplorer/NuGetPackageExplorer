@@ -1,0 +1,151 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+					xmlns:xamarin="http:/uno.ui/xamarin"
+					xmlns:todo="what should be done"
+					mc:Ignorable="xamarin todo">
+
+	<!-- Header Templates -->
+	<DataTemplate x:Key="SectionHeaderTemplate">
+		<TextBlock Text="{Binding}"
+				   HorizontalAlignment="Center"
+				   Style="{StaticResource TypoBody2}" />
+	</DataTemplate>
+	<DataTemplate x:Key="LabelHeaderTemplate">
+		<TextBlock IsTextSelectionEnabled="True"
+				   Style="{StaticResource TypoSubtitle2}">
+			<Run Text="{Binding}" /><Run Text=":" />
+		</TextBlock>
+	</DataTemplate>
+	<DataTemplate x:Key="LabelHeaderTemplate2">
+		<TextBlock Text="{Binding}"
+				   IsTextSelectionEnabled="True"
+				   Style="{StaticResource TypoSubtitle2}" />
+	</DataTemplate>
+
+	<!-- Content Template -->
+	<DataTemplate x:Key="TextContentTemplate">
+		<TextBlock Text="{Binding}"
+				   IsTextSelectionEnabled="True"
+				   Style="{StaticResource TypoBody2}" />
+	</DataTemplate>
+	<DataTemplate x:Key="MultilineTextContentTemplate">
+		<TextBlock Text="{Binding}"
+				   TextWrapping="Wrap"
+				   IsTextSelectionEnabled="True"
+				   Style="{StaticResource TypoBody2}" />
+	</DataTemplate>
+
+	<Style x:Key="SectionHeaderedContentControlStyle"
+		   TargetType="controls:HeaderedContentControl">
+
+		<Setter Property="Background" Value="{ThemeResource SurfaceThemeBrush87}" />
+		<Setter Property="CornerRadius" Value="3" />
+
+		<Setter Property="Header" Value="Header" />
+		<Setter Property="HeaderTemplate" Value="{StaticResource SectionHeaderTemplate}" />
+
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Stretch" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="controls:HeaderedContentControl">
+					<Grid CornerRadius="{TemplateBinding CornerRadius}"
+						  Background="{TemplateBinding Background}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<ContentPresenter Grid.Row="0"
+										  Content="{TemplateBinding Header}"
+										  ContentTemplate="{TemplateBinding HeaderTemplate}"
+										  BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+										  BorderThickness="0,0,0,1"
+										  Background="{ThemeResource SurfaceThemeBrush87}"
+										  Padding="20,10"
+										  HorizontalAlignment="Stretch"
+										  HorizontalContentAlignment="Stretch" />
+						<ContentPresenter Grid.Row="1"
+										  xamarin:Content="{TemplateBinding Content}"
+										  xamarin:ContentTemplate="{TemplateBinding ContentTemplate}"
+										  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="LabeledRawContentControlStyle"
+		   TargetType="controls:HeaderedContentControl">
+		<Setter Property="HeaderTemplate" Value="{StaticResource LabelHeaderTemplate}" />
+		<Setter Property="ContentTemplate" Value="{x:Null}" />
+		<Setter Property="Orientation" Value="Horizontal" />
+
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+
+		<Setter Property="IsTabStop" Value="False" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="controls:HeaderedContentControl">
+					<!-- template parts: HeaderPresenter? -->
+					<StackPanel x:Name="Panel"
+								Orientation="{TemplateBinding Orientation}">
+						<ContentPresenter x:Name="HeaderContentPresenter"
+										  Content="{TemplateBinding Header}"
+										  ContentTemplate="{TemplateBinding HeaderTemplate}" />
+						<ContentPresenter x:Name="ContentPresenter"
+										  xamarin:Content="{TemplateBinding Content}"
+										  xamarin:ContentTemplate="{TemplateBinding ContentTemplate}"
+										  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="OrientationStates">
+								<VisualState x:Name="Vertical" />
+								<VisualState x:Name="Horizontal">
+									<VisualState.Setters>
+										<Setter Target="Panel.Spacing" Value="5" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</StackPanel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="LabeledTextContentControlStyle"
+		   TargetType="controls:HeaderedContentControl"
+		   BasedOn="{StaticResource LabeledRawContentControlStyle}">
+		<Setter Property="ContentTemplate" Value="{StaticResource TextContentTemplate}" />
+	</Style>
+	<Style x:Key="LabeledItemsControlStyle"
+		   TargetType="wct:HeaderedItemsControl">
+		<Setter Property="HeaderTemplate" Value="{StaticResource LabelHeaderTemplate}" />
+
+		<Setter Property="Padding" Value="16,0,0,0" />
+		<Setter Property="Orientation" Value="Vertical" />
+	</Style>
+
+	<!-- HeaderTemplate without ':' -->
+	<Style x:Key="LabeledRawContentControlStyle2"
+		   TargetType="controls:HeaderedContentControl"
+		   BasedOn="{StaticResource LabeledRawContentControlStyle}">
+		<Setter Property="HeaderTemplate" Value="{StaticResource LabelHeaderTemplate2}" />
+	</Style>
+	<Style x:Key="LabeledTextContentControlStyle2"
+		   TargetType="controls:HeaderedContentControl"
+		   BasedOn="{StaticResource LabeledTextContentControlStyle}">
+		<Setter Property="HeaderTemplate" Value="{StaticResource LabelHeaderTemplate2}" />
+	</Style>
+</ResourceDictionary>

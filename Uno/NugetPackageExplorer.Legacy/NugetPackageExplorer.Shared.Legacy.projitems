@@ -1,0 +1,126 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>0edec935-ee96-4255-b7f0-0695bee40d40</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>NupkgExplorer</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nupkg\Files\AssemblyFileContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nupkg\Files\IFileContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nupkg\Files\ImageFileContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nupkg\Files\TextFileContent.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nupkg\INupkgFileSystemObject.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nupkg\NupkgArchive.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nupkg\NupkgContentDirectory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nupkg\NupkgContentFile.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nuspec\NuspecMetadata.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Business\Nuspec\NuspecMetadata.Schema.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Data\PackageData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Data\PackageType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Data\PackageVersion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Data\PackageVersionsResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Data\SearchResponse.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\Impl\NugetEndpoint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Client\INugetEndpoint.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\RawContentControl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\StackPanelEx.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Extensions\CompositionContainerExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Extensions\HttpClientExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Extensions\HttpResponseExceptionWithStatusCode.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Extensions\MvvmExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Json\Json.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Json\JsonArray.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\MVVM\AsyncCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\MVVM\PaginatedCollection.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\MVVM\ViewModelBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Navigation\DialogService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Navigation\NavigationService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Query\ApiEndpointBase.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Query\LoggingHttpClientHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Query\QueryBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presentation\Content\FeedPackagePickerViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presentation\Content\HomePageViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presentation\Content\InspectPackageViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presentation\Dialogs\DownloadProgressDialogViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presentation\Helpers\MonacoEditorLanguageHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Presentation\ShellViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Behaviors\TreeViewBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\EnumerableConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\FileContentTemplateSelector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\FromBoolToValueConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\FromObjectToValueConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\FromStringToValueConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\FSObjectConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\FSObjectStyleSelector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\FSObjectTemplateSelector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\HumanizeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\PackageDependencyToDeeplinkConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\DictionaryExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Framework\Xml\XmlConvert.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Converters\StringFormatConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Extensions\CodeEditorExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Extensions\DataGridExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Extensions\ListViewExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Extensions\TabViewExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Extensions\TooltipExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Views\Helpers\VisualTreeHelperEx.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Application\Colors.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Application\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Application\Typography.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Application\Values.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Controls\Button.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Controls\Expander.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Controls\Grid.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Controls\GridSplitter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Controls\HeaderedControls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Controls\ListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Controls\Menus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Controls\TabViewItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Views\Styles\Controls\TreeViewItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+</Project>

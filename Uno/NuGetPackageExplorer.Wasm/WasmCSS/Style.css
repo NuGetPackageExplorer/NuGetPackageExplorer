@@ -1,0 +1,40 @@
+﻿:root {
+    --progress-foreground-color: #777777;
+    --progress-background-color: #cccccc;
+}
+
+/* splash-screen logo */
+.uno-loader .logo {
+    /* keep ratio while stretching */
+    width: auto !important;
+    height: auto !important;
+
+    /* limit max size */
+    max-height: 150px !important;
+    max-width: 150px !important;
+}
+#uno-loading .uno-splash {
+    /* keep ratio while stretching */
+    width: auto !important;
+    height: auto !important;
+
+    /* limit max size */
+    max-height: 150px !important;
+    max-width: 150px !important;
+}
+
+/* progress bar (-moz: Firefox, -webkit: Chrome & Safari) */
+.uno-loader progress {
+    color: var(--progress-foreground-color, #777777);
+    background: var(--progress-background-color, #cccccc);
+}
+.uno-loader progress::-moz-progress-bar {
+    /* there is no -moz-progress-value; -bar is the foreground, while background is inherited from the base */
+    background-color: var(--progress-foreground-color, #777777);
+}
+.uno-loader progress::-webkit-progress-value {
+    background-color: var(--progress-foreground-color, #777777);
+}
+.uno-loader progress::-webkit-progress-bar {
+    background-color: var(--progress-background-color, #cccccc);
+}
