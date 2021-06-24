@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6279c845-92f8-4333-ab99-3d213163593c</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>NuGetPackageExplorer</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="$(MSBuildThisFileDirectory)App.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </ApplicationDefinition>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\PdbInfoViewer.xaml.cs">
+      <DependentUpon>PdbInfoViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Dialogs\DownloadProgressDialog.xaml.cs">
+      <DependentUpon>DownloadProgressDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Extensions\StringExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FeedPackagePicker.xaml.cs">
+      <DependentUpon>FeedPackagePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\ApplicationHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\IconUrlConverterHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\PackageHealthContentHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\PackageIconConverterHelper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\PackageImages.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)InspectPackage.xaml.cs">
+      <DependentUpon>InspectPackage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\PackageEditorService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\UIServices.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PackageViewer.xaml.cs">
+      <DependentUpon>PackageViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Services\AppInsightsJsTelemetryService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Shell.xaml.cs">
+      <DependentUpon>Shell.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)Controls\PdbInfoViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Dialogs\DownloadProgressDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)FeedPackagePicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)HomePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)InspectPackage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)PackageViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Shell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)Assets\SharedAssets.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <PRIResource Include="$(MSBuildThisFileDirectory)Strings\en\Resources.resw" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="$(MSBuildThisFileDirectory)Assets\default-package-icon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CheckedBlueCircle.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CheckedBlueCircle.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CheckedBlueCircle.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CheckedBlueCircle.scale-300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CheckedBlueCircle.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\default-package-icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FileIcon.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FileIcon.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FileIcon.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FileIcon.scale-300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FileIcon.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FolderIcon.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FolderIcon.scale-150.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FolderIcon.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FolderIcon.scale-300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FolderIcon.scale-400.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\NuGetLogo.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Powered-By-UnoPlatform-Dark.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Powered-By-UnoPlatform-Light.png" />
+  </ItemGroup>
+</Project>

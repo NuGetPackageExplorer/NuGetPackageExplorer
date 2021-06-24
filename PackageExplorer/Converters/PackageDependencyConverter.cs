@@ -1,13 +1,22 @@
 ﻿using System;
-using System.Windows.Data;
 using NuGet.Packaging.Core;
 using NuGetPe;
+
+#if HAS_UNO
+using Windows.UI.Xaml.Data;
+
+using _CultureInfo = System.String;
+#else
+using System.Windows.Data;
+
+using _CultureInfo = System.Globalization.CultureInfo;
+#endif
 
 namespace PackageExplorer
 {
     public class PackageDependencyConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             if (value == null)
             {
@@ -19,7 +28,7 @@ namespace PackageExplorer
             return $"{dependency.Id} {ManifestUtility.ReplaceMetadataWithToken(dependency.VersionRange.PrettyPrint())}";
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             throw new NotImplementedException();
         }

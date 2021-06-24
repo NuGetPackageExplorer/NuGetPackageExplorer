@@ -2,8 +2,17 @@
 using System.Collections;
 using System.Globalization;
 using System.Linq;
+
+
+#if HAS_UNO
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+using _CultureInfo = System.String;
+#else
 using System.Windows;
+using _CultureInfo = System.Globalization.CultureInfo;
 using System.Windows.Data;
+#endif
 
 namespace PackageExplorer
 {
@@ -13,7 +22,7 @@ namespace PackageExplorer
 
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             if (targetType == typeof(Visibility))
             {
@@ -54,7 +63,7 @@ namespace PackageExplorer
             return value;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             throw new NotImplementedException();
         }

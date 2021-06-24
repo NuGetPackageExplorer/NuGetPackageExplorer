@@ -1,0 +1,13 @@
+{
+  "solution": {
+    "path": "NuGetPackageExplorer.sln",
+    "projects": [
+      "Core\\Core.csproj",
+      "Uno\\NuGetPackageExplorer.Shared\\NuGetPackageExplorer.Shared.shproj",
+      "Uno\\NuGetPackageExplorer.Skia.Gtk\\NuGetPackageExplorer.Skia.Gtk.csproj",
+      "Uno\\NuGetPackageExplorer.Wasm\\NuGetPackageExplorer.Wasm.csproj",
+      "PackageViewModel\\PackageViewModel.csproj",
+      "Types\\Types.csproj"
+    ]
+  }
+}

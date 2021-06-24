@@ -1,20 +1,30 @@
 ﻿using System;
 using System.ComponentModel;
+
+#if HAS_UNO
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+
+using _CultureInfo = System.String;
+#else
 using System.Windows;
 using System.Windows.Data;
+
+using _CultureInfo = System.Globalization.CultureInfo;
+#endif
 
 namespace PackageExplorer
 {
     public class EnumConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             if (value == null) return DependencyProperty.UnsetValue;
 
             return GetDescription((Enum)value);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             return value;
         }

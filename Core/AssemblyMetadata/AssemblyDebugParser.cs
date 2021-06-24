@@ -26,6 +26,10 @@ namespace NuGetPe.AssemblyMetadata
             {
                 if (peStream == null)
                     throw new ArgumentNullException(nameof(peStream), "Full PDB's require the PE file to be next to the PDB");
+
+                if (!AppCompat.IsSupported(RuntimeFeature.DiaSymReader))
+                    throw new PlatformNotSupportedException("Windows PDB cannot be processed on this platform.");
+
                 // Full PDB. convert to ppdb in memory
 
                 _pdbBytes = pdbStream.ReadAllBytes();

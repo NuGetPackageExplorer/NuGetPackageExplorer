@@ -1,0 +1,93 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:converters="using:NupkgExplorer.Views.Converters">
+
+	<!--#region FromObjectToValueConverter: object -> Visibility-->
+	<converters:FromObjectToValueConverter x:Key="NullToVisible"
+										   NullValue="Visible"
+										   NotNullValue="Collapsed" />
+	<converters:FromObjectToValueConverter x:Key="NullToCollapsed"
+										   NullValue="Collapsed"
+										   NotNullValue="Visible" />
+	<!--#endregion-->
+	<!--#region FromObjectToValueConverter: object -> bool-->
+	<converters:FromObjectToValueConverter x:Key="IsNull"
+										   NullValue="True"
+										   NotNullValue="False" />
+	<converters:FromObjectToValueConverter x:Key="IsNotNull"
+										   NullValue="False"
+										   NotNullValue="True" />
+	<!--#endregion-->
+
+	<!--#region FromBoolToValueConverter: bool? -> Visibility-->
+	<converters:FromBoolToValueConverter x:Key="TrueToVisible"
+										 TrueValue="Visible"
+										 FalseOrDefaultValue="Collapsed" />
+	<converters:FromBoolToValueConverter x:Key="TrueOrNullToVisible"
+										 TrueOrDefaultValue="Visible"
+										 FalseValue="Collapsed" />
+	<converters:FromBoolToValueConverter x:Key="TrueToCollapsed"
+										 TrueValue="Collapsed"
+										 FalseOrDefaultValue="Visible" />
+	<converters:FromBoolToValueConverter x:Key="TrueOrNullToCollapsed"
+										 TrueOrDefaultValue="Collapsed"
+										 FalseValue="Visible" />
+	<!--#endregion-->
+	<!--#region FromBoolToValueConverter: bool? -> bool-->
+	<converters:FromBoolToValueConverter x:Key="IsTrue"
+										 TrueValue="True"
+										 FalseOrDefaultValue="False" />
+	<converters:FromBoolToValueConverter x:Key="NotFalse"
+										 TrueOrDefaultValue="True"
+										 FalseValue="False" />
+	<converters:FromBoolToValueConverter x:Key="IsNotTrue"
+										 TrueValue="False"
+										 FalseOrDefaultValue="True" />
+	<converters:FromBoolToValueConverter x:Key="IsFalse"
+										 TrueOrDefaultValue="False"
+										 FalseValue="True" />
+	<!--#endregion-->
+
+	<!--#region FromStringToValueConverter: string.IsNullOrEmpty -> Visibility-->
+	<converters:FromStringToValueConverter x:Key="IsNullOrEmptyToVisible"
+										   Check="IsNullOrEmpty"
+										   TrueValue="Visible"
+										   FalseValue="Collapsed" />
+	<converters:FromStringToValueConverter x:Key="IsNullOrEmptyToCollapsed"
+										   Check="IsNullOrEmpty"
+										   TrueValue="Collapsed"
+										   FalseValue="Visible" />
+	<!--#endregion-->
+	<!--#region FromStringToValueConverter: string.IsNullOrWhitespace -> Visibility-->
+	<converters:FromStringToValueConverter x:Key="IsNullOrWhitespaceToVisible"
+										   Check="IsNullOrWhitespace"
+										   TrueValue="Visible"
+										   FalseValue="Collapsed" />
+	<converters:FromStringToValueConverter x:Key="IsNullOrWhitespaceToCollapsed"
+										   Check="IsNullOrWhitespace"
+										   TrueValue="Collapsed"
+										   FalseValue="Visible" />
+	<!--#endregion-->
+
+	<!--#region EnumerableConverter: ...-->
+	<converters:EnumerableConverter x:Key="EnumerableStringJoinConverter"
+									Method="StringJoin" />
+	<converters:EnumerableConverter x:Key="EnumerableAnyConverter"
+									Method="Any" />
+	<converters:EnumerableConverter x:Key="EnumerableNoneConverter"
+									Method="None" />
+	<!--#endregion-->
+	<!--#region HumanizeConverter: ...-->
+	<converters:HumanizeConverter x:Key="FileSizeConverter"
+								  Conversion="FileSize" />
+	<converters:HumanizeConverter x:Key="LargeNumberConverter"
+								  Conversion="LargeNumber" />
+	<!--#endregion-->
+	<!--#region HumanizeConverter: ...-->
+	<converters:StringFormatConverter x:Key="CurrentCultureStringFormat"
+									  Culture="CurrentCulture" />
+	<converters:StringFormatConverter x:Key="InvariantCultureStringFormat"
+									  Culture="InvariantCulture" />
+	<!--#endregion-->
+
+</ResourceDictionary>

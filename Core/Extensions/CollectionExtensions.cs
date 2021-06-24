@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using NuGet.Packaging;
 
 namespace NuGetPe
@@ -31,6 +32,11 @@ namespace NuGetPe
                 collection.Remove(item);
             }
             return toRemove.Count;
+        }
+
+        public static IEnumerable<T?> CastAsNullable<T>(this IEnumerable<T> source) where T : struct
+        {
+            return source.Cast<T?>();
         }
     }
 }

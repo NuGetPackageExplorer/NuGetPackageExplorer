@@ -1,0 +1,45 @@
+﻿<ContentDialog x:Class="PackageExplorer.DownloadProgressDialog"
+			   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			   xmlns:local="using:NupkgExplorer.Views.Dialogs"
+			   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			   xmlns:todo="what should be done"
+			   mc:Ignorable="d todo"
+			   Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+
+		<StackPanel Grid.Row="0"
+					MinWidth="100">
+			<TextBlock Margin="0,0,0,5"
+					   Style="{StaticResource TypoSubtitle2}">
+				<Run Text="{Binding PackageName}" />
+				<Run Text="{Binding PackageVersion}" />
+			</TextBlock>
+			<TextBlock Style="{StaticResource TypoBody2}">
+				<Run Text="Downloading" />
+				<Run Text="{Binding Ellipsis}" />
+			</TextBlock>
+
+			<ProgressBar Value="{Binding Progress}" IsIndeterminate="false" />
+            
+			<TextBlock Visibility="{Binding Progress, Converter={StaticResource NullToCollapsed}}"
+					   Style="{StaticResource TypoBody2}">
+				<Run Text="{Binding Received, Converter={StaticResource FileSizeConverter}}" />
+				<Run Text="/" />
+				<Run Text="{Binding Total, Converter={StaticResource FileSizeConverter}}" />
+			</TextBlock>
+		</StackPanel>
+
+		<Button Grid.Row="1"
+				Content="Cancel"
+				Command="{Binding CancelDownloadCommand}"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Bottom" />
+	</Grid>
+</ContentDialog>

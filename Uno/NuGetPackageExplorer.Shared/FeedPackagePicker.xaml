@@ -1,0 +1,323 @@
+﻿<Page x:Class="PackageExplorer.FeedPackagePicker"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+	  xmlns:extensions="using:NupkgExplorer.Views.Extensions"
+	  xmlns:macos="http:/uno.ui/macos"
+	  xmlns:not_macos="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:not_win="http:/uno.ui/not_win"
+	  xmlns:pexpl="using:PackageExplorer"
+	  xmlns:data="using:NupkgExplorer.Client.Data"
+	  xmlns:todo="what should be done"
+	  xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:xamarin="http:/uno.ui/xamarin"
+	  mc:Ignorable="d todo macos xamarin not_win"
+	  x:Name="PageRoot"
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Page.Resources>
+		<DataTemplate x:Key="NugetPackageTemplate"
+					  x:DataType="data:PackageData">
+			<Grid ColumnSpacing="20">
+				<Grid.ColumnDefinitions>
+					<!-- 0: Icon, 1: Details, 2: Version -->
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
+				<!-- C0: Icon -->
+				<Image Grid.Column="0"
+					   Source="{x:Bind pexpl:PackageIconConverterHelper.ConvertToImage(IconUrl)}"
+					   Width="50"
+					   Height="50"
+					   VerticalAlignment="Top" />
+
+				<!-- C1: Details -->
+				<StackPanel Grid.Column="1">
+					<StackPanel Orientation="Horizontal"
+								Spacing="8">
+						<TextBlock Text="{Binding Id}"
+								   Style="{StaticResource TypoTitle2}" />
+						<Image Source="ms-appx:///Assets/CheckedBlueCircle.png"
+							   Height="18"
+							   Width="18"
+							   Visibility="{Binding Verified, Converter={StaticResource TrueToVisible}, FallbackValue=Collapsed}" />
+					</StackPanel>
+					<TextBlock Foreground="{ThemeResource OnSurfaceThemeBrush60}"
+							   Style="{StaticResource TypoBody2}">
+						<Run Text="by" />
+						<Run Text="{Binding Authors[0]}"
+							 Foreground="{ThemeResource OnSurfaceThemeBrush87}" />
+						<Run Text="{Binding TotalDownloads, Converter={StaticResource LargeNumberConverter}}"
+							 FontWeight="SemiBold" />
+						<Run Text="downloads"
+							 FontWeight="SemiBold" />
+					</TextBlock>
+					<TextBlock Text="{Binding Description}"
+							   TextTrimming="CharacterEllipsis"
+							   Style="{StaticResource TypoBody1}" />
+				</StackPanel>
+
+				<!-- C2: Version -->
+				<TextBlock Grid.Column="2"
+						   Style="{StaticResource TypoBody1}">
+					v<Run Text="{Binding Version}" />
+				</TextBlock>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="NugetPackageDetailsTemplate"
+					  x:DataType="data:PackageData">
+			<!-- workaround used to access parent data-context see #55 -->
+			<!-- note: the DataContext is FeedPackagePicker for now, until we reach the 1st nested StackPanel -->
+			<ScrollViewer x:Name="TemplateRoot"
+						  HorizontalScrollMode="Disabled"
+						  VerticalScrollMode="Auto">
+				<StackPanel Padding="20,20,20,36"
+							Spacing="10"
+							DataContext="{Binding SelectedPackage}">
+
+					<!-- Icon -->
+					<Image Source="{x:Bind pexpl:PackageIconConverterHelper.ConvertToImage(IconUrl)}"
+						   Width="38"
+						   Height="38"
+						   HorizontalAlignment="Left" />
+
+					<!-- Id, [V]erified -->
+					<StackPanel Orientation="Horizontal"
+								Spacing="8">
+						<TextBlock Text="{Binding Id}"
+								   IsTextSelectionEnabled="True"
+								   Style="{StaticResource TypoTitle1}" />
+						<Image Source="ms-appx:///Assets/CheckedBlueCircle.png"
+							   Height="18"
+							   Width="18"
+							   Visibility="{Binding Verified, Converter={StaticResource TrueToVisible}, FallbackValue=Collapsed}" />
+					</StackPanel>
+
+					<!-- SelectButton -->
+					<Button Content="Open"
+							win:Command="{Binding DataContext.OpenPackageFromFeedCommand, ElementName=PageRoot}"
+							not_win:Command="{Binding DataContext.OpenPackageFromFeedCommand, ElementName=TemplateRoot}"
+							HorizontalAlignment="Stretch"
+							Style="{StaticResource PrimaryAccentButtonStyle}" />
+
+					<!-- DetailsLabelGrid -->
+					<Grid ColumnSpacing="6"
+						  RowSpacing="10">
+						<Grid.ColumnDefinitions>
+							<!-- 0: Label, 1: Content -->
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="*" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<!-- Version + ComboBox -->
+						<TextBlock Grid.Row="0"
+								   Grid.Column="0"
+								   Text="Version:"
+								   IsTextSelectionEnabled="True"
+								   Style="{StaticResource TypoBody2}" />
+						<StackPanel Grid.Row="0"
+									Grid.Column="1">
+
+							<!-- Default Version + LoadVersions Button -->
+							<TextBlock Text="{Binding Version}"
+									   IsTextSelectionEnabled="True"
+									   Style="{StaticResource TypoBody2}"
+									   win:Visibility="{Binding ElementName=PageRoot, Path=DataContext.SelectedPackageVersions, Converter={StaticResource NullToVisible}, TargetNullValue=Visible}"
+									   not_win:Visibility="{Binding ElementName=TemplateRoot, Path=DataContext.SelectedPackageVersions, Converter={StaticResource NullToVisible}, TargetNullValue=Visible}" />
+							<HyperlinkButton Content="Show other versions"
+											 win:Command="{Binding ElementName=PageRoot, Path=DataContext.LoadPackageVersionsCommand}"
+											 not_win:Command="{Binding ElementName=TemplateRoot, Path=DataContext.LoadPackageVersionsCommand}"
+											 win:Visibility="{Binding ElementName=PageRoot, Path=DataContext.SelectedPackageVersions, Converter={StaticResource NullToVisible}, TargetNullValue=Visible}"
+											 not_win:Visibility="{Binding ElementName=TemplateRoot, Path=DataContext.SelectedPackageVersions, Converter={StaticResource NullToVisible}, TargetNullValue=Visible}"
+											 Margin="0"
+											 Padding="0" />
+
+							<!-- Version ComboBox -->
+							<ComboBox Text="{Binding Version}"
+									  win:ItemsSource="{Binding ElementName=PageRoot, Path=DataContext.SelectedPackageVersions}"
+									  not_win:ItemsSource="{Binding ElementName=TemplateRoot, Path=DataContext.SelectedPackageVersions}"
+									  win:SelectedItem="{Binding ElementName=PageRoot, Path=DataContext.SelectedPackageVersion, Mode=TwoWay}"
+									  not_win:SelectedItem="{Binding ElementName=TemplateRoot, Path=DataContext.SelectedPackageVersion, Mode=TwoWay}"
+									  win:Visibility="{Binding ElementName=PageRoot, Path=DataContext.SelectedPackageVersions, Converter={StaticResource NullToCollapsed}, TargetNullValue=Collapsed}"
+									  not_win:Visibility="{Binding ElementName=TemplateRoot, Path=DataContext.SelectedPackageVersions, Converter={StaticResource NullToCollapsed}, TargetNullValue=Collapsed}"
+									  IsEditable="False"
+									  HorizontalAlignment="Stretch" />
+						</StackPanel>
+
+						<!-- Description -->
+						<TextBlock Grid.Row="1"
+								   Grid.Column="0"
+								   Text="Description:"
+								   IsTextSelectionEnabled="True"
+								   Style="{StaticResource TypoBody2}" />
+						<TextBlock Grid.Row="1"
+								   Grid.Column="1"
+								   Text="{Binding Description}"
+								   IsTextSelectionEnabled="True"
+								   Style="{StaticResource TypoBody2}" />
+
+						<!-- Authors -->
+						<TextBlock Grid.Row="2"
+								   Grid.Column="0"
+								   Text="Author(s):"
+								   IsTextSelectionEnabled="True"
+								   Style="{StaticResource TypoBody2}" />
+						<TextBlock Grid.Row="2"
+								   Grid.Column="1"
+								   Text="{Binding Authors, Converter={StaticResource EnumerableStringJoinConverter}, ConverterParameter=', '}"
+								   TextWrapping="Wrap"
+								   IsTextSelectionEnabled="True"
+								   Style="{StaticResource TypoBody2}" />
+
+						<!-- LicenseUrl -->
+						<TextBlock Grid.Row="3"
+								   Grid.Column="0"
+								   Text="License:"
+								   IsTextSelectionEnabled="True"
+								   Style="{StaticResource TypoBody2}" />
+						<HyperlinkButton Grid.Row="3"
+										 Grid.Column="1"
+										 Content="{Binding LicenseUrl}"
+										 Padding="0"
+										 NavigateUri="{Binding LicenseUrl}" />
+
+						<!-- ProjectUrl -->
+						<TextBlock Grid.Row="4"
+								   Grid.Column="0"
+								   Text="Project URL:"
+								   Style="{StaticResource TypoBody2}" />
+						<HyperlinkButton Grid.Row="4"
+										 Grid.Column="1"
+										 Content="{Binding ProjectUrl}"
+										 Padding="0"
+										 NavigateUri="{Binding ProjectUrl}" />
+
+						<!-- Tags -->
+						<TextBlock Grid.Row="5"
+								   Grid.Column="0"
+								   Text="Tags:"
+								   IsTextSelectionEnabled="True"
+								   Style="{StaticResource TypoBody2}" />
+						<TextBlock Grid.Row="5"
+								   Grid.Column="1"
+								   Text="{Binding Tags, Converter={StaticResource EnumerableStringJoinConverter}, ConverterParameter=', '}"
+								   TextWrapping="Wrap"
+								   IsTextSelectionEnabled="True"
+								   Style="{StaticResource TypoBody2}" />
+					</Grid>
+				</StackPanel>
+			</ScrollViewer>
+		</DataTemplate>
+
+		<Style x:Key="FullWidthListViewItemStyle"
+			   TargetType="ListViewItem">
+			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+			<Setter Property="Padding" Value="20,20,20,36" />
+		</Style>
+	</Page.Resources>
+
+	<Grid RowSpacing="5"
+		  Padding="5">
+		<Grid.RowDefinitions>
+			<!-- R0: SearchBar; R1-2: SearchResults, R2: Powered-By Footer -->
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<!-- R0C0-2: SearchBar -->
+			<!-- R1-2C0: PackageListView, C1: GridSplitter, (R1)C2: PackageDetailsView -->
+			<!-- R2C2: Powered-By Footer -->
+			<ColumnDefinition Width="2.5*" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<!-- R0C0-1: SearchBar -->
+		<Grid Grid.Row="0"
+			  Grid.ColumnSpan="3"
+			  Style="{StaticResource SearchBarSectionGridStyle}">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<TextBox Grid.Column="0"
+					 Text="{Binding SearchTerm, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+					 PlaceholderText="Search for packages..."
+					 VerticalAlignment="Center" />
+			<Button Grid.Column="1"
+					win:Content="&#xE72C;"
+					xamarin:Content="&#xE149;"
+					Command="{Binding RefreshCommand}"
+					Style="{StaticResource IconButtonStyle}" />
+			<CheckBox Grid.Column="2"
+					  IsChecked="{Binding IncludePrerelease, Mode=TwoWay}"
+					  Content="Show pre-releases" />
+		</Grid>
+
+		<!-- R1-2C0: PackageListView -->
+		<Grid Grid.Row="1"
+			  Grid.RowSpan="2"
+			  Grid.Column="0"
+			  Style="{StaticResource SectionGridStyle}">
+			<ListView Grid.Column="0"
+					  ItemsSource="{Binding NugetPackages}"
+					  extensions:ListViewExtensions.AddIncrementallyLoadingSupport="True"
+					  extensions:ListViewExtensions.DoubleClickCommand="{Binding OpenPackageFromFeedCommand}"
+					  SelectedValue="{Binding SelectedPackage, Mode=TwoWay}"
+					  IsItemClickEnabled="True"
+					  ItemTemplate="{StaticResource NugetPackageTemplate}"
+					  ItemContainerStyle="{StaticResource FullWidthListViewItemStyle}" />
+		</Grid>
+
+		<!-- R1-2C1: GridSplitter -->
+		<controls:GridSplitter Grid.Row="1"
+							   Grid.RowSpan="2"
+							   Grid.Column="1"
+							   ResizeDirection="Columns"
+							   Style="{StaticResource TransparentGridSplitterStyle}" />
+
+		<!-- R1C2: PackageDetailsView -->
+		<Grid Grid.Row="1"
+			  Grid.Column="2"
+			  Style="{StaticResource SectionGridStyle}">
+			<TextBlock Text="Select a package to inspect"
+					   TextAlignment="Center"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"
+					   Foreground="{ThemeResource OnSurfaceThemeBrush38}"
+					   Visibility="{Binding SelectedPackage, Converter={StaticResource NullToVisible}, FallbackValue=Visible}"
+					   Style="{StaticResource TypoBody2}" />
+			<ContentControl Padding="8"
+							macos:Content="{Binding}"
+							ContentTemplate="{StaticResource NugetPackageDetailsTemplate}"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							VerticalContentAlignment="Stretch"
+							Visibility="{Binding SelectedPackage, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed}" />
+		</Grid>
+
+		<!-- R2C2: Powered-By Footer -->
+		<Grid Grid.Row="2"
+			  Grid.Column="2"
+			  Padding="24"
+			  Style="{StaticResource SectionGridStyle}">
+			<HyperlinkButton Style="{StaticResource PoweredByHyperlinkButtonStyle}" />
+		</Grid>
+	</Grid>
+</Page>

@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyModel;
 using NuGet.Protocol.Core.Types;
 
 using NuGetPe.AssemblyMetadata;
+using NuGetPe.Utility;
 
 namespace NuGetPe
 {
@@ -49,7 +50,7 @@ namespace NuGetPe
                 if (_package is ISignaturePackage sigPackage)
                 {
                     await sigPackage.LoadSignatureDataAsync().ConfigureAwait(false);
-                    if (sigPackage.RepositorySignature?.V3ServiceIndexUrl.AbsoluteUri.Contains(".nuget.org/", StringComparison.OrdinalIgnoreCase) == true)
+                    if (sigPackage.RepositorySignature?.V3ServiceIndexUrl?.AbsoluteUri.Contains(".nuget.org/", StringComparison.OrdinalIgnoreCase) == true)
                     {
                         IsPublicPackage = true;
                     }
@@ -59,12 +60,29 @@ namespace NuGetPe
                 var files = GetFilesToCheck();
                 return await CalculateValidity(files, cancellationToken).ConfigureAwait(false);
             }
+            catch (PlatformNotSupportedException e) when (!AppCompat.IsWindows)
+            {
+                DiagnosticsClient.TrackException(e, _package, IsPublicPackage);
+
+                return new SymbolValidatorResult(
+                    default, null,
+                    default, null,
+                    default, null,
+                    exception: e
+                );
+            }
             catch(Exception e)
             {
                 DiagnosticsClient.TrackException(e, _package, IsPublicPackage);
 
-                return new SymbolValidatorResult(SymbolValidationResult.NoSymbols, $"Validation Exception: {e.Message}", DeterministicResult.NonDeterministic, null, HasCompilerFlagsResult.Missing, null);
-            }            
+                var message = $"Validation Exception: {e.Message}";
+
+                return new SymbolValidatorResult(
+                    SymbolValidationResult.NoSymbols, message,
+                    DeterministicResult.NonDeterministic, message,
+                    HasCompilerFlagsResult.Missing, message
+                );
+            }
         }
 
         public IReadOnlyList<IFile> GetAllFiles() => GetFilesToCheck();
@@ -526,8 +544,12 @@ namespace NuGetPe
         {
             using var stream = StreamUtility.MakeSeekable(file.GetStream(), disposeOriginal: true);
             var peFile = new PeNet.PeFile(stream);
-            var signingCertificate = peFile.Authenticode?.SigningCertificate;
-            return signingCertificate != null && signingCertificate.Subject.EndsWith(", O=Microsoft Corporation, L=Redmond, S=Washington, C=US", StringComparison.OrdinalIgnoreCase);
+
+            var subject = AppCompat.IsSupported(RuntimeFeature.Cryptography)
+                ? peFile.Authenticode?.SigningCertificate?.Subject
+                : CryptoUtility.GetSigningCertificate(peFile)?.Subject.ToString();
+
+            return subject?.EndsWith(", O=Microsoft Corporation, L=Redmond, S=Washington, C=US", StringComparison.OrdinalIgnoreCase) == true;
         }
 
         private static async Task<bool> ValidatePdb(IFile input,
@@ -616,12 +638,23 @@ namespace NuGetPe
            // return match.Success && dlls.Contains($"{match.Groups[1]}\\{match.Groups[2]}.dll");
         }
 
+        //private static readonly string? apiLocation = "http://localhost:7071/api/MsdlProxy";
+        private static readonly string? ApiLocation = Environment.GetEnvironmentVariable("MSDL_PROXY_LOCATION");
+
         private async Task<Stream?> GetSymbolsAsync(IReadOnlyList<SymbolKey> symbolKeys, CancellationToken cancellationToken = default)
-        {
+        {            
             foreach (var symbolKey in symbolKeys)
             {
-               //var uri = new Uri(new Uri("https://symbols.nuget.org/download/symbols/"), symbolKey.Key);
-               var uri = new Uri(new Uri("https://msdl.microsoft.com/download/symbols/"), symbolKey.Key);
+
+                Uri uri;
+                if(AppCompat.IsWasm && !string.IsNullOrWhiteSpace(ApiLocation))
+                {                    
+                    uri = new Uri($"{ApiLocation}?symbolKey={symbolKey.Key}", UriKind.RelativeOrAbsolute);                                        
+                }
+                else
+                {
+                    uri = new Uri(new Uri("https://msdl.microsoft.com/download/symbols/"), symbolKey.Key);
+                }
 
                 using var request = new HttpRequestMessage
                 {

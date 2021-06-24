@@ -1,4 +1,6 @@
-﻿using NuGetPe;
+﻿using System;
+
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -19,5 +21,7 @@ namespace PackageExplorerViewModel
 
         public HasCompilerFlagsResult CompilerFlagsResult => _result?.CompilerFlagsResult ?? HasCompilerFlagsResult.NothingToValidate;
         public string? CompilerFlagsMessage => _result?.CompilerFlagsMessage;
+
+        public Exception? Exception => _result?.Exception;
     }
 }

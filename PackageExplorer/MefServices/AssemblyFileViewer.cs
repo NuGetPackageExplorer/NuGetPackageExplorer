@@ -2,13 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
+
+#if HAS_UNO
+using Windows.UI.Text;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Logging;
+
+using TabControl = Microsoft.UI.Xaml.Controls.TabView;
+using TabItem = Microsoft.UI.Xaml.Controls.TabViewItem;
+#else
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+#endif
 
 namespace PackageExplorer
 {
@@ -19,8 +32,6 @@ namespace PackageExplorer
         public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
             DiagnosticsClient.TrackEvent("AssemblyFileViewer");
-
-
 
             try
             {
@@ -43,6 +54,7 @@ namespace PackageExplorer
                 if (debugData != null)
                     debugDataViewModel = new AssemblyDebugDataViewModel(Task.FromResult(debugData));
 
+#if !HAS_UNO
                 // No debug data to display
                 if (assemblyMetadata != null && debugDataViewModel == null)
                 {
@@ -64,7 +76,12 @@ namespace PackageExplorer
                     // Tab control with three pages
                     var tc = new TabControl()
                     {
+#if HAS_UNO
+                        IsAddTabButtonVisible = false,
+                        TabItems =
+#else
                         Items =
+#endif
                         {
                             new TabItem
                             {
@@ -107,22 +124,48 @@ namespace PackageExplorer
 
                     return tc;
                 }
+#else
+                // returning UIElement from here works.
+                // however due to performance issues, we are just
+                // returning the datacontext and letting the xaml to handle the view.
+                // also, the ui layout is vastely different compared to the #if-block above
+                return new AssemblyFileContent()
+                {
+                    Metadata = assemblyMetadata
+                        ?.SelectOrDefault(GetMetadataEntriesOrderedByImportance)
+                        .ToArray(),
+                    DebugData = debugDataViewModel,
+                };
+#endif
             }
-            catch { }
+            catch (Exception e)
+            {
+#if HAS_UNO
+                this.Log().Error("Failed to generate view", e);
+#endif
+            }
 
+#if !HAS_UNO
             return new Grid();
+#else
+            // the empty object is needed for branching via type-checking
+            return new AssemblyFileContent();
+#endif
         }
 
 
         internal static Grid CreateAssemblyMetadataGrid(IEnumerable<KeyValuePair<string, string>> orderedAssemblyDataEntries)
         {
-
             var grid = new Grid();
-            grid.SetBinding(Grid.MaxWidthProperty, new Binding(nameof(ScrollViewer.ActualWidth)) { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(ScrollViewer), 1) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
+#if HAS_UNO
+            var style = Application.Current.Resources["SelectableTextBlockLikeStyleWithoutTriggers"] as Style;
+#else
+            grid.SetBinding(Grid.MaxWidthProperty, new Binding(nameof(ScrollViewer.ActualWidth)) { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(ScrollViewer), 1) });
             var style = Application.Current.FindResource("SelectableTextBlockLikeStyleWithoutTriggers") as Style;
+#endif
 
             foreach (var data in orderedAssemblyDataEntries)
             {
@@ -185,5 +228,22 @@ namespace PackageExplorer
                 yield return KeyValuePair.Create("Referenced assemblies", assemblyNamesDelimitedByLineBreak);
             }
         }
+
+#if HAS_UNO
+        [Bindable]
+        public class AssemblyFileContent
+        {
+            public bool IsAssemblyFileContent => true;
+
+            public KeyValuePair<string, string>[]? Metadata { get; init; }
+            public AssemblyDebugDataViewModel? DebugData { get; init; }
+
+            public override string ToString()
+            {
+                // workaround: prevent class name to be displayed during content transition
+                return string.Empty;
+            }
+        }
+#endif
     }
 }

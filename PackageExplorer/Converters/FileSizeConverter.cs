@@ -1,24 +1,39 @@
 ﻿using System;
 using System.Globalization;
+
+#if HAS_UNO
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+using _CultureInfo = System.String;
+#else
+using System.Windows;
+using _CultureInfo = System.Globalization.CultureInfo;
 using System.Windows.Data;
+#endif
 
 namespace PackageExplorer
 {
     public class FileSizeConverter : IValueConverter
     {
-        #region IValueConverter Members
+#region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object? parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object? parameter, _CultureInfo culture)
         {
-            return ConvertFileSizeToString((long)value, culture);
+#if HAS_UNO
+            var cultureInfo = new CultureInfo(culture);
+#else
+            var cultureInfo = culture;
+#endif
+
+            return ConvertFileSizeToString((long)value, cultureInfo);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             throw new NotImplementedException();
         }
 
-        #endregion
+#endregion
 
         internal static string ConvertFileSizeToString(long fileSize, CultureInfo culture)
         {

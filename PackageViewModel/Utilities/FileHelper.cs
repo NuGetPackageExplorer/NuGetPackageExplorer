@@ -329,6 +329,8 @@ namespace PackageExplorerViewModel
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_TYPE)]
             public string szTypeName;
         }
+
+#if !NETSTANDARD2_1
 #pragma warning restore IDE1006 // Naming Styles
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
         public static Icon ExtractAssociatedIcon(string fileName)
@@ -347,6 +349,6 @@ namespace PackageExplorerViewModel
             DestroyIcon(info.hIcon);
             return icon;
         }
-
+#endif
     }
 }
