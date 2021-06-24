@@ -192,7 +192,7 @@ stages:
       inputs:
         SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Wasm/bin/Release/net5.0/dist'
         Contents: '**'
-        TargetFolder: $(build.artifactstagingdirectory)\$(ReleaseChannel)\WebAssembly
+        TargetFolder: $(build.artifactstagingdirectory)\$(ReleaseChannel)
         CleanTargetFolder: false
         OverWrite: false
         flattenFolders: false
