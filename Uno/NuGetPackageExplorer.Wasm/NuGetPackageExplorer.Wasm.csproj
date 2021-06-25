@@ -44,30 +44,19 @@
     <LinkerDescriptor Include="LinkerConfig.xml" />
   </ItemGroup>
   <ItemGroup>
-    <!--
-    This item group is required by the project template because of the
-    new SDK-Style project, otherwise some files are not added automatically.
-
-    You can safely remove this ItemGroup completely.
-    -->
-    <None Include="Program.cs" />
-    <None Include="LinkerConfig.xml" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\Core\Core.csproj" />
     <ProjectReference Include="..\..\PackageViewModel\PackageViewModel.csproj" />
     <ProjectReference Include="..\..\Types\Types.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <!-- Note that for WebAssembly version 1.1.1 of the console logger required -->
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
+    <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.0.1" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.0.0" />
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.DataGrid" Version="7.0.0" />
     <PackageReference Include="Uno.Monaco.Editor" Version="1.0.2-uno.10" />
-    <PackageReference Include="Uno.UI.WebAssembly" Version="3.8.0-dev.457" />
-    <PackageReference Include="Uno.UI.RemoteControl" Version="3.8.0-dev.457" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.WebAssembly" Version="3.8.6" />
+    <PackageReference Include="Uno.UI.RemoteControl" Version="3.8.6" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="3.0.0-dev.87" />
     <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="3.0.0-dev.87" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="5.0.2" />

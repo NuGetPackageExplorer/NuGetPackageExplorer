@@ -11,7 +11,7 @@ jobs:
     env:
       DIST_PATH: Uno/NuGetPackageExplorer.Wasm/bin/Release/net5.0/dist
 
-    if: (github.event_name == 'pull_request' && github.event.action != 'closed')
+    if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.repository == 'NuGetPackageExplorer/NuGetPackageExplorer'
     runs-on: ubuntu-latest
     container: 'unoplatform/wasm-build:3.0'
     name: Build and Deploy Job
