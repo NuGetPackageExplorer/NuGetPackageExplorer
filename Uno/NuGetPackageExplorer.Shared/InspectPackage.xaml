@@ -294,6 +294,7 @@
 														Content="{x:Bind Package.PackageMetadata.Copyright}"
 														ContentTemplate="{StaticResource MultilineTextContentTemplate}"
 														Orientation="Vertical"
+														Visibility="{x:Bind Package.PackageMetadata.Copyright, Converter={StaticResource NullToVisibilityConverter}}"
 														Style="{StaticResource LabeledTextContentControlStyle}" />
 
 							<!-- Serviceable -->

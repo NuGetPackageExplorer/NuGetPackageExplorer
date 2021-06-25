@@ -9,7 +9,7 @@ on:
 jobs:
   build_and_deploy_job:
     env:
-      DIST_PATH: NuGetPackageExplorer/NuGetPackageExplorer.Wasm/bin/Release/net5.0/dist
+      DIST_PATH: Uno/NuGetPackageExplorer.Wasm/bin/Release/net5.0/dist
 
     if: (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
@@ -32,7 +32,7 @@ jobs:
           dotnet-version: '5.0.x'
           
       - run: |
-          cd NuGetPackageExplorer/NuGetPackageExplorer.Wasm
+          cd Uno/NuGetPackageExplorer.Wasm
           dotnet build -c Release /p:UNO_BUILD_ONLY=true
 
       - uses: actions/upload-artifact@v2
@@ -51,7 +51,7 @@ jobs:
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "${{ env.DIST_PATH }}" # App source code path
-          api_location: "NuGetPackageExplorer/Api" # Api source code path - optional
+          api_location: "Uno/Api" # Api source code path - optional
           output_location: "" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
 
