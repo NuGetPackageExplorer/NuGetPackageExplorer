@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
+using NuGet.Common;
 using NuGet.Versioning;
 
 namespace NuGetPe
@@ -57,17 +58,18 @@ namespace NuGetPe
                 new Command("package", "Validates NuGet package health. Ensures your package meets the .NET Foundation's guidelines for secure packages.")
                 {
                       localComand,
-                      remoteCommand
+                      remoteCommand,
+                      new Option<bool>("--verbose", "Log what's happening under the hood."),
                 }
             };
 
-            localComand.Handler = CommandHandler.Create<string>(RunLocalCommand);
-            remoteCommand.Handler = CommandHandler.Create<string, Uri, NuGetVersion?>(RunRemoteCommand);
+            localComand.Handler = CommandHandler.Create<bool, string>(RunLocalCommand);
+            remoteCommand.Handler = CommandHandler.Create<bool, string, Uri, NuGetVersion?>(RunRemoteCommand);
 
             return await rootCommand.InvokeAsync(args).ConfigureAwait(false);
         }
 
-        private static async Task<int> RunLocalCommand(string file)
+        private static async Task<int> RunLocalCommand(bool verbose, string file)
         {
             var directory = Directory.GetCurrentDirectory();
 
@@ -104,7 +106,7 @@ namespace NuGetPe
                         await Console.Out.WriteLineAsync($"Validating {packageFile.FullName}").ConfigureAwait(false);
                     }
 
-                    var isValid = await RunAsync(packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
+                    var isValid = await RunAsync(verbose, packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
 
                     if (!isValid)
                         return EXIT_FAILURE;
@@ -124,7 +126,7 @@ namespace NuGetPe
             return EXIT_SUCCESS;
         }
 
-        private static async Task<int> RunRemoteCommand(string packageId, Uri feedSource, NuGetVersion? version = null)
+        private static async Task<int> RunRemoteCommand(bool verbose, string packageId, Uri feedSource, NuGetVersion? version = null)
         {
             try
             {
@@ -135,13 +137,12 @@ namespace NuGetPe
                     cancellationTokenSource.Cancel();
                 };
                                 
-                using var downloader = new NuGetPackageDownloader(Console.Out);
+                using var downloader = new NuGetPackageDownloader(verbose ? new TextWriterLogger(Console.Out) : new NullLogger());
                 var packageFile = await downloader.DownloadAsync(packageId, version, feedSource, cancellationTokenSource.Token).ConfigureAwait(false);
                 var versionString = version == null ? "" : version.ToFullString() + " ";
                 await Console.Out.WriteLineAsync($"Validating {packageId} {versionString}from {packageFile.FullName}").ConfigureAwait(false);
                 
-
-                var isValid = await RunAsync(packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
+                var isValid = await RunAsync(verbose, packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
 
                 return isValid ? EXIT_SUCCESS : EXIT_FAILURE;
             }
@@ -158,7 +159,7 @@ namespace NuGetPe
         }
 
 
-        private static async Task<bool> RunAsync(FileInfo packageFile, CancellationToken cancellationToken)
+        private static async Task<bool> RunAsync(bool verbose, FileInfo packageFile, CancellationToken cancellationToken)
         {
             using var package = new ZipPackage(packageFile.FullName);
             
