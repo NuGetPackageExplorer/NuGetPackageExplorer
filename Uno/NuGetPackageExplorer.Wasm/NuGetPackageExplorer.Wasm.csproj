@@ -15,6 +15,8 @@
   </PropertyGroup>
   <ItemGroup>
     <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
+
+    <!-- This value must be the instrumentation key, not the connection string -->
     <WasmShellMonoEnvironment Include="NPE_AI_INSTRUMENTATIONKEY" Value="$(NpeAiInstrumentationKey)" />
   </ItemGroup>
   <ItemGroup>
