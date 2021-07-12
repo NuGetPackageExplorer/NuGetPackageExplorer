@@ -174,7 +174,7 @@ stages:
       displayName: Build Uno Apps
       inputs:
         solution: $(build.sourcesdirectory)/NuGetPackageExplorer-uno.slnf
-        msbuildArguments: /r /p:Configuration=Release /p:UNO_BUILD_ONLY=true /p:NpeAiInstrumentationKey=$(AppInsightsKey) /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
+        msbuildArguments: /r /p:Configuration=Release /p:UNO_BUILD_ONLY=true /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
         maximumCpuCount: true
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly'), eq(variables['ReleaseChannel'], 'UnoSkia')))
 
