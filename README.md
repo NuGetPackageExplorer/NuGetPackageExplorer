@@ -79,6 +79,12 @@ Chocolatey is another great way to install and update your application.
 2. Install Chocolatey: `iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex`
 3. Install NuGet Package Explorer: `choco install nugetpackageexplorer`
 
+### Web
+A subset of NuGet Package Explorer (Browsing, Inspecting, Uploading packages) is available on the [Web](https://NuGet.info). Implemented by using [Uno Platform](https://github.com/unoplatform/uno) Web Assembly support, it is also available as PWA.  
+
+The current Windows/WPF implementation of NPE will remain in the Windows store indefinitely, or at least until the new version fully replaces its functionality.
+
+
 ## What is NuGet Package Explorer?
 
 NuGet Package Explorer (NPE) is an application that makes it easy to create and explore NuGet packages. You can load a .nupkg or .snupkg file from disk or directly from a feed such as [nuget.org](https://www.nuget.org/).
