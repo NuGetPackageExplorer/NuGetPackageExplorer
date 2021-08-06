@@ -1,0 +1,15 @@
+version: 2
+updates:
+- package-ecosystem: nuget
+  directory: "/"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: Microsoft.DiaSymReader.Converter
+    versions:
+    - "> 1.1.0.pre.beta2.pre.21110.pre.01, < 1.2"
+  - dependency-name: Microsoft.Web.Xdt
+    versions:
+    - "> 2.1.2"
+ 
