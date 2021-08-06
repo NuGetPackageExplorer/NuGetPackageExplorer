@@ -53,30 +53,19 @@
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  Foreground="{TemplateBinding Foreground}"
 										  RenderTransformOrigin="0.5,0.5" />
-
-						<not_macos:FontIcon Grid.Column="1"
-											x:Name="Arrow"
-											FontFamily="Segoe MDL2 Assets"
-											FontSize="12"
-											Glyph="&#xE70D;"
-											Margin="8,8,20,8"
-											RenderTransformOrigin="0.5,0.5">
-							<FontIcon.RenderTransform>
-								<RotateTransform />
-							</FontIcon.RenderTransform>
-						</not_macos:FontIcon>
-						<macos:PathIcon Grid.Column="1"
-										x:Name="Arrow"
-										Height="24"
-										Data="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
-										Margin="8,8,20,8"
-										HorizontalAlignment="Center"
-										VerticalAlignment="Center"
-										RenderTransformOrigin="0.5,0.5">
+						<PathIcon Grid.Column="1"
+								  x:Name="Arrow"
+								  Height="24"
+								  Width="24"
+								  Data="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+								  Margin="8,8,20,8"
+								  HorizontalAlignment="Center"
+								  VerticalAlignment="Center"
+								  RenderTransformOrigin="0.5,0.5">
 							<PathIcon.RenderTransform>
 								<RotateTransform />
 							</PathIcon.RenderTransform>
-						</macos:PathIcon>
+						</PathIcon>
 
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
@@ -250,39 +239,26 @@
 								</todo:VisualState>
 							</VisualStateGroup>
 							<VisualStateGroup x:Name="ExpandDirectionStates">
-								<!-- Arrow.Glyph/Data value without rotation should be pointing in the same directin as "ExpandDirection" -->
-								<!-- Arrow.Glyph: https://docs.microsoft.com/en-us/windows/uwp/design/style/segoe-ui-symbol-font -->
 								<!-- Arrow.Data: chevron-[left|up|right|down] from https://materialdesignicons.com/ -->
+								<!-- note: this value without rotation should be pointing in the same directin as "ExpandDirection" -->
 								<VisualState x:Name="LeftDirection">
 									<VisualState.Setters>
-										<macos:Setter Target="Arrow.Data"
-													  Value="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
-										<not_macos:Setter Target="Arrow.Glyph"
-														  Value="&#xE70B;" />
+										<Setter Target="Arrow.Data" Value="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="RightDirection">
 									<VisualState.Setters>
-										<macos:Setter Target="Arrow.Data"
-													  Value="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
-										<not_macos:Setter Target="Arrow.Glyph"
-														  Value="&#xE70C;" />
+										<Setter Target="Arrow.Data" Value="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="DownDirection">
 									<VisualState.Setters>
-										<macos:Setter Target="Arrow.Data"
-													  Value="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
-										<not_macos:Setter Target="Arrow.Glyph"
-														  Value="&#xE70D;" />
+										<Setter Target="Arrow.Data" Value="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
 									</VisualState.Setters>
 								</VisualState>
 								<VisualState x:Name="UpDirection">
 									<VisualState.Setters>
-										<macos:Setter Target="Arrow.Data"
-													  Value="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
-										<not_macos:Setter Target="Arrow.Glyph"
-														  Value="&#xE70E;" />
+										<Setter Target="Arrow.Data" Value="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
 									</VisualState.Setters>
 								</VisualState>
 							</VisualStateGroup>
