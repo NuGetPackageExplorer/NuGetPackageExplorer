@@ -21,7 +21,27 @@ body::before {
 }
 
 /* https://github.com/unoplatform/uno/issues/4304 */
+/*
+  Using system font stack to avoid downloading font files & to preserve the native "system" look.
+  code taken from font-system-ui.css of https://github.com/csstools/sanitize.css
+*/
 @font-face {
-  font-family: 'Segoe UI';
-  src: local('system-ui'), local('Segoe UI'), local('-apple-system'), local('BlinkMacSystemFont'), local('Inter'), local('Cantarell'), local('Ubuntu'), local('Roboto'), local('Open Sans'), local('Noto Sans'), local('Helvetica Neue'), local('sans-serif');
+  font-family: system-ui;
+  src: local(".AppleSystemUIFont"), local("Segoe UI"), local("Ubuntu"), local("Roboto-Regular"), local("HelveticaNeue");
+}
+@font-face {
+  font-family: system-ui;
+  font-style: italic;
+  src: local(".AppleSystemUIFont"), local("Segoe UI Italic"), local("Ubuntu-Italic"), local("Roboto-Italic"), local("HelveticaNeue-Italic");
+}
+@font-face {
+  font-family: system-ui;
+  font-weight: bold;
+  src: local(".AppleSystemUIFont"), local("Segoe UI Bold"), local("Ubuntu-Bold"), local("Roboto-Bold"), local("HelveticaNeue-Bold");
+}
+@font-face {
+  font-family: system-ui;
+  font-style: italic;
+  font-weight: bold;
+  src: local(".AppleSystemUIFont"), local("Segoe UI Bold Italic"), local("Ubuntu-BoldItalic"), local("Roboto-BoldItalic"), local("HelveticaNeue-BoldItalic");
 }
