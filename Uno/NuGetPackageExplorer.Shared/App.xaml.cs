@@ -343,7 +343,6 @@ namespace PackageExplorer
 #pragma warning disable CS0162 // Unreachable code detected
 #if DEBUG
                     //return "uno"; // search
-                    //return new FileInfo(NuGetPackageExplorer.Constants.LocalTestPackagePath);
                     //return new PackageIdentity("Newtonsoft.Json", NuGetVersion.Parse("13.0.1"));
                     //return new PackageIdentity("Microsoft.Extensions.DependencyInjection", NuGetVersion.Parse("5.0.1"));
                     //return new PackageIdentity("XyWpf.Library", NuGetVersion.Parse("1.0.1"));
@@ -412,13 +411,8 @@ namespace PackageExplorer
                     this.Log().Debug("parsing launch arg: " + e.Arguments);
                 }
 
-                var deeplink = e.Arguments.NullIfEmpty()
-#if DEBUG // TODO: remove debug code
-               // ?? NuGetPackageExplorer.Constants.LocalTestPackagePath
-#endif
-                ;
-
                 // Assume everything else should be a path
+                var deeplink = e.Arguments.NullIfEmpty();
                 if (!string.IsNullOrWhiteSpace(deeplink))
                 {
                     return new FileInfo(deeplink);
