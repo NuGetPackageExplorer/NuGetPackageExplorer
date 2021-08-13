@@ -1,17 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reactive.Disposables;
-using System.Reflection;
-using System.Text;
+using System.Reactive.Linq;
+using System.Windows.Input;
 
 using Microsoft.UI.Xaml.Controls;
 
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Input;
 
 namespace NupkgExplorer.Views.Behaviors
 {
@@ -22,7 +22,9 @@ namespace NupkgExplorer.Views.Behaviors
          * - IsUpdatingSelectedItem: used to prevent self-feedback loop
          * - SelectedItemBindingDisposable: Disposable for managing SelectedItem subscriptions
          * AutoToggleItemExpansion: auto expand/collapse clicked item
-         * - AutoToggleItemExpansionDisposable: [private] IDisposable for managing AutoToggleItemExpansion subscription */
+         * - AutoToggleItemExpansionDisposable: [private] IDisposable for managing AutoToggleItemExpansion subscription
+         * DoubleClickCommand: self-explanatory;
+         * - DoubleClickCommandDisposable: for managing DoubleClickCommand subscription */
 		#region DependencyProperty: EnableSelectedItemBinding
 
 		public static DependencyProperty EnableSelectedItemBindingProperty { get; } = DependencyProperty.RegisterAttached(
@@ -95,12 +97,36 @@ namespace NupkgExplorer.Views.Behaviors
         private static void SetAutoToggleItemExpansionDisposable(TreeView obj, IDisposable value) => obj.SetValue(AutoToggleItemExpansionDisposableProperty, value);
 
         #endregion
+        #region DependencyProperty: DoubleClickCommand
 
-		// uwp: SelectedItem is not a DependencyProperty, therefore we cant use it for binding.
-		//		normally we would use IsSelected, however this will add needless complexity to the VM
-		//		so instead, we are exposing it with this behavior
-		// uno: SelectedItem is implemented as a DependencyProperty, so that works.
-		//		however we will be using this behavior for consistency
+        public static DependencyProperty DoubleClickCommandProperty { get; } = DependencyProperty.RegisterAttached(
+            "DoubleClickCommand",
+            typeof(ICommand),
+            typeof(TreeViewBehavior),
+            new PropertyMetadata(default(ICommand), (d, e) => d.Maybe<TreeView>(control => OnDoubleClickCommandChanged(control, e))));
+
+        public static ICommand GetDoubleClickCommand(TreeView obj) => (ICommand)obj.GetValue(DoubleClickCommandProperty);
+        public static void SetDoubleClickCommand(TreeView obj, ICommand value) => obj.SetValue(DoubleClickCommandProperty, value);
+
+        #endregion
+        #region DependencyProperty: DoubleClickCommandDisposable
+
+        public static DependencyProperty DoubleClickCommandDisposableProperty { get; } = DependencyProperty.RegisterAttached(
+            "DoubleClickCommandDisposable",
+            typeof(IDisposable),
+            typeof(TreeViewBehavior),
+            new PropertyMetadata(default(IDisposable)));
+
+        public static IDisposable GetDoubleClickCommandDisposable(TreeView obj) => (IDisposable)obj.GetValue(DoubleClickCommandDisposableProperty);
+        public static void SetDoubleClickCommandDisposable(TreeView obj, IDisposable value) => obj.SetValue(DoubleClickCommandDisposableProperty, value);
+
+        #endregion
+
+        // uwp: SelectedItem is not a DependencyProperty, therefore we cant use it for binding.
+        //		normally we would use IsSelected, however this will add needless complexity to the VM
+        //		so instead, we are exposing it with this behavior
+        // uno: SelectedItem is implemented as a DependencyProperty, so that works.
+        //		however we will be using this behavior for consistency
 
 		private static void OnEnableSelectedItemBindingChanged(TreeView sender, DependencyPropertyChangedEventArgs e)
 		{
@@ -166,6 +192,44 @@ namespace NupkgExplorer.Views.Behaviors
                 {
                     typeof(TreeViewBehavior).Log().ErrorIfEnabled(() => "failed to auto expand selected item: ", e);
                 }
+            }
+        }
+
+        [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "managed via DoubleClickCommandDisposable")]
+        private static void OnDoubleClickCommandChanged(TreeView control, DependencyPropertyChangedEventArgs e)
+        {
+            GetDoubleClickCommandDisposable(control)?.Dispose();
+            if (e.NewValue is ICommand command)
+            {
+                var subscriptions = new CompositeDisposable();
+
+                var doubleTapped = Observable
+                    .FromEventPattern<DoubleTappedEventHandler, DoubleTappedRoutedEventArgs>(
+                        h => control.DoubleTapped += h,
+                        h => control.DoubleTapped -= h
+                    )
+                    .Select(x => x.EventArgs.OriginalSource)
+                    .Publish();
+                doubleTapped.Connect().DisposeWith(subscriptions);
+
+                doubleTapped
+                    .Subscribe(x =>
+                    {
+                        try
+                        {
+                            if (command.CanExecute(x))
+                            {
+                                command.Execute(x);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            typeof(TreeViewBehavior).Log().Error("failed to execute DoubleClick command: ", ex);
+                        }
+                    })
+                    .DisposeWith(subscriptions);
+
+                SetDoubleClickCommandDisposable(control, subscriptions);
             }
         }
 	}

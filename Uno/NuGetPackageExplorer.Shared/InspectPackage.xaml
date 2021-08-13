@@ -771,6 +771,7 @@
 						   behavior:TreeViewBehavior.EnableSelectedItemBinding="True"
 						   behavior:TreeViewBehavior.SelectedItem="{Binding SelectedContent, Mode=TwoWay}"
 						   behavior:TreeViewBehavior.AutoToggleItemExpansion="True"
+						   behavior:TreeViewBehavior.DoubleClickCommand="{Binding DoubleClickCommand}"
 						   ItemTemplateSelector="{StaticResource FSObjectTemplateSelector}"
 						   ItemContainerStyle="{StaticResource FileExplorerTreeViewItemStyle}"
 						   SelectionMode="Single" />

@@ -34,6 +34,7 @@ using Uno.Logging;
 
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -68,6 +69,8 @@ namespace NupkgExplorer.Presentation.Content
             get => GetProperty<string?>();
             set => SetProperty(value);
         }
+
+        public ICommand DoubleClickCommand => GetCommand(DoubleClick);
 
         public ICommand CloseDocumentCommand => GetCommand(CloseDocument);
 
@@ -264,6 +267,32 @@ namespace NupkgExplorer.Presentation.Content
                 catch (Exception)
                 {
                     return null;
+                }
+            }
+        }
+
+        public async Task DoubleClick()
+        {
+            if (SelectedContent is IFile file)
+            {
+                var picker = new FileSavePicker
+                {
+                    SuggestedFileName = file.Name,
+                    SuggestedStartLocation = PickerLocationId.Downloads,
+                };
+
+                var saveFile = await picker.PickSaveFileAsync();
+                if (saveFile != null)
+                {
+                    CachedFileManager.DeferUpdates(saveFile);
+
+                    using (var saveStream = await saveFile.OpenStreamForWriteAsync())
+                    using (var stream = file.GetStream())
+                    {
+                        await stream.CopyToAsync(saveStream);
+                    }
+
+                    await CachedFileManager.CompleteUpdatesAsync(saveFile);
                 }
             }
         }
