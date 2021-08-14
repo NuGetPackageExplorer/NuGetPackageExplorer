@@ -38,6 +38,7 @@
             <self:PackageIconConverter x:Key="PackageIconConverter" />
             <self:FileTypeToImageSourceConverter x:Key="FileTypeToImageSourceConverter" />
             <self:LicenseMetadataConverter x:Key="LicenseMetadataConverter" />
+            <self:LicenseUrlToVisibilityConverter x:Key="LicenseUrlToVisibilityConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
@@ -306,19 +307,6 @@
                 </StackPanel>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type packaging:LicenseMetadata}">
-                <StackPanel>
-                    <TextBlock Text="{Binding Converter={StaticResource LicenseMetadataConverter}}"
-                               ToolTipService.ToolTip="{Binding Converter={StaticResource LicenseMetadataConverter}, ConverterParameter=detailed}" />
-
-                    <TextBlock Visibility="{Binding LicenseUrl, Converter={StaticResource NullToVisibilityConverter}}">
-                        <Hyperlink Command="GoToPage" CommandParameter="{Binding LicenseUrl}" ToolTip="{Binding LicenseUrl}">
-                            <Run Text="{x:Static self:Resources.Dialog_ViewLicense}" />
-                        </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
-            </DataTemplate>
-
             <DataTemplate DataType="{x:Type packaging:PackageDependencyGroup}">
                 <Grid Margin="0,0,0,8">
                     <Grid.RowDefinitions>
@@ -571,18 +559,33 @@
                         </StackPanel>
 
                         <!-- View License link -->
-                        <TextBlock Visibility="{Binding LicenseUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Visibility="{Binding LicenseUrl, Converter={StaticResource LicenseUrlToVisibilityConverter}}">
                             <Hyperlink Command="GoToPage" CommandParameter="{Binding LicenseUrl}" ToolTip="{Binding LicenseUrl}">
                                 <Run Text="{x:Static self:Resources.Dialog_ViewLicense}" />
                             </Hyperlink>
                         </TextBlock>
 
                         <!-- License Metadata -->
-                        <StackPanel
-                            Visibility="{Binding LicenseMetadata, Converter={StaticResource NullToVisibilityConverter}}">
-                            <TextBlock Text="{x:Static self:Resources.Dialog_LicenceMeta}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <StackPanel Visibility="{Binding LicenseMetadata, Converter={StaticResource NullToVisibilityConverter}}">
+                            <StackPanel>
+                                <StackPanel Style="{StaticResource DetailMetadataStyle}"
+                                            Visibility="{Binding LicenseMetadata.License, Converter={StaticResource NullToVisibilityConverter}}">
+                                    <TextBlock Text="{x:Static self:Resources.PackageChooser_DetailLicense}"
+                                               Style="{StaticResource DetailMetadataLabelStyle}" />
+                                    <TextBlock Text="{Binding LicenseMetadata, Converter={StaticResource LicenseMetadataConverter}}"
+                                               ToolTipService.ToolTip="{Binding LicenseMetadata, Converter={StaticResource LicenseMetadataConverter}, ConverterParameter=detailed}"
+                                               Style="{StaticResource DetailMetadataValueStyle}" />
+                                </StackPanel>
 
-                            <ContentPresenter Margin="14,0,0,0" Content="{Binding LicenseMetadata, Mode=OneWay}" />
+                                <!-- note: LicenseUrl & LicenseMetadata.LicenseUrl are the same property, but wont co-exist -->
+                                <TextBlock Visibility="{Binding LicenseMetadata.LicenseUrl, Converter={StaticResource LicenseUrlToVisibilityConverter}}">
+                                    <Hyperlink Command="GoToPage"
+                                               CommandParameter="{Binding LicenseMetadata.LicenseUrl}"
+                                               ToolTip="{Binding LicenseMetadata.LicenseUrl}">
+                                        <Run Text="{x:Static self:Resources.Dialog_ViewLicense}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
                         </StackPanel>
 
                         <!-- Project Url -->

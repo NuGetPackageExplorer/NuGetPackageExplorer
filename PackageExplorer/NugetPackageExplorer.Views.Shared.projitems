@@ -16,6 +16,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Converters\FileSizeConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\FrameworkAssemblyReferenceDisplayConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\LicenseMetadataConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\LicenseUrlToVisibilityConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NuGetVersionConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NuGetVersionPreReleaseConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToBoolConverter.cs" />

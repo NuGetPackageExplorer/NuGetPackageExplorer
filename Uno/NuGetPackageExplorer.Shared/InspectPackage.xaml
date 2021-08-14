@@ -41,6 +41,7 @@
 		<pexpl:PackageDependencyConverter x:Key="PackageDependencyConverter" />
 		<pexpl:ReferenceSetConverter x:Key="ReferenceSetConverter" />
 		<pexpl:LicenseMetadataConverter x:Key="LicenseMetadataConverter" />
+		<pexpl:LicenseUrlToVisibilityConverter x:Key="LicenseUrlToVisibilityConverter" />
 		<!--#endregion-->
 
 		<!-- Metadata -->
@@ -235,7 +236,7 @@
 											 NavigateUri="{x:Bind Package.PackageMetadata.LicenseUrl}"
 											 ToolTipService.ToolTip="{x:Bind Package.PackageMetadata.LicenseUrl}"
 											 Padding="0"
-											 Visibility="{x:Bind Package.PackageMetadata.LicenseUrl, Converter={StaticResource NullToCollapsed}}" />
+											 Visibility="{x:Bind Package.PackageMetadata.LicenseUrl, Converter={StaticResource LicenseUrlToVisibilityConverter}}" />
 
 							<!-- License Metadata -->
 							<legacyControl:StackPanelEx Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource IsNotNull}}">
@@ -249,11 +250,12 @@
 								</wct:HeaderedContentControl>
 
 								<!-- LicenseUrl -->
+								<!-- note: LicenseUrl & LicenseMetadata.LicenseUrl are the same property, but wont co-exist -->
 								<HyperlinkButton Content="{x:Bind pexpl:Resources.Dialog_ViewLicense}"
 												 NavigateUri="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl}"
 												 ToolTipService.ToolTip="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl}"
 												 Padding="0"
-												 Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl, Converter={StaticResource NullToCollapsed}}" />
+												 Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl, Converter={StaticResource LicenseUrlToVisibilityConverter}}" />
 							</legacyControl:StackPanelEx>
 						</legacyControl:StackPanelEx>
 					</wct:Expander>
