@@ -201,18 +201,12 @@ namespace NupkgExplorer.Views.Behaviors
             GetDoubleClickCommandDisposable(control)?.Dispose();
             if (e.NewValue is ICommand command)
             {
-                var subscriptions = new CompositeDisposable();
-
-                var doubleTapped = Observable
+                var subscription = Observable
                     .FromEventPattern<DoubleTappedEventHandler, DoubleTappedRoutedEventArgs>(
                         h => control.DoubleTapped += h,
                         h => control.DoubleTapped -= h
                     )
                     .Select(x => x.EventArgs.OriginalSource)
-                    .Publish();
-                doubleTapped.Connect().DisposeWith(subscriptions);
-
-                doubleTapped
                     .Subscribe(x =>
                     {
                         try
@@ -226,10 +220,9 @@ namespace NupkgExplorer.Views.Behaviors
                         {
                             typeof(TreeViewBehavior).Log().Error("failed to execute DoubleClick command: ", ex);
                         }
-                    })
-                    .DisposeWith(subscriptions);
+                    });
 
-                SetDoubleClickCommandDisposable(control, subscriptions);
+                SetDoubleClickCommandDisposable(control, subscription);
             }
         }
 	}
