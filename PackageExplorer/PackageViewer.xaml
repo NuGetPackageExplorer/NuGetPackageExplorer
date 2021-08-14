@@ -37,6 +37,7 @@
             <self:ListToStringConverter x:Key="ListToStringConverter" />
             <self:PackageIconConverter x:Key="PackageIconConverter" />
             <self:FileTypeToImageSourceConverter x:Key="FileTypeToImageSourceConverter" />
+            <self:LicenseMetadataConverter x:Key="LicenseMetadataConverter" />
 
             <DataTemplate DataType="{x:Type core:PackageDependency}">
                 <TextBlock ToolTip="Open this package from online feed.">
@@ -307,31 +308,14 @@
 
             <DataTemplate DataType="{x:Type packaging:LicenseMetadata}">
                 <StackPanel>
-                    <StackPanel Style="{StaticResource DetailMetadataStyle}">
-                        <TextBlock Text="{x:Static self:Resources.Dialog_RepositoryType}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                        <TextBlock Text="{Binding Type}" Style="{StaticResource DetailMetadataValueStyle}" />
-                    </StackPanel>
-
-                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding License, Converter={StaticResource NullToVisibilityConverter}}">
-                        <TextBlock Text="{x:Static self:Resources.PackageChooser_DetailLicense}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                        <TextBlock Text="{Binding License}" Style="{StaticResource DetailMetadataValueStyle}" />
-                    </StackPanel>
+                    <TextBlock Text="{Binding Converter={StaticResource LicenseMetadataConverter}}"
+                               ToolTipService.ToolTip="{Binding Converter={StaticResource LicenseMetadataConverter}, ConverterParameter=detailed}" />
 
                     <TextBlock Visibility="{Binding LicenseUrl, Converter={StaticResource NullToVisibilityConverter}}">
                         <Hyperlink Command="GoToPage" CommandParameter="{Binding LicenseUrl}" ToolTip="{Binding LicenseUrl}">
                             <Run Text="{x:Static self:Resources.Dialog_ViewLicense}" />
                         </Hyperlink>
                     </TextBlock>
-
-                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding LicenseExpression, Converter={StaticResource NullToVisibilityConverter}}">
-                        <TextBlock Text="{x:Static self:Resources.Dialog_LicenseExpressionVersion}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                        <TextBlock Text="{Binding Version}" Style="{StaticResource DetailMetadataValueStyle}" />
-                    </StackPanel>
-
-                    <StackPanel Style="{StaticResource DetailMetadataStyle}" Visibility="{Binding LicenseExpression, Converter={StaticResource NullToVisibilityConverter}}">
-                        <TextBlock Text="{x:Static self:Resources.Dialog_LicenseExpression}" Style="{StaticResource DetailMetadataLabelStyle}" />
-                        <TextBlock Text="{Binding LicenseExpression}" Style="{StaticResource DetailMetadataValueStyle}" />
-                    </StackPanel>
                 </StackPanel>
             </DataTemplate>
 

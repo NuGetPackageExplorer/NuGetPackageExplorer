@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -161,6 +161,9 @@
   </data>
   <data name="Dialog_LicenseExpression" xml:space="preserve">
     <value>Expression:</value>
+  </data>
+  <data name="Dialog_LicenseExpressionType" xml:space="preserve">
+    <value>Expression Type:</value>
   </data>
   <data name="Dialog_LicenseExpressionVersion" xml:space="preserve">
     <value>Expression Version:</value>

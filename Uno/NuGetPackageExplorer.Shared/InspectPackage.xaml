@@ -40,6 +40,7 @@
 		<pexpl:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
 		<pexpl:PackageDependencyConverter x:Key="PackageDependencyConverter" />
 		<pexpl:ReferenceSetConverter x:Key="ReferenceSetConverter" />
+		<pexpl:LicenseMetadataConverter x:Key="LicenseMetadataConverter" />
 		<!--#endregion-->
 
 		<!-- Metadata -->
@@ -237,42 +238,23 @@
 											 Visibility="{x:Bind Package.PackageMetadata.LicenseUrl, Converter={StaticResource NullToCollapsed}}" />
 
 							<!-- License Metadata -->
-							<wct:HeaderedContentControl x:Name="LicenseMetadataHeader"
-														Header="{x:Bind pexpl:Resources.Dialog_LicenceMeta}"
-														x:Load="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource IsNotNull}}"
-														Orientation="Vertical"
-														Style="{StaticResource LabeledRawContentControlStyle2}">
-								<legacyControl:StackPanelEx Margin="20,0,0,0"
-															Spacing="5">
-									<!-- Type -->
-									<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_RepositoryType}"
-																Content="{x:Bind Package.PackageMetadata.LicenseMetadata.Type}"
-																Style="{StaticResource LabeledTextContentControlStyle2}" />
+							<legacyControl:StackPanelEx Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource IsNotNull}}">
+								<!-- License -->
+								<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.PackageChooser_DetailLicense}"
+															Style="{StaticResource LabeledRawContentControlStyle2}">
+									<TextBlock Text="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource LicenseMetadataConverter}}"
+											   extensions:TooltipExtensions.ToolTip="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource LicenseMetadataConverter}, ConverterParameter=detailed}"
+											   IsTextSelectionEnabled="True"
+											   Style="{StaticResource TypoBody2}" />
+								</wct:HeaderedContentControl>
 
-									<!-- License -->
-									<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.PackageChooser_DetailLicense}"
-																Content="{x:Bind Package.PackageMetadata.LicenseMetadata.License}"
-																Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata.License, Converter={StaticResource NullToCollapsed}}"
-																Style="{StaticResource LabeledTextContentControlStyle2}" />
-									<HyperlinkButton Content="{x:Bind pexpl:Resources.Dialog_ViewLicense}"
-													 NavigateUri="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl}"
-													 ToolTipService.ToolTip="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl}"
-													 Padding="0"
-													 Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl, Converter={StaticResource NullToCollapsed}}" />
-
-									<!-- Version -->
-									<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_LicenseExpressionVersion}"
-																Content="{x:Bind Package.PackageMetadata.LicenseMetadata.Version}"
-																Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseExpression, Converter={StaticResource NullToCollapsed}}"
-																Style="{StaticResource LabeledTextContentControlStyle2}" />
-
-									<!-- Expression -->
-									<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_LicenseExpression}"
-																Content="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseExpression}"
-																Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseExpression, Converter={StaticResource NullToCollapsed}}"
-																Style="{StaticResource LabeledTextContentControlStyle2}" />
-								</legacyControl:StackPanelEx>
-							</wct:HeaderedContentControl>
+								<!-- LicenseUrl -->
+								<HyperlinkButton Content="{x:Bind pexpl:Resources.Dialog_ViewLicense}"
+												 NavigateUri="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl}"
+												 ToolTipService.ToolTip="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl}"
+												 Padding="0"
+												 Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl, Converter={StaticResource NullToCollapsed}}" />
+							</legacyControl:StackPanelEx>
 						</legacyControl:StackPanelEx>
 					</wct:Expander>
 
