@@ -34,6 +34,7 @@ using Uno.Logging;
 
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -68,6 +69,8 @@ namespace NupkgExplorer.Presentation.Content
             get => GetProperty<string?>();
             set => SetProperty(value);
         }
+
+        public ICommand DoubleClickCommand => GetCommand(DoubleClick);
 
         public ICommand CloseDocumentCommand => GetCommand(CloseDocument);
 
@@ -266,6 +269,35 @@ namespace NupkgExplorer.Presentation.Content
                     return null;
                 }
             }
+        }
+
+        public async Task DoubleClick()
+        {
+            // TODO: remove #if when https://github.com/unoplatform/uno/pull/6544 is available
+#if !HAS_UNO_SKIA_GTK
+            if (SelectedContent is IFile file)
+            {
+                var picker = new FileSavePicker
+                {
+                    SuggestedFileName = file.Name,
+                    SuggestedStartLocation = PickerLocationId.Downloads,
+                };
+
+                var saveFile = await picker.PickSaveFileAsync();
+                if (saveFile != null)
+                {
+                    CachedFileManager.DeferUpdates(saveFile);
+
+                    using (var saveStream = await saveFile.OpenStreamForWriteAsync())
+                    using (var stream = file.GetStream())
+                    {
+                        await stream.CopyToAsync(saveStream);
+                    }
+
+                    await CachedFileManager.CompleteUpdatesAsync(saveFile);
+                }
+            }
+#endif
         }
 
         public async Task CloseDocument()
