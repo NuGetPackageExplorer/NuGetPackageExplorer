@@ -196,6 +196,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Expression Type:.
+        /// </summary>
+        public static string Dialog_LicenseExpressionType {
+            get {
+                return ResourceManager.GetString("Dialog_LicenseExpressionType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Expression Version:.
         /// </summary>
         public static string Dialog_LicenseExpressionVersion {
@@ -257,7 +266,7 @@ namespace PackageExplorer {
                 return ResourceManager.GetString("Dialog_PublisherLabel", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Readme:.
         /// </summary>
@@ -637,7 +646,7 @@ namespace PackageExplorer {
                 return ResourceManager.GetString("PackageChooser_DetailProjectUrl", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Readme:.
         /// </summary>
