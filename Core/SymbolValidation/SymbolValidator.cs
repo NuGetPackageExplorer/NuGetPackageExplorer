@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -62,7 +62,8 @@ namespace NuGetPe
             }
             catch (PlatformNotSupportedException e) when (!AppCompat.IsWindows)
             {
-                DiagnosticsClient.TrackException(e, _package, IsPublicPackage);
+                // dont track PlatformNotSupportedException
+                //DiagnosticsClient.TrackException(e, _package, IsPublicPackage);
 
                 return new SymbolValidatorResult(
                     default, null,
