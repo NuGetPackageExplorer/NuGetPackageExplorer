@@ -34,11 +34,24 @@ namespace PackageExplorer
                 }
                 else
                 {
-                    return new StringBuilder()
-                        .AppendLine($"{Resources.Dialog_LicenseExpression} {metadata.LicenseExpression}")
-                        .AppendLine($"{Resources.Dialog_LicenseExpression} {metadata.Type}")
-                        .AppendLine($"{Resources.Dialog_LicenseExpressionVersion} {metadata.Version}")
-                        .ToString().TrimEnd();
+                    var sb = new StringBuilder();
+
+                    if (metadata.Type == LicenseType.Expression)
+                    {
+                        sb
+                            .AppendLine($"{Resources.Dialog_LicenseExpression} {metadata.LicenseExpression}")
+                            .AppendLine($"{Resources.Dialog_LicenseExpressionType} {metadata.Type}")
+                            .AppendLine($"{Resources.Dialog_LicenseExpressionVersion} {metadata.Version}");
+                    }
+                    else if (metadata.Type == LicenseType.File)
+                    {
+                        sb
+                            .AppendLine($"License: {metadata.License}")
+                            .AppendLine($"Type: {metadata.Type}")
+                            .AppendLine($"License Url: {metadata.LicenseUrl}");
+                    }
+
+                    return sb.ToString().TrimEnd();
                 }
             }
 
