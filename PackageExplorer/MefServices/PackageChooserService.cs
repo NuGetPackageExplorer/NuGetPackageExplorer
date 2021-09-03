@@ -46,8 +46,16 @@ namespace PackageExplorer
         {
             if (_viewModel == null)
             {
-                _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
-                _viewModel.PackageDownloadRequested += OnPackageDownloadRequested;
+                try
+                {
+                    _viewModel = ViewModelFactory.CreatePackageChooserViewModel(null);
+                    _viewModel.PackageDownloadRequested += OnPackageDownloadRequested;
+                }
+                catch (Exception ex)
+                {
+                    UIServices.Show(ex.Message, MessageLevel.Error);
+                    return null;
+                }
             }
 
 #if !HAS_UNO
@@ -127,13 +135,30 @@ namespace PackageExplorer
 #if !HAS_UNO
             if (_pluginDialog == null)
             {
-                _pluginViewModel = ViewModelFactory.CreatePackageChooserViewModel(NuGetConstants.PluginFeedUrl);
-                _pluginDialog = new PackageChooserDialog(SettingsManager, _pluginViewModel);
+                try
+                {
+                    _pluginViewModel = ViewModelFactory.CreatePackageChooserViewModel(NuGetConstants.PluginFeedUrl);
+                    _pluginDialog = new PackageChooserDialog(SettingsManager, _pluginViewModel);
+                }
+                catch (Exception ex)
+                {
+                    UIServices.Show(ex.Message, MessageLevel.Error);
+                    return null;
+                }
             }
 
             _pluginDialog.Owner = Window.Value;
+
             ReCenterPackageChooserDialog(_pluginDialog);
-            _pluginDialog.ShowDialog();
+
+            try
+            {
+                _pluginDialog.ShowDialog();
+            }
+            catch (ArgumentException e)
+            {
+                UIServices.Show(e.Message, MessageLevel.Error);
+            }
 #endif
             return _pluginViewModel?.SelectedPackage;
         }
