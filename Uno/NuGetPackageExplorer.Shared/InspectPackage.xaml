@@ -239,7 +239,7 @@
 											 Visibility="{x:Bind Package.PackageMetadata.LicenseUrl, Converter={StaticResource LicenseUrlToVisibilityConverter}}" />
 
 							<!-- License Metadata -->
-							<legacyControl:StackPanelEx Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource IsNotNull}}">
+							<legacyControl:StackPanelEx Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource NullToCollapsed}}">
 								<!-- License -->
 								<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.PackageChooser_DetailLicense}"
 															Style="{StaticResource LabeledRawContentControlStyle2}">
