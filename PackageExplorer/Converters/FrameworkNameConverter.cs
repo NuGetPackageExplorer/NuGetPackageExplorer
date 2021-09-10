@@ -1,9 +1,17 @@
 ﻿using System;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Windows.Data;
 using NuGet.Frameworks;
+
+#if HAS_UNO
+using Windows.UI.Xaml.Data;
+
+using _CultureInfo = System.String;
+#else
+using System.Windows.Data;
+
+using _CultureInfo = System.Globalization.CultureInfo;
+#endif
 
 namespace PackageExplorer
 {
@@ -11,8 +19,13 @@ namespace PackageExplorer
     {
         private static readonly string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build", "ref" };
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {
+            if (value is NuGetFramework framework)
+            {
+                return framework.DotNetFrameworkName;
+            }
+
             var path = (string)value;
             var name = Path.GetFileName(path);
 
@@ -54,7 +67,7 @@ namespace PackageExplorer
             return string.Empty;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             throw new NotImplementedException();
         }
