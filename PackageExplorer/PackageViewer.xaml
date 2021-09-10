@@ -32,6 +32,7 @@
             <self:ReferenceSetConverter x:Key="ReferenceSetConverter" />
             <self:PackageDependencyConverter x:Key="PackageDependencyConverter" />
             <self:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
+            <self:FrameworkNameConverter x:Key="FrameworkNameConverter" />
             <self:NuGetVersionConverter x:Key="NuGetVersionConverter" />
             <self:NuGetVersionPreReleaseConverter x:Key="NuGetVersionPreReleaseConverter" />
             <self:ListToStringConverter x:Key="ListToStringConverter" />
@@ -314,7 +315,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static self:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding TargetFramework, Converter={StaticResource FrameworkNameConverter}, TargetNullValue={x:Static self:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
                     <ItemsControl
                         x:Name="dependenciesList"
                         Grid.Row="1"
@@ -342,7 +343,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static self:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding TargetFramework, Converter={StaticResource FrameworkNameConverter}, TargetNullValue={x:Static self:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
                     <ItemsControl
                         x:Name="frameworkReferencesList"
                         Grid.Row="1"
@@ -363,7 +364,7 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Text="{Binding TargetFramework, TargetNullValue={x:Static self:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
+                    <TextBlock Text="{Binding TargetFramework, Converter={StaticResource FrameworkNameConverter}, TargetNullValue={x:Static self:Resources.NoFxDependencyGroup}}" FontWeight="SemiBold" TextWrapping="Wrap" />
                     <ItemsControl
                         x:Name="referencesList"
                         Grid.Row="1"
