@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
@@ -15,12 +15,12 @@ namespace NuGetPe
     internal class Program
     {
         // Standard exit codes, see https://man.openbsd.org/sysexits and https://docs.microsoft.com/en-us/cpp/c-runtime-library/exit-success-exit-failure
-        
+
         private const int EXIT_SUCCESS   =  0;
         private const int EXIT_FAILURE   =  1;
         private const int EX_UNAVAILABLE = 69; // A service is unavailable. This can occur if a support program or file does not exist. This can also be used as a catch-all message when something you wanted to do doesn't work, but you don't know why.
         private const int EX_SOFTWARE    = 70; // An internal software error has been detected. This should be limited to non-operating system related errors if possible.
-        
+
 
         private static async Task<int> Main(string[] args)
         {
@@ -28,7 +28,7 @@ namespace NuGetPe
             {
                 new Argument<string>("file", "Package to validate.")
             };
-            
+
             var remoteCommand = new Command("remote", "A package on a NuGet Feed")
             {
                 new Argument<string>("packageId", "Package Id"),
@@ -49,7 +49,25 @@ namespace NuGetPe
                         }
                     },
                     description: "Package version. Defaults to latest."),
-                new Option<Uri>(new []{"--feed-source", "-s"}, () => new Uri(NuGet.Configuration.NuGetConstants.V3FeedUrl), $"V3 NuGet Feed Source.")
+                new Option<DirectoryInfo?>(
+                    new[] { "--nuget-config-directory", "-d" },
+                    parseArgument: arg =>
+                    {
+                        if (arg.Tokens.Count > 0)
+                        {
+                            var directory = arg.Tokens[0].Value;
+                            var directoryInfo = new DirectoryInfo(directory);
+                            if (directoryInfo.Exists)
+                            {
+                                return directoryInfo;
+                            }
+                            arg.ErrorMessage = $"The NuGet configuration directory that was specified must exist: {directory}";
+                        }
+                        return null;
+                    },
+                    description: "The directory from where the NuGet configuration is loaded. " +
+                                 "This is used to automatically detect NuGet package sources and the location of the global‑packages directory. " +
+                                 "Defaults to the current directory."),
             };
 
             var rootCommand = new RootCommand()
@@ -62,7 +80,7 @@ namespace NuGetPe
             };
 
             localComand.Handler = CommandHandler.Create<string>(RunLocalCommand);
-            remoteCommand.Handler = CommandHandler.Create<string, Uri, NuGetVersion?>(RunRemoteCommand);
+            remoteCommand.Handler = CommandHandler.Create<string, NuGetVersion?, DirectoryInfo?>(RunRemoteCommand);
 
             return await rootCommand.InvokeAsync(args).ConfigureAwait(false);
         }
@@ -124,7 +142,7 @@ namespace NuGetPe
             return EXIT_SUCCESS;
         }
 
-        private static async Task<int> RunRemoteCommand(string packageId, Uri feedSource, NuGetVersion? version = null)
+        private static async Task<int> RunRemoteCommand(string packageId, NuGetVersion? version = null, DirectoryInfo? nuGetConfigDirectory = null)
         {
             try
             {
@@ -134,12 +152,12 @@ namespace NuGetPe
                     eventArgs.Cancel = !cancellationTokenSource.IsCancellationRequested;
                     cancellationTokenSource.Cancel();
                 };
-                                
-                using var downloader = new NuGetPackageDownloader(Console.Out);
-                var packageFile = await downloader.DownloadAsync(packageId, version, feedSource, cancellationTokenSource.Token).ConfigureAwait(false);
+
+                using var downloader = new NuGetPackageDownloader(Console.Out, nuGetConfigDirectory ?? new DirectoryInfo(Environment.CurrentDirectory));
+                var packageFile = await downloader.DownloadAsync(packageId, version, cancellationTokenSource.Token).ConfigureAwait(false);
                 var versionString = version == null ? "" : version.ToFullString() + " ";
                 await Console.Out.WriteLineAsync($"Validating {packageId} {versionString}from {packageFile.FullName}").ConfigureAwait(false);
-                
+
 
                 var isValid = await RunAsync(packageFile, cancellationTokenSource.Token).ConfigureAwait(false);
 
@@ -161,7 +179,7 @@ namespace NuGetPe
         private static async Task<bool> RunAsync(FileInfo packageFile, CancellationToken cancellationToken)
         {
             using var package = new ZipPackage(packageFile.FullName);
-            
+
             var validator = new SymbolValidator(package, packageFile.FullName);
             var result = await validator.Validate(cancellationToken).ConfigureAwait(false);
             await WriteResult("Source Link", result.SourceLinkResult, result.SourceLinkErrorMessage, SourceLinkDescription).ConfigureAwait(false);
