@@ -21,7 +21,7 @@ namespace NuGetPe.AssemblyMetadata
     {
         public AssemblyDebugParser(Stream? peStream, Stream pdbStream)
         {
-            Stream inputStream;
+            Stream? inputStream;
             if (!PdbConverter.IsPortable(pdbStream))
             {
                 if (peStream == null)
@@ -38,8 +38,17 @@ namespace NuGetPe.AssemblyMetadata
                 peStream.Position = 0;
 
                 _temporaryPdbStream = new MemoryStream();
-                PdbConverter.Default.ConvertWindowsToPortable(peStream, pdbStream, _temporaryPdbStream);
-                _temporaryPdbStream.Position = 0;
+
+                try
+                {
+                    PdbConverter.Default.ConvertWindowsToPortable(peStream, pdbStream, _temporaryPdbStream);
+                    _temporaryPdbStream.Position = 0;
+                }
+                catch (Exception)
+                {
+                    _temporaryPdbStream?.Dispose();
+                    _temporaryPdbStream = null;
+                }
                 peStream.Position = 0;
                 inputStream = _temporaryPdbStream;
                 _pdbType = PdbType.Full;
@@ -53,9 +62,11 @@ namespace NuGetPe.AssemblyMetadata
             }
 
 
-
-            _readerProvider = MetadataReaderProvider.FromPortablePdbStream(inputStream);
-            _reader = _readerProvider.GetMetadataReader();
+            if (inputStream != null)
+            {
+                _readerProvider = MetadataReaderProvider.FromPortablePdbStream(inputStream);
+                _reader = _readerProvider.GetMetadataReader();
+            }
 
             if (peStream != null)
             {
@@ -78,8 +89,8 @@ namespace NuGetPe.AssemblyMetadata
 
         private readonly PdbType _pdbType;
         private bool _disposedValue;
-        private readonly MetadataReaderProvider _readerProvider;
-        private readonly MetadataReader _reader;
+        private readonly MetadataReaderProvider? _readerProvider;
+        private readonly MetadataReader? _reader;
         private readonly PEReader? _peReader;
         private readonly bool _ownPeReader;
         private readonly Stream? _temporaryPdbStream;
@@ -138,6 +149,9 @@ namespace NuGetPe.AssemblyMetadata
         {
             var flags = new List<CompilerFlag>();
 
+            if (_reader is null)
+                return flags;
+
             foreach (var cdih in _reader.GetCustomDebugInformation(EntityHandle.ModuleDefinition))
             {
                 var customDebugInformation = _reader.GetCustomDebugInformation(cdih);
@@ -174,6 +188,9 @@ namespace NuGetPe.AssemblyMetadata
         private IReadOnlyCollection<MetadataReference> GetMetadataReferences()
         {
             var references = new List<MetadataReference>();
+
+            if (_reader is null)
+                return references;
 
             foreach (var cdih in _reader.GetCustomDebugInformation(EntityHandle.ModuleDefinition))
             {
@@ -238,6 +255,9 @@ namespace NuGetPe.AssemblyMetadata
 
         private bool IsEmbedded(DocumentHandle dh)
         {
+            if (_reader is null)
+                return false;
+
             foreach (var cdih in _reader.GetCustomDebugInformation(dh))
             {
                 var cdi = _reader.GetCustomDebugInformation(cdih);
@@ -372,6 +392,9 @@ namespace NuGetPe.AssemblyMetadata
 
         private IEnumerable<AssemblyDebugSourceDocument> GetSourceDocuments()
         {
+            if (_reader is null)
+                yield break;
+
             foreach (var dh in _reader.Documents)
             {
                 if (dh.IsNil) continue;
@@ -459,7 +482,7 @@ namespace NuGetPe.AssemblyMetadata
         {
             if (!_disposedValue)
             {
-                _readerProvider.Dispose();
+                _readerProvider?.Dispose();
                 _temporaryPdbStream?.Dispose();
 
                 if (_ownPeReader)
