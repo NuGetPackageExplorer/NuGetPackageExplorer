@@ -14,7 +14,7 @@ stages:
   jobs:
   - job: Build
     pool:
-      vmImage: windows-latest
+      vmImage: windows-2022
     strategy:
       matrix:
         Channel_Zip:
