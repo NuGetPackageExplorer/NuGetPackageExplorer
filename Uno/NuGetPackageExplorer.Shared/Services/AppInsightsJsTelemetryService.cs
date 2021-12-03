@@ -76,7 +76,13 @@ namespace NuGetPackageExplorer.Services
             if (!_initialized) return;
             
             _logger.DebugIfEnabled(() => $"TrackPageView: {pageName}");
-            InvokeJS($"appInsights.trackPageView({{name: \"{EscapeJs(pageName)}\"}});");
+
+            var localProperties = BuildLocalProperties(null);
+
+            InvokeJS("appInsights.trackPageView({\n" +
+                $"  name: \"{EscapeJs(pageName)}\",\n" +
+                $"  properties: {ToJsObject(localProperties)}\n" +
+            "\n});");
         }
 
         public void TrackTrace(string evt, IDictionary<string, string>? properties)
