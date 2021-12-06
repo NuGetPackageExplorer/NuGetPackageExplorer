@@ -21,11 +21,11 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.1.2.30" />
     <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
-    <PackageReference Include="Humanizer" Version="2.11.10" />
+    <PackageReference Include="Humanizer" Version="2.13.14" />
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="4.0.0" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0-preview.1.21102.12" />
-    <PackageReference Include="System.Runtime.Caching" Version="6.0.0-preview.1.21102.12" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="6.0.0" />
 
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
   </ItemGroup>
@@ -33,8 +33,7 @@
   <ItemGroup>
     <Resource Include="Images\*.*" />
     <None Remove=".editorconfig" />
-    <None Remove="Resources\default-package-icon.png" />
-    <AdditionalFiles Include=".editorconfig" />
+    <None Remove="Resources\default-package-icon.png" />    
     <Content Include="Resources\fxAssemblies.txt" CopyToOutputDirectory="PreserveNewest" />
     <Resource Include="Resources\default-package-icon.png" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="ApplicationInsights.config" CopyToOutputDirectory="PreserveNewest" />
