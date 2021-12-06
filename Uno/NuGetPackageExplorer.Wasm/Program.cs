@@ -12,7 +12,7 @@ namespace PackageExplorer
 	{
 		static int Main(string[] args)
 		{
-            FeatureConfiguration.ApiInformation.NotImplementedLogLevel = Microsoft.Extensions.Logging.LogLevel.Debug;
+            FeatureConfiguration.ApiInformation.NotImplementedLogLevel = Uno.Foundation.Logging.LogLevel.Debug;
 
             Windows.UI.Xaml.Application.Start(_ => new App());
 
