@@ -31,16 +31,11 @@ stages:
           ReleaseChannel: UnoSkia
 
     steps:
-    - task: UseDotNet@2
-      displayName: 'Use .NET 5 SDK'
-      inputs:
-        version: 5.x
         
     - task: UseDotNet@2
       displayName: 'Use .NET 6 SDK'
       inputs:
         version: 6.x
-        includePreviewVersions: true
 
     #- pwsh: |
     #    $branch = "release/5.0.1xx"

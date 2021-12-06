@@ -53,7 +53,7 @@ namespace Api
 
             var pdbStream = new MemoryStream();
 
-            await response.Content.CopyToAsync(pdbStream).ConfigureAwait(false);
+            await response.Content.CopyToAsync(pdbStream, cancellationSource.Token).ConfigureAwait(false);
             pdbStream.Position = 0;
 
             var resp = new HttpResponseMessage()
