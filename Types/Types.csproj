@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="NuGet.Packaging" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="6.0.0-preview.1.21102.12" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="6.0.0" />
   </ItemGroup>
 
 </Project>
