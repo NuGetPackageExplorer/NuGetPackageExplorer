@@ -21,15 +21,10 @@ jobs:
           fetch-depth: 0
           submodules: true
           
-      - name: Setup dotnet 3.1.x
+      - name: Setup dotnet 6.0.x
         uses: actions/setup-dotnet@v1.7.2
         with:
-          dotnet-version: '3.1.x'
-          
-      - name: Setup dotnet 5.0.x
-        uses: actions/setup-dotnet@v1.7.2
-        with:
-          dotnet-version: '5.0.x'
+          dotnet-version: '6.0.x'
           
       - run: |
           cd Uno/NuGetPackageExplorer.Wasm
