@@ -25,7 +25,7 @@
     <PackageReference Include="Ookii.Dialogs.Wpf" Version="4.0.0" />
     <PackageReference Include="System.Memory" Version="4.5.4" />
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0-preview.1.21102.12" />
-    <PackageReference Include="System.Runtime.Caching" Version="6.0.0-preview.1.21102.12" />
+    <PackageReference Include="System.Runtime.Caching" Version="6.0.0" />
 
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
   </ItemGroup>
