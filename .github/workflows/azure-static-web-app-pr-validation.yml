@@ -9,7 +9,7 @@ on:
 jobs:
   build_and_deploy_job:
     env:
-      DIST_PATH: Uno/NuGetPackageExplorer.Wasm/bin/Release/net5.0/dist
+      DIST_PATH: Uno/NuGetPackageExplorer.Wasm/bin/Release/net6.0/dist
 
     if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.repository == 'NuGetPackageExplorer/NuGetPackageExplorer'
     runs-on: ubuntu-latest

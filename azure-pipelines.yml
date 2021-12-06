@@ -190,7 +190,7 @@ stages:
     - task: CopyFiles@2
       displayName: Copy WebAssembly Package
       inputs:
-        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Wasm/bin/Release/net5.0/dist'
+        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Wasm/bin/Release/net6.0/dist'
         Contents: '**'
         TargetFolder: $(build.artifactstagingdirectory)\$(ReleaseChannel)
         CleanTargetFolder: false
