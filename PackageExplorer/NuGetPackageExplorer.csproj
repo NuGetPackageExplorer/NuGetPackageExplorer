@@ -33,8 +33,7 @@
   <ItemGroup>
     <Resource Include="Images\*.*" />
     <None Remove=".editorconfig" />
-    <None Remove="Resources\default-package-icon.png" />
-    <AdditionalFiles Include=".editorconfig" />
+    <None Remove="Resources\default-package-icon.png" />    
     <Content Include="Resources\fxAssemblies.txt" CopyToOutputDirectory="PreserveNewest" />
     <Resource Include="Resources\default-package-icon.png" CopyToOutputDirectory="PreserveNewest" />
     <Content Include="ApplicationInsights.config" CopyToOutputDirectory="PreserveNewest" />
