@@ -18,11 +18,14 @@ namespace PackageExplorer
         public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var path = value as string;
-            if(path != null)
+            if (path != null)
             {
                 using var icon = FileHelper.ExtractAssociatedIcon(path);
-                var src  = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-                return src;
+                if (icon != null)
+                {
+                    var src = Imaging.CreateBitmapSourceFromHIcon(icon.Handle, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                    return src;
+                }
             }
 
             return null;
