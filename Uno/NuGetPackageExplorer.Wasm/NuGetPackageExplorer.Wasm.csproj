@@ -58,7 +58,7 @@
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.DataGrid" Version="7.1.10-gf3d2516805" />
     <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.Uwp.Managed" Version="2.3.0-uno.12" />
     <PackageReference Include="Uno.Monaco.Editor" Version="1.1.0-uno.16" />
-    <PackageReference Include="Uno.UI.WebAssembly" Version="4.0.11" />
+    <PackageReference Include="Uno.UI.WebAssembly" Version="4.0.13" />
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.0.11" />
     <PackageReference Include="Uno.UI.RemoteControl" Version="4.0.11" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="3.1.3" />
