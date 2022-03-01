@@ -74,6 +74,10 @@
 						<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_VersionLabel}"
 													Content="{x:Bind Package.PackageMetadata.Version}"
 													Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+						<HyperlinkButton Content="View Metadata source"
+										 Command="{Binding ViewMetadataSourceCommand}"
+										 Padding="0" />
 					</legacyControl:StackPanelEx>
 
 					<!-- Digital Signatures -->
