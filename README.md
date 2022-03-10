@@ -21,6 +21,14 @@ the release version with no interference and will automatically update.
 
 <a href='//www.microsoft.com/store/apps/9wzdncrdmdm3?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='English badge' width="284" height="104" /></a>
 
+### 
+
+If you have winget installed, you can use it to acquire NuGet Package Explorer through the Microsoft Store:
+
+```
+winget install "NuGet Package Explorer"
+```
+
 ### .NET CLI Tool
 
 A subset of functionality for checking package health is now availabe as a cross-platform CLI tool. Install with:
