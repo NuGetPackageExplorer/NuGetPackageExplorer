@@ -70,6 +70,8 @@ namespace NupkgExplorer.Presentation.Content
             set => SetProperty(value);
         }
 
+        public ICommand ViewMetadataSourceCommand => GetCommand(ViewMetadataSource);
+
         public ICommand DoubleClickCommand => GetCommand(DoubleClick);
 
         public ICommand CloseDocumentCommand => GetCommand(CloseDocument);
@@ -269,6 +271,14 @@ namespace NupkgExplorer.Presentation.Content
                     return null;
                 }
             }
+        }
+        
+        public void ViewMetadataSource()
+        {
+            DiagnosticsClient.TrackEvent("InspectPackage_ViewMetadataSource");
+
+            var manifest = Package.CreatePackageMetadataFile();
+            SelectedContent = new PackageFile(manifest, manifest.Name, Package.RootFolder);
         }
 
         public async Task DoubleClick()

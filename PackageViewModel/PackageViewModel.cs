@@ -1154,7 +1154,7 @@ namespace PackageExplorerViewModel
             return !IsInEditFileMode && !IsInEditMetadataMode;
         }
 
-        private IEditablePackageFile CreatePackageMetadataFile()
+        public IEditablePackageFile CreatePackageMetadataFile()
         {
             var packageName = PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension;
             var filePath = Path.GetTempFileName();
