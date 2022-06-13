@@ -427,14 +427,14 @@ namespace PackageExplorerViewModel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         private void AddPhysicalFolderCore(DirectoryInfo dirInfo)
         {
-            var childPackgeFolder = AddFolder(dirInfo.Name);
+            var childPackageFolder = AddFolder(dirInfo.Name);
             foreach (var file in dirInfo.GetFiles("*.*", SearchOption.TopDirectoryOnly))
             {
-                childPackgeFolder?.AddFile(file.FullName);
+                childPackageFolder?.AddFile(file.FullName);
             }
             foreach (var subFolder in dirInfo.GetDirectories("*.*", SearchOption.TopDirectoryOnly))
             {
-                childPackgeFolder?.AddPhysicalFolderCore(subFolder);
+                childPackageFolder?.AddPhysicalFolderCore(subFolder);
             }
         }
 

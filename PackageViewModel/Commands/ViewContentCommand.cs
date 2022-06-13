@@ -133,7 +133,7 @@ namespace PackageExplorerViewModel
             IReadOnlyList<AuthenticodeSignature> sigs;
             SignatureCheckResult isValidSig;
             {
-                // note: later, throught binding converter, SigningCertificate's CN value is extracted through native api
+                // note: later, through binding converter, SigningCertificate's CN value is extracted through native api
                 if (AppCompat.IsSupported(RuntimeFeature.Cryptography, RuntimeFeature.NativeMethods))
                 {
                     using var stream = file.GetStream();

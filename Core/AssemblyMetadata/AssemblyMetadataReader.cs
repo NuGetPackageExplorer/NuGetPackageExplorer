@@ -47,7 +47,7 @@ namespace NuGetPe.AssemblyMetadata
             }
             catch
             {
-                // Ingore if unable to read metadata.
+                // Ignore if unable to read metadata.
             }
 
             return result;

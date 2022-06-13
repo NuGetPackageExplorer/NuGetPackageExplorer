@@ -61,7 +61,7 @@ namespace PackageExplorerViewModel
             }
 
             // copy to temporary file
-            // create package in the temprary file first in case the operation fails which would
+            // create package in the temporary file first in case the operation fails which would
             // override existing file with a 0-byte file.
             var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
             using (Stream tempFileStream = File.Create(tempFileName))
@@ -96,7 +96,7 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException(nameof(file));
 
             // copy to temporary file
-            // create package in the temprary file first in case the operation fails which would
+            // create package in the temporary file first in case the operation fails which would
             // override existing file with a 0-byte file.
             var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
 

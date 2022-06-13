@@ -57,7 +57,7 @@ namespace NupkgExplorer.Business.Nupkg
 			var virtualRoot = mapping.GetOrAddValue(string.Empty, k => new NupkgContentDirectory(k));
 			var queue = new Queue<NupkgContentDirectory>(directories);
 
-			// rebuild hiecharchy
+			// rebuild hierarchy
 			while (queue.Count > 0 && queue.Dequeue() is NupkgContentDirectory current)
 			{
 				if (current.FullName == string.Empty) continue;

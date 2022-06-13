@@ -21,7 +21,7 @@ namespace PackageExplorerViewModel
             // add files
             builder.Files.AddRange(files);
 
-            // create package in the temprary file first in case the operation fails which would
+            // create package in the temporary file first in case the operation fails which would
             // override existing file with a 0-byte file.
             var fileNameToUse = useTempFile ? Path.GetTempFileName() : targetFilePath;
             try
