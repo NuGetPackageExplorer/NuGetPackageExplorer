@@ -243,7 +243,7 @@ namespace NuGetPe
             get { return null; }
         }
 
-        public int DownloadCount
+        public long DownloadCount
         {
             get { return -1; }
         }

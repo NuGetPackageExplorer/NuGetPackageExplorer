@@ -13,6 +13,10 @@ namespace PackageExplorer
             {
                 return i.ToMetric(decimals: 1);
             }
+            if (value is long l)
+            {
+                return ((double)l).ToMetric(decimals: 1);
+            }
             if (value is double dbl)
             {
                 return dbl.ToMetric(decimals: 1);
