@@ -347,7 +347,7 @@ namespace PackageExplorerViewModel
 
             var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
 
-            var downloadCount = (int?)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount);
+            var downloadCount = versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount;
 
             return new PackageInfo(packageSearchMetadata.Identity)
             {
