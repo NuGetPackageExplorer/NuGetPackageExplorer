@@ -6,7 +6,6 @@
     <TargetFramework>net6.0</TargetFramework>
     <AssemblyName>PackageExplorer</AssemblyName>
     <RootNamespace>PackageExplorer</RootNamespace>
-    <UnoUIUseRoslynSourceGenerators>false</UnoUIUseRoslynSourceGenerators>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup Condition="exists('..\NuGetPackageExplorer.UWP')">
