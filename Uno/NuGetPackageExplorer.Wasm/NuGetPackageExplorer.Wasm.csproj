@@ -6,7 +6,6 @@
     <NoWarn>NU1701</NoWarn>
     <AssemblyName>PackageExplorer</AssemblyName>
     <RootNamespace>PackageExplorer</RootNamespace>
-    <UnoUIUseRoslynSourceGenerators>false</UnoUIUseRoslynSourceGenerators>
     <WasmShellWebAppBasePath>/</WasmShellWebAppBasePath>
     <WasmPWAManifestFile>manifest.json</WasmPWAManifestFile>
     <MsdlApiBaseLocation>api/MsdlProxy</MsdlApiBaseLocation>

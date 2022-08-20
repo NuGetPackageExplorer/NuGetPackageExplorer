@@ -12,6 +12,9 @@
     <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
     <IsPackable>false</IsPackable>
+
+    <!-- force the use of Roslyn hosted generators https://github.com/unoplatform/uno/discussions/9531 -->
+    <UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
