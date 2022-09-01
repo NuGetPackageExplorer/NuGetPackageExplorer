@@ -7,13 +7,14 @@
 
 	<Style x:Key="SectionGridStyle"
 		   TargetType="Grid">
-		<Setter Property="CornerRadius" Value="3" />
-		<Setter Property="Background" Value="{ThemeResource SurfaceThemeBrush87}" />
+		<Setter Property="CornerRadius" Value="4" />
+		<Setter Property="BorderThickness" Value="1" />
+		<Setter Property="BorderBrush" Value="{ThemeResource CardStrokeColorDefaultBrush}" />
+		<Setter Property="Background" Value="{ThemeResource CardBackgroundFillColorDefault}" />
 	</Style>
 	<Style x:Key="SearchBarSectionGridStyle"
 		   TargetType="Grid"
 		   BasedOn="{StaticResource SectionGridStyle}">
-		<Setter Property="Background" Value="{ThemeResource SurfaceThemeBrush87}" />
 		<Setter Property="Padding" Value="20" />
 		<Setter Property="ColumnSpacing" Value="20" />
 	</Style>

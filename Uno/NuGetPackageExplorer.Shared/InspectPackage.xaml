@@ -725,41 +725,191 @@
 					  Severity="Warning"
 					  Message="{Binding VersionRedirectWarningMessage}"
 					  IsOpen="{Binding VersionRedirectWarningMessage, Converter={StaticResource IsNotNull}, Mode=OneWay}" />
-
+			
 		<!-- R1-3C0: Metadata TabView -->
-		<muxc:TabView Grid.Row="1"
-					  Grid.RowSpan="3"
-					  Grid.Column="0"
-                      Background="{ThemeResource SurfaceThemeBrush87}"
-                      TabWidthMode="SizeToContent"
-					  IsAddTabButtonVisible="False"
-					  HorizontalAlignment="Stretch"
-					  VerticalAlignment="Stretch">
+		<Grid Grid.Row="1"
+			Grid.RowSpan="3"
+			Grid.Column="0" 
+			Style="{StaticResource SectionGridStyle}">
 
-			<muxc:TabViewItem Header="Metadata"
-                              Style="{StaticResource TabViewItemStyle}" 
-							  extensions:TabViewExtensions.HideHeaderToolTip="True">
-				<muxc:TabViewItem.IconSource>
-					<muxc:PathIconSource Data="M14,7V9H13V15H14V17H10V15H11V9H10V7H14M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3M5,5V19H19V5H5Z" />
-				</muxc:TabViewItem.IconSource>
-				<ContentControl Content="{x:Bind DataContext, Mode=OneWay}"
-								ContentTemplate="{StaticResource MetadataTemplate}"
-								HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch" />
-			</muxc:TabViewItem>
-			<muxc:TabViewItem Header="Dependencies"
-                              Style="{StaticResource TabViewItemStyle}" 
-							  extensions:TabViewExtensions.HideHeaderToolTip="True">
-				<muxc:TabViewItem.IconSource>
-					<muxc:PathIconSource Data="M22 13V19H21L19 17H11V9H5L3 11H2V5H3L5 7H13V15H19L21 13Z" />
-				</muxc:TabViewItem.IconSource>
-				<ContentControl Content="{x:Bind DataContext, Mode=OneWay}"
-								ContentTemplate="{StaticResource DependenciesTemplate}"
-								HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch" />
-			</muxc:TabViewItem>
-		</muxc:TabView>
+			<Pivot>
+				<Pivot.Resources>
+					<ResourceDictionary>
+						<Style TargetType="PivotHeaderItem">
+							<Setter Property="Padding" Value="{ThemeResource PivotHeaderItemMargin}" />
+							<Setter Property="Height" Value="48" />
+							<Setter Property="VerticalContentAlignment" Value="Center" />
+							<Setter Property="IsTabStop" Value="False" />
+							<Setter Property="UseSystemFocusVisuals" Value="False" />
+							<Setter Property="Template">
+								<Setter.Value>
+									<ControlTemplate TargetType="PivotHeaderItem">
+										<Grid x:Name="Grid" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
 
+											<VisualStateManager.VisualStateGroups>
+												<VisualStateGroup x:Name="SelectionStates">
+
+													<VisualStateGroup.Transitions>
+														<VisualTransition From="Unselected" To="UnselectedLocked" GeneratedDuration="0:0:0.33" />
+														<VisualTransition From="UnselectedLocked" To="Unselected" GeneratedDuration="0:0:0.33" />
+													</VisualStateGroup.Transitions>
+
+													<VisualState x:Name="Disabled">
+														<VisualState.Setters>
+															<Setter Target="SelectedPipe.Visibility" Value="Collapsed" />
+														</VisualState.Setters>
+
+														<Storyboard>
+															<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+																<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemForegroundDisabled}" />
+															</ObjectAnimationUsingKeyFrames>
+															<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+																<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundDisabled}" />
+															</ObjectAnimationUsingKeyFrames>
+														</Storyboard>
+													</VisualState>
+													<VisualState x:Name="Unselected">
+														<VisualState.Setters>
+															<Setter Target="SelectedPipe.Visibility" Value="Collapsed" />
+														</VisualState.Setters>
+													</VisualState>
+													<VisualState x:Name="UnselectedLocked">
+														<VisualState.Setters>
+															<Setter Target="SelectedPipe.Visibility" Value="Collapsed" />
+														</VisualState.Setters>
+
+														<Storyboard>
+															<DoubleAnimation Storyboard.TargetName="ContentPresenterTranslateTransform"
+											Storyboard.TargetProperty="X"
+											Duration="0"
+											To="{ThemeResource PivotHeaderItemLockedTranslation}" />
+															<DoubleAnimation Storyboard.TargetName="ContentPresenter"
+											Storyboard.TargetProperty="(UIElement.Opacity)"
+											Duration="0"
+											To="0" />
+														</Storyboard>
+													</VisualState>
+
+													<VisualState x:Name="Selected">
+														<VisualState.Setters>
+															<Setter Target="SelectedPipe.Visibility" Value="Visible" />
+														</VisualState.Setters>
+														<Storyboard>
+															<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+																<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundSelected}" />
+															</ObjectAnimationUsingKeyFrames>
+														</Storyboard>
+													</VisualState>
+													<VisualState x:Name="UnselectedPointerOver">
+														<VisualState.Setters>
+															<Setter Target="SelectedPipe.Visibility" Value="Collapsed" />
+														</VisualState.Setters>
+
+														<Storyboard>
+															<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+																<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundUnselectedPointerOver}" />
+															</ObjectAnimationUsingKeyFrames>
+														</Storyboard>
+													</VisualState>
+													<VisualState x:Name="SelectedPointerOver">
+														<VisualState.Setters>
+															<Setter Target="SelectedPipe.Visibility" Value="Visible" />
+														</VisualState.Setters>
+														<Storyboard>
+															<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+																<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundSelectedPointerOver}" />
+															</ObjectAnimationUsingKeyFrames>
+														</Storyboard>
+													</VisualState>
+													<VisualState x:Name="UnselectedPressed">
+														<VisualState.Setters>
+															<Setter Target="SelectedPipe.Visibility" Value="Collapsed" />
+														</VisualState.Setters>
+
+														<Storyboard>
+															<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+																<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundUnselectedPressed}" />
+															</ObjectAnimationUsingKeyFrames>
+														</Storyboard>
+													</VisualState>
+													<VisualState x:Name="SelectedPressed">
+														<VisualState.Setters>
+															<Setter Target="SelectedPipe.Visibility" Value="Visible" />
+															<Setter Target="SelectedPipe.Width" Value="12" />
+														</VisualState.Setters>
+														<Storyboard>
+															<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Grid" Storyboard.TargetProperty="Background">
+																<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PivotHeaderItemBackgroundSelectedPressed}" />
+															</ObjectAnimationUsingKeyFrames>
+														</Storyboard>
+													</VisualState>
+
+												</VisualStateGroup>
+
+											</VisualStateManager.VisualStateGroups>
+
+											<Grid.RenderTransform>
+												<TranslateTransform x:Name="ContentPresenterTranslateTransform" />
+											</Grid.RenderTransform>
+											<ContentPresenter x:Name="ContentPresenter"
+												Content="{TemplateBinding Content}"
+												ContentTemplate="{TemplateBinding ContentTemplate}"
+												FontSize="{TemplateBinding FontSize}"
+												FontFamily="{TemplateBinding FontFamily}"
+												FontWeight="{TemplateBinding FontWeight}"
+												HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+												VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+												OpticalMarginAlignment="TrimSideBearings" />
+											<Grid 
+												x:Name="SelectedPipe"
+												Margin="16,0,16,4"
+												Height="4"
+												Visibility="Collapsed"
+												VerticalAlignment="Bottom"
+												HorizontalAlignment="Center">
+												<Rectangle
+													Height="4"
+													Width="16"
+													Fill="{ThemeResource NavigationViewSelectionIndicatorForeground}"
+													RadiusX="2"
+													RadiusY="2"/>
+											</Grid>
+										</Grid>
+									</ControlTemplate>
+								</Setter.Value>
+							</Setter>
+						</Style>
+					</ResourceDictionary>
+				</Pivot.Resources>
+				<PivotItem>
+					<PivotItem.Header>
+						<StackPanel Spacing="8" Orientation="Horizontal">
+							<PathIcon Data="M14,7V9H13V15H14V17H10V15H11V9H10V7H14M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3M5,5V19H19V5H5Z" />
+							<TextBlock VerticalAlignment="Center" Style="{StaticResource BodyTextBlockStyle}" Text="Metadata" />
+						</StackPanel>
+					</PivotItem.Header>
+					
+					<ContentControl Content="{x:Bind DataContext, Mode=OneWay}"
+						ContentTemplate="{StaticResource MetadataTemplate}"
+						HorizontalContentAlignment="Stretch"
+						VerticalContentAlignment="Stretch" />
+				</PivotItem>
+				
+				<PivotItem>
+					<PivotItem.Header>
+						<StackPanel Spacing="8" Orientation="Horizontal">
+							<PathIcon Data="M22 13V19H21L19 17H11V9H5L3 11H2V5H3L5 7H13V15H19L21 13Z" />
+							<TextBlock VerticalAlignment="Center" Style="{StaticResource BodyTextBlockStyle}" Text="Dependencies" />
+						</StackPanel>
+					</PivotItem.Header>
+					
+					<ContentControl Content="{x:Bind DataContext, Mode=OneWay}"
+						ContentTemplate="{StaticResource DependenciesTemplate}"
+						HorizontalContentAlignment="Stretch"
+						VerticalContentAlignment="Stretch" />
+				</PivotItem>
+			</Pivot>
+		</Grid>
 		<!-- R1-4C1: GridSplitter (columns) -->
 		<wct:GridSplitter Grid.Row="1"
 						  Grid.RowSpan="3"

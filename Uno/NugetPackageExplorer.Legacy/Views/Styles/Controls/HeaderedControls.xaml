@@ -40,9 +40,6 @@
 	<Style x:Key="SectionHeaderedContentControlStyle"
 		   TargetType="controls:HeaderedContentControl">
 
-		<Setter Property="Background" Value="{ThemeResource SurfaceThemeBrush87}" />
-		<Setter Property="CornerRadius" Value="3" />
-
 		<Setter Property="Header" Value="Header" />
 		<Setter Property="HeaderTemplate" Value="{StaticResource SectionHeaderTemplate}" />
 
@@ -54,8 +51,7 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="controls:HeaderedContentControl">
-					<Grid CornerRadius="{TemplateBinding CornerRadius}"
-						  Background="{TemplateBinding Background}">
+					<Grid Style="{StaticResource SectionGridStyle}">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="*" />
@@ -66,7 +62,6 @@
 										  ContentTemplate="{TemplateBinding HeaderTemplate}"
 										  BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 										  BorderThickness="0,0,0,1"
-										  Background="{ThemeResource SurfaceThemeBrush87}"
 										  Padding="20,10"
 										  HorizontalAlignment="Stretch"
 										  HorizontalContentAlignment="Stretch" />
