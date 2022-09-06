@@ -53,19 +53,20 @@
 				<ControlTemplate TargetType="controls:HeaderedContentControl">
 					<Grid Style="{StaticResource SectionGridStyle}">
 						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
+							<RowDefinition Height="{StaticResource NavigationViewTopPaneHeight}" />
 							<RowDefinition Height="*" />
 						</Grid.RowDefinitions>
 
 						<ContentPresenter Grid.Row="0"
 										  Content="{TemplateBinding Header}"
 										  ContentTemplate="{TemplateBinding HeaderTemplate}"
-										  BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-										  BorderThickness="0,0,0,1"
-										  Padding="20,10"
+										  VerticalAlignment="Stretch"
+										  VerticalContentAlignment="Center"
 										  HorizontalAlignment="Stretch"
 										  HorizontalContentAlignment="Stretch" />
 						<ContentPresenter Grid.Row="1"
+										  BorderThickness="0,1,0,0"
+										  BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
 										  xamarin:Content="{TemplateBinding Content}"
 										  xamarin:ContentTemplate="{TemplateBinding ContentTemplate}"
 										  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"

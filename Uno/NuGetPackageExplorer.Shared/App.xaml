@@ -12,20 +12,20 @@
                 <!-- Other merged dictionaries here -->
                 <!--#region Resources imported from Uno.NPE -->
 
-                <ResourceDictionary Source="Views/Styles/Application/Converters.xaml" />
-                <ResourceDictionary Source="Views/Styles/Application/Colors.xaml" />
-                <ResourceDictionary Source="Views/Styles/Application/Typography.xaml" />
-                <ResourceDictionary Source="Views/Styles/Application/Values.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Application/Converters.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Application/Colors.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Application/Typography.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Application/Values.xaml" />
 
-                <ResourceDictionary Source="Views/Styles/Controls/Button.xaml" />
-                <ResourceDictionary Source="Views/Styles/Controls/Expander.xaml" />
-                <ResourceDictionary Source="Views/Styles/Controls/Grid.xaml" />
-                <ResourceDictionary Source="Views/Styles/Controls/GridSplitter.xaml" />
-                <ResourceDictionary Source="Views/Styles/Controls/HeaderedControls.xaml" />
-                <ResourceDictionary Source="Views/Styles/Controls/ListView.xaml" />
-                <ResourceDictionary Source="Views/Styles/Controls/Menus.xaml" />
-                <ResourceDictionary Source="Views/Styles/Controls/TreeViewItem.xaml" />
-                <ResourceDictionary Source="Views/Styles/Controls/TabViewItem.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Controls/Button.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Controls/Expander.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Controls/Grid.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Controls/GridSplitter.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Controls/HeaderedControls.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Controls/ListView.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Controls/Menus.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Controls/TreeViewItem.xaml" />
+                <ResourceDictionary Source="Legacy/Views/Styles/Controls/TabViewItem.xaml" />
                 <!--#endregion-->
             </ResourceDictionary.MergedDictionaries>
 

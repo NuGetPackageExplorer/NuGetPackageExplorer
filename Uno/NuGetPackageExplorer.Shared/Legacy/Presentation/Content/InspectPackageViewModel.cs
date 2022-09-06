@@ -44,26 +44,36 @@ namespace NupkgExplorer.Presentation.Content
 {
     public class InspectPackageViewModel : Framework.MVVM.ViewModelBase
     {
+        public DataTemplate SelectedMetadataTabTemplate
+        {
+            get => GetProperty<DataTemplate>();
+            set => SetProperty(value);
+        }
+
         public PackageViewModel Package
         {
             get => GetProperty<PackageViewModel>();
             set => SetProperty(value);
         }
+
         public IPart SelectedContent
         {
             get => GetProperty<IPart>();
             set => SetProperty(value);
         }
+
         public IFile OpenedDocument
         {
             get => GetProperty<IFile>();
             set => SetProperty(value);
         }
+
         public string OpenedDocumentLanguage
         {
             get => GetProperty<string>();
             set => SetProperty(value);
         }
+
         public string? VersionRedirectWarningMessage
         {
             get => GetProperty<string?>();
@@ -75,6 +85,8 @@ namespace NupkgExplorer.Presentation.Content
         public ICommand DoubleClickCommand => GetCommand(DoubleClick);
 
         public ICommand CloseDocumentCommand => GetCommand(CloseDocument);
+
+        public ICommand TabItemSelectedCommand => new RelayCommand<Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs>(OnTabItemSelected);
 
         public InspectPackageViewModel(PackageViewModel package, PackageIdentity? redirectedFrom = null)
         {
@@ -98,6 +110,14 @@ namespace NupkgExplorer.Presentation.Content
                         : default
                     ) ?? "plaintext";
                 });
+        }
+
+        private void OnTabItemSelected(Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
+        {
+            if (args.SelectedItemContainer.Tag is DataTemplate template)
+            {
+                SelectedMetadataTabTemplate = template;
+            }
         }
 
         public static async Task<InspectPackageViewModel> CreateFromLocalPackage(StorageFile packageFile)
