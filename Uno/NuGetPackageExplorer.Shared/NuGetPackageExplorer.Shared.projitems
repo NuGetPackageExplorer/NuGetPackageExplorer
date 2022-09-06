@@ -52,7 +52,6 @@
         <Compile Include="$(MSBuildThisFileDirectory)Shell.xaml.cs">
             <DependentUpon>Shell.xaml</DependentUpon>
         </Compile>
-        <Compile Include="$(MSBuildThisFileDirectory)Helpers\PackageMetadataTemplateSelector.cs" />
         <Compile Include="$(MSBuildThisFileDirectory)Legacy\Business\Nupkg\Files\AssemblyFileContent.cs" />
         <Compile Include="$(MSBuildThisFileDirectory)Legacy\Business\Nupkg\Files\IFileContent.cs" />
         <Compile Include="$(MSBuildThisFileDirectory)Legacy\Business\Nupkg\Files\ImageFileContent.cs" />
