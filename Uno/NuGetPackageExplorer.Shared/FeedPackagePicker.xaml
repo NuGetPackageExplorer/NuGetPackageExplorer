@@ -102,7 +102,7 @@
 							win:Command="{Binding DataContext.OpenPackageFromFeedCommand, ElementName=PageRoot}"
 							not_win:Command="{Binding DataContext.OpenPackageFromFeedCommand, ElementName=TemplateRoot}"
 							HorizontalAlignment="Stretch"
-							Style="{StaticResource PrimaryAccentButtonStyle}" />
+							Style="{ThemeResource AccentButtonStyle}" />
 
 					<!-- DetailsLabelGrid -->
 					<Grid ColumnSpacing="6"
@@ -222,7 +222,8 @@
 		</DataTemplate>
 
 		<Style x:Key="FullWidthListViewItemStyle"
-			   TargetType="ListViewItem">
+			   	BasedOn="{ThemeResource ListViewItemExpanded}"
+			   	TargetType="ListViewItem">
 			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 			<Setter Property="Padding" Value="20,20,20,36" />
 		</Style>
@@ -264,9 +265,10 @@
 					xamarin:Content="&#xE149;"
 					Command="{Binding RefreshCommand}"
 					Style="{StaticResource IconButtonStyle}" />
-			<CheckBox Grid.Column="2"
+			<ToggleSwitch Grid.Column="2"
 					  IsChecked="{Binding IncludePrerelease, Mode=TwoWay}"
-					  Content="Show pre-releases" />
+					  OnContent="Pre-releases shown"
+					  OffContent="Pre-releases hidden" />
 		</Grid>
 
 		<!-- R1-2C0: PackageListView -->

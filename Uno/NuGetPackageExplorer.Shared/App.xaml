@@ -23,7 +23,6 @@
                 <ResourceDictionary Source="Legacy/Views/Styles/Controls/GridSplitter.xaml" />
                 <ResourceDictionary Source="Legacy/Views/Styles/Controls/HeaderedControls.xaml" />
                 <ResourceDictionary Source="Legacy/Views/Styles/Controls/ListView.xaml" />
-                <ResourceDictionary Source="Legacy/Views/Styles/Controls/Menus.xaml" />
                 <ResourceDictionary Source="Legacy/Views/Styles/Controls/TreeViewItem.xaml" />
                 <ResourceDictionary Source="Legacy/Views/Styles/Controls/TabViewItem.xaml" />
                 <!--#endregion-->

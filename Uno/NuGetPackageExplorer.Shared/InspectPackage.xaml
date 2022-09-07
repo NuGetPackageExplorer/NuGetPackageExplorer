@@ -683,7 +683,6 @@
                                behavior:TreeViewBehavior.AutoToggleItemExpansion="True"
                                behavior:TreeViewBehavior.DoubleClickCommand="{Binding DoubleClickCommand}"
                                ItemTemplateSelector="{StaticResource FSObjectTemplateSelector}"
-                               ItemContainerStyle="{StaticResource FileExplorerTreeViewItemStyle}"
                                SelectionMode="Single" />
             </wct:HeaderedContentControl>
         </Grid>
@@ -810,9 +809,14 @@
                                               ItemsSource="{Binding Package.CurrentFileInfo.Content.DebugData.MetadataReferences}"
                                               AutoGenerateColumns="False"
                                               IsReadOnly="True"
-                                              ColumnHeaderHeight="36"
+                                              ColumnHeaderHeight="38"
                                               ScrollViewer.HorizontalScrollMode="Enabled"
                                               ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                    <wct:DataGrid.Resources>
+                                        <StaticResource x:Key="DataGridColumnHeaderBackgroundColor"
+                                                        ResourceKey="SystemControlTransparentBrush" />
+                                        <SolidColorBrush x:Key="DataGridColumnHeaderBackgroundBrush" Color="Transparent" />
+                                    </wct:DataGrid.Resources>
                                     <wct:DataGrid.ColumnHeaderStyle>
                                         <Style TargetType="wctPrimitives:DataGridColumnHeader">
                                             <Setter Property="FontWeight"
@@ -823,6 +827,10 @@
                                                     Value="{ThemeResource ApplicationForegroundThemeBrush}" />
                                             <Setter Property="Background"
                                                     Value="Transparent" />
+                                            <Setter Property="SeparatorBrush"
+                                                    Value="Transparent" />
+                                            <Setter Property="Height"
+                                                    Value="38" />
                                         </Style>
                                     </wct:DataGrid.ColumnHeaderStyle>
                                     <wct:DataGrid.Columns>
@@ -870,7 +878,8 @@
                                                            Margin="5,0,0,0"
                                                            IsTextSelectionEnabled="True"
                                                            Visibility="{x:Bind Location, Converter={StaticResource NullToVisibilityConverter}, Mode=OneWay}">
-                                                    <Hyperlink NavigateUri="{x:Bind Location, Mode=OneWay}">
+                                                    <Hyperlink Foreground="{ThemeResource AccentTextFillColorPrimaryBrush}"
+                                                               NavigateUri="{x:Bind Location, Mode=OneWay}">
                                                         <Run Text="{x:Bind Location, Mode=OneWay}" />
                                                     </Hyperlink>
                                                 </TextBlock>

@@ -187,10 +187,6 @@
             <SubType>Designer</SubType>
             <Generator>MSBuild:Compile</Generator>
         </Page>
-        <Page Include="$(MSBuildThisFileDirectory)Legacy\Views\Styles\Controls\Menus.xaml">
-            <SubType>Designer</SubType>
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
         <Page Include="$(MSBuildThisFileDirectory)Legacy\Views\Styles\Controls\TabViewItem.xaml">
             <SubType>Designer</SubType>
             <Generator>MSBuild:Compile</Generator>
