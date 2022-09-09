@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "NuGetPackageExplorer.sln",
+    "projects": [
+		"NuGetPackageExplorer.Shared\\NuGetPackageExplorer.Shared.shproj",
+		"NuGetPackageExplorer.Wasm\\NuGetPackageExplorer.Wasm.csproj",
+    ]
+  }
+}

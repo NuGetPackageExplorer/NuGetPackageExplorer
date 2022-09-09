@@ -50,6 +50,12 @@ namespace NupkgExplorer.Presentation.Content
             set => SetProperty(value);
         }
 
+        public bool MetadataTabsContentVisible
+        {
+            get => GetProperty<bool>();
+            set => SetProperty(value);
+        }
+
         public PackageViewModel Package
         {
             get => GetProperty<PackageViewModel>();
@@ -80,6 +86,8 @@ namespace NupkgExplorer.Presentation.Content
             set => SetProperty(value);
         }
 
+        public ICommand InitialLoadCommand => new RelayCommand<DataTemplate>(InitialLoadCommandExecute);
+
         public ICommand ViewMetadataSourceCommand => GetCommand(ViewMetadataSource);
 
         public ICommand DoubleClickCommand => GetCommand(DoubleClick);
@@ -92,6 +100,7 @@ namespace NupkgExplorer.Presentation.Content
         {
             if (package == null) throw new ArgumentNullException(nameof(package));
 
+            MetadataTabsContentVisible = false;
             Title = $"{package.PackageMetadata} | {NuGetPackageExplorer.Constants.AppName}";
             Location = $"/packages/{package.PackageMetadata.Id}/{(redirectedFrom?.Version ?? package.PackageMetadata.Version)}";
             Package = package;
@@ -118,6 +127,12 @@ namespace NupkgExplorer.Presentation.Content
             {
                 SelectedMetadataTabTemplate = template;
             }
+        }
+
+        private void InitialLoadCommandExecute(DataTemplate template)
+        {
+            SelectedMetadataTabTemplate = template;
+            MetadataTabsContentVisible = true;
         }
 
         public static async Task<InspectPackageViewModel> CreateFromLocalPackage(StorageFile packageFile)
@@ -292,7 +307,7 @@ namespace NupkgExplorer.Presentation.Content
                 }
             }
         }
-        
+
         public void ViewMetadataSource()
         {
             DiagnosticsClient.TrackEvent("InspectPackage_ViewMetadataSource");
