@@ -88,8 +88,6 @@
                           Version="6.0.0" />
         <PackageReference Include="Uno.Core"
                           Version="4.0.1" />
-        <PackageReference Include="Uno.UI.Lottie"
-                          Version="4.4.20" />
     </ItemGroup>
     <Import Project="..\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems"
             Label="Shared"

@@ -98,10 +98,12 @@
 
             <Style x:Key="PoweredByHyperlinkButtonStyle"
                    TargetType="HyperlinkButton">
-                <Setter Property="Content">
+                <Setter Property="ContentTemplate">
                     <Setter.Value>
-                        <Image Source="{ThemeResource PoweredByUnoPlatformImageSource}"
+                        <DataTemplate>
+                            <Image Source="{ThemeResource PoweredByUnoPlatformImageSource}"
                                Height="40" />
+                        </DataTemplate>
                     </Setter.Value>
                 </Setter>
                 <Setter Property="NavigateUri" Value="https://platform.uno/" />

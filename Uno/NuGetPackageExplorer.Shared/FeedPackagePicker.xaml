@@ -229,8 +229,7 @@
 		</Style>
 	</Page.Resources>
 
-	<Grid RowSpacing="5"
-		  Padding="5">
+	<Grid RowSpacing="4">
 		<Grid.RowDefinitions>
 			<!-- R0: SearchBar; R1-2: SearchResults, R2: Powered-By Footer -->
 			<RowDefinition Height="Auto" />
@@ -266,7 +265,7 @@
 					Command="{Binding RefreshCommand}"
 					Style="{StaticResource IconButtonStyle}" />
 			<ToggleSwitch Grid.Column="2"
-					  IsChecked="{Binding IncludePrerelease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+					  IsOn="{Binding IncludePrerelease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 					  OnContent="Pre-releases shown"
 					  OffContent="Pre-releases hidden" />
 		</Grid>

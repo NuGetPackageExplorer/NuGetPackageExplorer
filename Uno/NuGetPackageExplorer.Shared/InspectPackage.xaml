@@ -211,7 +211,7 @@
                                              FileTemplate="{StaticResource FileTemplate}"
                                              DirectoryTemplate="{StaticResource DirectoryTemplate}" />
     </Page.Resources>
-    <Grid Padding="5">
+    <Grid>
         <Grid.RowDefinitions>
             <!-- R0: Redirect Warning, R1-4: Main Content, R4: Powered-By Footer -->
             <RowDefinition Height="Auto" />

@@ -15,21 +15,21 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0"
+                    Spacing="4"
                     MinWidth="256">
             <TextBlock Style="{StaticResource TypoTitle1}" Text="Downloading" />
-            <muxc:AnimatedVisualPlayer x:Name="player"
+            <!-- <muxc:AnimatedVisualPlayer x:Name="player"
 									   Width="256"
 									   Height="256"
-									   x:Load="False"
                                        AutoPlay="True">
                 <lottie:LottieVisualSource UriSource="ms-appx:///Assets/loading.json" />
-            </muxc:AnimatedVisualPlayer>
-            <TextBlock Margin="0,0,0,5"
-                       Style="{StaticResource TypoSubtitle2}">
+            </muxc:AnimatedVisualPlayer> -->
+            <TextBlock
+                       Style="{StaticResource TypoBody2}">
                 <Run Text="{Binding PackageName}" />
                 <Run Text="{Binding PackageVersion}" />
             </TextBlock>
-            <ProgressBar x:Load="False"
+            <!-- <ProgressBar x:Load="False"
                          Value="{Binding Progress}"
                          IsIndeterminate="False" />
             <TextBlock Visibility="{Binding Progress, Converter={StaticResource NullToCollapsed}}"
@@ -37,7 +37,7 @@
                 <Run Text="{Binding Received, Converter={StaticResource FileSizeConverter}}" />
                 <Run Text="/" />
                 <Run Text="{Binding Total, Converter={StaticResource FileSizeConverter}}" />
-            </TextBlock>
+            </TextBlock> -->
         </StackPanel>
         <Button Grid.Row="1"
                 Content="Cancel"
