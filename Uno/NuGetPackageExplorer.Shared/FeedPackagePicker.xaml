@@ -225,7 +225,7 @@
 			   	BasedOn="{ThemeResource ListViewItemExpanded}"
 			   	TargetType="ListViewItem">
 			<Setter Property="HorizontalContentAlignment" Value="Stretch" />
-			<Setter Property="Padding" Value="20,20,20,36" />
+			<Setter Property="Padding" Value="20" />
 		</Style>
 	</Page.Resources>
 
@@ -266,7 +266,7 @@
 					Command="{Binding RefreshCommand}"
 					Style="{StaticResource IconButtonStyle}" />
 			<ToggleSwitch Grid.Column="2"
-					  IsChecked="{Binding IncludePrerelease, Mode=TwoWay}"
+					  IsChecked="{Binding IncludePrerelease, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
 					  OnContent="Pre-releases shown"
 					  OffContent="Pre-releases hidden" />
 		</Grid>

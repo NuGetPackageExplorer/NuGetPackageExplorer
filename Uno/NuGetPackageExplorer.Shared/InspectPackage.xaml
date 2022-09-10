@@ -184,39 +184,27 @@
         <!-- File Explorer -->
         <DataTemplate x:Key="DirectoryTemplate"
                       x:DataType="pkvm:PackageFolder">
-            <muxc:TreeViewItem VerticalAlignment="Center"
+            <muxc:TreeViewItem HorizontalContentAlignment="Stretch"
+                               behavior:TreeViewBehavior.ItemDoubleTapCommand="{Binding ElementName=PageRoot, DataContext.DoubleClickCommand}"
                                ItemsSource="{Binding Children}">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0"
-                           Width="20"
+                <StackPanel Orientation="Horizontal">
+                    <Image Width="20"
                            Source="ms-appx:///Assets/FolderIcon.png" />
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding Name}"
-                               Margin="16,0,0,0"
-                               Style="{StaticResource TypoBody2}" />
-                </Grid>
+                    <TextBlock Margin="0,0,10,0" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                </StackPanel>
             </muxc:TreeViewItem>
         </DataTemplate>
         <DataTemplate x:Key="FileTemplate"
                       x:DataType="pkvm:PackageFile">
-            <muxc:TreeViewItem>
-                <Grid VerticalAlignment="Center">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Image Grid.Column="0"
-                           Width="20"
+            <muxc:TreeViewItem HorizontalContentAlignment="Stretch"
+                               behavior:TreeViewBehavior.ItemDoubleTapCommand="{Binding ElementName=PageRoot, DataContext.DoubleClickCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <Image Width="20"
                            Source="ms-appx:///Assets/FileIcon.png" />
-                    <TextBlock Grid.Column="1"
-                               Text="{Binding Name}"
-                               Margin="16,0,0,0"
-                               Style="{StaticResource TypoBody2}" />
-                </Grid>
+                    <TextBlock Margin="0,0,10,0" />
+                    <TextBlock VerticalAlignment="Center" Text="{Binding Name}" />
+                </StackPanel>
             </muxc:TreeViewItem>
         </DataTemplate>
         <converters:FSObjectTemplateSelector x:Key="FSObjectTemplateSelector"
@@ -482,6 +470,106 @@
                             </StackPanel>
                         </ScrollViewer>
                     </DataTemplate>
+                    <DataTemplate x:Key="DependenciesContentTemplate"
+                                  x:DataType="vm:InspectPackageViewModel">
+                        <ScrollViewer>
+                            <StackPanel HorizontalAlignment="Stretch">
+                                <muxc:Expander Header="Dependencies"
+                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               Visibility="{x:Bind Package.PackageMetadata.DependencyGroups, Converter={StaticResource EnumerableAnyConverter}}">
+                                    <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.DependencyGroups}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="pkging:PackageDependencyGroup">
+                                                <StackPanel Padding="0,0,0,6">
+                                                    <TextBlock Text="{x:Bind TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
+                                                               FontWeight="Bold"
+                                                               Style="{StaticResource TypoBody2}" />
+                                                    <ItemsControl ItemsSource="{x:Bind Packages}"
+                                                                  Margin="16,0,0,0"
+                                                                  Visibility="{x:Bind Packages, Converter={StaticResource EnumerableAnyConverter}}">
+                                                        <ItemsControl.ItemTemplate>
+                                                            <DataTemplate x:DataType="pkcore:PackageDependency">
+                                                                <HyperlinkButton Content="{x:Bind Converter={StaticResource PackageDependencyConverter}}"
+                                                                                 NavigateUri="{x:Bind Converter={StaticResource PackageDependencyToPackageLink}}"
+                                                                                 Padding="0" />
+                                                            </DataTemplate>
+                                                        </ItemsControl.ItemTemplate>
+                                                    </ItemsControl>
+                                                    <TextBlock Text="{x:Bind pexpl:Resources.Dialog_NoDependencyLabel}"
+                                                               FontStyle="Italic"
+                                                               Margin="16,0,0,0"
+                                                               Visibility="{x:Bind Packages, Converter={StaticResource EnumerableNoneConverter}}"
+                                                               Style="{StaticResource TypoBody2}" />
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </muxc:Expander>
+                                <muxc:Expander Header="{x:Bind pexpl:Resources.Dialog_FrameworkAssembliesLabel}"
+                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               Visibility="{x:Bind Package.PackageMetadata.FrameworkAssemblies, Converter={StaticResource EnumerableAnyConverter}}">
+                                    <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.FrameworkAssemblies}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="pkging:FrameworkAssemblyReference">
+                                                <TextBlock Text="{x:Bind Converter={StaticResource FrameworkAssemblyReferenceDisplayConverter}, ConverterParameter=includeAssembly}"
+                                                           IsTextSelectionEnabled="True"
+                                                           Style="{StaticResource TypoBody2}" />
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </muxc:Expander>
+                                <muxc:Expander Header="Framework References"
+                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               Visibility="{x:Bind Package.PackageMetadata.FrameworkReferenceGroups, Converter={StaticResource EnumerableAnyConverter}}">
+                                    <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.FrameworkReferenceGroups}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate x:DataType="pkging:FrameworkReferenceGroup">
+                                                <wct:HeaderedItemsControl Header="{x:Bind TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
+                                                                          ItemsSource="{x:Bind FrameworkReferences}"
+                                                                          Style="{StaticResource LabeledItemsControlStyle}">
+                                                    <wct:HeaderedItemsControl.ItemTemplate>
+                                                        <DataTemplate x:DataType="pkging:FrameworkReference">
+                                                            <TextBlock Text="{x:Bind Name}"
+                                                                       IsTextSelectionEnabled="True"
+                                                                       Style="{StaticResource TypoBody2}" />
+                                                        </DataTemplate>
+                                                    </wct:HeaderedItemsControl.ItemTemplate>
+                                                </wct:HeaderedItemsControl>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </muxc:Expander>
+                                <muxc:Expander Header="Filtered Assembly References"
+                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               Visibility="{x:Bind Package.PackageMetadata.PackageAssemblyReferences, Converter={StaticResource EnumerableAnyConverter}}">
+                                    <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.PackageAssemblyReferences, Converter={StaticResource ReferenceSetConverter}}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding}"
+                                                               IsTextSelectionEnabled="True"
+                                                               Visibility="{Binding TargetFramework, Converter={StaticResource NullToVisible}, FallbackValue=Visible, TargetNullValue=Visible}"
+                                                               Style="{StaticResource TypoBody2}" />
+                                                    <wct:HeaderedItemsControl Header="{Binding TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
+                                                                              ItemsSource="{Binding References}"
+                                                                              Visibility="{Binding TargetFramework, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed, TargetNullValue=Collapsed}"
+                                                                              Style="{StaticResource LabeledItemsControlStyle}">
+                                                        <wct:HeaderedItemsControl.ItemTemplate>
+                                                            <DataTemplate>
+                                                                <TextBlock Text="{Binding}"
+                                                                           IsTextSelectionEnabled="True"
+                                                                           Style="{StaticResource TypoBody2}" />
+                                                            </DataTemplate>
+                                                        </wct:HeaderedItemsControl.ItemTemplate>
+                                                    </wct:HeaderedItemsControl>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </muxc:Expander>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DataTemplate>
                 </muxc:NavigationView.Resources>
                 <i:Interaction.Behaviors>
                     <core:EventTriggerBehavior EventName="SelectionChanged">
@@ -491,7 +579,8 @@
                     </core:EventTriggerBehavior>
                     <core:EventTriggerBehavior EventName="DataContextChanged">
                         <core:EventTriggerBehavior.Actions>
-                            <core:InvokeCommandAction Command="{Binding InitialLoadCommand}" CommandParameter="{StaticResource MetadataContentTemplate}" />
+                            <core:InvokeCommandAction Command="{Binding InitialLoadCommand}"
+                                                      CommandParameter="{StaticResource MetadataContentTemplate}" />
                         </core:EventTriggerBehavior.Actions>
                     </core:EventTriggerBehavior>
                 </i:Interaction.Behaviors>
@@ -508,110 +597,7 @@
                             </StackPanel>
                         </muxc:NavigationViewItem.Content>
                     </muxc:NavigationViewItem>
-                    <muxc:NavigationViewItem>
-                        <muxc:NavigationViewItem.Tag>
-                            <DataTemplate x:Name="DependenciesTemp"
-                                          x:Key="DependenciesTemplate"
-                                          x:DataType="vm:InspectPackageViewModel">
-                                <ScrollViewer>
-                                    <StackPanel HorizontalAlignment="Stretch">
-                                        <muxc:Expander Header="Dependencies"
-                                                       Style="{StaticResource InnerSectionExpanderStyle_v2}"
-                                                       Visibility="{x:Bind Package.PackageMetadata.DependencyGroups, Converter={StaticResource EnumerableAnyConverter}}">
-                                            <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.DependencyGroups}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="pkging:PackageDependencyGroup">
-                                                        <StackPanel Padding="0,0,0,6">
-                                                            <TextBlock Text="{x:Bind TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
-                                                                       FontWeight="Bold"
-                                                                       Style="{StaticResource TypoBody2}" />
-                                                            <ItemsControl ItemsSource="{x:Bind Packages}"
-                                                                          Margin="16,0,0,0"
-                                                                          Visibility="{x:Bind Packages, Converter={StaticResource EnumerableAnyConverter}}">
-                                                                <ItemsControl.ItemTemplate>
-                                                                    <DataTemplate x:DataType="pkcore:PackageDependency">
-                                                                        <HyperlinkButton Content="{x:Bind Converter={StaticResource PackageDependencyConverter}}"
-                                                                                         NavigateUri="{x:Bind Converter={StaticResource PackageDependencyToPackageLink}}"
-                                                                                         Padding="0" />
-                                                                    </DataTemplate>
-                                                                </ItemsControl.ItemTemplate>
-                                                            </ItemsControl>
-                                                            <TextBlock Text="{x:Bind pexpl:Resources.Dialog_NoDependencyLabel}"
-                                                                       FontStyle="Italic"
-                                                                       Margin="16,0,0,0"
-                                                                       Visibility="{x:Bind Packages, Converter={StaticResource EnumerableNoneConverter}}"
-                                                                       Style="{StaticResource TypoBody2}" />
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </muxc:Expander>
-                                        <muxc:Expander Header="{x:Bind pexpl:Resources.Dialog_FrameworkAssembliesLabel}"
-                                                       Style="{StaticResource InnerSectionExpanderStyle_v2}"
-                                                       Visibility="{x:Bind Package.PackageMetadata.FrameworkAssemblies, Converter={StaticResource EnumerableAnyConverter}}">
-                                            <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.FrameworkAssemblies}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="pkging:FrameworkAssemblyReference">
-                                                        <TextBlock Text="{x:Bind Converter={StaticResource FrameworkAssemblyReferenceDisplayConverter}, ConverterParameter=includeAssembly}"
-                                                                   IsTextSelectionEnabled="True"
-                                                                   Style="{StaticResource TypoBody2}" />
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </muxc:Expander>
-                                        <muxc:Expander Header="Framework References"
-                                                       Style="{StaticResource InnerSectionExpanderStyle_v2}"
-                                                       Visibility="{x:Bind Package.PackageMetadata.FrameworkReferenceGroups, Converter={StaticResource EnumerableAnyConverter}}">
-                                            <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.FrameworkReferenceGroups}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate x:DataType="pkging:FrameworkReferenceGroup">
-                                                        <wct:HeaderedItemsControl Header="{x:Bind TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
-                                                                                  ItemsSource="{x:Bind FrameworkReferences}"
-                                                                                  Style="{StaticResource LabeledItemsControlStyle}">
-                                                            <wct:HeaderedItemsControl.ItemTemplate>
-                                                                <DataTemplate x:DataType="pkging:FrameworkReference">
-                                                                    <TextBlock Text="{x:Bind Name}"
-                                                                               IsTextSelectionEnabled="True"
-                                                                               Style="{StaticResource TypoBody2}" />
-                                                                </DataTemplate>
-                                                            </wct:HeaderedItemsControl.ItemTemplate>
-                                                        </wct:HeaderedItemsControl>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </muxc:Expander>
-                                        <muxc:Expander Header="Filtered Assembly References"
-                                                       Style="{StaticResource InnerSectionExpanderStyle_v2}"
-                                                       Visibility="{x:Bind Package.PackageMetadata.PackageAssemblyReferences, Converter={StaticResource EnumerableAnyConverter}}">
-                                            <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.PackageAssemblyReferences, Converter={StaticResource ReferenceSetConverter}}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <StackPanel>
-                                                            <TextBlock Text="{Binding}"
-                                                                       IsTextSelectionEnabled="True"
-                                                                       Visibility="{Binding TargetFramework, Converter={StaticResource NullToVisible}, FallbackValue=Visible, TargetNullValue=Visible}"
-                                                                       Style="{StaticResource TypoBody2}" />
-                                                            <wct:HeaderedItemsControl Header="{Binding TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
-                                                                                      ItemsSource="{Binding References}"
-                                                                                      Visibility="{Binding TargetFramework, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed, TargetNullValue=Collapsed}"
-                                                                                      Style="{StaticResource LabeledItemsControlStyle}">
-                                                                <wct:HeaderedItemsControl.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <TextBlock Text="{Binding}"
-                                                                                   IsTextSelectionEnabled="True"
-                                                                                   Style="{StaticResource TypoBody2}" />
-                                                                    </DataTemplate>
-                                                                </wct:HeaderedItemsControl.ItemTemplate>
-                                                            </wct:HeaderedItemsControl>
-                                                        </StackPanel>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </muxc:Expander>
-                                    </StackPanel>
-                                </ScrollViewer>
-                            </DataTemplate>
-                        </muxc:NavigationViewItem.Tag>
+                    <muxc:NavigationViewItem Tag="{StaticResource DependenciesContentTemplate}">
                         <muxc:NavigationViewItem.Content>
                             <StackPanel Spacing="8"
                                         Orientation="Horizontal">
@@ -646,11 +632,11 @@
             <wct:HeaderedContentControl Header="Contents"
                                         Style="{StaticResource SectionHeaderedContentControlStyle}">
                 <muxc:TreeView ItemsSource="{Binding Package.RootFolder.Children}"
-                               behavior:TreeViewBehavior.EnableSelectedItemBinding="True"
-                               behavior:TreeViewBehavior.SelectedItem="{Binding SelectedContent, Mode=TwoWay}"
+                               SelectedItem="{Binding SelectedContent, Mode=TwoWay}"
                                behavior:TreeViewBehavior.AutoToggleItemExpansion="True"
-                               behavior:TreeViewBehavior.DoubleClickCommand="{Binding DoubleClickCommand}"
                                ItemTemplateSelector="{StaticResource FSObjectTemplateSelector}"
+                               CanReorderItems="False"
+                               CanDragItems="False"
                                SelectionMode="Single" />
             </wct:HeaderedContentControl>
         </Grid>

@@ -225,5 +225,6 @@
         <Content Include="$(MSBuildThisFileDirectory)Assets\NuGetLogo.scale-100.png" />
         <Content Include="$(MSBuildThisFileDirectory)Assets\Powered-By-UnoPlatform-Dark.png" />
         <Content Include="$(MSBuildThisFileDirectory)Assets\Powered-By-UnoPlatform-Light.png" />
+        <Content Include="$(MSBuildThisFileDirectory)Assets\loading.json" />
     </ItemGroup>
 </Project>
