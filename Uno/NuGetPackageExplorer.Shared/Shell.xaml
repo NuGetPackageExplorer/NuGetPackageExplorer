@@ -21,11 +21,14 @@
         <CommandBar Background="Transparent"
                     Grid.Row="0"
                     DefaultLabelPosition="Right"
-                    IsOpen="True"
                     IsSticky="True">
+            <CommandBar.Resources>
+                <StaticResource x:Key="CommandBarBackgroundOpen"
+                                ResourceKey="ControlFillColorTransparentBrush" />
+            </CommandBar.Resources>
             <CommandBar.Content>
                 <Button x:Name="BackButton"
-                        Margin="0,6"
+                        Margin="4,6,0,6"
                         Style="{StaticResource NavigationBackButtonNormalStyle}"
                         IsEnabled="{x:Bind ContentFrame.CanGoBack, Mode=OneWay}"
                         ToolTipService.ToolTip="Back"
@@ -51,7 +54,8 @@
                 </win:AppBarButton.Icon>
             </win:AppBarButton>
         </CommandBar>
-        <Frame not_macos:Grid.Row="1"
+        <Frame Margin="8,0,8,8"
+               not_macos:Grid.Row="1"
                x:Name="ContentFrame" />
     </Grid>
 </Page>
