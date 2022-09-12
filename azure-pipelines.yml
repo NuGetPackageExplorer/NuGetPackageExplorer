@@ -27,8 +27,6 @@ stages:
           ReleaseChannel: Choco
         Channel_WebAssembly:
           ReleaseChannel: WebAssembly
-        Channel_UnoSkia:
-          ReleaseChannel: UnoSkia
 
     steps:
         
@@ -171,16 +169,7 @@ stages:
         solution: $(build.sourcesdirectory)/NuGetPackageExplorer-uno.slnf
         msbuildArguments: /r /p:Configuration=Release /p:UNO_BUILD_ONLY=true /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
         maximumCpuCount: true
-      condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly'), eq(variables['ReleaseChannel'], 'UnoSkia')))
-
-    - task: ArchiveFiles@1
-      displayName: Zip Gtk PackageExplorer files
-      inputs:
-        archiveType: zip
-        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Skia.Gtk/bin/Release/net6.0
-        archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Skia.Gtk.$(Build.BuildNumber).zip
-        includeRootFolder: false
-      condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
+      condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly')))
 
     - task: CopyFiles@2
       displayName: Copy WebAssembly Package
