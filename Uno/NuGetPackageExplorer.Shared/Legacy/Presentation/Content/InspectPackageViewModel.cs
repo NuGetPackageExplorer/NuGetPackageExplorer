@@ -50,6 +50,12 @@ namespace NupkgExplorer.Presentation.Content
             set => SetProperty(value);
         }
 
+        public bool AreExpandedByDefault
+        {
+            get => GetProperty<bool>();
+            set => SetProperty(value);
+        }
+
         public bool MetadataTabsContentVisible
         {
             get => GetProperty<bool>();
@@ -100,6 +106,7 @@ namespace NupkgExplorer.Presentation.Content
         {
             if (package == null) throw new ArgumentNullException(nameof(package));
 
+            AreExpandedByDefault = true;
             MetadataTabsContentVisible = false;
             Title = $"{package.PackageMetadata} | {NuGetPackageExplorer.Constants.AppName}";
             Location = $"/packages/{package.PackageMetadata.Id}/{(redirectedFrom?.Version ?? package.PackageMetadata.Version)}";

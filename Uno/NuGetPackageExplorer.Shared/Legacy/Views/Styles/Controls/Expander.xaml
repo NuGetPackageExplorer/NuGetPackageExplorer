@@ -343,11 +343,12 @@
 		</Setter>
 	</Style>
 
-	<Style x:Key="InnerSectionExpanderStyle_v2" 
+	<Style x:Key="InnerSectionExpanderStyle_v2"
 		   TargetType="muxc:Expander">
 		   <Setter Property="HorizontalAlignment" Value="Stretch" />
 		   <Setter Property="HorizontalContentAlignment" Value="Left" />
-		   <Setter Property="IsExpanded" Value="True" />
+		   <!-- Not possible until https://github.com/unoplatform/uno/issues/3739 is fixed: -->
+		   <!-- <Setter Property="IsExpanded" Value="True" /> -->
 	</Style>
 
 	<Style x:Key="FileExplorerItemHeaderToggleButtonStyle"
