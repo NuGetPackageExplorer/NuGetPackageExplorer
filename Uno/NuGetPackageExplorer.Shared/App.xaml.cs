@@ -199,14 +199,16 @@ namespace PackageExplorer
             var manager = SystemNavigationManager.GetForCurrentView();
 
 #if WINDOWS_UWP || __WASM__
-			// wire-up back navigation
-			manager.BackRequested += (s, e) => frame.GoBack();
-			frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
-			{
-				manager.AppViewBackButtonVisibility = frame.CanGoBack
-					? AppViewBackButtonVisibility.Visible
-					: AppViewBackButtonVisibility.Collapsed;
-			});
+            // wire-up back navigation
+            manager.BackRequested += (s, e) => frame.GoBack();
+            frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
+            {
+                manager.AppViewBackButtonVisibility = frame.CanGoBack
+                    ? AppViewBackButtonVisibility.Visible
+                    : AppViewBackButtonVisibility.Collapsed;
+            });
+
+            Uno.UI.FeatureConfiguration.Page.IsPoolingEnabled = true;
 #endif
 
 #if __WASM__

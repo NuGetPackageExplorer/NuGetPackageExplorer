@@ -28,6 +28,7 @@
       xmlns:todo="what should be done"
       mc:Ignorable="d todo wasm xamarin not_win"
       x:Name="PageRoot"
+      NavigationCacheMode="Enabled"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
         <!-- #region Converters -->

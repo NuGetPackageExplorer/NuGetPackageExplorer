@@ -16,6 +16,7 @@
       mc:Ignorable="d todo macos xamarin not_win"
       xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
       x:Name="PageRoot"
+      NavigationCacheMode="Enabled"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
         <DataTemplate x:Key="NugetPackageTemplate"
