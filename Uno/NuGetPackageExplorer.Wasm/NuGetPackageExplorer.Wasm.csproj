@@ -59,8 +59,6 @@
         <ProjectReference Include="..\..\Types\Types.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.Extensions.Logging.Console"
-                          Version="6.0.0" />
         <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console"
                           Version="1.4.0" />
         <PackageReference Include="System.Reactive"
@@ -86,7 +84,13 @@
                           Version="3.3.1" />
         <PackageReference Include="Microsoft.Windows.Compatibility"
                           Version="6.0.0" />
-        <PackageReference Include="Uno.Core"
+        <PackageReference Include="Uno.Core.Extensions"
+                          Version="4.0.1" />
+        <PackageReference Include="Uno.Core.Extensions.Logging"
+                          Version="4.0.1" />
+        <PackageReference Include="Uno.Core.Extensions.Disposables"
+                          Version="4.0.1" />
+        <PackageReference Include="Uno.Core.Extensions.Compatibility"
                           Version="4.0.1" />
     </ItemGroup>
     <Import Project="..\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems"
