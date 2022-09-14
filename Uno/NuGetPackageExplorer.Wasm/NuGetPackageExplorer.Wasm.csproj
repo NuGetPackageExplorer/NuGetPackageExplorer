@@ -39,7 +39,7 @@
     <ItemGroup>
         <Content Include="images\**\*.png" />
         <Content Include="ai.2.6.3.min.js" />
-        <Content Update="WasmCSS\Fonts\uno-fluentui-assets.woff2" />
+        <Content Update="WasmCSS\uno-fluentui-assets.woff2" />
     </ItemGroup>
     <ItemGroup>
         <EmbeddedResource Include="WasmCSS\**\*.css" />
