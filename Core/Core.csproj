@@ -23,7 +23,7 @@
     <!--<PackageReference Include="Microsoft.SourceLink.Tools" Version="1.1.0-beta-21115-02" PrivateAssets="all" />-->
     <PackageReference Include="Microsoft.SymbolStore" Version="1.0.251801" />
     <PackageReference Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />    
-    <PackageReference Include="PeNet" Version="2.9.7" />
+    <PackageReference Include="PeNet" Version="2.9.9" />
     <PackageReference Include="System.Formats.Asn1" Version="6.0.0" />
     <PackageReference Include="System.Reflection.Metadata" Version="6.0.1" />
     <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" Version="1.1.24" />
