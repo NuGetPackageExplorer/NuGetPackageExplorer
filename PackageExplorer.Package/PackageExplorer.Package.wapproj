@@ -20,6 +20,14 @@
       <Configuration>Release</Configuration>
       <Platform>x86</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|ARM64">
+      <Configuration>Debug</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|ARM64">
+      <Configuration>Release</Configuration>
+      <Platform>ARM64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup>
     <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
@@ -28,22 +36,24 @@
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" />
   <PropertyGroup>
     <ProjectGuid>452579bf-ff89-46fd-953d-e9d02d71efdd</ProjectGuid>
-    <TargetPlatformVersion>10.0.18362.0</TargetPlatformVersion>
+    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
     <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <DebuggerType>ManagedOnly</DebuggerType>
     <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64|x86</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x64|x86|arm64</AppxBundlePlatforms>
     <AppxPackageIncludePrivateSymbols>true</AppxPackageIncludePrivateSymbols>
     <UapAppxPackageBuildMode>SideLoadOnly</UapAppxPackageBuildMode>
     <UapAppxPackageBuildMode Condition="'$(ReleaseChannel)' == 'Store'">CI</UapAppxPackageBuildMode>
-    <EntryPointProjectUniqueName>..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
+    <EntryPointExe Condition="'$(BuildingInsideVisualStudio)' != 'true' ">NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
+    <EntryPointProjectUniqueName Condition="'$(BuildingInsideVisualStudio)' == 'true' ">..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
+    <GetPackagingOutputsDependsOn Condition="'$(BuildingInsideVisualStudio)' != 'true' ">$(GetPackagingOutputsDependsOn);BuildRefsOutputGroup</GetPackagingOutputsDependsOn>    
   </PropertyGroup>
   <PropertyGroup Condition="'$(ReleaseChannel)' == 'Nightly'">
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
-    <AppInstallerUri>https://nugetpackageexplorer.blob.core.windows.net/nightly</AppInstallerUri>
+    <AppInstallerUri>https://npenightly.blob.core.windows.net/nightly</AppInstallerUri>
     <AppInstallerUpdateFrequency>0</AppInstallerUpdateFrequency>
     <AppInstallerCheckForUpdateFrequency>OnApplicationRun</AppInstallerCheckForUpdateFrequency>
   </PropertyGroup>
@@ -66,12 +76,33 @@
     <None Include="Package.xml" />
     <None Include="Assets\*.png" Condition="'$(ReleaseChannel)' != 'Store'" />
   </ItemGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(BuildingInsideVisualStudio)' == 'true'">
     <ProjectReference Include="..\PackageExplorer\NuGetPackageExplorer.csproj">
       <SkipGetTargetFrameworkProperties>True</SkipGetTargetFrameworkProperties>
       <PublishProfile Condition="'$(Platform)'=='x64'">Properties\PublishProfiles\WinX64.pubxml</PublishProfile>
       <PublishProfile Condition="'$(Platform)'=='x86'">Properties\PublishProfiles\WinX86.pubxml</PublishProfile>
+      <PublishProfile Condition="'$(Platform)'=='ARM64'">Properties\PublishProfiles\WinARM64.pubxml</PublishProfile>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
+  <Target Name="BuildRef" Condition="'$(BuildingInsideVisualStudio)' != 'true' " BeforeTargets="BeforeBuild">
+    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+      <NpeExecCmd>dotnet publish -c $(Configuration) "$(MSBuildThisFileDirectory)..\PackageExplorer\NuGetPackageExplorer.csproj" /p:PublishProfile=Properties\PublishProfiles\Win$(Platform).pubxml</NpeExecCmd>
+    </PropertyGroup>
+    <Message Text="Executing: $(NpeExecCmd)" Importance="High" />
+    <Exec Command="$(NpeExecCmd)" />
+    <Message Text="Built ref " />
+    <ItemGroup>
+      <TheFiles Include="..\PackageExplorer\bin\$(Configuration)\net6.0-windows10.0.19041\win-$(Platform)\publish\**\*.*" />
+      <TheFiles TargetPath="NuGetPackageExplorer\%(RecursiveDir)%(Filename)%(Extension)" />
+      <BuiltRef Include="@(TheFiles)">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </BuiltRef>
+    </ItemGroup>
+  </Target>
+  <Target Name="BuildRefsOutputGroup" Returns="@(BuiltRefsOutput)">
+    <ItemGroup>
+      <_PackagingOutputsUnexpanded Include="@(BuiltRef)" OutputGroup="BuildRefsOutputGroup" ProjectName="$(ProjectName)" />
+    </ItemGroup>
+  </Target>
 </Project>

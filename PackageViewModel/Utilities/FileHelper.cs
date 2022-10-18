@@ -5,12 +5,16 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
+
+[assembly: DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
 
 namespace PackageExplorerViewModel
 {
-    internal static class FileHelper
+    public static class FileHelper
     {
         private static readonly string[] ExecutableScriptsExtensions = new[]
                                                                         {
@@ -26,18 +30,24 @@ namespace PackageExplorerViewModel
                                                                     ".DLL", ".EXE", ".WINMD", ".CHM", ".PDF",
                                                                     ".DOCX", ".DOC", ".JPG", ".PNG", ".GIF",
                                                                     ".RTF", ".PDB", ".ZIP", ".RAR", ".XAP",
-                                                                    ".VSIX", ".NUPKG", ".SNUPKG", ".SNK", ".PFX", ".ICO"
+                                                                    ".VSIX", ".NUPKG", ".SNUPKG", ".SNK", ".PFX", ".ICO",
+                                                                    ".SO", ".DYLIB"
                                                                 };
 
         public static bool IsBinaryFile(string path)
         {
             // TODO: check for content type of the file here
             var extension = Path.GetExtension(path);
-            return !string.IsNullOrEmpty(extension) && BinaryFileExtensions.Any(p => p.Equals(extension, StringComparison.InvariantCultureIgnoreCase));
+            return !string.IsNullOrEmpty(extension) && BinaryFileExtensions.Any(p => p.Equals(extension, StringComparison.OrdinalIgnoreCase));
         }
 
         public static void OpenFileInShell(PackageFile file, IUIServices uiServices)
         {
+            if (file is null)
+                throw new ArgumentNullException(nameof(file));
+            if (uiServices is null)
+                throw new ArgumentNullException(nameof(uiServices));
+
             if (IsExecutableScript(file.Name))
             {
                 var confirm = uiServices.Confirm(
@@ -81,6 +91,9 @@ namespace PackageExplorerViewModel
         public static void OpenFileInShellWith(PackageFile file)
         {
             DiagnosticsClient.TrackEvent("FileHelper_OpenFileInShellWith");
+
+            if (file is null)
+                throw new ArgumentNullException(nameof(file));
 
             // copy to temporary file
             // create package in the temprary file first in case the operation fails which would
@@ -160,6 +173,9 @@ namespace PackageExplorerViewModel
                 throw new ArgumentException("Argument is null or empty", nameof(fileName));
             }
 
+            if (content is null)
+                throw new ArgumentNullException(nameof(content));
+
             var filePath = Path.Combine(GetTempFilePath(), fileName);
             using (Stream targetStream = File.Create(filePath))
             {
@@ -170,6 +186,9 @@ namespace PackageExplorerViewModel
 
         public static bool IsAssembly(string path)
         {
+            if (path is null)
+                throw new ArgumentNullException(nameof(path));
+
             return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
                    path.EndsWith(".winmd", StringComparison.OrdinalIgnoreCase) ||
                    path.EndsWith(".exe", StringComparison.OrdinalIgnoreCase);
@@ -272,7 +291,9 @@ namespace PackageExplorerViewModel
             /// <summary>
             /// The handle that identifies a directory.
             /// </summary>
+#pragma warning disable CA1069 // Enums values should not be duplicated
             FILE_ATTRIBUTE_DIRECTORY = 0x10,
+#pragma warning restore CA1069 // Enums values should not be duplicated
         }
 
         /// <summary>
@@ -310,24 +331,30 @@ namespace PackageExplorerViewModel
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_TYPE)]
             public string szTypeName;
         }
+
+#if !NETSTANDARD2_1
 #pragma warning restore IDE1006 // Naming Styles
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
-        public static Icon ExtractAssociatedIcon(string fileName)
+        public static Icon? ExtractAssociatedIcon(string fileName)
         {
             var info = new SHFILEINFO();
             var infoSize = (uint)Marshal.SizeOf(info);
 
-            SHGetFileInfo(
+            var res = SHGetFileInfo(
                 fileName,
                 FILE_ATTRIBUTE_NORMAL,
                 out info,
                 infoSize,
                 SHGFI.Icon | SHGFI.SmallIcon | SHGFI.UseFileAttributes);
 
-            var icon = (Icon)Icon.FromHandle(info.hIcon).Clone();
-            DestroyIcon(info.hIcon);
-            return icon;
+            if (res != 0)
+            {
+                var icon = (Icon)Icon.FromHandle(info.hIcon).Clone();
+                DestroyIcon(info.hIcon);
+                return icon;
+            }
+            return null;
         }
-
+#endif
     }
 }

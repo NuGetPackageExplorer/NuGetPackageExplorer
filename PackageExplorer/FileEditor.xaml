@@ -63,7 +63,7 @@
                     <self:GrayscaleMenuItem Header="E_xtra Large" Tag="18" Click="OnFontSizeItem_Click" IsChecked="{Binding FontSize, Source={StaticResource Settings}, Converter={StaticResource FontSizeToBoolConverter}, ConverterParameter=18, Mode=OneWay}" />
                 </MenuItem>
 
-                <MenuItem Header="_Word Wrap" IsCheckable="True" IsChecked="{Binding WordWrap, Source={StaticResource Settings}, Mode=TwoWay}" />
+                <MenuItem Header="_Word Wrap" IsCheckable="True" IsChecked="{Binding WordWrap, Source={StaticResource Settings}, Mode=TwoWay}" Icon="{StaticResource WordWrapIcon}" />
                 <MenuItem Header="Show _Line Numbers" IsCheckable="True" IsChecked="{Binding ShowLineNumbers, Source={StaticResource Settings}, Mode=TwoWay}" />
             </MenuItem>
 
@@ -72,10 +72,10 @@
                 <MenuItem Header="A_bout..." Command="Help" />
             </MenuItem>
         </Menu>
-        
+
         <!-- This border simulates ToolbarTray -->
         <Border Background="{StaticResource ToolBarTrayBackground}" DockPanel.Dock="Top">
-            <ToolBar ToolBarTray.IsLocked="True" Margin="1">            
+            <ToolBar ToolBarTray.IsLocked="True" Margin="1">
                 <!-- Return to Package -->
                 <Button ToolTip="Return to Package (Ctrl+F4)"
                         Command="{Binding CloseCommand, Mode=OneWay}"
@@ -123,6 +123,13 @@
 
                 <ComboBox x:Name="SyntaxDefinitions" IsEditable="false" IsReadOnly="true" Width="110" DisplayMemberPath="Name"></ComboBox>
 
+                <ToggleButton
+                    IsChecked="{Binding WordWrap, Source={StaticResource Settings}, Mode=TwoWay}"
+                    Style="{StaticResource {x:Static ToolBar.ToggleButtonStyleKey}}"
+                    Margin="2,0,0,0"
+                    ToolTip="Word Wrap"
+                    Content="{StaticResource WordWrapIcon}" />
+
                 <Separator />
 
                 <Label Content="F_ont: " Target="FontChoice" />
@@ -149,7 +156,7 @@
                 </ComboBox>
             </ToolBar>
         </Border>
-        
+
         <StatusBar Padding="0,2,0,2" DockPanel.Dock="Bottom" Background="#293955" Foreground="#CCFFFFFF">
             <StatusBarItem Content="{Binding FileInEdit.Path, FallbackValue=Ready, Mode=OneWay}" />
             <StatusBarItem HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,3,0" Visibility="{Binding HasEdit, Converter={StaticResource boolToVis}, FallbackValue=Collapsed}">
@@ -159,15 +166,15 @@
             </StatusBarItem>
         </StatusBar>
 
-        <ae:TextEditor 
-            x:Name="Editor" 
-            Margin="5" 
-            Padding="5,2,5,5" 
-            HorizontalScrollBarVisibility="Auto" 
-            IsModified="{Binding HasEdit, Mode=TwoWay}" 
-            WordWrap="{Binding WordWrap, Source={StaticResource Settings}, Mode=OneWay}" 
-            ShowLineNumbers="{Binding ShowLineNumbers, Source={StaticResource Settings}, Mode=OneWay}" 
-            SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}" 
+        <ae:TextEditor
+            x:Name="Editor"
+            Margin="5"
+            Padding="5,2,5,5"
+            HorizontalScrollBarVisibility="Auto"
+            IsModified="{Binding HasEdit, Mode=TwoWay}"
+            WordWrap="{Binding WordWrap, Source={StaticResource Settings}, Mode=OneWay}"
+            ShowLineNumbers="{Binding ShowLineNumbers, Source={StaticResource Settings}, Mode=OneWay}"
+            SyntaxHighlighting="{Binding SelectedItem, ElementName=SyntaxDefinitions, Mode=OneWay}"
             FontFamily="{Binding SelectedItem, ElementName=FontChoice}"
             IsReadOnly="{Binding IsReadOnly, Mode=OneWay}"
             />

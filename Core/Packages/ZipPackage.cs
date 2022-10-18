@@ -4,12 +4,18 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+
+using NuGet.Common;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
 using NuGet.Versioning;
+
+using NuGetPe.Utility;
 
 namespace NuGetPe
 {
@@ -22,6 +28,7 @@ namespace NuGetPe
         // so we don't have to hold on to that resource
         private readonly Func<Stream> _streamFactory;
         private ManifestMetadata _metadata;
+        private bool _signatureLoaded;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         public ZipPackage(string filePath)
@@ -96,6 +103,12 @@ namespace NuGetPe
         {
             get { return _metadata.IconUrl; }
             set { _metadata.SetIconUrl(value?.ToString()); }
+        }
+
+        public string? Readme
+        {
+            get { return _metadata.Readme; }
+            set { _metadata.Readme = value; }
         }
 
         public Uri? LicenseUrl
@@ -230,7 +243,7 @@ namespace NuGetPe
             get { return null; }
         }
 
-        public int DownloadCount
+        public long DownloadCount
         {
             get { return -1; }
         }
@@ -277,7 +290,7 @@ namespace NuGetPe
         public VerifySignaturesResult VerificationResult { get; private set; }
 
         // Keep a list of open stream here, and close on dispose.
-        private readonly List<IDisposable> _danglingStreams = new List<IDisposable>();
+        private readonly List<IDisposable> _danglingStreams = new();
 
         public IEnumerable<IPackageFile> GetFiles()
         {
@@ -297,39 +310,54 @@ namespace NuGetPe
         {
             return _streamFactory();
         }
-        
+
         public async Task LoadSignatureDataAsync()
         {
+            if (_signatureLoaded) return;
+
             using var reader = new PackageArchiveReader(_streamFactory(), false);
             IsSigned = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
             if (IsSigned)
             {
                 try
                 {
-                    var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None).ConfigureAwait(false);
-
-                    // Author signatures must be the primary, but they can contain
-                    // a repository counter signature
-                    if (sig.Type == SignatureType.Author)
+                    if (!AppCompat.IsSupported(RuntimeFeature.Cryptography))
                     {
-                        PublisherSignature = new SignatureInfo(sig);
-
-                        var counter = RepositoryCountersignature.GetRepositoryCountersignature(sig);
-                        if (counter != null)
+                        if (await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false))
                         {
-                            RepositorySignature = new RepositorySignatureInfo(counter);
+                            (PublisherSignature, RepositorySignature) = CryptoUtility.GetSignatures(reader);
                         }
                     }
-                    else if (sig.Type == SignatureType.Repository)
+                    else
                     {
-                        RepositorySignature = new RepositorySignatureInfo(sig);
+#if IS_SIGNING_SUPPORTED
+                        var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None).ConfigureAwait(false);
+
+                        // Author signatures must be the primary, but they can contain
+                        // a repository counter signature
+                        if (sig.Type == SignatureType.Author)
+                        {
+                            PublisherSignature = new PublisherSignatureInfo(sig);
+
+                            var counter = RepositoryCountersignature.GetRepositoryCountersignature(sig);
+                            if (counter != null)
+                            {
+                                RepositorySignature = new RepositorySignatureInfo(counter);
+                            }
+                        }
+                        else if (sig.Type == SignatureType.Repository)
+                        {
+                            RepositorySignature = new RepositorySignatureInfo(sig);
+                        }
+#endif
                     }
                 }
                 catch (SignatureException)
                 {
                 }
-
             }
+
+            _signatureLoaded = true;
         }
 
         public async Task VerifySignatureAsync()
@@ -394,6 +422,16 @@ namespace NuGetPe
                 _zipArchive = new ZipArchive(stream, ZipArchiveMode.Read);
             }
             public ReadOnlyCollection<ZipArchiveEntry> GetZipEntries() => _zipArchive.Entries;
+
+            protected override void Dispose(bool disposing)
+            {
+                if (disposing)
+                {
+                    _zipArchive.Dispose();
+                }
+
+                base.Dispose(disposing);
+            }
         }
     }
 }

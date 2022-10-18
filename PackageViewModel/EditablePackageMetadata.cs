@@ -17,13 +17,14 @@ namespace PackageExplorerViewModel
 {
     public sealed class EditablePackageMetadata : IPackageMetadata, IDataErrorInfo, INotifyPropertyChanged
     {
-        private readonly Dictionary<string, string?> _propertyErrors = new Dictionary<string, string?>();
+        private readonly Dictionary<string, string?> _propertyErrors = new();
         private readonly IUIServices _uiServices;
         private string? _authors;
         private string? _copyright;
         private string? _description;
         private string? _icon;
         private Uri? _iconUrl;
+        private string? _readme;
         private string _id;
         private string? _language;
         private Uri? _licenseUrl;
@@ -46,7 +47,7 @@ namespace PackageExplorerViewModel
 
         public ICommand ShowValidationResultsCommand => _showValidationResultsCommand;
 
-        public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices, SymbolValidator symbolValidator)
+        public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices, PackageViewModel packageViewModel)
         {
             if (source is null)
                 throw new ArgumentNullException(nameof(source));
@@ -61,7 +62,7 @@ namespace PackageExplorerViewModel
             Owners = ConvertToString(source.Owners);
             Icon = source.Icon;
             IconUrl = FixIconUrl(source.IconUrl);
-
+            Readme = source.Readme;
             ProjectUrl = source.ProjectUrl;
             RequireLicenseAcceptance = source.RequireLicenseAcceptance;
             DevelopmentDependency = source.DevelopmentDependency;
@@ -78,7 +79,12 @@ namespace PackageExplorerViewModel
             ContentFiles = new ObservableCollection<ManifestContentFiles>(source.ContentFiles);
             _frameworkReferenceGroups = new ObservableCollection<FrameworkReferenceGroup>(source.FrameworkReferenceGroups);
 
-            Repository = source.Repository;
+            if(source.Repository != null)
+            {
+                Repository = new RepositoryMetadataViewModel(source.Repository);
+                _underlyingRepository = source.Repository;
+            }
+
             LicenseMetadata = source.LicenseMetadata;
             LicenseUrl = LicenseMetadata != null ? null : source.LicenseUrl; // This will be set for back compat, but should show up as null here
 
@@ -88,11 +94,11 @@ namespace PackageExplorerViewModel
             }
             MinClientVersion = source.MinClientVersion;
 
-            SymbolValidator = symbolValidator;
+            PackageViewModel = packageViewModel;
         }
 
-        public EditablePackageMetadata(IPackage source, IUIServices uiServices, SymbolValidator symbolValidator)
-            : this((IPackageMetadata)source, uiServices, symbolValidator)
+        public EditablePackageMetadata(IPackage source, IUIServices uiServices, PackageViewModel packageViewModel)
+            : this((IPackageMetadata)source, uiServices, packageViewModel)
         {
             // Zip Packages may be signed, we need to load that data async
             if (source is ISignaturePackage zip)
@@ -169,7 +175,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public SymbolValidator SymbolValidator
+        public PackageViewModel PackageViewModel
         {
             get;
         }
@@ -284,7 +290,8 @@ namespace PackageExplorerViewModel
 
         public event PropertyChangedEventHandler? PropertyChanged;
         private bool _developmentDependency;
-        private RepositoryMetadata? _repository;
+        private RepositoryMetadataViewModel? _repository;
+        private readonly RepositoryMetadata? _underlyingRepository;
         private LicenseMetadata? _licenseMetadata;
         private SignatureInfo? _publisherCertificate;
         private ValidationResultViewModel? _validationResult;
@@ -402,6 +409,19 @@ namespace PackageExplorerViewModel
                 {
                     _iconUrl = value;
                     RaisePropertyChange(nameof(IconUrl));
+                }
+            }
+        }
+
+        public string? Readme
+        {
+            get { return _readme; }
+            set
+            {
+                if (_readme != value)
+                {
+                    _readme = value;
+                    RaisePropertyChange(nameof(Readme));
                 }
             }
         }
@@ -572,6 +592,8 @@ namespace PackageExplorerViewModel
             }
         }
 
+        RepositoryMetadata? IPackageMetadata.Repository => _underlyingRepository;
+
         IEnumerable<string> IPackageMetadata.Authors
         {
             get { return SplitString(Authors); }
@@ -604,7 +626,7 @@ namespace PackageExplorerViewModel
         IEnumerable<PackageType> IPackageMetadata.PackageTypes => PackageTypes;
         public ICollection<PackageType> PackageTypes { get; }
 
-        public RepositoryMetadata? Repository
+        public RepositoryMetadataViewModel? Repository
         {
             get { return _repository; }
             set
@@ -638,7 +660,7 @@ namespace PackageExplorerViewModel
             var path = uri.OriginalString;
             if (path.StartsWith("//", StringComparison.Ordinal))
             {
-                path = path.Substring(1);
+                path = path[1..];
             }
 
             var builder = new UriBuilder

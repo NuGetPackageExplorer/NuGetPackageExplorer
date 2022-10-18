@@ -8,23 +8,38 @@ using Microsoft.ApplicationInsights.Extensibility;
 
 namespace NuGetPe.Utility
 {
-    internal class AppVersionTelemetryInitializer : ITelemetryInitializer
+    public class AppVersionTelemetryInitializer : ITelemetryInitializer, ITelemetryServiceInitializer
     {
-        private readonly string _wpfVersion;        
+        private Dictionary<string, string> _properties = new Dictionary<string, string>();
+
+#if WINDOWS
+        private readonly string _wpfVersion;
+#endif
         private readonly string _appVersion;
 
         public AppVersionTelemetryInitializer()
         {
-            _wpfVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;            
+#if WINDOWS
+            _wpfVersion = typeof(System.Windows.Application).Assembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion;
+            _properties["WPF version"] = _wpfVersion;
+#endif
             _appVersion = typeof(DiagnosticsClient).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()
                                                             .First(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))
                                                             .Value!;
+
+            _properties["Version"] = _appVersion;
         }
 
+        public IReadOnlyDictionary<string, string> Properties => _properties;
+
         public void Initialize(ITelemetry telemetry)
-        {            
-            telemetry.Context.GlobalProperties["WPF version"] = _wpfVersion;            
+        {
             telemetry.Context.Component.Version = _appVersion;
+
+            foreach (var item in _properties)
+            {
+                telemetry.Context.GlobalProperties.Add(item);
+            }
         }
     }
 

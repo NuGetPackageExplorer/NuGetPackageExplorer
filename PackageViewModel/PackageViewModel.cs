@@ -6,7 +6,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.NetworkInformation;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using NuGet.Packaging;
 using NuGetPackageExplorer.Types;
@@ -18,11 +20,8 @@ namespace PackageExplorerViewModel
 {
     public sealed class PackageViewModel : ViewModelBase, IDisposable
     {
-
-        #region private fields
         private readonly IPackageEditorService _editorService;
         private readonly IMruManager _mruManager;
-        private readonly IPackage _package;
         private EditablePackageMetadata _packageMetadata;
         private readonly IList<Lazy<IPackageRule>> _packageRules;
         private readonly CredentialPublishProvider _credentialPublishProvider;
@@ -41,8 +40,11 @@ namespace PackageExplorerViewModel
         private ICommand? _editFileCommand;
         private ICommand? _editMetadataSourceCommand;
         private ICommand? _executePackageCommand;
+        private ICommand? _expandAllCommand;
+        private ICommand? _collapseAllCommand;
         private RelayCommand? _exportCommand;
         private FileEditorViewModel? _fileEditorViewModel;
+        private SymbolValidatorResultViewModel? _symbolValidatorResultViewModel;
         private bool _hasEdit;
         private bool _isInEditMode;
         private RelayCommand<object>? _openContentFileCommand;
@@ -60,8 +62,7 @@ namespace PackageExplorerViewModel
         private ICommand? _viewPackageAnalysisCommand;
         private ICommand? _removeSignatureCommand;
         private FileSystemWatcher? _watcher;
-
-        #endregion
+        private readonly bool _initialized;
 
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         internal PackageViewModel(
@@ -83,27 +84,27 @@ namespace PackageExplorerViewModel
             UIServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
             _mruManager = mruManager ?? throw new ArgumentNullException(nameof(mruManager));
             _credentialPublishProvider = credentialPublishProvider ?? throw new ArgumentNullException(nameof(credentialPublishProvider));
-            _package = package ?? throw new ArgumentNullException(nameof(package));
+            Package = package ?? throw new ArgumentNullException(nameof(package));
             ContentViewerMetadata = contentViewerMetadata;
             _packageRules = packageRules;
 
 
-            PackagePath = path;
+
+
+
+            RootFolder = PathToTreeConverter.Convert(Package.GetFiles().ToList(), this);
+            PackagePath = path; // also sets symbol validator
             PackageSource = source;
 
-            
-            RootFolder = PathToTreeConverter.Convert(_package.GetFiles().ToList(), this);
+            _packageMetadata = new EditablePackageMetadata(Package, UIServices, this);
 
-            SymbolValidator = new SymbolValidator(this, _package);
-            SymbolValidator.Refresh();
-
-
-
-            _packageMetadata = new EditablePackageMetadata(_package, UIServices, SymbolValidator);
             _isSigned = _packageMetadata.IsSigned;
+
+            _initialized = true;
+
+            // Forces the symbol validator to kick off
+            OnPropertyChanged(null);
         }
-
-
 
         internal IList<Lazy<IPackageContentViewer, IPackageContentViewerMetadata>> ContentViewerMetadata { get; }
 
@@ -165,7 +166,24 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public SymbolValidator SymbolValidator { get; } 
+        public SymbolValidator SymbolValidator { get; private set; }
+
+        public SymbolValidatorResultViewModel? SymbolValidatorResultViewModel
+        {
+            get { return _symbolValidatorResultViewModel; }
+            set
+            {
+                if (_symbolValidatorResultViewModel != value)
+                {
+                    _symbolValidatorResultViewModel = value;
+                    OnPropertyChanged(nameof(SymbolValidatorResultViewModel));
+                }
+            }
+        }
+
+        public bool PublishedOnNuGetOrg => SymbolValidator!.IsPublicPackage;
+
+        public IPackage Package { get; }
 
         public string WindowTitle
         {
@@ -240,7 +258,9 @@ namespace PackageExplorerViewModel
                     _selectedItem = value;
                     OnPropertyChanged(nameof(SelectedItem));
                     ((ViewContentCommand)ViewContentCommand).RaiseCanExecuteChanged();
+#if WINDOWS
                     CommandManager.InvalidateRequerySuggested();
+#endif
                 }
             }
         }
@@ -253,13 +273,17 @@ namespace PackageExplorerViewModel
                 if (_packagePath != value)
                 {
                     _packagePath = value;
+
+                    SymbolValidator = new SymbolValidator(Package, PackagePath, RootFolder);
                     OnPropertyChanged(nameof(PackageSource));
+                    OnPropertyChanged(nameof(SymbolValidator));
 
                     // This may be a URI or a file
                     if (Uri.TryCreate(value, UriKind.Absolute, out var result))
                     {
                         if (result!.IsFile && File.Exists(value))
                         {
+#if !NETSTANDARD2_1 // UNO TODO: Use proper platform detection
                             // Clean up the old one since we can't reliably change the Filter without a race
                             if (_watcher != null)
                             {
@@ -279,6 +303,7 @@ namespace PackageExplorerViewModel
                             _watcher.Path = Path.GetDirectoryName(PackagePath)!;
                             _watcher.Filter = Path.GetFileName(PackagePath);
                             _watcher.EnableRaisingEvents = true;
+#endif
                         }
                     }
                 }
@@ -325,8 +350,27 @@ namespace PackageExplorerViewModel
 
                 foreach (var file in RootFolder.GetFiles())
                 {
+                    // https://github.com/NuGet/NuGet.Client/blob/1919a94220568927813bde48f71427b5df1fbe92/src/NuGet.Core/NuGet.Packaging/PackageCreation/Authoring/PackageBuilder.cs#L748-L751
                     if (file.Path.EndsWith(".png", StringComparison.OrdinalIgnoreCase) ||
-                        file.Path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase))
+                        file.Path.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) ||
+                        file.Path.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+                    {
+                        yield return file.Path;
+                    }
+                }
+            }
+        }
+
+        public IEnumerable<string> ReadmePaths
+        {
+            get
+            {
+                yield return "";
+
+                foreach (var file in RootFolder.GetFiles())
+                {
+                    // https://github.com/NuGet/NuGet.Client/blob/1919a94220568927813bde48f71427b5df1fbe92/src/NuGet.Core/NuGet.Packaging/PackageCreation/Authoring/PackageBuilder.cs#L875
+                    if (file.Path.EndsWith(NuGet.Configuration.NuGetConstants.ReadmeExtension, StringComparison.OrdinalIgnoreCase))
                     {
                         yield return file.Path;
                     }
@@ -343,7 +387,7 @@ namespace PackageExplorerViewModel
             IsDisposed = true;
 
             RootFolder.Dispose();
-            _package.Dispose();
+            Package.Dispose();
 
             if (_watcher != null)
             {
@@ -889,7 +933,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void ExportExecute()
         {
             DiagnosticsClient.TrackEvent("PackageViewModel_ExportExecute");
@@ -905,7 +948,7 @@ namespace PackageExplorerViewModel
                 {
                     if (!(ex is IOException) && !(ex is ArgumentException) && !(ex is UnauthorizedAccessException))
                     {
-                        DiagnosticsClient.TrackException(ex);
+                        DiagnosticsClient.TrackException(ex, Package, PublishedOnNuGetOrg);
                     }
                     UIServices.Show(ex.Message, MessageLevel.Error);
                 }
@@ -936,10 +979,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes"),
-         SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters",
-             MessageId =
-                 "NuGetPackageExplorer.Types.IUIServices.Show(System.String,NuGetPackageExplorer.Types.MessageLevel)")]
         private void PackageCommandExecute(LazyPackageCommand packageCommand)
         {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
@@ -949,7 +988,7 @@ namespace PackageExplorerViewModel
             }
             catch (Exception ex)
             {
-                DiagnosticsClient.TrackException(ex);
+                DiagnosticsClient.TrackException(ex, Package, PublishedOnNuGetOrg);
                 UIServices.Show("The command failed with this error message:" +
                                 Environment.NewLine +
                                 Environment.NewLine +
@@ -1115,7 +1154,7 @@ namespace PackageExplorerViewModel
             return !IsInEditFileMode && !IsInEditMetadataMode;
         }
 
-        private IEditablePackageFile CreatePackageMetadataFile()
+        public IEditablePackageFile CreatePackageMetadataFile()
         {
             var packageName = PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension;
             var filePath = Path.GetTempFileName();
@@ -1182,7 +1221,7 @@ namespace PackageExplorerViewModel
 
         #endregion
 
-        #region AddScriptCommand 
+        #region AddScriptCommand
 
         public ICommand AddScriptCommand
         {
@@ -1287,6 +1326,44 @@ namespace PackageExplorerViewModel
 
         #endregion
 
+        #region ExpandAllCommand
+
+        public ICommand ExpandAllCommand => _expandAllCommand ??= new RelayCommand(ExpandAllCommandExecute, ExpandAllCommandCanExecute);
+
+        private bool ExpandAllCommandCanExecute()
+        {
+            return PackageParts.Count != 0;
+        }
+
+        private void ExpandAllCommandExecute()
+        {
+            foreach (var folder in RootFolder.GetPackageParts().OfType<PackageFolder>())
+            {
+                folder.IsExpanded = true;
+            }
+        }
+
+        #endregion
+
+        #region CollapseAllCommand
+
+        public ICommand CollapseAllCommand => _collapseAllCommand ??= new RelayCommand(CollapseAllCommandExecute, CollapseAllCommandCanExecute);
+
+        private bool CollapseAllCommandCanExecute()
+        {
+            return PackageParts.Count != 0;
+        }
+
+        private void CollapseAllCommandExecute()
+        {
+            foreach (var folder in RootFolder.GetPackageParts().OfType<PackageFolder>())
+            {
+                folder.IsExpanded = false;
+            }
+        }
+
+        #endregion
+
         private void OnFileChange(object sender, FileSystemEventArgs e)
         {
             HasFileChangedExternally = true;
@@ -1304,13 +1381,11 @@ namespace PackageExplorerViewModel
             CurrentFileInfo = fileInfo;
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         internal IEnumerable<IPackageFile> GetFiles()
         {
-            return RootFolder.GetFiles();
+            return RootFolder.GetPackageFiles();
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1024:UsePropertiesWhereAppropriate")]
         public string? GetCurrentPackageTempFile()
         {
             var tempFile = Path.GetTempFileName();
@@ -1330,7 +1405,7 @@ namespace PackageExplorerViewModel
             {
                 if (!(e is ArgumentException))
                 {
-                    DiagnosticsClient.TrackException(e);
+                    DiagnosticsClient.TrackException(e, Package, PublishedOnNuGetOrg);
                 }
                 UIServices.Show(e.Message, MessageLevel.Error);
             }
@@ -1345,7 +1420,7 @@ namespace PackageExplorerViewModel
 
         public void BeginEdit()
         {
-            // raise the property change event here to force the edit form to rebind 
+            // raise the property change event here to force the edit form to rebind
             // all controls, which will erase all error states, if any, left over from the previous edit
             OnPropertyChanged(nameof(PackageMetadata));
             IsInEditMetadataMode = true;
@@ -1409,6 +1484,23 @@ namespace PackageExplorerViewModel
             ExportManifest(Path.Combine(rootPath, PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension));
         }
 
+
+        protected override async void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            base.OnPropertyChanged(propertyName);
+
+            if (!_initialized) return;
+
+            // Refresh the symbol validator
+            // No need to refresh for certain properties that don't affect the data
+            if (propertyName == nameof(SelectedItem) ||
+                propertyName == nameof(CurrentFileInfo) ||
+                propertyName == nameof(SymbolValidatorResultViewModel))
+                return;
+
+            var result = await Task.Run(async () => await SymbolValidator.Validate().ConfigureAwait(false)).ConfigureAwait(true);
+            SymbolValidatorResultViewModel = new SymbolValidatorResultViewModel(result);
+        }
         internal void ExportManifest(string fullpath, bool askForConfirmation = true, bool includeFilesSection = true)
         {
             if (File.Exists(fullpath) && askForConfirmation)
@@ -1431,7 +1523,7 @@ namespace PackageExplorerViewModel
             {
                 var tempPath = Path.GetTempPath();
 
-                manifest.Files.AddRange(RootFolder.GetFiles().Select(
+                manifest.Files.AddRange(RootFolder.GetPackageFiles().Select(
                     f => new ManifestFile
                     {
 
@@ -1621,7 +1713,6 @@ namespace PackageExplorerViewModel
             ViewContentCommand.Execute(file);
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.ConfirmCloseEditor(System.String,System.String)"), System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         internal bool SaveMetadataAfterEditSource(string editedFilePath)
         {
             if (!File.Exists(editedFilePath))
@@ -1634,7 +1725,7 @@ namespace PackageExplorerViewModel
             {
                 using var str = ManifestUtility.ReadManifest(metadataFileStream);
                 var manifest = Manifest.ReadFrom(str, true);
-                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices, SymbolValidator);
+                var newMetadata = new EditablePackageMetadata(manifest.Metadata, UIServices, this);
                 PackageMetadata = newMetadata;
 
                 return true;

@@ -1,0 +1,1017 @@
+<Page x:Class="PackageExplorer.InspectPackage"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  xmlns:extensions="using:NupkgExplorer.Views.Extensions"
+	  xmlns:legacyControl="using:NupkgExplorer.Controls"
+	  xmlns:converters="using:NupkgExplorer.Views.Converters"
+	  xmlns:monaco="using:Monaco"
+	  xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
+	  xmlns:pe="using:NuGetPe"
+	  xmlns:pexpl="using:PackageExplorer"
+	  xmlns:peControls="using:PackageExplorer.Controls"
+	  xmlns:pkcore="using:NuGet.Packaging.Core"
+	  xmlns:pkging="using:NuGet.Packaging"
+	  xmlns:pkvm="using:PackageExplorerViewModel"
+	  xmlns:vm="using:NupkgExplorer.Presentation.Content"
+	  xmlns:behavior="using:NupkgExplorer.Views.Behaviors"
+	  xmlns:wct="using:Microsoft.Toolkit.Uwp.UI.Controls"
+	  xmlns:wctPrimitives="using:Microsoft.Toolkit.Uwp.UI.Controls.Primitives"
+	  xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:xamarin="http://uno.ui/xamarin"
+	  xmlns:wasm="http://uno.ui/wasm"
+	  xmlns:not_win="http://uno.ui/not_win"
+	  xmlns:not_wasm="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:todo="what should be done"
+	  mc:Ignorable="d todo wasm xamarin not_win"
+	  x:Name="PageRoot"
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Page.Resources>
+		<!--#region Converters-->
+		<converters:FromBoolToValueConverter x:Key="IsWarningOpenToMargin"
+											 TrueValue="0,0,0,5"
+											 FalseOrDefaultValue="0" />
+		<converters:PackageDependencyToDeeplinkConverter x:Key="PackageDependencyToPackageLink"
+														 ConvertTo="PackageLink" />
+		<pexpl:BooleanToStringConverter x:Key="BooleanConverter" />
+		<pexpl:DateTimeOffsetLongDateConverter x:Key="DateTimeOffsetLongDateConverter" />
+		<pexpl:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
+		<pexpl:PackageDependencyConverter x:Key="PackageDependencyConverter" />
+		<pexpl:ReferenceSetConverter x:Key="ReferenceSetConverter" />
+		<pexpl:FrameworkNameConverter x:Key="FrameworkNameConverter" />
+		<pexpl:LicenseMetadataConverter x:Key="LicenseMetadataConverter" />
+		<pexpl:LicenseUrlToVisibilityConverter x:Key="LicenseUrlToVisibilityConverter" />
+		<!--#endregion-->
+
+		<!-- Metadata -->
+		<DataTemplate x:Key="MetadataTemplate"
+					  x:DataType="vm:InspectPackageViewModel">
+			<ScrollViewer x:Name="TemplateRoot"
+						  HorizontalScrollMode="Disabled"
+						  VerticalScrollBarVisibility="Auto">
+                <StackPanel 
+					  Background="{ThemeResource SurfaceThemeBrush87}">
+					<!-- note: preserve the content order as the same from NPE -->
+
+					<!-- Icon, Id, Version -->
+					<legacyControl:StackPanelEx Padding="20,10,10,10"
+												Spacing="5">
+
+						<!-- Icon -->
+						<Image Source="{x:Bind pexpl:PackageIconConverterHelper.ConvertToImage(Package, Package.PackageMetadata.IconOrIconUrl)}"
+							   Width="38"
+							   Height="38"
+							   HorizontalAlignment="Left" />
+
+						<!-- Id -->
+						<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_IdLabel}"
+													Content="{x:Bind Package.PackageMetadata.Id}"
+													Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+						<!-- Version -->
+						<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_VersionLabel}"
+													Content="{x:Bind Package.PackageMetadata.Version}"
+													Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+						<HyperlinkButton Content="View Metadata source"
+										 Command="{Binding ViewMetadataSourceCommand}"
+										 Padding="0" />
+					</legacyControl:StackPanelEx>
+
+					<!-- Digital Signatures -->
+					<wct:Expander Header="Digital Signatures"
+								  Visibility="{Binding Package.Package.RepositorySignature, Converter={StaticResource NullToCollapsed}}"
+								  Style="{StaticResource InnerSectionExpanderStyle}">
+						<legacyControl:StackPanelEx Spacing="5">
+
+							<!-- Publisher -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_PublisherLabel}"
+														Content="{Binding Package.Package.PublisherSignature}"
+														ContentTemplate="{StaticResource PublisherSignatureTemplate}"
+														Visibility="{Binding Package.Package.PublisherSignature, Converter={StaticResource NullToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+							<!-- Repository -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_RepositoryLabel}"
+														Content="{Binding Package.Package.RepositorySignature}"
+														ContentTemplate="{StaticResource RepositorySignatureTemplate}"
+														Visibility="{Binding Package.Package.RepositorySignature, Converter={StaticResource NullToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+						</legacyControl:StackPanelEx>
+					</wct:Expander>
+
+					<!-- Validation -->
+					<wct:Expander Header="Health"
+								  Visibility="{Binding Package.PackageMetadata.IsSigned, Converter={StaticResource NullToCollapsed}}"
+								  Style="{StaticResource InnerSectionExpanderStyle}">
+						<Grid>
+
+							<!-- Validation Results -->
+							<legacyControl:StackPanelEx Spacing="5"
+														Visibility="{Binding Package.SymbolValidatorResultViewModel.Exception, Converter={StaticResource NullToVisible}}">
+								<!-- Signature Validation -->
+								<todo:HeaderedContentControl Header="Signature"
+															 Content="{Binding Package.PackageMetadata}"
+															 ContentTemplate="{StaticResource VerifySignaturesResult}"
+															 Style="{StaticResource LabeledTextContentControlStyle}" />
+
+								<!-- Source Link Validation -->
+								<wct:HeaderedContentControl Header="Source Link"
+															Content="{Binding Package.SymbolValidatorResultViewModel}"
+															ContentTemplate="{StaticResource SourceLinkValidation}"
+															Style="{StaticResource LabeledTextContentControlStyle}" />
+
+								<!-- Deterministic Validation -->
+								<wct:HeaderedContentControl Header="Deterministic (dll/exe)"
+															Content="{Binding Package.SymbolValidatorResultViewModel}"
+															ContentTemplate="{StaticResource DeterministicValidation}"
+															Style="{StaticResource LabeledTextContentControlStyle}" />
+
+								<!-- Has Compiler Flag Data Validation -->
+								<wct:HeaderedContentControl Header="Compiler Flags"
+															Content="{Binding Package.SymbolValidatorResultViewModel}"
+															ContentTemplate="{StaticResource CompilerFlagsValidation}"
+															Style="{StaticResource LabeledTextContentControlStyle}" />
+								<TextBlock Text="{x:Bind pexpl:Resources.Dialog_ValidationNote}"
+										   IsTextSelectionEnabled="True"
+										   FontStyle="Italic"
+										   Style="{StaticResource TypoBody2}" />
+							</legacyControl:StackPanelEx>
+
+							<!-- Specific Validation Error -->
+							<Grid ColumnSpacing="5"
+								  Visibility="{Binding Package.SymbolValidatorResultViewModel.Exception, Converter={StaticResource NullToCollapsed}}">
+								<Grid.ColumnDefinitions>
+									<!-- 0: Icon, 1: Exception Message -->
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition Width="*" />
+								</Grid.ColumnDefinitions>
+
+								<!-- 0: Warning Icon -->
+								<Viewbox Grid.Column="0"
+										 Width="16"
+										 Height="16">
+									<Grid>
+										<Path Data="F1M16,16L0,16 0,0 16,0z"
+											  Fill="#00FFFFFF" />
+										<Path Data="F1M7.7246,15.9219C1.6086,14.1719,0.6986,7.3389,1.0726,3.9709L1.1316,3.4369 7.9996,-9.99999999997669E-05 14.8686,3.4369 14.9276,3.9709C15.3016,7.3389,14.3916,14.1719,8.2756,15.9219L7.9996,15.9999z"
+											  Fill="#FFF6F6F6" />
+										<Path Data="F1M9,9L7,9 7,4 9,4z M9,12L7,12 7,10 9,10z M13.951,4L8,1 2.049,4C2.049,4 1.058,13 8,15 14.942,13 13.951,4 13.951,4"
+											  Fill="#FFFFCC00" />
+										<Path Data="F1M7,12L9,12 9,10 7,10z M7,4L9,4 9,9 7,9z"
+											  Fill="#FF000000" />
+									</Grid>
+								</Viewbox>
+
+								<!-- 1: Exception Message -->
+								<TextBlock Grid.Column="1"
+										   Text="{Binding Package.SymbolValidatorResultViewModel.Exception.Message}"
+										   TextWrapping="Wrap"
+										   IsTextScaleFactorEnabled="True"
+										   Style="{StaticResource TypoBody2}" />
+							</Grid>
+						</Grid>
+					</wct:Expander>
+
+					<!-- Package Info -->
+					<wct:Expander Header="Package Info"
+								  Style="{StaticResource InnerSectionExpanderStyle}">
+						<legacyControl:StackPanelEx Spacing="5">
+
+							<!-- Title -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_TitleLabel}"
+														Content="{x:Bind Package.PackageMetadata.Title}"
+														Visibility="{x:Bind Package.PackageMetadata.Title, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+							<!-- Authors -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_CreatedByLabel}"
+														Content="{x:Bind Package.PackageMetadata.Authors}"
+														Visibility="{x:Bind Package.PackageMetadata.Authors, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+							<!-- Owners -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_OwnersLabel}"
+														Content="{x:Bind Package.PackageMetadata.Owners}"
+														Visibility="{x:Bind Package.PackageMetadata.Owners, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+							<!-- Min client version -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_MinVersionLabel}"
+														Content="{x:Bind Package.PackageMetadata.MinClientVersion}"
+														Visibility="{x:Bind Package.PackageMetadata.MinClientVersion, Converter={StaticResource NullToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+							<!-- Development Dependency -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_DevelopmentDependencyLabel}"
+														Content="{x:Bind Package.PackageMetadata.DevelopmentDependency, Converter={StaticResource BooleanConverter}}"
+														Visibility="{x:Bind Package.PackageMetadata.DevelopmentDependency, Converter={StaticResource TrueToVisible}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+							<!-- Tags -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_TagLabel}"
+														Content="{x:Bind Package.PackageMetadata.Tags}"
+														Visibility="{x:Bind Package.PackageMetadata.Tags, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+							<!-- Language -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_LanguageLabel}"
+														Content="{x:Bind Package.PackageMetadata.Language}"
+														Visibility="{x:Bind Package.PackageMetadata.Language, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+						</legacyControl:StackPanelEx>
+					</wct:Expander>
+
+					<!-- License -->
+					<wct:Expander Header="License"
+								  IsExpanded="True"
+								  Style="{StaticResource InnerSectionExpanderStyle}">
+						<legacyControl:StackPanelEx Spacing="5">
+
+							<!-- Require License Acceptance -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_RequireLicenseLabel}"
+														Content="{x:Bind Package.PackageMetadata.RequireLicenseAcceptance, Converter={StaticResource BooleanConverter}}"
+														Visibility="{x:Bind Package.PackageMetadata.RequireLicenseAcceptance, Converter={StaticResource TrueToVisible}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+							<!-- View License link -->
+							<HyperlinkButton Content="{x:Bind pexpl:Resources.Dialog_ViewLicense}"
+											 NavigateUri="{x:Bind Package.PackageMetadata.LicenseUrl}"
+											 ToolTipService.ToolTip="{x:Bind Package.PackageMetadata.LicenseUrl}"
+											 Padding="0"
+											 Visibility="{x:Bind Package.PackageMetadata.LicenseUrl, Converter={StaticResource LicenseUrlToVisibilityConverter}}" />
+
+							<!-- License Metadata -->
+							<legacyControl:StackPanelEx Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource NullToCollapsed}}">
+								<!-- License -->
+								<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.PackageChooser_DetailLicense}"
+															Style="{StaticResource LabeledRawContentControlStyle2}">
+									<TextBlock Text="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource LicenseMetadataConverter}}"
+											   extensions:TooltipExtensions.ToolTip="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource LicenseMetadataConverter}, ConverterParameter=detailed}"
+											   IsTextSelectionEnabled="True"
+											   Style="{StaticResource TypoBody2}" />
+								</wct:HeaderedContentControl>
+
+								<!-- LicenseUrl -->
+								<!-- note: LicenseUrl & LicenseMetadata.LicenseUrl are the same property, but wont co-exist -->
+								<HyperlinkButton Content="{x:Bind pexpl:Resources.Dialog_ViewLicense}"
+												 NavigateUri="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl}"
+												 ToolTipService.ToolTip="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl}"
+												 Padding="0"
+												 Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata.LicenseUrl, Converter={StaticResource LicenseUrlToVisibilityConverter}}" />
+							</legacyControl:StackPanelEx>
+						</legacyControl:StackPanelEx>
+					</wct:Expander>
+
+					<!-- Misc -->
+					<wct:Expander Header="Misc"
+								  IsExpanded="True"
+								  Style="{StaticResource InnerSectionExpanderStyle}">
+						<legacyControl:StackPanelEx Spacing="5">
+
+							<!-- Project Url -->
+							<HyperlinkButton Content="{x:Bind pexpl:Resources.Dialog_MoreInfo}"
+											 NavigateUri="{x:Bind Package.PackageMetadata.ProjectUrl}"
+											 ToolTipService.ToolTip="{x:Bind Package.PackageMetadata.ProjectUrl}"
+											 Padding="0"
+											 Visibility="{x:Bind Package.PackageMetadata.ProjectUrl, Converter={StaticResource NullToCollapsed}}" />
+
+							<!-- Copyright -->
+							<wct:HeaderedContentControl Header="Copyright"
+														Content="{x:Bind Package.PackageMetadata.Copyright}"
+														ContentTemplate="{StaticResource MultilineTextContentTemplate}"
+														Orientation="Vertical"
+														Visibility="{x:Bind Package.PackageMetadata.Copyright, Converter={StaticResource NullToVisibilityConverter}}"
+														Style="{StaticResource LabeledTextContentControlStyle}" />
+
+							<!-- Serviceable -->
+							<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_ServiceableLabel}"
+														Content="{x:Bind Package.PackageMetadata.Serviceable, Converter={StaticResource BooleanConverter}}"
+														Visibility="{x:Bind Package.PackageMetadata.Serviceable, Converter={StaticResource TrueToVisible}}"
+														Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+							<!-- Repository -->
+							<wct:HeaderedContentControl x:Name="RepositoryHeader"
+														Header="{x:Bind pexpl:Resources.Dialog_RepositoryLabel}"
+														x:Load="{x:Bind Package.PackageMetadata.Repository, Converter={StaticResource IsNotNull}}"
+														Orientation="Vertical"
+														Style="{StaticResource LabeledRawContentControlStyle2}">
+								<legacyControl:StackPanelEx Margin="20,0,0,0"
+															Spacing="5">
+
+									<!-- Type -->
+									<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_RepositoryType}"
+																Content="{x:Bind Package.PackageMetadata.Repository.Type}"
+																Visibility="{x:Bind Package.PackageMetadata.Repository.Type, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+																Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+									<!-- Url -->
+									<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_RepositoryUrl}"
+																Style="{StaticResource LabeledRawContentControlStyle2}">
+										<HyperlinkButton Content="{x:Bind Package.PackageMetadata.Repository.Url}"
+														 NavigateUri="{x:Bind Package.PackageMetadata.Repository.Url}"
+														 ToolTipService.ToolTip="{x:Bind Package.PackageMetadata.Repository.Url}"
+														 Padding="0" />
+									</wct:HeaderedContentControl>
+
+									<!-- Branch -->
+									<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_RepositoryBranch}"
+																Content="{x:Bind Package.PackageMetadata.Repository.Branch}"
+																Visibility="{x:Bind Package.PackageMetadata.Repository.Branch, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+																Style="{StaticResource LabeledTextContentControlStyle2}" />
+									<!-- Branch -->
+									<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_RepositoryCommit}"
+																Content="{x:Bind Package.PackageMetadata.Repository.Commit}"
+																Visibility="{x:Bind Package.PackageMetadata.Repository.Commit, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+																Style="{StaticResource LabeledTextContentControlStyle2}" />
+								</legacyControl:StackPanelEx>
+							</wct:HeaderedContentControl>
+
+							<!-- Summary -->
+							<wct:HeaderedContentControl Header="Summary"
+														Content="{x:Bind Package.PackageMetadata.Summary}"
+														ContentTemplate="{StaticResource MultilineTextContentTemplate}"
+														Orientation="Vertical"
+														Visibility="{x:Bind Package.PackageMetadata.Summary, Converter={StaticResource IsNullOrWhitespaceToCollapsed}, FallbackValue=Collapsed}"
+														Style="{StaticResource LabeledTextContentControlStyle}" />
+
+							<!-- Description -->
+							<wct:HeaderedContentControl Header="Description"
+														Content="{x:Bind Package.PackageMetadata.Description}"
+														ContentTemplate="{StaticResource MultilineTextContentTemplate}"
+														Orientation="Vertical"
+														Visibility="{x:Bind Package.PackageMetadata.Description, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle}" />
+
+							<!-- Release Notes -->
+							<wct:HeaderedContentControl Header="Release notes"
+														Content="{x:Bind Package.PackageMetadata.ReleaseNotes}"
+														ContentTemplate="{StaticResource MultilineTextContentTemplate}"
+														Orientation="Vertical"
+														Visibility="{x:Bind Package.PackageMetadata.ReleaseNotes, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+														Style="{StaticResource LabeledTextContentControlStyle}" />
+						</legacyControl:StackPanelEx>
+					</wct:Expander>
+
+					<!-- note: the "Dependencies" section has been moved to another tab -->
+				</StackPanel>
+			</ScrollViewer>
+		</DataTemplate>
+		<DataTemplate x:Key="PublisherSignatureTemplate"
+					  x:DataType="pe:SignatureInfo">
+			<StackPanel>
+				<TextBlock Text="{Binding SignerCertificate.Subject.CommonName}"
+						   IsTextSelectionEnabled="True"
+						   Visibility="{Binding SignerCertificate.Subject.CommonName, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+						   Style="{StaticResource TypoBody2}" />
+				<TextBlock IsTextSelectionEnabled="True"
+						   Visibility="{Binding Timestamp, Converter={StaticResource NullToCollapsed}}"
+						   Style="{StaticResource TypoBody2}">
+					<Run Text="@" />
+					<Run Text="{Binding Timestamp, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F}" />
+				</TextBlock>
+				<TextBlock IsTextSelectionEnabled="True"
+						   Visibility="{Binding TimestampSignerCertificate.Subject.CommonName, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+						   Style="{StaticResource TypoBody2}">
+					<Run Text="by" />
+					<Run Text="{Binding TimestampSignerCertificate.Subject.CommonName}" />
+				</TextBlock>
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="RepositorySignatureTemplate"
+					  x:DataType="pe:RepositorySignatureInfo">
+			<StackPanel>
+				<TextBlock Text="{Binding SignerCertificate.Subject.CommonName}"
+						   IsTextSelectionEnabled="True"
+						   Visibility="{Binding SignerCertificate.Subject.CommonName, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+						   Style="{StaticResource TypoBody2}" />
+				<TextBlock IsTextSelectionEnabled="True"
+						   Visibility="{Binding Timestamp, Converter={StaticResource NullToCollapsed}}"
+						   Style="{StaticResource TypoBody2}">
+					<Run Text="@" />
+					<Run Text="{Binding Timestamp, Converter={StaticResource DateTimeOffsetLongDateConverter}, ConverterParameter=F}" />
+				</TextBlock>
+				<TextBlock IsTextSelectionEnabled="True"
+						   Visibility="{Binding TimestampSignerCertificate.Subject.CommonName, Converter={StaticResource IsNullOrWhitespaceToCollapsed}}"
+						   Style="{StaticResource TypoBody2}">
+					<Run Text="by" />
+					<Run Text="{Binding TimestampSignerCertificate.Subject.CommonName}" />
+				</TextBlock>
+
+				<TextBlock IsTextSelectionEnabled="True"
+						   Style="{StaticResource TypoBody2}">
+					<Run Text="Owners: " />
+					<Run Text="{Binding PackageOwners, Converter={StaticResource EnumerableStringJoinConverter}, ConverterParameter=', '}" />
+				</TextBlock>
+				<TextBlock IsTextSelectionEnabled="True"
+						   Style="{StaticResource TypoBody2}">
+					<Run Text="Service Index: " />
+					<Hyperlink NavigateUri="{Binding V3ServiceIndexUrl}">
+						<Run Text="{Binding V3ServiceIndexUrl}" />
+					</Hyperlink>
+				</TextBlock>
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="PackageHealthIconTemplate"
+					  x:DataType="pexpl:PackageHealthIconVisibilityInfo">
+			<Grid>
+				<Viewbox Visibility="{x:Bind IsCriticalIcon}"
+						 Width="16"
+						 Height="16">
+					<Grid>
+						<Path Data="F1M16,16L0,16 0,0 16,0z"
+							  Fill="#00FFFFFF" />
+						<Path Data="F1M7.7246,15.9219C1.6086,14.1719,0.6986,7.3399,1.0726,3.9709L1.1316,3.4369 7.9996,-9.99999999997669E-05 14.8686,3.4369 14.9276,3.9709C15.3016,7.3399,14.3916,14.1719,8.2756,15.9219L7.9996,15.9999z"
+							  Fill="#FFF6F6F6" />
+						<Path Data="F1M11.4141,10L10.0001,11.414 8.0001,9.414 6.0001,11.414 4.5861,10 6.5861,8 4.5861,6 6.0001,4.586 8.0001,6.586 10.0001,4.586 11.4141,6 9.4141,8z M13.9511,4L8.0001,1 2.0491,4C2.0491,4 1.0581,13 8.0001,15 14.9421,13 13.9511,4 13.9511,4"
+							  Fill="#FFE51300" />
+						<Path Data="F1M11.4141,6L10.0001,4.586 8.0001,6.586 6.0001,4.586 4.5861,6 6.5861,8 4.5861,10 6.0001,11.414 8.0001,9.414 10.0001,11.414 11.4141,10 9.4141,8z"
+							  Fill="#FFFFFFFF" />
+					</Grid>
+				</Viewbox>
+
+				<Viewbox Visibility="{x:Bind IsOKIcon}"
+						 Width="16"
+						 Height="16">
+					<Grid>
+						<Path Data="F1M16,16L0,16 0,0 16,0z"
+							  Fill="#00FFFFFF" />
+						<Path Data="F1M7.7246,15.9219C1.6086,14.1719,0.6986,7.3389,1.0726,3.9709L1.1316,3.4369 7.9996,-9.99999999997669E-05 14.8686,3.4369 14.9276,3.9709C15.3016,7.3389,14.3916,14.1719,8.2756,15.9219L7.9996,15.9999z"
+							  Fill="#FFF6F6F6" />
+						<Path Data="F1M8.5,12L6.5,12 4.5,8 6.5,8 7.5,10 10,5 12,5z M13.951,4L8,1 2.049,4C2.049,4 1.058,13 8,15 14.942,13 13.951,4 13.951,4"
+							  Fill="#FF329932" />
+						<Path Data="F1M9.999,5L7.499,10 6.499,8 4.499,8 6.499,12 8.499,12 11.999,5z"
+							  Fill="#FFFFFFFF" />
+					</Grid>
+				</Viewbox>
+
+				<Viewbox Visibility="{x:Bind IsWarningIcon}"
+						 Width="16"
+						 Height="16">
+					<Grid>
+						<Path Data="F1M16,16L0,16 0,0 16,0z"
+							  Fill="#00FFFFFF" />
+						<Path Data="F1M7.7246,15.9219C1.6086,14.1719,0.6986,7.3389,1.0726,3.9709L1.1316,3.4369 7.9996,-9.99999999997669E-05 14.8686,3.4369 14.9276,3.9709C15.3016,7.3389,14.3916,14.1719,8.2756,15.9219L7.9996,15.9999z"
+							  Fill="#FFF6F6F6" />
+						<Path Data="F1M9,9L7,9 7,4 9,4z M9,12L7,12 7,10 9,10z M13.951,4L8,1 2.049,4C2.049,4 1.058,13 8,15 14.942,13 13.951,4 13.951,4"
+							  Fill="#FFFFCC00" />
+						<Path Data="F1M7,12L9,12 9,10 7,10z M7,4L9,4 9,9 7,9z"
+							  Fill="#FF000000" />
+					</Grid>
+				</Viewbox>
+
+				<Viewbox Visibility="{x:Bind IsInfoIcon}"
+						 Width="16"
+						 Height="16">
+					<Grid>
+						<Path Data="F1M16,16L0,16 0,0 16,0z"
+							  Fill="#00FFFFFF" />
+						<Path Data="F1M0,8.0005C0,3.5825 3.582,0.000499999999998835 8,0.000499999999998835 12.418,0.000499999999998835 16,3.5825 16,8.0005 16,12.4185 12.418,16.0005 8,16.0005 3.582,16.0005 0,12.4185 0,8.0005"
+							  Fill="#FFF6F6F6" />
+						<Path Data="F1M9,5L7,5 7,3 9,3z M9,13L7,13 7,6 9,6z M8,1C4.135,1 1,4.135 1,8 1,11.865 4.135,15 8,15 11.865,15 15,11.865 15,8 15,4.135 11.865,1 8,1"
+							  Fill="#FF1AA1E2" />
+						<Path Data="F1M7,5L9,5 9,3 7,3z M7,6L9,6 9,13 7,13z"
+							  Fill="#FFFFFFFF" />
+					</Grid>
+				</Viewbox>
+			</Grid>
+		</DataTemplate>
+		<DataTemplate x:Key="VerifySignaturesResult"
+					  x:DataType="pkvm:EditablePackageMetadata">
+			<StackPanel Orientation="Horizontal"
+						Spacing="4">
+				<TextBlock Text="{x:Bind pexpl:PackageHealthContentHelper.ValidationResultToText(ValidationResult.Trust), Mode=OneWay, FallbackValue='Unsupported'}"
+						   IsTextSelectionEnabled="True"
+						   Style="{StaticResource TypoBody2}" />
+				<ContentControl Width="16"
+								Height="16"
+								Content="{x:Bind pexpl:PackageHealthContentHelper.ValidationResultToIcon(ValidationResult.Trust), Mode=OneWay}"
+								ContentTemplate="{StaticResource PackageHealthIconTemplate}" />
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="SourceLinkValidation"
+					  x:DataType="pkvm:SymbolValidatorResultViewModel">
+			<StackPanel x:Name="Root"
+						Orientation="Horizontal"
+						Spacing="4"
+						extensions:TooltipExtensions.ToolTip="{x:Bind SourceLinkErrorMessage}">
+				<TextBlock Text="{x:Bind pexpl:PackageHealthContentHelper.SourceLinkResultToText(SourceLinkResult), FallbackValue='Validating...', Mode=OneWay}"
+						   IsTextSelectionEnabled="True"
+						   Style="{StaticResource TypoBody2}" />
+				<ContentControl Width="16"
+								Height="16"
+								Content="{x:Bind pexpl:PackageHealthContentHelper.SourceLinkResultToIcon(SourceLinkResult), Mode=OneWay}"
+								ContentTemplate="{StaticResource PackageHealthIconTemplate}" />
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="DeterministicValidation"
+					  x:DataType="pkvm:SymbolValidatorResultViewModel">
+			<StackPanel x:Name="Root"
+						Orientation="Horizontal"
+						Spacing="4"
+						extensions:TooltipExtensions.ToolTip="{x:Bind DeterministicErrorMessage}">
+				<TextBlock Text="{x:Bind pexpl:PackageHealthContentHelper.DeterministicResultToText(DeterministicResult), FallbackValue='Validating...', Mode=OneWay}"
+						   IsTextSelectionEnabled="True"
+						   Style="{StaticResource TypoBody2}" />
+				<ContentControl Width="16"
+								Height="16"
+								Content="{x:Bind pexpl:PackageHealthContentHelper.DeterministicResultToIcon(DeterministicResult), Mode=OneWay}"
+								ContentTemplate="{StaticResource PackageHealthIconTemplate}" />
+			</StackPanel>
+		</DataTemplate>
+		<DataTemplate x:Key="CompilerFlagsValidation"
+					  x:DataType="pkvm:SymbolValidatorResultViewModel">
+			<StackPanel x:Name="Root"
+						Orientation="Horizontal"
+						Spacing="4"
+						extensions:TooltipExtensions.ToolTip="{x:Bind CompilerFlagsMessage}">
+				<TextBlock Text="{x:Bind pexpl:PackageHealthContentHelper.CompilerFlagsResultToText(CompilerFlagsResult), FallbackValue='Validating...', Mode=OneWay}"
+						   IsTextSelectionEnabled="True"
+						   Style="{StaticResource TypoBody2}" />
+				<ContentControl Width="16"
+								Height="16"
+								Content="{x:Bind pexpl:PackageHealthContentHelper.CompilerFlagsResultToIcon(CompilerFlagsResult), Mode=OneWay}"
+								ContentTemplate="{StaticResource PackageHealthIconTemplate}" />
+			</StackPanel>
+		</DataTemplate>
+
+		<!-- Dependencies -->
+		<DataTemplate x:Key="DependenciesTemplate"
+					  x:DataType="vm:InspectPackageViewModel">
+			<ScrollViewer HorizontalScrollMode="Auto"
+						  VerticalScrollBarVisibility="Auto">
+                <StackPanel Background="{ThemeResource SurfaceThemeBrush87}">
+					<!-- note: preserve the content order as the same from NPE -->
+
+					<!-- Dependencies list -->
+					<wct:Expander Header="{x:Bind pexpl:Resources.Dialog_DependenciesLabel}"
+								  Visibility="{x:Bind Package.PackageMetadata.DependencyGroups, Converter={StaticResource EnumerableAnyConverter}}"
+								  Style="{StaticResource InnerSectionExpanderStyle}">
+						<ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.DependencyGroups}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="pkging:PackageDependencyGroup">
+									<StackPanel Padding="0,0,0,6">
+										<TextBlock Text="{x:Bind TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
+												   FontWeight="Bold"
+												   Style="{StaticResource TypoBody2}" />
+										<ItemsControl ItemsSource="{x:Bind Packages}"
+													  Margin="16,0,0,0"
+													  Visibility="{x:Bind Packages, Converter={StaticResource EnumerableAnyConverter}}">
+											<ItemsControl.ItemTemplate>
+												<DataTemplate x:DataType="pkcore:PackageDependency">
+													<HyperlinkButton Content="{x:Bind Converter={StaticResource PackageDependencyConverter}}"
+																	 NavigateUri="{x:Bind Converter={StaticResource PackageDependencyToPackageLink}}"
+																	 Padding="0" />
+												</DataTemplate>
+											</ItemsControl.ItemTemplate>
+										</ItemsControl>
+										<TextBlock Text="{x:Bind pexpl:Resources.Dialog_NoDependencyLabel}"
+												   FontStyle="Italic"
+												   Margin="16,0,0,0"
+												   Visibility="{x:Bind Packages, Converter={StaticResource EnumerableNoneConverter}}"
+												   Style="{StaticResource TypoBody2}" />
+									</StackPanel>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</wct:Expander>
+
+					<!-- Framework assembly references -->
+					<wct:Expander Header="{x:Bind pexpl:Resources.Dialog_FrameworkAssembliesLabel}"
+								  Visibility="{x:Bind Package.PackageMetadata.FrameworkAssemblies, Converter={StaticResource EnumerableAnyConverter}}"
+								  Style="{StaticResource InnerSectionExpanderStyle}">
+						<ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.FrameworkAssemblies}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="pkging:FrameworkAssemblyReference">
+									<TextBlock Text="{x:Bind Converter={StaticResource FrameworkAssemblyReferenceDisplayConverter}, ConverterParameter=includeAssembly}"
+											   IsTextSelectionEnabled="True"
+											   Style="{StaticResource TypoBody2}" />
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</wct:Expander>
+
+					<!-- Framework Reference Groups -->
+					<wct:Expander Header="Framework References"
+								  Visibility="{x:Bind Package.PackageMetadata.FrameworkReferenceGroups, Converter={StaticResource EnumerableAnyConverter}}"
+								  Style="{StaticResource InnerSectionExpanderStyle}">
+						<ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.FrameworkReferenceGroups}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="pkging:FrameworkReferenceGroup">
+									<wct:HeaderedItemsControl Header="{x:Bind TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
+															  ItemsSource="{x:Bind FrameworkReferences}"
+															  Style="{StaticResource LabeledItemsControlStyle}">
+										<wct:HeaderedItemsControl.ItemTemplate>
+											<DataTemplate x:DataType="pkging:FrameworkReference">
+												<TextBlock Text="{x:Bind Name}"
+														   IsTextSelectionEnabled="True"
+														   Style="{StaticResource TypoBody2}" />
+											</DataTemplate>
+										</wct:HeaderedItemsControl.ItemTemplate>
+									</wct:HeaderedItemsControl>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</wct:Expander>
+
+					<!-- Package Assembly References -->
+					<wct:Expander Header="Filtered Assembly References"
+								  Visibility="{x:Bind Package.PackageMetadata.PackageAssemblyReferences, Converter={StaticResource EnumerableAnyConverter}}"
+								  Style="{StaticResource InnerSectionExpanderStyle}">
+						<ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.PackageAssemblyReferences, Converter={StaticResource ReferenceSetConverter}}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<StackPanel>
+										<!-- note: depending on if ReferenceSetConverter flatten the ItemSources -->
+										<!-- the datacontext here could be a PackageReferenceSet or just a string -->
+										<TextBlock Text="{Binding}"
+												   IsTextSelectionEnabled="True"
+												   Visibility="{Binding TargetFramework, Converter={StaticResource NullToVisible}, FallbackValue=Visible, TargetNullValue=Visible}"
+												   Style="{StaticResource TypoBody2}" />
+										<wct:HeaderedItemsControl Header="{Binding TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
+																  ItemsSource="{Binding References}"
+																  Visibility="{Binding TargetFramework, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed, TargetNullValue=Collapsed}"
+																  Style="{StaticResource LabeledItemsControlStyle}">
+											<wct:HeaderedItemsControl.ItemTemplate>
+												<DataTemplate>
+													<TextBlock Text="{Binding}"
+															   IsTextSelectionEnabled="True"
+															   Style="{StaticResource TypoBody2}" />
+												</DataTemplate>
+											</wct:HeaderedItemsControl.ItemTemplate>
+										</wct:HeaderedItemsControl>
+									</StackPanel>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</wct:Expander>
+
+				</StackPanel>
+			</ScrollViewer>
+		</DataTemplate>
+
+		<!-- File Explorer -->
+		<DataTemplate x:Key="DirectoryTemplate"
+					  x:DataType="pkvm:PackageFolder">
+			<muxc:TreeViewItem ItemsSource="{Binding Children}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<Image Grid.Column="0"
+						   Width="20"
+						   Source="ms-appx:///Assets/FolderIcon.png" />
+					<TextBlock Grid.Column="1"
+							   Text="{Binding Name}"
+							   Margin="16,0,0,0"
+							   Style="{StaticResource TypoBody2}" />
+				</Grid>
+			</muxc:TreeViewItem>
+		</DataTemplate>
+		<DataTemplate x:Key="FileTemplate"
+					  x:DataType="pkvm:PackageFile">
+			<muxc:TreeViewItem>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="*" />
+					</Grid.ColumnDefinitions>
+
+					<Image Grid.Column="0"
+						   Width="20"
+						   Source="ms-appx:///Assets/FileIcon.png" />
+					<TextBlock Grid.Column="1"
+							   Text="{Binding Name}"
+							   Margin="16,0,0,0"
+							   Style="{StaticResource TypoBody2}" />
+				</Grid>
+			</muxc:TreeViewItem>
+		</DataTemplate>
+		<converters:FSObjectTemplateSelector x:Key="FSObjectTemplateSelector"
+											 FileTemplate="{StaticResource FileTemplate}"
+											 DirectoryTemplate="{StaticResource DirectoryTemplate}" />
+	</Page.Resources>
+
+	<Grid Padding="5">
+		<Grid.RowDefinitions>
+			<!-- R0: Redirect Warning, R1-4: Main Content, R4: Powered-By Footer -->
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<!-- R0C0-2: Redirect Warning -->
+			<!-- R1-3C0: Metadata TabView -->
+			<!-- R1-4C1: GridSplitter (columns) -->
+			<!-- R1C2: File Browser -->
+			<!-- R2C2: GridSplitter (rows) -->
+			<!-- R3-4C2: File Viewer -->
+			<!-- R4C0: Powered-By Footer -->
+			<ColumnDefinition Width="1*" />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="2*" />
+		</Grid.ColumnDefinitions>
+
+		<!-- R0C0-2: Redirect Warning -->
+		<muxc:InfoBar Grid.Row="0"
+					  Grid.ColumnSpan="3"
+					  Margin="{Binding RelativeSource={RelativeSource Mode=Self}, Path=IsOpen, Converter={StaticResource IsWarningOpenToMargin}, FallbackValue=0}"
+					  Severity="Warning"
+					  Message="{Binding VersionRedirectWarningMessage}"
+					  IsOpen="{Binding VersionRedirectWarningMessage, Converter={StaticResource IsNotNull}, Mode=OneWay}" />
+
+		<!-- R1-3C0: Metadata TabView -->
+		<muxc:TabView Grid.Row="1"
+					  Grid.RowSpan="3"
+					  Grid.Column="0"
+                      Background="{ThemeResource SurfaceThemeBrush87}"
+                      TabWidthMode="SizeToContent"
+					  IsAddTabButtonVisible="False"
+					  HorizontalAlignment="Stretch"
+					  VerticalAlignment="Stretch">
+
+			<muxc:TabViewItem Header="Metadata"
+                              Style="{StaticResource TabViewItemStyle}" 
+							  extensions:TabViewExtensions.HideHeaderToolTip="True">
+				<muxc:TabViewItem.IconSource>
+					<muxc:PathIconSource Data="M14,7V9H13V15H14V17H10V15H11V9H10V7H14M5,3H19A2,2 0 0,1 21,5V19A2,2 0 0,1 19,21H5A2,2 0 0,1 3,19V5A2,2 0 0,1 5,3M5,5V19H19V5H5Z" />
+				</muxc:TabViewItem.IconSource>
+				<ContentControl Content="{x:Bind DataContext, Mode=OneWay}"
+								ContentTemplate="{StaticResource MetadataTemplate}"
+								HorizontalContentAlignment="Stretch"
+								VerticalContentAlignment="Stretch" />
+			</muxc:TabViewItem>
+			<muxc:TabViewItem Header="Dependencies"
+                              Style="{StaticResource TabViewItemStyle}" 
+							  extensions:TabViewExtensions.HideHeaderToolTip="True">
+				<muxc:TabViewItem.IconSource>
+					<muxc:PathIconSource Data="M22 13V19H21L19 17H11V9H5L3 11H2V5H3L5 7H13V15H19L21 13Z" />
+				</muxc:TabViewItem.IconSource>
+				<ContentControl Content="{x:Bind DataContext, Mode=OneWay}"
+								ContentTemplate="{StaticResource DependenciesTemplate}"
+								HorizontalContentAlignment="Stretch"
+								VerticalContentAlignment="Stretch" />
+			</muxc:TabViewItem>
+		</muxc:TabView>
+
+		<!-- R1-4C1: GridSplitter (columns) -->
+		<wct:GridSplitter Grid.Row="1"
+						  Grid.RowSpan="3"
+						  Grid.Column="1"
+						  ResizeDirection="Columns"
+						  Style="{StaticResource TransparentGridSplitterStyle}" />
+
+		<!-- R1C2: File Browser -->
+		<wct:HeaderedContentControl Grid.Row="1"
+									Grid.Column="2"
+									Header="Contents"
+									Style="{StaticResource SectionHeaderedContentControlStyle}">
+			<muxc:TreeView ItemsSource="{Binding Package.RootFolder.Children}"
+						   behavior:TreeViewBehavior.EnableSelectedItemBinding="True"
+						   behavior:TreeViewBehavior.SelectedItem="{Binding SelectedContent, Mode=TwoWay}"
+						   behavior:TreeViewBehavior.AutoToggleItemExpansion="True"
+						   behavior:TreeViewBehavior.DoubleClickCommand="{Binding DoubleClickCommand}"
+						   ItemTemplateSelector="{StaticResource FSObjectTemplateSelector}"
+						   ItemContainerStyle="{StaticResource FileExplorerTreeViewItemStyle}"
+						   SelectionMode="Single" />
+		</wct:HeaderedContentControl>
+
+		<!-- R2C2: GridSplitter (rows) -->
+		<wct:GridSplitter Grid.Row="2"
+						  Grid.Column="2"
+						  ResizeDirection="Rows"
+						  Style="{StaticResource TransparentGridSplitterStyle}" />
+
+		<!-- R3-4C2: File Viewer -->
+		<Grid Grid.Row="3"
+			  Grid.RowSpan="2"
+			  Grid.Column="2"
+			  Style="{StaticResource SectionGridStyle}">
+
+			<TextBlock Text="Select a file to inspect"
+					   TextAlignment="Center"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"
+					   Foreground="{ThemeResource OnSurfaceThemeBrush38}"
+					   Visibility="{Binding Package.CurrentFileInfo, Converter={StaticResource NullToVisible}, FallbackValue=Visible}"
+					   Style="{StaticResource TypoBody2}" />
+
+            <Grid Background="{ThemeResource SurfaceThemeBrush87}" Visibility="{Binding Package.CurrentFileInfo, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed}">
+				<Grid.RowDefinitions>
+					<!-- 0: File Name, 1: Signature Info, 2: File Size, 3: Content -->
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+
+				<!-- R0: Header -->
+				<Grid Grid.Row="0"
+					  BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+					  BorderThickness="0,0,0,1"
+					  Background="{ThemeResource SurfaceThemeBrush87}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="*" />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<TextBlock Grid.Column="0"
+							   Text="{Binding OpenedDocument.Name}"
+							   extensions:TooltipExtensions.ToolTip="{Binding OpenedDocument.Path}"
+							   HorizontalAlignment="Center"
+							   VerticalAlignment="Center"
+							   IsTextSelectionEnabled="True"
+							   Style="{StaticResource TypoBody2}" />
+					<Button Grid.Column="1"
+							win:Content="&#xE8BB;"
+							xamarin:Content="&#xE10A;"
+							Command="{Binding CloseDocumentCommand}"
+							Style="{StaticResource IconButtonStyle}" />
+				</Grid>
+
+				<!-- todo: R1: Signature Info -->
+
+				<!-- R2: File Size -->
+				<Border Grid.Row="2"
+						BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+						BorderThickness="0,0,0,1"
+						Padding="8,4"
+						Background="{ThemeResource SurfaceThemeBrush87}">
+					<TextBlock IsTextSelectionEnabled="True">
+						<Run Text="Size:" />
+						<Run Text="{Binding Package.CurrentFileInfo.Size, Converter={StaticResource FileSizeConverter}}" />
+					</TextBlock>
+				</Border>
+
+				<!-- R3: Content Viewer -->
+				<todo:ContentControl Grid.Row="3"
+									 Content="{Binding Package.CurrentFileInfo}"
+									 ContentTemplateSelector="{StaticResource FileContentInfoTemplateSelector}"
+									 HorizontalAlignment="Stretch"
+									 HorizontalContentAlignment="Stretch"
+									 VerticalAlignment="Stretch"
+									 VerticalContentAlignment="Stretch" />
+				<Grid Grid.Row="3">
+
+					<!-- Custom Content Viewer -->
+					<Grid Visibility="{Binding Package.CurrentFileInfo.IsTextFile, Converter={StaticResource TrueToCollapsed}}">
+
+						<!-- RawContentControl: specialized control used to bind directly UIElement from DataContext -->
+						<!-- note: a standard ContentControl would just show .String() instead. -->
+						<legacyControl:RawContentControl Grid.Row="1"
+														 RawContent="{Binding Package.CurrentFileInfo.Content}"
+														 Visibility="{Binding Package.CurrentFileInfo.Content.IsAssemblyFileContent, Converter={StaticResource TrueToCollapsed}, FallbackValue=Visible}" />
+
+						<!-- Assembly File Viewer -->
+						<!-- note: workaround for RawContentControl performance issue -->
+						<muxc:TabView IsAddTabButtonVisible="False"
+									  HorizontalAlignment="Stretch"
+									  VerticalAlignment="Stretch"
+                                      Background="{ThemeResource SurfaceThemeBrush87}"
+                                      TabWidthMode="SizeToContent"
+									  extensions:TabViewExtensions.ResetSelectionWith="{Binding Package.CurrentFileInfo}"
+									  extensions:TabViewExtensions.ResetSelectionWithItemVisibility="True"
+									  Visibility="{Binding Package.CurrentFileInfo.Content.IsAssemblyFileContent, Converter={StaticResource TrueToVisible}, FallbackValue=Collapsed}">
+							<muxc:TabViewItem Style="{StaticResource TabViewItemStyle}" Header="Assembly Attributes"
+											  extensions:TabViewExtensions.HideHeaderToolTip="True">
+								<ListView ItemsSource="{Binding Package.CurrentFileInfo.Content.Metadata}"
+										  ItemContainerStyle="{StaticResource SlimListViewItemStyle}"
+										  SelectionMode="None"
+										  Padding="10"
+										  Style="{StaticResource BidirectionalScrollableListViewStyle}">
+									<ListView.ItemTemplate>
+										<DataTemplate>
+											<wct:HeaderedContentControl Header="{Binding Key}"
+																		Content="{Binding Value}"
+																		Margin="5,0,5,5"
+																		Style="{StaticResource LabeledTextContentControlStyle}" />
+										</DataTemplate>
+									</ListView.ItemTemplate>
+								</ListView>
+							</muxc:TabViewItem>
+                            <muxc:TabViewItem Header="PDB Info"
+                                              Style="{StaticResource TabViewItemStyle}" 
+											  extensions:TabViewExtensions.HideHeaderToolTip="True"
+											  Visibility="{Binding Package.CurrentFileInfo.Content.DebugData, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed}">
+								<ScrollViewer HorizontalScrollBarVisibility="Disabled"
+											  HorizontalScrollMode="Disabled"
+											  VerticalScrollBarVisibility="Auto">
+									<peControls:PdbInfoViewer DataContext="{Binding Package.CurrentFileInfo.Content.DebugData}"
+															  Margin="10" />
+								</ScrollViewer>
+							</muxc:TabViewItem>
+							<muxc:TabViewItem Header="PDB Metadata References"
+                                              Style="{StaticResource TabViewItemStyle}" 
+											  extensions:TabViewExtensions.HideHeaderToolTip="True"
+											  Visibility="{Binding Package.CurrentFileInfo.Content.DebugData.MetadataReferences, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed}">
+								<wct:DataGrid Grid.Row="1"
+											  ItemsSource="{Binding Package.CurrentFileInfo.Content.DebugData.MetadataReferences}"
+											  AutoGenerateColumns="False"
+											  IsReadOnly="True"
+											  ColumnHeaderHeight="36"
+											  ScrollViewer.HorizontalScrollMode="Enabled"
+											  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+									<wct:DataGrid.ColumnHeaderStyle>
+										<Style TargetType="wctPrimitives:DataGridColumnHeader">
+											<Setter Property="FontWeight" Value="SemiBold" />
+											<Setter Property="FontSize" Value="14" />
+											<Setter Property="Foreground" Value="{ThemeResource ApplicationForegroundThemeBrush}" />
+											<Setter Property="Background" Value="Transparent" />
+										</Style>
+									</wct:DataGrid.ColumnHeaderStyle>
+									<wct:DataGrid.Columns>
+										<wct:DataGridTextColumn Header="Name"
+																Binding="{Binding Name, Mode=OneWay}" />
+										<wct:DataGridTextColumn Header="Extern Aliases"
+																Binding="{Binding ExternAliases, Converter={StaticResource EnumerableStringJoinConverter}, ConverterParameter=', ', Mode=OneWay}" />
+										<wct:DataGridTextColumn Header="Metadata Image Kind"
+																Binding="{Binding MetadataImageKind, Mode=OneWay}" />
+										<wct:DataGridTextColumn Header="Embed Interop Types"
+																Binding="{Binding EmbedInteropTypes, Mode=OneWay}" />
+										<wct:DataGridTextColumn Header="Timestamp"
+																Binding="{Binding Timestamp, Converter={StaticResource InvariantCultureStringFormat}, ConverterParameter=0x{0:X}, Mode=OneWay}" />
+										<wct:DataGridTextColumn Header="Image Size (bytes)"
+																Binding="{Binding ImageSize, Converter={StaticResource InvariantCultureStringFormat}, ConverterParameter='{}{0:#,#}', Mode=OneWay}" />
+										<wct:DataGridTextColumn Header="MVID"
+																Binding="{Binding Mvid, Mode=OneWay}" />
+									</wct:DataGrid.Columns>
+								</wct:DataGrid>
+							</muxc:TabViewItem>
+							<muxc:TabViewItem Header="PDB Sources"
+                                              Style="{StaticResource TabViewItemStyle}" 
+											  extensions:TabViewExtensions.HideHeaderToolTip="True"
+											  Visibility="{Binding Package.CurrentFileInfo.Content.DebugData, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed}">
+								<ListView ItemsSource="{Binding Package.CurrentFileInfo.Content.DebugData.Sources}"
+										  ItemContainerStyle="{StaticResource SlimListViewItemStyle}"
+										  SelectionMode="None"
+										  Padding="10"
+										  Style="{StaticResource BidirectionalScrollableListViewStyle}">
+									<ListView.ItemTemplate>
+										<DataTemplate x:DataType="pkvm:AssemblyDebugSourceDocumentViewModel">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto" />
+													<ColumnDefinition Width="*" />
+												</Grid.ColumnDefinitions>
+
+												<TextBlock Grid.Column="0"
+														   Text="{x:Bind Language, Converter={StaticResource EnumConverter}, Mode=OneWay}" />
+												<TextBlock Grid.Column="1"
+														   Text="{x:Bind Path, Mode=OneWay}"
+														   Margin="5,0,0,0"
+														   IsTextSelectionEnabled="True"
+														   Visibility="{x:Bind Location, Converter={StaticResource InvertedNullToVisibilityConverter}, Mode=OneWay}" />
+												<TextBlock Grid.Column="1"
+														   Margin="5,0,0,0"
+														   IsTextSelectionEnabled="True"
+														   Visibility="{x:Bind Location, Converter={StaticResource NullToVisibilityConverter}, Mode=OneWay}">
+													<Hyperlink NavigateUri="{x:Bind Location, Mode=OneWay}">
+														<Run Text="{x:Bind Location, Mode=OneWay}" />
+													</Hyperlink>
+												</TextBlock>
+											</Grid>
+										</DataTemplate>
+									</ListView.ItemTemplate>
+								</ListView>
+							</muxc:TabViewItem>
+						</muxc:TabView>
+					</Grid>
+
+					<!-- Raw Text Content Viewer -->
+					<wasm:Border x:Load="False"
+								 Visibility="{Binding Package.CurrentFileInfo.IsTextFile, Converter={StaticResource TrueToVisible}}">
+						<monaco:CodeEditor Text="{Binding Package.CurrentFileInfo.Content, TargetNullValue=''}"
+										   extensions:CodeEditorExtensions.ModelLanguage="{Binding OpenedDocumentLanguage}"
+										   extensions:CodeEditorExtensions.AutoLayoutOnResize="True"
+										   extensions:CodeEditorExtensions.AutoUpdateTheme="True"
+										   ReadOnly="True" />
+					</wasm:Border>
+					<not_wasm:Border Visibility="{Binding Package.CurrentFileInfo.IsTextFile, Converter={StaticResource TrueToVisible}}">
+						<ScrollViewer HorizontalScrollBarVisibility="Auto"
+									  VerticalScrollBarVisibility="Auto"
+									  Padding="0,0,16,16">
+							<TextBlock Text="{Binding Package.CurrentFileInfo.Content}"
+									   IsTextSelectionEnabled="True" />
+						</ScrollViewer>
+					</not_wasm:Border>
+
+				</Grid>
+			</Grid>
+		</Grid>
+
+		<!-- R4C0: Powered-By Footer -->
+		<Grid Grid.Row="4"
+			  Grid.Column="0"
+			  Margin="0,5,0,0"
+			  Padding="24"
+			  Style="{StaticResource SectionGridStyle}">
+			<HyperlinkButton Style="{StaticResource PoweredByHyperlinkButtonStyle}" />
+		</Grid>
+	</Grid>
+</Page>

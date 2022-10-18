@@ -9,18 +9,20 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
 using NuGetPackageExplorer.Types;
-using NuGetPe;
-using OSVersionHelper;
-using PackageExplorer.Properties;
 using Windows.Storage;
+using NuGet.Configuration;
+using NpeConstants = NuGetPe.NuGetConstants;
+
+#if !HAS_UNO
+using OSVersionHelper;
+using NpeSettings = PackageExplorer.Properties.Settings;
+#endif
 
 namespace PackageExplorer
 {
     [Export(typeof(ISettingsManager))]
     internal class SettingsManager : ISettingsManager, INotifyPropertyChanged
     {
-        public const string ApiKeysSectionName = "apikeys";
-
         public event PropertyChangedEventHandler? PropertyChanged;
 
         private readonly object _lockObject = new object();
@@ -32,39 +34,44 @@ namespace PackageExplorer
 
         private T GetValue<T>([CallerMemberName] string? name = null)
         {
-            lock(_lockObject)
+            lock (_lockObject)
             {
                 object value;
                 try
                 {
+#if !HAS_UNO
                     if (WindowsVersionHelper.HasPackageIdentity)
                     {
                         value = GetValueFromLocalSettings<T>(name!)!;
                     }
                     else
                     {
-                        value = Settings.Default[name];
+                        value = NpeSettings.Default[name];
                         if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
                         {
-                            value = sc.Cast<string>().ToArray();
+                            value = sc.Cast<string>().ToList();
                         }
                     }
+#else
+                    Windows.Storage.ApplicationData.Current.LocalSettings.Values.TryGetValue(name, out value!);
+#endif
 
                     if (value is T t)
                     {
                         return t;
                     }
                 }
+#if !HAS_UNO
                 catch (ConfigurationErrorsException)
                 {
                     // Corrupt settings file
-                    Settings.Default.Reset();
+                    NpeSettings.Default.Reset();
 
                     // Try getting it again
-                    value = Settings.Default[name];
+                    value = NpeSettings.Default[name];
                     if (typeof(T) == typeof(List<string>) && value is StringCollection sc)
                     {
-                        value = sc.Cast<string>().ToArray();
+                        value = sc.Cast<string>().ToList();
                     }
 
                     if (value is T t)
@@ -72,6 +79,7 @@ namespace PackageExplorer
                         return t;
                     }
                 }
+#endif
                 catch (UnauthorizedAccessException)
                 { }
                 catch (IOException)
@@ -80,7 +88,7 @@ namespace PackageExplorer
                 }
 
                 return default!;
-            }            
+            }
         }
 
         // Don't load these types inline
@@ -102,11 +110,12 @@ namespace PackageExplorer
         {
             name ??= propertyName;
 
-            lock(_lockObject)
+            lock (_lockObject)
             {
                 try
                 {
-                    if (WindowsVersionHelper.HasPackageIdentity)
+#if !HAS_UNO
+                   if (WindowsVersionHelper.HasPackageIdentity)
                     {
                         SetValueInLocalSettings(value, name!);
                     }
@@ -118,8 +127,11 @@ namespace PackageExplorer
                             sc.AddRange(list.ToArray());
                             value = sc;
                         }
-                        Settings.Default[name] = value;
+                        NpeSettings.Default[name] = value;
                     }
+#else
+                    Windows.Storage.ApplicationData.Current.LocalSettings.Values[name] = value;
+#endif
                 }
                 catch (UnauthorizedAccessException)
                 { }
@@ -127,7 +139,7 @@ namespace PackageExplorer
                 {
                     // not much we can do if we can't read/write the settings file
                 }
-            }            
+            }
 
             OnPropertyChanged(propertyName);
         }
@@ -156,7 +168,26 @@ namespace PackageExplorer
 
         public IList<string> GetPackageSources()
         {
-            return GetValue<List<string>>("MruPackageSources") ?? new List<string>();
+            var list = new List<string>();
+            var nugetSettings = Settings.LoadDefaultSettings(null);
+            foreach (var packageSource in SettingsUtility.GetEnabledSources(nugetSettings))
+            {
+                list.Add(packageSource.Source);
+            }
+
+            var npeSources = GetValue<List<string>>("MruPackageSources");
+            if (npeSources != null)
+            {
+                foreach (var npeSource in npeSources)
+                {
+                    if (!list.Contains(npeSource))
+                    {
+                        list.Add(npeSource);
+                    }
+                }
+            }
+
+            return list;
         }
 
         public void SetPackageSources(IEnumerable<string> sources)
@@ -166,13 +197,32 @@ namespace PackageExplorer
 
         public string ActivePackageSource
         {
-            get => GetValue<string>("PackageSource") ?? NuGetConstants.DefaultFeedUrl;
+            get => GetValue<string>("PackageSource") ?? NpeConstants.DefaultFeedUrl;
             set => SetValue(value, "PackageSource");
         }
 
         public IList<string> GetPublishSources()
         {
-            return GetValue<List<string>>("PublishPackageSources") ?? new List<string>();
+            var list = new List<string>();
+            var nugetSettings = Settings.LoadDefaultSettings(null);
+            foreach (var packageSource in SettingsUtility.GetEnabledSources(nugetSettings))
+            {
+                list.Add(packageSource.Source);
+            }
+
+            var npeSources = GetValue<List<string>>("PublishPackageSources");
+            if (npeSources != null)
+            {
+                foreach (var npeSource in npeSources)
+                {
+                    if (!list.Contains(npeSource))
+                    {
+                        list.Add(npeSource);
+                    }
+                }
+            }
+
+            return list;
         }
 
         public void SetPublishSources(IEnumerable<string> sources)
@@ -182,22 +232,29 @@ namespace PackageExplorer
 
         public string ActivePublishSource
         {
-            get => GetValue<string>("PublishPackageLocation") ?? NuGetConstants.NuGetPublishFeed;
+            get
+            {
+                var publishSource = GetValue<string>("PublishPackageLocation");
+                if (publishSource == null)
+                {
+                    var nugetSettings = Settings.LoadDefaultSettings(null);
+                    publishSource = SettingsUtility.GetDefaultPushSource(nugetSettings);
+                }
+                return publishSource ?? NpeConstants.NuGetPublishFeed;
+            }
             set => SetValue(value, "PublishPackageLocation");
         }
 
         public string? ReadApiKey(string source)
         {
-            var settings = new UserSettings(new PhysicalFileSystem(Environment.CurrentDirectory));
-            var key = settings.GetDecryptedValue(ApiKeysSectionName, source);
-
-            return key;
+            var nugetSettings = Settings.LoadDefaultSettings(null);
+            return SettingsUtility.GetDecryptedValueForAddItem(nugetSettings, ConfigurationConstants.ApiKeys, source);
         }
 
         public void WriteApiKey(string source, string apiKey)
         {
-            var settings = new UserSettings(new PhysicalFileSystem(Environment.CurrentDirectory));
-            settings.SetEncryptedValue(ApiKeysSectionName, source, apiKey);
+            var nugetSettings = Settings.LoadDefaultSettings(null);
+            SettingsUtility.SetEncryptedValueForAddItem(nugetSettings, ConfigurationConstants.ApiKeys, source, apiKey);
         }
 
         public bool ShowPrereleasePackages

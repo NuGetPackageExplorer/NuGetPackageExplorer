@@ -118,5 +118,19 @@
             <Control Margin="7,0,7,0" Template="{StaticResource loadingAnimation}" />
             <Button Content="Cancel" Padding="5,0,5,0" Command="{Binding CancelCommand}" />
         </StackPanel>
+
+        <!-- Error Message -->
+        <TextBlock 
+            Grid.Row="1" 
+            Margin="-10,0,0,0"
+            Padding="5"
+            Background="Beige"
+            MaxHeight="40"
+            Visibility="{Binding ErrorMessage, Converter={StaticResource NullToVisibilityConverter}, Mode=OneWay}"
+            Text="{Binding ErrorMessage}" 
+            Foreground="Black" 
+            VerticalAlignment="Center" 
+            TextWrapping="Wrap"
+            TextTrimming="CharacterEllipsis"/>
     </Grid>
 </UserControl>

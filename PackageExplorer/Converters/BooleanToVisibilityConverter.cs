@@ -1,7 +1,15 @@
-using System;
+﻿using System;
 using System.Globalization;
+
+#if HAS_UNO
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
+using _CultureInfo = System.String;
+#else
 using System.Windows;
+using _CultureInfo = System.Globalization.CultureInfo;
 using System.Windows.Data;
+#endif
 
 namespace PackageExplorer
 {
@@ -18,7 +26,7 @@ namespace PackageExplorer
 
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             var boolValue = (bool)value;
             if (Inverted)
@@ -26,17 +34,10 @@ namespace PackageExplorer
                 boolValue = !boolValue;
             }
 
-            if ((string)parameter == "hidden")
-            {
-                return boolValue ? Visibility.Visible : Visibility.Hidden;
-            }
-            else
-            {
-                return boolValue ? Visibility.Visible : Visibility.Collapsed;
-            }
+            return boolValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
         {
             throw new NotImplementedException();
         }

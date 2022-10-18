@@ -12,8 +12,11 @@ using System.Text.RegularExpressions;
 using NuGet.Versioning;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
-using OSVersionHelper;
 using Windows.Storage;
+
+#if !HAS_UNO
+using OSVersionHelper;
+#endif
 
 namespace PackageExplorer
 {
@@ -37,7 +40,8 @@ namespace PackageExplorer
             "lib\\net48",
             "lib\\netcoreapp3.0",
             "lib\\netcoreapp3.1",
-			"lib\\netcoreapp5.0",
+            "lib\\net5.0",
+            "lib\\net6.0",
         };
 
         // %localappdata%/NuGet/PackageExplorerPlugins
@@ -47,6 +51,7 @@ namespace PackageExplorer
 
         private static string? GetPluginDirectory()
         {
+#if !HAS_UNO
             // Try getting it from the app model first
             if (WindowsVersionHelper.HasPackageIdentity)
             {
@@ -59,6 +64,7 @@ namespace PackageExplorer
                     // Don't care here, not on Win7 or running in an app model context
                 }
             }
+#endif
 
             return GetCachePath(Environment.GetFolderPath);
         }
@@ -107,7 +113,7 @@ namespace PackageExplorer
         [Import]
         public Lazy<IUIServices> UIServices { get; set; }
 
-        #region IPluginManager Members
+#region IPluginManager Members
 
         public ICollection<PluginInfo> Plugins
         {
@@ -212,7 +218,7 @@ namespace PackageExplorer
             return false;
         }
 
-        #endregion
+#endregion
 
         private void EnsurePluginCatalog(AggregateCatalog mainCatalog)
         {

@@ -11,7 +11,7 @@ using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    public class PackageFolder : PackagePart
+    public class PackageFolder : PackagePart, IFolder
     {
         private ICommand? _addContentFolderCommand;
         private bool _isExpanded;
@@ -23,7 +23,7 @@ namespace PackageExplorerViewModel
             Children = new SortedCollection<PackagePart>();
         }
 
-        public PackageFolder(string name, PackageViewModel viewModel)
+        public PackageFolder(string name, PackageViewModel? viewModel)
             : base(name, null, viewModel)
         {
             Children = new SortedCollection<PackagePart>();
@@ -31,29 +31,29 @@ namespace PackageExplorerViewModel
 
         public ICollection<PackagePart> Children { get; private set; }
 
-        public ICommand AddContentFileCommand
+        public ICommand? AddContentFileCommand
         {
-            get { return PackageViewModel.AddContentFileCommand; }
+            get { return PackageViewModel?.AddContentFileCommand; }
         }
 
-        public ICommand AddNewFolderCommand
+        public ICommand? AddNewFolderCommand
         {
-            get { return PackageViewModel.AddNewFolderCommand; }
+            get { return PackageViewModel?.AddNewFolderCommand; }
         }
 
-        public ICommand AddNewFileCommand
+        public ICommand? AddNewFileCommand
         {
-            get { return PackageViewModel.AddNewFileCommand; }
+            get { return PackageViewModel?.AddNewFileCommand; }
         }
 
-        public ICommand AddScriptCommand
+        public ICommand? AddScriptCommand
         {
-            get { return PackageViewModel.AddScriptCommand; }
+            get { return PackageViewModel?.AddScriptCommand; }
         }
 
-        public ICommand AddBuildFileCommand
+        public ICommand? AddBuildFileCommand
         {
-            get { return PackageViewModel.AddBuildFileCommand; }
+            get { return PackageViewModel?.AddBuildFileCommand; }
         }
 
         public ICommand AddContentFolderCommand
@@ -83,7 +83,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public PackagePart? this[string name]
+        public IPart? this[string name]
         {
             get { return Children.SingleOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase)); }
         }
@@ -98,7 +98,12 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public override IEnumerable<IPackageFile> GetFiles()
+        public override IEnumerable<IFile> GetFiles()
+        {
+            return Children.Count == 0 ? Array.Empty<IFile>() : Children.SelectMany(p => p.GetFiles());
+        }
+
+        public override IEnumerable<IPackageFile> GetPackageFiles()
         {
             if (Children.Count == 0)
             {
@@ -114,7 +119,7 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                return Children.SelectMany(p => p.GetFiles());
+                return Children.SelectMany(p => p.GetPackageFiles());
             }
         }
 
@@ -134,7 +139,7 @@ namespace PackageExplorerViewModel
             if (removed)
             {
                 child.Dispose();
-                PackageViewModel.NotifyChanges();
+                PackageViewModel?.NotifyChanges();
             }
         }
 
@@ -161,7 +166,7 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
-            if (PackageViewModel.IsSigned || PackageViewModel.IsInEditFileMode)
+            if (PackageViewModel?.IsSigned == true || PackageViewModel?.IsInEditFileMode == true)
             {
                 return false;
             }
@@ -174,7 +179,7 @@ namespace PackageExplorerViewModel
         {
             if (folderName == "portable")
             {
-                if (!PackageViewModel.UIServices.TrySelectPortableFramework(out folderName))
+                if (!(PackageViewModel?.UIServices.TrySelectPortableFramework(out folderName) == true))
                 {
                     return;
                 }
@@ -203,7 +208,7 @@ namespace PackageExplorerViewModel
         {
             if (!AddContentFolderCanExecute(folderName))
             {
-                PackageViewModel.UIServices.Show(
+                PackageViewModel?.UIServices.Show(
                     string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
                     MessageLevel.Error);
                 return null;
@@ -221,7 +226,7 @@ namespace PackageExplorerViewModel
                 throw new ArgumentNullException(nameof(childFolder));
             if (!AddContentFolderCanExecute(childFolder.Name))
             {
-                PackageViewModel.UIServices.Show(
+                PackageViewModel?.UIServices.Show(
                     string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, childFolder.Name),
                     MessageLevel.Error);
                 return;
@@ -252,10 +257,7 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                if (childFolder.Parent != null)
-                {
-                    childFolder.Parent.Detach(childFolder);
-                }
+                childFolder._parent?.Detach(childFolder);
 
                 newFolder = childFolder;
             }
@@ -268,7 +270,7 @@ namespace PackageExplorerViewModel
             Attach(childFolder);
             childFolder.IsSelected = true;
             IsExpanded = true;
-            PackageViewModel.NotifyChanges();
+            PackageViewModel?.NotifyChanges();
         }
 
         public PackageFile? AddFile(string filePath)
@@ -281,22 +283,22 @@ namespace PackageExplorerViewModel
             var newFileName = System.IO.Path.GetFileName(filePath)!;
             if (ContainsFolder(newFileName))
             {
-                PackageViewModel.UIServices.Show(Resources.FileNameConflictWithExistingDirectory, MessageLevel.Error);
+                PackageViewModel?.UIServices.Show(Resources.FileNameConflictWithExistingDirectory, MessageLevel.Error);
                 return null;
             }
 
             var showingRemovedFile = false;
             if (ContainsFile(newFileName))
             {
-                var confirmed = PackageViewModel.UIServices.Confirm(
+                var confirmed = PackageViewModel?.UIServices.Confirm(
                     Resources.ConfirmToReplaceExsitingFile_Title,
                     string.Format(CultureInfo.CurrentCulture, Resources.ConfirmToReplaceExsitingFile, newFileName),
-                    isWarning: true);
+                    isWarning: true) ?? true;
 
                 if (confirmed)
                 {
                     var part = this[newFileName] as PackageFile;
-                    showingRemovedFile = PackageViewModel.IsShowingFileContent(part);
+                    showingRemovedFile = PackageViewModel?.IsShowingFileContent(part) ?? false;
 
                     // remove the existing file before adding the new one
                     RemoveChildByName(newFileName);
@@ -314,11 +316,11 @@ namespace PackageExplorerViewModel
             Children.Add(newFile);
             newFile.IsSelected = true;
             IsExpanded = true;
-            PackageViewModel.NotifyChanges();
+            PackageViewModel?.NotifyChanges();
 
             if (showingRemovedFile)
             {
-                PackageViewModel.ShowFileContent(newFile);
+                PackageViewModel?.ShowFileContent(newFile);
             }
 
             return newFile;
@@ -354,11 +356,7 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                // detach from current parent
-                if (file.Parent != null)
-                {
-                    file.Parent.Detach(file);
-                }
+                ((PackageFolder?)file.Parent)?.Detach(file);
 
                 newFile = file;
             }
@@ -366,23 +364,24 @@ namespace PackageExplorerViewModel
             Attach(newFile);
             newFile.IsSelected = true;
             IsExpanded = true;
-            PackageViewModel.NotifyChanges();
+            PackageViewModel?.NotifyChanges();
         }
 
         internal void ReplaceFile(PackageFile oldFile)
         {
-            var result = PackageViewModel.UIServices.OpenFileDialog("Select New File", "All files (*.*)|*.*",
-                                                                     out var selectedFileName);
+            string? selectedFileName = null;
+            var result = PackageViewModel?.UIServices.OpenFileDialog("Select New File", "All files (*.*)|*.*",
+                                                                     out selectedFileName) ?? false;
             if (result)
             {
-                ReplaceFile(oldFile, selectedFileName);
+                ReplaceFile(oldFile, selectedFileName!);
             }
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         internal void ReplaceFile(PackageFile oldFile, string newFilePath)
         {
-            var showingFile = PackageViewModel.IsShowingFileContent(oldFile);
+            var showingFile = PackageViewModel?.IsShowingFileContent(oldFile) ?? false;
 
             // temporarily remove the old file in order to add a new file
             Children.Remove(oldFile);
@@ -395,7 +394,7 @@ namespace PackageExplorerViewModel
 
                 if (showingFile)
                 {
-                    PackageViewModel.ShowFileContent(newFile);
+                    PackageViewModel?.ShowFileContent(newFile);
                 }
             }
             else
@@ -416,7 +415,7 @@ namespace PackageExplorerViewModel
             var folderName = dirInfo.Name;
             if (!AddContentFolderCanExecute(folderName))
             {
-                PackageViewModel.UIServices.Show(
+                PackageViewModel?.UIServices.Show(
                     string.Format(CultureInfo.CurrentCulture, Resources.RenameCausesNameCollison, folderName),
                     MessageLevel.Error);
                 return;
@@ -445,7 +444,7 @@ namespace PackageExplorerViewModel
             Debug.Assert(count <= 1);
             if (count == 1)
             {
-                PackageViewModel.NotifyChanges();
+                PackageViewModel?.NotifyChanges();
             }
         }
 

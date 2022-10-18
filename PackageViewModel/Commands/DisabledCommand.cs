@@ -12,7 +12,7 @@ namespace PackageExplorerViewModel
             return false;
         }
 
-        event EventHandler ICommand.CanExecuteChanged
+        event EventHandler? ICommand.CanExecuteChanged
         {
             add { }
             remove { }

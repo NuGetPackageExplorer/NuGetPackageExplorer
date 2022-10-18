@@ -35,6 +35,7 @@ namespace PackageExplorerViewModel
             _defaultPackageSourceUrl = defaultPackageSourceUrl;
             Packages = new ObservableCollection<object>();
 
+            RefreshCommand = new RelayCommand(RefreshCommandExecute);
             SearchCommand = new RelayCommand<string>(Search, CanSearch);
             ClearSearchCommand = new RelayCommand(ClearSearch, CanClearSearch);
             LoadMoreCommand = new RelayCommand(async () => await LoadMore(CancellationToken.None), CanLoadMore);
@@ -206,6 +207,7 @@ namespace PackageExplorerViewModel
             }
         }
 
+        public ICommand RefreshCommand { get; private set; }
         public ICommand SearchCommand { get; private set; }
         public ICommand ClearSearchCommand { get; private set; }
         public ICommand LoadMoreCommand { get; private set; }
@@ -218,8 +220,7 @@ namespace PackageExplorerViewModel
 
         private readonly PackageListCache<IPackageSearchMetadata> _packageListCache = new PackageListCache<IPackageSearchMetadata>();
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling"),
-         System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling")]
         private async Task LoadPackages()
         {
             Packages.Clear();
@@ -298,6 +299,9 @@ namespace PackageExplorerViewModel
                 if (firstLoad)
                 {
                     SelectedPackageViewModel = Packages.OfType<PackageInfoViewModel>().FirstOrDefault();
+
+                    // add the new source to MRU list, after the load succeeds, in case there's an error with the source
+                    _packageSourceManager!.NotifyPackageSourceAdded(PackageSource);
                 }
             }
             catch (OperationCanceledException)
@@ -327,6 +331,11 @@ namespace PackageExplorerViewModel
 
             IsEditable = true;
             CurrentCancellationTokenSource = null;
+        }
+
+        private async void RefreshCommandExecute()
+        {
+            await LoadPackages();
         }
 
         #region Search
@@ -375,19 +384,8 @@ namespace PackageExplorerViewModel
                 {
                     await LoadPackages();
 
-                    // add the new source to MRU list, after the load succeeds, in case there's an error with the source
-                    _packageSourceManager!.NotifyPackageSourceAdded(source);
-                }
-                catch (Exception e)
-                {
-                    _uIServices.Show(e.Message, MessageLevel.Error);
-                }
-            }
-            else
-            {
-                try
-                {
-                    await LoadPackages();
+                    // this is to make sure the combo box doesn't goes blank after adding sources
+                    PackageSource = source;
                 }
                 catch (Exception e)
                 {

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace NuGetPackageExplorer.Types
 {
@@ -36,13 +35,12 @@ namespace NuGetPackageExplorer.Types
         bool? ConfirmWithCancel(string title, string message);
         void Show(string message, MessageLevel messageLevel);
 
-        [SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
         Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft);
 
         bool TrySelectPortableFramework(out string portableFramework);
 
         bool ConfirmCloseEditor(string title, string message);
 
-        DispatcherOperation BeginInvoke(Action action);
+        Task BeginInvoke(Action action);
     }
 }

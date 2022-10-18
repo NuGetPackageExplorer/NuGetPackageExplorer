@@ -1,15 +1,25 @@
 <Project>
 
-  <PropertyGroup>
-    <WindowsWinmdFile Condition="Exists('$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd')">$(MSBuildProgramFiles32)\Windows Kits\10\UnionMetadata\$(TargetPlatformVersion)\Windows.winmd</WindowsWinmdFile>
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
+    <UseWpf>true</UseWpf>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Reference Update="Windows" Private="false" HintPath="$(WindowsWinmdFile)" />
-  </ItemGroup>
-  
+  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <NuGetDependencyVersion>6.0.0-xprivate.60026</NuGetDependencyVersion>
+  </PropertyGroup>
+
   <PropertyGroup>
     <Product Condition="'$(IsTypesProject)' != 'true'">$(Product) ($(Configuration)) ($(Platform))</Product>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SigningNotSupported Condition=" '$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netcoreapp2.1' OR '$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'netcoreapp3.1'">true</SigningNotSupported>
+    <SigningNotSupported Condition=" '$(SigningNotSupported)' != 'true'">false</SigningNotSupported>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(SigningNotSupported)' != 'true' ">
+    <DefineConstants>$(DefineConstants);IS_SIGNING_SUPPORTED</DefineConstants>
   </PropertyGroup>
 
   <Target Name="AddCommitHashToAssemblyAttributes" BeforeTargets="GetAssemblyAttributes">

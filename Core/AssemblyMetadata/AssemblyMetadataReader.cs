@@ -5,11 +5,18 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Metadata;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace NuGetPe.AssemblyMetadata
 {
     public static class AssemblyMetadataReader
     {
+        /// <summary>
+        /// Expects a PE file
+        /// </summary>
+        /// <param name="assemblyPath"></param>
+        /// <returns></returns>
         public static AssemblyMetaDataInfo? ReadMetaData(string assemblyPath)
         {
             if (string.IsNullOrWhiteSpace(assemblyPath))
@@ -46,10 +53,29 @@ namespace NuGetPe.AssemblyMetadata
             return result;
         }
 
-        public static AssemblyDebugData ReadDebugData(Stream? peStream, Stream pdbStream)
+        public static async Task<AssemblyDebugData> ReadDebugData(Stream? peStream, Stream pdbStream)
         {
-            using var reader = new AssemblyDebugParser(peStream, pdbStream);
-            return reader.GetDebugData();
+            if (pdbStream is null)
+                throw new ArgumentNullException(nameof(pdbStream));
+
+            try
+            {
+                using var cts = new CancellationTokenSource();
+
+                return await Task.Run(() =>
+                {
+                    cts.CancelAfter(TimeSpan.FromSeconds(10));
+                    using var reader = new AssemblyDebugParser(peStream, pdbStream);
+                    return reader.GetDebugData();
+
+                }, cts.Token).ConfigureAwait(false);
+            }
+            finally
+            {
+                peStream?.Dispose();
+                pdbStream.Dispose();
+            }
+                  
         }
 
         private static void AddAssemblyAttributes(AssemblyMetadataParser parser, AssemblyMetaDataInfo result)

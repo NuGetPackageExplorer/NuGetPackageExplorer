@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
+[assembly: DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
+
 namespace PackageExplorer
 {
     internal static class NativeMethods
@@ -38,7 +40,7 @@ namespace PackageExplorer
                                                uint flags);
 
         [DllImport("user32.dll", PreserveSig = true)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, long wParam, IntPtr lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, long wParam, IntPtr lParam);
 
         [method: DllImport("ntdsapi.dll", EntryPoint = "DsGetRdnW", ExactSpelling = true, CallingConvention = CallingConvention.Winapi, CharSet = CharSet.Unicode)]
         [return: MarshalAs(UnmanagedType.Error)]

@@ -1,0 +1,1121 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+					xmlns:macos="http:/uno.ui/macos"
+					xmlns:xamarin="http:/uno.ui/xamarin"
+					xmlns:not_macos="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:todo="what should be done"
+					mc:Ignorable="macos xamarin todo">
+
+	<Style x:Key="InnerSectionHeaderToggleButtonStyle"
+		   TargetType="ToggleButton">
+		<!--<Setter Property="Background" Value="{ThemeResource SurfaceThemeBrush60}" />-->
+		<Setter Property="Foreground" Value="{ThemeResource OnSurfaceThemeBrush87}" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="FontSize" Value="16" />
+
+		<Setter Property="Padding" Value="2,0,0,0" />
+		<Setter Property="Height" Value="40" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
+
+		<Setter Property="UseSystemFocusVisuals" Value="True" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ToggleButton">
+					<Grid x:Name="RootGrid"
+						  Background="{ThemeResource SurfaceThemeBrush87}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<Rectangle x:Name="HoverPanel"
+								   Grid.ColumnSpan="2"
+								   Fill="Transparent" />
+
+						<ContentPresenter x:Name="ContentPresenter"
+										  Grid.Column="0"
+										  Margin="20,8,8,8"
+										  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+										  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+										  AutomationProperties.AccessibilityView="Raw"
+										  BorderBrush="{TemplateBinding BorderBrush}"
+										  BorderThickness="{TemplateBinding BorderThickness}"
+										  Content="{TemplateBinding Content}"
+										  ContentTemplate="{TemplateBinding ContentTemplate}"
+										  ContentTransitions="{TemplateBinding ContentTransitions}"
+										  Foreground="{TemplateBinding Foreground}"
+										  RenderTransformOrigin="0.5,0.5" />
+						<PathIcon Grid.Column="1"
+								  x:Name="Arrow"
+								  Height="24"
+								  Width="24"
+								  Data="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z"
+								  Margin="8,8,20,8"
+								  HorizontalAlignment="Center"
+								  VerticalAlignment="Center"
+								  RenderTransformOrigin="0.5,0.5">
+							<PathIcon.RenderTransform>
+								<RotateTransform />
+							</PathIcon.RenderTransform>
+						</PathIcon>
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<!-- "Checked" states should rotate Arrow by 180' to produce the mirror direction -->
+								<!-- "Indeterminate/Disabled" states: unused -->
+
+								<!-- "Normal" states -->
+								<VisualState x:Name="Normal">
+									<Storyboard>
+										<PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="0.0"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="PointerOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PrimaryColorBrush20}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="0.0"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PrimaryColorBrush38}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="0.0"
+														 Duration="0:0:0.1" />
+										<PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
+									</Storyboard>
+								</VisualState>
+								<todo:VisualState x:Name="Disabled">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="0.0"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</todo:VisualState>
+
+								<!-- "Checked" states -->
+								<VisualState x:Name="Checked">
+									<Storyboard>
+										<PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="180"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="CheckedPointerOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PrimaryColorBrush20}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="180"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="CheckedPressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PrimaryColorBrush38}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="180"
+														 Duration="0:0:0.1" />
+										<PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
+									</Storyboard>
+								</VisualState>
+								<todo:VisualState x:Name="CheckedDisabled">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="180"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</todo:VisualState>
+
+								<!-- "Indeterminate" states -->
+								<todo:VisualState x:Name="Indeterminate">
+									<Storyboard>
+										<PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+									</Storyboard>
+								</todo:VisualState>
+								<todo:VisualState x:Name="IndeterminatePointerOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+									</Storyboard>
+								</todo:VisualState>
+								<todo:VisualState x:Name="IndeterminatePressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
+									</Storyboard>
+								</todo:VisualState>
+								<todo:VisualState x:Name="IndeterminateDisabled">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</todo:VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="ExpandDirectionStates">
+								<!-- Arrow.Data: chevron-[left|up|right|down] from https://materialdesignicons.com/ -->
+								<!-- note: this value without rotation should be pointing in the same directin as "ExpandDirection" -->
+								<VisualState x:Name="LeftDirection">
+									<VisualState.Setters>
+										<Setter Target="Arrow.Data" Value="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="RightDirection">
+									<VisualState.Setters>
+										<Setter Target="Arrow.Data" Value="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="DownDirection">
+									<VisualState.Setters>
+										<Setter Target="Arrow.Data" Value="M7.41,8.58L12,13.17L16.59,8.58L18,10L12,16L6,10L7.41,8.58Z" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="UpDirection">
+									<VisualState.Setters>
+										<Setter Target="Arrow.Data" Value="M7.41,15.41L12,10.83L16.59,15.41L18,14L12,8L6,14L7.41,15.41Z" />
+									</VisualState.Setters>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="InnerSectionExpanderStyle"
+		   TargetType="controls:Expander">
+		<Setter Property="HeaderStyle" Value="{StaticResource InnerSectionHeaderToggleButtonStyle}" />
+		<Setter Property="IsExpanded" Value="True" />
+		<Setter Property="Foreground" Value="{ThemeResource OnSurfaceThemeBrush87}" />
+		<Setter Property="Background" Value="Transparent" />
+
+		<Setter Property="Orientation" Value="Vertical" />
+		<Setter Property="Padding" Value="20,10,10,10" />
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Stretch" />
+
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="controls:Expander">
+					<Grid Background="{TemplateBinding Background}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<Border Grid.Row="0"
+								BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+								BorderThickness="0,0,0,1">
+							<ToggleButton x:Name="PART_ExpanderToggleButton"
+										  MinWidth="40"
+										  MinHeight="40"
+										  AutomationProperties.Name="Expand"
+										  Content="{TemplateBinding Header}"
+										  ContentTemplate="{TemplateBinding HeaderTemplate}"
+										  Foreground="{TemplateBinding Foreground}"
+										  IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+										  Style="{TemplateBinding HeaderStyle}"
+										  TabIndex="0" />
+						</Border>
+						<ContentPresenter Grid.Row="1"
+										  x:Name="ContentPresenter"
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+										  HorizontalContentAlignment="Stretch"
+										  VerticalContentAlignment="Stretch"
+										  xamarin:Content="{TemplateBinding Content}"
+										  xamarin:ContentTemplate="{TemplateBinding ContentTemplate}"
+										  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  Margin="{TemplateBinding Padding}"
+										  Visibility="Collapsed" />
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="DisplayModeAndDirectionStates">
+								<VisualState x:Name="VisibleDown">
+									<VisualState.Setters>
+										<Setter Target="ContentPresenter.(UIElement.Visibility)" Value="Visible" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="CollapsedDown">
+									<VisualState.Setters>
+										<Setter Target="ContentPresenter.(UIElement.Visibility)" Value="Collapsed" />
+									</VisualState.Setters>
+								</VisualState>
+								<todo:VisualState x:Name="VisibleUp" />
+								<todo:VisualState x:Name="CollapsedUp" />
+								<todo:VisualState x:Name="VisibleRight" />
+								<todo:VisualState x:Name="CollapsedRight" />
+								<todo:VisualState x:Name="VisibleLeft" />
+								<todo:VisualState x:Name="CollapsedLeft" />
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="AnimatedInnerSectionExpanderStyle"
+		   TargetType="controls:Expander"
+		   BasedOn="{StaticResource InnerSectionExpanderStyle}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<not_macos:ControlTemplate TargetType="controls:Expander">
+					<!-- template parts: PART_ExpanderToggleButton! -->
+					<!-- removed LayoutTransformControl due to measure -inf, -inf issue -->
+					<Border BorderBrush="{TemplateBinding BorderBrush}"
+							BorderThickness="{TemplateBinding BorderThickness}">
+						<Grid x:Name="PART_RootGrid">
+							<Grid.RowDefinitions>
+								<RowDefinition x:Name="RowOne"
+											   Height="Auto" />
+								<RowDefinition x:Name="RowTwo"
+											   Height="*" />
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition x:Name="ColumnOne"
+												  Width="Auto" />
+								<ColumnDefinition x:Name="ColumnTwo"
+												  Width="*" />
+							</Grid.ColumnDefinitions>
+							<todo:controls_LayoutTransformControl x:Name="PART_LayoutTransformer"
+																  Grid.Row="0"
+																  Grid.RowSpan="1"
+																  Grid.Column="0"
+																  Grid.ColumnSpan="2"
+																  RenderTransformOrigin="0.5,0.5">
+								<controls:LayoutTransformControl.Transform>
+									<RotateTransform x:Name="RotateLayoutTransform" Angle="0" />
+								</controls:LayoutTransformControl.Transform>
+								<ToggleButton x:Name="PART_ExpanderToggleButton"
+											  MinWidth="40"
+											  MinHeight="40"
+											  AutomationProperties.Name="Expand"
+											  Content="{TemplateBinding Header}"
+											  ContentTemplate="{TemplateBinding HeaderTemplate}"
+											  Foreground="{TemplateBinding Foreground}"
+											  IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+											  Style="{TemplateBinding HeaderStyle}"
+											  TabIndex="0" />
+							</todo:controls_LayoutTransformControl>
+							<Border x:Name="PART_ExpanderToggleBorder"
+									Grid.Row="0"
+									Grid.RowSpan="1"
+									Grid.Column="0"
+									Grid.ColumnSpan="2"
+									BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+									BorderThickness="0,0,0,1">
+								<ToggleButton x:Name="PART_ExpanderToggleButton"
+											  MinWidth="40"
+											  MinHeight="40"
+											  AutomationProperties.Name="Expand"
+											  Content="{TemplateBinding Header}"
+											  ContentTemplate="{TemplateBinding HeaderTemplate}"
+											  Foreground="{TemplateBinding Foreground}"
+											  IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+											  Style="{TemplateBinding HeaderStyle}"
+											  TabIndex="0" />
+							</Border>
+							<Grid x:Name="PART_ContentOverlay"
+								  Grid.Row="1"
+								  Grid.RowSpan="1"
+								  Grid.Column="0"
+								  Grid.ColumnSpan="2"
+								  HorizontalAlignment="Stretch"
+								  VerticalAlignment="Stretch"
+								  Visibility="{Binding ContentOverlay, RelativeSource={RelativeSource Mode=TemplatedParent}, Converter={StaticResource NullToCollapsed}}"
+								  Background="{TemplateBinding Background}">
+								<ContentControl Content="{TemplateBinding ContentOverlay}"
+												HorizontalContentAlignment="Stretch"
+												VerticalContentAlignment="Stretch"
+												IsTabStop="False"
+												IsEnabled="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource IsFalse}}"
+												HorizontalAlignment="Stretch"
+												VerticalAlignment="Stretch">
+									<ContentControl.RenderTransform>
+										<ScaleTransform />
+									</ContentControl.RenderTransform>
+								</ContentControl>
+							</Grid>
+							<Grid x:Name="PART_MainContent"
+								  Grid.Row="1"
+								  Grid.RowSpan="1"
+								  Grid.Column="0"
+								  Grid.ColumnSpan="2"
+								  Background="{TemplateBinding Background}">
+
+								<!-- UNO TODO https://github.com/unoplatform/uno/issues/857 -->
+								<ContentPresenter x:Name="ContentPresenter"
+												  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+												  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+												  HorizontalContentAlignment="Stretch"
+												  VerticalContentAlignment="Stretch"
+												  xamarin:Content="{TemplateBinding Content}"
+												  xamarin:ContentTemplate="{TemplateBinding ContentTemplate}"
+												  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+												  Margin="{TemplateBinding Padding}"
+												  Opacity="0">
+									<ContentPresenter.RenderTransform>
+										<TranslateTransform Y="0" />
+									</ContentPresenter.RenderTransform>
+								</ContentPresenter>
+								<Grid.RenderTransform>
+									<ScaleTransform />
+								</Grid.RenderTransform>
+							</Grid>
+						</Grid>
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="DisplayModeAndDirectionStates">
+								<VisualState x:Name="VisibleLeft">
+									<VisualState.Setters>
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Column)" Value="1" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="PART_MainContent.(Grid.Row)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_MainContent.(Grid.Column)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="PART_ContentOverlay.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_ContentOverlay.(Grid.Column)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.ColumnSpan)" Value="1" />
+										<todo:Setter Target="RotateLayoutTransform.Angle"
+													 Value="-90" />
+										<Setter Target="ColumnOne.Width" Value="*" />
+										<Setter Target="ColumnTwo.Width" Value="Auto" />
+										<Setter Target="PART_MainContent.RenderTransformOrigin" Value="1, 0.5" />
+										<Setter Target="ContentPresenter.(UIElement.RenderTransform).(TranslateTransform.Y)" Value="0" />
+									</VisualState.Setters>
+									<Storyboard>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+																	   Storyboard.TargetProperty="(UIElement.Opacity)">
+											<LinearDoubleKeyFrame KeyTime="0"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.15"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.25"
+																  Value="1" />
+										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+														 From="0"
+														 To="1"
+														 Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+														 To="1"
+														 Duration="0:0:0.2" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="VisibleDown">
+									<Storyboard>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+																	   Storyboard.TargetProperty="(UIElement.Opacity)">
+											<LinearDoubleKeyFrame KeyTime="0"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.15"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.25"
+																  Value="1" />
+										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+																	   Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+											<LinearDoubleKeyFrame KeyTime="0"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.15"
+																  Value="20" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.25"
+																  Value="0" />
+										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+														 To="1"
+														 Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+														 From="0"
+														 To="1"
+														 Duration="0:0:0.2" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="VisibleRight">
+									<VisualState.Setters>
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Column)" Value="0" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="PART_MainContent.(Grid.Row)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_MainContent.(Grid.Column)" Value="1" />
+										<Setter Target="PART_MainContent.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="PART_ContentOverlay.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_ContentOverlay.(Grid.Column)" Value="1" />
+										<Setter Target="PART_ContentOverlay.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="ContentPresenter.(UIElement.RenderTransform).(TranslateTransform.Y)" Value="0" />
+										<todo:Setter Target="RotateLayoutTransform.Angle"
+													 Value="-90" />
+									</VisualState.Setters>
+									<Storyboard>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+																	   Storyboard.TargetProperty="(UIElement.Opacity)">
+											<LinearDoubleKeyFrame KeyTime="0"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.15"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.25"
+																  Value="1" />
+										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+														 From="0"
+														 To="1"
+														 Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+														 To="1"
+														 Duration="0:0:0.2" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="VisibleUp">
+									<VisualState.Setters>
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Row)" Value="1" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.RowSpan)" Value="1" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Column)" Value="0" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.ColumnSpan)" Value="2" />
+										<Setter Target="PART_MainContent.(Grid.Row)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.RowSpan)" Value="1" />
+										<Setter Target="PART_MainContent.(Grid.Column)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.ColumnSpan)" Value="2" />
+										<Setter Target="PART_ContentOverlay.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.RowSpan)" Value="1" />
+										<Setter Target="PART_ContentOverlay.(Grid.Column)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.ColumnSpan)" Value="2" />
+										<Setter Target="RowOne.Height" Value="*" />
+										<Setter Target="RowTwo.Height" Value="Auto" />
+										<todo:Setter Target="RotateLayoutTransform.Angle"
+													 Value="0" />
+										<Setter Target="PART_MainContent.RenderTransformOrigin" Value="0.5, 1" />
+									</VisualState.Setters>
+									<Storyboard>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+																	   Storyboard.TargetProperty="(UIElement.Opacity)">
+											<LinearDoubleKeyFrame KeyTime="0"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.15"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.25"
+																  Value="1" />
+										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+																	   Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)">
+											<LinearDoubleKeyFrame KeyTime="0"
+																  Value="0" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.15"
+																  Value="20" />
+											<LinearDoubleKeyFrame KeyTime="0:0:0.25"
+																  Value="0" />
+										</DoubleAnimationUsingKeyFrames>
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+														 To="1"
+														 Duration="0:0:0.2" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+														 From="0"
+														 To="1"
+														 Duration="0:0:0.2" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="CollapsedLeft">
+									<VisualState.Setters>
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Column)" Value="1" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="PART_MainContent.(Grid.Row)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_MainContent.(Grid.Column)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="PART_ContentOverlay.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_ContentOverlay.(Grid.Column)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.ColumnSpan)" Value="1" />
+										<todo:Setter Target="RotateLayoutTransform.Angle"
+													 Value="-90" />
+										<Setter Target="ColumnOne.Width" Value="*" />
+										<Setter Target="ColumnTwo.Width" Value="Auto" />
+										<Setter Target="PART_MainContent.RenderTransformOrigin" Value="1, 0.5" />
+										<Setter Target="PART_ExpanderToggleButton.Background" Value="{Binding ElementName=PART_MainContent, Path=Background}" />
+									</VisualState.Setters>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="ContentPresenter"
+														 Storyboard.TargetProperty="(UIElement.Opacity)"
+														 From="1"
+														 To="0"
+														 Duration="0:0:0.15" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+														 To="0"
+														 Duration="0:0:0.15" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+														 To="1"
+														 Duration="0:0:0.15" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_MainContent" Storyboard.TargetProperty="(UIElement.Visibility)">
+											<DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="Collapsed" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="CollapsedDown">
+									<VisualState.Setters>
+										<Setter Target="PART_ExpanderToggleButton.Background" Value="{Binding ElementName=PART_MainContent, Path=Background}" />
+									</VisualState.Setters>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="ContentPresenter"
+														 Storyboard.TargetProperty="(UIElement.Opacity)"
+														 From="1"
+														 To="0"
+														 Duration="0:0:0.15" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+														 To="1"
+														 Duration="0:0:0.15" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+														 From="1"
+														 To="0"
+														 Duration="0:0:0.15" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_MainContent" Storyboard.TargetProperty="(UIElement.Visibility)">
+											<DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="Collapsed" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="CollapsedRight">
+									<VisualState.Setters>
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Column)" Value="0" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="PART_MainContent.(Grid.Row)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_MainContent.(Grid.Column)" Value="1" />
+										<Setter Target="PART_MainContent.(Grid.ColumnSpan)" Value="1" />
+										<Setter Target="PART_ContentOverlay.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.RowSpan)" Value="2" />
+										<Setter Target="PART_ContentOverlay.(Grid.Column)" Value="1" />
+										<Setter Target="PART_ContentOverlay.(Grid.ColumnSpan)" Value="1" />
+										<todo:Setter Target="RotateLayoutTransform.Angle"
+													 Value="-90" />
+										<Setter Target="PART_ExpanderToggleButton.Background" Value="{Binding ElementName=PART_MainContent, Path=Background}" />
+									</VisualState.Setters>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="ContentPresenter"
+														 Storyboard.TargetProperty="(UIElement.Opacity)"
+														 From="1"
+														 To="0"
+														 Duration="0:0:0.15" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+														 To="0"
+														 Duration="0:0:0.15" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+														 To="1"
+														 Duration="0:0:0.15" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_MainContent" Storyboard.TargetProperty="(UIElement.Visibility)">
+											<DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="Collapsed" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="CollapsedUp">
+									<VisualState.Setters>
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Row)" Value="1" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.RowSpan)" Value="1" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.Column)" Value="0" />
+										<Setter Target="PART_ExpanderToggleBorder.(Grid.ColumnSpan)" Value="2" />
+										<Setter Target="PART_MainContent.(Grid.Row)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.RowSpan)" Value="1" />
+										<Setter Target="PART_MainContent.(Grid.Column)" Value="0" />
+										<Setter Target="PART_MainContent.(Grid.ColumnSpan)" Value="2" />
+										<Setter Target="PART_ContentOverlay.(Grid.Row)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.RowSpan)" Value="1" />
+										<Setter Target="PART_ContentOverlay.(Grid.Column)" Value="0" />
+										<Setter Target="PART_ContentOverlay.(Grid.ColumnSpan)" Value="2" />
+										<Setter Target="RowOne.Height" Value="*" />
+										<Setter Target="RowTwo.Height" Value="Auto" />
+										<todo:Setter Target="RotateLayoutTransform.Angle"
+													 Value="0" />
+										<Setter Target="PART_MainContent.RenderTransformOrigin" Value="0.5, 1" />
+										<Setter Target="PART_ExpanderToggleButton.Background" Value="{Binding ElementName=PART_MainContent, Path=Background}" />
+									</VisualState.Setters>
+									<Storyboard>
+										<DoubleAnimation Storyboard.TargetName="ContentPresenter"
+														 Storyboard.TargetProperty="(UIElement.Opacity)"
+														 From="1"
+														 To="0"
+														 Duration="0:0:0.15" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+														 To="1"
+														 Duration="0:0:0.15" />
+										<DoubleAnimation Storyboard.TargetName="PART_MainContent"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+														 From="1"
+														 To="0"
+														 Duration="0:0:0.15" />
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="PART_MainContent" Storyboard.TargetProperty="(UIElement.Visibility)">
+											<DiscreteObjectKeyFrame KeyTime="0:0:0.15" Value="Collapsed" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</Border>
+				</not_macos:ControlTemplate>
+				<macos:ControlTemplate TargetType="controls:Expander">
+					<Grid Background="{TemplateBinding Background}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<Border Grid.Row="0"
+								BorderBrush="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+								BorderThickness="0,0,0,1">
+							<ToggleButton x:Name="PART_ExpanderToggleButton"
+										  MinWidth="40"
+										  MinHeight="40"
+										  AutomationProperties.Name="Expand"
+										  Content="{TemplateBinding Header}"
+										  ContentTemplate="{TemplateBinding HeaderTemplate}"
+										  Foreground="{TemplateBinding Foreground}"
+										  IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+										  Style="{TemplateBinding HeaderStyle}"
+										  TabIndex="0" />
+						</Border>
+						<ContentPresenter Grid.Row="1"
+										  x:Name="ContentPresenter"
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+										  HorizontalContentAlignment="Stretch"
+										  VerticalContentAlignment="Stretch"
+										  xamarin:Content="{TemplateBinding Content}"
+										  xamarin:ContentTemplate="{TemplateBinding ContentTemplate}"
+										  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  Margin="{TemplateBinding Padding}"
+										  Visibility="Collapsed" />
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="DisplayModeAndDirectionStates">
+								<VisualState x:Name="VisibleDown">
+									<VisualState.Setters>
+										<Setter Target="ContentPresenter.(UIElement.Visibility)" Value="Visible" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="CollapsedDown">
+									<VisualState.Setters>
+										<Setter Target="ContentPresenter.(UIElement.Visibility)" Value="Collapsed" />
+									</VisualState.Setters>
+								</VisualState>
+								<todo:VisualState x:Name="VisibleUp" />
+								<todo:VisualState x:Name="CollapsedUp" />
+								<todo:VisualState x:Name="VisibleRight" />
+								<todo:VisualState x:Name="CollapsedRight" />
+								<todo:VisualState x:Name="VisibleLeft" />
+								<todo:VisualState x:Name="CollapsedLeft" />
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</Grid>
+				</macos:ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+	<Style x:Key="FileExplorerItemHeaderToggleButtonStyle"
+		   TargetType="ToggleButton">
+		<Setter Property="Background" Value="{ThemeResource SurfaceThemeBrush60}" />
+		<Setter Property="Foreground" Value="{ThemeResource OnSurfaceThemeBrush87}" />
+		<Setter Property="BorderThickness" Value="0" />
+		<Setter Property="FontWeight" Value="Normal" />
+		<Setter Property="FontSize" Value="14" />
+
+		<Setter Property="Padding" Value="0" />
+		<Setter Property="Height" Value="36" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+
+		<Setter Property="UseSystemFocusVisuals" Value="True" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ToggleButton">
+					<Grid Background="{TemplateBinding Background}"
+						  BorderBrush="{TemplateBinding BorderBrush}"
+						  BorderThickness="{TemplateBinding BorderThickness}">
+
+						<Rectangle x:Name="HoverPanel" />
+
+						<Grid Margin="{TemplateBinding Padding}">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+
+							<Path Grid.Column="0"
+								  Name="Arrow"
+								  Height="24"
+								  Width="24"
+								  Fill="{TemplateBinding Foreground}"
+								  Data="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"
+								  RenderTransformOrigin="0.5,0.5">
+								<Path.RenderTransform>
+									<RotateTransform />
+								</Path.RenderTransform>
+							</Path>
+							<ContentPresenter x:Name="ContentPresenter"
+											  Grid.Column="1"
+											  Content="{TemplateBinding Content}"
+											  ContentTemplate="{TemplateBinding ContentTemplate}"
+											  ContentTransitions="{TemplateBinding ContentTransitions}"
+											  Foreground="{TemplateBinding Foreground}"
+											  Margin="8,0,0,0"
+											  HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+											  VerticalAlignment="{TemplateBinding VerticalAlignment}"
+											  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+											  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+											  AutomationProperties.AccessibilityView="Raw"
+											  RenderTransformOrigin="0.5,0.5" />
+						</Grid>
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<!-- "Checked" states should rotate Arrow 90' clock-wise -->
+								<!-- "Indeterminate/Disabled" states: unused -->
+
+								<!-- "Normal" states -->
+								<VisualState x:Name="Normal">
+									<Storyboard>
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="0.0"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="PointerOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PrimaryColorBrush20}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="0.0"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PrimaryColorBrush38}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="0.0"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<todo:VisualState x:Name="Disabled">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="0.0"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</todo:VisualState>
+
+								<!-- "Checked" states -->
+								<VisualState x:Name="Checked">
+									<Storyboard>
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="90"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="CheckedPointerOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PrimaryColorBrush20}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="90"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="CheckedPressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource PrimaryColorBrush38}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="90"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</VisualState>
+								<todo:VisualState x:Name="CheckedDisabled">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<DoubleAnimation BeginTime="0:0:0"
+														 Storyboard.TargetName="Arrow"
+														 Storyboard.TargetProperty="(UIElement.RenderTransform).(RotateTransform.Angle)"
+														 To="180"
+														 Duration="0:0:0.1" />
+									</Storyboard>
+								</todo:VisualState>
+
+								<!-- "Indeterminate" states -->
+								<todo:VisualState x:Name="Indeterminate">
+									<Storyboard>
+										<PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+									</Storyboard>
+								</todo:VisualState>
+								<todo:VisualState x:Name="IndeterminatePointerOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<PointerUpThemeAnimation Storyboard.TargetName="RootGrid" />
+									</Storyboard>
+								</todo:VisualState>
+								<todo:VisualState x:Name="IndeterminatePressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseMediumLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlHighlightBaseHighBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<PointerDownThemeAnimation Storyboard.TargetName="RootGrid" />
+									</Storyboard>
+								</todo:VisualState>
+								<todo:VisualState x:Name="IndeterminateDisabled">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HoverPanel" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="Arrow" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource SystemControlDisabledBaseLowBrush}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</todo:VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="ExpandDirectionStates" />
+						</VisualStateManager.VisualStateGroups>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="FileExplorerItemExpanderStyle"
+		   TargetType="controls:Expander">
+		<Setter Property="HeaderStyle" Value="{StaticResource FileExplorerItemHeaderToggleButtonStyle}" />
+		<Setter Property="Foreground" Value="{ThemeResource OnSurfaceThemeBrush87}" />
+		<Setter Property="Background" Value="Transparent" />
+
+		<!-- note: only support Orientation=Verticaly ExpandDirection=Down -->
+		<Setter Property="ExpandDirection" Value="Down" />
+		<Setter Property="Orientation" Value="Vertical" />
+		<Setter Property="Padding" Value="24,0,0,0" />
+		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
+		<Setter Property="VerticalContentAlignment" Value="Stretch" />
+
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="controls:Expander">
+					<!-- template parts: PART_ExpanderToggleButton! -->
+
+					<Grid Background="{TemplateBinding Background}">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<ToggleButton Grid.Row="0"
+									  x:Name="PART_ExpanderToggleButton"
+									  Content="{TemplateBinding Header}"
+									  ContentTemplate="{TemplateBinding HeaderTemplate}"
+									  IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+									  Foreground="{TemplateBinding Foreground}"
+									  Padding="{TemplateBinding Padding}"
+									  BorderBrush="{TemplateBinding BorderBrush}"
+									  BorderThickness="{TemplateBinding BorderThickness}"
+									  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+									  HorizontalContentAlignment="Stretch"
+									  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+									  VerticalContentAlignment="Stretch"
+									  Style="{TemplateBinding HeaderStyle}" />
+						<ContentPresenter Grid.Row="1"
+										  x:Name="ContentPresenter"
+										  x:Load="False"
+										  xamarin:Content="{TemplateBinding Content}"
+										  xamarin:ContentTemplate="{TemplateBinding ContentTemplate}"
+										  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  Margin="{TemplateBinding Padding}"
+										  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										  HorizontalContentAlignment="Stretch"
+										  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+										  VerticalContentAlignment="Stretch"
+										  Visibility="Collapsed" />
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="DisplayModeAndDirectionStates">
+								<VisualState x:Name="VisibleDown">
+									<VisualState.Setters>
+										<Setter Target="ContentPresenter.Visibility" Value="Visible" />
+									</VisualState.Setters>
+								</VisualState>
+								<VisualState x:Name="CollapsedDown" />
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+</ResourceDictionary>

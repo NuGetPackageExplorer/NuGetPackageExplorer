@@ -28,12 +28,18 @@ namespace PackageExplorer
                     {
                         if (string.Equals(file.Path, iconPath, StringComparison.OrdinalIgnoreCase))
                         {
-                            var image = new BitmapImage();
-                            image.BeginInit();
-                            image.CacheOption = BitmapCacheOption.OnLoad;
-                            image.StreamSource = file.GetStream();
-                            image.EndInit();                            
-                            return image;
+                            // catch potential exceptions during image loading from zip file
+                            // see 1097
+                            try
+                            {
+                                var image = new BitmapImage();
+                                image.BeginInit();
+                                image.CacheOption = BitmapCacheOption.OnLoad;
+                                image.StreamSource = file.GetStream();
+                                image.EndInit();
+                                return image;
+                            }
+                            catch { }
                         }
                     }
 

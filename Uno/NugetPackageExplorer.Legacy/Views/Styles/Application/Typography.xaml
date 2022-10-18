@@ -1,0 +1,45 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<Style x:Key="BaseTypographyStyle"
+		   TargetType="TextBlock">
+		<Setter Property="Foreground" Value="{ThemeResource OnSurfaceThemeBrush87}" />
+		<Setter Property="TextTrimming" Value="CharacterEllipsis" />
+	</Style>
+
+	<Style x:Key="TypoTitle1"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource BaseTypographyStyle}">
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="FontSize" Value="20" />
+	</Style>
+	<Style x:Key="TypoTitle2"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource BaseTypographyStyle}">
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="FontSize" Value="18" />
+	</Style>
+	<Style x:Key="TypoSubtitle1"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource BaseTypographyStyle}">
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="FontSize" Value="16" />
+	</Style>
+	<Style x:Key="TypoSubtitle2"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource BaseTypographyStyle}">
+		<Setter Property="FontWeight" Value="SemiBold" />
+		<Setter Property="FontSize" Value="14" />
+	</Style>
+	<Style x:Key="TypoBody1"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource BaseTypographyStyle}">
+		<Setter Property="FontSize" Value="16" />
+	</Style>
+	<Style x:Key="TypoBody2"
+		   TargetType="TextBlock"
+		   BasedOn="{StaticResource BaseTypographyStyle}">
+		<Setter Property="FontSize" Value="14" />
+	</Style>
+
+</ResourceDictionary>

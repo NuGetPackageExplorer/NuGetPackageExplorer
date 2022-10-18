@@ -36,7 +36,16 @@ namespace PackageExplorer
                         "v5.0-macos", "net5.0-macos",
                         "v5.0-tvos", "net5.0-tvos",
                         "v5.0-watchos", "net5.0-watchos",
-                        "v5.0-windows", "net5.0-windows"
+                        "v5.0-windows", "net5.0-windows",
+
+                        "v6.0","net6.0",
+                        "v6.0-android", "net6.0-android",
+                        "v6.0-ios", "net6.0-ios",
+                        "v6.0-macos", "net6.0-macos",
+                        "v6.0-tvos", "net6.0-tvos",
+                        "v6.0-maccatalyst", "net6.0-maccatalyst",
+                        "v6.0-tizen", "net6.0-tizen",
+                        "v6.0-windows", "net6.0-windows",
                     }
                 ),
 
@@ -52,7 +61,6 @@ namespace PackageExplorer
                         "v2.2","netcoreapp2.2",
                         "v3.0","netcoreapp3.0",
                         "v3.1","netcoreapp3.1",
-                        "v5.0","netcoreapp5.0",
                     }
                 ),
 
@@ -589,7 +597,7 @@ namespace PackageExplorer
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
-        private IDataObject CreateDataObject(PackagePart packagePart)
+        private static IDataObject CreateDataObject(PackagePart packagePart)
         {
             var data = new DataObject();
             data.SetData(PackageFileDataFormat, packagePart.Path);

@@ -1,0 +1,63 @@
+name: Azure Static Web Apps PR Validation
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+jobs:
+  build_and_deploy_job:
+    env:
+      DIST_PATH: Uno/NuGetPackageExplorer.Wasm/bin/Release/net6.0/dist
+
+    if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.repository == 'NuGetPackageExplorer/NuGetPackageExplorer'
+    runs-on: ubuntu-latest
+    container: 'unoplatform/wasm-build:3.0'
+    name: Build and Deploy Job
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+          
+      - name: Setup dotnet 6.0.x
+        uses: actions/setup-dotnet@v1.7.2
+        with:
+          dotnet-version: '6.0.x'
+          
+      - run: |
+          cd Uno/NuGetPackageExplorer.Wasm
+          dotnet build -c Release /p:UNO_BUILD_ONLY=true
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: wasm-site
+          path: ${{ env.DIST_PATH }}
+
+      - name: Build And Deploy
+        id: builddeploy_uno
+        uses: Azure/static-web-apps-deploy@v0.0.1-preview
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CI }}
+          skip_deploy_on_missing_secrets: true
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          action: "upload"
+          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+          app_location: "${{ env.DIST_PATH }}" # App source code path
+          api_location: "Uno/Api" # Api source code path - optional
+          output_location: "" # Built app content directory - optional
+          ###### End of Repository/Build Configurations ######
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v0.0.1-preview
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CI }}
+          action: "close"

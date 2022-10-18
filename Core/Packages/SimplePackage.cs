@@ -27,6 +27,7 @@ namespace NuGetPe
             Owners = packageBuilder.Owners;
             Icon = packageBuilder.Icon;
             IconUrl = packageBuilder.IconUrl;
+            Readme = packageBuilder.Readme;
             LicenseUrl = packageBuilder.LicenseUrl;
             ProjectUrl = packageBuilder.ProjectUrl;
             RequireLicenseAcceptance = packageBuilder.RequireLicenseAcceptance;
@@ -55,7 +56,6 @@ namespace NuGetPe
             return _packageBuilder.Files.Where(p => !PackageUtility.IsManifest(p.Path));
         }
 
-        [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         public Stream GetStream()
         {
             Stream memoryStream = new MemoryStream();
@@ -76,6 +76,8 @@ namespace NuGetPe
         public string Icon { get; private set; }
 
         public Uri IconUrl { get; private set; }
+
+        public string Readme { get; private set; }
 
         public Uri LicenseUrl { get; private set; }
 
@@ -123,7 +125,7 @@ namespace NuGetPe
             get { return null; }
         }
 
-        public int DownloadCount
+        public long DownloadCount
         {
             get { return -1; }
         }

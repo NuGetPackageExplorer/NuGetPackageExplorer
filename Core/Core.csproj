@@ -1,10 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp5.0</TargetFramework>
+    <TargetFrameworks>net6.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net6.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks Condition="$(UNO_BUILD_ONLY)!=''">netstandard2.1</TargetFrameworks>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
     <Title>NuGet Package Explorer Core</Title>
+    <AssemblyName>NuGetPackageExplorer.Core</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,13 +17,20 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />
-    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.10.55" />
-    <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-20115-01" />
-    <PackageReference Include="Microsoft.SymbolStore" Version="1.0.117501" />
-    <PackageReference Include="Microsoft.Windows.SDK.Contracts" Version="10.0.18362.2005" />
-    <PackageReference Include="OSVersionHelper" Version="1.0.11" />
-    <PackageReference Include="System.Reflection.Metadata" Version="1.8.0" />
-    <Reference Include="Windows" />
+    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.18.1" />
+    <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-21110-01" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
+    <!--<PackageReference Include="Microsoft.SourceLink.Tools" Version="1.1.0-beta-21115-02" PrivateAssets="all" />-->
+    <PackageReference Include="Microsoft.SymbolStore" Version="1.0.251801" />
+    <PackageReference Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />    
+    <PackageReference Include="PeNet" Version="2.9.7" />
+    <PackageReference Include="System.Formats.Asn1" Version="6.0.0" />
+    <PackageReference Include="System.Reflection.Metadata" Version="6.0.1" />
+    <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" Version="1.1.24" />
   </ItemGroup>
 
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
+    <PackageReference Update="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-20501-01" />
+  </ItemGroup>
 </Project>

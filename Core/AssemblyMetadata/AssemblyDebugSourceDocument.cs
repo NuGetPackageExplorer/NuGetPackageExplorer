@@ -35,7 +35,7 @@ namespace NuGetPe.AssemblyMetadata
         public bool HasSourceLink => IsEmbedded || !string.IsNullOrWhiteSpace(Url);
         public string? Url { get; internal set; }
 
-        private SymbolLanguage LanguageFromGuid(Guid guid)
+        private static SymbolLanguage LanguageFromGuid(Guid guid)
         {
             if (guid == CSharp) return SymbolLanguage.CSharp;
             if (guid == VisualBasic) return SymbolLanguage.VisualBasic;

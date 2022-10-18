@@ -57,6 +57,8 @@ namespace PackageExplorerViewModel
 
         public string? Icon => null;
 
+        public string? Readme => null;
+
         public Uri? LicenseUrl
         {
             get { return null; }
@@ -117,7 +119,7 @@ namespace PackageExplorerViewModel
             get { return null; }
         }
 
-        public int DownloadCount
+        public long DownloadCount
         {
             get { return -1; }
         }

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -35,26 +36,35 @@ namespace NuGetPe
         {
             // This method needs to replace tokens in version fields with a sentinel value
             // since the NuGetVersion object model doesn't support it.
+            // Also needs to handle blank versions
             var xdoc = XDocument.Load(stream);
-            var ns = xdoc.Root.GetDefaultNamespace();
+            var ns = xdoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
 
             // Get the version node
-            var version = xdoc.Root.Descendants(ns + "version").FirstOrDefault();
-            if (version != null)
+            var version = xdoc.Root?.Descendants(ns + "version").FirstOrDefault();
+            if (version is not null)
             {
                 version.Value = ReplaceTokenWithMetadata(version.Value);
             }
 
             // Get dependency nodes
-            var deps = xdoc.Root.Descendants(ns + "dependency");
-            foreach (var dep in deps)
+            var deps = xdoc.Root?.Descendants(ns + "dependency");
+            if(deps is not null)
             {
-                var val = dep.GetOptionalAttributeValue("version");
-                if (!string.IsNullOrWhiteSpace(val))
+                foreach (var dep in deps)
                 {
-                    dep.SetAttributeValue("version", ReplaceTokenWithMetadata(val));
+                    var val = dep.GetOptionalAttributeValue("version");
+                    if (!string.IsNullOrWhiteSpace(val))
+                    {
+                        dep.SetAttributeValue("version"!, ReplaceTokenWithMetadata(val));
+                    }
+                    else
+                    {
+                        // Some packages (like Paket.Core have version="" in the dependencies. NuGet doesn't handle it, so remove it so we can load.
+                        dep.RemoveAttributes(a => string.Equals("version", a.Name.LocalName, StringComparison.OrdinalIgnoreCase));
+                    }
                 }
-            }
+            }            
 
 
             // The manifest utility exports licenseUrl for back compat, but it's not intended
@@ -62,7 +72,7 @@ namespace NuGetPe
             // If license exists, strip licenseUrl
 
 
-            if (xdoc.Root.Descendants(ns + "license").Any())
+            if (xdoc.Root?.Descendants(ns + "license").Any() == true)
             {
                 // Remove licenseUrl
                 xdoc.Descendants(ns + "licenseUrl").Remove();
@@ -79,14 +89,12 @@ namespace NuGetPe
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static string? ReplaceTokenWithMetadata(string value)
+        public static string ReplaceTokenWithMetadata(string value)
         {
-            // see if it's a token
+            if (value is null)
+                throw new System.ArgumentNullException(nameof(value));
 
-            if (value == null)
-            {
-                return value;
-            }
+            // see if it's a token            
 
             var matches = TokenRegex.Matches(value);
 #pragma warning disable CS8606 // Possible null reference assignment to iteration variable
@@ -135,33 +143,35 @@ namespace NuGetPe
             // This method needs to replace tokens in version fields with a sentinel value
             // since the NuGetVersion object model doesn't support it.
             var xdoc = XDocument.Load(sourceStream);
-            var ns = xdoc.Root.GetDefaultNamespace();
+            var ns = xdoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
 
             // Get the version node
-            var version = xdoc.Root.Descendants(ns + "version").FirstOrDefault();
-            if (version != null)
+            var version = xdoc.Root?.Descendants(ns + "version").FirstOrDefault();
+            if (version is not null)
             {
-                version.Value = ReplaceMetadataWithToken(version.Value);
+                version.Value = ReplaceMetadataWithToken(version.Value)!;
             }
 
             // Get dependency nodes
-            var deps = xdoc.Root.Descendants(ns + "dependency");
-            foreach (var dep in deps)
+            var deps = xdoc.Root?.Descendants(ns + "dependency");
+            if(deps is not null)
             {
-                var val = dep.GetOptionalAttributeValue("version");
-                if (!string.IsNullOrWhiteSpace(val))
+                foreach (var dep in deps)
                 {
-                    dep.SetAttributeValue("version", ReplaceMetadataWithToken(val));
+                    var val = dep.GetOptionalAttributeValue("version");
+                    if (!string.IsNullOrWhiteSpace(val))
+                    {
+                        dep.SetAttributeValue("version"!, ReplaceMetadataWithToken(val));
+                    }
                 }
-            }
+            }            
 
             // The manifest utility exports licenseUrl for back compat, but it's not intended
             // for round-tripping
             // If license exists, strip licenseUrl
 
 
-            if (xdoc.Root.Descendants(ns + "license")
-                    .Any())
+            if (xdoc.Root?.Descendants(ns + "license").Any() == true)
             {
                 // Remove licenseUrl
                 xdoc.Descendants(ns + "licenseUrl").Remove();

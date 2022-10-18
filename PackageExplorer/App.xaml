@@ -35,6 +35,7 @@
             <self:IconUrlToImageCacheConverter x:Key="IconUrlToImageCacheConverter" />
             <self:NumberToStringConverter x:Key="NumberToStringConverter" />
             <self:EnumConverter x:Key="EnumConverter" />
+            <self:StringCollectionsToStringConverter x:Key="StringCollectionsToStringConverter" />
 
             <ContextMenu x:Key="TextBoxContextMenu">
                 <self:GrayscaleMenuItem Command="Cut">

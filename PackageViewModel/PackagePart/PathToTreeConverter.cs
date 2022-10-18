@@ -5,9 +5,9 @@ using NuGet.Packaging;
 
 namespace PackageExplorerViewModel
 {
-    internal static class PathToTreeConverter
+    public static class PathToTreeConverter
     {
-        public static PackageFolder Convert(List<IPackageFile> paths, PackageViewModel viewModel)
+        public static PackageFolder Convert(List<IPackageFile> paths, PackageViewModel? viewModel)
         {
             if (paths == null)
             {

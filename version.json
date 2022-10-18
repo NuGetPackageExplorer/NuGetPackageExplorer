@@ -1,8 +1,7 @@
 {
-  "version": "5.6",
+  "version": "6.0",
   "publicReleaseRefSpec": [
-    "^refs/heads/master$", // we release out of master
-    "^refs/heads/dev$", // we release out of develop
+    "^refs/heads/main$", // we release out of main
     "^refs/tags/v\\d+\\.\\d+", // we also release tags starting with vN.N
     "^refs/heads/rel/v\\d+\\.\\d+" // we also release tags starting with vN.N
   ],

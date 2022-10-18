@@ -1,0 +1,108 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<!--#region Opacity map-->
+	<!--
+		0.00 = 00
+		0.05 = 0C
+		0.10 = 19
+		0.15 = 26
+		:: 0.20 = 33
+		0.25 = 3F
+		0.30 = 4C
+		0.35 = 59
+		:: 0.38 = 61
+		0.40 = 66
+		0.45 = 72
+		0.50 = 7F
+		0.55 = 8C
+		:: 0.60 = 99
+		0.65 = A5
+		0.70 = B2
+		0.75 = BF
+		0.80 = CC
+		0.85 = D8
+		:: 0.87 = DE
+		0.90 = E5
+		0.95 = F2
+		1.00 = FF
+	-->
+	<!--#endregion-->
+
+	<ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush"
+							 Color="#f3f0f0f0" />
+            <SolidColorBrush x:Key="MenuBarBackgroundBrush"
+                             Color="#f3f0f0f0"/>
+
+            <!-- Shared Brushes -->
+			<SolidColorBrush x:Key="SurfaceThemeBrush87"
+							 Color="#deffffff" />
+			<SolidColorBrush x:Key="SurfaceThemeBrush60"
+							 Color="#99ffffff" />
+			<SolidColorBrush x:Key="SurfaceThemeBrush38"
+							 Color="#61ffffff" />
+			<SolidColorBrush x:Key="SurfaceThemeBrush20"
+							 Color="#33ffffff" />
+			<SolidColorBrush x:Key="OnSurfaceThemeBrush87"
+							 Color="#de000000" />
+			<SolidColorBrush x:Key="OnSurfaceThemeBrush60"
+							 Color="#99000000" />
+			<SolidColorBrush x:Key="OnSurfaceThemeBrush38"
+							 Color="#61000000" />
+			<SolidColorBrush x:Key="OnSurfaceThemeBrush20"
+							 Color="#33000000" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark">
+			<SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush"
+							 Color="#f3141414" />
+            <SolidColorBrush x:Key="MenuBarBackgroundBrush"
+                             Color="#f3141414"/>
+
+            <!-- Shared Brushes -->
+			<SolidColorBrush x:Key="SurfaceThemeBrush87"
+							 Color="#de363636" />
+			<SolidColorBrush x:Key="SurfaceThemeBrush60"
+							 Color="#99363636" />
+			<SolidColorBrush x:Key="SurfaceThemeBrush38"
+							 Color="#61363636" />
+			<SolidColorBrush x:Key="SurfaceThemeBrush20"
+							 Color="#33363636" />
+			<SolidColorBrush x:Key="OnSurfaceThemeBrush87"
+							 Color="#deffffff" />
+			<SolidColorBrush x:Key="OnSurfaceThemeBrush60"
+							 Color="#99ffffff" />
+			<SolidColorBrush x:Key="OnSurfaceThemeBrush38"
+							 Color="#61ffffff" />
+			<SolidColorBrush x:Key="OnSurfaceThemeBrush20"
+							 Color="#33ffffff" />
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+
+	<Color x:Key="PrimaryColor">#159bff</Color>
+	<Color x:Key="SecondaryColor">#7a67f8</Color>
+	<Color x:Key="VariantLightColor">#444444</Color>
+
+	<SolidColorBrush x:Key="PrimaryColorBrush"
+					 Color="{StaticResource PrimaryColor}" />
+	<SolidColorBrush x:Key="SecondaryColorBrush"
+					 Color="{StaticResource SecondaryColor}" />
+	<SolidColorBrush x:Key="VariantLightColorBrush"
+					 Color="{StaticResource VariantLightColor}" />
+
+	<SolidColorBrush x:Key="PrimaryColorBrush87"
+					 Color="{StaticResource PrimaryColor}"
+					 Opacity="0.87" />
+	<SolidColorBrush x:Key="PrimaryColorBrush60"
+					 Color="{StaticResource PrimaryColor}"
+					 Opacity="0.60" />
+	<SolidColorBrush x:Key="PrimaryColorBrush38"
+					 Color="{StaticResource PrimaryColor}"
+					 Opacity="0.38" />
+	<SolidColorBrush x:Key="PrimaryColorBrush20"
+					 Color="{StaticResource PrimaryColor}"
+					 Opacity="0.20" />
+	<SolidColorBrush x:Key="OnPrimaryColorBrush"
+					 Color="White" />
+</ResourceDictionary>

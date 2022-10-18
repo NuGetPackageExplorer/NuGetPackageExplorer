@@ -45,8 +45,8 @@ namespace PackageExplorerViewModel.Rules
             return new PackageIssue(
                 PackageIssueLevel.Warning,
                 "Native build file misnamed",
-                $"The build file '{filename}' does not match the nuget package name. For native packages, this will cause incorrect behavior when being referenced.",
-                $"Rename the build file '{filename}' to match the Nuget package name '{packageName}'."
+                $"The build file '{filename}' does not match the NuGet package name. For native packages, this will cause incorrect behavior when being referenced.",
+                $"Rename the build file '{filename}' to match the NuGet package name '{packageName}'."
             );
         }
     }

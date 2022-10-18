@@ -1,0 +1,119 @@
+﻿<UserControl
+    x:Class="PackageExplorer.PackageViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:viewmodel="using:PackageExplorerViewModel"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="using:PackageExplorer"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <UserControl.Resources>
+        <local:NuGetVersionConverter x:Key="NuGetVersionConverter" />
+        <local:NuGetVersionPreReleaseConverter x:Key="NuGetVersionPreReleaseConverter" />
+
+        <DataTemplate x:DataType="viewmodel:EditablePackageMetadata" x:Key="VerifySignaturesResult">
+
+            <StackPanel Orientation="Horizontal">
+                 <!--ToolTip="{x:Static self:Resources.Dialog_ShowDetails}"-->
+                <!--
+                <StackPanel.InputBindings>
+                    <MouseBinding Gesture="LeftClick" Command="{Binding ShowValidationResultsCommand}" />
+                </StackPanel.InputBindings>
+                -->
+                <TextBlock Name="isValid" Text="{x:Bind local:Resources.Validation_Pending}" />
+                <ContentControl Name="icon" Margin="3,0,0,0" Width="16" Height="16" Visibility="Collapsed"  />
+                <!--<controls:Spinner x:Name="spinner" Margin="3,0,0,0" Width="16" Height="16" />-->
+            </StackPanel>
+            <!--
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Valid">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Valid}" />
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityOkIcon}" />
+                    <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Disallowed">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Disallowed}" />
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityCriticalIcon}" />
+                    <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Suspect">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Suspect}" />
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
+                    <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding ValidationResult.Trust}" Value="Unknown">
+                    <Setter TargetName="isValid" Property="Text" Value="{x:Static self:Resources.Validation_Unknown}" />
+                    <Setter TargetName="icon" Property="Content" Value="{StaticResource StatusSecurityWarningIcon}" />
+                    <Setter TargetName="icon" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="spinner" Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+            -->
+        </DataTemplate>
+
+        <!-- data template for the package details pane -->
+        <DataTemplate x:Key="PackageDetailTemplate" x:DataType="viewmodel:EditablePackageMetadata">
+            <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <Border BorderThickness="0.5" HorizontalAlignment="Left" Padding="2" Background="White" Margin="0,0,0,5" ToolTipService.ToolTip="{Binding IconOrIconUrl}" Visibility="{Binding IconOrIconUrl, Converter={StaticResource NullToVisibilityConverter}}">
+                        <!--BorderBrush="{StaticResource {x:Bind SystemColors.ActiveBorderBrushKey}}"--> 
+                        <Image Width="32" Height="32" >
+                            <!--<Image.Source>
+                                <MultiBinding Converter="{StaticResource PackageIconConverter}">
+                                    <Binding ElementName="PackageMetadataViewer" Path="DataContext" />
+                                    <Binding Path="IconOrIconUrl" />
+                                </MultiBinding>
+                            </Image.Source>-->
+                        </Image>
+                    </Border>
+
+                    <!-- Id -->
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                        <TextBlock Text="{x:Bind local:Resources.Dialog_IdLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Id}" Style="{StaticResource DetailMetadataValueStyle}" />
+                    </StackPanel>
+
+                    <!-- Version -->
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}">
+                        <TextBlock Text="{x:Bind local:Resources.Dialog_VersionLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <TextBlock Text="{Binding Version, Converter={StaticResource NuGetVersionConverter}}" Style="{StaticResource DetailMetadataValueStyle}" />
+                        <TextBlock Margin="3,0,0,0" Text="(prerelease)" Foreground="DarkRed" Visibility="{Binding Version, Mode=OneWay, Converter={StaticResource NuGetVersionPreReleaseConverter}}" />
+                    </StackPanel>
+
+                    <!-- Publisher -->
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}"
+                                Visibility="{Binding PublisherSignature, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Bind local:Resources.Dialog_PublisherLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <ContentControl Content="{Binding PublisherSignature, Mode=OneWay}" ContentTemplate="{StaticResource VerifySignaturesResult}" />
+
+                    </StackPanel>
+
+                    <!-- Repository -->
+                    <StackPanel Style="{StaticResource DetailMetadataStyle}"
+                                Visibility="{Binding RepositorySignature, Converter={StaticResource NullToVisibilityConverter}}">
+                        <TextBlock Text="{x:Bind local:Resources.Dialog_RepositoryLabel}" Style="{StaticResource DetailMetadataLabelStyle}" />
+                        <ContentControl Content="{Binding RepositorySignature, Mode=OneWay}" ContentTemplate="{StaticResource VerifySignaturesResult}" />
+
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <Grid>
+
+        <ContentControl x:Name="PackageMetadataViewer"
+                        Grid.Row="1"
+                        Content="{Binding PackageMetadata}"
+                        ContentTemplate="{StaticResource PackageDetailTemplate}"
+                        Visibility="{Binding IsInEditMetadataMode, Converter={StaticResource invertedBoolToVis}, FallbackValue=Collapsed}" />
+
+    </Grid>
+</UserControl>

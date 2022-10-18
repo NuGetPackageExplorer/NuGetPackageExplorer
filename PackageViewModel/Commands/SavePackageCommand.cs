@@ -124,7 +124,6 @@ namespace PackageExplorerViewModel
                    NuGetPe.Constants.SymbolPackageExtension.Equals(Path.GetExtension(packageSource), StringComparison.OrdinalIgnoreCase));
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Globalization", "CA1303:Do not pass literals as localized parameters", MessageId = "NuGetPackageExplorer.Types.IUIServices.Confirm(System.String,System.String,System.Boolean)")]
         private void Save()
         {
             var expectedPackageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.PackageExtension;
@@ -193,7 +192,6 @@ namespace PackageExplorerViewModel
             RaiseCanExecuteChangedEvent();
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private void SaveMetadataAs()
         {
             var packageName = ViewModel.PackageMetadata.FileName + NuGetPe.Constants.ManifestExtension;
@@ -216,7 +214,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex)
                 {
-                    DiagnosticsClient.TrackException(ex);
+                    DiagnosticsClient.TrackException(ex, ViewModel.Package, ViewModel.PublishedOnNuGetOrg);
                     ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
                 }
             }
@@ -275,14 +273,13 @@ namespace PackageExplorerViewModel
                     }
                     catch (Exception ex)
                     {
-                        DiagnosticsClient.TrackException(ex);
+                        DiagnosticsClient.TrackException(ex, ViewModel.Package, ViewModel.PublishedOnNuGetOrg);
                         ViewModel.UIServices.Show(ex.Message, MessageLevel.Error);
                     }
                 }
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private bool SavePackage(string fileName)
         {
             try

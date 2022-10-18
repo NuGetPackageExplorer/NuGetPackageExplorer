@@ -79,6 +79,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deterministic (dll/exe):.
+        /// </summary>
+        public static string Dialog_DeterministicValidation {
+            get {
+                return ResourceManager.GetString("Dialog_DeterministicValidation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Development Dependency:.
         /// </summary>
         public static string Dialog_DevelopmentDependencyLabel {
@@ -111,6 +120,24 @@ namespace PackageExplorer {
         public static string Dialog_FrameworkAssembliesLabel {
             get {
                 return ResourceManager.GetString("Dialog_FrameworkAssembliesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compiler Flags:.
+        /// </summary>
+        public static string Dialog_HasCompilerFlags {
+            get {
+                return ResourceManager.GetString("Dialog_HasCompilerFlags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Health:.
+        /// </summary>
+        public static string Dialog_Health {
+            get {
+                return ResourceManager.GetString("Dialog_Health", resourceCulture);
             }
         }
         
@@ -165,6 +192,15 @@ namespace PackageExplorer {
         public static string Dialog_LicenseExpression {
             get {
                 return ResourceManager.GetString("Dialog_LicenseExpression", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expression Type:.
+        /// </summary>
+        public static string Dialog_LicenseExpressionType {
+            get {
+                return ResourceManager.GetString("Dialog_LicenseExpressionType", resourceCulture);
             }
         }
         
@@ -228,6 +264,15 @@ namespace PackageExplorer {
         public static string Dialog_PublisherLabel {
             get {
                 return ResourceManager.GetString("Dialog_PublisherLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Readme:.
+        /// </summary>
+        public static string Dialog_ReadmeLabel {
+            get {
+                return ResourceManager.GetString("Dialog_ReadmeLabel", resourceCulture);
             }
         }
         
@@ -333,7 +378,7 @@ namespace PackageExplorer {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Signature Validation:.
+        ///   Looks up a localized string similar to Signature:.
         /// </summary>
         public static string Dialog_SignatureValidation {
             get {
@@ -374,6 +419,15 @@ namespace PackageExplorer {
         public static string Dialog_TitleLabel {
             get {
                 return ResourceManager.GetString("Dialog_TitleLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Note: Dependencies are not checked by this tool..
+        /// </summary>
+        public static string Dialog_ValidationNote {
+            get {
+                return ResourceManager.GetString("Dialog_ValidationNote", resourceCulture);
             }
         }
         
@@ -594,6 +648,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Readme:.
+        /// </summary>
+        public static string PackageChooser_DetailReadme {
+            get {
+                return ResourceManager.GetString("PackageChooser_DetailReadme", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Report Abuse:.
         /// </summary>
         public static string PackageChooser_DetailReportAbuse {
@@ -626,6 +689,15 @@ namespace PackageExplorer {
         public static string PackageChooser_PackageSource {
             get {
                 return ResourceManager.GetString("PackageChooser_PackageSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string PackageChooser_RefreshButtonTooltip {
+            get {
+                return ResourceManager.GetString("PackageChooser_RefreshButtonTooltip", resourceCulture);
             }
         }
         
@@ -711,11 +783,29 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Contains untracked sources (obj).
+        /// </summary>
+        public static string Validation_HasUntrackedSources {
+            get {
+                return ResourceManager.GetString("Validation_HasUntrackedSources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid Source Link.
         /// </summary>
         public static string Validation_InvalidSourceLink {
             get {
                 return ResourceManager.GetString("Validation_InvalidSourceLink", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing.
+        /// </summary>
+        public static string Validation_MissingCompilerFlags {
+            get {
+                return ResourceManager.GetString("Validation_MissingCompilerFlags", resourceCulture);
             }
         }
         
@@ -738,6 +828,15 @@ namespace PackageExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Non deterministic.
+        /// </summary>
+        public static string Validation_NonDeterministic {
+            get {
+                return ResourceManager.GetString("Validation_NonDeterministic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No files found to validate.
         /// </summary>
         public static string Validation_NothingToValidate {
@@ -752,6 +851,15 @@ namespace PackageExplorer {
         public static string Validation_Pending {
             get {
                 return ResourceManager.GetString("Validation_Pending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Present, not reproducible.
+        /// </summary>
+        public static string Validation_Present {
+            get {
+                return ResourceManager.GetString("Validation_Present", resourceCulture);
             }
         }
         

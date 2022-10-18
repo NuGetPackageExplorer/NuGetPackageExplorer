@@ -60,7 +60,6 @@ namespace PackageExplorerViewModel
             }
         }
 
-        [SuppressMessage("Microsoft.Design", "CA1056:UriPropertiesShouldNotBeStrings")]
         public string PublishUrl
         {
             get { return _mruSourceManager.ActivePackageSource; }
@@ -251,7 +250,8 @@ namespace PackageExplorerViewModel
                 var repository = PackageRepositoryFactory.CreateRepository(PublishUrl);
                 var updateResource = await repository.GetResourceAsync<PackageUpdateResource>();
 
-                await updateResource.Push(_packageFilePath, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, AppendV2ApiToUrl != true, NullLogger.Instance);
+                await updateResource.Push(new[] { _packageFilePath }, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, AppendV2ApiToUrl != true, false, null, NullLogger.Instance);
+                
 
                 if (PublishAsUnlisted == true)
                 {

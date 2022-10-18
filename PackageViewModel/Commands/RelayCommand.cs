@@ -33,7 +33,9 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Microsoft.Design", "CA1030:UseEventsWhereAppropriate")]
         public void RaiseCanExecuteChanged()
         {
+#if WINDOWS
             CommandManager.InvalidateRequerySuggested();
+#endif
         }
 
         [DebuggerStepThrough]
@@ -42,21 +44,25 @@ namespace PackageExplorerViewModel
             return _canExecute == null || _canExecute((T)parameter!);
         }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add
             {
+#if WINDOWS
                 if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested += value;
                 }
+#endif
             }
             remove
             {
+#if WINDOWS
                 if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested -= value;
                 }
+#endif
             }
         }
 
@@ -110,21 +116,25 @@ namespace PackageExplorerViewModel
             return _canExecute == null || _canExecute();
         }
 
-        public event EventHandler CanExecuteChanged
+        public event EventHandler? CanExecuteChanged
         {
             add
             {
+#if WINDOWS
                 if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested += value;
                 }
+#endif
             }
             remove
             {
+#if WINDOWS
                 if (_canExecute != null)
                 {
                     CommandManager.RequerySuggested -= value;
                 }
+#endif
             }
         }
 
@@ -146,7 +156,9 @@ namespace PackageExplorerViewModel
          SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         public void RaiseCanExecuteChanged()
         {
+#if WINDOWS
             CommandManager.InvalidateRequerySuggested();
+#endif
         }
     }
 }

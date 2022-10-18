@@ -12,13 +12,72 @@ the release version with no interference and will automatically update.
 
 | Build Number | Link |
 | ------------ | ---- |
-| [![Nightly build number](https://nugetpackageexplorer.blob.core.windows.net/nightly/ci_badge.svg)](https://nugetpackageexplorer.blob.core.windows.net/nightly/install.html)| [Install](https://nugetpackageexplorer.blob.core.windows.net/nightly/install.html)
-| [![Stable build number](https://nugetpackageexplorer.blob.core.windows.net/store/stable_badge.svg)](https://www.microsoft.com/store/apps/9wzdncrdmdm3) | [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) |
+| [![Nightly build number](https://npenightly.blob.core.windows.net/nightly/ci_badge.svg?q=1)](https://npenightly.blob.core.windows.net/nightly/install.html)| [Install](https://npenightly.blob.core.windows.net/nightly/install.html)
+| [![Stable build number](https://npenightly.blob.core.windows.net/store/stable_badge.svg?q=1)](https://www.microsoft.com/store/apps/9wzdncrdmdm3) | [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) |
 | [![Chocolatey build number](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg)](https://chocolatey.org/packages/NugetPackageExplorer) | [Chocolatey](https://chocolatey.org/packages/NugetPackageExplorer) |
+| ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/dotnet-validate) | [dotnet-validate CLI](https://www.nuget.org/packages/dotnet-validate) |
 
 ### Microsoft Store (recommended)
 
-<a href="https://www.microsoft.com/store/apps/9wzdncrdmdm3?ocid=badge"><img height="104" width="288" src="https://assets.windowsphone.com/f2f77ec7-9ba9-4850-9ebe-77e366d08adc/English_Get_it_Win_10_InvariantCulture_Default.png" alt="Get it on Windows 10"></a>
+<a href='//www.microsoft.com/store/apps/9wzdncrdmdm3?cid=storebadge&ocid=badge'><img src='https://developer.microsoft.com/store/badges/images/English_get-it-from-MS.png' alt='English badge' width="284" height="104" /></a>
+
+### 
+
+If you have winget installed, you can use it to acquire NuGet Package Explorer through the Microsoft Store:
+
+```
+winget install "NuGet Package Explorer"
+```
+
+### .NET CLI Tool
+
+A subset of functionality for checking package health is now availabe as a cross-platform CLI tool. Install with:
+
+`dotnet tool install -g dotnet-validate --version 0.0.1-preview.42`
+
+*Note: Use the latest version*
+
+There is one command and two subcommands:
+
+The main command is `package`. This is so `dotnet validate ...` can be used for additional things later.
+
+Usage:
+
+```
+Usage:
+  dotnet validate package local [options] <file>
+
+Arguments:
+  <file>    Package to validate.
+
+Options:
+  -?, -h, --help    Show help and usage information
+
+```
+
+```
+Usage:
+  dotnet validate package remote [options] <packageId>
+
+Arguments:
+  <packageId>    Package Id
+
+Options:
+  -v, --version <version>            Package version. Defaults to latest.
+  -s, --feed-source <feed-source>    V3 NuGet Feed Source. [default: https://api.nuget.org/v3/index.json]
+  -?, -h, --help                     Show help and usage information
+
+```
+
+Return codes:
+Tool will return `-1` if the package is not fully valid. Details will be printed to the console.
+
+#### To Do
+
+A lot! The tool should emit the results in a machine-parsable way (json).
+
+*Known Issue:* Exact versions for remote packages isn't working. Only the latest is checked. Will be fixed shortly.
+
 
 ### Chocolatey
 
@@ -27,6 +86,12 @@ Chocolatey is another great way to install and update your application.
 1. Run PowerShell (as Admin)
 2. Install Chocolatey: `iwr https://chocolatey.org/install.ps1 -UseBasicParsing | iex`
 3. Install NuGet Package Explorer: `choco install nugetpackageexplorer`
+
+### Web
+A subset of NuGet Package Explorer (Browsing, Inspecting, Uploading packages) is available on the [Web](https://NuGet.info). Implemented by using [Uno Platform](https://github.com/unoplatform/uno) Web Assembly support, it is also available as PWA.  
+
+The current Windows/WPF implementation of NPE will remain in the Windows store indefinitely, or at least until the new version fully replaces its functionality.
+
 
 ## What is NuGet Package Explorer?
 
@@ -93,8 +158,7 @@ Please check the [FAQ](https://github.com/NuGetPackageExplorer/NuGetPackageExplo
 Requirements to build the project:
 
 - VS2019 or later. If using the stable release, make sure to enable support for Preview .NET Core SDK's
-- [Windows 10 SDK 17134](https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk)
-- [.NET 5 SDK](https://dotnet.microsoft.com/download/dotnet-core/5.0)
+- [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
 - [Shared IntelliCode model](https://prod.intellicode.vsengsaas.visualstudio.com/get?m=B971F4617299420C8D5CFEF23F395D2A)
 
 

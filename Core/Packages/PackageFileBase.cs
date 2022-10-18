@@ -11,19 +11,18 @@ namespace NuGetPe
     {
         protected PackageFileBase(string path)
         {
-            Path = path;
+            Path = path;            
+          
+            // make sure we switch to the directory char per platform for this check as ParseNuGetFrameworkFromFilePath looks for that
+            var nuf = FrameworkNameUtility.ParseNuGetFrameworkFromFilePath(path?.Replace('\\', System.IO.Path.DirectorySeparatorChar), out var effectivePath);
 
-            FrameworkNameUtility.ParseFrameworkNameFromFilePath(path, out var effectivePath);
             EffectivePath = effectivePath;
 
-            try
+            NuGetFramework = nuf;
+            if(nuf != null)
             {
-                TargetFramework = new FrameworkName(NuGetFramework.Parse(effectivePath).DotNetFrameworkName);
-            }
-            catch (ArgumentException) // could be an invalid framework/version
-            {
-
-            }
+                TargetFramework = new FrameworkName(NuGetFramework.DotNetFrameworkName);
+            }                           
         }
 
         public string Path
@@ -49,19 +48,22 @@ namespace NuGetPe
         }
 
         public FrameworkName? TargetFramework { get; }
+        public NuGetFramework? NuGetFramework { get; }
 
-        public IEnumerable<FrameworkName> SupportedFrameworks
+        public IEnumerable<NuGetFramework> SupportedFrameworks
         {
             get
             {
-                if (TargetFramework != null)
+                if (NuGetFramework != null)
                 {
-                    yield return TargetFramework;
+                    yield return NuGetFramework;
                 }
                 yield break;
             }
         }
 
         public virtual DateTimeOffset LastWriteTime { get; } = DateTimeOffset.MinValue;
+
+        
     }
 }

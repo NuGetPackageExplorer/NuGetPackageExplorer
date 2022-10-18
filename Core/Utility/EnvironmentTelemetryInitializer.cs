@@ -9,27 +9,39 @@ using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
 namespace NuGetPe.Utility
 {
-    internal class EnvironmentTelemetryInitializer : ITelemetryInitializer
+    public class EnvironmentTelemetryInitializer : ITelemetryInitializer, ITelemetryServiceInitializer
     {
+        private Dictionary<string, string> _properties = new Dictionary<string, string>();
 
 #if STORE
-        private const string Channel = "store";
+        private readonly string _channel = "store";
 #elif NIGHTLY
-        private const string Channel = "nightly";
+        private readonly string _channel = "nightly";
 #elif CHOCO
-        private const string Channel = "chocolatey";
+        private readonly string _channel = "chocolatey";
 #else
-        private const string Channel = "zip";
+        private readonly string _channel = AppCompat.IsWasm ? "WebAssembly" : "zip";
 #endif
 
-        public void Initialize(ITelemetry telemetry)
+        public IReadOnlyDictionary<string, string> Properties => _properties;
+
+        public EnvironmentTelemetryInitializer()
         {
-            telemetry.Context.GlobalProperties["Environment"] = Channel;
+            _properties["Environment"] = _channel;
+
             // Always default to development if we're in the debugger
             if (Debugger.IsAttached)
             {
-                telemetry.Context.GlobalProperties["Environment"] = "development";
-            }       
+                _properties["Environment"] = "development";
+            }
+        }
+
+        public void Initialize(ITelemetry telemetry)
+        {
+            foreach (var item in _properties)
+            {
+                telemetry.Context.GlobalProperties.Add(item);
+            }
         }
     }
 }

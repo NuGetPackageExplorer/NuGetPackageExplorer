@@ -1,12 +1,27 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Windows;
-using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
-using PackageExplorerViewModel.Utilities;
+
+#if HAS_UNO
+using Windows.UI.Text;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Uno.Extensions;
+using Uno.Logging;
+
+using TabControl = Microsoft.UI.Xaml.Controls.TabView;
+using TabItem = Microsoft.UI.Xaml.Controls.TabViewItem;
+#else
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+#endif
 
 namespace PackageExplorer
 {
@@ -18,22 +33,32 @@ namespace PackageExplorer
         {
             DiagnosticsClient.TrackEvent("AssemblyFileViewer");
 
-            
-
             try
             {
                 using var str = selectedFile.GetStream();
                 using var tempFile = new TemporaryFile(str);
 
+                var debugData = (selectedFile as PackageFile)?.DebugData;
                 var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
-                AssemblyDebugDataViewModel? debugDataViewModel = null;
-                if (assemblyMetadata?.DebugData.HasDebugInfo == true)
-                    debugDataViewModel = new AssemblyDebugDataViewModel(assemblyMetadata.DebugData);
 
+                if (debugData == null)
+                {
+                    if (assemblyMetadata?.DebugData.HasDebugInfo == true)
+                    {
+                        debugData = assemblyMetadata.DebugData;
+                    }
+                }
+
+                AssemblyDebugDataViewModel? debugDataViewModel = null;
+
+                if (debugData != null)
+                    debugDataViewModel = new AssemblyDebugDataViewModel(Task.FromResult(debugData));
+
+#if !HAS_UNO
                 // No debug data to display
                 if (assemblyMetadata != null && debugDataViewModel == null)
                 {
-                    var orderedAssemblyDataEntries = assemblyMetadata.GetMetadataEntriesOrderedByImportance();
+                    var orderedAssemblyDataEntries = GetMetadataEntriesOrderedByImportance(assemblyMetadata);
 
                     var grid = CreateAssemblyMetadataGrid(orderedAssemblyDataEntries);
 
@@ -46,12 +71,17 @@ namespace PackageExplorer
                 }
                 else if (assemblyMetadata != null && debugDataViewModel != null)
                 {
-                    var orderedAssemblyDataEntries = assemblyMetadata.GetMetadataEntriesOrderedByImportance();
+                    var orderedAssemblyDataEntries = GetMetadataEntriesOrderedByImportance(assemblyMetadata);
 
-                    // Tab control with two pages
+                    // Tab control with three pages
                     var tc = new TabControl()
                     {
+#if HAS_UNO
+                        IsAddTabButtonVisible = false,
+                        TabItems =
+#else
                         Items =
+#endif
                         {
                             new TabItem
                             {
@@ -65,12 +95,25 @@ namespace PackageExplorer
                             },
                             new TabItem
                             {
-                                Header = "Embedded PDB Data",
+                                Header = "PDB Info",
                                 Content = new ScrollViewer
                                 {
                                     HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
                                     VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                                    Content = new Controls.PdbFileViewer
+                                    Content = new Controls.PdbInfoViewer
+                                    {
+                                        DataContext = debugDataViewModel
+                                    }
+                                }
+                            },
+                            new TabItem
+                            {
+                                Header = "PDB Sources",
+                                Content = new ScrollViewer
+                                {
+                                    HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    Content = new Controls.PdbSourcesViewer
                                     {
                                         DataContext = debugDataViewModel
                                     }
@@ -81,21 +124,48 @@ namespace PackageExplorer
 
                     return tc;
                 }
+#else
+                // returning UIElement from here works.
+                // however due to performance issues, we are just
+                // returning the datacontext and letting the xaml to handle the view.
+                // also, the ui layout is vastely different compared to the #if-block above
+                return new AssemblyFileContent()
+                {
+                    Metadata = assemblyMetadata
+                        ?.SelectOrDefault(GetMetadataEntriesOrderedByImportance)
+                        .ToArray(),
+                    DebugData = debugDataViewModel,
+                };
+#endif
             }
-            catch { }
+            catch (Exception e)
+            {
+#if HAS_UNO
+                this.Log().Error("Failed to generate view", e);
+#endif
+            }
 
+#if !HAS_UNO
             return new Grid();
+#else
+            // the empty object is needed for branching via type-checking
+            return new AssemblyFileContent();
+#endif
         }
 
 
-        private static Grid CreateAssemblyMetadataGrid(IEnumerable<KeyValuePair<string, string>> orderedAssemblyDataEntries)
+        internal static Grid CreateAssemblyMetadataGrid(IEnumerable<KeyValuePair<string, string>> orderedAssemblyDataEntries)
         {
-
             var grid = new Grid();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-            var style =  Application.Current.FindResource("SelectableTextBlockLikeStyleWithoutTriggers") as Style;
+#if HAS_UNO
+            var style = Application.Current.Resources["SelectableTextBlockLikeStyleWithoutTriggers"] as Style;
+#else
+            grid.SetBinding(Grid.MaxWidthProperty, new Binding(nameof(ScrollViewer.ActualWidth)) { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(ScrollViewer), 1) });
+            var style = Application.Current.FindResource("SelectableTextBlockLikeStyleWithoutTriggers") as Style;
+#endif
 
             foreach (var data in orderedAssemblyDataEntries)
             {
@@ -113,7 +183,8 @@ namespace PackageExplorer
                 {
                     Text = data.Value,
                     Margin = new Thickness(0, 3, 3, 0),
-                    Style = style
+                    Style = style,
+                    TextWrapping = TextWrapping.Wrap,
                 };
                 Grid.SetRow(value, grid.RowDefinitions.Count);
                 Grid.SetColumn(value, 1);
@@ -125,5 +196,54 @@ namespace PackageExplorer
 
             return grid;
         }
+
+
+        /// <summary>
+        /// Gets all the metadata entries sorted by importance
+        /// </summary>
+        private static IEnumerable<KeyValuePair<string, string>> GetMetadataEntriesOrderedByImportance(AssemblyMetaDataInfo assemblyMetaData)
+        {
+            if (assemblyMetaData.FullName != null)
+            {
+                yield return KeyValuePair.Create("Full Name", assemblyMetaData.FullName);
+            }
+            if (assemblyMetaData.StrongName != null)
+            {
+                yield return KeyValuePair.Create("Strong Name", assemblyMetaData.StrongName);
+            }
+
+            foreach (var entry in assemblyMetaData.MetadataEntries.OrderBy(kv => kv.Key))
+            {
+                yield return entry;
+            }
+
+            if (assemblyMetaData.ReferencedAssemblies != null)
+            {
+                var assemblyNamesDelimitedByLineBreak = string.Join(
+                    Environment.NewLine,
+                    assemblyMetaData.ReferencedAssemblies
+                        .OrderBy(assName => assName.Name)
+                        .Select(assName => assName.FullName));
+
+                yield return KeyValuePair.Create("Referenced assemblies", assemblyNamesDelimitedByLineBreak);
+            }
+        }
+
+#if HAS_UNO
+        [Bindable]
+        public class AssemblyFileContent
+        {
+            public bool IsAssemblyFileContent => true;
+
+            public KeyValuePair<string, string>[]? Metadata { get; init; }
+            public AssemblyDebugDataViewModel? DebugData { get; init; }
+
+            public override string ToString()
+            {
+                // workaround: prevent class name to be displayed during content transition
+                return string.Empty;
+            }
+        }
+#endif
     }
 }

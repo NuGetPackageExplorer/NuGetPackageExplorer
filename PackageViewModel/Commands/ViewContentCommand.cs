@@ -8,7 +8,9 @@ using System.Windows.Input;
 using AuthenticodeExaminer;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
-using PackageExplorerViewModel.Utilities;
+using NuGetPe.Utility;
+
+using PeNet;
 
 namespace PackageExplorerViewModel
 {
@@ -21,7 +23,7 @@ namespace PackageExplorerViewModel
 
         #region ICommand Members
 
-        public event EventHandler CanExecuteChanged = delegate { };
+        public event EventHandler? CanExecuteChanged = delegate { };
 
         public bool CanExecute(object? parameter)
         {
@@ -60,7 +62,7 @@ namespace PackageExplorerViewModel
                     {
                         if (!(e is IOException))
                         {
-                            DiagnosticsClient.TrackException(e);
+                            DiagnosticsClient.TrackException(e, ViewModel.Package, ViewModel.PublishedOnNuGetOrg);
                         }
 
                         ViewModel.UIServices.Show(e.Message, MessageLevel.Error);
@@ -74,13 +76,9 @@ namespace PackageExplorerViewModel
 
         public void RaiseCanExecuteChanged()
         {
-            CanExecuteChanged(this, EventArgs.Empty);
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        [SuppressMessage(
-            "Microsoft.Design",
-            "CA1031:DoNotCatchGeneralExceptionTypes",
-            Justification = "We don't want plugin to crash the app.")]
         private void ShowFile(PackageFile file)
         {
             object? content = null;
@@ -90,14 +88,13 @@ namespace PackageExplorerViewModel
             var contentViewers = FindContentViewer(file);
             if (contentViewers != null)
             {
-                isBinary = true;
                 try
                 {
                     // iterate over all plugins, looking for the first one that return non-null content
                     foreach (var viewer in contentViewers)
                     {
 
-                        var files = file.GetAssociatedFiles().ToList();
+                        var files = file.GetAssociatedPackageFiles().ToList();
 
                         content = viewer.GetView(file, files);
                         if (content != null)
@@ -109,15 +106,12 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex) when (!(ex is FileNotFoundException))
                 {
-                    DiagnosticsClient.TrackException(ex);
+                    DiagnosticsClient.TrackException(ex, ViewModel.Package, ViewModel.PublishedOnNuGetOrg);
                     // don't let plugin crash the app
                     content = Resources.PluginFailToReadContent + Environment.NewLine + ex.ToString();
                 }
 
-                if (content is string)
-                {
-                    isBinary = false;
-                }
+                isBinary = content is not string;
             }
 
             // if plugins fail to read this file, fall back to the default viewer
@@ -138,15 +132,36 @@ namespace PackageExplorerViewModel
             long size = -1;
             IReadOnlyList<AuthenticodeSignature> sigs;
             SignatureCheckResult isValidSig;
-            using (var str = file.GetStream())
-            using (var tempFile = new TemporaryFile(str, Path.GetExtension(file.Name)))
             {
-                var extractor = new FileInspector(tempFile.FileName);
+                // note: later, throught binding converter, SigningCertificate's CN value is extracted through native api
+                if (AppCompat.IsSupported(RuntimeFeature.Cryptography, RuntimeFeature.NativeMethods))
+                {
+                    using var stream = file.GetStream();
+                    using var tempFile = new TemporaryFile(stream, Path.GetExtension(file.Name));
+                    var extractor = new FileInspector(tempFile.FileName);
 
-                sigs = extractor.GetSignatures().ToList();
-                isValidSig = extractor.Validate();
+                    sigs = extractor.GetSignatures().ToList();
+                    isValidSig = extractor.Validate();
+                    size = tempFile.Length;
+                }
+                else
+                {
+                    using var stream = StreamUtility.MakeSeekable(file.GetStream(), disposeOriginal: true);
+                    var peFile = new PeFile(stream);
+                    var certificate = CryptoUtility.GetSigningCertificate(peFile);
 
-                size = tempFile.Length;
+                    if (certificate is not null)
+                    {
+                        sigs = new List<AuthenticodeSignature>(0);
+                        isValidSig = SignatureCheckResult.UnknownProvider;
+                    }
+                    else
+                    {
+                        sigs = new List<AuthenticodeSignature>(0);
+                        isValidSig = SignatureCheckResult.NoSignature;
+                    }
+                    size = peFile.FileSize;
+                }
             }
 
             var fileInfo = new FileContentInfo(
@@ -167,7 +182,9 @@ namespace PackageExplorerViewModel
             var extension = Path.GetExtension(file.Name);
 
             return from p in ViewModel.ContentViewerMetadata
+#if !NETSTANDARD2_1
                    where AppCompat.IsWindows10S ? p.Metadata.SupportsWindows10S : true // Filter out incompatible addins on 10s
+#endif
                    where p.Metadata.SupportedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase)
                    orderby p.Metadata.Priority
                    select p.Value;

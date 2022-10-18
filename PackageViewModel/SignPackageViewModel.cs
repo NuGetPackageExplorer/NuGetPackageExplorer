@@ -226,6 +226,7 @@ namespace PackageExplorerViewModel
         {
             DiagnosticsClient.TrackEvent("SignPackageViewModel_SelectCertificateFileCommandExecute");
 
+#if WINDOWS
             try
             {
                 using var store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
@@ -259,14 +260,19 @@ namespace PackageExplorerViewModel
             {
                 OnError(ex);
             }
+#else
+            throw new PlatformNotSupportedException();
+#endif
         }
 
+#if WINDOWS
         private static bool IsCertificateValidForNuGet(X509Certificate2 certificate) =>
             CertificateUtility.IsValidForPurposeFast(certificate, Oids.CodeSigningEku) &&
             CertificateUtility.IsCertificatePublicKeyValid(certificate) &&
             CertificateUtility.IsSignatureAlgorithmSupported(certificate) &&
             !CertificateUtility.HasExtendedKeyUsage(certificate, Oids.LifetimeSigningEku) &&
             !CertificateUtility.IsCertificateValidityPeriodInTheFuture(certificate);
+#endif
 
         private void ShowCertificateCommandExecute()
         {
@@ -277,7 +283,9 @@ namespace PackageExplorerViewModel
             {
                 try
                 {
+#if WINDOWS
                     X509Certificate2UI.DisplayCertificate(certificate);
+#endif
                 }
                 catch { }
             }
@@ -296,6 +304,10 @@ namespace PackageExplorerViewModel
 
             try
             {
+
+                if (Certificate == null)
+                    return null;
+
                 using var tempCertificate = new X509Certificate2(Certificate);
                 using var signRequest = new AuthorSignPackageRequest(tempCertificate, HashAlgorithmName);
                 var packagePath = _packageViewModel.GetCurrentPackageTempFile();
@@ -400,12 +412,12 @@ namespace PackageExplorerViewModel
 
                 if (!ShowPassword)
                 {
-                    OnError(new Exception(Resources.PasswordRequired));
+                    OnError(new ArgumentException(Resources.PasswordRequired));
                     ShowPassword = true;
                 }
                 else
                 {
-                    OnError(new Exception(Resources.PasswordIncorrect));
+                    OnError(new ArgumentOutOfRangeException(Resources.PasswordIncorrect));
                 }
             }
             catch (Exception ex)
@@ -460,6 +472,7 @@ namespace PackageExplorerViewModel
             _certificateValidationTimer?.Dispose();
             _certificateValidationSemaphore?.Dispose();
             _certificate?.Dispose();
+            _certificate = null;
         }
     }
 }

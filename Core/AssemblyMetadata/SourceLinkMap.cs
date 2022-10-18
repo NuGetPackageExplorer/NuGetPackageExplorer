@@ -1,146 +1,156 @@
 ﻿// Copyright (c) Microsoft.  All Rights Reserved.  Licensed under the Apache License, Version 2.0.  See License.txt in the project root for license information.
 
+#nullable enable
+
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
-// TODO: Use a source package once available (https://github.com/dotnet/sourcelink/issues/443)
+#if NETCOREAPP
+using System.Diagnostics.CodeAnalysis;
+#endif
 
 namespace Microsoft.SourceLink.Tools
 {
-    public sealed class SourceLinkMap
+    /// <summary>
+    /// Source Link URL map. Maps file paths matching Source Link patterns to URLs.
+    /// </summary>
+    internal readonly struct SourceLinkMap
     {
-        private readonly List<(FilePathPattern key, UriPattern value)> _entries;
+        private readonly ReadOnlyCollection<Entry> _entries;
 
-        internal SourceLinkMap(List<(FilePathPattern key, UriPattern value)> entries)
+        private SourceLinkMap(ReadOnlyCollection<Entry> mappings)
         {
-            Debug.Assert(entries != null);
-            _entries = entries;
+            _entries = mappings;
         }
 
-        internal struct FilePathPattern
+        public readonly struct Entry
+        {
+            public readonly FilePathPattern FilePath;
+            public readonly UriPattern Uri;
+
+            public Entry(FilePathPattern filePath, UriPattern uri)
+            {
+                FilePath = filePath;
+                Uri = uri;
+            }
+
+            public void Deconstruct(out FilePathPattern filePath, out UriPattern uri)
+            {
+                filePath = FilePath;
+                uri = Uri;
+            }
+        }
+
+        public readonly struct FilePathPattern
         {
             public readonly string Path;
             public readonly bool IsPrefix;
 
             public FilePathPattern(string path, bool isPrefix)
             {
-                Debug.Assert(path != null);
-
                 Path = path;
                 IsPrefix = isPrefix;
             }
         }
 
-        internal struct UriPattern
+        public readonly struct UriPattern
         {
             public readonly string Prefix;
             public readonly string Suffix;
 
             public UriPattern(string prefix, string suffix)
             {
-                Debug.Assert(prefix != null);
-                Debug.Assert(suffix != null);
-
                 Prefix = prefix;
                 Suffix = suffix;
             }
         }
 
-        internal static SourceLinkMap? Parse(string json, Action<string> reportDiagnostic)
+        public IReadOnlyList<Entry> Entries => _entries;
+
+        /// <summary>
+        /// Parses Source Link JSON string.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="json"/> is null.</exception>
+        /// <exception cref="InvalidDataException">The JSON does not follow Source Link specification.</exception>
+        /// <exception cref="JsonException"><paramref name="json"/> is not valid JSON string.</exception>
+        public static SourceLinkMap Parse(string json)
         {
-            var errorReported = false;
-
-            void ReportInvalidJsonDataOnce(string message)
+            if (json is null)
             {
-                if (!errorReported)
-                {
-                    // Bad source link format
-                    reportDiagnostic($"The JSON format is invalid: {message}");
-                }
-
-                errorReported = true;
+                throw new ArgumentNullException(nameof(json));
             }
 
-            var list = new List<(FilePathPattern key, UriPattern value)>();
-            try
+            var list = new List<Entry>();
+
+            var root = JsonDocument.Parse(json, new JsonDocumentOptions() { AllowTrailingCommas = true }).RootElement;
+            if (root.ValueKind != JsonValueKind.Object)
             {
-                // trim BOM if present:
-                var root = JObject.Parse(json.TrimStart('\uFEFF'));
-                var documents = root["documents"];
-
-                if (documents.Type != JTokenType.Object)
-                {
-                    ReportInvalidJsonDataOnce($"expected object: {documents}");
-                    return null;
-                }
-
-                foreach (var token in documents)
-                {
-                    if (!(token is JProperty property))
-                    {
-                        ReportInvalidJsonDataOnce($"expected property: {token}");
-                        continue;
-                    }
-
-                    var value = (property.Value.Type == JTokenType.String) ?
-                        property.Value.Value<string>() : null;
-
-                    if (value == null ||
-                        !TryParseEntry(property.Name, value, out var path, out var uri))
-                    {
-                        ReportInvalidJsonDataOnce($"invalid mapping: '{property.Name}': '{value}'");
-                        continue;
-                    }
-
-                    list.Add((path, uri));
-                }
+                throw new InvalidDataException();
             }
-            catch (JsonReaderException e)
+
+            foreach (var rootEntry in root.EnumerateObject())
             {
-                reportDiagnostic(e.Message);
-                return null;
+                if (!rootEntry.NameEquals("documents"))
+                {
+                    // potential future extensibility
+                    continue;
+                }
+
+                if (rootEntry.Value.ValueKind != JsonValueKind.Object)
+                {
+                    throw new InvalidDataException();
+                }
+
+                foreach (var documentsEntry in rootEntry.Value.EnumerateObject())
+                {
+                    if (documentsEntry.Value.ValueKind != JsonValueKind.String ||
+                        !TryParseEntry(documentsEntry.Name, documentsEntry.Value.GetString()!, out var entry))
+                    {
+                        throw new InvalidDataException();
+                    }
+
+                    list.Add(entry);
+                }
             }
 
             // Sort the map by decreasing file path length. This ensures that the most specific paths will checked before the least specific
             // and that absolute paths will be checked before a wildcard path with a matching base
-            list.Sort((left, right) => -left.key.Path.Length.CompareTo(right.key.Path.Length));
+            list.Sort((left, right) => -left.FilePath.Path.Length.CompareTo(right.FilePath.Path.Length));
 
-            return new SourceLinkMap(list);
+            return new SourceLinkMap(new ReadOnlyCollection<Entry>(list));
         }
 
-        private static bool TryParseEntry(string key, string value, out FilePathPattern path, out UriPattern uri)
+        private static bool TryParseEntry(string key, string value, out Entry entry)
         {
-            path = default;
-            uri = default;
+            entry = default;
 
             // VALIDATION RULES
             // 1. The only acceptable wildcard is one and only one '*', which if present will be replaced by a relative path
             // 2. If the filepath does not contain a *, the uri cannot contain a * and if the filepath contains a * the uri must contain a *
             // 3. If the filepath contains a *, it must be the final character
             // 4. If the uri contains a *, it may be anywhere in the uri
+            if (key.Length == 0)
+            {
+                return false;
+            }
 
-            var filePathStar = key.IndexOf('*', StringComparison.OrdinalIgnoreCase);
+            var filePathStar = key.IndexOf('*', StringComparison.Ordinal);
             if (filePathStar == key.Length - 1)
             {
                 key = key.Substring(0, filePathStar);
-
-                if (key.IndexOf('*', StringComparison.OrdinalIgnoreCase) >= 0)
-                {
-                    return false;
-                }
             }
-            else if (filePathStar >= 0 || key.Length == 0)
+            else if (filePathStar >= 0)
             {
                 return false;
             }
 
             string uriPrefix, uriSuffix;
-            var uriStar = value.IndexOf('*', StringComparison.OrdinalIgnoreCase);
+            var uriStar = value.IndexOf('*', StringComparison.Ordinal);
             if (uriStar >= 0)
             {
                 if (filePathStar < 0)
@@ -149,9 +159,9 @@ namespace Microsoft.SourceLink.Tools
                 }
 
                 uriPrefix = value.Substring(0, uriStar);
-                uriSuffix = value.Substring(uriStar + 1);
+                uriSuffix = value[(uriStar + 1)..];
 
-                if (uriSuffix.IndexOf('*', StringComparison.OrdinalIgnoreCase) >= 0)
+                if (uriSuffix.Contains('*', StringComparison.Ordinal))
                 {
                     return false;
                 }
@@ -162,42 +172,58 @@ namespace Microsoft.SourceLink.Tools
                 uriSuffix = "";
             }
 
-            path = new FilePathPattern(key, isPrefix: filePathStar >= 0);
-            uri = new UriPattern(uriPrefix, uriSuffix);
+            entry = new Entry(
+                new FilePathPattern(key, isPrefix: filePathStar >= 0),
+                new UriPattern(uriPrefix, uriSuffix));
+
             return true;
         }
 
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design", "CA1055:Uri return values should not be strings", Justification = "<Pending>")]
-        public string? GetUri(string path)
+        /// <summary>
+        /// Maps specified <paramref name="path"/> to the corresponding URL.
+        /// </summary>
+        /// <exception cref="ArgumentNullException"><paramref name="path"/> is null.</exception>
+        public bool TryGetUri(
+            string path,
+#if NETCOREAPP
+            [NotNullWhen(true)]
+#endif
+            out string? uri)
         {
-            if (path is null)
-                throw new ArgumentNullException(nameof(path));
-
-            if (path.IndexOf('*', StringComparison.OrdinalIgnoreCase) >= 0)
+            if (path == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(path));
+            }
+
+            if (path.Contains('*', StringComparison.Ordinal))
+            {
+                uri = null;
+                return false;
             }
 
             // Note: the mapping function is case-insensitive.
 
-            foreach (var (file, uri) in _entries)
+            foreach (var (file, mappedUri) in _entries)
             {
                 if (file.IsPrefix)
                 {
                     if (path.StartsWith(file.Path, StringComparison.OrdinalIgnoreCase))
                     {
-                        var escapedPath = string.Join("/", path.Substring(file.Path.Length).Split(new[] { '/', '\\' }).Select(Uri.EscapeDataString));
-                        return uri.Prefix + escapedPath + uri.Suffix;
+                        var escapedPath = string.Join("/", path[file.Path.Length..].Split(new[] { '/', '\\' }).Select(Uri.EscapeDataString));
+                        uri = mappedUri.Prefix + escapedPath + mappedUri.Suffix;
+                        return true;
                     }
                 }
                 else if (string.Equals(path, file.Path, StringComparison.OrdinalIgnoreCase))
                 {
-                    Debug.Assert(uri.Suffix.Length == 0);
-                    return uri.Prefix;
+                    Debug.Assert(mappedUri.Suffix.Length == 0);
+                    uri = mappedUri.Prefix;
+                    return true;
                 }
             }
 
-            return null;
-        }
+            uri = null;
+            return false;
+        } 
     }
 }

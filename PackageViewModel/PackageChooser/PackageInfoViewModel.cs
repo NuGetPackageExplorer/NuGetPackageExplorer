@@ -347,7 +347,7 @@ namespace PackageExplorerViewModel
 
             var versionInfo = versionInfos?.FirstOrDefault(v => v.Version == packageSearchMetadata.Identity.Version);
 
-            var downloadCount = (int?)(versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount);
+            var downloadCount = versionInfo?.DownloadCount ?? packageSearchMetadata.DownloadCount;
 
             return new PackageInfo(packageSearchMetadata.Identity)
             {
@@ -363,7 +363,8 @@ namespace PackageExplorerViewModel
                 LicenseUrl = packageSearchMetadata.LicenseUrl?.ToString() ?? string.Empty,
                 ProjectUrl = packageSearchMetadata.ProjectUrl?.ToString() ?? string.Empty,
                 ReportAbuseUrl = packageSearchMetadata.ReportAbuseUrl?.ToString() ?? string.Empty,
-                IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty
+                IconUrl = packageSearchMetadata.IconUrl?.ToString() ?? string.Empty,
+                ReadmeUrl = packageSearchMetadata.ReadmeUrl?.ToString() ?? string.Empty
             };
         }
 

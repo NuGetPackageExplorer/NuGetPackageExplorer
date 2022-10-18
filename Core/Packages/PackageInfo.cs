@@ -58,7 +58,7 @@ namespace NuGetPe
         /// <summary>
         /// Gets or sets the number of package downloads.
         /// </summary>
-        public int? DownloadCount { get; set; }
+        public long? DownloadCount { get; set; }
 
         /// <summary>
         /// Gets or sets the time of the packages publishing.
@@ -69,6 +69,11 @@ namespace NuGetPe
         /// Gets or sets the url to the package icon.
         /// </summary>
         public string? IconUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the url to the package readme.
+        /// </summary>
+        public string? ReadmeUrl { get; set; }
 
         /// <summary>
         /// Gets or sets the url to the package license information.

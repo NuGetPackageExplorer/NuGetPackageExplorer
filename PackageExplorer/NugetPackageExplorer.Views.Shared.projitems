@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects Condition="'$(MSBuildVersion)' == '' Or '$(MSBuildVersion)' &lt; '16.0'">$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>ceac2115-ff07-4ad0-9c9a-dd967b7ecd58</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>NugetPackageExplorer.Views.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BooleanToStringConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\BooleanToVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\DateTimeOffsetLongDateConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\EnumConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\FileSizeConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\FrameworkAssemblyReferenceDisplayConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\FrameworkNameConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\LicenseMetadataConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\LicenseUrlToVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NuGetVersionConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NuGetVersionPreReleaseConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToBoolConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\NullToVisibilityConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\PackageDependencyConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Converters\ReferenceSetConverter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\AssemblyFileViewer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\ImageFileViewer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\NativeLibraryFileViewer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\PdbFileViewer.cs" />
+    <!-- <Compile Include="$(MSBuildThisFileDirectory)MefServices\RtfFileViewer.cs" /> -->
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\PackageChooserService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\PackageDownloader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\PluginManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MefServices\SettingsManager.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resources.Designer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utilities\FileUtility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="$(MSBuildThisFileDirectory)Resources.resx" />
+  </ItemGroup>
+</Project>

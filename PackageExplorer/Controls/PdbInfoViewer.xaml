@@ -1,0 +1,111 @@
+﻿<UserControl x:Class="PackageExplorer.Controls.PdbInfoViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:PackageExplorer.Controls"
+             xmlns:self="clr-namespace:PackageExplorer" 
+             xmlns:vm="clr-namespace:PackageExplorerViewModel;assembly=NuGetPackageExplorer.PackageViewModel"
+             xmlns:core="clr-namespace:NuGetPe.AssemblyMetadata;assembly=NuGetPackageExplorer.Core"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type vm:AssemblyDebugDataViewModel}, IsDesignTimeCreatable=False}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <Style x:Key="Key" TargetType="{x:Type TextBox}" BasedOn="{StaticResource SelectableTextBlockLikeStyleWithoutTriggers}">
+                <Setter Property="Margin" Value="3,3,10,0" />
+                <Setter Property="FontWeight" Value="SemiBold" />
+            </Style>
+            <Style x:Key="Value" TargetType="{x:Type TextBox}" BasedOn="{StaticResource SelectableTextBlockLikeStyleWithoutTriggers}">
+                <Setter Property="Margin" Value="0,3,3,0" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- IsTabStop="True" here is to prevent scrolling down to the first focusable element which would be the first cell in the DataGrid -->
+        <TextBox Text="Type:" Style="{StaticResource Key}" IsTabStop="True" />
+        <TextBox
+            Grid.Column="1"            
+            Text="{Binding PdbType, Mode=OneWay}"
+            Style="{StaticResource Value}"  />
+
+        <TextBox
+            Grid.Row="1"
+            Text="Compiler Flags Present:"
+            Style="{StaticResource Key}" />
+        <TextBox
+            Grid.Row="1"
+            Grid.Column="1"            
+            Text="{Binding HasCompilerFlags, Mode=OneWay}"
+            Style="{StaticResource Value}"  />
+
+
+        <TextBox
+            Grid.Row="2"
+            Visibility="{Binding CompilerFlags, Converter={StaticResource NullToVisibilityConverter}}"
+            Text="Compiler Flags:"
+            Style="{StaticResource Key}" />
+
+        <ItemsControl Grid.IsSharedSizeScope="True"
+            Grid.Row="2"
+            Grid.Column="1"
+            Visibility="{Binding CompilerFlags, Converter={StaticResource NullToVisibilityConverter}}"
+            ItemsSource="{Binding CompilerFlags}"
+            IsTabStop="False"
+            x:Name="flagItems">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="{x:Type core:CompilerFlag}">
+                    <Grid MaxWidth="{Binding ActualWidth, ElementName=flagItems}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="flagLabel" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+
+                        <TextBox Text="{Binding Key, Mode=OneWay}" Style="{StaticResource Key}" />
+                        <TextBox Text="{Binding Value, Mode=OneWay}" Grid.Column="1" Style="{StaticResource Value}" TextWrapping="Wrap" />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <TextBox
+            Grid.Row="3"
+            Visibility="{Binding MetadataReferences, Converter={StaticResource NullToVisibilityConverter}}"
+            Text="Metadata References:"
+            Style="{StaticResource Key}" />
+
+        <DataGrid
+                Grid.Row="4"
+                Grid.ColumnSpan="2"
+                Visibility="{Binding MetadataReferences, Converter={StaticResource NullToVisibilityConverter}}"
+                ItemsSource="{Binding MetadataReferences}"
+                AutoGenerateColumns="False"
+                IsReadOnly="True"
+                PreviewMouseWheel="DataGrid_PreviewMouseWheel"
+            >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Binding="{Binding Name, Mode=OneWay}"  />
+                <DataGridTextColumn Header="Extern Aliases" Binding="{Binding ExternAliases, Mode=OneWay, Converter={StaticResource StringCollectionsToStringConverter}}"  />
+                <DataGridTextColumn Header="Metadata Image Kind" Binding="{Binding MetadataImageKind, Mode=OneWay}"  />
+                <DataGridTextColumn Header="Embed Interop Types" Binding="{Binding EmbedInteropTypes, Mode=OneWay}"  />
+                <DataGridTextColumn Header="Timestamp" Binding="{Binding Timestamp, Mode=OneWay, StringFormat=0x{0:X}}"  />
+                <DataGridTextColumn Header="Image Size (bytes)" Binding="{Binding ImageSize, Mode=OneWay, StringFormat={}{0:#,#}}"  />
+                <DataGridTextColumn Header="MVID" Binding="{Binding Mvid, Mode=OneWay}"  />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

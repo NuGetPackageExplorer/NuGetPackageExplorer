@@ -13,8 +13,11 @@ namespace PackageExplorer
     {
         private PackageChooserViewModel? _viewModel;
 
+#if !HAS_UNO
         // for select plugin dialog
         private PackageChooserDialog? _pluginDialog;
+#endif
+
 #pragma warning disable CA2213 // Disposable fields should be disposed
         private PackageChooserViewModel? _pluginViewModel;
 #pragma warning restore CA2213 // Disposable fields should be disposed
@@ -47,6 +50,7 @@ namespace PackageExplorer
                 _viewModel.PackageDownloadRequested += OnPackageDownloadRequested;
             }
 
+#if !HAS_UNO
             var dialog = new PackageChooserDialog(SettingsManager, _viewModel)
             {
                 Owner = Window.Value
@@ -62,6 +66,7 @@ namespace PackageExplorer
             {
                 UIServices.Show(e.Message, MessageLevel.Error);
             }
+#endif
 
             return _viewModel.SelectedPackage;
         }
@@ -119,6 +124,7 @@ namespace PackageExplorer
 
         public PackageInfo? SelectPluginPackage()
         {
+#if !HAS_UNO
             if (_pluginDialog == null)
             {
                 _pluginViewModel = ViewModelFactory.CreatePackageChooserViewModel(NuGetConstants.PluginFeedUrl);
@@ -128,10 +134,12 @@ namespace PackageExplorer
             _pluginDialog.Owner = Window.Value;
             ReCenterPackageChooserDialog(_pluginDialog);
             _pluginDialog.ShowDialog();
+#endif
             return _pluginViewModel?.SelectedPackage;
         }
 
-        private void ReCenterPackageChooserDialog(StandardDialog dialog)
+#if !HAS_UNO
+        private static void ReCenterPackageChooserDialog(StandardDialog dialog)
         {
             if (dialog.Owner == null)
             {
@@ -151,6 +159,7 @@ namespace PackageExplorer
             dialog.Left = ownerCenterX - dialog.ActualWidth / 2;
             dialog.Top = ownerCenterY - dialog.ActualHeight / 2;
         }
+#endif
 
         public void Dispose()
         {
