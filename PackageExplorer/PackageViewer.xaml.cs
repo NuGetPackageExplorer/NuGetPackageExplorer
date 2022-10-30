@@ -46,6 +46,15 @@ namespace PackageExplorer
                         "v6.0-maccatalyst", "net6.0-maccatalyst",
                         "v6.0-tizen", "net6.0-tizen",
                         "v6.0-windows", "net6.0-windows",
+						
+						"v7.0","net7.0",
+                        "v7.0-android", "net7.0-android",
+                        "v7.0-ios", "net7.0-ios",
+                        "v7.0-macos", "net7.0-macos",
+                        "v7.0-tvos", "net7.0-tvos",
+                        "v7.0-maccatalyst", "net7.0-maccatalyst",
+                        "v7.0-tizen", "net7.0-tizen",
+                        "v7.0-windows", "net7.0-windows",
                     }
                 ),
 
@@ -105,6 +114,7 @@ namespace PackageExplorer
                         "v4.7.1", "net471",
                         "v4.7.2", "net472",
                         "v4.8", "net48"
+						"v4.8.1", "net481"
                     }
                 )
                 
