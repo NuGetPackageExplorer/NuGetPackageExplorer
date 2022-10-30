@@ -83,7 +83,7 @@ namespace PackageExplorer
 #if __WASM__
             // FIXME#14: we are bypassing the entire implementation, because DownloadResource could not be created on WASM (but works skia)
             return NugetEndpoint
-                .DownloadPackage(packageIdentity.Id, packageIdentity.Version.OriginalVersion)
+                .DownloadPackage(packageIdentity.Id, packageIdentity.Version.ToNormalizedString())
                 .ContinueWith(x =>
                 {
                     var path = $"./tmp/{Guid.NewGuid()}.nupkg";
