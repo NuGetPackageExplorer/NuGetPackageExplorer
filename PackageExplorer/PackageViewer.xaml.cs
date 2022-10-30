@@ -113,7 +113,7 @@ namespace PackageExplorer
                         "v4.7", "net47",
                         "v4.7.1", "net471",
                         "v4.7.2", "net472",
-                        "v4.8", "net48"
+                        "v4.8", "net48",
 						"v4.8.1", "net481"
                     }
                 )
