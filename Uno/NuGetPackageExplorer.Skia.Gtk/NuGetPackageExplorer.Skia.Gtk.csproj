@@ -24,7 +24,7 @@
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.1" />
     <PackageReference Include="Uno.UI.Skia.Gtk" Version="4.2.6" />
-    <PackageReference Include="Uno.UI.RemoteControl" Version="4.2.6" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.UI.RemoteControl" Version="4.6.19" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.1.10-gf3d2516805" />
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.DataGrid" Version="7.1.10-gf3d2516805" />
     <PackageReference Include="System.Runtime.Caching" Version="6.0.0" />
