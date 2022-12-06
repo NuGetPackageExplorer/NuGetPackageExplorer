@@ -30,6 +30,7 @@ namespace PackageExplorer
                     ".NET",
                     new[]
                     {
+                        // .NET 5 References
                         "v5.0","net5.0",
                         "v5.0-android", "net5.0-android",
                         "v5.0-ios", "net5.0-ios",
@@ -38,6 +39,7 @@ namespace PackageExplorer
                         "v5.0-watchos", "net5.0-watchos",
                         "v5.0-windows", "net5.0-windows7.0",
 
+                        // .NET 6 References
                         "v6.0","net6.0",
                         "v6.0-android", "net6.0-android",
                         "v6.0-ios", "net6.0-ios",
@@ -47,6 +49,7 @@ namespace PackageExplorer
                         "v6.0-tizen", "net6.0-tizen",
                         "v6.0-windows", "net6.0-windows7.0",
 						
+                        // .NET 7 References
 						"v7.0","net7.0",
                         "v7.0-android", "net7.0-android",
                         "v7.0-ios", "net7.0-ios",
