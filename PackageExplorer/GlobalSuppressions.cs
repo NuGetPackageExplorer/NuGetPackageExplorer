@@ -11,6 +11,3 @@
 using System.Diagnostics.CodeAnalysis;
 
 [assembly: SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Scope = "assembly")]
-[assembly: SuppressMessage("Code Quality", "IDE0067:Dispose objects before losing scope", Scope = "assembly")]
-[assembly: SuppressMessage("Code Quality", "IDE0068:Use recommended dispose pattern", Scope = "assembly")]
-[assembly: SuppressMessage("Code Quality", "IDE0069:Disposable fields should be disposed", Scope = "assembly")]
