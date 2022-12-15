@@ -37,7 +37,7 @@ namespace PackageExplorer
                         "v5.0-macos", "net5.0-macos",
                         "v5.0-tvos", "net5.0-tvos",
                         "v5.0-watchos", "net5.0-watchos",
-                        "v5.0-windows", "net5.0-windows7.0",
+                        "v5.0-windows", "net5.0-windows",
 
                         // .NET 6 References
                         "v6.0","net6.0",
