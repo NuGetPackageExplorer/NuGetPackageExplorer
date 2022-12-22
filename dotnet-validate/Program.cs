@@ -153,7 +153,7 @@ namespace NuGetPe
                     cancellationTokenSource.Cancel();
                 };
 
-                using var downloader = new NuGetPackageDownloader(Console.Out, nuGetConfigDirectory ?? new DirectoryInfo(Environment.CurrentDirectory));
+                using var downloader = new NuGetPackageDownloader(new ConsoleLogger(), nuGetConfigDirectory ?? new DirectoryInfo(Environment.CurrentDirectory));
                 var packageFile = await downloader.DownloadAsync(packageId, version, cancellationTokenSource.Token).ConfigureAwait(false);
                 var versionString = version == null ? "" : version.ToFullString() + " ";
                 await Console.Out.WriteLineAsync($"Validating {packageId} {versionString}from {packageFile.FullName}").ConfigureAwait(false);

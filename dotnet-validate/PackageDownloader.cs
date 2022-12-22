@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -20,9 +20,9 @@ namespace NuGetPe
         private readonly SourceCacheContext _sourceCacheContext;
         private readonly PackageSourceProvider _packageSourceProvider;
 
-        public NuGetPackageDownloader(TextWriter logTextWriter, DirectoryInfo nuGetConfigDirectory)
+        public NuGetPackageDownloader(ILogger logger, DirectoryInfo nuGetConfigDirectory)
         {
-            _logger = new TextWriterLogger(logTextWriter);
+            _logger = logger;
             _settings = Settings.LoadDefaultSettings(nuGetConfigDirectory.FullName);
             _sourceCacheContext = new SourceCacheContext();
             _packageSourceProvider = new PackageSourceProvider(_settings);
