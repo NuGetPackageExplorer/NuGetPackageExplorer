@@ -47,7 +47,7 @@ namespace PackageExplorer
                         "v6.0-tvos", "net6.0-tvos",
                         "v6.0-maccatalyst", "net6.0-maccatalyst",
                         "v6.0-tizen", "net6.0-tizen",
-                        "v6.0-windows", "net6.0-windows7.0",
+                        "v6.0-windows", "net6.0-windows",
 						
                         // .NET 7 References
 						"v7.0","net7.0",
@@ -57,7 +57,7 @@ namespace PackageExplorer
                         "v7.0-tvos", "net7.0-tvos",
                         "v7.0-maccatalyst", "net7.0-maccatalyst",
                         "v7.0-tizen", "net7.0-tizen",
-                        "v7.0-windows", "net7.0-windows7.0",
+                        "v7.0-windows", "net7.0-windows",
                     }
                 ),
 
