@@ -15,7 +15,7 @@
     <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />    
     <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="System.Windows.Extensions" Version="6.0.0" />
+    <PackageReference Include="System.Windows.Extensions" Version="7.0.0" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
