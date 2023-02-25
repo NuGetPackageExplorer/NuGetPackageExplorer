@@ -58,6 +58,16 @@ namespace PackageExplorer
                         "v7.0-maccatalyst", "net7.0-maccatalyst",
                         "v7.0-tizen", "net7.0-tizen",
                         "v7.0-windows", "net7.0-windows",
+
+                        // .NET 8 References
+						"v8.0","net8.0",
+                        "v8.0-android", "net8.0-android",
+                        "v8.0-ios", "net8.0-ios",
+                        "v8.0-macos", "net8.0-macos",
+                        "v8.0-tvos", "net8.0-tvos",
+                        "v8.0-maccatalyst", "net8.0-maccatalyst",
+                        "v8.0-tizen", "net8.0-tizen",
+                        "v8.0-windows", "net8.0-windows",
                     }
                 ),
 
