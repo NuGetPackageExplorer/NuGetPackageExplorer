@@ -15,6 +15,7 @@ using NuGetPe;
 
 using NupkgExplorer.Framework.Extensions;
 using NupkgExplorer.Framework.Navigation;
+using NupkgExplorer.Presentation;
 using NupkgExplorer.Presentation.Content;
 using NupkgExplorer.Presentation.Dialogs;
 
@@ -115,7 +116,7 @@ namespace PackageExplorer
         /// <param name="e">Details about the launch request and process.</param>
         protected override async void OnLaunched(LaunchActivatedEventArgs e) =>
             //await OnLaunched<MainWindow>(e, Container.GetExportedValue<MainWindow>, PerformMainLandingNavigation)
-            await OnLaunched<Shell>(e, BuildShell, PerformShellLandingNavigation)
+            await OnLaunched<ShellPage>(e, BuildShell, PerformShellLandingNavigation)
                 .ConfigureAwait(true);
 
         private async Task OnLaunched<TRootPage>(LaunchActivatedEventArgs e, Func<TRootPage?> buildRoot, Func<TRootPage, LaunchActivatedEventArgs, Task> landingNavigation) where TRootPage : UIElement
@@ -173,9 +174,10 @@ namespace PackageExplorer
             }
         }
 
-        private Shell BuildShell()
+        private ShellPage BuildShell()
         {
-            var shell = Container.GetExportedValue<Shell>();
+            var shell = Container.GetExportedValue<ShellPage>();
+            shell.DataContext = new ShellPageViewModel();
             var frame = shell.GetContentFrame();
             frame.Navigated += (s, e) =>
             {
@@ -199,14 +201,16 @@ namespace PackageExplorer
             var manager = SystemNavigationManager.GetForCurrentView();
 
 #if WINDOWS_UWP || __WASM__
-			// wire-up back navigation
-			manager.BackRequested += (s, e) => frame.GoBack();
-			frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
-			{
-				manager.AppViewBackButtonVisibility = frame.CanGoBack
-					? AppViewBackButtonVisibility.Visible
-					: AppViewBackButtonVisibility.Collapsed;
-			});
+            // wire-up back navigation
+            manager.BackRequested += (s, e) => frame.GoBack();
+            frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
+            {
+                manager.AppViewBackButtonVisibility = frame.CanGoBack
+                    ? AppViewBackButtonVisibility.Visible
+                    : AppViewBackButtonVisibility.Collapsed;
+            });
+
+            Uno.UI.FeatureConfiguration.Page.IsPoolingEnabled = true;
 #endif
 
 #if __WASM__
@@ -224,7 +228,7 @@ namespace PackageExplorer
             return shell;
         }
 
-        private async Task PerformShellLandingNavigation(Shell shell, LaunchActivatedEventArgs e)
+        private async Task PerformShellLandingNavigation(ShellPage shell, LaunchActivatedEventArgs e)
         {
             var navigation = Container.GetExportedValue<NavigationService>()!;
             var deeplink = default(object?);
