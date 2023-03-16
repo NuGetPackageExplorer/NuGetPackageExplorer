@@ -269,3 +269,5 @@ __pycache__/
 # VS Code
 .vscode/
 /dotnet-validate/Properties/launchSettings.json
+
+.DS_Store
