@@ -1,8 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RuleSet Name="NuGet Package Explorer Code Analysis Rules" ToolsVersion="16.0">
   <Rules AnalyzerId="Microsoft.CodeAnalysis.CSharp.Features" RuleNamespace="Microsoft.CodeAnalysis.CSharp.Features">
-    <Rule Id="IDE0067" Action="None" />
-    <Rule Id="IDE0068" Action="None" />
-    <Rule Id="IDE0069" Action="None" />
   </Rules>
 </RuleSet>
