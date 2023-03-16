@@ -1,0 +1,16 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<ResourceDictionary.ThemeDictionaries>
+		<!-- Light Theme -->
+		<ResourceDictionary x:Key="Light">
+			<x:String x:Key="PoweredByUnoPlatformImageSource">ms-appx:///Assets/Powered-By-UnoPlatform-Light.png</x:String>
+		</ResourceDictionary>
+
+		<!-- Dark Theme -->
+		<ResourceDictionary x:Key="Dark">
+			<x:String x:Key="PoweredByUnoPlatformImageSource">ms-appx:///Assets/Powered-By-UnoPlatform-Dark.png</x:String>
+		</ResourceDictionary>
+	</ResourceDictionary.ThemeDictionaries>
+
+</ResourceDictionary>
