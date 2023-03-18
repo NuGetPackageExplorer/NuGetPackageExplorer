@@ -44,31 +44,55 @@ namespace NupkgExplorer.Presentation.Content
 {
     public class InspectPackageViewModel : Framework.MVVM.ViewModelBase
     {
+        public DataTemplate SelectedMetadataTabTemplate
+        {
+            get => GetProperty<DataTemplate>();
+            set => SetProperty(value);
+        }
+
+        public bool AreExpandedByDefault
+        {
+            get => GetProperty<bool>();
+            set => SetProperty(value);
+        }
+
+        public bool MetadataTabsContentVisible
+        {
+            get => GetProperty<bool>();
+            set => SetProperty(value);
+        }
+
         public PackageViewModel Package
         {
             get => GetProperty<PackageViewModel>();
             set => SetProperty(value);
         }
+
         public IPart SelectedContent
         {
             get => GetProperty<IPart>();
             set => SetProperty(value);
         }
+
         public IFile OpenedDocument
         {
             get => GetProperty<IFile>();
             set => SetProperty(value);
         }
+
         public string OpenedDocumentLanguage
         {
             get => GetProperty<string>();
             set => SetProperty(value);
         }
+
         public string? VersionRedirectWarningMessage
         {
             get => GetProperty<string?>();
             set => SetProperty(value);
         }
+
+        public ICommand InitialLoadCommand => new RelayCommand<DataTemplate>(InitialLoadCommandExecute);
 
         public ICommand ViewMetadataSourceCommand => GetCommand(ViewMetadataSource);
 
@@ -76,10 +100,14 @@ namespace NupkgExplorer.Presentation.Content
 
         public ICommand CloseDocumentCommand => GetCommand(CloseDocument);
 
+        public ICommand TabItemSelectedCommand => new RelayCommand<Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs>(OnTabItemSelected);
+
         public InspectPackageViewModel(PackageViewModel package, PackageIdentity? redirectedFrom = null)
         {
             if (package == null) throw new ArgumentNullException(nameof(package));
 
+            AreExpandedByDefault = true;
+            MetadataTabsContentVisible = false;
             Title = $"{package.PackageMetadata} | {NuGetPackageExplorer.Constants.AppName}";
             Location = $"/packages/{package.PackageMetadata.Id}/{(redirectedFrom?.Version ?? package.PackageMetadata.Version)}";
             Package = package;
@@ -98,6 +126,20 @@ namespace NupkgExplorer.Presentation.Content
                         : default
                     ) ?? "plaintext";
                 });
+        }
+
+        private void OnTabItemSelected(Microsoft.UI.Xaml.Controls.NavigationViewSelectionChangedEventArgs args)
+        {
+            if (args.SelectedItemContainer.Tag is DataTemplate template)
+            {
+                SelectedMetadataTabTemplate = template;
+            }
+        }
+
+        private void InitialLoadCommandExecute(DataTemplate template)
+        {
+            SelectedMetadataTabTemplate = template;
+            MetadataTabsContentVisible = true;
         }
 
         public static async Task<InspectPackageViewModel> CreateFromLocalPackage(StorageFile packageFile)
@@ -272,7 +314,7 @@ namespace NupkgExplorer.Presentation.Content
                 }
             }
         }
-        
+
         public void ViewMetadataSource()
         {
             DiagnosticsClient.TrackEvent("InspectPackage_ViewMetadataSource");

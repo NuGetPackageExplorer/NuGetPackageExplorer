@@ -11,7 +11,11 @@
   "orientation": "any",
   "background_color": "transparent",
   "prefer_related_applications": true,
-  "categories": [ "utilities", "tools", "development" ],
+  "categories": [
+    "utilities",
+    "tools",
+    "development"
+  ],
   "icons": [
     {
       "src": "./images/pwa/windows10/SmallTile.scale-100.png",

@@ -15,6 +15,7 @@ using NuGetPe;
 
 using NupkgExplorer.Framework.Extensions;
 using NupkgExplorer.Framework.Navigation;
+using NupkgExplorer.Presentation;
 using NupkgExplorer.Presentation.Content;
 using NupkgExplorer.Presentation.Dialogs;
 
@@ -176,6 +177,7 @@ namespace PackageExplorer
         private Shell BuildShell()
         {
             var shell = Container.GetExportedValue<Shell>();
+            shell.DataContext = new ShellViewModel();
             var frame = shell.GetContentFrame();
             frame.Navigated += (s, e) =>
             {
@@ -199,14 +201,16 @@ namespace PackageExplorer
             var manager = SystemNavigationManager.GetForCurrentView();
 
 #if WINDOWS_UWP || __WASM__
-			// wire-up back navigation
-			manager.BackRequested += (s, e) => frame.GoBack();
-			frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
-			{
-				manager.AppViewBackButtonVisibility = frame.CanGoBack
-					? AppViewBackButtonVisibility.Visible
-					: AppViewBackButtonVisibility.Collapsed;
-			});
+            // wire-up back navigation
+            manager.BackRequested += (s, e) => frame.GoBack();
+            frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
+            {
+                manager.AppViewBackButtonVisibility = frame.CanGoBack
+                    ? AppViewBackButtonVisibility.Visible
+                    : AppViewBackButtonVisibility.Collapsed;
+            });
+
+            Uno.UI.FeatureConfiguration.Page.IsPoolingEnabled = true;
 #endif
 
 #if __WASM__

@@ -22,25 +22,30 @@ namespace PackageExplorer
     /// </summary>
     [Export]
     public sealed partial class Shell : Page
-	{
+    {
         [Import]
         public NavigationService NavigationService { get; set; }
 
-		public Shell()
-		{
-			InitializeComponent();
-		}
+        public Shell()
+        {
+            InitializeComponent();
+        }
 
         public Frame GetContentFrame() => ContentFrame;
 
-		private void ToggleDarkLightTheme(object sender, RoutedEventArgs e)
-		{
+        private void ToggleDarkLightTheme(object sender, RoutedEventArgs e)
+        {
 #if WINDOWS_UWP
 			RequestedTheme = RequestedTheme == ElementTheme.Dark
 				? ElementTheme.Light
 				: ElementTheme.Dark;
 #endif
-		}
+        }
+
+        private void NavigateBack(object sender, RoutedEventArgs e)
+        {
+            ContentFrame.GoBack();
+        }
 
         private async void OpenLocalPackage(object sender, RoutedEventArgs e)
         {
@@ -68,5 +73,5 @@ namespace PackageExplorer
         {
             NavigationService.NavigateTo<FeedPackagePickerViewModel>();
         }
-	}
+    }
 }

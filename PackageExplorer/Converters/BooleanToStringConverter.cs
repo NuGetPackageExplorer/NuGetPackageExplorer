@@ -2,6 +2,7 @@
 
 #if HAS_UNO
 using Windows.UI.Xaml.Data;
+
 using _CultureInfo = System.String;
 #else
 using _CultureInfo = System.Globalization.CultureInfo;
@@ -16,8 +17,11 @@ namespace PackageExplorer
 
         public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {
-            var boolValue = (bool)value;
-            return boolValue ? "Yes" : "No";
+            if (value is bool boolValue)
+            {
+                return boolValue ? "Yes" : "No";
+            }
+            return string.Empty;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
