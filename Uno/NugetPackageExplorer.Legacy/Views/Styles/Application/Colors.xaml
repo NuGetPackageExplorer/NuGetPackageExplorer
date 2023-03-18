@@ -29,79 +29,46 @@
 	-->
 	<!--#endregion-->
 
-	<ResourceDictionary.ThemeDictionaries>
-		<ResourceDictionary x:Key="Light">
-            <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush"
-							 Color="#f3f0f0f0" />
-            <SolidColorBrush x:Key="MenuBarBackgroundBrush"
-                             Color="#f3f0f0f0"/>
-
-            <!-- Shared Brushes -->
-			<SolidColorBrush x:Key="SurfaceThemeBrush87"
-							 Color="#deffffff" />
-			<SolidColorBrush x:Key="SurfaceThemeBrush60"
-							 Color="#99ffffff" />
-			<SolidColorBrush x:Key="SurfaceThemeBrush38"
-							 Color="#61ffffff" />
-			<SolidColorBrush x:Key="SurfaceThemeBrush20"
-							 Color="#33ffffff" />
-			<SolidColorBrush x:Key="OnSurfaceThemeBrush87"
-							 Color="#de000000" />
-			<SolidColorBrush x:Key="OnSurfaceThemeBrush60"
-							 Color="#99000000" />
-			<SolidColorBrush x:Key="OnSurfaceThemeBrush38"
-							 Color="#61000000" />
-			<SolidColorBrush x:Key="OnSurfaceThemeBrush20"
-							 Color="#33000000" />
-		</ResourceDictionary>
-		<ResourceDictionary x:Key="Dark">
-			<SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush"
-							 Color="#f3141414" />
-            <SolidColorBrush x:Key="MenuBarBackgroundBrush"
-                             Color="#f3141414"/>
-
-            <!-- Shared Brushes -->
-			<SolidColorBrush x:Key="SurfaceThemeBrush87"
-							 Color="#de363636" />
-			<SolidColorBrush x:Key="SurfaceThemeBrush60"
-							 Color="#99363636" />
-			<SolidColorBrush x:Key="SurfaceThemeBrush38"
-							 Color="#61363636" />
-			<SolidColorBrush x:Key="SurfaceThemeBrush20"
-							 Color="#33363636" />
-			<SolidColorBrush x:Key="OnSurfaceThemeBrush87"
-							 Color="#deffffff" />
-			<SolidColorBrush x:Key="OnSurfaceThemeBrush60"
-							 Color="#99ffffff" />
-			<SolidColorBrush x:Key="OnSurfaceThemeBrush38"
-							 Color="#61ffffff" />
-			<SolidColorBrush x:Key="OnSurfaceThemeBrush20"
-							 Color="#33ffffff" />
-		</ResourceDictionary>
-	</ResourceDictionary.ThemeDictionaries>
+	<!-- Shared Brushes -->
+	<SolidColorBrush x:Key="SurfaceThemeBrush87"
+						Color="{ThemeResource ControlFillColorDefault}" />
+	<SolidColorBrush x:Key="SurfaceThemeBrush60"
+						Color="{ThemeResource ControlFillColorSecondary}" />
+	<SolidColorBrush x:Key="SurfaceThemeBrush38"
+						Color="{ThemeResource ControlFillColorTertiary}" />
+	<SolidColorBrush x:Key="SurfaceThemeBrush20"
+						Color="{ThemeResource ControlFillColorTertiary}" />
+	<SolidColorBrush x:Key="OnSurfaceThemeBrush87"
+						Color="{ThemeResource TextFillColorPrimary}" />
+	<SolidColorBrush x:Key="OnSurfaceThemeBrush60"
+						Color="{ThemeResource TextFillColorSecondary}" />
+	<SolidColorBrush x:Key="OnSurfaceThemeBrush38"
+						Color="{ThemeResource TextFillColorTertiary}" />
+	<SolidColorBrush x:Key="OnSurfaceThemeBrush20"
+						Color="{ThemeResource TextFillColorTertiary}" />
 
 	<Color x:Key="PrimaryColor">#159bff</Color>
 	<Color x:Key="SecondaryColor">#7a67f8</Color>
 	<Color x:Key="VariantLightColor">#444444</Color>
 
 	<SolidColorBrush x:Key="PrimaryColorBrush"
-					 Color="{StaticResource PrimaryColor}" />
+					 Color="{ThemeResource PrimaryColor}" />
 	<SolidColorBrush x:Key="SecondaryColorBrush"
-					 Color="{StaticResource SecondaryColor}" />
+					 Color="{ThemeResource SecondaryColor}" />
 	<SolidColorBrush x:Key="VariantLightColorBrush"
-					 Color="{StaticResource VariantLightColor}" />
+					 Color="{ThemeResource VariantLightColor}" />
 
 	<SolidColorBrush x:Key="PrimaryColorBrush87"
-					 Color="{StaticResource PrimaryColor}"
+					 Color="{ThemeResource PrimaryColor}"
 					 Opacity="0.87" />
 	<SolidColorBrush x:Key="PrimaryColorBrush60"
-					 Color="{StaticResource PrimaryColor}"
+					 Color="{ThemeResource PrimaryColor}"
 					 Opacity="0.60" />
 	<SolidColorBrush x:Key="PrimaryColorBrush38"
-					 Color="{StaticResource PrimaryColor}"
+					 Color="{ThemeResource PrimaryColor}"
 					 Opacity="0.38" />
 	<SolidColorBrush x:Key="PrimaryColorBrush20"
-					 Color="{StaticResource PrimaryColor}"
+					 Color="{ThemeResource PrimaryColor}"
 					 Opacity="0.20" />
 	<SolidColorBrush x:Key="OnPrimaryColorBrush"
 					 Color="White" />

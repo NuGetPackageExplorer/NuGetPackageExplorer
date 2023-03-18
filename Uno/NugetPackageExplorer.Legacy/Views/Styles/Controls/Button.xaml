@@ -24,9 +24,10 @@
 		<!-- win reference: https://docs.microsoft.com/en-us/windows/uwp/design/style/segoe-ui-symbol-font -->
 		<!-- uno reference: https://github.com/winjs/winjs/tree/master/src/fonts -->
 		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="CornerRadius" Value="6" />
 		<Setter Property="Foreground" Value="{ThemeResource OnSurfaceThemeBrush87}" />
 		<Setter Property="FontFamily" Value="{ThemeResource SymbolThemeFontFamily}" />
-		<Setter Property="FontSize" Value="16" />
+		<Setter Property="FontSize" Value="14" />
 		<Setter Property="Height" Value="40" />
 		<Setter Property="Width" Value="40" />
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -36,6 +37,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Grid x:Name="RootGrid"
+						  CornerRadius="{TemplateBinding CornerRadius}"
 						  Background="{TemplateBinding Background}">
 						<FontIcon x:Name="Content"
 								  FontSize="{TemplateBinding FontSize}"
