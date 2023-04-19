@@ -271,7 +271,8 @@
                                                      Padding="0" />
                                 </legacyControl:StackPanelEx>
                                 <muxc:Expander Header="Digital Signatures"
-                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               HorizontalAlignment="Stretch"
+                                               HorizontalContentAlignment="Left"
                                                IsExpanded="{Binding AreExpandedByDefault}"
                                                Visibility="{Binding Package.Package.RepositorySignature, Converter={StaticResource NullToCollapsed}}">
                                     <legacyControl:StackPanelEx Spacing="5">
@@ -288,7 +289,8 @@
                                     </legacyControl:StackPanelEx>
                                 </muxc:Expander>
                                 <muxc:Expander Header="Health"
-                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               HorizontalAlignment="Stretch"
+                                               HorizontalContentAlignment="Left"
                                                IsExpanded="{Binding AreExpandedByDefault}"
                                                Visibility="{Binding Package.PackageMetadata.IsSigned, Converter={StaticResource NullToCollapsed}}">
                                     <Grid>
@@ -344,7 +346,8 @@
                                     </Grid>
                                 </muxc:Expander>
                                 <muxc:Expander Header="Package Info"
-                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               HorizontalAlignment="Stretch"
+                                               HorizontalContentAlignment="Left"
                                                IsExpanded="{Binding AreExpandedByDefault}">
                                     <legacyControl:StackPanelEx Spacing="5">
                                         <wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_TitleLabel}"
@@ -378,7 +381,8 @@
                                     </legacyControl:StackPanelEx>
                                 </muxc:Expander>
                                 <muxc:Expander Header="License"
-                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               HorizontalAlignment="Stretch"
+                                               HorizontalContentAlignment="Left"
                                                IsExpanded="{Binding AreExpandedByDefault}">
                                     <legacyControl:StackPanelEx Spacing="5">
                                         <wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_RequireLicenseLabel}"
@@ -407,7 +411,8 @@
                                     </legacyControl:StackPanelEx>
                                 </muxc:Expander>
                                 <muxc:Expander Header="Misc"
-                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               HorizontalAlignment="Stretch"
+                                               HorizontalContentAlignment="Left"
                                                IsExpanded="{Binding AreExpandedByDefault}">
                                     <legacyControl:StackPanelEx Spacing="5">
                                         <HyperlinkButton Content="{x:Bind pexpl:Resources.Dialog_MoreInfo}"
@@ -481,7 +486,8 @@
                         <ScrollViewer>
                             <StackPanel HorizontalAlignment="Stretch">
                                 <muxc:Expander Header="Dependencies"
-                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               HorizontalAlignment="Stretch"
+                                               HorizontalContentAlignment="Left"
                                                IsExpanded="{Binding AreExpandedByDefault}"
                                                Visibility="{x:Bind Package.PackageMetadata.DependencyGroups, Converter={StaticResource EnumerableAnyConverter}}">
                                     <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.DependencyGroups}">
@@ -513,7 +519,8 @@
                                     </ItemsControl>
                                 </muxc:Expander>
                                 <muxc:Expander Header="{x:Bind pexpl:Resources.Dialog_FrameworkAssembliesLabel}"
-                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               HorizontalAlignment="Stretch"
+                                               HorizontalContentAlignment="Left"
                                                IsExpanded="{Binding AreExpandedByDefault}"
                                                Visibility="{x:Bind Package.PackageMetadata.FrameworkAssemblies, Converter={StaticResource EnumerableAnyConverter}}">
                                     <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.FrameworkAssemblies}">
@@ -527,7 +534,8 @@
                                     </ItemsControl>
                                 </muxc:Expander>
                                 <muxc:Expander Header="Framework References"
-                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               HorizontalAlignment="Stretch"
+                                               HorizontalContentAlignment="Left"
                                                IsExpanded="{Binding AreExpandedByDefault}"
                                                Visibility="{x:Bind Package.PackageMetadata.FrameworkReferenceGroups, Converter={StaticResource EnumerableAnyConverter}}">
                                     <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.FrameworkReferenceGroups}">
@@ -549,7 +557,8 @@
                                     </ItemsControl>
                                 </muxc:Expander>
                                 <muxc:Expander Header="Filtered Assembly References"
-                                               Style="{StaticResource InnerSectionExpanderStyle_v2}"
+                                               HorizontalAlignment="Stretch"
+                                               HorizontalContentAlignment="Left"
                                                IsExpanded="{Binding AreExpandedByDefault}"
                                                Visibility="{x:Bind Package.PackageMetadata.PackageAssemblyReferences, Converter={StaticResource EnumerableAnyConverter}}">
                                     <ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.PackageAssemblyReferences, Converter={StaticResource ReferenceSetConverter}}">
