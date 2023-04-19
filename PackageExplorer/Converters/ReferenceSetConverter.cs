@@ -19,6 +19,11 @@ namespace PackageExplorer
     {
         public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {
+            if (value == null)
+            {
+                return null;
+            }
+
             var referenceSets = (ICollection<PackageReferenceSet>)value;
             if (referenceSets.Any(d => d.TargetFramework != null))
             {
