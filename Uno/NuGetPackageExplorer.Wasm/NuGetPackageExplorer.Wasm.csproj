@@ -12,6 +12,17 @@
     <MsdlApiBaseLocation Condition="'$(Configuration)'=='Debug'">http://localhost:7071/api/MsdlProxy</MsdlApiBaseLocation>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <!--
+			IL Linking is disabled in Debug configuration.
+			When building in Release, see https://platform.uno/docs/articles/features/using-il-linker-WebAssembly.html
+		-->
+    <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
+  </PropertyGroup>
   <ItemGroup>
     <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
 
@@ -59,11 +70,11 @@
     <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.DataGrid" Version="7.1.11" />
     <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.Uwp.Managed" Version="2.3.0" />
     <PackageReference Include="Uno.Monaco.Editor" Version="1.1.0" />
-    <PackageReference Include="Uno.UI.WebAssembly" Version="4.8.24" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.8.24" />
-    <PackageReference Include="Uno.UI.RemoteControl" Version="4.8.24" Condition="'$(Configuration)'=='Debug'" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.20" />
-    <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.20" />
+    <PackageReference Include="Uno.UI.WebAssembly" Version="4.9.17" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.9.17" />
+    <PackageReference Include="Uno.UI.RemoteControl" Version="4.9.17" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="8.0.0-dev.210" />
+    <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.210" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
     <PackageReference Include="Uno.Core" Version="4.0.1" />
   </ItemGroup>
