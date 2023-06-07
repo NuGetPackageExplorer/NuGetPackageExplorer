@@ -52,9 +52,11 @@ namespace NupkgExplorer.Presentation
 #endif
         }
 
+#if __WASM__
         private bool IsWindowStandalone()
         {
             return WebAssemblyRuntime.InvokeJS(@"window.matchMedia('(display-mode: standalone)').matches") == "true";
         }
+#endif
     }
 }
