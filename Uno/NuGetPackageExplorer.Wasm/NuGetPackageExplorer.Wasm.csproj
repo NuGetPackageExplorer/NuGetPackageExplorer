@@ -62,17 +62,16 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
-    <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
+    <PackageReference Include="Uno.Extensions.Logging.WebAssembly.Console" Version="1.6.0-dev.2" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls" Version="7.1.10-gf3d2516805" />
-    <PackageReference Include="Uno.Microsoft.Toolkit.Uwp.UI.Controls.DataGrid" Version="7.1.10-gf3d2516805" />
-    <PackageReference Include="Uno.Microsoft.Xaml.Behaviors.Uwp.Managed" Version="2.3.0" />
-    <PackageReference Include="Uno.Monaco.Editor" Version="1.1.0" />
-    <PackageReference Include="Uno.UI.WebAssembly" Version="4.9.17" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.9.17" />
-    <PackageReference Include="Uno.UI.RemoteControl" Version="4.9.17" Condition="'$(Configuration)'=='Debug'" />
-    <PackageReference Include="Uno.Wasm.Bootstrap" Version="8.0.0-dev.210" />
-    <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.210" />
+    <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.200-dev.6.gf657bb2e91" />
+    <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.200-dev.6.gf657bb2e91" />
+    <PackageReference Include="Uno.Monaco.Editor" Version="2.0.0-dev.50" />
+    <PackageReference Include="Uno.WinUI.WebAssembly" Version="5.0.0-dev.1380" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.0.0-dev.1380" />
+    <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.0.0-dev.1380" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.Wasm.Bootstrap" Version="8.0.0-dev.226" />
+    <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.226" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
     <PackageReference Include="Uno.Core" Version="4.0.1" />
   </ItemGroup>

@@ -4,8 +4,8 @@ using System.Text;
 using NupkgExplorer.Business.Nupkg;
 using Uno.Extensions;
 using Uno.Logging;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 namespace NupkgExplorer.Views.Converters
 {

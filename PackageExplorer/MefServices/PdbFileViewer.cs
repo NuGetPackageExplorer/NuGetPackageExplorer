@@ -8,7 +8,7 @@ using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
 
 #if HAS_UNO
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.Logging;
 #else
