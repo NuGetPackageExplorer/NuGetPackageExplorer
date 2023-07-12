@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net6.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks>net7.0;net6.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net7.0-windows10.0.19041</TargetFrameworks>
     <TargetFrameworks Condition="$(UNO_BUILD_ONLY)!=''">netstandard2.1</TargetFrameworks>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
