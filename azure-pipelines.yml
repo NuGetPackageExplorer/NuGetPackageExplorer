@@ -160,7 +160,7 @@ stages:
       displayName: Zip Windows PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net6.0-windows10.0.19041/win-x64/publish
+        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net7.0-windows10.0.19041/win-x64/publish
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
