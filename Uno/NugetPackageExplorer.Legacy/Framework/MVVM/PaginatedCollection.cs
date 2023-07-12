@@ -11,7 +11,7 @@ using Uno.Logging;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 namespace NupkgExplorer.Framework.MVVM
 {

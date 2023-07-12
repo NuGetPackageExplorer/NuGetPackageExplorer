@@ -9,7 +9,7 @@ using PackageExplorer;
 using Uno.Extensions;
 using Uno.Logging;
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace NupkgExplorer.Framework.Navigation
 {
