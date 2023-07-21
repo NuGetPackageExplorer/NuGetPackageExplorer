@@ -128,7 +128,7 @@ namespace PackageExplorer
                 // returning UIElement from here works.
                 // however due to performance issues, we are just
                 // returning the datacontext and letting the xaml to handle the view.
-                // also, the ui layout is vastely different compared to the #if-block above
+                // also, the ui layout is vastly different compared to the #if-block above
                 return new AssemblyFileContent()
                 {
                     Metadata = assemblyMetadata

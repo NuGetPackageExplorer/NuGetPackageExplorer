@@ -105,7 +105,7 @@ namespace PackageExplorer
 
         // return true = pending assembly added
         // return false = pending assembly is invalid
-        // return null = no pending asesmbly
+        // return null = no pending assembly
         private bool? AddPendingFrameworkAssembly()
         {
             // Blank assembly name but content in the supported framework textbox is an error

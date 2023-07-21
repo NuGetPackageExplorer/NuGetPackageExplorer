@@ -62,7 +62,7 @@ namespace NuGetPe
             }
             catch (PlatformNotSupportedException e) when (!AppCompat.IsWindows)
             {
-                // dont track PlatformNotSupportedException
+                // don't track PlatformNotSupportedException
                 //DiagnosticsClient.TrackException(e, _package, IsPublicPackage);
 
                 return new SymbolValidatorResult(
@@ -242,7 +242,7 @@ namespace NuGetPe
                         }
 
                     }
-                    catch // an error occured, no symbols
+                    catch // an error occurred, no symbols
                     {
                         noSymbols.Add(file.Primary);
                     }
@@ -511,7 +511,7 @@ namespace NuGetPe
 
             if (nonReproducible.Count > 0)
             {
-                // See if they're here because they're missig or just too old
+                // See if they're here because they're missing or just too old
                 var first = nonReproducible.First();
                 compilerFlagsResult = (first.DebugData?.HasCompilerFlags == true &&
                                        first.DebugData?.CompilerVersionSupportsReproducible == false) ? HasCompilerFlagsResult.Present : HasCompilerFlagsResult.Missing;

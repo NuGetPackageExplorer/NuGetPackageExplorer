@@ -84,7 +84,7 @@ namespace PackageExplorer
             }
             finally
             {
-                // store this bitmapImage in the bitmap image cache, so that other occurances can reuse the BitmapImage
+                // store this bitmapImage in the bitmap image cache, so that other occurrences can reuse the BitmapImage
                 cachedBitmapImage = iconBitmapImage ?? defaultPackageIcon!;
                 AddToCache(iconUrl, cachedBitmapImage);
 

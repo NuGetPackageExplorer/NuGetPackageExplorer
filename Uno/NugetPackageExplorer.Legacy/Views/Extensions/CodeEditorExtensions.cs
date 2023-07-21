@@ -116,7 +116,7 @@ namespace NupkgExplorer.Views.Extensions
         {
             var language = e.NewValue as string ?? "plaintext";
 
-            // CodeLanguage doesnt work when the control is loading/first loaded
+            // CodeLanguage doesn't work when the control is loading/first loaded
             // calling its underlying method to ensure the language is actually set
             control.ExecuteJavascript($"monaco.editor.setModelLanguage(model, '{language}');");
         }

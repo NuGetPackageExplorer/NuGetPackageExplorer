@@ -37,8 +37,8 @@ namespace NuGetPe
 
         /// <remarks>
         /// Alternative ctor without any dependency to System.Security.Cryptography namespace
-        /// note: IS_SIGNING_SUPPORTED isnt accurate here.
-        /// As wasm (local, not ci) uses .net 5.0, but doesnt support it.
+        /// note: IS_SIGNING_SUPPORTED isn't accurate here.
+        /// As wasm (local, not ci) uses .net 5.0, but doesn't support it.
         /// In fact, <see cref="AppCompat.IsSupported(RuntimeFeature)"/> should be used instead.
         /// </remarks>
         public SignatureInfo(

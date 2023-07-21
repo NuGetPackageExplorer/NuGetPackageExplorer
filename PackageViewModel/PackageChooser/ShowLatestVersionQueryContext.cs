@@ -18,10 +18,10 @@ namespace PackageExplorerViewModel
         private readonly int _pageSize;
         private readonly PackageListCache<T> _packageListCache;
         private readonly LocalPackageSearcher<T> _localPackageSearcher;
-        private PackageSearchResource? _packageSearchResouce;
+        private PackageSearchResource? _packageSearchResource;
 
 #pragma warning disable CS0618 // Type or member is obsolete
-        private RawSearchResourceV3? _rawPackageSearchResouce;
+        private RawSearchResourceV3? _rawPackageSearchResource;
 #pragma warning restore CS0618 // Type or member is obsolete
 
         private int? _lastPageIndex;
@@ -101,20 +101,20 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                if (_packageSearchResouce == null && _rawPackageSearchResouce == null)
+                if (_packageSearchResource == null && _rawPackageSearchResource == null)
                 {
 #pragma warning disable CS0618 // Type or member is obsolete
-                    _rawPackageSearchResouce = await _sourceRepository.GetResourceAsync<RawSearchResourceV3>(token);
+                    _rawPackageSearchResource = await _sourceRepository.GetResourceAsync<RawSearchResourceV3>(token);
 #pragma warning restore CS0618 // Type or member is obsolete
                 }
 
-                if (_rawPackageSearchResouce != null)
+                if (_rawPackageSearchResource != null)
                 {
                     // Don't run the cpu-bound operations on GUI thread
                     result = await Task.Run(async () =>
                     {
 #pragma warning disable CS0618 // Type or member is obsolete
-                        var json = await _rawPackageSearchResouce.Search(searchText, _searchContext.Filter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
+                        var json = await _rawPackageSearchResource.Search(searchText, _searchContext.Filter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
 #pragma warning restore CS0618 // Type or member is obsolete
                         return json.Select(s => s.FromJToken<PackageSearchMetadata>()).ToList();
                     }, token);
@@ -122,12 +122,12 @@ namespace PackageExplorerViewModel
 
                 if (result == null)
                 {
-                    if (_packageSearchResouce == null)
+                    if (_packageSearchResource == null)
                     {
-                        _packageSearchResouce = await _sourceRepository.GetResourceAsync<PackageSearchResource>(token);
+                        _packageSearchResource = await _sourceRepository.GetResourceAsync<PackageSearchResource>(token);
                     }
 
-                    result = await _packageSearchResouce.SearchAsync(searchText, _searchContext.Filter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
+                    result = await _packageSearchResource.SearchAsync(searchText, _searchContext.Filter, CurrentPage * _pageSize, _pageSize, NullLogger.Instance, token);
                 }
             }
 
