@@ -28,6 +28,11 @@ namespace NuGetPe
         {
             return feature switch
             {
+                // Under Wasm (net7), the following is not supported
+                // PrimarySignature.Load failed System.TypeInitializationException: TypeInitialization_Type, System.Security.Cryptography.Pkcs.SubjectIdentifier
+                // dotnet.js:14--->System.TypeInitializationException: TypeInitialization_Type, System.Security.Cryptography.X509Certificates.X509Pal
+                // dotnet.js:14--->System.PlatformNotSupportedException: SystemSecurityCryptographyX509Certificates_PlatformNotSupported
+                // dotnet.js:14    at System.Security.Cryptography.X509Certificates.X509Pal.BuildSingleton() in runtime\src\libraries\System.Security.Cryptography\src\System\Security\Cryptography\X509Certificates\X509Pal.NotSupported.cs:line 10
                 RuntimeFeature.Cryptography => !IsWasm,
                 RuntimeFeature.NativeMethods => IsWindows,
                 RuntimeFeature.DiaSymReader => IsWindows,

@@ -31,7 +31,7 @@ winget install "NuGet Package Explorer"
 
 ### .NET CLI Tool
 
-A subset of functionality for checking package health is now availabe as a cross-platform CLI tool. Install with:
+A subset of functionality for checking package health is now available as a cross-platform CLI tool. Install with:
 
 `dotnet tool install -g dotnet-validate --version 0.0.1-preview.42`
 
