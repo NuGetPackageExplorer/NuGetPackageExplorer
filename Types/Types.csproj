@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks>net7.0;net6.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
     <TargetFrameworks Condition="$(UNO_BUILD_ONLY)!=''">netstandard2.1</TargetFrameworks>
     <Description>Contains types to enable the plugin architecture in NuGet Package Explorer.</Description>
     <Product>NuGet Package Explorer</Product>
