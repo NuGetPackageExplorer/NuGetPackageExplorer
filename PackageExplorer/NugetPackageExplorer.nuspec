@@ -27,7 +27,7 @@
   </metadata>
   <files>
     <file src="ChocolateyInstall.ps1"  />
-    <file src="bin\Release\net6.0-windows10.0.19041\win-x64\publish\**\*.*" target="tools"  />
+    <file src="bin\Release\net7.0-windows10.0.19041\win-x64\publish\**\*.*" target="tools"  />
     <file src="..\LICENSE.txt" target="legal\LICENSE.txt" />
     <file src="..\Build\Verification.txt" target="legal\Verification.txt" />
   </files>

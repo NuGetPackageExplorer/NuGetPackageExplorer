@@ -93,7 +93,7 @@
     <Exec Command="$(NpeExecCmd)" />
     <Message Text="Built ref " />
     <ItemGroup>
-      <TheFiles Include="..\PackageExplorer\bin\$(Configuration)\net6.0-windows10.0.19041\win-$(Platform)\publish\**\*.*" />
+      <TheFiles Include="..\PackageExplorer\bin\$(Configuration)\net7.0-windows10.0.19041\win-$(Platform)\publish\**\*.*" />
       <TheFiles TargetPath="NuGetPackageExplorer\%(RecursiveDir)%(Filename)%(Extension)" />
       <BuiltRef Include="@(TheFiles)">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
