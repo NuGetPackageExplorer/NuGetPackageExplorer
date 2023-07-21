@@ -58,7 +58,7 @@ namespace NuGetPe
         /// <summary>
         /// Gets or sets the number of package downloads.
         /// </summary>
-        public int? DownloadCount { get; set; }
+        public long? DownloadCount { get; set; }
 
         /// <summary>
         /// Gets or sets the time of the packages publishing.
