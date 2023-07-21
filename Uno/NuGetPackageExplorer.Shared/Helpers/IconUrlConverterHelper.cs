@@ -40,7 +40,6 @@ namespace PackageExplorer
 
         private void IconBitmapImage_ImageFailed(object sender, Windows.UI.Xaml.ExceptionRoutedEventArgs e)
         {
-            throw new NotImplementedException();
         }
     }
 }
