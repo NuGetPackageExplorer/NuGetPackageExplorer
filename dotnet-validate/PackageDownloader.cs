@@ -21,9 +21,9 @@ namespace NuGetPe
         private readonly SourceCacheContext _sourceCacheContext;
         private readonly PackageSourceMapping _packageSourceMapping;
 
-        public NuGetPackageDownloader(TextWriter logTextWriter, DirectoryInfo nuGetConfigDirectory)
+        public NuGetPackageDownloader(ILogger logger, DirectoryInfo nuGetConfigDirectory)
         {
-            _logger = new TextWriterLogger(logTextWriter);
+            _logger = logger;
             _settings = Settings.LoadDefaultSettings(nuGetConfigDirectory.FullName);
             _sourceCacheContext = new SourceCacheContext();
             _packageSourceMapping = PackageSourceMapping.GetPackageSourceMapping(_settings);
@@ -91,6 +91,13 @@ namespace NuGetPe
                 {
                     throw new InvalidOperationException($"The package stream is expected to be a {nameof(FileStream)} but is a {result.PackageStream?.GetType()}.");
                 }
+
+                var identity = result.PackageReader is null ? null : await result.PackageReader.GetIdentityAsync(cancellationToken).ConfigureAwait(false);
+                if (identity is not null && identity.Version != packageIdentity.Version)
+                {
+                    _logger.LogWarning($"The manifest/.nuspec version of {packageId} ({identity.Version}) does not match the requested version ({packageIdentity.Version})");
+                }
+
                 await result.PackageStream.DisposeAsync().ConfigureAwait(false);
                 return new FileInfo(fileStream.Name);
             }
