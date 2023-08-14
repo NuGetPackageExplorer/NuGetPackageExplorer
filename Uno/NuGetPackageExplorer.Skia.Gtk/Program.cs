@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.IO;
 
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.Gtk;
 
 namespace PackageExplorer
 {
