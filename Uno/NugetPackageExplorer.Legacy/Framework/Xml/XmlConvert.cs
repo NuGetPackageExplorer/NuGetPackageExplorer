@@ -13,7 +13,7 @@ using Uno.Logging;
 namespace NupkgExplorer.Framework.Xml
 {
 	/// <summary>
-	/// Simplified version of XmlSerializer, with case-insentive name mappings and more lenient xml attribute requirements.
+	/// Simplified version of XmlSerializer, with case-insensitive name mappings and more lenient xml attribute requirements.
 	/// </summary>
 	/// <remarks>Xml attributes may not be used for its original purpose.</remarks>
 	public static class XmlConvert

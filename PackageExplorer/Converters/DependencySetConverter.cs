@@ -13,7 +13,7 @@ namespace PackageExplorer
             var dependencySets = (IEnumerable<PackageDependencyGroup>)value;
             if (dependencySets.Any(d => (d.TargetFramework != null && !d.TargetFramework.IsAny)))
             {
-                // if there is at least one dependeny set with non-null target framework,
+                // if there is at least one dependency set with non-null target framework,
                 // we show the dependencies grouped by target framework.
                 return dependencySets;
             }

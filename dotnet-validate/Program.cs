@@ -24,7 +24,7 @@ namespace NuGetPe
 
         private static async Task<int> Main(string[] args)
         {
-            var localComand = new Command("local", "A local package")
+            var localCommand = new Command("local", "A local package")
             {
                 new Argument<string>("file", "Package to validate.")
             };
@@ -74,12 +74,12 @@ namespace NuGetPe
             {
                 new Command("package", "Validates NuGet package health. Ensures your package meets the .NET Foundation's guidelines for secure packages.")
                 {
-                      localComand,
+                      localCommand,
                       remoteCommand
                 }
             };
 
-            localComand.Handler = CommandHandler.Create<string>(RunLocalCommand);
+            localCommand.Handler = CommandHandler.Create<string>(RunLocalCommand);
             remoteCommand.Handler = CommandHandler.Create<string, NuGetVersion?, DirectoryInfo?>(RunRemoteCommand);
 
             return await rootCommand.InvokeAsync(args).ConfigureAwait(false);
@@ -153,7 +153,7 @@ namespace NuGetPe
                     cancellationTokenSource.Cancel();
                 };
 
-                using var downloader = new NuGetPackageDownloader(Console.Out, nuGetConfigDirectory ?? new DirectoryInfo(Environment.CurrentDirectory));
+                using var downloader = new NuGetPackageDownloader(new ConsoleLogger(), nuGetConfigDirectory ?? new DirectoryInfo(Environment.CurrentDirectory));
                 var packageFile = await downloader.DownloadAsync(packageId, version, cancellationTokenSource.Token).ConfigureAwait(false);
                 var versionString = version == null ? "" : version.ToFullString() + " ";
                 await Console.Out.WriteLineAsync($"Validating {packageId} {versionString}from {packageFile.FullName}").ConfigureAwait(false);

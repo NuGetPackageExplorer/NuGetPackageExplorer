@@ -49,8 +49,8 @@ namespace NuGetPe.Packages.Pkcs
             {
                 throw new CryptographicException();
             }
-            // workaround for reading interger with a context-specific tag
-            var versionData = sequence.ReadEncodedValue().Slice(2); // strip outter tag: context-specific#0
+            // workaround for reading integer with a context-specific tag
+            var versionData = sequence.ReadEncodedValue().Slice(2); // strip outer tag: context-specific#0
             var versionReader = new AsnReader(versionData, AsnEncodingRules.BER);
             if (!versionReader.TryReadInt32(out var version))
             {

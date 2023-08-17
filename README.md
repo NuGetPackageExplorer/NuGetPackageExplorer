@@ -31,7 +31,7 @@ winget install "NuGet Package Explorer"
 
 ### .NET CLI Tool
 
-A subset of functionality for checking package health is now availabe as a cross-platform CLI tool. Install with:
+A subset of functionality for checking package health is now available as a cross-platform CLI tool. Install with:
 
 `dotnet tool install -g dotnet-validate --version 0.0.1-preview.42`
 
@@ -157,8 +157,6 @@ Please check the [FAQ](https://github.com/NuGetPackageExplorer/NuGetPackageExplo
 
 Requirements to build the project:
 
-- VS2019 or later. If using the stable release, make sure to enable support for Preview .NET Core SDK's
-- [.NET 6 SDK](https://dotnet.microsoft.com/download/dotnet/6.0)
-- [Shared IntelliCode model](https://prod.intellicode.vsengsaas.visualstudio.com/get?m=B971F4617299420C8D5CFEF23F395D2A)
-
+- VS2022 or later. If using the stable release, make sure to enable support for Preview .NET Core SDK's
+- [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
 
