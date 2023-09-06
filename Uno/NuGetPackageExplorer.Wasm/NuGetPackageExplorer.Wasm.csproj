@@ -73,7 +73,7 @@
     <PackageReference Include="Uno.UI.RemoteControl" Version="4.9.17" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="8.0.0-dev.210" />
     <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.210" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.6" />
     <PackageReference Include="Uno.Core" Version="4.0.1" />
   </ItemGroup>
   <Import Project="..\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems" Label="Shared" Condition="Exists('..\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems')" />
