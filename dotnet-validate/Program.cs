@@ -180,7 +180,7 @@ namespace NuGetPe
         {
             using var package = new ZipPackage(packageFile.FullName);
 
-            var validator = new SymbolValidator(package, packageFile.FullName);
+            var validator = new SymbolValidator(package, packageFile.FullName, packageFile.FullName);
             var result = await validator.Validate(cancellationToken).ConfigureAwait(false);
             await WriteResult("Source Link", result.SourceLinkResult, result.SourceLinkErrorMessage, SourceLinkDescription).ConfigureAwait(false);
             await WriteResult("Deterministic (dll/exe)", result.DeterministicResult, result.DeterministicErrorMessage, DeterministicDescription).ConfigureAwait(false);

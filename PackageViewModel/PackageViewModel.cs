@@ -93,8 +93,8 @@ namespace PackageExplorerViewModel
 
 
             RootFolder = PathToTreeConverter.Convert(Package.GetFiles().ToList(), this);
-            PackagePath = path; // also sets symbol validator
             PackageSource = source;
+            PackagePath = path; // also sets symbol validator
 
             _packageMetadata = new EditablePackageMetadata(Package, UIServices, this);
 
@@ -181,7 +181,7 @@ namespace PackageExplorerViewModel
             }
         }
 
-        public bool PublishedOnNuGetOrg => SymbolValidator!.IsPublicPackage;
+        public bool PublishedOnline => SymbolValidator!.IsPublicPackage;
 
         public IPackage Package { get; }
 
@@ -274,7 +274,7 @@ namespace PackageExplorerViewModel
                 {
                     _packagePath = value;
 
-                    SymbolValidator = new SymbolValidator(Package, PackagePath, RootFolder);
+                    SymbolValidator = new SymbolValidator(Package, PackagePath, PackageSource, RootFolder);
                     OnPropertyChanged(nameof(PackageSource));
                     OnPropertyChanged(nameof(SymbolValidator));
 
@@ -948,7 +948,7 @@ namespace PackageExplorerViewModel
                 {
                     if (!(ex is IOException) && !(ex is ArgumentException) && !(ex is UnauthorizedAccessException))
                     {
-                        DiagnosticsClient.TrackException(ex, Package, PublishedOnNuGetOrg);
+                        DiagnosticsClient.TrackException(ex, Package, PublishedOnline);
                     }
                     UIServices.Show(ex.Message, MessageLevel.Error);
                 }
@@ -988,7 +988,7 @@ namespace PackageExplorerViewModel
             }
             catch (Exception ex)
             {
-                DiagnosticsClient.TrackException(ex, Package, PublishedOnNuGetOrg);
+                DiagnosticsClient.TrackException(ex, Package, PublishedOnline);
                 UIServices.Show("The command failed with this error message:" +
                                 Environment.NewLine +
                                 Environment.NewLine +
@@ -1405,7 +1405,7 @@ namespace PackageExplorerViewModel
             {
                 if (!(e is ArgumentException))
                 {
-                    DiagnosticsClient.TrackException(e, Package, PublishedOnNuGetOrg);
+                    DiagnosticsClient.TrackException(e, Package, PublishedOnline);
                 }
                 UIServices.Show(e.Message, MessageLevel.Error);
             }

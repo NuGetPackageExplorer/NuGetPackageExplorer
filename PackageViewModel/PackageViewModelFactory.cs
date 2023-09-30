@@ -78,7 +78,7 @@ namespace PackageExplorerViewModel
                 ContentViewerMetadata,
                 PackageRules);
 
-            DiagnosticsClient.TrackEvent("PackageViewModelFactory_CreateViewModel", package, pvm.PublishedOnNuGetOrg);
+            DiagnosticsClient.TrackEvent("PackageViewModelFactory_CreateViewModel", package, pvm.PublishedOnline);
 
             return pvm;
         }
