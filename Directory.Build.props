@@ -62,4 +62,9 @@
     <DefineConstants Condition="'$(ReleaseChannel)' == 'Debug' ">$(DefineConstants);ZIP</DefineConstants>    
   </PropertyGroup>
 
+  <PropertyGroup>
+    <IsMacOS>false</IsMacOS>
+    <IsMacOS Condition="'$(OS)' == 'Unix'">true</IsMacOS>
+    <UNO_BUILD_ONLY Condition='$(IsMacOS)'>true</UNO_BUILD_ONLY>
+  </PropertyGroup>
 </Project>
