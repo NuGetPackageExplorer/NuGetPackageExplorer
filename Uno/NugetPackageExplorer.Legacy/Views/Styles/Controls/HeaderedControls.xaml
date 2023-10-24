@@ -130,7 +130,7 @@
 		<Setter Property="ContentTemplate" Value="{StaticResource TextContentTemplate}" />
 	</Style>
 	<Style x:Key="LabeledItemsControlStyle"
-		   TargetType="wct:HeaderedItemsControl">
+		   TargetType="controls:HeaderedItemsControl">
 		<Setter Property="HeaderTemplate" Value="{StaticResource LabelHeaderTemplate}" />
 
 		<Setter Property="Padding" Value="16,0,0,0" />
