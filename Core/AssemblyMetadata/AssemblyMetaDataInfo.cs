@@ -10,8 +10,8 @@ namespace NuGetPe.AssemblyMetadata
     /// </summary>
     public class AssemblyMetaDataInfo
     {
-        private readonly Dictionary<string, string> _metadataEntries = new Dictionary<string, string>();
-        public IReadOnlyDictionary<string, string> MetadataEntries => _metadataEntries;
+        private readonly List<KeyValuePair<string, string>> _metadataEntries = new List<KeyValuePair<string, string>>();
+        public IReadOnlyList<KeyValuePair<string, string>> MetadataEntries => _metadataEntries;
         public string FullName { get; internal set; }
         public string StrongName { get; internal set; }
         public IEnumerable<AssemblyName> ReferencedAssemblies { get; private set; } = Enumerable.Empty<AssemblyName>();
@@ -70,7 +70,7 @@ namespace NuGetPe.AssemblyMetadata
                 throw new ArgumentNullException(nameof(displayName));
             }
 
-            _metadataEntries[displayName] = value;
+            _metadataEntries.Add(new KeyValuePair<string, string>(displayName, value));
         }
     }
 }
