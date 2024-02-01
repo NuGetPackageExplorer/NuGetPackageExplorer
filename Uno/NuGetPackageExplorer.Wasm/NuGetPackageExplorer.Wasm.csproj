@@ -75,6 +75,7 @@
     <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.210" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.6" />
     <PackageReference Include="Uno.Core" Version="4.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.12" Condition="$(IsMacOS)"/>
   </ItemGroup>
   <Import Project="..\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems" Label="Shared" Condition="Exists('..\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems')" />
   <Import Project="..\..\PackageExplorer\NugetPackageExplorer.Views.Shared.projitems" Label="Shared" />
