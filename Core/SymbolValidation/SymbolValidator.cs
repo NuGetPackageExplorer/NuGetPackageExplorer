@@ -21,18 +21,20 @@ namespace NuGetPe
     {
         private readonly IPackage _package;
         private readonly string _packagePath;
+        private readonly string _packageSource;
         private readonly IFolder _rootFolder;
         private readonly HttpClient _httpClient;
 
-        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder = null)
-            : this(package, packagePath, rootFolder, httpClient: null)
+        public SymbolValidator(IPackage package, string packagePath, string packageSource, IFolder? rootFolder = null)
+            : this(package, packagePath, packageSource, rootFolder, httpClient: null)
         {
         }
 
-        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder, HttpClient? httpClient)
+        public SymbolValidator(IPackage package, string packagePath, string packageSource, IFolder? rootFolder, HttpClient? httpClient)
         {
             _package = package ?? throw new ArgumentNullException(nameof(package));
             _packagePath = packagePath ?? throw new ArgumentNullException(nameof(packagePath));
+            _packageSource = packageSource;
             _rootFolder = rootFolder ?? PathToTreeConverter.Convert(package.GetFiles().ToList());
             _httpClient = httpClient ?? new();
 
@@ -46,15 +48,7 @@ namespace NuGetPe
         {
             try
             {
-                // NuGet signs all its packages and stamps on the service index. Look for that.
-                if (_package is ISignaturePackage sigPackage)
-                {
-                    await sigPackage.LoadSignatureDataAsync().ConfigureAwait(false);
-                    if (sigPackage.RepositorySignature?.V3ServiceIndexUrl?.AbsoluteUri.Contains(".nuget.org/", StringComparison.OrdinalIgnoreCase) == true)
-                    {
-                        IsPublicPackage = true;
-                    }
-                }
+                IsPublicPackage = Uri.TryCreate(_packageSource, UriKind.Absolute, out var uri) && uri is { IsFile: false, IsUnc: false };
 
                 // Get relevant files to check
                 var files = GetFilesToCheck();
@@ -269,24 +263,52 @@ namespace NuGetPe
                     }
                     else if (IsPublicPackage)
                     {
-                        // try to get on NuGet.org
-                        // https://www.nuget.org/api/v2/symbolpackage/Newtonsoft.Json/12.0.3 -- Will redirect
+                        var sourceRepository = Repository.CreateSource(Repository.Provider.GetCoreV3(), _packageSource);
+                        var symbolPackagePublishSourceUri = (await sourceRepository.GetResourceAsync<SymbolPackageUpdateResourceV3>(cancellationToken).ConfigureAwait(false))?.SourceUri;
 
-#pragma warning disable CA2234 // Pass system uri objects instead of strings
-#pragma warning disable CA1308 // Normalize strings to uppercase
-                        using var response = await _httpClient.GetAsync($"https://globalcdn.nuget.org/symbol-packages/{_package.Id.ToLowerInvariant()}.{_package.Version.ToNormalizedString().ToLowerInvariant()}.snupkg", cancellationToken).ConfigureAwait(false);
-#pragma warning restore CA1308 // Normalize strings to uppercase
-#pragma warning restore CA2234 // Pass system uri objects instead of strings
-
-                        if (response.IsSuccessStatusCode) // we'll get a 404 if none
+                        if (symbolPackagePublishSourceUri is not null)
                         {
+                            var variants = new[]
+                            {
+                                async () => await ReadPublicPackageSymbolFile(_package.Id.ToLowerInvariant(), _package.Version.ToNormalizedString().ToLowerInvariant()), // nuget.org
+                                async () => await ReadPublicPackageSymbolFile(_package.Id, _package.Version.OriginalVersion), // myget.org
+                            };
+
+                            foreach (var variant in variants)
+                            {
+                                if (await variant())
+                                {
+                                    break;
+                                }
+                            }
+
+                            async Task<bool> ReadPublicPackageSymbolFile(string id, string version)
+                            {
+                                try
+                                {
+                                    var symbolPackageUri = new Uri($"{symbolPackagePublishSourceUri.AbsoluteUri.TrimEnd('/')}/{id}/{version}");
+                                    using var response = await _httpClient.GetAsync(symbolPackageUri, cancellationToken).ConfigureAwait(false);
+
+                                    if (response.IsSuccessStatusCode) // we'll get a 404 if none
+                                    {
 #if NET5_0_OR_GREATER
-                            using var getStream = await response.Content!.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+                                        using var getStream = await response.Content!.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
 #else
-                            using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
+                                        using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
 #endif
-                            using var tempFile = new TemporaryFile(getStream, ".snupkg");
-                            await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
+                                        using var tempFile = new TemporaryFile(getStream, ".snupkg");
+                                        await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
+
+                                        return true;
+                                    }
+                                }
+                                catch
+                                {
+                                    // ignored
+                                }
+
+                                return false;
+                            }
                         }
                     }
                 }
@@ -643,14 +665,14 @@ namespace NuGetPe
         private static readonly string? ApiLocation = Environment.GetEnvironmentVariable("MSDL_PROXY_LOCATION");
 
         private async Task<Stream?> GetSymbolsAsync(IReadOnlyList<SymbolKey> symbolKeys, CancellationToken cancellationToken = default)
-        {            
+        {
             foreach (var symbolKey in symbolKeys)
             {
 
                 Uri uri;
                 if(AppCompat.IsWasm && !string.IsNullOrWhiteSpace(ApiLocation))
-                {                    
-                    uri = new Uri($"{ApiLocation}?symbolKey={symbolKey.Key}", UriKind.RelativeOrAbsolute);                                        
+                {
+                    uri = new Uri($"{ApiLocation}?symbolKey={symbolKey.Key}", UriKind.RelativeOrAbsolute);
                 }
                 else
                 {
