@@ -170,6 +170,8 @@ dotnet_naming_style.camel_case_and_prefix_with_underscore_style.capitalization  
 
 dotnet_naming_style.pascal_case_and_prefix_with_I_style.required_prefix                               = I
 dotnet_naming_style.pascal_case_and_prefix_with_I_style.capitalization                                = pascal_case
+dotnet_style_operator_placement_when_wrapping = beginning_of_line
+dotnet_style_prefer_simplified_boolean_expressions = true:suggestion
 
 
 # CSharp code style settings:
@@ -200,11 +202,13 @@ csharp_preserve_single_line_statements = true
 csharp_style_expression_bodied_methods = false:none
 csharp_style_expression_bodied_constructors = false:none
 csharp_style_expression_bodied_operators = false:none
+csharp_style_expression_bodied_local_functions = false:none
 
 # Prefer property-like constructs to have an expression-body
 csharp_style_expression_bodied_properties = true:none
 csharp_style_expression_bodied_indexers = true:none
 csharp_style_expression_bodied_accessors = true:none
+csharp_style_expression_bodied_lambdas = true:none
 
 # Expression 
 csharp_prefer_simple_default_expression = true:suggestion
@@ -271,3 +275,10 @@ dotnet_diagnostic.CA1816.severity = silent
 # CA1054: Uri parameters should not be strings
 dotnet_diagnostic.CA1054.severity = none
 dotnet_diagnostic.CA1056.severity = none
+csharp_using_directive_placement = outside_namespace:silent
+csharp_prefer_simple_using_statement = true:suggestion
+csharp_style_namespace_declarations = block_scoped:silent
+csharp_style_prefer_method_group_conversion = true:silent
+csharp_style_prefer_top_level_statements = true:silent
+csharp_style_prefer_primary_constructors = true:suggestion
+

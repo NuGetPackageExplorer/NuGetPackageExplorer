@@ -36,20 +36,24 @@
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.props" />
   <PropertyGroup>
     <ProjectGuid>452579bf-ff89-46fd-953d-e9d02d71efdd</ProjectGuid>
-    <TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
-    <TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>
+    <TargetPlatformVersion>10.0.22000.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
     <DefaultLanguage>en-US</DefaultLanguage>
     <DebuggerType>ManagedOnly</DebuggerType>
     <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x64|x86|arm64</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
     <AppxPackageIncludePrivateSymbols>true</AppxPackageIncludePrivateSymbols>
     <UapAppxPackageBuildMode>SideLoadOnly</UapAppxPackageBuildMode>
     <UapAppxPackageBuildMode Condition="'$(ReleaseChannel)' == 'Store'">CI</UapAppxPackageBuildMode>
     <EntryPointExe Condition="'$(BuildingInsideVisualStudio)' != 'true' ">NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
-    <EntryPointProjectUniqueName Condition="'$(BuildingInsideVisualStudio)' == 'true' ">..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
-    <GetPackagingOutputsDependsOn Condition="'$(BuildingInsideVisualStudio)' != 'true' ">$(GetPackagingOutputsDependsOn);BuildRefsOutputGroup</GetPackagingOutputsDependsOn>    
+    <EntryPointProjectUniqueName Condition="'$(BuildingInsideVisualStudio)' == 'true' ">$(SourceRootDir)PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
+    <GetPackagingOutputsDependsOn Condition="'$(BuildingInsideVisualStudio)' != 'true' ">$(GetPackagingOutputsDependsOn);BuildRefsOutputGroup</GetPackagingOutputsDependsOn>
+    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
+    <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
+    <GenerateTestArtifacts>True</GenerateTestArtifacts>
+    <AppInstallerUri>D:\</AppInstallerUri>
   </PropertyGroup>
   <PropertyGroup Condition="'$(ReleaseChannel)' == 'Nightly'">
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
@@ -87,13 +91,13 @@
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
   <Target Name="BuildRef" Condition="'$(BuildingInsideVisualStudio)' != 'true' " BeforeTargets="BeforeBuild">
     <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-      <NpeExecCmd>dotnet publish -c $(Configuration) "$(MSBuildThisFileDirectory)..\PackageExplorer\NuGetPackageExplorer.csproj" /p:PublishProfile=Properties\PublishProfiles\Win$(Platform).pubxml</NpeExecCmd>
+      <NpeExecCmd>dotnet publish -c $(Configuration) "$(SourceRootDir)PackageExplorer\NuGetPackageExplorer.csproj" /p:PublishProfile=Properties\PublishProfiles\Win$(Platform).pubxml</NpeExecCmd>
     </PropertyGroup>
     <Message Text="Executing: $(NpeExecCmd)" Importance="High" />
     <Exec Command="$(NpeExecCmd)" />
     <Message Text="Built ref " />
     <ItemGroup>
-      <TheFiles Include="..\PackageExplorer\bin\$(Configuration)\net7.0-windows10.0.19041\win-$(Platform)\publish\**\*.*" />
+      <TheFiles Include="$(SourceRootDir)PackageExplorer\bin\$(Configuration)\net8.0-windows10.0.22000\win-$(Platform)\publish\**\*.*" />
       <TheFiles TargetPath="NuGetPackageExplorer\%(RecursiveDir)%(Filename)%(Extension)" />
       <BuiltRef Include="@(TheFiles)">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

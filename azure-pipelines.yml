@@ -14,7 +14,7 @@ stages:
   jobs:
   - job: Build
     pool:
-      vmImage: windows-2022
+      vmImage: windows-latest
     strategy:
       matrix:
         Channel_Zip:
@@ -33,45 +33,9 @@ stages:
     steps:
         
     - task: UseDotNet@2
-      displayName: 'Use .NET 6 SDK'
+      displayName: 'Use .NET 8 SDK'
       inputs:
-        version: 7.x
-
-    #- pwsh: |
-    #    $branch = "release/5.0.1xx"
-    #    $scriptPath = Join-Path $env:AGENT_TOOLSDIRECTORY dotnet-install.ps1
-    #    Invoke-WebRequest -OutFile $scriptPath https://raw.githubusercontent.com/dotnet/install-scripts/master/src/dotnet-install.ps1
-    #    &"$scriptPath" -Channel $branch
-
-    #    $configFile = Join-Path $env:AGENT_TOOLSDIRECTORY NuGet-darc.config
-    #    # Get the darc feeds needed
-    #    Invoke-WebRequest -OutFile $configFile "https://raw.githubusercontent.com/dotnet/installer/$branch/NuGet.config"
-
-    #    [xml]$nugetConfig = Get-Content $configFile
-    #    $darcNodes = $nugetConfig.SelectNodes("/configuration/packageSources/add[starts-with(@key, 'darc-')]")
-        
-    #    $installationPath = Join-Path $env:AGENT_TOOLSDIRECTORY dotnet
-
-    #    Write-Host "##vso[task.setvariable variable=DOTNET_ROOT]$installationPath"
-
-    #    # Enable multi-level lookup to fall back to the built-in SDK's for older versions. Set to 0 to disable
-    #    Write-Host "##vso[task.setvariable variable=DOTNET_MULTILEVEL_LOOKUP]1"
-
-    #    # Make sure the new path is propagated back to the main host process 
-    #    Write-Host "##vso[task.setvariable variable=PATH]$env:PATH"
-
-    #    # Add the nightly NuGet feeds to the nuget config starting with the darc nodes
-    #    foreach ($feed in $darcNodes) {
-    #      $key = $feed.attributes['key'].value
-    #      $value = $feed.attributes['value'].value
-
-    #      Write-Host "Adding DARC feed '$key': $value"
-    #      dotnet nuget add source $value -n $key
-    #    }
-
-    #    dotnet nuget add source https://pkgs.dev.azure.com/dnceng/public/_packaging/dotnet5/nuget/v3/index.json -n dotnet5        
-
-    #  displayName: Intall .NET 5.0 SDK
+        version: 8.x
 
     - task: DotNetCoreCLI@2
       inputs:
@@ -145,7 +109,7 @@ stages:
       inputs:
         command: pack
         arguments: /bl:$(Build.ArtifactStagingDirectory)\Logs\Libraries.binlog
-        packagesToPack: '**/*.csproj;!**/NuGetPackageExplorer.csproj;!**/*.macOS.csproj'
+        packagesToPack: '**/*.csproj;!**/NuGetPackageExplorer.csproj'
         configuration: $(BuildConfiguration)
         packDirectory: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
@@ -160,7 +124,7 @@ stages:
       displayName: Zip Windows PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net7.0-windows10.0.19041/win-x64/publish
+        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net8.0-windows10.0.22000/win-x64/publish
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
@@ -177,7 +141,7 @@ stages:
       displayName: Zip Gtk PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Skia.Gtk/bin/Release/net7.0
+        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Skia.Gtk/bin/Release/net8.0
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Skia.Gtk.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
@@ -185,7 +149,7 @@ stages:
     - task: CopyFiles@2
       displayName: Copy WebAssembly Package
       inputs:
-        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Wasm/bin/Release/net7.0/dist'
+        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Wasm/bin/Release/net8.0/dist'
         Contents: '**'
         TargetFolder: $(build.artifactstagingdirectory)\$(ReleaseChannel)
         CleanTargetFolder: false

@@ -4,10 +4,10 @@
     <Authors>Luan Nguyen,Julian Verdurmen,Claire Novotny</Authors>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <NoPackageAnalysis>true</NoPackageAnalysis>
-    <PackageIconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/images/nuget.png</PackageIconUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/main/images/nuget.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer</PackageProjectUrl>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/master/LICENSE</PackageLicenseUrl>
-    <Copyright>© 2022 .NET Foundation and Contributors</Copyright>
+    <PackageLicenseUrl>https://raw.githubusercontent.com/NuGetPackageExplorer/NuGetPackageExplorer/main/LICENSE</PackageLicenseUrl>
+    <Copyright>© 2024 .NET Foundation and Contributors</Copyright>
     <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)NuGetPackageExplorer.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisDictionary>$(MSBuildThisFileDirectory)CodeAnalysisDictionary.xml</CodeAnalysisDictionary>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -38,15 +38,19 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <SourceRootDir>$(MSBuildThisFileDirectory)</SourceRootDir>
+  </PropertyGroup>
+  
+  <PropertyGroup>
     <!--<TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>-->
     <!--<TargetPlatformVersion>10.0.19041</TargetPlatformVersion>-->
     
-    <NuGetDependencyVersion>6.0.0</NuGetDependencyVersion>
+    <NuGetDependencyVersion>6.9.1</NuGetDependencyVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.5.109" PrivateAssets="all" />    
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All"/>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" PrivateAssets="all" />    
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All"/>
     <Compile Include="$(MSBuildThisFileDirectory)Common\CommonAssemblyInfo.cs" LinkBase="Properties" />
   </ItemGroup>
   
