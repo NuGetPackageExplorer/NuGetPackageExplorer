@@ -50,9 +50,7 @@
     <EntryPointExe Condition="'$(BuildingInsideVisualStudio)' != 'true' ">NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
     <EntryPointProjectUniqueName Condition="'$(BuildingInsideVisualStudio)' == 'true' ">$(SourceRootDir)PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
     <GetPackagingOutputsDependsOn Condition="'$(BuildingInsideVisualStudio)' != 'true' ">$(GetPackagingOutputsDependsOn);BuildRefsOutputGroup</GetPackagingOutputsDependsOn>
-    <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
-    <GenerateTestArtifacts>True</GenerateTestArtifacts>
   </PropertyGroup>
   <PropertyGroup Condition="'$(ReleaseChannel)' == 'Nightly'">
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
