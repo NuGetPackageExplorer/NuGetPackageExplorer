@@ -2,8 +2,8 @@
 using System.ComponentModel;
 
 #if HAS_UNO
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Data;
 
 using _CultureInfo = System.String;
 #else

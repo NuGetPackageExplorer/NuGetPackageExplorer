@@ -4,7 +4,7 @@ using System.Text;
 
 using NuGet.Packaging.Core;
 
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 namespace NupkgExplorer.Views.Converters
 {

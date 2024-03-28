@@ -3,7 +3,7 @@ using System.Linq;
 using NuGet.Packaging;
 
 #if HAS_UNO
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 using _CultureInfo = System.String;
 #else

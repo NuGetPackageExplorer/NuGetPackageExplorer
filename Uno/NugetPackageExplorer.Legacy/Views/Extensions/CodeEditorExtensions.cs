@@ -10,7 +10,8 @@ using Uno.Extensions;
 
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using Microsoft.UI;
 
 namespace NupkgExplorer.Views.Extensions
 {

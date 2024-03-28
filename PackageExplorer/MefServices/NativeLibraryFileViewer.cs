@@ -2,7 +2,7 @@
 using NuGetPackageExplorer.Types;
 
 #if HAS_UNO
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 #else
 using System.Windows.Controls;
 #endif

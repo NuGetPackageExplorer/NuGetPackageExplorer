@@ -9,7 +9,7 @@ using NupkgExplorer.Framework.MVVM;
 
 using PackageExplorer;
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace NupkgExplorer.Framework.Navigation
 {

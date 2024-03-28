@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace PackageExplorer
 {
@@ -38,7 +38,7 @@ namespace PackageExplorer
             return iconBitmapImage ?? defaultPackageIcon!;
         }
 
-        private void IconBitmapImage_ImageFailed(object sender, Windows.UI.Xaml.ExceptionRoutedEventArgs e)
+        private void IconBitmapImage_ImageFailed(object sender, Microsoft.UI.Xaml.ExceptionRoutedEventArgs e)
         {
         }
     }

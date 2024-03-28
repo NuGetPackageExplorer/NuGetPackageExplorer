@@ -3,10 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using Uno.Extensions;
 using Windows.ApplicationModel.Core;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using CommunityToolkit.WinUI.UI.Controls;
 
 namespace NupkgExplorer.Views.Extensions
 {

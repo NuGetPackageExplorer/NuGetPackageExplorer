@@ -4,8 +4,8 @@ using NuGetPackageExplorer.Types;
 using NuGetPe;
 
 #if HAS_UNO
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Media.Imaging;
 #else
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
