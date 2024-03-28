@@ -9,9 +9,10 @@ using PackageExplorerViewModel;
 
 #if HAS_UNO
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Text;
 using Uno.Extensions;
 using Uno.Logging;
 

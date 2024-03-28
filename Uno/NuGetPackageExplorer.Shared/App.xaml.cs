@@ -1,5 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Toolkit.Uwp.Helpers;
+using CommunityToolkit.WinUI.Helpers;
 
 using NuGet.Common;
 using NuGet.Configuration;
@@ -37,20 +37,17 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Logging;
 
-using Windows.ApplicationModel;
-using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
 using Windows.UI.Popups;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
+using Microsoft.UI.Xaml.Navigation;
 
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -139,7 +136,7 @@ namespace PackageExplorer
             var window = new Window();
             window.Activate();
 #else
-            var window = Windows.UI.Xaml.Window.Current;
+            var window = Microsoft.UI.Xaml.Window.Current;
 #endif
             MainWindow = window;
 
@@ -154,7 +151,7 @@ namespace PackageExplorer
             }
 
 #if !(NET5_0 && WINDOWS)
-            if (e.PrelaunchActivated == false)
+            if (e.UWPLaunchActivatedEventArgs.PrelaunchActivated == false)
 #endif
             {
                 // Ensure the current window is active
@@ -189,9 +186,11 @@ namespace PackageExplorer
 
                 var vm = (e.Parameter as NupkgExplorer.Framework.MVVM.ViewModelBase);
 
-                ApplicationView.GetForCurrentView().Title = vm?.Title ?? NuGetPackageExplorer.Constants.AppName;
+#if HAS_UNO
+                Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title = vm?.Title ?? NuGetPackageExplorer.Constants.AppName;
 #if __WASM__
                 NuGetPackageExplorer.Helpers.ApplicationHelper.ReplaceUrl(new Uri(vm?.Location ?? "/", UriKind.Relative));
+#endif
 #endif
 
                 DiagnosticsClient.TrackPageView(e.Content.GetType().Name);
@@ -505,7 +504,7 @@ namespace PackageExplorer
         /// </summary>
         /// <param name="sender">The source of the suspend request.</param>
         /// <param name="e">Details about the suspend request.</param>
-        private void OnSuspending(object sender, SuspendingEventArgs e)
+        private void OnSuspending(object sender, Windows.ApplicationModel.SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
@@ -550,22 +549,22 @@ namespace PackageExplorer
 
 
                 // Generic Xaml events
-                // builder.AddFilter("Windows.UI.Xaml", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.UIElement", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.FrameworkElement", LogLevel.Trace );
+                // builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Debug );
+                // builder.AddFilter("Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug );
+                // builder.AddFilter("Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug );
+                // builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Debug );
+                // builder.AddFilter("Microsoft.UI.Xaml.FrameworkElement", LogLevel.Trace );
 
                 // Layouter specific messages
-                // builder.AddFilter("Windows.UI.Xaml.Controls", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.Controls.Panel", LogLevel.Debug );
+                // builder.AddFilter("Microsoft.UI.Xaml.Controls", LogLevel.Debug );
+                // builder.AddFilter("Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug );
+                // builder.AddFilter("Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug );
 
                 // builder.AddFilter("Windows.Storage", LogLevel.Debug );
 
                 // Binding related messages
-                // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
-                // builder.AddFilter("Windows.UI.Xaml.Data", LogLevel.Debug );
+                // builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
+                // builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
 
                 // Binder memory references tracking
                 // builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );

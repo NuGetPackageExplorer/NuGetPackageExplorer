@@ -6,7 +6,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Logging;
 
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 namespace NupkgExplorer.Views.Converters
 {

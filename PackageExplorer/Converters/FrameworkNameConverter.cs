@@ -4,7 +4,7 @@ using System.Linq;
 using NuGet.Frameworks;
 
 #if HAS_UNO
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 using _CultureInfo = System.String;
 #else
