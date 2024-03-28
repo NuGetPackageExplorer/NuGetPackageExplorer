@@ -178,70 +178,79 @@ stages:
       artifact: SigningScripts
 
 - stage: CodeSign
+  dependsOn: Build
   condition: and(succeeded('Build'), not(eq(variables['build.reason'], 'PullRequest')))
   jobs:
-  - deployment: CodeSign
+  - job: CodeSign
     displayName: Code Signing
     pool:
       vmImage: windows-latest
-    environment: Code Sign - CI
     variables:
-    - group: NuGet Package Explorer Sign Client
-    strategy:
-      runOnce:
-        deploy:
-          steps:
+    - group: SignCLI Config
+  
+    steps:
 
-          - task: DownloadPipelineArtifact@2
-            displayName: Download Zip Artifacts
-            inputs:
-              artifactName: Zip
-              targetPath: $(Pipeline.Workspace)/ToSign/Zip
+    - task: DownloadPipelineArtifact@2
+      displayName: Download Zip Artifacts
+      inputs:
+        artifactName: Zip
+        targetPath: $(Pipeline.Workspace)/ToSign/Zip
 
-          - task: DownloadPipelineArtifact@2
-            displayName: Download Choco Artifacts
-            inputs:
-              artifactName: Choco
-              targetPath: $(Pipeline.Workspace)/ToSign/Choco
+    - task: DownloadPipelineArtifact@2
+      displayName: Download Choco Artifacts
+      inputs:
+        artifactName: Choco
+        targetPath: $(Pipeline.Workspace)/ToSign/Choco
 
-          - task: DownloadPipelineArtifact@2
-            displayName: Download Nightly Artifacts
-            inputs:
-              artifactName: Nightly
-              targetPath: $(Pipeline.Workspace)/ToSign/Nightly
+    - task: DownloadPipelineArtifact@2
+      displayName: Download Nightly Artifacts
+      inputs:
+        artifactName: Nightly
+        targetPath: $(Pipeline.Workspace)/ToSign/Nightly
 
-          - download: current
-            artifact: SigningScripts
+    - download: current
+      artifact: SigningScripts
 
-          - task: DotNetCoreCLI@2
-            inputs:
-              command: custom
-              custom: tool
-              arguments: install --tool-path . SignClient
-            displayName: Install SignTool tool
+    - task: UseDotNet@2
+      displayName: 'Use .NET SDK 8.x'
+      inputs:
+        version: 8.x
 
-          - pwsh: |
-              .\SignClient "Sign" `
-              --baseDirectory "$(Pipeline.Workspace)\ToSign" `
-              --input "**/*.{appxbundle,appinstaller,zip,nupkg}" `
-              --config "$(Pipeline.Workspace)\SigningScripts\appsettings.json" `
-              --filelist "$(Pipeline.Workspace)\SigningScripts\filelist.txt" `
-              --user "$(SignClientUser)" `
-              --secret '$(SignClientSecret)' `
-              --name "NuGet Package Explorer" `
-              --description "NuGet Package Explorer" `
-              --descriptionUrl "https://github.com/NuGetPackageExplorer/NuGetPackageExplorer"
-            displayName: Authenticode Sign artifacts
+    # Install the code signing tool
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: custom
+        custom: tool
+        arguments: install --tool-path . --prerelease sign 
+      displayName: Install SignTool tool
 
-          - publish: $(Pipeline.Workspace)/ToSign/Zip
-            displayName: Publish Signed Zip Packages
-            artifact: ZipSigned
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: 'Azure RM (NPE)'
+        scriptType: pscore
+        scriptLocation: inlineScript
+        inlineScript: |
+        .\sign code azure-key-vault `
+        "**/*.{appxbundle,appinstaller,zip,nupkg}" `
+        --base-directory "$(Pipeline.Workspace)\ToSign" `
+        --file-list "$(Pipeline.Workspace)\SigningScripts\filelist.txt" `        
+        --publisher-name "NuGet Package Explorer" `
+        --description "NuGet Package Explorer" `
+        --description-url "https://github.com/NuGetPackageExplorer/NuGetPackageExplorer" `
+        --azure-key-vault-managed-identity `
+        --azure-key-vault-certificate "$(SignKeyVaultCertificate)" `
+        --azure-key-vault-url "$(SignKeyVaultUrl)"
+      displayName: Authenticode Sign artifacts
 
-          - publish: $(Pipeline.Workspace)/ToSign/Choco
-            displayName: Publish Signed Choco Packages
-            artifact: ChocoSigned
+    - publish: $(Pipeline.Workspace)/ToSign/Zip
+      displayName: Publish Signed Zip Packages
+      artifact: ZipSigned
 
-          - publish: $(Pipeline.Workspace)/ToSign/Nightly
-            displayName: Publish Signed Choco Packages
-            artifact: NightlySigned
+    - publish: $(Pipeline.Workspace)/ToSign/Choco
+      displayName: Publish Signed Choco Packages
+      artifact: ChocoSigned
+
+    - publish: $(Pipeline.Workspace)/ToSign/Nightly
+      displayName: Publish Signed Choco Packages
+      artifact: NightlySigned
 
