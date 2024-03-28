@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;net6.0;netcoreapp3.1;netstandard2.1</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net7.0-windows10.0.19041</TargetFrameworks>
+    <TargetFrameworks>net8.0;netstandard2.1</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net8.0-windows10.0.22000</TargetFrameworks>
     <TargetFrameworks Condition="$(UNO_BUILD_ONLY)!=''">netstandard2.1</TargetFrameworks>
     <RootNamespace>NuGetPe</RootNamespace>
     <Description>Core library which is responsible for loading .nupkg files and parsing .nuspec files.</Description>
@@ -18,14 +18,14 @@
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />
     <PackageReference Include="AppInsights.WindowsDesktop" Version="2.18.1" />
-    <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-21110-01" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
+    <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-24172-02" />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="8.0.0" />
     <!--<PackageReference Include="Microsoft.SourceLink.Tools" Version="1.1.0-beta-21115-02" PrivateAssets="all" />-->
     <PackageReference Include="Microsoft.SymbolStore" Version="1.0.251801" />
-    <PackageReference Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />    
+    <PackageReference Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />
     <PackageReference Include="PeNet" Version="2.9.7" />
-    <PackageReference Include="System.Formats.Asn1" Version="6.0.0" />
-    <PackageReference Include="System.Reflection.Metadata" Version="6.0.1" />
+    <PackageReference Include="System.Formats.Asn1" Version="8.0.0" />
+    <PackageReference Include="System.Reflection.Metadata" Version="8.0.0" />
     <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" Version="1.1.24" />
   </ItemGroup>
 
