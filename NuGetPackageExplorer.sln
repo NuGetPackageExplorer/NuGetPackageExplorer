@@ -18,6 +18,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Common\CommonAssemblyInfo.cs = Common\CommonAssemblyInfo.cs
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
+		NuGet.config = NuGet.config
 		NuGetPackageExplorer.ruleset = NuGetPackageExplorer.ruleset
 		README-developers.md = README-developers.md
 		README.md = README.md
@@ -36,8 +37,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Platforms", "Platforms", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetPackageExplorer.Wasm", "Uno\NuGetPackageExplorer.Wasm\NuGetPackageExplorer.Wasm.csproj", "{2386DF3C-A33D-4171-889B-F02E0A5D0086}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGetPackageExplorer.macOS", "Uno\NuGetPackageExplorer.macOS\NuGetPackageExplorer.macOS.csproj", "{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetPackageExplorer.Skia.Gtk", "Uno\NuGetPackageExplorer.Skia.Gtk\NuGetPackageExplorer.Skia.Gtk.csproj", "{6ED913A7-1741-4C95-8C4F-48181DE14699}"
 EndProject
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "NugetPackageExplorer.Views.Shared", "PackageExplorer\NugetPackageExplorer.Views.Shared.shproj", "{CEAC2115-FF07-4AD0-9C9A-DD967B7ECD58}"
@@ -47,18 +46,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Uno\Api\Api.csproj", "{FA3F8816-EEFC-40B3-A879-CA649442C4FE}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		Uno\NugetPackageExplorer.Legacy\NugetPackageExplorer.Shared.Legacy.projitems*{0edec935-ee96-4255-b7f0-0695bee40d40}*SharedItemsImports = 13
-		PackageExplorer\NugetPackageExplorer.Views.Shared.projitems*{2386df3c-a33d-4171-889b-f02e0a5d0086}*SharedItemsImports = 5
-		Uno\NugetPackageExplorer.Legacy\NugetPackageExplorer.Shared.Legacy.projitems*{2386df3c-a33d-4171-889b-f02e0a5d0086}*SharedItemsImports = 5
-		Uno\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems*{2386df3c-a33d-4171-889b-f02e0a5d0086}*SharedItemsImports = 5
-		Uno\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
-		PackageExplorer\NugetPackageExplorer.Views.Shared.projitems*{6ed913a7-1741-4c95-8c4f-48181de14699}*SharedItemsImports = 5
-		Uno\NugetPackageExplorer.Legacy\NugetPackageExplorer.Shared.Legacy.projitems*{6ed913a7-1741-4c95-8c4f-48181de14699}*SharedItemsImports = 5
-		Uno\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems*{6ed913a7-1741-4c95-8c4f-48181de14699}*SharedItemsImports = 5
-		Uno\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems*{a01c2d55-c6f4-43c2-993b-90c57a3fdddf}*SharedItemsImports = 4
-		PackageExplorer\NugetPackageExplorer.Views.Shared.projitems*{ceac2115-ff07-4ad0-9c9a-dd967b7ecd58}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Ad-Hoc|Any CPU = Ad-Hoc|Any CPU
 		Ad-Hoc|ARM = Ad-Hoc|ARM
@@ -498,50 +485,6 @@ Global
 		{2386DF3C-A33D-4171-889B-F02E0A5D0086}.Release|x64.Build.0 = Release|Any CPU
 		{2386DF3C-A33D-4171-889B-F02E0A5D0086}.Release|x86.ActiveCfg = Release|Any CPU
 		{2386DF3C-A33D-4171-889B-F02E0A5D0086}.Release|x86.Build.0 = Release|Any CPU
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|Any CPU.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|Any CPU.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|ARM.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|ARM.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|ARM64.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|ARM64.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|iPhone.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|iPhone.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|x64.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|x64.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|x86.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Ad-Hoc|x86.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|Any CPU.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|Any CPU.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|ARM.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|ARM.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|ARM64.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|ARM64.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|iPhone.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|iPhone.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|x64.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|x64.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|x86.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.AppStore|x86.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Debug|Any CPU.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Debug|ARM.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Debug|ARM64.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Debug|iPhone.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Debug|x64.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Debug|x86.ActiveCfg = Debug|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Release|Any CPU.ActiveCfg = Release|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Release|ARM.ActiveCfg = Release|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Release|ARM64.ActiveCfg = Release|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Release|iPhone.ActiveCfg = Release|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Release|x64.ActiveCfg = Release|iPhoneSimulator
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF}.Release|x86.ActiveCfg = Release|iPhoneSimulator
 		{6ED913A7-1741-4C95-8C4F-48181DE14699}.Ad-Hoc|Any CPU.ActiveCfg = Debug|Any CPU
 		{6ED913A7-1741-4C95-8C4F-48181DE14699}.Ad-Hoc|Any CPU.Build.0 = Debug|Any CPU
 		{6ED913A7-1741-4C95-8C4F-48181DE14699}.Ad-Hoc|ARM.ActiveCfg = Debug|Any CPU
@@ -662,7 +605,6 @@ Global
 		{6279C845-92F8-4333-AB99-3D213163593C} = {840D6489-5640-44BA-856D-40638CB72344}
 		{6400EFB6-4D0A-4A84-B551-F064FECBA6D9} = {840D6489-5640-44BA-856D-40638CB72344}
 		{2386DF3C-A33D-4171-889B-F02E0A5D0086} = {6400EFB6-4D0A-4A84-B551-F064FECBA6D9}
-		{A01C2D55-C6F4-43C2-993B-90C57A3FDDDF} = {6400EFB6-4D0A-4A84-B551-F064FECBA6D9}
 		{6ED913A7-1741-4C95-8C4F-48181DE14699} = {6400EFB6-4D0A-4A84-B551-F064FECBA6D9}
 		{CEAC2115-FF07-4AD0-9C9A-DD967B7ECD58} = {840D6489-5640-44BA-856D-40638CB72344}
 		{0EDEC935-EE96-4255-B7F0-0695BEE40D40} = {840D6489-5640-44BA-856D-40638CB72344}
@@ -670,5 +612,16 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {23EC8E7E-FE69-480B-A23A-D5C7F1E1FFFC}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Uno\NugetPackageExplorer.Legacy\NugetPackageExplorer.Shared.Legacy.projitems*{0edec935-ee96-4255-b7f0-0695bee40d40}*SharedItemsImports = 13
+		PackageExplorer\NugetPackageExplorer.Views.Shared.projitems*{2386df3c-a33d-4171-889b-f02e0a5d0086}*SharedItemsImports = 5
+		Uno\NugetPackageExplorer.Legacy\NugetPackageExplorer.Shared.Legacy.projitems*{2386df3c-a33d-4171-889b-f02e0a5d0086}*SharedItemsImports = 5
+		Uno\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems*{2386df3c-a33d-4171-889b-f02e0a5d0086}*SharedItemsImports = 5
+		Uno\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems*{6279c845-92f8-4333-ab99-3d213163593c}*SharedItemsImports = 13
+		PackageExplorer\NugetPackageExplorer.Views.Shared.projitems*{6ed913a7-1741-4c95-8c4f-48181de14699}*SharedItemsImports = 5
+		Uno\NugetPackageExplorer.Legacy\NugetPackageExplorer.Shared.Legacy.projitems*{6ed913a7-1741-4c95-8c4f-48181de14699}*SharedItemsImports = 5
+		Uno\NuGetPackageExplorer.Shared\NuGetPackageExplorer.Shared.projitems*{6ed913a7-1741-4c95-8c4f-48181de14699}*SharedItemsImports = 5
+		PackageExplorer\NugetPackageExplorer.Views.Shared.projitems*{ceac2115-ff07-4ad0-9c9a-dd967b7ecd58}*SharedItemsImports = 13
 	EndGlobalSection
 EndGlobal
