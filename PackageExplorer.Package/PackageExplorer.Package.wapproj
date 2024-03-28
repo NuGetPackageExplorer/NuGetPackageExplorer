@@ -48,7 +48,7 @@
     <UapAppxPackageBuildMode>SideLoadOnly</UapAppxPackageBuildMode>
     <UapAppxPackageBuildMode Condition="'$(ReleaseChannel)' == 'Store'">CI</UapAppxPackageBuildMode>
     <EntryPointExe Condition="'$(BuildingInsideVisualStudio)' != 'true' ">NuGetPackageExplorer\NuGetPackageExplorer.exe</EntryPointExe>
-    <EntryPointProjectUniqueName Condition="'$(BuildingInsideVisualStudio)' == 'true' ">..\PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
+    <EntryPointProjectUniqueName Condition="'$(BuildingInsideVisualStudio)' == 'true' ">$(SourceRootDir)PackageExplorer\NuGetPackageExplorer.csproj</EntryPointProjectUniqueName>
     <GetPackagingOutputsDependsOn Condition="'$(BuildingInsideVisualStudio)' != 'true' ">$(GetPackagingOutputsDependsOn);BuildRefsOutputGroup</GetPackagingOutputsDependsOn>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
@@ -91,13 +91,13 @@
   <Import Project="$(WapProjPath)\Microsoft.DesktopBridge.targets" />
   <Target Name="BuildRef" Condition="'$(BuildingInsideVisualStudio)' != 'true' " BeforeTargets="BeforeBuild">
     <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-      <NpeExecCmd>dotnet publish -c $(Configuration) "$(MSBuildThisFileDirectory)..\PackageExplorer\NuGetPackageExplorer.csproj" /p:PublishProfile=Properties\PublishProfiles\Win$(Platform).pubxml</NpeExecCmd>
+      <NpeExecCmd>dotnet publish -c $(Configuration) "$(SourceRootDir)PackageExplorer\NuGetPackageExplorer.csproj" /p:PublishProfile=Properties\PublishProfiles\Win$(Platform).pubxml</NpeExecCmd>
     </PropertyGroup>
     <Message Text="Executing: $(NpeExecCmd)" Importance="High" />
     <Exec Command="$(NpeExecCmd)" />
     <Message Text="Built ref " />
     <ItemGroup>
-      <TheFiles Include="..\PackageExplorer\bin\$(Configuration)\net8.0-windows10.0.22000\win-$(Platform)\publish\**\*.*" />
+      <TheFiles Include="$(SourceRootDir)PackageExplorer\bin\$(Configuration)\net8.0-windows10.0.22000\win-$(Platform)\publish\**\*.*" />
       <TheFiles TargetPath="NuGetPackageExplorer\%(RecursiveDir)%(Filename)%(Extension)" />
       <BuiltRef Include="@(TheFiles)">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

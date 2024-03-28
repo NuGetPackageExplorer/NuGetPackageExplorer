@@ -38,6 +38,10 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <SourceRootDir>$(MSBuildThisFileDirectory)</SourceRootDir>
+  </PropertyGroup>
+  
+  <PropertyGroup>
     <!--<TargetPlatformMinVersion>10.0.17134.0</TargetPlatformMinVersion>-->
     <!--<TargetPlatformVersion>10.0.19041</TargetPlatformVersion>-->
     
