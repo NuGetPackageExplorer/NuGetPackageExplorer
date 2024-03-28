@@ -6,13 +6,13 @@ using NuGetPackageExplorer.Types;
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
-using Microsoft.UI.Text;
 
 #if HAS_UNO
 using Windows.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Text;
 using Uno.Extensions;
 using Uno.Logging;
 
