@@ -231,7 +231,7 @@ stages:
         scriptLocation: inlineScript
         inlineScript: |
           .\sign code azure-key-vault `
-          "**/*.{appxbundle,appinstaller,zip,nupkg}" `
+          "**/*.{appxbundle,msixbundle,appinstaller,zip,nupkg}" `
           --base-directory "$(Pipeline.Workspace)\ToSign" `
           --file-list "$(Pipeline.Workspace)\SigningScripts\filelist.txt" `
           --publisher-name "NuGet Package Explorer" `
