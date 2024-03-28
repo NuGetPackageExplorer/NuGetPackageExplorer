@@ -24,6 +24,10 @@
     <WasmShellILLinkerEnabled>false</WasmShellILLinkerEnabled>
   </PropertyGroup>
   <ItemGroup>
+    <WasmShellAdditionalPInvokeLibrary Include="libc" />
+    <WasmShellAdditionalPInvokeLibrary Include="libc.so" />
+  </ItemGroup>
+  <ItemGroup>
     <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
 
     <!-- This value must be the instrumentation key, not the connection string -->
