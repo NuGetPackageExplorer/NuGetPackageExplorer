@@ -58,6 +58,8 @@ namespace PackageExplorer
     /// </summary>
     public sealed partial class App : Application
     {
+        public Window MainWindow { get; private set; }
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -136,6 +138,7 @@ namespace PackageExplorer
 #else
             var window = Microsoft.UI.Xaml.Window.Current;
 #endif
+            MainWindow = window;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
