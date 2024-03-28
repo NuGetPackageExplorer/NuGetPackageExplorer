@@ -23,12 +23,12 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.1" />
-    <PackageReference Include="Uno.WinUI.Skia.Gtk" Version="5.0.0-dev.1380" />
-    <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.0.0-dev.1380" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.WinUI.Skia.Gtk" Version="5.1.104" />
+    <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.1.104" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.200-dev.16.g49756d9ac4" />
     <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.200-dev.16.g49756d9ac4" />
     <PackageReference Include="System.Runtime.Caching" Version="6.0.0" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.0.0-dev.1380" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.1.104" />
     <PackageReference Include="Uno.Core" Version="4.0.1" />
   </ItemGroup>
   <ItemGroup>

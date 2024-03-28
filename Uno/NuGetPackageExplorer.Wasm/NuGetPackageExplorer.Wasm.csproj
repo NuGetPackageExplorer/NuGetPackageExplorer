@@ -67,9 +67,9 @@
     <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.200-dev.16.g49756d9ac4" />
     <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.200-dev.16.g49756d9ac4" />
     <PackageReference Include="Uno.Monaco.Editor" Version="2.0.0-dev.50" />
-    <PackageReference Include="Uno.WinUI.WebAssembly" Version="5.0.0-dev.1380" />
-    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.0.0-dev.1380" />
-    <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.0.0-dev.1380" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.WinUI.WebAssembly" Version="5.1.104" />
+    <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.1.104" />
+    <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.1.104" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.Wasm.Bootstrap" Version="8.0.0-dev.226" />
     <PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.226" />
     <PackageReference Include="Microsoft.Windows.Compatibility" Version="6.0.0" />
