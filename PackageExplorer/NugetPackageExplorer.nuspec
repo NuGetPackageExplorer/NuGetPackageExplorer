@@ -14,6 +14,12 @@
       NuGet Package Explorer is an application which allows creating and exploring NuGet packages easily.
       After installing it, you can double click on a .nupkg or .snupkg file to view the package content.
       You can also load packages directly from the official NuGet feed.
+
+      ### Available Package Parameters
+
+      - `/NoDesktopShortut` : Don't create a desktop shortcut when installing
+
+      Example: `choco install nugetpackageexplorer -y --params="'/NoDesktopShortcut'"`
     </description>
     <summary>Makes creating and examining nuget packages very easy.</summary>
     <releaseNotes>https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/releases</releaseNotes>
@@ -21,7 +27,7 @@
   </metadata>
   <files>
     <file src="ChocolateyInstall.ps1"  />
-    <file src="bin\Release\net6.0-windows10.0.19041\win-x64\publish\**\*.*" target="tools"  />
+    <file src="bin\Release\net8.0-windows10.0.22000\win-x64\publish\**\*.*" target="tools"  />
     <file src="..\LICENSE.txt" target="legal\LICENSE.txt" />
     <file src="..\Build\Verification.txt" target="legal\Verification.txt" />
   </files>

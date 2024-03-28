@@ -17,7 +17,7 @@ namespace PackageExplorer
                 return stringValue;
             }
 
-            // replace a series of whitepaces with a single whitespace
+            // replace a series of whitespaces with a single whitespace
             // REVIEW: Should we avoid regex and just do this manually?
             return Regex.Replace(stringValue, @"[\f\t\v\x85\p{Z}]+", " ");
         }

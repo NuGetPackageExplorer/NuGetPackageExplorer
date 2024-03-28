@@ -76,7 +76,7 @@ namespace PackageExplorerViewModel
                 }
             }
 
-            var successful = PersitChanges();
+            var successful = PersistChanges();
             if (successful)
             {
                 // return back to Package view
@@ -108,7 +108,7 @@ namespace PackageExplorerViewModel
             try
             {
                 SaveExecute(editorService);
-                PersitChanges();
+                PersistChanges();
             }
             catch (Exception e)
             {
@@ -117,7 +117,7 @@ namespace PackageExplorerViewModel
 
         }
 
-        private bool PersitChanges()
+        private bool PersistChanges()
         {
             if (_hasSaved)
             {

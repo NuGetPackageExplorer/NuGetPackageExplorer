@@ -9,7 +9,7 @@ using NupkgExplorer.Framework.MVVM;
 
 using PackageExplorer;
 
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls;
 
 namespace NupkgExplorer.Framework.Navigation
 {
@@ -45,7 +45,9 @@ namespace NupkgExplorer.Framework.Navigation
 
             //todo: check&switch thread
             var dialog = (ContentDialog)App.Current.Container.GetExportedValue(dialogType);
-			dialog.DataContext = viewModel;
+            dialog.XamlRoot = App.Current.MainWindow?.Content?.XamlRoot;
+
+            dialog.DataContext = viewModel;
 
 			using (ct.Register(CloseDialog))
 			{

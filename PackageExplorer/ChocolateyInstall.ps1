@@ -2,10 +2,25 @@
     $drop = Join-Path (Split-Path -parent $MyInvocation.MyCommand.Definition) "tools"
     $exeName = "NugetPackageExplorer.exe"
     $exe = Join-Path $drop $exeName
+
+    $pp = Get-PackageParameters
+
+    if(-not $pp['NoDesktopShortcut']) {
+        $desktop = Join-Path $env:Public -ChildPath 'Desktop'
+        $shortcutFile =  Join-Path $desktop -ChildPath "$($exeName.Split('.')[0]).lnk"
+        
+        $shortcutArgs = @{
+            ShortcutFilePath = $shortcutFile
+            TargetPath = $exe
+            WorkingDirectory = $drop
+            Desciption = 'NuGet Package Explorer'
+        }
+
+        Install-ChocolateyShortcut @shortcutArgs
+
+    }
     
     New-Item "$exe.gui" -Type File -Force | Out-Null
-
-    Install-ChocolateyDesktopLink $exe
 
     # Generate ignore files for all exe files except "NugetPackageExplorer.exe".
     # This prevents chocolatey from generating shims for them.

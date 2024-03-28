@@ -5,7 +5,9 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 [assembly: DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
@@ -59,7 +61,7 @@ namespace PackageExplorerViewModel
             }
 
             // copy to temporary file
-            // create package in the temprary file first in case the operation fails which would
+            // create package in the temporary file first in case the operation fails which would
             // override existing file with a 0-byte file.
             var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
             using (Stream tempFileStream = File.Create(tempFileName))
@@ -87,14 +89,14 @@ namespace PackageExplorerViewModel
         }
 
         public static void OpenFileInShellWith(PackageFile file)
-        {            
+        {
             DiagnosticsClient.TrackEvent("FileHelper_OpenFileInShellWith");
 
             if (file is null)
                 throw new ArgumentNullException(nameof(file));
 
             // copy to temporary file
-            // create package in the temprary file first in case the operation fails which would
+            // create package in the temporary file first in case the operation fails which would
             // override existing file with a 0-byte file.
             var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
 
@@ -333,21 +335,25 @@ namespace PackageExplorerViewModel
 #if !NETSTANDARD2_1
 #pragma warning restore IDE1006 // Naming Styles
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
-        public static Icon ExtractAssociatedIcon(string fileName)
+        public static Icon? ExtractAssociatedIcon(string fileName)
         {
             var info = new SHFILEINFO();
             var infoSize = (uint)Marshal.SizeOf(info);
 
-            SHGetFileInfo(
+            var res = SHGetFileInfo(
                 fileName,
                 FILE_ATTRIBUTE_NORMAL,
                 out info,
                 infoSize,
                 SHGFI.Icon | SHGFI.SmallIcon | SHGFI.UseFileAttributes);
 
-            var icon = (Icon)Icon.FromHandle(info.hIcon).Clone();
-            DestroyIcon(info.hIcon);
-            return icon;
+            if (res != 0)
+            {
+                var icon = (Icon)Icon.FromHandle(info.hIcon).Clone();
+                DestroyIcon(info.hIcon);
+                return icon;
+            }
+            return null;
         }
 #endif
     }

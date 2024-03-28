@@ -167,10 +167,10 @@ namespace NuGetPe
             Debug.Assert(left.Name == right.Name);
 
             // First check how much attribute names and values match
-            var leftExactMathes = CountMatches(left, target, AttributeEquals);
-            var rightExactMathes = CountMatches(right, target, AttributeEquals);
+            var leftExactMatches = CountMatches(left, target, AttributeEquals);
+            var rightExactMatches = CountMatches(right, target, AttributeEquals);
 
-            if (leftExactMathes == rightExactMathes)
+            if (leftExactMatches == rightExactMatches)
             {
                 // Then check which names match
                 var leftNameMatches = CountMatches(left, target, (a, b) => a.Name == b.Name);
@@ -179,7 +179,7 @@ namespace NuGetPe
                 return rightNameMatches.CompareTo(leftNameMatches);
             }
 
-            return rightExactMathes.CompareTo(leftExactMathes);
+            return rightExactMatches.CompareTo(leftExactMatches);
         }
 
         private static int CountMatches(XElement left, XElement right, Func<XAttribute, XAttribute, bool> matcher)

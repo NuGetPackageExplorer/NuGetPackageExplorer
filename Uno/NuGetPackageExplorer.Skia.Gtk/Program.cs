@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using System.IO;
 
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.Gtk;
 
 namespace PackageExplorer
 {
@@ -17,7 +17,7 @@ namespace PackageExplorer
 				expArgs.ExitApplication = true;
 			};
 
-			var host = new GtkHost(() => new App(), args);
+			var host = new GtkHost(() => new App());
 
 			host.Run();
 		}

@@ -4,7 +4,7 @@ using System.Linq;
 using NuGet.Packaging;
 
 #if HAS_UNO
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Data;
 
 using _CultureInfo = System.String;
 #else
@@ -22,7 +22,7 @@ namespace PackageExplorer
             var referenceSets = (ICollection<PackageReferenceSet>)value;
             if (referenceSets.Any(d => d.TargetFramework != null))
             {
-                // if there is at least one dependeny set with non-null target framework,
+                // if there is at least one dependency set with non-null target framework,
                 // we show the dependencies grouped by target framework.
                 return referenceSets;
             }

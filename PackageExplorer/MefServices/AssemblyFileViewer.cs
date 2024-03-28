@@ -9,9 +9,10 @@ using PackageExplorerViewModel;
 
 #if HAS_UNO
 using Windows.UI.Text;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Text;
 using Uno.Extensions;
 using Uno.Logging;
 
@@ -128,7 +129,7 @@ namespace PackageExplorer
                 // returning UIElement from here works.
                 // however due to performance issues, we are just
                 // returning the datacontext and letting the xaml to handle the view.
-                // also, the ui layout is vastely different compared to the #if-block above
+                // also, the ui layout is vastly different compared to the #if-block above
                 return new AssemblyFileContent()
                 {
                     Metadata = assemblyMetadata

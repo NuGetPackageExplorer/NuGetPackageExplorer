@@ -60,10 +60,29 @@ namespace PackageExplorerViewModel
         /// <returns></returns>
         public IEnumerable<PackageFile> GetAssociatedPackageFiles()
         {
-            var filename = System.IO.Path.GetFileNameWithoutExtension(Name);
+            const string niPdbExt = ".ni.pdb";
 
-            static bool HasSameName(IPart packagePart, string name) =>
-                System.IO.Path.GetFileNameWithoutExtension(packagePart.Name).Equals(name, StringComparison.OrdinalIgnoreCase);
+            string? filename = null;
+
+            if (Name.EndsWith(niPdbExt, StringComparison.OrdinalIgnoreCase))
+            {
+                filename = Name.AsSpan()[..(Name.Length - niPdbExt.Length)].ToString();
+            }
+
+            filename ??= System.IO.Path.GetFileNameWithoutExtension(Name);
+
+            static bool HasSameName(IPart packagePart, string name)
+            {
+                if (System.IO.Path.GetFileNameWithoutExtension(packagePart.Name).Equals(name, StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                if (packagePart.Name.EndsWith(niPdbExt, StringComparison.OrdinalIgnoreCase))
+                {
+                    var nameNoExt = packagePart.Name.AsSpan()[..(packagePart.Name.Length - niPdbExt.Length)];
+                    return nameNoExt.CompareTo(name, StringComparison.OrdinalIgnoreCase) == 0;
+                }
+                return false;
+            }
 
             return _parent!.GetFiles().OfType<PackageFile>().Where(f => f.Path != Path && HasSameName(f, filename));
         }

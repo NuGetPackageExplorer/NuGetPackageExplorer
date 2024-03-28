@@ -16,8 +16,8 @@
 	  xmlns:pkvm="using:PackageExplorerViewModel"
 	  xmlns:vm="using:NupkgExplorer.Presentation.Content"
 	  xmlns:behavior="using:NupkgExplorer.Views.Behaviors"
-	  xmlns:wct="using:Microsoft.Toolkit.Uwp.UI.Controls"
-	  xmlns:wctPrimitives="using:Microsoft.Toolkit.Uwp.UI.Controls.Primitives"
+	  xmlns:wct="using:CommunityToolkit.WinUI.UI.Controls"
+	  xmlns:wctPrimitives="using:CommunityToolkit.WinUI.UI.Controls.Primitives"
 	  xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:xamarin="http://uno.ui/xamarin"
 	  xmlns:wasm="http://uno.ui/wasm"
@@ -40,6 +40,7 @@
 		<pexpl:FrameworkAssemblyReferenceDisplayConverter x:Key="FrameworkAssemblyReferenceDisplayConverter" />
 		<pexpl:PackageDependencyConverter x:Key="PackageDependencyConverter" />
 		<pexpl:ReferenceSetConverter x:Key="ReferenceSetConverter" />
+		<pexpl:FrameworkNameConverter x:Key="FrameworkNameConverter" />
 		<pexpl:LicenseMetadataConverter x:Key="LicenseMetadataConverter" />
 		<pexpl:LicenseUrlToVisibilityConverter x:Key="LicenseUrlToVisibilityConverter" />
 		<!--#endregion-->
@@ -73,6 +74,10 @@
 						<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.Dialog_VersionLabel}"
 													Content="{x:Bind Package.PackageMetadata.Version}"
 													Style="{StaticResource LabeledTextContentControlStyle2}" />
+
+						<HyperlinkButton Content="View Metadata source"
+										 Command="{Binding ViewMetadataSourceCommand}"
+										 Padding="0" />
 					</legacyControl:StackPanelEx>
 
 					<!-- Digital Signatures -->
@@ -239,7 +244,7 @@
 											 Visibility="{x:Bind Package.PackageMetadata.LicenseUrl, Converter={StaticResource LicenseUrlToVisibilityConverter}}" />
 
 							<!-- License Metadata -->
-							<legacyControl:StackPanelEx Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource IsNotNull}}">
+							<legacyControl:StackPanelEx Visibility="{x:Bind Package.PackageMetadata.LicenseMetadata, Converter={StaticResource NullToCollapsed}}">
 								<!-- License -->
 								<wct:HeaderedContentControl Header="{x:Bind pexpl:Resources.PackageChooser_DetailLicense}"
 															Style="{StaticResource LabeledRawContentControlStyle2}">
@@ -548,7 +553,7 @@
 							<ItemsControl.ItemTemplate>
 								<DataTemplate x:DataType="pkging:PackageDependencyGroup">
 									<StackPanel Padding="0,0,0,6">
-										<TextBlock Text="{x:Bind TargetFramework}"
+										<TextBlock Text="{x:Bind TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
 												   FontWeight="Bold"
 												   Style="{StaticResource TypoBody2}" />
 										<ItemsControl ItemsSource="{x:Bind Packages}"
@@ -595,7 +600,7 @@
 						<ItemsControl ItemsSource="{x:Bind Package.PackageMetadata.FrameworkReferenceGroups}">
 							<ItemsControl.ItemTemplate>
 								<DataTemplate x:DataType="pkging:FrameworkReferenceGroup">
-									<wct:HeaderedItemsControl Header="{x:Bind TargetFramework}"
+									<wct:HeaderedItemsControl Header="{x:Bind TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
 															  ItemsSource="{x:Bind FrameworkReferences}"
 															  Style="{StaticResource LabeledItemsControlStyle}">
 										<wct:HeaderedItemsControl.ItemTemplate>
@@ -625,7 +630,7 @@
 												   IsTextSelectionEnabled="True"
 												   Visibility="{Binding TargetFramework, Converter={StaticResource NullToVisible}, FallbackValue=Visible, TargetNullValue=Visible}"
 												   Style="{StaticResource TypoBody2}" />
-										<wct:HeaderedItemsControl Header="{Binding TargetFramework}"
+										<wct:HeaderedItemsControl Header="{Binding TargetFramework, Converter={StaticResource FrameworkNameConverter}}"
 																  ItemsSource="{Binding References}"
 																  Visibility="{Binding TargetFramework, Converter={StaticResource NullToCollapsed}, FallbackValue=Collapsed, TargetNullValue=Collapsed}"
 																  Style="{StaticResource LabeledItemsControlStyle}">

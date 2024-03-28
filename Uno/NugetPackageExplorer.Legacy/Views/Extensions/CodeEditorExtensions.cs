@@ -10,7 +10,8 @@ using Uno.Extensions;
 
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
+using Microsoft.UI.Xaml;
+using Microsoft.UI;
 
 namespace NupkgExplorer.Views.Extensions
 {
@@ -116,7 +117,7 @@ namespace NupkgExplorer.Views.Extensions
         {
             var language = e.NewValue as string ?? "plaintext";
 
-            // CodeLanguage doesnt work when the control is loading/first loaded
+            // CodeLanguage doesn't work when the control is loading/first loaded
             // calling its underlying method to ensure the language is actually set
             control.ExecuteJavascript($"monaco.editor.setModelLanguage(model, '{language}');");
         }

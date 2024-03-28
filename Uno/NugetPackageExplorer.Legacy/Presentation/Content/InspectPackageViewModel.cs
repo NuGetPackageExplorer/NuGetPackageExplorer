@@ -35,8 +35,8 @@ using Uno.Logging;
 using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.Storage.Pickers;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
 
 using Constants = NuGetPe.Constants;
 
@@ -69,6 +69,8 @@ namespace NupkgExplorer.Presentation.Content
             get => GetProperty<string?>();
             set => SetProperty(value);
         }
+
+        public ICommand ViewMetadataSourceCommand => GetCommand(ViewMetadataSource);
 
         public ICommand DoubleClickCommand => GetCommand(DoubleClick);
 
@@ -269,6 +271,14 @@ namespace NupkgExplorer.Presentation.Content
                     return null;
                 }
             }
+        }
+        
+        public void ViewMetadataSource()
+        {
+            DiagnosticsClient.TrackEvent("InspectPackage_ViewMetadataSource");
+
+            var manifest = Package.CreatePackageMetadataFile();
+            SelectedContent = new PackageFile(manifest, manifest.Name, Package.RootFolder);
         }
 
         public async Task DoubleClick()
