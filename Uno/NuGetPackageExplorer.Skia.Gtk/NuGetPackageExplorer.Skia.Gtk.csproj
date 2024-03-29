@@ -27,7 +27,7 @@
     <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.1.104" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.200-dev.16.g49756d9ac4" />
     <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="7.1.200-dev.16.g49756d9ac4" />
-    <PackageReference Include="System.Runtime.Caching" Version="6.0.0" />
+    <PackageReference Include="System.Runtime.Caching" Version="8.0.0" />
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="5.1.104" />
     <PackageReference Include="Uno.Core" Version="4.0.1" />
   </ItemGroup>
