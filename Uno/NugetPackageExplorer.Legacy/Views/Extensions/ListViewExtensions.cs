@@ -120,10 +120,13 @@ namespace NupkgExplorer.Views.Extensions
                     {
                         try
                         {
-                            if (command.CanExecute(x.Value))
+                            control.DispatcherQueue.TryEnqueue(() =>
                             {
-                                command.Execute(x.Value);
-                            }
+                                if (command.CanExecute(x.Value))
+                                {
+                                    command.Execute(x.Value);
+                                }
+                            });
                         }
                         catch (Exception ex)
                         {
