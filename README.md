@@ -5,9 +5,9 @@
 
 ## How to install
 
-You could install with the [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) or [Chocolatey](https://chocolatey.org/packages/NugetPackageExplorer). The Microsoft Store is the preferred version for Windows 10 Creators Update and later. It auto-updates and is the full application.
+You can install NuGet Package Explorer on Windows with the [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3),  [Chocolatey](https://chocolatey.org/packages/NugetPackageExplorer), or use it [from the Web](https://nuget.info) from any platform as well as a PWA. The Microsoft Store is the preferred version for Windows 10 Creators Update and later. It auto-updates and is the full application.
 
-There also a CI build available for direct install on Windows 10 1803 and higher. The nightly build installs alongside
+There also a Windows CI build available for direct install on Windows 10 1803 and higher, and Web version [is also available](https://ci.nuget.info). The nightly build installs alongside
 the release version with no interference and will automatically update.
 
 | Build Number | Link |
