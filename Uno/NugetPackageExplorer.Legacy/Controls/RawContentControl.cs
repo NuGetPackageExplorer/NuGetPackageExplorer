@@ -12,7 +12,7 @@ using Microsoft.UI.Xaml.Media;
 
 namespace NupkgExplorer.Controls
 {
-    public class RawContentControl : Border
+    public partial class RawContentControl : ContentPresenter
     {
         #region DependencyProperty: RawContent
 
@@ -34,12 +34,13 @@ namespace NupkgExplorer.Controls
         {
             if (e.NewValue is UIElement el)
             {
-                Child = el;
+                Content = el;
             }
             else if (e.NewValue != null)
             {
-                Child = new TextBlock();
-                Child.SetBinding(TextBlock.TextProperty, new Binding { Source = this, Path = nameof(RawContent) });
+                var tb = new TextBlock();
+                tb.SetBinding(TextBlock.TextProperty, new Binding { Source = this, Path = new(nameof(RawContent)) });
+                Content = tb;
             }
         }
     }

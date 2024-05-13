@@ -1,0 +1,116 @@
+﻿<Application
+    x:Class="PackageExplorer.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PackageExplorer">
+
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
+                
+                <!-- Other merged dictionaries here -->
+                <!--#region Resources imported from Uno.NPE -->
+
+                <ResourceDictionary Source="Views/Styles/Application/Converters.xaml" />
+                <ResourceDictionary Source="Views/Styles/Application/Colors.xaml" />
+                <ResourceDictionary Source="Views/Styles/Application/Typography.xaml" />
+                <ResourceDictionary Source="Views/Styles/Application/Values.xaml" />
+
+                <ResourceDictionary Source="Views/Styles/Controls/Button.xaml" />
+                <ResourceDictionary Source="Views/Styles/Controls/Expander.xaml" />
+                <ResourceDictionary Source="Views/Styles/Controls/Grid.xaml" />
+                <ResourceDictionary Source="Views/Styles/Controls/GridSplitter.xaml" />
+                <ResourceDictionary Source="Views/Styles/Controls/HeaderedControls.xaml" />
+                <ResourceDictionary Source="Views/Styles/Controls/ListView.xaml" />
+                <ResourceDictionary Source="Views/Styles/Controls/Menus.xaml" />
+                <ResourceDictionary Source="Views/Styles/Controls/TreeViewItem.xaml" />
+                <ResourceDictionary Source="Views/Styles/Controls/TabViewItem.xaml" />
+                <!--#endregion-->
+            </ResourceDictionary.MergedDictionaries>
+
+            <!--#region Resources imported from NPE -->
+            <local:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+            <local:NullToVisibilityConverter x:Key="InvertedNullToVisibilityConverter" Inverted="True" />
+            <local:NullToBoolConverter x:Key="nullToBoolConverter" />
+            <local:BooleanToVisibilityConverter x:Key="invertedBoolToVis" Inverted="True" />
+            <local:EnumConverter x:Key="EnumConverter" />
+            <!--
+            <local:IntegerToBooleanConverter x:Key="FontSizeToBoolConverter" />
+            <local:BooleanToVisibilityConverter x:Key="boolToVis" />
+            <local:CountToVisibilityConverter x:Key="countConverter" />
+            <local:AndLogicConverter x:Key="andConverter" />
+            <local:SubtracterConverter x:Key="SubtracterConverter" />
+            <local:StringShortenerConverter x:Key="StringShortenerConverter" />
+            <local:FileSizeConverter x:Key="FileSizeConverter" />
+            <local:DateTimeOffsetHumanizeConverter x:Key="DateTimeOffsetHumanizeConverter" />
+            <local:DateTimeOffsetLongDateConverter x:Key="DateTimeOffsetLongDateConverter" />
+            <local:CertificateToSubjectConverter x:Key="CertificateToSubjectConverter" />
+            <local:IconUrlToImageCacheConverter x:Key="IconUrlToImageCacheConverter" />
+            <local:NumberToStringConverter x:Key="NumberToStringConverter" />
+            <local:StringCollectionsToStringConverter x:Key="StringCollectionsToStringConverter" />
+            -->
+
+        
+            <Style x:Key="DetailMetadataStyle" TargetType="StackPanel">
+                <Setter Property="Margin" Value="0,3,0,0" />
+                <Setter Property="Orientation" Value="Horizontal" />
+            </Style>
+
+            <Style x:Key="DetailMetadataValueStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="3,0,0,0" />
+            </Style>
+
+            <Style x:Key="DetailHyperlinkTextBlockStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="0,3,0,0" />
+            </Style>
+
+            <Style x:Key="DetailMetadataLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontWeight" Value="Bold" />
+            </Style>
+
+            <Style x:Key="DetailDescriptionTextBoxStyle" TargetType="TextBlock">
+                <Setter Property="Margin" Value="0,8,0,8" />
+                <Setter Property="TextWrapping" Value="Wrap" />
+                <Setter Property="TextTrimming" Value="CharacterEllipsis" />
+            </Style>
+
+            <Style x:Key="NoDependencyTextBoxStyle" TargetType="TextBlock" BasedOn="{StaticResource DetailDescriptionTextBoxStyle}">
+                <Setter Property="FontStyle" Value="Italic" />
+            </Style>
+
+            <Style x:Key="DetailDependenciesTextBoxStyle" TargetType="TextBlock" BasedOn="{StaticResource DetailDescriptionTextBoxStyle}"></Style>
+
+            <Style x:Key="SelectableTextBlockLikeStyleWithoutTriggers" TargetType="TextBox">
+                <Setter Property="IsReadOnly" Value="True" />
+                <Setter Property="IsTabStop" Value="False" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="Background" Value="Transparent" />
+                <!--<Setter Property="Padding" Value="-2,0,0,0" />-->
+                <!-- not applicable to uwp/uno
+                    The Padding -2,0,0,0 is required because the TextBox
+                    seems to have an inherent "Padding" of about 2 pixels.
+                    Without the Padding property,
+                    the text seems to be 2 pixels to the left
+                    compared to a TextBlock
+                -->
+            </Style>
+            <!--#endregion-->
+
+            <Style x:Key="PoweredByHyperlinkButtonStyle"
+                   TargetType="HyperlinkButton">
+                <Setter Property="ContentTemplate">
+                    <Setter.Value>
+                        <DataTemplate>
+                            <Image Source="{ThemeResource PoweredByUnoPlatformImageSource}"
+                                   Height="40" />
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="NavigateUri" Value="https://platform.uno/" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

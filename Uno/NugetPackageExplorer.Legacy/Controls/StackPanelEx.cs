@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls;
 
 namespace NupkgExplorer.Controls
 {
-    public class StackPanelEx : StackPanel
+    public partial class StackPanelEx : StackPanel
     {
         // workaround for: https://github.com/microsoft/microsoft-ui-xaml/issues/916
         // modified from: https://github.com/unoplatform/uno/blob/a7158b41df67f1e02dd48ffe395ea1d2b07e96e4/src/Uno.UI/UI/Xaml/Controls/StackPanel/StackPanel.Layout.cs
@@ -44,7 +44,8 @@ namespace NupkgExplorer.Controls
             {
                 var view = Children[i];
 
-                var measuredSize = MeasureElement(view, slotSize);
+                view.Measure(slotSize);
+                var measuredSize = view.DesiredSize;
 
                 // only insert spacing between visible views
                 //var addSpacing = i != count - 1;
@@ -125,7 +126,7 @@ namespace NupkgExplorer.Controls
             for (var i = 0; i < count; i++)
             {
                 var view = Children[i];
-                var desiredChildSize = GetElementDesiredSize(view);
+                var desiredChildSize = view.DesiredSize;
 
                 // only insert spacing between visible views
                 //var addSpacing = i != 0;
@@ -170,7 +171,7 @@ namespace NupkgExplorer.Controls
 
                 var adjustedRectangle = childRectangle;
 
-                ArrangeElement(view, adjustedRectangle);
+                view.Arrange(adjustedRectangle);
             }
 
             //var finalSizeWithBorderAndPadding = arrangeSize.Add(borderAndPaddingSize);
