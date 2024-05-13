@@ -1,0 +1,10 @@
+{
+  "background_color": "#ffffff",
+  "description": "NuGetPackageExplorer",
+  "display": "standalone",
+  "name": "NuGetPackageExplorer",
+  "short_name": "NuGetPackageExplorer",
+  "start_url": "/index.html",
+  "theme_color": "#ffffff",
+  "scope": "/"
+}

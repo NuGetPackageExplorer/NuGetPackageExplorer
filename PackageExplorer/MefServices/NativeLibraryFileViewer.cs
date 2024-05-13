@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using NuGetPackageExplorer.Types;
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml.Controls;
 #else
 using System.Windows.Controls;

@@ -7,7 +7,7 @@ using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
 using Windows.UI.Text;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -55,7 +55,7 @@ namespace PackageExplorer
                 if (debugData != null)
                     debugDataViewModel = new AssemblyDebugDataViewModel(Task.FromResult(debugData));
 
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
                 // No debug data to display
                 if (assemblyMetadata != null && debugDataViewModel == null)
                 {
@@ -77,7 +77,7 @@ namespace PackageExplorer
                     // Tab control with three pages
                     var tc = new TabControl()
                     {
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
                         IsAddTabButtonVisible = false,
                         TabItems =
 #else
@@ -161,7 +161,7 @@ namespace PackageExplorer
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Auto) });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
             var style = Application.Current.Resources["SelectableTextBlockLikeStyleWithoutTriggers"] as Style;
 #else
             grid.SetBinding(Grid.MaxWidthProperty, new Binding(nameof(ScrollViewer.ActualWidth)) { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(ScrollViewer), 1) });
@@ -230,7 +230,7 @@ namespace PackageExplorer
             }
         }
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
         [Bindable]
         public class AssemblyFileContent
         {

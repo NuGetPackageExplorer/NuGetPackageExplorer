@@ -7,7 +7,7 @@ using NuGetPe;
 using NuGetPe.AssemblyMetadata;
 using PackageExplorerViewModel;
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.Logging;
@@ -51,7 +51,7 @@ namespace PackageExplorer
                 var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true);
                 var data = new AssemblyDebugDataViewModel(AssemblyMetadataReader.ReadDebugData(peStream, stream));
 
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
                 // Tab control with two pages
                 var tc = new TabControl()
                 {
@@ -105,7 +105,7 @@ namespace PackageExplorer
             }
             catch (Exception e)
             {
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
                 this.Log().Error("Failed to generate view", e);
 #endif
             }

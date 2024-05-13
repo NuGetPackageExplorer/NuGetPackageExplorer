@@ -18,7 +18,7 @@ using NuGetPe;
 
 using PackageExplorerViewModel;
 
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
 using Ookii.Dialogs.Wpf;
 #endif
 
@@ -97,7 +97,7 @@ namespace PackageExplorer
                 });
 #endif
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
             string? description = null;
             int? percent = null;
             var updated = 0;
@@ -199,7 +199,7 @@ namespace PackageExplorer
 
                     return tempFilePath;
                 }
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
                 catch (OperationCanceledException)
                 {
                     return null;
@@ -212,7 +212,7 @@ namespace PackageExplorer
 #endif
                 finally
                 {
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
                     cts!.Dispose();
 #else
                     timer!.Stop();

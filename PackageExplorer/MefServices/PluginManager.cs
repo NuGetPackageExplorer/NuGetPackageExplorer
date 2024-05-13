@@ -14,7 +14,7 @@ using NuGetPackageExplorer.Types;
 using NuGetPe;
 using Windows.Storage;
 
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
 using OSVersionHelper;
 #endif
 
@@ -51,7 +51,7 @@ namespace PackageExplorer
 
         private static string? GetPluginDirectory()
         {
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
             // Try getting it from the app model first
             if (WindowsVersionHelper.HasPackageIdentity)
             {

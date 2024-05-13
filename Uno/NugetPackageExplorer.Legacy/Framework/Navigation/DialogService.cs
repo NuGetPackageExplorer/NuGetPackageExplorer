@@ -54,7 +54,7 @@ namespace NupkgExplorer.Framework.Navigation
 				return await dialog.ShowAsync();
 			}
 
-			void CloseDialog() => _ = dialog.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => dialog.Hide());
+			void CloseDialog() => _ = dialog.DispatcherQueue.TryEnqueue(Microsoft.UI.Dispatching.DispatcherQueuePriority.Normal, () => dialog.Hide());
 		}
 	}
 }

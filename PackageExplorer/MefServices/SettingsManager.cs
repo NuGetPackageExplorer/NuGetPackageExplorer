@@ -13,7 +13,7 @@ using Windows.Storage;
 using NuGet.Configuration;
 using NpeConstants = NuGetPe.NuGetConstants;
 
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
 using OSVersionHelper;
 using NpeSettings = PackageExplorer.Properties.Settings;
 #endif
@@ -39,7 +39,7 @@ namespace PackageExplorer
                 object value;
                 try
                 {
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
                     if (WindowsVersionHelper.HasPackageIdentity)
                     {
                         value = GetValueFromLocalSettings<T>(name!)!;
@@ -61,7 +61,7 @@ namespace PackageExplorer
                         return t;
                     }
                 }
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
                 catch (ConfigurationErrorsException)
                 {
                     // Corrupt settings file
@@ -114,8 +114,8 @@ namespace PackageExplorer
             {
                 try
                 {
-#if !HAS_UNO
-                   if (WindowsVersionHelper.HasPackageIdentity)
+#if !HAS_UNO && !USE_WINUI
+                    if (WindowsVersionHelper.HasPackageIdentity)
                     {
                         SetValueInLocalSettings(value, name!);
                     }
