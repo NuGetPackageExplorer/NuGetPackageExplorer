@@ -3,7 +3,7 @@ using System.IO;
 using NuGetPackageExplorer.Types;
 using NuGetPe;
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media.Imaging;
 #else
@@ -22,8 +22,8 @@ namespace PackageExplorer
 
             using var stream = StreamUtility.MakeSeekable(selectedFile.GetStream(), true);
             var source = new BitmapImage();
-#if HAS_UNO
-            source.SetSource(stream);
+#if HAS_UNO || USE_WINUI
+            source.SetSource(stream.AsRandomAccessStream());
 #else
             source.BeginInit();
             source.CacheOption = BitmapCacheOption.OnLoad;
@@ -34,7 +34,7 @@ namespace PackageExplorer
             var image = new Image
             {
                 Source = source,
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
                 Width = source.Width,
                 Height = source.Height,
 #endif

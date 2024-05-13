@@ -13,7 +13,7 @@ namespace PackageExplorer
     {
         private PackageChooserViewModel? _viewModel;
 
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
         // for select plugin dialog
         private PackageChooserDialog? _pluginDialog;
 #endif
@@ -58,7 +58,7 @@ namespace PackageExplorer
                 }
             }
 
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
             var dialog = new PackageChooserDialog(SettingsManager, _viewModel)
             {
                 Owner = Window.Value
@@ -132,7 +132,7 @@ namespace PackageExplorer
 
         public PackageInfo? SelectPluginPackage()
         {
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
             if (_pluginDialog == null)
             {
                 try
@@ -163,7 +163,7 @@ namespace PackageExplorer
             return _pluginViewModel?.SelectedPackage;
         }
 
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
         private static void ReCenterPackageChooserDialog(StandardDialog dialog)
         {
             if (dialog.Owner == null)

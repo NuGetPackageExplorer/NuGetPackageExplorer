@@ -1,0 +1,94 @@
+﻿<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>
+      net8.0-windows10.0.19041;
+      net8.0-desktop;
+      net8.0-browserwasm;
+    </TargetFrameworks>
+
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+    <NoWarn>NU1701</NoWarn>
+    <AssemblyName>PackageExplorer</AssemblyName>
+    <RootNamespace>PackageExplorer</RootNamespace>
+    <IsPackable>false</IsPackable>
+
+    <!-- Display name -->
+    <ApplicationTitle>NuGet Package Explorer</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>info.nuget.nugetpackageexplorer</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(TargetFramework)'=='net8.0-browserwasm'">
+      <PropertyGroup>
+        <WasmShellWebAppBasePath>/</WasmShellWebAppBasePath>
+        <WasmPWAManifestFile>Platforms/WebAssembly/manifest.json</WasmPWAManifestFile>
+        <MsdlApiBaseLocation>Platforms/api/MsdlProxy</MsdlApiBaseLocation>
+        <MsdlApiBaseLocation Condition="'$(Configuration)'=='Debug'">http://localhost:7071/api/MsdlProxy</MsdlApiBaseLocation>
+        
+        <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
+      </PropertyGroup>
+
+      <ItemGroup>
+        <WasmShellAdditionalPInvokeLibrary Include="libc" />
+        <WasmShellAdditionalPInvokeLibrary Include="libc.so" />
+      </ItemGroup>
+      
+      <ItemGroup>
+        <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
+
+        <!-- This value must be the instrumentation key, not the connection string -->
+        <WasmShellMonoEnvironment Include="NPE_AI_INSTRUMENTATIONKEY" Value="$(NpeAiInstrumentationKey)" />
+      </ItemGroup>
+      
+      <ItemGroup>
+        <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+      </ItemGroup>
+      
+      <ItemGroup>
+        <Content Include="Platforms/WebAssembly/ai.2.6.3.min.js" />
+      </ItemGroup>
+      
+      <ItemGroup>
+        <PackageReference Include="Uno.Monaco.Editor" />
+      </ItemGroup>
+
+    </When>
+    <When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+      <PropertyGroup>
+        <DefineConstants>$(DefineConstants);USE_WINUI</DefineConstants>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" />
+    <PackageReference Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" />
+  </ItemGroup>
+  <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) != 'windows'">
+    <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" />
+    <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\..\Core\Core.csproj" />
+    <ProjectReference Include="..\..\PackageViewModel\PackageViewModel.csproj" />
+    <ProjectReference Include="..\..\Types\Types.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Reactive" />
+
+    <PackageReference Include="Microsoft.Windows.Compatibility"  />
+    <PackageReference Include="Uno.Core" />
+  </ItemGroup>
+  
+  <Import Project="..\..\PackageExplorer\NugetPackageExplorer.Views.Shared.projitems" Label="Shared" />
+  <Import Project="..\NugetPackageExplorer.Legacy\NugetPackageExplorer.Shared.Legacy.projitems" Label="Shared" />
+
+</Project>

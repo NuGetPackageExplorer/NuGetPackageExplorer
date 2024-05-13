@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 
