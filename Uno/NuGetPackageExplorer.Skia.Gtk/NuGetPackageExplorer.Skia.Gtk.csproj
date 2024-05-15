@@ -22,7 +22,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
     <PackageReference Include="System.Reactive" Version="5.0.0" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="6.0.1" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="8.0.1" />
     <PackageReference Include="Uno.WinUI.Skia.Gtk" Version="5.1.104" />
     <PackageReference Include="Uno.WinUI.RemoteControl" Version="5.1.104" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="7.1.200-dev.16.g49756d9ac4" />
