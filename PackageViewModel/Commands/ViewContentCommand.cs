@@ -62,7 +62,7 @@ namespace PackageExplorerViewModel
                     {
                         if (!(e is IOException))
                         {
-                            DiagnosticsClient.TrackException(e, ViewModel.Package, ViewModel.PublishedOnNuGetOrg);
+                            DiagnosticsClient.TrackException(e, ViewModel.Package, ViewModel.PublishedOnline);
                         }
 
                         ViewModel.UIServices.Show(e.Message, MessageLevel.Error);
@@ -106,7 +106,7 @@ namespace PackageExplorerViewModel
                 }
                 catch (Exception ex) when (!(ex is FileNotFoundException))
                 {
-                    DiagnosticsClient.TrackException(ex, ViewModel.Package, ViewModel.PublishedOnNuGetOrg);
+                    DiagnosticsClient.TrackException(ex, ViewModel.Package, ViewModel.PublishedOnline);
                     // don't let plugin crash the app
                     content = Resources.PluginFailToReadContent + Environment.NewLine + ex.ToString();
                 }
