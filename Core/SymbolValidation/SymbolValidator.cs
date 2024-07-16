@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -199,7 +199,12 @@ namespace NuGetPe
                     {
 
                         using var str = file.Primary.GetStream();
-                        using var tempFile = new TemporaryFile(str);
+
+                        // Use descriptive file extension so files that appear in file system logging or that are
+                        // leftover during an abrupt process termination can be debugged easier
+                        var tempFileExtension = ".npe" + (string.IsNullOrEmpty(file.Primary.Extension) ? ".dat" : file.Primary.Extension);
+
+                        using var tempFile = new TemporaryFile(str, tempFileExtension);
 
                         var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
 
@@ -285,7 +290,7 @@ namespace NuGetPe
 #else
                             using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
 #endif
-                            using var tempFile = new TemporaryFile(getStream, ".snupkg");
+                            using var tempFile = new TemporaryFile(getStream, ".npe.snupkg");
                             await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
                         }
                     }
