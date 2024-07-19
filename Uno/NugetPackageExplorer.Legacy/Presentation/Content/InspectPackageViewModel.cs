@@ -272,7 +272,7 @@ namespace NupkgExplorer.Presentation.Content
                 }
             }
         }
-        
+
         public void ViewMetadataSource()
         {
             DiagnosticsClient.TrackEvent("InspectPackage_ViewMetadataSource");
@@ -283,8 +283,6 @@ namespace NupkgExplorer.Presentation.Content
 
         public async Task DoubleClick()
         {
-            // TODO: remove #if when https://github.com/unoplatform/uno/pull/6544 is available
-#if !HAS_UNO_SKIA_GTK
             if (SelectedContent is IFile file)
             {
                 var picker = new FileSavePicker
@@ -307,7 +305,6 @@ namespace NupkgExplorer.Presentation.Content
                     await CachedFileManager.CompleteUpdatesAsync(saveFile);
                 }
             }
-#endif
         }
 
         public async Task CloseDocument()
