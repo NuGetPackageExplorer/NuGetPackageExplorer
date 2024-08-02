@@ -3,7 +3,7 @@ using System.Globalization;
 using NuGet.Versioning;
 using NuGetPe;
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using _CultureInfo = System.String;
@@ -16,7 +16,7 @@ using System.Windows.Data;
 
 namespace PackageExplorer
 {
-#if !HAS_UNO
+#if !HAS_UNO && !USE_WINUI
     [ValueConversion(typeof(NuGetVersion), typeof(Visibility))]
 #endif
     public class NuGetVersionPreReleaseConverter : IValueConverter

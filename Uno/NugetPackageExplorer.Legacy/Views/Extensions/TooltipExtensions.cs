@@ -125,7 +125,9 @@ namespace NupkgExplorer.Views.Extensions
             void SetupToolTip(ToolTip tooltip)
             {
                 tooltip.Placement = GetPlacement(tooltip);
+#if HAS_UNO
                 tooltip.SetAnchor(GetPlacementTarget(control) ?? control);
+#endif
 
                 SetToolTipReference(control, tooltip);
                 SetToolTipSubscription(control, SubscribeToEvents(control, tooltip));
@@ -151,7 +153,9 @@ namespace NupkgExplorer.Views.Extensions
         {
             if (GetToolTipReference(control) is { } tooltip)
             {
+#if HAS_UNO
                 tooltip.SetAnchor(e.NewValue as UIElement ?? control);
+#endif
             }
         }
 
@@ -200,7 +204,9 @@ namespace NupkgExplorer.Views.Extensions
             }
             async Task HoverTask(long hoverId)
             {
+#if HAS_UNO
                 await Task.Delay(FeatureConfiguration.ToolTip.ShowDelay).ConfigureAwait(false);
+#endif
                 if (currentHoverId != hoverId)
                 {
                     return;
@@ -210,7 +216,9 @@ namespace NupkgExplorer.Views.Extensions
                 {
                     tooltip.IsOpen = true;
 
+#if HAS_UNO
                     await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration).ConfigureAwait(false);
+#endif
                     if (currentHoverId == hoverId)
                     {
                         tooltip.IsOpen = false;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Globalization;
 
-#if HAS_UNO
+#if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using _CultureInfo = System.String;

@@ -75,7 +75,7 @@ namespace NupkgExplorer.Views.Extensions
 
         private static void OnAddIncrementallyLoadingSupportChanged(ListView control, DependencyPropertyChangedEventArgs e)
         {
-#if __WASM__ || HAS_UNO_SKIA_GTK
+#if __WASM__ || __SKIA__
             if ((bool)e.NewValue)
             {
                 if (control.IsLoaded)
@@ -139,7 +139,7 @@ namespace NupkgExplorer.Views.Extensions
             }
         }
 
-#if __WASM__ || HAS_UNO_SKIA_GTK
+#if __WASM__ || __SKIA__
         private static void InstallIncrementalLoadingWorkaround(object sender, RoutedEventArgs _)
         {
             var lv = (ListView)sender;

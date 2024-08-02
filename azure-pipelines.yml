@@ -31,7 +31,7 @@ stages:
           ReleaseChannel: UnoSkia
 
     steps:
-        
+
     - task: UseDotNet@2
       displayName: 'Use .NET 8 SDK'
       inputs:
@@ -138,18 +138,18 @@ stages:
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly'), eq(variables['ReleaseChannel'], 'UnoSkia')))
 
     - task: ArchiveFiles@1
-      displayName: Zip Gtk PackageExplorer files
+      displayName: Zip Desktop PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Skia.Gtk/bin/Release/net8.0
-        archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Skia.Gtk.$(Build.BuildNumber).zip
+        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net8.0-desktop
+        archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Desktop.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
 
     - task: CopyFiles@2
       displayName: Copy WebAssembly Package
       inputs:
-        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer.Wasm/bin/Release/net8.0/dist'
+        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net8.0-browserwasm/dist'
         Contents: '**'
         TargetFolder: $(build.artifactstagingdirectory)\$(ReleaseChannel)
         CleanTargetFolder: false
@@ -165,12 +165,12 @@ stages:
     - publish: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
       displayName: Publish Build Packages
       artifact: $(ReleaseChannel)
-  
+
     - task: PublishBuildArtifacts@1
       inputs:
         pathToPublish: $(Build.ArtifactStagingDirectory)\Logs
-        artifactName: Logs    
-      displayName: Publish Build Logs      
+        artifactName: Logs
+      displayName: Publish Build Logs
       condition: always()
 
     - publish: Build
@@ -187,7 +187,7 @@ stages:
       vmImage: windows-latest
     variables:
     - group: SignCLI Config
-  
+
     steps:
 
     - task: DownloadPipelineArtifact@2
@@ -221,7 +221,7 @@ stages:
       inputs:
         command: custom
         custom: tool
-        arguments: install --tool-path . --prerelease sign 
+        arguments: install --tool-path . --prerelease sign
       displayName: Install SignTool tool
 
     - task: AzureCLI@2
