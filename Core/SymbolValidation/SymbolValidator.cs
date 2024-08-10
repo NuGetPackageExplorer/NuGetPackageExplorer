@@ -23,6 +23,7 @@ namespace NuGetPe
         private readonly string _packagePath;
         private readonly IFolder _rootFolder;
         private readonly HttpClient _httpClient;
+        private readonly ITemporaryPathProvider? _tempPathProvider;
 
         public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder = null)
             : this(package, packagePath, rootFolder, httpClient: null)
@@ -30,11 +31,17 @@ namespace NuGetPe
         }
 
         public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder, HttpClient? httpClient)
+            : this(package, packagePath, rootFolder, httpClient, tempPathProvider: null)
+        {
+        }
+
+        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder, HttpClient? httpClient, ITemporaryPathProvider? tempPathProvider)
         {
             _package = package ?? throw new ArgumentNullException(nameof(package));
             _packagePath = packagePath ?? throw new ArgumentNullException(nameof(packagePath));
             _rootFolder = rootFolder ?? PathToTreeConverter.Convert(package.GetFiles().ToList());
             _httpClient = httpClient ?? new();
+            _tempPathProvider = tempPathProvider;
 
             if (httpClient == null)
             {
@@ -204,7 +211,7 @@ namespace NuGetPe
                         // leftover during an abrupt process termination can be debugged easier
                         var tempFileExtension = ".npe" + (string.IsNullOrEmpty(file.Primary.Extension) ? ".dat" : file.Primary.Extension);
 
-                        using var tempFile = new TemporaryFile(str, tempFileExtension);
+                        using var tempFile = GetTempFile(str, tempFileExtension, file.Primary.Name);
 
                         var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
 
@@ -279,7 +286,8 @@ namespace NuGetPe
 
 #pragma warning disable CA2234 // Pass system uri objects instead of strings
 #pragma warning disable CA1308 // Normalize strings to uppercase
-                        using var response = await _httpClient.GetAsync($"https://globalcdn.nuget.org/symbol-packages/{_package.Id.ToLowerInvariant()}.{_package.Version.ToNormalizedString().ToLowerInvariant()}.snupkg", cancellationToken).ConfigureAwait(false);
+                        var fileName = $"{_package.Id.ToLowerInvariant()}.{_package.Version.ToNormalizedString().ToLowerInvariant()}.snupkg";
+                        using var response = await _httpClient.GetAsync($"https://globalcdn.nuget.org/symbol-packages/{fileName}", cancellationToken).ConfigureAwait(false);
 #pragma warning restore CA1308 // Normalize strings to uppercase
 #pragma warning restore CA2234 // Pass system uri objects instead of strings
 
@@ -290,7 +298,7 @@ namespace NuGetPe
 #else
                             using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
 #endif
-                            using var tempFile = new TemporaryFile(getStream, ".npe.snupkg");
+                            using var tempFile = GetTempFile(getStream, ".npe.snupkg", fileName);
                             await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
                         }
                     }
@@ -544,6 +552,19 @@ namespace NuGetPe
             return new SymbolValidatorResult(sourceLinkResult, sourceLinkErrorMessage,
                 deterministicResult, deterministicErrorMessage,
                 compilerFlagsResult, compilerFlagsMessage);
+        }
+
+        private TemporaryFile GetTempFile(Stream stream, string tempExtension, string fileName)
+        {
+            if (_tempPathProvider is not null)
+            {
+                var path = _tempPathProvider.GetPath(_package, fileName);
+                return new TemporaryFile(path, stream);
+            }
+            else
+            {
+                return new TemporaryFile(stream, tempExtension);
+            }
         }
 
         private static bool IsMicrosoftFile(IFile file)

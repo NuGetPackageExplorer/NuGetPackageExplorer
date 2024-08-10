@@ -6,22 +6,39 @@ namespace NuGetPe
     public sealed class TemporaryFile : IDisposable
     {
         public TemporaryFile(Stream stream, string? extension = null)
+            : this(GeneratePath(extension), stream)
         {
+        }
+
+        public TemporaryFile(string path, Stream stream)
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
             if (stream == null)
                 throw new ArgumentNullException(nameof(stream));
 
-            if (string.IsNullOrWhiteSpace(extension) || extension[0] != '.')
+            var directory = Path.GetDirectoryName(path);
+            if (directory is not null && !Directory.Exists(directory))
             {
-                FileName = Path.GetTempFileName();
-            }
-            else
-            {
-                FileName = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + extension);
+                Directory.CreateDirectory(directory);
             }
 
+            FileName = path;
             using var fstream = File.Open(FileName, FileMode.Create);
             stream.CopyTo(fstream);
             fstream.Flush();
+        }
+
+        private static string GeneratePath(string? extension)
+        {
+            if (string.IsNullOrWhiteSpace(extension) || extension[0] != '.')
+            {
+                return Path.GetTempFileName();
+            }
+            else
+            {
+                return Path.Combine(Path.GetTempPath(), Path.GetRandomFileName() + extension);
+            }
         }
 
         public string FileName { get; }
