@@ -23,7 +23,7 @@ namespace NuGetPe
         private readonly string _packagePath;
         private readonly IFolder _rootFolder;
         private readonly HttpClient _httpClient;
-        private readonly ITemporaryPathProvider? _tempPathProvider;
+        private readonly ITemporaryFileProvider? _tempProvider;
 
         public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder = null)
             : this(package, packagePath, rootFolder, httpClient: null)
@@ -31,17 +31,17 @@ namespace NuGetPe
         }
 
         public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder, HttpClient? httpClient)
-            : this(package, packagePath, rootFolder, httpClient, tempPathProvider: null)
+            : this(package, packagePath, rootFolder, httpClient, tempProvider: null)
         {
         }
 
-        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder, HttpClient? httpClient, ITemporaryPathProvider? tempPathProvider)
+        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder, HttpClient? httpClient, ITemporaryFileProvider? tempProvider)
         {
             _package = package ?? throw new ArgumentNullException(nameof(package));
             _packagePath = packagePath ?? throw new ArgumentNullException(nameof(packagePath));
             _rootFolder = rootFolder ?? PathToTreeConverter.Convert(package.GetFiles().ToList());
             _httpClient = httpClient ?? new();
-            _tempPathProvider = tempPathProvider;
+            _tempProvider = tempProvider;
 
             if (httpClient == null)
             {
@@ -211,7 +211,7 @@ namespace NuGetPe
                         // leftover during an abrupt process termination can be debugged easier
                         var tempFileExtension = ".npe" + (string.IsNullOrEmpty(file.Primary.Extension) ? ".dat" : file.Primary.Extension);
 
-                        using var tempFile = GetTempFile(str, tempFileExtension, file.Primary.Name);
+                        using var tempFile = GetTemporaryFile(str, tempFileExtension, file.Primary.Name);
 
                         var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
 
@@ -298,7 +298,7 @@ namespace NuGetPe
 #else
                             using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
 #endif
-                            using var tempFile = GetTempFile(getStream, ".npe.snupkg", fileName);
+                            using var tempFile = GetTemporaryFile(getStream, ".npe.snupkg", fileName);
                             await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
                         }
                     }
@@ -554,12 +554,11 @@ namespace NuGetPe
                 compilerFlagsResult, compilerFlagsMessage);
         }
 
-        private TemporaryFile GetTempFile(Stream stream, string tempExtension, string fileName)
+        private TemporaryFile GetTemporaryFile(Stream stream, string tempExtension, string fileName)
         {
-            if (_tempPathProvider is not null)
+            if (_tempProvider is not null)
             {
-                var path = _tempPathProvider.GetPath(_package, fileName);
-                return new TemporaryFile(path, stream);
+                return _tempProvider.GetTemporaryFile(stream, _package, fileName);
             }
             else
             {
