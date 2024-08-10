@@ -205,13 +205,12 @@ namespace NuGetPe
                     try
                     {
 
-                        using var str = file.Primary.GetStream();
+                        using var stream = file.Primary.GetStream();
 
                         // Use descriptive file extension so files that appear in file system logging or that are
                         // leftover during an abrupt process termination can be debugged easier
                         var tempFileExtension = ".npe" + (string.IsNullOrEmpty(file.Primary.Extension) ? ".dat" : file.Primary.Extension);
-
-                        using var tempFile = GetTemporaryFile(str, tempFileExtension, file.Primary.Name);
+                        using var tempFile = GetTemporaryFile(stream, extension: tempFileExtension, part: file.Primary);
 
                         var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
 
@@ -298,7 +297,7 @@ namespace NuGetPe
 #else
                             using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
 #endif
-                            using var tempFile = GetTemporaryFile(getStream, ".npe.snupkg", fileName);
+                            using var tempFile = GetTemporaryFile(getStream, extension: ".npe.snupkg", name: fileName);
                             await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
                         }
                     }
@@ -554,15 +553,15 @@ namespace NuGetPe
                 compilerFlagsResult, compilerFlagsMessage);
         }
 
-        private TemporaryFile GetTemporaryFile(Stream stream, string tempExtension, string fileName)
+        private TemporaryFile GetTemporaryFile(Stream stream, string? extension = null, string? name = null, IPart? part = null)
         {
             if (_tempProvider is not null)
             {
-                return _tempProvider.GetTemporaryFile(stream, _package, fileName);
+                return _tempProvider.GetTemporaryFile(stream, _package, name, part);
             }
             else
             {
-                return new TemporaryFile(stream, tempExtension);
+                return new TemporaryFile(stream, extension);
             }
         }
 
