@@ -24,6 +24,14 @@ namespace NuGetPe
             fstream.Flush();
         }
 
+        public TemporaryFile(string path)
+        {
+            if (path == null)
+                throw new ArgumentNullException(nameof(path));
+
+            FileName = path;
+        }
+
         public string FileName { get; }
 
         public long Length => new FileInfo(FileName).Length;

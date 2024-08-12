@@ -23,6 +23,7 @@ namespace NuGetPe
         private readonly string _packagePath;
         private readonly IFolder _rootFolder;
         private readonly HttpClient _httpClient;
+        private readonly ITemporaryFileProvider? _tempProvider;
 
         public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder = null)
             : this(package, packagePath, rootFolder, httpClient: null)
@@ -30,11 +31,17 @@ namespace NuGetPe
         }
 
         public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder, HttpClient? httpClient)
+            : this(package, packagePath, rootFolder, httpClient, tempProvider: null)
+        {
+        }
+
+        public SymbolValidator(IPackage package, string packagePath, IFolder? rootFolder, HttpClient? httpClient, ITemporaryFileProvider? tempProvider)
         {
             _package = package ?? throw new ArgumentNullException(nameof(package));
             _packagePath = packagePath ?? throw new ArgumentNullException(nameof(packagePath));
             _rootFolder = rootFolder ?? PathToTreeConverter.Convert(package.GetFiles().ToList());
             _httpClient = httpClient ?? new();
+            _tempProvider = tempProvider;
 
             if (httpClient == null)
             {
@@ -198,13 +205,12 @@ namespace NuGetPe
                     try
                     {
 
-                        using var str = file.Primary.GetStream();
+                        using var stream = file.Primary.GetStream();
 
                         // Use descriptive file extension so files that appear in file system logging or that are
                         // leftover during an abrupt process termination can be debugged easier
                         var tempFileExtension = ".npe" + (string.IsNullOrEmpty(file.Primary.Extension) ? ".dat" : file.Primary.Extension);
-
-                        using var tempFile = new TemporaryFile(str, tempFileExtension);
+                        using var tempFile = GetTemporaryFile(stream, extension: tempFileExtension, part: file.Primary);
 
                         var assemblyMetadata = AssemblyMetadataReader.ReadMetaData(tempFile.FileName);
 
@@ -279,7 +285,8 @@ namespace NuGetPe
 
 #pragma warning disable CA2234 // Pass system uri objects instead of strings
 #pragma warning disable CA1308 // Normalize strings to uppercase
-                        using var response = await _httpClient.GetAsync($"https://globalcdn.nuget.org/symbol-packages/{_package.Id.ToLowerInvariant()}.{_package.Version.ToNormalizedString().ToLowerInvariant()}.snupkg", cancellationToken).ConfigureAwait(false);
+                        var fileName = $"{_package.Id.ToLowerInvariant()}.{_package.Version.ToNormalizedString().ToLowerInvariant()}.snupkg";
+                        using var response = await _httpClient.GetAsync($"https://globalcdn.nuget.org/symbol-packages/{fileName}", cancellationToken).ConfigureAwait(false);
 #pragma warning restore CA1308 // Normalize strings to uppercase
 #pragma warning restore CA2234 // Pass system uri objects instead of strings
 
@@ -290,7 +297,7 @@ namespace NuGetPe
 #else
                             using var getStream = await response.Content!.ReadAsStreamAsync().ConfigureAwait(false);
 #endif
-                            using var tempFile = new TemporaryFile(getStream, ".npe.snupkg");
+                            using var tempFile = GetTemporaryFile(getStream, extension: ".npe.snupkg", name: fileName);
                             await ReadSnupkgFile(tempFile.FileName).ConfigureAwait(false);
                         }
                     }
@@ -544,6 +551,18 @@ namespace NuGetPe
             return new SymbolValidatorResult(sourceLinkResult, sourceLinkErrorMessage,
                 deterministicResult, deterministicErrorMessage,
                 compilerFlagsResult, compilerFlagsMessage);
+        }
+
+        private TemporaryFile GetTemporaryFile(Stream stream, string? extension = null, string? name = null, IPart? part = null)
+        {
+            if (_tempProvider is not null)
+            {
+                return _tempProvider.GetTemporaryFile(stream, _package, name, part);
+            }
+            else
+            {
+                return new TemporaryFile(stream, extension);
+            }
         }
 
         private static bool IsMicrosoftFile(IFile file)
