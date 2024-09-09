@@ -237,7 +237,6 @@ stages:
           --publisher-name "NuGet Package Explorer" `
           --description "NuGet Package Explorer" `
           --description-url "https://github.com/NuGetPackageExplorer/NuGetPackageExplorer" `
-          --azure-key-vault-managed-identity `
           --azure-key-vault-certificate "$(SignKeyVaultCertificate)" `
           --azure-key-vault-url "$(SignKeyVaultUrl)"
       displayName: Authenticode Sign artifacts
