@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <TargetFrameworks>
-      net8.0-windows10.0.19041;
-      net8.0-desktop;
-      net8.0-browserwasm;
+      net9.0-windows10.0.19041;
+      net9.0-desktop;
+      net9.0-browserwasm;
     </TargetFrameworks>
 
     <OutputType>Exe</OutputType>
@@ -24,7 +24,7 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition="'$(TargetFramework)'=='net8.0-browserwasm'">
+    <When Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
       <PropertyGroup>
         <WasmShellWebAppBasePath>/</WasmShellWebAppBasePath>
         <WasmPWAManifestFile>Platforms/WebAssembly/manifest.json</WasmPWAManifestFile>
