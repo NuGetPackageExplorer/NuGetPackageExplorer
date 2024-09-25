@@ -32,8 +32,11 @@
         <MsdlApiBaseLocation Condition="'$(Configuration)'=='Debug'">http://localhost:7071/api/MsdlProxy</MsdlApiBaseLocation>
         
         <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
-      </PropertyGroup>
 
+        <!-- Required for file open picker -->
+        <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+      </PropertyGroup>
+      
       <ItemGroup>
         <WasmShellAdditionalPInvokeLibrary Include="libc" />
         <WasmShellAdditionalPInvokeLibrary Include="libc.so" />
