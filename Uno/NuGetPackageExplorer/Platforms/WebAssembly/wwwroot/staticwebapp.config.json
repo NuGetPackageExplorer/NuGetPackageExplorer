@@ -9,7 +9,7 @@
   },
   "routes": [
     {
-      "route": "/package_*",
+      "route": "/_framework/*",
       "headers": {
         "cache-control": "public, immutable, max-age=31536000"
       }
