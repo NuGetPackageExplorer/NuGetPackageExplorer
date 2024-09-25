@@ -543,7 +543,7 @@ namespace PackageExplorer
 
                 builder.AddFilter("NupkgExplorer", LogLevel.Debug);
                 builder.AddFilter("NuGetPackageExplorer", LogLevel.Debug);
-                builder.AddFilter("PackageExplorer", LogLevel.Error);
+                builder.AddFilter("PackageExplorer", LogLevel.Debug);
 
 #if __WASM__
                 // Telemetry
