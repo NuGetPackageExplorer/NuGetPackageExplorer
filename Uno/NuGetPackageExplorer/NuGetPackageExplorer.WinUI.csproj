@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <TargetFrameworks>
-      net9.0-windows10.0.19041;
+      <!--net9.0-windows10.0.19041;-->
       net9.0-desktop;
       net9.0-browserwasm;
     </TargetFrameworks>
@@ -51,7 +51,8 @@
       </ItemGroup>
       
       <ItemGroup>
-        <Content Include="Platforms/WebAssembly/ai.2.6.3.min.js" />
+        <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/ai.2.6.3.min.js" />
+        <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/azure-app-insights.js" />
       </ItemGroup>
       
       <ItemGroup>
@@ -84,7 +85,7 @@
   <ItemGroup>
     <PackageReference Include="System.Reactive" />
 
-    <PackageReference Include="Microsoft.Windows.Compatibility"  />
+    <PackageReference Include="Microsoft.Windows.Compatibility" />
     <PackageReference Include="Uno.Core" />
   </ItemGroup>
   
