@@ -145,15 +145,22 @@ namespace NupkgExplorer.Presentation.Content
 
         public async Task OpenPackageFromFeed(object? parameter)
         {
-            // parameter is not null, when invoked from double-clicking on the listview
-            var package = parameter as PackageData ?? SelectedPackage ?? throw new ArgumentNullException(nameof(SelectedPackage));
-            var version = parameter is PackageData
-                ? package.Version // ignore any selected version, when double-clicking
-                : (SelectedPackageVersion ?? package.Version);
-            var identity = new PackageIdentity(package.Id, NuGetVersion.Parse(version));
-            var inspectVM = await InspectPackageViewModel.CreateFromRemotePackage(identity);
+            try
+            {
+                // parameter is not null, when invoked from double-clicking on the listview
+                var package = parameter as PackageData ?? SelectedPackage ?? throw new ArgumentNullException(nameof(SelectedPackage));
+                var version = parameter is PackageData
+                    ? package.Version // ignore any selected version, when double-clicking
+                    : (SelectedPackageVersion ?? package.Version);
+                var identity = new PackageIdentity(package.Id, NuGetVersion.Parse(version));
+                var inspectVM = await InspectPackageViewModel.CreateFromRemotePackage(identity);
 
-            NavigationService.NavigateTo(inspectVM);
+                NavigationService.NavigateTo(inspectVM);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("OpenPackageFromFeed exception " + e);
+            }
 		}
 	}
 }
