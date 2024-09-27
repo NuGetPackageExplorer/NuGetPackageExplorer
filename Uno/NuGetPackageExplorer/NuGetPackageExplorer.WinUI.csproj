@@ -35,6 +35,8 @@
 
         <!-- Required for file open picker -->
         <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+
+        <AppIconPath>wwwroot/favicon.ico</AppIconPath>
       </PropertyGroup>
 
       <ItemGroup>
