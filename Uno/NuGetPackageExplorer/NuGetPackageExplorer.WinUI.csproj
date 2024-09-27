@@ -38,16 +38,6 @@
       </PropertyGroup>
 
       <ItemGroup>
-
-        <Content Include="Platforms/WebAssembly/wwwroot/**"
-                 ExcludeFromSingleFile="true"
-                 TargetPath="%(RecursiveDir)%(FileName)%(Extension)"
-                 Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)"
-                 CopyToPublishDirectory="PreserveNewest" />
-
-      </ItemGroup>
-      
-      <ItemGroup>
         <WasmShellAdditionalPInvokeLibrary Include="libc" />
         <WasmShellAdditionalPInvokeLibrary Include="libc.so" />
       </ItemGroup>
