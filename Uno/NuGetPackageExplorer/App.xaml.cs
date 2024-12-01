@@ -532,7 +532,7 @@ namespace PackageExplorer
 #endif
 
                 // Exclude logs below this level
-                builder.SetMinimumLevel(LogLevel.Debug);
+                builder.SetMinimumLevel(LogLevel.Information);
 
                 // Default filters for Uno Platform namespaces
                 builder.AddFilter("Uno", LogLevel.Error);
@@ -541,9 +541,9 @@ namespace PackageExplorer
 
                 builder.AddFilter("Uno.UI.DataBinding.BindingPropertyHelper", LogLevel.Critical);
 
-                builder.AddFilter("NupkgExplorer", LogLevel.Debug);
-                builder.AddFilter("NuGetPackageExplorer", LogLevel.Debug);
-                builder.AddFilter("PackageExplorer", LogLevel.Debug);
+                builder.AddFilter("NupkgExplorer", LogLevel.Error);
+                builder.AddFilter("NuGetPackageExplorer", LogLevel.Error);
+                builder.AddFilter("PackageExplorer", LogLevel.Error);
 
 #if __WASM__
                 // Telemetry
