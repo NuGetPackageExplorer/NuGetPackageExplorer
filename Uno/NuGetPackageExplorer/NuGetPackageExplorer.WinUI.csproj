@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <TargetFrameworks>
-      <!--net9.0-windows10.0.19041;-->
+      net9.0-windows10.0.19041;
       net9.0-desktop;
       net9.0-browserwasm;
     </TargetFrameworks>
@@ -35,9 +35,6 @@
 
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
         <WasmBuildNative>true</WasmBuildNative>
-
-        <!-- Required for file open picker -->
-        <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
       </PropertyGroup>
 
       <ItemGroup>
