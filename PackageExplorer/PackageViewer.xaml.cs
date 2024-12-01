@@ -48,9 +48,9 @@ namespace PackageExplorer
                         "v6.0-maccatalyst", "net6.0-maccatalyst",
                         "v6.0-tizen", "net6.0-tizen",
                         "v6.0-windows", "net6.0-windows",
-						
+
                         // .NET 7 References
-						"v7.0","net7.0",
+                        "v7.0","net7.0",
                         "v7.0-android", "net7.0-android",
                         "v7.0-ios", "net7.0-ios",
                         "v7.0-macos", "net7.0-macos",
@@ -60,14 +60,24 @@ namespace PackageExplorer
                         "v7.0-windows", "net7.0-windows",
 
                         // .NET 8 References
-						"v8.0","net9.0",
-                        "v8.0-android", "net9.0-android",
-                        "v8.0-ios", "net9.0-ios",
-                        "v8.0-macos", "net9.0-macos",
-                        "v8.0-tvos", "net9.0-tvos",
-                        "v8.0-maccatalyst", "net9.0-maccatalyst",
-                        "v8.0-tizen", "net9.0-tizen",
-                        "v8.0-windows", "net9.0-windows",
+                        "v8.0","net8.0",
+                        "v8.0-android", "net8.0-android",
+                        "v8.0-ios", "net8.0-ios",
+                        "v8.0-macos", "net8.0-macos",
+                        "v8.0-tvos", "net8.0-tvos",
+                        "v8.0-maccatalyst", "net8.0-maccatalyst",
+                        "v8.0-tizen", "net8.0-tizen",
+                        "v8.0-windows", "net8.0-windows",
+
+                        // .NET 9 References
+                        "v9.0","net9.0",
+                        "v9.0-android", "net9.0-android",
+                        "v9.0-ios", "net9.0-ios",
+                        "v9.0-macos", "net9.0-macos",
+                        "v9.0-tvos", "net9.0-tvos",
+                        "v9.0-maccatalyst", "net9.0-maccatalyst",
+                        "v9.0-tizen", "net9.0-tizen",
+                        "v9.0-windows", "net9.0-windows",
                     }
                 ),
 
