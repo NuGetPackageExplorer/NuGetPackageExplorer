@@ -27,7 +27,7 @@
     <When Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
       <PropertyGroup>
         <WasmShellWebAppBasePath>/</WasmShellWebAppBasePath>
-        <WasmPWAManifestFile>Platforms/WebAssembly/manifest.json</WasmPWAManifestFile>
+        <WasmPWAManifestFile>Platforms/WebAssembly/manifest.webmanifest</WasmPWAManifestFile>
         <MsdlApiBaseLocation>Platforms/api/MsdlProxy</MsdlApiBaseLocation>
         <MsdlApiBaseLocation Condition="'$(Configuration)'=='Debug'">http://localhost:7071/api/MsdlProxy</MsdlApiBaseLocation>
         
