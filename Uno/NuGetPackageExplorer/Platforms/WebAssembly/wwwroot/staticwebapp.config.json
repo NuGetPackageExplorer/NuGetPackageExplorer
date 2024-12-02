@@ -16,6 +16,13 @@
     }
     ,
     {
+      "route": "/package_*",
+      "headers": {
+        "cache-control": "public, immutable, max-age=31536000"
+      }
+    }
+    ,
+    {
       "route": "/*",
       "headers": {
         "cache-control": "must-revalidate, max-age=3600"
