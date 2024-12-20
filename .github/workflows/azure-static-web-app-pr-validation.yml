@@ -9,7 +9,7 @@ on:
 jobs:
   build_and_deploy_job:
     env:
-      DIST_PATH: Uno/NuGetPackageExplorer/bin/Release/net8.0-browserwasm/dist
+      DIST_PATH: Uno/NuGetPackageExplorer/bin/Release/net9.0-browserwasm/publish/wwwroot
 
     if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.repository == 'NuGetPackageExplorer/NuGetPackageExplorer'
     runs-on: ubuntu-latest
@@ -24,13 +24,16 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '9.0.x'
+
+      - run: |
+          dotnet workload install wasm-tools
 
       - run: |
           cd Uno/NuGetPackageExplorer
-          dotnet build -c Release -f net8.0-browserwasm /p:UNO_BUILD_ONLY=true
+          dotnet publish -c Release -f net9.0-browserwasm
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         with:
           name: wasm-site
           path: ${{ env.DIST_PATH }}

@@ -1,10 +1,16 @@
 {
-  "background_color": "#ffffff",
-  "description": "NuGetPackageExplorer",
+  "dir": "ltr",
+  "lang": "en",
+  "name": "NuGet Package Explorer",
+  "scope": "/",
   "display": "standalone",
-  "name": "NuGetPackageExplorer",
-  "short_name": "NuGetPackageExplorer",
-  "start_url": "/index.html",
-  "theme_color": "#ffffff",
-  "scope": "/"
+  "start_url": "/",
+  "short_name": "NuGet Package Explorer",
+  "theme_color": "#FFFFFF",
+  "description": "Browse NuGet packages from NuGet.org and view the contents of local packages. NuGet is a package management tool in Visual Studio. More information on NuGet can be viewed at https://docs.nuget.org",
+  "orientation": "any",
+  "background_color": "transparent",
+  "prefer_related_applications": true,
+  "categories": [ "utilities", "tools", "development" ],
+  "screenshots": []
 }

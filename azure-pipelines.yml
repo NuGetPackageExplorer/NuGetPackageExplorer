@@ -33,9 +33,12 @@ stages:
     steps:
 
     - task: UseDotNet@2
-      displayName: 'Use .NET 8 SDK'
+      displayName: 'Use .NET 9 SDK'
       inputs:
-        version: 8.x
+        version: 9.x
+
+    - script: dotnet workload install wasm-tools
+      displayName: Set Version
 
     - task: DotNetCoreCLI@2
       inputs:
@@ -124,32 +127,34 @@ stages:
       displayName: Zip Windows PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net8.0-windows10.0.22000/win-x64/publish
+        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net9.0-windows10.0.22000/win-x64/publish
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
-    - task: MSBuild@1
-      displayName: Build Uno Apps
-      inputs:
-        solution: $(build.sourcesdirectory)/NuGetPackageExplorer-uno.slnf
-        msbuildArguments: /r /p:Configuration=Release /p:UNO_BUILD_ONLY=true /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
-        maximumCpuCount: true
-      condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly'), eq(variables['ReleaseChannel'], 'UnoSkia')))
+    - powershell: |
+        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-desktop /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
+      displayName: Build Uno Desktop App
+      condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'UnoSkia')))
 
     - task: ArchiveFiles@1
       displayName: Zip Desktop PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net8.0-desktop
+        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-desktop
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Desktop.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
 
+    - powershell: |
+        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-browserwasm /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
+      displayName: Build Uno Desktop App
+      condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly')))
+
     - task: CopyFiles@2
       displayName: Copy WebAssembly Package
       inputs:
-        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net8.0-browserwasm/dist'
+        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-browserwasm/publish/wwwroot'
         Contents: '**'
         TargetFolder: $(build.artifactstagingdirectory)\$(ReleaseChannel)
         CleanTargetFolder: false
@@ -212,9 +217,9 @@ stages:
       artifact: SigningScripts
 
     - task: UseDotNet@2
-      displayName: 'Use .NET SDK 8.x'
+      displayName: 'Use .NET SDK 9.x'
       inputs:
-        version: 8.x
+        version: 9.x
 
     # Install the code signing tool
     - task: DotNetCoreCLI@2

@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <TargetFrameworks>
-      net8.0-windows10.0.19041;
-      net8.0-desktop;
-      net8.0-browserwasm;
+      net9.0-windows10.0.19041;
+      net9.0-desktop;
+      net9.0-browserwasm;
     </TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
-    <NoWarn>NU1701</NoWarn>
+    <NoWarn>$(NoWarn);NU1701;Uno0001</NoWarn>
     <AssemblyName>PackageExplorer</AssemblyName>
     <RootNamespace>PackageExplorer</RootNamespace>
     <IsPackable>false</IsPackable>
@@ -24,14 +24,17 @@
   </PropertyGroup>
 
   <Choose>
-    <When Condition="'$(TargetFramework)'=='net8.0-browserwasm'">
+    <When Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
       <PropertyGroup>
         <WasmShellWebAppBasePath>/</WasmShellWebAppBasePath>
-        <WasmPWAManifestFile>Platforms/WebAssembly/manifest.json</WasmPWAManifestFile>
+        <WasmPWAManifestFile>Platforms/WebAssembly/manifest.webmanifest</WasmPWAManifestFile>
         <MsdlApiBaseLocation>Platforms/api/MsdlProxy</MsdlApiBaseLocation>
         <MsdlApiBaseLocation Condition="'$(Configuration)'=='Debug'">http://localhost:7071/api/MsdlProxy</MsdlApiBaseLocation>
         
         <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
+
+        <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
+        <WasmBuildNative>true</WasmBuildNative>
       </PropertyGroup>
 
       <ItemGroup>
@@ -51,7 +54,8 @@
       </ItemGroup>
       
       <ItemGroup>
-        <Content Include="Platforms/WebAssembly/ai.2.6.3.min.js" />
+        <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/ai.2.6.3.min.js" />
+        <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/azure-app-insights.js" />
       </ItemGroup>
       
       <ItemGroup>
@@ -84,7 +88,7 @@
   <ItemGroup>
     <PackageReference Include="System.Reactive" />
 
-    <PackageReference Include="Microsoft.Windows.Compatibility"  />
+    <PackageReference Include="Microsoft.Windows.Compatibility" />
     <PackageReference Include="Uno.Core" />
   </ItemGroup>
   

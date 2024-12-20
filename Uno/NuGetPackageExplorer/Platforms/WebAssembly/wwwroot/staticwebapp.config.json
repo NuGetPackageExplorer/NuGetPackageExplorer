@@ -9,6 +9,13 @@
   },
   "routes": [
     {
+      "route": "/_framework/*",
+      "headers": {
+        "cache-control": "public, immutable, max-age=31536000"
+      }
+    }
+    ,
+    {
       "route": "/package_*",
       "headers": {
         "cache-control": "public, immutable, max-age=31536000"
