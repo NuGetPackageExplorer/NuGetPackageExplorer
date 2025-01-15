@@ -1,4 +1,7 @@
 {
+  "platform": {
+    "apiRuntime": "dotnet-isolated:8.0"
+  },
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
@@ -13,15 +16,13 @@
       "headers": {
         "cache-control": "public, immutable, max-age=31536000"
       }
-    }
-    ,
+    },
     {
       "route": "/package_*",
       "headers": {
         "cache-control": "public, immutable, max-age=31536000"
       }
-    }
-    ,
+    },
     {
       "route": "/*",
       "headers": {

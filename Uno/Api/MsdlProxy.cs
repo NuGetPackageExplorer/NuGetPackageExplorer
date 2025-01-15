@@ -2,37 +2,43 @@
 using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Diagnostics;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
+using System.Net;
 
 namespace Api
 {
-    public static class MsdlProxy
+    public class MsdlProxy
     {
-        [FunctionName("MsdlProxy")]
-        public static async Task<HttpResponseMessage> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            ILogger log, CancellationToken hostCancellationToken)
+        private readonly ILogger<MsdlProxy> _log;
+
+        public MsdlProxy(ILogger<MsdlProxy> log)
         {
+            _log = log;
+        }
 
+        [Function("MsdlProxy")]
+        public async Task<HttpResponseData> Run(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequestData req,
+            CancellationToken hostCancellationToken)
+        {
             Debug.Assert(req != null);
-            Debug.Assert(log != null);
+            Debug.Assert(_log != null);
 
-            var key = req.Query["symbolkey"].FirstOrDefault();
-            log.LogInformation($"Symbol request for {key}");
+            var key = req.Query["symbolkey"];
+            _log.LogInformation($"Symbol request for {key}");
 
-            var checksum = req.Headers["SymbolChecksum"].FirstOrDefault();
+            var checksum = req.Headers.GetValues("SymbolChecksum").FirstOrDefault();
 
             var uri = new Uri(new Uri("https://msdl.microsoft.com/download/symbols/"), key);
 
-            using var request = new HttpRequestMessage
+            using var pdbRequest = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
                 RequestUri = uri
@@ -40,14 +46,14 @@ namespace Api
 
             if (checksum != null)
             {
-                request.Headers.Add("SymbolChecksum", checksum);
+                pdbRequest.Headers.Add("SymbolChecksum", checksum);
             }
 
-            using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, req.HttpContext.RequestAborted);
+            using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, req.FunctionContext.CancellationToken);
 
             using var httpClient = new HttpClient();
 
-            using var response = await httpClient.SendAsync(request, cancellationSource.Token).ConfigureAwait(false);
+            using var response = await httpClient.SendAsync(pdbRequest, cancellationSource.Token).ConfigureAwait(false);
 
             response.EnsureSuccessStatusCode();
 
@@ -56,13 +62,11 @@ namespace Api
             await response.Content.CopyToAsync(pdbStream, cancellationSource.Token).ConfigureAwait(false);
             pdbStream.Position = 0;
 
-            var resp = new HttpResponseMessage()
-            {
-                Content = new StreamContent(pdbStream),
-            };
-
+            var resp = req.CreateResponse(HttpStatusCode.OK);
             resp.Headers.Add("Cache-Control", "public, immutable, max-age=31536000");
-            resp.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            resp.Headers.Add("Content-Type", "application/octet-stream");
+
+            await resp.WriteBytesAsync(pdbStream.ToArray());
 
             return resp;
         }

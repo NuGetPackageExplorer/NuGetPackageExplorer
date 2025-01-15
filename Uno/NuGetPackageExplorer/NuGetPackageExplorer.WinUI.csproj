@@ -28,7 +28,7 @@
       <PropertyGroup>
         <WasmShellWebAppBasePath>/</WasmShellWebAppBasePath>
         <WasmPWAManifestFile>Platforms/WebAssembly/manifest.webmanifest</WasmPWAManifestFile>
-        <MsdlApiBaseLocation>Platforms/api/MsdlProxy</MsdlApiBaseLocation>
+        <MsdlApiBaseLocation>api/MsdlProxy</MsdlApiBaseLocation>
         <MsdlApiBaseLocation Condition="'$(Configuration)'=='Debug'">http://localhost:7071/api/MsdlProxy</MsdlApiBaseLocation>
         
         <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
@@ -94,5 +94,13 @@
   
   <Import Project="..\..\PackageExplorer\NugetPackageExplorer.Views.Shared.projitems" Label="Shared" />
   <Import Project="..\NugetPackageExplorer.Legacy\NugetPackageExplorer.Shared.Legacy.projitems" Label="Shared" />
+
+  <!-- Workaround for https://github.com/unoplatform/uno/issues/19232 -->
+  <PropertyGroup>
+    <UnoGenerateAssetsManifestDependsOn>
+      $(UnoGenerateAssetsManifestDependsOn);
+      GenerateUnoWasmAssets;
+    </UnoGenerateAssetsManifestDependsOn>
+  </PropertyGroup>
 
 </Project>
