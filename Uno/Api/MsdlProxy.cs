@@ -12,19 +12,26 @@ using Microsoft.Azure.Functions.Worker;
 
 namespace Api
 {
-    public static class MsdlProxy
+    public class MsdlProxy
     {
+        private readonly ILogger<MsdlProxy> _log;
+
+        public MsdlProxy(ILogger<MsdlProxy> log)
+        {
+            _log = log;
+        }
+
         [Function("MsdlProxy")]
-        public static async Task<HttpResponseMessage> Run(
+        public async Task<HttpResponseMessage> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequest req,
-            ILogger log, CancellationToken hostCancellationToken)
+            CancellationToken hostCancellationToken)
         {
 
             Debug.Assert(req != null);
-            Debug.Assert(log != null);
+            Debug.Assert(_log != null);
 
             var key = req.Query["symbolkey"].FirstOrDefault();
-            log.LogInformation($"Symbol request for {key}");
+            _log.LogInformation($"Symbol request for {key}");
 
             var checksum = req.Headers["SymbolChecksum"].FirstOrDefault();
 
