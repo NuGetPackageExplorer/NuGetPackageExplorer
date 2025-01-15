@@ -95,4 +95,12 @@
   <Import Project="..\..\PackageExplorer\NugetPackageExplorer.Views.Shared.projitems" Label="Shared" />
   <Import Project="..\NugetPackageExplorer.Legacy\NugetPackageExplorer.Shared.Legacy.projitems" Label="Shared" />
 
+  <!-- Workaround for https://github.com/unoplatform/uno/issues/19232 -->
+  <PropertyGroup>
+    <UnoGenerateAssetsManifestDependsOn>
+      $(UnoGenerateAssetsManifestDependsOn);
+      GenerateUnoWasmAssets;
+    </UnoGenerateAssetsManifestDependsOn>
+  </PropertyGroup>
+
 </Project>
