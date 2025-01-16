@@ -178,7 +178,8 @@ stages:
       artifact: SigningScripts
 
     - powershell: |
-        dotnet clean Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj
+        cd Uno
+        git clean -fdx
       displayName: Clean Uno tree
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly')))
 
