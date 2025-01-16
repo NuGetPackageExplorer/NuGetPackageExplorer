@@ -162,7 +162,7 @@ stages:
         flattenFolders: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
-    - publish: '$(build.sourcesdirectory)/Uno/Api'
+    - publish: '$(build.sourcesdirectory)/Uno'
       displayName: Publish Cors bypass Azure Function
       artifact: CorsAzureFunction
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
