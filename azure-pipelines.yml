@@ -148,7 +148,7 @@ stages:
 
     - powershell: |
         dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-browserwasm /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
-      displayName: Build Uno Desktop App
+      displayName: Build Uno Wasm App
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly')))
 
     - task: CopyFiles@2
@@ -160,11 +160,6 @@ stages:
         CleanTargetFolder: false
         OverWrite: false
         flattenFolders: false
-      condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
-
-    - publish: '$(build.sourcesdirectory)/Uno/Api'
-      displayName: Publish Cors bypass Azure Function
-      artifact: CorsAzureFunction
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
     - publish: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
@@ -181,6 +176,17 @@ stages:
     - publish: Build
       displayName: Publish signing scripts
       artifact: SigningScripts
+
+    - powershell: |
+        cd Uno
+        git clean -fdx
+      displayName: Clean Uno tree
+      condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly')))
+
+    - publish: '$(build.sourcesdirectory)/Uno'
+      displayName: Publish Cors bypass Azure Function
+      artifact: CorsAzureFunction
+      condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
 - stage: CodeSign
   dependsOn: Build
