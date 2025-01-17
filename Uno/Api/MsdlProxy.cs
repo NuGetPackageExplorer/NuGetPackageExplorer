@@ -34,7 +34,9 @@ namespace Api
             var key = req.Query["symbolkey"];
             _log.LogInformation($"Symbol request for {key}");
 
-            var checksum = req.Headers.GetValues("SymbolChecksum").FirstOrDefault();
+            var checksum = req.Headers.TryGetValues("SymbolChecksum", out var checksums)
+                ? checksums.FirstOrDefault()
+                : null;
 
             var uri = new Uri(new Uri("https://msdl.microsoft.com/download/symbols/"), key);
 
