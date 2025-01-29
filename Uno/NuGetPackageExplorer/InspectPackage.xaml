@@ -984,8 +984,7 @@
 					</Grid>
 
 					<!-- Raw Text Content Viewer -->
-					<wasm:Border x:Load="False"
-								 Visibility="{Binding Package.CurrentFileInfo.IsTextFile, Converter={StaticResource TrueToVisible}}">
+                    <wasm:Border x:Load="{x:Bind Model.Package.CurrentFileInfo.IsTextFile, Mode=OneWay}">
 						<monaco:CodeEditor Text="{Binding Package.CurrentFileInfo.Content, TargetNullValue=''}"
 										   extensions:CodeEditorExtensions.ModelLanguage="{Binding OpenedDocumentLanguage}"
 										   extensions:CodeEditorExtensions.AutoLayoutOnResize="True"
