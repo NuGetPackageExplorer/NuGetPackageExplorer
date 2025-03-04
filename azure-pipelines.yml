@@ -37,6 +37,9 @@ stages:
       inputs:
         version: 9.x
 
+    - script: dotnet workload install wasm-tools
+      displayName: Install workloads for .NET 9
+
     - task: UseDotNet@2
       displayName: 'Use .NET 10 SDK'
       inputs:
@@ -44,7 +47,7 @@ stages:
         version: 10.x
 
     - script: dotnet workload install wasm-tools
-      displayName: Set Version
+      displayName: Install workloads for .NET 10
 
     - task: DotNetCoreCLI@2
       inputs:
