@@ -129,11 +129,11 @@ stages:
       displayName: Create Choco package
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Choco'))
 
-    - task: ArchiveFiles@1
+    - task: ArchiveFiles@2
       displayName: Zip Windows PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: $(Build.ArtifactStagingDirectory)/artifacts/publish/NuGetPackageExplorer/$(BuildConfiguration)_win-$(Platform)
+        rootFolderOrFile: $(Build.ArtifactStagingDirectory)/artifacts/publish/NuGetPackageExplorer/$(BuildConfiguration)_win-$(Platform)
         archiveFile: $(Build.ArtifactStagingDirectory)\artifacts\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
@@ -143,11 +143,11 @@ stages:
       displayName: Build Uno Desktop App
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'UnoSkia')))
 
-    - task: ArchiveFiles@1
+    - task: ArchiveFiles@2
       displayName: Zip Desktop PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-desktop
+        rootFolderOrFile: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-desktop
         archiveFile: $(Build.ArtifactStagingDirectory)\artifacts\$(ReleaseChannel)\PackageExplorer.Desktop.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
