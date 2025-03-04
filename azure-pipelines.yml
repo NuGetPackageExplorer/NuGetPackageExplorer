@@ -37,8 +37,14 @@ stages:
       inputs:
         version: 9.x
 
-    - script: dotnet workload install wasm-tools
-      displayName: Set Version
+    - task: UseDotNet@2
+      displayName: 'Use .NET 10 SDK'
+      inputs:
+        includePreviewVersions: true
+        version: 10.x
+
+    - script: dotnet workload restore --include-previews --from-previous-sdk --project .\Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj
+      displayName: Restore workloads
 
     - task: DotNetCoreCLI@2
       inputs:
@@ -51,7 +57,7 @@ stages:
       displayName: Set Version
 
     - powershell: |
-        mkdir $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
+        mkdir $(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)
 
         # Set versions
 
@@ -68,12 +74,12 @@ stages:
         [xml]$badge = Get-Content ".\Build\ci_badge.svg"
         $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"
         $badge.svg.g[1].text[3].InnerText = "$(GitBuildVersionSimple).0"
-        $badge.Save("$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\ci_badge.svg")
+        $badge.Save("$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\ci_badge.svg")
 
         [xml]$badge = Get-Content ".\Build\store_badge.svg"
         $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"
         $badge.svg.g[1].text[3].InnerText = "$(GitBuildVersionSimple).0"
-        $badge.Save("$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\stable_badge.svg")
+        $badge.Save("$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\stable_badge.svg")
       displayName: Update manifest and badge versions
 
     - powershell: |
@@ -91,7 +97,7 @@ stages:
       displayName: Build Package
       inputs:
         solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-        msbuildArguments: /restore /p:AppxPackageDir="$(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\\" /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
+        msbuildArguments: /restore /p:AppxPackageDir="$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\\" /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
         configuration: $(BuildConfiguration)
         maximumCpuCount: true
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'Store')))
@@ -101,7 +107,7 @@ stages:
       inputs:
         command: publish
         projects: 'PackageExplorer/NuGetPackageExplorer.csproj'
-        arguments: -c $(BuildConfiguration) /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
+        arguments: -c $(BuildConfiguration) /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
         zipAfterPublish: false
         modifyOutputPath: false
         publishWebProjects: false
@@ -111,64 +117,64 @@ stages:
       displayName: Pack Libraries as Package
       inputs:
         command: pack
-        arguments: /bl:$(Build.ArtifactStagingDirectory)\Logs\Libraries.binlog
+        arguments: /bl:$(Build.SourcesDirectory)\artifacts\logs\Libraries.binlog
         packagesToPack: '**/*.csproj;!**/NuGetPackageExplorer.csproj'
         configuration: $(BuildConfiguration)
-        packDirectory: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\NuGet
+        packDirectory: $(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\NuGet
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
     - powershell: |
         # Chocolatey
-        & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $(NBGV_ChocolateyPackageVersion) --OutputDirectory $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
+        & choco.exe pack .\PackageExplorer\NuGetPackageExplorer.nuspec --version $(NBGV_ChocolateyPackageVersion) --OutputDirectory $(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)
       displayName: Create Choco package
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Choco'))
 
-    - task: ArchiveFiles@1
+    - task: ArchiveFiles@2
       displayName: Zip Windows PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net9.0-windows10.0.22000/win-x64/publish
-        archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
+        rootFolderOrFile: $(Build.SourcesDirectory)/artifacts/publish/NuGetPackageExplorer/$(BuildConfiguration)_win-x64
+        archiveFile: $(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
     - powershell: |
-        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-desktop /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
+        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-desktop /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Uno Desktop App
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'UnoSkia')))
 
-    - task: ArchiveFiles@1
+    - task: ArchiveFiles@2
       displayName: Zip Desktop PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: $(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-desktop
-        archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.Desktop.$(Build.BuildNumber).zip
+        rootFolderOrFile: $(build.SourcesDirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-desktop
+        archiveFile: $(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\PackageExplorer.Desktop.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
 
     - powershell: |
-        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-browserwasm /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.ArtifactStagingDirectory)\Logs\$(ReleaseChannel).binlog
+        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-browserwasm /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Uno Wasm App
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly')))
 
     - task: CopyFiles@2
       displayName: Copy WebAssembly Package
       inputs:
-        SourceFolder: '$(build.sourcesdirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-browserwasm/publish/wwwroot'
+        SourceFolder: '$(build.SourcesDirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-browserwasm/publish/wwwroot'
         Contents: '**'
-        TargetFolder: $(build.artifactstagingdirectory)\$(ReleaseChannel)
+        TargetFolder: $(build.SourcesDirectory)\artifacts\$(ReleaseChannel)
         CleanTargetFolder: false
         OverWrite: false
         flattenFolders: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
-    - publish: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)
+    - publish: $(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)
       displayName: Publish Build Packages
       artifact: $(ReleaseChannel)
 
     - task: PublishBuildArtifacts@1
       inputs:
-        pathToPublish: $(Build.ArtifactStagingDirectory)\Logs
+        pathToPublish: $(Build.SourcesDirectory)\artifacts\logs
         artifactName: Logs
       displayName: Publish Build Logs
       condition: always()
