@@ -37,8 +37,8 @@ stages:
       inputs:
         version: 9.x
 
-    - script: dotnet workload install wasm-tools
-      displayName: Install workloads for .NET 9
+#    - script: dotnet workload install wasm-tools
+#      displayName: Install workloads for .NET 9
 
     - task: UseDotNet@2
       displayName: 'Use .NET 10 SDK'
@@ -46,11 +46,11 @@ stages:
         includePreviewVersions: true
         version: 10.x
 
-    - script: dotnet workload install wasm-tools
-      displayName: Install workloads for .NET 10
+#    - script: dotnet workload install wasm-tools
+#      displayName: Install workloads for .NET 10
 
     - script: dotnet workload restore --include-previews --from-previous-sdk --project .\Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj
-      displayName: restore workloads
+      displayName: Restore workloads
 
     - task: DotNetCoreCLI@2
       inputs:
@@ -139,7 +139,7 @@ stages:
       displayName: Zip Windows PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolderOrFile: $(Build.SourcesDirectory)/artifacts/publish/NuGetPackageExplorer/$(BuildConfiguration)_win-$(Platform)
+        rootFolderOrFile: $(Build.SourcesDirectory)/artifacts/publish/NuGetPackageExplorer/$(BuildConfiguration)_win-x64
         archiveFile: $(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
