@@ -238,7 +238,7 @@ stages:
       inputs:
         command: custom
         custom: tool
-        arguments: install --tool-path . --prerelease sign
+        arguments: install --tool-path . --prerelease --version 0.9.1-beta.24529.1
       displayName: Install SignTool tool
 
     - task: AzureCLI@2
