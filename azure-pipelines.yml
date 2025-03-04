@@ -49,6 +49,9 @@ stages:
     - script: dotnet workload install wasm-tools
       displayName: Install workloads for .NET 10
 
+    - script: dotnet workload restore --include-previews --from-previous-sdk --project .\Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj
+      displayName: restore workloads
+
     - task: DotNetCoreCLI@2
       inputs:
         command: custom
