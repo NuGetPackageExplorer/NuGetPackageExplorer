@@ -35,6 +35,7 @@ stages:
     - task: UseDotNet@2
       displayName: 'Use .NET 9 SDK'
       inputs:
+        
         version: 9.x
 
     - script: dotnet workload install wasm-tools
@@ -127,7 +128,7 @@ stages:
       displayName: Zip Windows PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net9.0-windows10.0.22000/win-x64/publish
+        rootFolder: PackageExplorer/bin/$(BuildConfiguration)/net9.0-windows10.0.26100/win-x64/publish
         archiveFile: $(Build.ArtifactStagingDirectory)\$(ReleaseChannel)\PackageExplorer.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
