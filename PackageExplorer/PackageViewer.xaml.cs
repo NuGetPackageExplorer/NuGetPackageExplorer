@@ -297,7 +297,7 @@ namespace PackageExplorer
 
         // delay load the Syntax HighlightTextBox, avoid loading SyntaxHighlighting.dll upfront
         [MethodImpl(MethodImplOptions.NoInlining)]
-        private static UserControl CreateFileContentViewer()
+        private static ContentViewerPane CreateFileContentViewer()
         {
             var content = new ContentViewerPane();
             content.SetBinding(DataContextProperty, new Binding("CurrentFileInfo"));
@@ -632,7 +632,7 @@ namespace PackageExplorer
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
-        private static IDataObject CreateDataObject(PackagePart packagePart)
+        private static DataObject CreateDataObject(PackagePart packagePart)
         {
             var data = new DataObject();
             data.SetData(PackageFileDataFormat, packagePart.Path);

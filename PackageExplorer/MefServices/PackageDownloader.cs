@@ -304,15 +304,12 @@ namespace PackageExplorer
     }
 
 
-    [Serializable]
+
     public class PackageNotFoundException : Exception
     {
         public PackageNotFoundException() { }
         public PackageNotFoundException(string message) : base(message) { }
         public PackageNotFoundException(string message, Exception inner) : base(message, inner) { }
-        protected PackageNotFoundException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
     internal sealed class ProgressStream : Stream
