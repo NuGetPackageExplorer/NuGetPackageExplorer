@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+
+#if WINDOWS
+using System.Drawing;
+#endif
 
 using NuGetPackageExplorer.Types;
 
@@ -332,7 +335,7 @@ namespace PackageExplorerViewModel
             public string szTypeName;
         }
 
-#if !NETSTANDARD2_1
+#if WINDOWS
 #pragma warning restore IDE1006 // Naming Styles
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
         public static Icon? ExtractAssociatedIcon(string fileName)
