@@ -16,15 +16,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Types\Types.csproj" />
-    <PackageReference Include="AppInsights.WindowsDesktop" Version="2.18.1" />
-    <PackageReference Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-24172-02" />
-    <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="$(SystemDependencyVersion)" />
-    <PackageReference Include="Microsoft.SymbolStore" Version="1.0.251801" />
-    <PackageReference Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="PeNet" Version="2.9.7" />
-    <PackageReference Include="System.Formats.Asn1" Version="$(SystemDependencyVersion)" />
-    <PackageReference Include="System.Reflection.Metadata" Version="$(SystemDependencyVersion)" />
-    <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" Version="1.1.24" />
+    <PackageReference Include="AppInsights.WindowsDesktop" />
+    <PackageReference Include="Microsoft.DiaSymReader.Converter"  />
+    <PackageReference Include="Microsoft.Extensions.DependencyModel" />
+    <PackageReference Include="Microsoft.SymbolStore" />
+    <PackageReference Include="NuGet.Protocol" />
+    <PackageReference Include="PeNet" />
+    <PackageReference Include="System.Formats.Asn1" />
+    <PackageReference Include="System.Reflection.Metadata" />
+    <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" />
   </ItemGroup>
 
   <ItemGroup>

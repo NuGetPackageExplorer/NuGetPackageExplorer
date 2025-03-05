@@ -9,12 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AuthenticodeExaminer" Version="0.3.0" />
-    <PackageReference Include="NuGet.Credentials" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="NuGet.PackageManagement" Version="$(NuGetDependencyVersion)" />    
-    <PackageReference Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="System.Windows.Extensions" Version="$(SystemDependencyVersion)" />
+    <PackageReference Include="AuthenticodeExaminer" />
+    <PackageReference Include="NuGet.Credentials" />
+    <PackageReference Include="NuGet.PackageManagement" />    
+    <PackageReference Include="NuGet.Commands" />
+    <PackageReference Include="NuGet.Resolver" />
+    <PackageReference Include="System.Windows.Extensions" />
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 

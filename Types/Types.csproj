@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NuGet.Packaging" Version="$(NuGetDependencyVersion)" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="$(SystemDependencyVersion)" />
+    <PackageReference Include="NuGet.Packaging" />
+    <PackageReference Include="System.ComponentModel.Composition" />
   </ItemGroup>
 
 </Project>
