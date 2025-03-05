@@ -69,7 +69,8 @@ public class ResXCompositeFormatGenerator : IIncrementalGenerator
                 }
                 else
                 {
-                    sourceBuilder.AppendLine($"        public static string {resourceName} => ResourceManager.GetString(\"{resourceName}\", CultureInfo.CurrentUICulture)!;");
+                    sourceBuilder.AppendLine($"        private static readonly string {resourceName}Value = ResourceManager.GetString(\"{resourceName}\", CultureInfo.CurrentUICulture)!;");
+                    sourceBuilder.AppendLine($"        public static string {resourceName} => {resourceName}Value;");
                 }
 
                 sourceBuilder.AppendLine();
