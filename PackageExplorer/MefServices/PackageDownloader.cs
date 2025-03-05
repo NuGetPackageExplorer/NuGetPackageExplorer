@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
@@ -14,6 +15,7 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 using PackageExplorerViewModel;
@@ -29,7 +31,7 @@ using NupkgExplorer.Client;
 namespace PackageExplorer
 {
     [Export(typeof(INuGetPackageDownloader))]
-    internal class PackageDownloader : INuGetPackageDownloader
+    internal sealed class PackageDownloader : INuGetPackageDownloader
     {
         private static readonly FileSizeConverter FileSizeConverter = new();
 
@@ -261,7 +263,7 @@ namespace PackageExplorer
             return tcs.Task;
         }
 
-#endregion
+        #endregion
 
         private void OnError(Exception error)
         {
@@ -270,7 +272,7 @@ namespace PackageExplorer
     }
 
     // helper classes for getting http progress events
-    internal class ProgressHttpMessageHandler : DelegatingHandler
+    internal sealed class ProgressHttpMessageHandler : DelegatingHandler
     {
         private readonly Action<long, long?> _progressAction;
 
@@ -313,7 +315,7 @@ namespace PackageExplorer
           System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
-    internal class ProgressStream : Stream
+    internal sealed class ProgressStream : Stream
     {
         private readonly Stream _inner;
         private readonly Action<long> _progress;
@@ -398,7 +400,7 @@ namespace PackageExplorer
     }
 
     // https://github.com/NuGet/NuGet.Client/blob/5244dc7596f0cc0ed65984dc8c040d23b0e9c09b/src/NuGet.Core/NuGet.Protocol/HttpSource/HttpHandlerResourceV3Provider.cs
-    internal class ProgressHttpHandlerResourceV3Provider : ResourceProvider
+    internal sealed class ProgressHttpHandlerResourceV3Provider : ResourceProvider
     {
         private readonly Action<long, long?> _progressAction;
 

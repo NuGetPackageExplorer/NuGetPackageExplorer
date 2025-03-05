@@ -7,10 +7,15 @@ using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+
 using Newtonsoft.Json;
-using NuGetPackageExplorer.Types;
-using Windows.Storage;
+
 using NuGet.Configuration;
+
+using NuGetPackageExplorer.Types;
+
+using Windows.Storage;
+
 using NpeConstants = NuGetPe.NuGetConstants;
 
 #if !HAS_UNO && !USE_WINUI
@@ -21,7 +26,7 @@ using NpeSettings = PackageExplorer.Properties.Settings;
 namespace PackageExplorer
 {
     [Export(typeof(ISettingsManager))]
-    internal class SettingsManager : ISettingsManager, INotifyPropertyChanged
+    internal sealed class SettingsManager : ISettingsManager, INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
 

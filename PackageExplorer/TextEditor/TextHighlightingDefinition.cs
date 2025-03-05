@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+
 using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace PackageExplorer
 {
-    internal class TextHighlightingDefinition : IHighlightingDefinition
+    internal sealed class TextHighlightingDefinition : IHighlightingDefinition
     {
         public static readonly TextHighlightingDefinition Instance = new TextHighlightingDefinition();
         private static readonly HighlightingRuleSet _emptyRuleSet = new HighlightingRuleSet();

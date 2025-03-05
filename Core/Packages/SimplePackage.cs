@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
 namespace NuGetPe
 {
-    internal class SimplePackage : IPackage
+    internal sealed class SimplePackage : IPackage
     {
         private readonly PackageBuilder _packageBuilder;
 
@@ -44,7 +44,7 @@ namespace NuGetPe
             PackageTypes = packageBuilder.PackageTypes;
             MinClientVersion = packageBuilder.MinClientVersion;
             LicenseMetadata = packageBuilder.LicenseMetadata;
-            FrameworkReferenceGroups = packageBuilder.FrameworkReferenceGroups;            
+            FrameworkReferenceGroups = packageBuilder.FrameworkReferenceGroups;
 
             _packageBuilder = packageBuilder;
         }

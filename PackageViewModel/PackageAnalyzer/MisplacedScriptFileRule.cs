@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
     [Export(typeof(IPackageRule))]
-    internal class MisplacedScriptFileRule : IPackageRule
+    internal sealed class MisplacedScriptFileRule : IPackageRule
     {
         private const string ToolsFolder = "tools";
         private const string ScriptExtension = ".ps1";

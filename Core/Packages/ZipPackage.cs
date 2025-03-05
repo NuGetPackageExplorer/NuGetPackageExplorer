@@ -4,12 +4,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 
-using NuGet.Common;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
@@ -410,7 +407,7 @@ namespace NuGetPe
         }
 
 
-        private class MyPackageArchiveReader : PackageArchiveReader
+        private sealed class MyPackageArchiveReader : PackageArchiveReader
         {
             private readonly ZipArchive _zipArchive;
 

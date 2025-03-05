@@ -9,9 +9,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
-using PackageExplorer.Properties;
+
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -137,10 +139,10 @@ namespace PackageExplorer
                         "v4.7.1", "net471",
                         "v4.7.2", "net472",
                         "v4.8", "net48",
-						"v4.8.1", "net481"
+                        "v4.8.1", "net481"
                     }
                 )
-                
+
                 ,
                 (
                     //see https://docs.nuget.org/ndocs/schema/target-frameworks
@@ -670,7 +672,7 @@ namespace PackageExplorer
 
             var menuItems = new List<object>();
 
-          
+
 
 
             foreach (var pair in FrameworkFolders)
@@ -708,7 +710,7 @@ namespace PackageExplorer
                     item.CommandParameter = "portable";
                 }
 
-                menuItems.Insert(0, item);;
+                menuItems.Insert(0, item); ;
             }
 
             var addSeparator = menu.Items.Count > 0;
@@ -727,7 +729,7 @@ namespace PackageExplorer
             }
         }
 
-        private class LazyPackageFileStream : Stream
+        private sealed class LazyPackageFileStream : Stream
         {
             private readonly PackageFile _packageFile;
             private Stream? _inner;

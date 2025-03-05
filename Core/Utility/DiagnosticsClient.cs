@@ -32,7 +32,7 @@ namespace NuGetPe
             var config = xmlData != null ? TelemetryConfiguration.CreateFromConfiguration(xmlData) : TelemetryConfiguration.CreateDefault();
 #pragma warning restore CA2000 // Dispose objects before losing scope
 
-            if(!forLibrary)
+            if (!forLibrary)
             {
                 config.TelemetryInitializers.Add(new AppVersionTelemetryInitializer());
                 config.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
@@ -41,7 +41,7 @@ namespace NuGetPe
                 Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
 #endif
             }
-            
+
             _service = new AppInsightsTelemetryService(new TelemetryClient(config));
         }
 
@@ -76,9 +76,9 @@ namespace NuGetPe
         {
             if (_service == null) return;
 
-            if(packageIsPublic && package != null)
+            if (packageIsPublic && package != null)
             {
-                properties??= new Dictionary<string, string>();
+                properties ??= new Dictionary<string, string>();
 
                 properties.Add("packageId", package.Id);
                 properties.Add("packageVersion", package.Version.ToNormalizedString());
@@ -121,7 +121,7 @@ namespace NuGetPe
             _service.TrackPageView(pageName);
         }
 
-        private class AppInsightsTelemetryService : ITelemetryService
+        private sealed class AppInsightsTelemetryService : ITelemetryService
         {
             private readonly TelemetryClient _client;
 

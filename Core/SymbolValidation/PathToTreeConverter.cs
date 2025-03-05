@@ -66,7 +66,7 @@ namespace NuGetPe
 
 
 
-        class File : IFile
+        sealed class File : IFile
         {
             private readonly NuGet.Packaging.IPackageFile _packageFile;
 
@@ -119,7 +119,7 @@ namespace NuGetPe
             public Stream GetStream() => _packageFile.GetStream();
         }
 
-        class Folder : IFolder
+        sealed class Folder : IFolder
         {
             public IFolder? Parent { get; }
             public SortedCollection<IPart> Children { get; }
@@ -141,7 +141,7 @@ namespace NuGetPe
             public IPart? this[string name] => Children.SingleOrDefault(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        class PackagePartComparer : Comparer<IPart>
+        sealed class PackagePartComparer : Comparer<IPart>
         {
             public override int Compare(IPart? x, IPart? y)
             {

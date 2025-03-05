@@ -9,9 +9,13 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+
 using NuGet.Versioning;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
+
 using Windows.Storage;
 
 #if !HAS_UNO && !USE_WINUI
@@ -21,7 +25,7 @@ using OSVersionHelper;
 namespace PackageExplorer
 {
     [Export(typeof(IPluginManager))]
-    internal class PluginManager : IPluginManager, IDisposable
+    internal sealed class PluginManager : IPluginManager, IDisposable
     {
         private const string NuGetDirectoryName = "NuGet";
         private const string PluginsDirectoryName = "PackageExplorerPlugins";
@@ -110,7 +114,7 @@ namespace PackageExplorer
         [Import]
         public Lazy<IUIServices> UIServices { get; set; }
 
-#region IPluginManager Members
+        #region IPluginManager Members
 
         public ICollection<PluginInfo> Plugins
         {
@@ -209,7 +213,7 @@ namespace PackageExplorer
             return false;
         }
 
-#endregion
+        #endregion
 
         private void EnsurePluginCatalog(AggregateCatalog mainCatalog)
         {
@@ -405,10 +409,10 @@ namespace PackageExplorer
 
             foreach (var loaderException in exception.LoaderExceptions!)
             {
-                if(loaderException != null)
+                if (loaderException != null)
                 {
                     builder.AppendLine(loaderException.Message);
-                }                
+                }
             }
 
             return builder.ToString();

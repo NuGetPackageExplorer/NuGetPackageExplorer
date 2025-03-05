@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace PackageExplorer.Controls
 {
-    internal class EllipseDetails
+    internal sealed class EllipseDetails
     {
         public double Width { get; set; }
         public double Height { get; set; }
@@ -19,7 +19,7 @@ namespace PackageExplorer.Controls
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
     }
 
-    internal class EllipseData : ObservableCollection<EllipseDetails>
+    internal sealed class EllipseData : ObservableCollection<EllipseDetails>
     {
         private static readonly double[] LeftCoordinates = new[] {
                 20.1696, 2.86816, 5.03758e-006, 12.1203, 36.5459, 64.6723, 87.6176, 98.165, 92.9838, 47.2783

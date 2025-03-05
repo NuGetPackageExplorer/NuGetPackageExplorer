@@ -1,15 +1,19 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using System.Windows;
+
 using NuGet.Protocol.Core.Types;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
+
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
 {
     [Export(typeof(IPackageChooser))]
-    internal class PackageChooserService : IPackageChooser
+    internal sealed class PackageChooserService : IPackageChooser
     {
         private PackageChooserViewModel? _viewModel;
 

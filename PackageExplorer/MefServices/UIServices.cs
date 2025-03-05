@@ -17,7 +17,7 @@ using Ookii.Dialogs.Wpf;
 namespace PackageExplorer
 {
     [Export(typeof(IUIServices))]
-    internal class UIServices : IUIServices
+    internal sealed class UIServices : IUIServices
     {
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
         [Import]

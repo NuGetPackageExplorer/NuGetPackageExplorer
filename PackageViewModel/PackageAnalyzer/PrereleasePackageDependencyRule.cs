@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Globalization;
 using System.Linq;
+
 using NuGet.Packaging.Core;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
     [Export(typeof(IPackageRule))]
-    internal class PrereleasePackageDependencyRule : IPackageRule
+    internal sealed class PrereleasePackageDependencyRule : IPackageRule
     {
         #region IPackageRule Members
 

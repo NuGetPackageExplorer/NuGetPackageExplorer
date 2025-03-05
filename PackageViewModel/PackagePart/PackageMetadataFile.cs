@@ -8,7 +8,7 @@ using NuGet.Frameworks;
 
 namespace PackageExplorerViewModel
 {
-    internal class PackageMetadataFile : IEditablePackageFile
+    internal sealed class PackageMetadataFile : IEditablePackageFile
     {
         private readonly PackageViewModel _packageViewModel;
 

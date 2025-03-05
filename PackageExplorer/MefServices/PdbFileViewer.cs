@@ -2,13 +2,17 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
+
 using PackageExplorerViewModel;
 
 #if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml.Controls;
+
 using Uno.Extensions;
 using Uno.Logging;
 #else
@@ -18,7 +22,7 @@ using System.Windows.Controls;
 namespace PackageExplorer
 {
     [PackageContentViewerMetadata(100, ".pdb", SupportsWindows10S = false)]
-    internal class PdbFileViewer : IPackageContentViewer
+    internal sealed class PdbFileViewer : IPackageContentViewer
     {
         public object GetView(IPackageContent selectedFile, IReadOnlyList<IPackageContent> peerFiles)
         {
@@ -37,7 +41,7 @@ namespace PackageExplorer
                                                 ".winmd".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase));
 
             // Get the exe as a last resort, the stand-alone case (.NET Single file or .NET Framework app)
-            pe ??= peerFiles.FirstOrDefault(pc =>  ".exe".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase));
+            pe ??= peerFiles.FirstOrDefault(pc => ".exe".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase));
 
 #pragma warning disable CA2000 // Dispose objects before losing scope -- ReadDebugData will dispose
             var peStream = pe != null

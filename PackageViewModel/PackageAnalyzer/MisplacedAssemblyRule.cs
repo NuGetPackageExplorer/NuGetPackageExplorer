@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
     [Export(typeof(IPackageRule))]
-    internal class MisplacedAssemblyRule : IPackageRule
+    internal sealed class MisplacedAssemblyRule : IPackageRule
     {
         private static readonly HashSet<string> assemblyFolders = new HashSet<string>(new[] { "lib", "analyzers", "build", "ref", "tools" }, StringComparer.OrdinalIgnoreCase);
 
