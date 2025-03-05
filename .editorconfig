@@ -266,6 +266,9 @@ dotnet_diagnostic.CA1051.severity = none
 # CA1031: Do not catch general exception types
 dotnet_diagnostic.CA1031.severity = none
 
+# CA1515: Consider making public types internal
+dotnet_diagnostic.CA1515.severity = none
+
 # CA1812: Avoid uninstantiated internal classes
 dotnet_diagnostic.CA1812.severity = silent
 
