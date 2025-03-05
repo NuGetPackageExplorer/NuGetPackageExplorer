@@ -15,10 +15,7 @@ namespace NuGetPe
 
         public SimplePackage(PackageBuilder packageBuilder)
         {
-            if (packageBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(packageBuilder));
-            }
+            ArgumentNullException.ThrowIfNull(packageBuilder);
 
             Id = packageBuilder.Id;
             Version = packageBuilder.Version;

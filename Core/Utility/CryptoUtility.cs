@@ -20,7 +20,7 @@ namespace NuGetPe.Utility
     {
         public static TBSCertificate? GetSigningCertificate(PeFile peFile)
         {
-            if (peFile == null) throw new ArgumentNullException(nameof(peFile));
+            ArgumentNullException.ThrowIfNull(peFile);
 
             if (peFile.WinCertificate?.WCertificateType != PeNet.Header.Pe.WinCertificateType.PkcsSignedData)
             {
@@ -61,7 +61,7 @@ namespace NuGetPe.Utility
 
         public static (SignatureInfo? PublisherSignature, RepositorySignatureInfo? RepositorySignature) GetSignatures(PackageArchiveReader reader)
         {
-            if (reader == null) throw new ArgumentNullException(nameof(reader));
+            ArgumentNullException.ThrowIfNull(reader);
 
             var entry = reader.GetEntry(SigningSpecifications.V1.SignaturePath);
             using var stream = entry.Open();
@@ -120,7 +120,7 @@ namespace NuGetPe.Utility
 
         private static TBSCertificate? GetSignerCertificate(SignerInfo signerInfo, CertificateChoices[]? certificates)
         {
-            if (signerInfo is null) throw new ArgumentNullException(nameof(signerInfo));
+            ArgumentNullException.ThrowIfNull(signerInfo);
             if (certificates is null) return null;
 
             if (signerInfo.Sid.IssuerAndSerialNumber is { } iasn)

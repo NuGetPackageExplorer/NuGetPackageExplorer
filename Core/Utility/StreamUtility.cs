@@ -7,16 +7,14 @@ namespace NuGetPe
     {
         public static Stream ToStream(string content)
         {
-            if (content is null)
-                throw new System.ArgumentNullException(nameof(content));
+            System.ArgumentNullException.ThrowIfNull(content);
 
             return new MemoryStream(Encoding.UTF8.GetBytes(content));
         }
 
         public static Stream MakeSeekable(Stream stream, bool disposeOriginal = false)
         {
-            if (stream is null)
-                throw new System.ArgumentNullException(nameof(stream));
+            System.ArgumentNullException.ThrowIfNull(stream);
 
             if (stream.CanSeek)
             {

@@ -1467,10 +1467,7 @@ namespace PackageExplorerViewModel
 
         private void Export(string rootPath)
         {
-            if (rootPath == null)
-            {
-                throw new ArgumentNullException(nameof(rootPath));
-            }
+            ArgumentNullException.ThrowIfNull(rootPath);
 
             if (!Directory.Exists(rootPath))
             {
@@ -1575,8 +1572,7 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddDraggedAndDroppedFiles(PackageFolder? folder, string[] fileNames)
         {
-            if (fileNames is null)
-                throw new ArgumentNullException(nameof(fileNames));
+            ArgumentNullException.ThrowIfNull(fileNames);
 
             if (folder == null)
             {
@@ -1659,10 +1655,8 @@ namespace PackageExplorerViewModel
         [SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public static void AddDraggedAndDroppedFileDescriptors(PackageFolder folder, IEnumerable<(string FilePath, Stream? Stream)> fileDescriptors)
         {
-            if (folder is null)
-                throw new ArgumentNullException(nameof(folder));
-            if (fileDescriptors is null)
-                throw new ArgumentNullException(nameof(fileDescriptors));
+            ArgumentNullException.ThrowIfNull(folder);
+            ArgumentNullException.ThrowIfNull(fileDescriptors);
             foreach (var fileDescription in fileDescriptors)
             {
                 var parts = fileDescription.FilePath.Split(Path.DirectorySeparatorChar);

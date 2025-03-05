@@ -16,8 +16,7 @@ namespace PackageExplorerViewModel
 
         public EditablePackageReferenceSet(PackageReferenceSet packageReferenceSet)
         {
-            if (packageReferenceSet is null)
-                throw new System.ArgumentNullException(nameof(packageReferenceSet));
+            System.ArgumentNullException.ThrowIfNull(packageReferenceSet);
             _targetFramework = packageReferenceSet.TargetFramework;
             References = new ObservableCollection<string>(packageReferenceSet.References);
         }

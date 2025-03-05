@@ -26,15 +26,9 @@ namespace PackageExplorerViewModel
         /// <exception cref="ArgumentNullException"></exception>
         public static string RelativePathTo(string fromDirectory, string toPath)
         {
-            if (fromDirectory == null)
-            {
-                throw new ArgumentNullException(nameof(fromDirectory));
-            }
+            ArgumentNullException.ThrowIfNull(fromDirectory);
 
-            if (toPath == null)
-            {
-                throw new ArgumentNullException(nameof(toPath));
-            }
+            ArgumentNullException.ThrowIfNull(toPath);
 
             var isRooted = Path.IsPathRooted(fromDirectory)
                 && Path.IsPathRooted(toPath);

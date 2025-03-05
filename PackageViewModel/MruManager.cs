@@ -91,10 +91,7 @@ namespace PackageExplorerViewModel
 
         private void AddFile(MruItem mruItem)
         {
-            if (mruItem == null)
-            {
-                throw new ArgumentNullException(nameof(mruItem));
-            }
+            ArgumentNullException.ThrowIfNull(mruItem);
 
             Files.Remove(mruItem);
             Files.Insert(0, mruItem);

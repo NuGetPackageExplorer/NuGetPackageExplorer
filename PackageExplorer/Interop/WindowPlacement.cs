@@ -33,8 +33,7 @@ namespace PackageExplorer
 
         public static WindowPlacement Parse(string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value);
             var parts = value.Split('|');
 
             if (parts.Length != 6)
@@ -86,8 +85,7 @@ namespace PackageExplorer
 
         public static Rect Parse(string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value);
             var ss = Array.ConvertAll(value.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries),
                                         v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 4 ? new Rect(ss[0], ss[1], ss[2], ss[3]) : new Rect();
@@ -114,8 +112,7 @@ namespace PackageExplorer
 
         public static Point Parse(string value)
         {
-            if (value is null)
-                throw new ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value);
             var ss = Array.ConvertAll(value.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries),
                                         v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 2 ? new Point(ss[0], ss[1]) : new Point();

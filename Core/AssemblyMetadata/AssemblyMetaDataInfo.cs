@@ -21,10 +21,7 @@ namespace NuGetPe.AssemblyMetadata
         public AssemblyMetaDataInfo(AssemblyName assemblyName)
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
-            if (assemblyName == null)
-            {
-                throw new ArgumentNullException(nameof(assemblyName));
-            }
+            ArgumentNullException.ThrowIfNull(assemblyName);
 
             SetFullName(assemblyName);
         }

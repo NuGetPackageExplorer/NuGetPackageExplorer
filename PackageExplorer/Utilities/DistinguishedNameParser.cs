@@ -9,8 +9,7 @@ namespace PackageExplorer
     {
         public static Dictionary<string, List<string>> Parse(string distingishedName)
         {
-            if (distingishedName is null)
-                throw new ArgumentNullException(nameof(distingishedName));
+            ArgumentNullException.ThrowIfNull(distingishedName);
             var result = new Dictionary<string, List<string>>(StringComparer.CurrentCultureIgnoreCase);
             var distinguishedNamePtr = IntPtr.Zero;
             try

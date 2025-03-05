@@ -49,8 +49,7 @@ namespace PackageExplorerViewModel
 
         public EditablePackageMetadata(IPackageMetadata source, IUIServices uiServices, PackageViewModel packageViewModel)
         {
-            if (source is null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source);
             _uiServices = uiServices;
             _showValidationResultsCommand = new RelayCommand(OnShowValidationResult, () => ValidationResult != null);
 
@@ -109,8 +108,7 @@ namespace PackageExplorerViewModel
 
         public async void LoadSignatureData(ISignaturePackage package)
         {
-            if (package is null)
-                throw new ArgumentNullException(nameof(package));
+            ArgumentNullException.ThrowIfNull(package);
             if (package.IsSigned)
             {
                 PublisherSignature = package.PublisherSignature;

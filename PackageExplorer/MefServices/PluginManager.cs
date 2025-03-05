@@ -97,10 +97,7 @@ namespace PackageExplorer
         public PluginManager(AggregateCatalog catalog)
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
-            if (catalog == null)
-            {
-                throw new ArgumentNullException(nameof(catalog));
-            }
+            ArgumentNullException.ThrowIfNull(catalog);
 
             // clean up from previous run
             DeleteAllDeleteMeFiles();
@@ -122,10 +119,7 @@ namespace PackageExplorer
 
         public PluginInfo? AddPlugin(IPackage plugin)
         {
-            if (plugin == null)
-            {
-                throw new ArgumentNullException(nameof(plugin));
-            }
+            ArgumentNullException.ThrowIfNull(plugin);
 
             if (PluginsDirectory == null)
             {
@@ -186,10 +180,7 @@ namespace PackageExplorer
 
         public bool DeletePlugin(PluginInfo plugin)
         {
-            if (plugin == null)
-            {
-                throw new ArgumentNullException(nameof(plugin));
-            }
+            ArgumentNullException.ThrowIfNull(plugin);
 
             if (PluginsDirectory == null)
             {

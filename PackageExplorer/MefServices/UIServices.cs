@@ -5,9 +5,13 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
+
 using Microsoft.Win32;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
+
 using Ookii.Dialogs.Wpf;
 
 namespace PackageExplorer
@@ -268,13 +272,13 @@ namespace PackageExplorer
                     return false;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Show(e.Message, MessageLevel.Error);
                 selectedPath = string.Empty;
                 return false;
             }
-            
+
         }
 
         public Task BeginInvoke(Action action)
@@ -284,10 +288,7 @@ namespace PackageExplorer
 
         public Tuple<bool?, bool> ConfirmMoveFile(string fileName, string targetFolder, int numberOfItemsLeft)
         {
-            if (numberOfItemsLeft < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(numberOfItemsLeft));
-            }
+            ArgumentOutOfRangeException.ThrowIfNegative(numberOfItemsLeft);
 
             var mainInstruction = string.Format(
                 CultureInfo.CurrentCulture,

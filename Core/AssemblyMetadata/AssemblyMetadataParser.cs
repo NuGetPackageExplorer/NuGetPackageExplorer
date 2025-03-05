@@ -15,10 +15,7 @@ namespace NuGetPe.AssemblyMetadata
 
         public AssemblyMetadataParser(string fileName)
         {
-            if (fileName == null)
-            {
-                throw new ArgumentNullException(nameof(fileName));
-            }
+            ArgumentNullException.ThrowIfNull(fileName);
 
             _peReader = new PEReader(File.OpenRead(fileName));
             _metadataReader = _peReader.GetMetadataReader();

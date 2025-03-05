@@ -12,12 +12,8 @@ namespace NuGetPackageExplorer.Types
         [SuppressMessage("Microsoft.Naming", "CA1702:CompoundWordsShouldBeCasedCorrectly", MessageId = "InFolder")]
         public static IEnumerable<string> GetFilesInFolder(this IPackage package, string folder)
         {
-            if (package is null)
-                throw new ArgumentNullException(nameof(package));
-            if (folder == null)
-            {
-                throw new ArgumentNullException(nameof(folder));
-            }
+            ArgumentNullException.ThrowIfNull(package);
+            ArgumentNullException.ThrowIfNull(folder);
 
             if (string.IsNullOrEmpty(folder))
             {

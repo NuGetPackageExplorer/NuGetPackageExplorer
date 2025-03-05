@@ -27,8 +27,7 @@ namespace NuGetPe
 
         public virtual void AddFile(string path, Stream stream)
         {
-            if (stream is null)
-                throw new ArgumentNullException(nameof(stream));
+            ArgumentNullException.ThrowIfNull(stream);
             var d = Path.GetDirectoryName(path);
             if (d != null)
             {
@@ -167,8 +166,7 @@ namespace NuGetPe
 
         protected string MakeRelativePath(string fullPath)
         {
-            if (fullPath is null)
-                throw new ArgumentNullException(nameof(fullPath));
+            ArgumentNullException.ThrowIfNull(fullPath);
             return fullPath.Substring(Root.Length).TrimStart(Path.DirectorySeparatorChar);
         }
 

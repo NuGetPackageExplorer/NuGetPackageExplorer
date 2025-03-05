@@ -25,8 +25,7 @@ namespace NuGetPe
 
         public static bool IsTokenized(this NuGetVersion version)
         {
-            if (version is null)
-                throw new System.ArgumentNullException(nameof(version));
+            ArgumentNullException.ThrowIfNull(version);
             var labels = version.ReleaseLabels.ToList();
 
             return labels.Count >= 3 && labels[0] == TokenStart && labels[labels.Count - 1] == TokenEnd;
@@ -91,8 +90,7 @@ namespace NuGetPe
         /// <returns></returns>
         public static string ReplaceTokenWithMetadata(string value)
         {
-            if (value is null)
-                throw new System.ArgumentNullException(nameof(value));
+            ArgumentNullException.ThrowIfNull(value);
 
             // see if it's a token            
 

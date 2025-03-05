@@ -53,10 +53,7 @@ namespace PackageExplorer
         {
             DiagnosticsClient.TrackEvent("FileEditor_Save");
 
-            if (filePath == null)
-            {
-                throw new ArgumentNullException(nameof(filePath));
-            }
+            ArgumentNullException.ThrowIfNull(filePath);
 
             try
             {

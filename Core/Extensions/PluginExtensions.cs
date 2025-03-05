@@ -7,17 +7,10 @@ namespace NuGetPe
     {
         public static int UnpackPackage(this IPackage package, string sourceDirectory, string targetRootDirectory)
         {
-            if (package is null)
-                throw new ArgumentNullException(nameof(package));
-            if (sourceDirectory == null)
-            {
-                throw new ArgumentNullException(nameof(sourceDirectory));
-            }
+            ArgumentNullException.ThrowIfNull(package);
+            ArgumentNullException.ThrowIfNull(sourceDirectory);
 
-            if (targetRootDirectory == null)
-            {
-                throw new ArgumentNullException(nameof(targetRootDirectory));
-            }
+            ArgumentNullException.ThrowIfNull(targetRootDirectory);
 
             if (!sourceDirectory.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
             {
