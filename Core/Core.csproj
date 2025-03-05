@@ -10,8 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="NuGetResources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="NuGetResources.Designer.cs" CustomToolNamespace="NuGetPe.Resources" />
-    <Compile Update="NuGetResources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="NuGetResources.resx" />
+    <ProjectReference Include="..\NuGetPeGenerators\NuGetPeGenerators.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="False" />
+    <AdditionalFiles Include="**\*.resx" />
   </ItemGroup>
 
   <ItemGroup>

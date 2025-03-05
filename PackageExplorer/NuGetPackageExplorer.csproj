@@ -41,8 +41,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Resources.resx" />
-    <EmbeddedResource Update="Resources.resx" Generator="PublicResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" />
+    <ProjectReference Include="..\NuGetPeGenerators\NuGetPeGenerators.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="False" />
+    <AdditionalFiles Include="**\*.resx" />
   </ItemGroup>
 
 </Project>

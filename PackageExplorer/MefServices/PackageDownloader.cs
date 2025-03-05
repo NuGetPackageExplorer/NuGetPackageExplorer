@@ -110,14 +110,14 @@ namespace PackageExplorer
             // TODO: progress/error reporting & cancellation
             DoWorkAsync().ContinueWith(x => tcs.TrySetResult(x.Result));
 #else
-            var progressDialogText = Resources.Dialog_DownloadingPackage;
+            string progressDialogText;
             if (packageIdentity.HasVersion)
             {
-                progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, packageIdentity.Id, packageIdentity.Version);
+                progressDialogText = string.Format(CultureInfo.CurrentCulture, Resources.Dialog_DownloadingPackage, packageIdentity.Id, packageIdentity.Version);
             }
             else
             {
-                progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, packageIdentity.Id, string.Empty);
+                progressDialogText = string.Format(CultureInfo.CurrentCulture, Resources.Dialog_DownloadingPackage, packageIdentity.Id, string.Empty);
             }
 
             string? description = null;
