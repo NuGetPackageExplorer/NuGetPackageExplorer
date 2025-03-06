@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
@@ -392,7 +387,7 @@ namespace NuGetPe
             // We exclude any opc files and the manifest file (.nuspec)
             var path = entry.FullName;
 
-            return !path.EndsWith("/", StringComparison.Ordinal) && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
+            return !path.EndsWith('/') && !ExcludePaths.Any(p => path.StartsWith(p, StringComparison.OrdinalIgnoreCase)) &&
                    !PackageUtility.IsManifest(path);
         }
 

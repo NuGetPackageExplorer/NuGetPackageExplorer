@@ -43,6 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NuGetPackageExplorer.WinUI"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Uno Solution Items", "Uno Solution Items", "{2168CA4C-AF5E-4EEB-AE42-E472E5E89428}"
 	ProjectSection(SolutionItems) = preProject
+		Uno\.editorconfig = Uno\.editorconfig
 		Uno\Directory.Build.props = Uno\Directory.Build.props
 		Uno\Directory.Build.targets = Uno\Directory.Build.targets
 		Uno\Directory.Packages.props = Uno\Directory.Packages.props

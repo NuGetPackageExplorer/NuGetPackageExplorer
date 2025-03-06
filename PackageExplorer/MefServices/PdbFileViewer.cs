@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 
 using NuGetPackageExplorer.Types;
 
@@ -107,7 +104,11 @@ namespace PackageExplorer
             {
 
             }
-            catch (Exception e)
+            catch (Exception
+#if HAS_UNO || USE_WINUI
+            e
+#endif
+            )
             {
 #if HAS_UNO || USE_WINUI
                 this.Log().Error("Failed to generate view", e);

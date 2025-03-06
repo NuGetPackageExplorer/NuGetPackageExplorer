@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -353,7 +350,7 @@ namespace PackageExplorer
 
         private static void CreateDeleteMeFile(string targetPath)
         {
-            if (targetPath.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
+            if (targetPath.EndsWith('\\'))
             {
                 targetPath = targetPath[0..^1];
             }

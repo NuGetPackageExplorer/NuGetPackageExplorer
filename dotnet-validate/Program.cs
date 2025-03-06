@@ -1,11 +1,6 @@
-﻿using System;
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
@@ -35,7 +30,7 @@ namespace NuGetPe
             {
                 new Argument<string>("packageId", "Package Id"),
                 new Option<NuGetVersion?>(
-                    new[] { "--version", "-v" },
+                    ["--version", "-v"],
                     parseArgument: arg =>
                     {
                         if (arg.Tokens.Count > 0 && NuGetVersion.TryParse(arg.Tokens[0].Value, out var version))
@@ -52,7 +47,7 @@ namespace NuGetPe
                     },
                     description: "Package version. Defaults to latest."),
                 new Option<DirectoryInfo?>(
-                    new[] { "--nuget-config-directory", "-d" },
+                    ["--nuget-config-directory", "-d"],
                     parseArgument: arg =>
                     {
                         if (arg.Tokens.Count > 0)

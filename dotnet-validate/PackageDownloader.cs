@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-
-using NuGet.Common;
+﻿using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
 using NuGet.Protocol;
@@ -29,7 +22,7 @@ namespace NuGetPe
             _packageSourceMapping = PackageSourceMapping.GetPackageSourceMapping(_settings);
         }
 
-        private IReadOnlyCollection<PackageSource> GetPackageSources(string packageId)
+        private List<PackageSource> GetPackageSources(string packageId)
         {
             var packageSourceProvider = new PackageSourceProvider(_settings);
             var packageSources = packageSourceProvider.LoadPackageSources().Where(e => e.IsEnabled && e.IsHttp).Distinct().ToList();

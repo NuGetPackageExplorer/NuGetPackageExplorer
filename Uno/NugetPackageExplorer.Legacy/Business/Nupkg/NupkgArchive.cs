@@ -20,7 +20,7 @@ namespace NupkgExplorer.Business.Nupkg
             _nupkg = new ZipArchive(stream);
         }
 
-        public NuspecMetadata GetMetadata()
+        public NuspecMetadata? GetMetadata()
         {
             try
             {
