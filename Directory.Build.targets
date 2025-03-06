@@ -5,10 +5,6 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(TargetFramework)' == 'netcoreapp3.1'">
-    <NuGetDependencyVersion>6.0.0-xprivate.60026</NuGetDependencyVersion>
-  </PropertyGroup>
-
   <PropertyGroup>
     <Product Condition="'$(IsTypesProject)' != 'true'">$(Product) ($(Configuration)) ($(Platform))</Product>
   </PropertyGroup>
@@ -21,6 +17,12 @@
   <PropertyGroup Condition=" '$(SigningNotSupported)' != 'true' ">
     <DefineConstants>$(DefineConstants);IS_SIGNING_SUPPORTED</DefineConstants>
   </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Remove these bc they conflict with the WPF ones we use by default -->
+    <Using Remove="System.Drawing" />
+    <Using Remove="System.Windows.Forms" />
+  </ItemGroup>
 
   <Target Name="AddCommitHashToAssemblyAttributes" BeforeTargets="GetAssemblyAttributes">
     <ItemGroup>

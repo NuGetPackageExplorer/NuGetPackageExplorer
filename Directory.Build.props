@@ -28,6 +28,7 @@
     <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <NuGetAuditMode>all</NuGetAuditMode>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
