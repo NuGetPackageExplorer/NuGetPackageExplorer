@@ -25,10 +25,7 @@ namespace PackageExplorerViewModel
         protected PackagePart(string name, PackageFolder? parent, PackageViewModel? viewModel)
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
-            if (name == null)
-            {
-                throw new ArgumentNullException(nameof(name));
-            }
+            ArgumentNullException.ThrowIfNull(name);
 
             PackageViewModel = viewModel;
             _parent = parent;
@@ -57,8 +54,7 @@ namespace PackageExplorerViewModel
             get { return _name!; }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException(nameof(value));
+                ArgumentNullException.ThrowIfNull(value);
 
                 if (_name != value)
                 {

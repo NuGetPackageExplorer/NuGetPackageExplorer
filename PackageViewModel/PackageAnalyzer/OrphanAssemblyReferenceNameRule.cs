@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
     [Export(typeof(IPackageRule))]
-    internal class OrphanAssemblyReferenceNameRule : IPackageRule
+    internal sealed class OrphanAssemblyReferenceNameRule : IPackageRule
     {
         #region IPackageRule Members
 

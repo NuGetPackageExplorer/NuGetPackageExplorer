@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Packaging.Core;
@@ -14,6 +15,7 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 using PackageExplorerViewModel;
@@ -29,7 +31,7 @@ using NupkgExplorer.Client;
 namespace PackageExplorer
 {
     [Export(typeof(INuGetPackageDownloader))]
-    internal class PackageDownloader : INuGetPackageDownloader
+    internal sealed class PackageDownloader : INuGetPackageDownloader
     {
         private static readonly FileSizeConverter FileSizeConverter = new();
 
@@ -108,14 +110,14 @@ namespace PackageExplorer
             // TODO: progress/error reporting & cancellation
             DoWorkAsync().ContinueWith(x => tcs.TrySetResult(x.Result));
 #else
-            var progressDialogText = Resources.Dialog_DownloadingPackage;
+            string progressDialogText;
             if (packageIdentity.HasVersion)
             {
-                progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, packageIdentity.Id, packageIdentity.Version);
+                progressDialogText = string.Format(CultureInfo.CurrentCulture, Resources.Dialog_DownloadingPackage, packageIdentity.Id, packageIdentity.Version);
             }
             else
             {
-                progressDialogText = string.Format(CultureInfo.CurrentCulture, progressDialogText, packageIdentity.Id, string.Empty);
+                progressDialogText = string.Format(CultureInfo.CurrentCulture, Resources.Dialog_DownloadingPackage, packageIdentity.Id, string.Empty);
             }
 
             string? description = null;
@@ -261,7 +263,7 @@ namespace PackageExplorer
             return tcs.Task;
         }
 
-#endregion
+        #endregion
 
         private void OnError(Exception error)
         {
@@ -270,7 +272,7 @@ namespace PackageExplorer
     }
 
     // helper classes for getting http progress events
-    internal class ProgressHttpMessageHandler : DelegatingHandler
+    internal sealed class ProgressHttpMessageHandler : DelegatingHandler
     {
         private readonly Action<long, long?> _progressAction;
 
@@ -302,18 +304,15 @@ namespace PackageExplorer
     }
 
 
-    [Serializable]
+
     public class PackageNotFoundException : Exception
     {
         public PackageNotFoundException() { }
         public PackageNotFoundException(string message) : base(message) { }
         public PackageNotFoundException(string message, Exception inner) : base(message, inner) { }
-        protected PackageNotFoundException(
-          System.Runtime.Serialization.SerializationInfo info,
-          System.Runtime.Serialization.StreamingContext context) : base(info, context) { }
     }
 
-    internal class ProgressStream : Stream
+    internal sealed class ProgressStream : Stream
     {
         private readonly Stream _inner;
         private readonly Action<long> _progress;
@@ -398,7 +397,7 @@ namespace PackageExplorer
     }
 
     // https://github.com/NuGet/NuGet.Client/blob/5244dc7596f0cc0ed65984dc8c040d23b0e9c09b/src/NuGet.Core/NuGet.Protocol/HttpSource/HttpHandlerResourceV3Provider.cs
-    internal class ProgressHttpHandlerResourceV3Provider : ResourceProvider
+    internal sealed class ProgressHttpHandlerResourceV3Provider : ResourceProvider
     {
         private readonly Action<long, long?> _progressAction;
 

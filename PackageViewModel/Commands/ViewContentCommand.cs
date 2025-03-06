@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Input;
+
 using AuthenticodeExaminer;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 using NuGetPe.Utility;
 
@@ -14,7 +16,7 @@ using PeNet;
 
 namespace PackageExplorerViewModel
 {
-    internal class ViewContentCommand : CommandBase, ICommand
+    internal sealed class ViewContentCommand : CommandBase, ICommand
     {
         public ViewContentCommand(PackageViewModel packageViewModel)
             : base(packageViewModel)

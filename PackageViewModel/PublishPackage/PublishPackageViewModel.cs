@@ -35,8 +35,7 @@ namespace PackageExplorerViewModel
             CredentialPublishProvider credentialPublishProvider,
             PackageViewModel viewModel)
         {
-            if (viewModel is null)
-                throw new ArgumentNullException(nameof(viewModel));
+            ArgumentNullException.ThrowIfNull(viewModel);
             _mruSourceManager = mruSourceManager ?? throw new ArgumentNullException(nameof(mruSourceManager));
             _settingsManager = settingsManager ?? throw new ArgumentNullException(nameof(settingsManager));
             _uiServices = uiServices ?? throw new ArgumentNullException(nameof(uiServices));
@@ -220,8 +219,7 @@ namespace PackageExplorerViewModel
 
         public void OnError(Exception error)
         {
-            if (error is null)
-                throw new ArgumentNullException(nameof(error));
+            ArgumentNullException.ThrowIfNull(error);
             ShowProgress = false;
             HasError = true;
             Status = error.Message;

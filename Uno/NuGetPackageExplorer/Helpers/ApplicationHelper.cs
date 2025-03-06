@@ -16,7 +16,7 @@ namespace NuGetPackageExplorer.Helpers
         /// <remarks>The new URL must be of the same origin as the current URL; otherwise replaceState throws an exception.</remarks>
         public static void ReplaceUrl(string newUrl)
         {
-            if (newUrl == null) throw new ArgumentNullException(nameof(newUrl));
+            ArgumentNullException.ThrowIfNull(newUrl);
 
             var js = @$"
             window.history.replaceState(
@@ -33,7 +33,7 @@ namespace NuGetPackageExplorer.Helpers
         /// <param name="absoluteOrRelativeUri">new url</param>
         public static void ReplaceUrl(Uri absoluteOrRelativeUri)
         {
-            if (absoluteOrRelativeUri == null) throw new ArgumentNullException(nameof(absoluteOrRelativeUri));
+            ArgumentNullException.ThrowIfNull(absoluteOrRelativeUri);
 
             var uri = absoluteOrRelativeUri.IsAbsoluteUri
                 ? absoluteOrRelativeUri

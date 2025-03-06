@@ -4,16 +4,13 @@ using NuGet.Packaging.Signing;
 
 using NuGetPe;
 
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-
 namespace PackageExplorer
 {
     public static class PackageHealthContentHelper
     {
         private static ResourceManager resManager => Resources.ResourceManager;
 
-        public static string ValidationResultToText(SignatureVerificationStatus result)
+        public static string? ValidationResultToText(SignatureVerificationStatus result)
         {
             switch (result)
             {
@@ -47,7 +44,7 @@ namespace PackageExplorer
             }
         }
 
-        public static string SourceLinkResultToText(SymbolValidationResult result)
+        public static string? SourceLinkResultToText(SymbolValidationResult result)
         {
             switch (result)
             {
@@ -71,7 +68,7 @@ namespace PackageExplorer
             }
         }
 
-        public static PackageHealthIconVisibilityInfo SourceLinkResultToIcon(SymbolValidationResult result)
+        public static PackageHealthIconVisibilityInfo? SourceLinkResultToIcon(SymbolValidationResult result)
         {
             switch (result)
             {
@@ -93,7 +90,7 @@ namespace PackageExplorer
             return null;
         }
 
-        public static string DeterministicResultToText(DeterministicResult result)
+        public static string? DeterministicResultToText(DeterministicResult result)
         {
             switch (result)
             {
@@ -110,7 +107,7 @@ namespace PackageExplorer
             }
         }
 
-        public static PackageHealthIconVisibilityInfo DeterministicResultToIcon(DeterministicResult result)
+        public static PackageHealthIconVisibilityInfo? DeterministicResultToIcon(DeterministicResult result)
         {
             switch (result)
             {
@@ -126,7 +123,7 @@ namespace PackageExplorer
             return null;
         }
 
-        public static string CompilerFlagsResultToText(HasCompilerFlagsResult result)
+        public static string? CompilerFlagsResultToText(HasCompilerFlagsResult result)
         {
             switch (result)
             {
@@ -143,7 +140,7 @@ namespace PackageExplorer
             }
         }
 
-        public static PackageHealthIconVisibilityInfo CompilerFlagsResultToIcon(HasCompilerFlagsResult result)
+        public static PackageHealthIconVisibilityInfo? CompilerFlagsResultToIcon(HasCompilerFlagsResult result)
         {
             switch (result)
             {

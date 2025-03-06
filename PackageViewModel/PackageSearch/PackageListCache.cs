@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+
 using NuGet.Protocol.Core.Types;
 
 namespace PackageExplorerViewModel.PackageSearch
 {
-    internal class PackageListCache<T>  where T : IPackageSearchMetadata
+    internal sealed class PackageListCache<T> where T : IPackageSearchMetadata
     {
         private readonly Dictionary<string, List<T>> _packagesDict = new Dictionary<string, List<T>>(StringComparer.OrdinalIgnoreCase);
 

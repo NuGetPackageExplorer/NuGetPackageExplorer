@@ -122,8 +122,8 @@ namespace PackageExplorer
 
         private async Task OnLaunched<TRootPage>(LaunchActivatedEventArgs e, Func<TRootPage?> buildRoot, Func<TRootPage, LaunchActivatedEventArgs, Task> landingNavigation) where TRootPage : UIElement
         {
-            if (buildRoot == null) throw new ArgumentNullException(nameof(buildRoot));
-            if (landingNavigation == null) throw new ArgumentNullException(nameof(landingNavigation));
+            ArgumentNullException.ThrowIfNull(buildRoot);
+            ArgumentNullException.ThrowIfNull(landingNavigation);
 
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)

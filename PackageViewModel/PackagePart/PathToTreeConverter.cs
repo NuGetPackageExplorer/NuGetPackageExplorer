@@ -9,10 +9,7 @@ namespace PackageExplorerViewModel
     {
         public static PackageFolder Convert(List<IPackageFile> paths, PackageViewModel? viewModel)
         {
-            if (paths == null)
-            {
-                throw new ArgumentNullException(nameof(paths));
-            }
+            ArgumentNullException.ThrowIfNull(paths);
 
             paths.Sort((p1, p2) => string.Compare(p1.Path, p2.Path, StringComparison.OrdinalIgnoreCase));
 

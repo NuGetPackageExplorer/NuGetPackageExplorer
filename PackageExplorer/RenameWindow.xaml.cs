@@ -1,10 +1,10 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+
 using NuGetPe;
 
 namespace PackageExplorer
@@ -70,7 +70,7 @@ namespace PackageExplorer
 
         #region Nested type: NameValidationRule
 
-        private class NameValidationRule : ValidationRule
+        private sealed class NameValidationRule : ValidationRule
         {
             public static readonly NameValidationRule Instance = new NameValidationRule();
 

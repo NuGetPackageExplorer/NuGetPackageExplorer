@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
 using NuGet.Common;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+
 using PackageExplorerViewModel.PackageSearch;
 
 namespace PackageExplorerViewModel
 {
-    internal class ShowLatestVersionQueryContext<T> : IQueryContext<T> where T : IPackageSearchMetadata
+    internal sealed class ShowLatestVersionQueryContext<T> : IQueryContext<T> where T : IPackageSearchMetadata
     {
         private readonly SourceRepository _sourceRepository;
         private readonly SearchContext _searchContext;

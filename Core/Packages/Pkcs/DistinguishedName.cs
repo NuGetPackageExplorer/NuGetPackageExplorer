@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Formats.Asn1;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 // docs reference: https://tools.ietf.org/html/rfc5280
 // impl reference: n/a
@@ -13,7 +11,7 @@ namespace NuGetPe.Packages.Pkcs
 {
     public class DistinguishedName
     {
-        private class Oids
+        private sealed class Oids
         {
             // https://oidref.com/2.5.4
             public const string CommonName = "2.5.4.3";
@@ -96,7 +94,7 @@ namespace NuGetPe.Packages.Pkcs
 
         public static bool operator ==(DistinguishedName? a, DistinguishedName? b) => a is null ? b is null : a.Equals(b);
         public static bool operator !=(DistinguishedName? a, DistinguishedName? b) => !(a == b);
-        
+
         public override int GetHashCode() => ValueCollection.GetHashCode();
         public override bool Equals(object? obj)
         {

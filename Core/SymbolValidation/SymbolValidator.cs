@@ -79,7 +79,7 @@ namespace NuGetPe
                     exception: e
                 );
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 DiagnosticsClient.TrackException(e, _package, IsPublicPackage);
 
@@ -115,7 +115,7 @@ namespace NuGetPe
 
             var depsFiles = _rootFolder["tools"]?.GetFiles().Where(f => f.Path.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase)) ?? Enumerable.Empty<IFile>();
 
-            foreach(var depFile in depsFiles)
+            foreach (var depFile in depsFiles)
             {
                 using var reader = new DependencyContextJsonReader();
                 var context = reader.Read(depFile.GetStream());
@@ -124,8 +124,8 @@ namespace NuGetPe
 
 
                 var userFiles = (from rl in runtimeLibs
-                                join f in depFile.Parent!.GetFiles() on $"{rl.Name}.dll".ToUpperInvariant() equals f.Name.ToUpperInvariant()
-                                select f).ToList();
+                                 join f in depFile.Parent!.GetFiles() on $"{rl.Name}.dll".ToUpperInvariant() equals f.Name.ToUpperInvariant()
+                                 select f).ToList();
 
 
                 files.AddRange(userFiles);
@@ -178,7 +178,7 @@ namespace NuGetPe
             foreach (var file in filesWithPdb.ToArray()) // work on array as we'll remove items that are satellite assemblies as we go
             {
                 // Skip satellite assemblies
-                if(IsSatelliteAssembly(file.Primary.Path))
+                if (IsSatelliteAssembly(file.Primary.Path))
                 {
                     filesWithPdb.Remove(allFilePaths[file.Primary.Path]);
                     continue;
@@ -186,9 +186,9 @@ namespace NuGetPe
 
                 // If we have a PDB, try loading that first. If not, may be embedded.
                 // Local checks first
-                if(file.Pdb != null)
+                if (file.Pdb != null)
                 {
-                    if (! await ValidatePdb(file.Primary, file.Pdb.GetStream(),
+                    if (!await ValidatePdb(file.Primary, file.Pdb.GetStream(),
                                             noSourceLink,
                                             sourceLinkErrors,
                                             untrackedSources,
@@ -218,7 +218,7 @@ namespace NuGetPe
                         if (assemblyMetadata?.DebugData.HasDebugInfo == true)
                         {
                             // we have an embedded pdb
-                            if(!assemblyMetadata.DebugData.HasSourceLink)
+                            if (!assemblyMetadata.DebugData.HasSourceLink)
                             {
                                 noSourceLink.Add(file.Primary);
                             }
@@ -236,13 +236,13 @@ namespace NuGetPe
                             }
 
                             // Check for deterministic sources
-                            if(!assemblyMetadata.DebugData.SourcesAreDeterministic)
+                            if (!assemblyMetadata.DebugData.SourcesAreDeterministic)
                             {
                                 nonDeterministic.Add(file.Primary);
                             }
 
                             // Check for reproducible build settings
-                            if(!assemblyMetadata.DebugData.HasCompilerFlags || !assemblyMetadata.DebugData.CompilerVersionSupportsReproducible)
+                            if (!assemblyMetadata.DebugData.HasCompilerFlags || !assemblyMetadata.DebugData.CompilerVersionSupportsReproducible)
                             {
                                 nonReproducible.Add(file.Primary);
                             }
@@ -347,15 +347,15 @@ namespace NuGetPe
             {
                 var microsoftFiles = noSymbols.Where(f => f.DebugData != null && IsMicrosoftFile(f)).ToList();
 
-                foreach(var file in microsoftFiles)
+                foreach (var file in microsoftFiles)
                 {
                     var pdbStream = await GetSymbolsAsync(file.DebugData!.SymbolKeys, cancellationToken).ConfigureAwait(false);
-                    if(pdbStream != null)
+                    if (pdbStream != null)
                     {
                         requireExternal = true;
 
                         // Found a PDB for it
-                        if(await ValidatePdb(file, pdbStream,
+                        if (await ValidatePdb(file, pdbStream,
                             noSourceLink,
                             sourceLinkErrors,
                             untrackedSources,
@@ -385,7 +385,7 @@ namespace NuGetPe
 
             if (noSymbols.Count == 0 && noSourceLink.Count == 0 && sourceLinkErrors.Count == 0)
             {
-                if(untrackedSources.Count > 0)
+                if (untrackedSources.Count > 0)
                 {
                     sourceLinkResult = SymbolValidationResult.HasUntrackedSources;
 
@@ -395,11 +395,11 @@ namespace NuGetPe
                     sb.AppendLine("");
                     sb.AppendLine("Also, use 3.1.300 SDK to build or\nworkaround in: https://github.com/dotnet/sourcelink/issues/572");
 
-                    foreach(var untracked in untrackedSources)
+                    foreach (var untracked in untrackedSources)
                     {
                         sb.AppendLine($"Assembly: {untracked.Path}");
 
-                        foreach(var source in untracked.DebugData!.UntrackedSources)
+                        foreach (var source in untracked.DebugData!.UntrackedSources)
                         {
                             sb.AppendLine($"  {source}");
                         }
@@ -409,12 +409,12 @@ namespace NuGetPe
 
                     sourceLinkErrorMessage = sb.ToString();
                 }
-                else if(filesWithPdb.Count == 0)
+                else if (filesWithPdb.Count == 0)
                 {
                     sourceLinkResult = SymbolValidationResult.NothingToValidate;
                     sourceLinkErrorMessage = "No files found to validate";
                 }
-                else if(requireExternal)
+                else if (requireExternal)
                 {
                     sourceLinkResult = SymbolValidationResult.ValidExternal;
                     sourceLinkErrorMessage = null;
@@ -433,20 +433,20 @@ namespace NuGetPe
                 {
                     sourceLinkResult = SymbolValidationResult.NoSourceLink;
 
-                    sb.AppendLine($"Missing Source Link for:\n{string.Join("\n", noSourceLink.Select(p => p.Path)) }");
+                    sb.AppendLine($"Missing Source Link for:\n{string.Join("\n", noSourceLink.Select(p => p.Path))}");
                     found = true;
                 }
 
-                if(sourceLinkErrors.Count > 0)
+                if (sourceLinkErrors.Count > 0)
                 {
                     sourceLinkResult = SymbolValidationResult.InvalidSourceLink;
 
                     if (found)
                         sb.AppendLine();
 
-                    foreach(var (file, errors) in sourceLinkErrors)
+                    foreach (var (file, errors) in sourceLinkErrors)
                     {
-                        sb.AppendLine($"Source Link errors for {file.Path}:\n{string.Join("\n", errors) }");
+                        sb.AppendLine($"Source Link errors for {file.Path}:\n{string.Join("\n", errors)}");
                     }
 
                     found = true;
@@ -459,15 +459,15 @@ namespace NuGetPe
                     if (found)
                         sb.AppendLine();
 
-                    if(!pdbChecksumValid)
+                    if (!pdbChecksumValid)
                     {
                         sb.AppendLine("Some PDB's checksums do not match their PE files and are shown as missing.");
                     }
 
-                    sb.AppendLine($"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.Path)) }");
+                    sb.AppendLine($"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.Path))}");
                     found = true;
                 }
-                else if(!found)
+                else if (!found)
                 {
                     throw new InvalidOperationException("This branch of code should never be reached because either one of {noSymbols.Count, noSourceLink.Count, sourceLinkErrors.Count} must be > 0.");
                 }
@@ -475,7 +475,7 @@ namespace NuGetPe
                 sourceLinkErrorMessage = sb.ToString();
             }
 
-            if(sourceLinkResult == SymbolValidationResult.NothingToValidate)
+            if (sourceLinkResult == SymbolValidationResult.NothingToValidate)
             {
                 deterministicResult = DeterministicResult.NothingToValidate;
                 deterministicErrorMessage = null;
@@ -483,7 +483,7 @@ namespace NuGetPe
                 compilerFlagsResult = HasCompilerFlagsResult.NothingToValidate;
                 compilerFlagsMessage = null;
             }
-            else if(sourceLinkResult == SymbolValidationResult.NoSymbols)
+            else if (sourceLinkResult == SymbolValidationResult.NoSymbols)
             {
                 deterministicResult = DeterministicResult.NonDeterministic;
                 deterministicErrorMessage = "Missing Symbols";
@@ -491,7 +491,7 @@ namespace NuGetPe
                 compilerFlagsResult = HasCompilerFlagsResult.Missing;
                 compilerFlagsMessage = "Missing Symbols";
             }
-            else if(nonDeterministic.Count > 0)
+            else if (nonDeterministic.Count > 0)
             {
                 deterministicResult = DeterministicResult.NonDeterministic;
 
@@ -502,7 +502,7 @@ namespace NuGetPe
                 sb.AppendLine();
                 sb.AppendLine("The following assemblies have not been compiled with deterministic settings:");
 
-                foreach(var file in nonDeterministic)
+                foreach (var file in nonDeterministic)
                 {
                     sb.AppendLine(file.Path);
                 }
@@ -510,7 +510,7 @@ namespace NuGetPe
                 deterministicErrorMessage = sb.ToString();
 
             }
-            else if(sourceLinkResult == SymbolValidationResult.HasUntrackedSources)
+            else if (sourceLinkResult == SymbolValidationResult.HasUntrackedSources)
             {
                 deterministicResult = DeterministicResult.HasUntrackedSources;
                 deterministicErrorMessage = null;
@@ -531,7 +531,7 @@ namespace NuGetPe
                 var sb = new StringBuilder();
                 sb.AppendLine("Ensure you're using at least the 5.0.300 SDK or MSBuild 16.10:");
 
-                if(sourceLinkResult == SymbolValidationResult.NoSymbols)
+                if (sourceLinkResult == SymbolValidationResult.NoSymbols)
                 {
                     sb.AppendLine("Assemblies must have symbols:");
                 }
@@ -595,14 +595,14 @@ namespace NuGetPe
                 // Try anyway in case it succeeds as a ppdb
                 try
                 {
-                    if(input.DebugData == null || !input.DebugData.HasDebugInfo) // get it again if this is a shell with keys
+                    if (input.DebugData == null || !input.DebugData.HasDebugInfo) // get it again if this is a shell with keys
                     {
                         using var stream = StreamUtility.MakeSeekable(pdbStream, true);
                         input.DebugData = await AssemblyMetadataReader.ReadDebugData(peStream, stream).ConfigureAwait(false);
                     }
 
                     // Check to see if the PDB is valid, but only for pdb's that aren't alongside the PE file
-                    if(validateChecksum && !input.DebugData.PdbChecksumIsValid)
+                    if (validateChecksum && !input.DebugData.PdbChecksumIsValid)
                     {
                         return false;
                     }
@@ -620,7 +620,7 @@ namespace NuGetPe
                     }
 
                     // Check for non-embedded sources
-                    if(input.DebugData.UntrackedSources.Count > 0 || !input.DebugData.AllSourceLink)
+                    if (input.DebugData.UntrackedSources.Count > 0 || !input.DebugData.AllSourceLink)
                     {
                         untrackedSources.Add(input);
                     }
@@ -631,7 +631,7 @@ namespace NuGetPe
                         nonDeterministic.Add(input);
                     }
 
-                    if(!input.DebugData.HasCompilerFlags || !input.DebugData.CompilerVersionSupportsReproducible)
+                    if (!input.DebugData.HasCompilerFlags || !input.DebugData.CompilerVersionSupportsReproducible)
                     {
                         nonReproducible.Add(input);
                     }
@@ -660,21 +660,21 @@ namespace NuGetPe
             return match.Success;
 
             // Satellite assemblies may not be in the same package as their main dll
-           // return match.Success && dlls.Contains($"{match.Groups[1]}\\{match.Groups[2]}.dll");
+            // return match.Success && dlls.Contains($"{match.Groups[1]}\\{match.Groups[2]}.dll");
         }
 
         //private static readonly string? apiLocation = "http://localhost:7071/api/MsdlProxy";
         private static readonly string? ApiLocation = Environment.GetEnvironmentVariable("MSDL_PROXY_LOCATION");
 
         private async Task<Stream?> GetSymbolsAsync(IReadOnlyList<SymbolKey> symbolKeys, CancellationToken cancellationToken = default)
-        {            
+        {
             foreach (var symbolKey in symbolKeys)
             {
 
                 Uri uri;
-                if(AppCompat.IsWasm && !string.IsNullOrWhiteSpace(ApiLocation))
-                {                    
-                    uri = new Uri($"{ApiLocation}?symbolKey={symbolKey.Key}", UriKind.RelativeOrAbsolute);                                        
+                if (AppCompat.IsWasm && !string.IsNullOrWhiteSpace(ApiLocation))
+                {
+                    uri = new Uri($"{ApiLocation}?symbolKey={symbolKey.Key}", UriKind.RelativeOrAbsolute);
                 }
                 else
                 {
@@ -717,7 +717,7 @@ namespace NuGetPe
         /// </summary>
         public bool IsPublicPackage { get; private set; }
 
-        private class FileWithPdb
+        private sealed class FileWithPdb
         {
 #pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
             public IFile Primary { get; set; }

@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 
 namespace PackageExplorerViewModel.PackageSearch
 {
-    internal class LocalPackageSearcher<T> where T : IPackageSearchMetadata
+    internal sealed class LocalPackageSearcher<T> where T : IPackageSearchMetadata
     {
         private readonly SearchContext _searchContext;
 

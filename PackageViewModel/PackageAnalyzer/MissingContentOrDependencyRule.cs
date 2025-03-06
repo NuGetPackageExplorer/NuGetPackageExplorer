@@ -1,13 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 namespace PackageExplorerViewModel.Rules
 {
     [Export(typeof(IPackageRule))]
-    internal class MissingContentOrDependencyRule : IPackageRule
+    internal sealed class MissingContentOrDependencyRule : IPackageRule
     {
         #region IPackageRule Members
 

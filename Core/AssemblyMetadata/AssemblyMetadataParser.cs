@@ -8,17 +8,14 @@ using System.Reflection.PortableExecutable;
 
 namespace NuGetPe.AssemblyMetadata
 {
-    internal class AssemblyMetadataParser : IDisposable
+    internal sealed class AssemblyMetadataParser : IDisposable
     {
         private readonly PEReader _peReader;
         private readonly MetadataReader _metadataReader;
 
         public AssemblyMetadataParser(string fileName)
         {
-            if (fileName == null)
-            {
-                throw new ArgumentNullException(nameof(fileName));
-            }
+            ArgumentNullException.ThrowIfNull(fileName);
 
             _peReader = new PEReader(File.OpenRead(fileName));
             _metadataReader = _peReader.GetMetadataReader();
@@ -115,7 +112,7 @@ namespace NuGetPe.AssemblyMetadata
             }
         }
 
-        public class AttributeInfo
+        public sealed class AttributeInfo
         {
             public string FullTypeName { get; }
             public CustomAttributeTypedArgument<string>[] FixedArguments { get; }
@@ -132,7 +129,7 @@ namespace NuGetPe.AssemblyMetadata
             }
         }
 
-        private class AttributeTypeProvider : ICustomAttributeTypeProvider<string>
+        private sealed class AttributeTypeProvider : ICustomAttributeTypeProvider<string>
         {
             private static readonly Dictionary<PrimitiveTypeCode, Type> PrimitiveTypeMappings =
                 new Dictionary<PrimitiveTypeCode, Type>
@@ -257,7 +254,7 @@ namespace NuGetPe.AssemblyMetadata
             _peReader.Dispose();
         }
 
-        private class UnknownTypeException : InvalidOperationException
+        private sealed class UnknownTypeException : InvalidOperationException
         {
             public UnknownTypeException(string message) : base(message)
             {

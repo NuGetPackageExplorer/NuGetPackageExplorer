@@ -78,7 +78,7 @@ namespace NupkgExplorer.Presentation.Content
 
         public InspectPackageViewModel(PackageViewModel package, PackageIdentity? redirectedFrom = null)
         {
-            if (package == null) throw new ArgumentNullException(nameof(package));
+            ArgumentNullException.ThrowIfNull(package);
 
             Title = $"{package.PackageMetadata} | {NuGetPackageExplorer.Constants.AppName}";
             Location = $"/packages/{package.PackageMetadata.Id}/{(redirectedFrom?.Version ?? package.PackageMetadata.Version)}";
@@ -160,7 +160,7 @@ namespace NupkgExplorer.Presentation.Content
 
         public static async Task<InspectPackageViewModel> CreateFromRemotePackage(PackageIdentity identity, PackageIdentity? redirectedFrom = null)
         {
-            if (identity == null) throw new ArgumentNullException(nameof(identity));
+            ArgumentNullException.ThrowIfNull(identity);
 
             // TODO: move load cache/download to the caller
             var factory = DefaultContainer.GetExportedValue<IPackageViewModelFactory>()!;
@@ -226,7 +226,7 @@ namespace NupkgExplorer.Presentation.Content
 
         public static async Task<InspectPackageViewModel> CreateFromRemotePackageWithFallback(PackageIdentity identity)
         {
-            if (identity == null) throw new ArgumentNullException(nameof(identity));
+            ArgumentNullException.ThrowIfNull(identity);
 
             try
             {

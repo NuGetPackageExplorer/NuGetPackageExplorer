@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
+
 using NuGet.Packaging;
 using NuGet.Versioning;
+
 using NuGetPackageExplorer.Types;
 
 namespace PackageExplorerViewModel
 {
     [Export(typeof(IMruManager))]
-    internal class MruManager : IMruManager
+    internal sealed class MruManager : IMruManager
     {
         private const int MaxFile = 10;
         private readonly ISettingsManager _settingsManager;
@@ -91,10 +92,7 @@ namespace PackageExplorerViewModel
 
         private void AddFile(MruItem mruItem)
         {
-            if (mruItem == null)
-            {
-                throw new ArgumentNullException(nameof(mruItem));
-            }
+            ArgumentNullException.ThrowIfNull(mruItem);
 
             Files.Remove(mruItem);
             Files.Insert(0, mruItem);

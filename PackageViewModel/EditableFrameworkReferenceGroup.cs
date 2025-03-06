@@ -17,8 +17,7 @@ namespace PackageExplorerViewModel
 
         public EditableFrameworkReferenceGroup(FrameworkReferenceGroup frameworkReferenceGroup)
         {
-            if (frameworkReferenceGroup is null)
-                throw new System.ArgumentNullException(nameof(frameworkReferenceGroup));
+            System.ArgumentNullException.ThrowIfNull(frameworkReferenceGroup);
             _targetFramework = frameworkReferenceGroup.TargetFramework;
             FrameworkReferences = new ObservableCollection<string>(frameworkReferenceGroup.FrameworkReferences.Select(fr => fr.Name));
         }

@@ -17,8 +17,7 @@ namespace PackageExplorerViewModel
 
         public EditablePackageDependencySet(PackageDependencyGroup packageDependencySet)
         {
-            if (packageDependencySet is null)
-                throw new System.ArgumentNullException(nameof(packageDependencySet));
+            System.ArgumentNullException.ThrowIfNull(packageDependencySet);
             _targetFramework = packageDependencySet.TargetFramework;
             Dependencies = new ObservableCollection<PackageDependency>(packageDependencySet.Packages);
         }

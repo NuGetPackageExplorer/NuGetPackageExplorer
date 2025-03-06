@@ -65,10 +65,7 @@ namespace PackageExplorerViewModel
 
         private void AddSource(string newSource)
         {
-            if (newSource == null)
-            {
-                throw new ArgumentNullException(nameof(newSource));
-            }
+            ArgumentNullException.ThrowIfNull(newSource);
 
             var defaultFeed = _sourceSettings.DefaultSource;
 

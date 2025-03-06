@@ -12,10 +12,7 @@ namespace NuGetPe
     {
         public static IFolder Convert(List<NuGet.Packaging.IPackageFile> paths)
         {
-            if (paths == null)
-            {
-                throw new ArgumentNullException(nameof(paths));
-            }
+            ArgumentNullException.ThrowIfNull(paths);
 
             paths.Sort((p1, p2) => string.Compare(p1.Path, p2.Path, StringComparison.OrdinalIgnoreCase));
 
@@ -69,7 +66,7 @@ namespace NuGetPe
 
 
 
-        class File : IFile
+        sealed class File : IFile
         {
             private readonly NuGet.Packaging.IPackageFile _packageFile;
 
@@ -122,7 +119,7 @@ namespace NuGetPe
             public Stream GetStream() => _packageFile.GetStream();
         }
 
-        class Folder : IFolder
+        sealed class Folder : IFolder
         {
             public IFolder? Parent { get; }
             public SortedCollection<IPart> Children { get; }
@@ -144,7 +141,7 @@ namespace NuGetPe
             public IPart? this[string name] => Children.SingleOrDefault(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
-        class PackagePartComparer : Comparer<IPart>
+        sealed class PackagePartComparer : Comparer<IPart>
         {
             public override int Compare(IPart? x, IPart? y)
             {

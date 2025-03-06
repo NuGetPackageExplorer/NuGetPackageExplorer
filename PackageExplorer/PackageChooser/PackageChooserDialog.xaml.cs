@@ -1,12 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
+
 using PackageExplorerViewModel;
 
 namespace PackageExplorer
@@ -119,7 +121,7 @@ namespace PackageExplorer
 
         internal void ForceClose()
         {
-            Closing -= StandardDialog_Closing;
+            Closing -= StandardDialog_Closing!;
             Close();
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Linq;
 using System.Net;
+
 using PackageExplorerViewModel.Types;
 
 namespace PackageExplorer.MefServices
@@ -49,14 +50,14 @@ namespace PackageExplorer.MefServices
             var credentials = CredentialCache.DefaultCredentials;
             lock (_feedsLock)
             {
-                var matchingFeeds = _feeds.Where(x => string.Compare(uri.Scheme, x.Item1.Scheme, StringComparison.OrdinalIgnoreCase) == 0 &&
-                                                      string.Compare(uri.Host, x.Item1.Host, StringComparison.OrdinalIgnoreCase) == 0 &&
+                var matchingFeeds = _feeds.Where(x => string.Equals(uri.Scheme, x.Item1.Scheme, StringComparison.OrdinalIgnoreCase) &&
+                                                      string.Equals(uri.Host, x.Item1.Host, StringComparison.OrdinalIgnoreCase) &&
                                                       uri.AbsolutePath.Contains(x.Item1.AbsolutePath, StringComparison.OrdinalIgnoreCase));
                 if (matchingFeeds.Any())
                 {
                     credentials = matchingFeeds.First().Item2;
                 }
-                else if(TryAddUriCredentials(uri, out var uriCredentials))
+                else if (TryAddUriCredentials(uri, out var uriCredentials))
                 {
                     credentials = uriCredentials!;
                 }

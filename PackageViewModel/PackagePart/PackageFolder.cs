@@ -130,10 +130,7 @@ namespace PackageExplorerViewModel
 
         public void RemoveChild(PackagePart child)
         {
-            if (child == null)
-            {
-                throw new ArgumentNullException(nameof(child));
-            }
+            ArgumentNullException.ThrowIfNull(child);
 
             var removed = Children.Remove(child);
             if (removed)
@@ -222,8 +219,7 @@ namespace PackageExplorerViewModel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddFolder(PackageFolder childFolder, bool makeCopy = false)
         {
-            if (childFolder is null)
-                throw new ArgumentNullException(nameof(childFolder));
+            ArgumentNullException.ThrowIfNull(childFolder);
             if (!AddContentFolderCanExecute(childFolder.Name))
             {
                 PackageViewModel?.UIServices.Show(
@@ -329,10 +325,7 @@ namespace PackageExplorerViewModel
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "<Pending>")]
         public void AddFile(PackageFile file, bool makeCopy = false)
         {
-            if (file == null)
-            {
-                throw new ArgumentNullException(nameof(file));
-            }
+            ArgumentNullException.ThrowIfNull(file);
 
             if (Contains(file))
             {

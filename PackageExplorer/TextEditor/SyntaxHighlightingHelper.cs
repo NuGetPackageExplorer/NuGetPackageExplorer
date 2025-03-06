@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+
 using ICSharpCode.AvalonEdit.Highlighting;
 
 namespace PackageExplorer
@@ -10,6 +11,7 @@ namespace PackageExplorer
         private static bool _hasRegistered;
         private static readonly object Lock = new object();
         private static readonly string[] NugetExtensions = new[] { ".nuspec", ".props", ".targets", ".xdt" };
+        internal static readonly string[] Extensions = new[] { ".txt" };
 
         public static void RegisterHightingExtensions()
         {
@@ -23,7 +25,7 @@ namespace PackageExplorer
 
                         HighlightingManager.Instance.RegisterHighlighting(
                             "Plain Text",
-                            new[] { ".txt" },
+                            Extensions,
                             TextHighlightingDefinition.Instance);
                     }
                 }

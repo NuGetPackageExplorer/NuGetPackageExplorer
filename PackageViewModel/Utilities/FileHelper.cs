@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+
+#if WINDOWS
+using System.Drawing;
+#endif
 
 using NuGetPackageExplorer.Types;
 
@@ -43,10 +46,8 @@ namespace PackageExplorerViewModel
 
         public static void OpenFileInShell(PackageFile file, IUIServices uiServices)
         {
-            if (file is null)
-                throw new ArgumentNullException(nameof(file));
-            if (uiServices is null)
-                throw new ArgumentNullException(nameof(uiServices));
+            ArgumentNullException.ThrowIfNull(file);
+            ArgumentNullException.ThrowIfNull(uiServices);
 
             if (IsExecutableScript(file.Name))
             {
@@ -92,8 +93,7 @@ namespace PackageExplorerViewModel
         {
             DiagnosticsClient.TrackEvent("FileHelper_OpenFileInShellWith");
 
-            if (file is null)
-                throw new ArgumentNullException(nameof(file));
+            ArgumentNullException.ThrowIfNull(file);
 
             // copy to temporary file
             // create package in the temporary file first in case the operation fails which would
@@ -173,8 +173,7 @@ namespace PackageExplorerViewModel
                 throw new ArgumentException("Argument is null or empty", nameof(fileName));
             }
 
-            if (content is null)
-                throw new ArgumentNullException(nameof(content));
+            ArgumentNullException.ThrowIfNull(content);
 
             var filePath = Path.Combine(GetTempFilePath(), fileName);
             using (Stream targetStream = File.Create(filePath))
@@ -186,8 +185,7 @@ namespace PackageExplorerViewModel
 
         public static bool IsAssembly(string path)
         {
-            if (path is null)
-                throw new ArgumentNullException(nameof(path));
+            ArgumentNullException.ThrowIfNull(path);
 
             return path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
                    path.EndsWith(".winmd", StringComparison.OrdinalIgnoreCase) ||
@@ -332,7 +330,7 @@ namespace PackageExplorerViewModel
             public string szTypeName;
         }
 
-#if !NETSTANDARD2_1
+#if WINDOWS
 #pragma warning restore IDE1006 // Naming Styles
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance", "CA1806:Do not ignore method results", Justification = "<Pending>")]
         public static Icon? ExtractAssociatedIcon(string fileName)

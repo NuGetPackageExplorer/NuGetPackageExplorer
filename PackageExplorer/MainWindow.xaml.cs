@@ -39,8 +39,7 @@ namespace PackageExplorer
         public MainWindow(IMruManager mruManager)
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
-            if (mruManager is null)
-                throw new ArgumentNullException(nameof(mruManager));
+            ArgumentNullException.ThrowIfNull(mruManager);
 
             InitializeComponent();
 

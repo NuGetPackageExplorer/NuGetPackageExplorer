@@ -1,15 +1,16 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Input;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
-    internal class SavePackageCommand : CommandBase, ICommand
+    internal sealed class SavePackageCommand : CommandBase, ICommand
     {
         private const string SaveAction = "Save";
         private const string SaveAsAction = "SaveAs";

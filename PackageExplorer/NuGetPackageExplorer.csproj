@@ -11,7 +11,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TieredCompilationQuickJitForLoops>true</TieredCompilationQuickJitForLoops>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
-    <AppendPlatformToOutputPath>true</AppendPlatformToOutputPath>
+    <AppendPlatformToOutputPath>true</AppendPlatformToOutputPath>    
   </PropertyGroup>
 
   <PropertyGroup>
@@ -20,13 +20,13 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="AvalonEdit" Version="6.1.3.50" />
-    <PackageReference Include="GrayscaleEffect" Version="1.0.1" />
-    <PackageReference Include="Humanizer" Version="2.14.1" />
-    <PackageReference Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
-    <PackageReference Include="System.Memory" Version="4.5.5" />
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-    <PackageReference Include="System.Runtime.Caching" Version="$(SystemDependencyVersion)" />
+    <PackageReference Include="AvalonEdit" />
+    <PackageReference Include="GrayscaleEffect" />
+    <PackageReference Include="Humanizer" />
+    <PackageReference Include="Ookii.Dialogs.Wpf" />
+    <PackageReference Include="System.Memory" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" />
+    <PackageReference Include="System.Runtime.Caching" />
 
     <ProjectReference Include="..\PackageViewModel\PackageViewModel.csproj" />
   </ItemGroup>
@@ -41,8 +41,27 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Resources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Resources.resx" />
-    <EmbeddedResource Update="Resources.resx" Generator="PublicResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" />
+    <ProjectReference Include="..\NuGetPeGenerators\NuGetPeGenerators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="False" />
+    <AdditionalFiles Include="**\*.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AdditionalFiles Remove="Properties\app.manifest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 
 </Project>
