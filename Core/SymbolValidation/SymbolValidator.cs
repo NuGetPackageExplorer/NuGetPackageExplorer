@@ -571,7 +571,7 @@ namespace NuGetPe
             var peFile = new PeNet.PeFile(stream);
 
             var subject = AppCompat.IsSupported(RuntimeFeature.Cryptography)
-                ? peFile.Authenticode?.SigningCertificate?.Subject
+                ? peFile.AuthenticodeInfo?.SigningCertificate?.Subject
                 : CryptoUtility.GetSigningCertificate(peFile)?.Subject.ToString();
 
             return subject?.EndsWith(", O=Microsoft Corporation, L=Redmond, S=Washington, C=US", StringComparison.OrdinalIgnoreCase) == true;
