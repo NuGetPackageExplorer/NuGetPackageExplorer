@@ -219,7 +219,7 @@ namespace PackageExplorerViewModel
             /// <summary>
             /// Get icon location
             /// </summary>
-            IconLocatin = 0x000001000,
+            IconLocation = 0x000001000,
 
             /// <summary>
             /// Return exe type
@@ -307,7 +307,7 @@ namespace PackageExplorerViewModel
         private const int FILE_ATTRIBUTE_NORMAL = 0x80;
 
 
-        [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         private static extern int SHGetFileInfo(string pszPath, int dwFileAttributes, out SHFILEINFO psfi, uint cbfileInfo, SHGFI uFlags);
 
         [DllImport("user32.dll")]
