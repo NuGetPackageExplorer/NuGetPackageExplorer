@@ -8,7 +8,7 @@ namespace NuGetPe.Utility
 {
     public class EnvironmentTelemetryInitializer : ITelemetryInitializer, ITelemetryServiceInitializer
     {
-        private Dictionary<string, string> _properties = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _properties = new Dictionary<string, string>();
 
 #if STORE
         private readonly string _channel = "store";

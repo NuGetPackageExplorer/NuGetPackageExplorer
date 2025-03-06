@@ -95,7 +95,7 @@ namespace NuGetPe
 
         public IReadOnlyList<IFile> GetAllFiles() => GetFilesToCheck();
 
-        private IReadOnlyList<IFile> GetFilesToCheck()
+        private List<IFile> GetFilesToCheck()
         {
             if (_package.PackageTypes.Contains(NuGet.Packaging.Core.PackageType.DotnetTool))
             {
@@ -105,7 +105,7 @@ namespace NuGetPe
             return GetLibraryFiles();
         }
 
-        private IReadOnlyList<IFile> GetToolFiles()
+        private List<IFile> GetToolFiles()
         {
 
             var files = new List<IFile>();
@@ -134,7 +134,7 @@ namespace NuGetPe
             return files;
         }
 
-        private IReadOnlyList<IFile> GetLibraryFiles()
+        private List<IFile> GetLibraryFiles()
         {
             // For library packages, we look in lib and runtimes for files to check
 

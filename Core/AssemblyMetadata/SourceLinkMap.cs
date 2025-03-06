@@ -71,6 +71,7 @@ namespace Microsoft.SourceLink.Tools
         }
 
         public IReadOnlyList<Entry> Entries => _entries;
+        internal static readonly char[] Separator = ['/', '\\'];
 
         /// <summary>
         /// Parses Source Link JSON string.
@@ -203,7 +204,7 @@ namespace Microsoft.SourceLink.Tools
                 {
                     if (path.StartsWith(file.Path, StringComparison.OrdinalIgnoreCase))
                     {
-                        var escapedPath = string.Join("/", path[file.Path.Length..].Split(new[] { '/', '\\' }).Select(Uri.EscapeDataString));
+                        var escapedPath = string.Join("/", path[file.Path.Length..].Split(Separator).Select(Uri.EscapeDataString));
                         uri = mappedUri.Prefix + escapedPath + mappedUri.Suffix;
                         return true;
                     }
@@ -218,6 +219,6 @@ namespace Microsoft.SourceLink.Tools
 
             uri = null;
             return false;
-        } 
+        }
     }
 }

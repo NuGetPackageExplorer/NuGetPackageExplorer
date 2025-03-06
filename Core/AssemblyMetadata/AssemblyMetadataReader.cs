@@ -69,8 +69,11 @@ namespace NuGetPe.AssemblyMetadata
             }
             finally
             {
-                peStream?.Dispose();
-                pdbStream.Dispose();
+                if (peStream != null)
+                {
+                    await peStream.DisposeAsync().ConfigureAwait(false);
+                }
+                await pdbStream.DisposeAsync().ConfigureAwait(false);
             }
 
         }

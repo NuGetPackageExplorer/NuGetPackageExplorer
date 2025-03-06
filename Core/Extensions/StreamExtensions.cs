@@ -10,7 +10,7 @@ namespace NuGetPe
             System.ArgumentNullException.ThrowIfNull(stream);
             var length = (int)stream.Length;
             var buffer = new byte[length];
-            stream.Read(buffer, 0, length);
+            stream.ReadExactly(buffer, 0, length);
             return buffer;
         }
 
