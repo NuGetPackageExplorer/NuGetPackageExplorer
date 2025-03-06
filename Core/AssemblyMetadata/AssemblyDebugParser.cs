@@ -295,7 +295,7 @@ namespace NuGetPe.AssemblyMetadata
 
                 var hashes = new Dictionary<string, byte[]>();
 
-                if (_reader.DebugMetadataHeader == null)
+                if (_reader?.DebugMetadataHeader == null)
                     return false;
 
                 var idOffset = _reader.DebugMetadataHeader.IdStartOffset;

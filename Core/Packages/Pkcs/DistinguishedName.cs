@@ -21,7 +21,7 @@ namespace NuGetPe.Packages.Pkcs
             public const string StateOrProvinceName = "2.5.4.8";
             public const string OrganizationName = "2.5.4.10";
         }
-        private static readonly IReadOnlyDictionary<string, string> SubjectLabelMappings = new Dictionary<string, string>
+        private static readonly Dictionary<string, string> SubjectLabelMappings = new Dictionary<string, string>
         {
             [Oids.CommonName] = "CN",
             [Oids.OrganizationName] = "O",

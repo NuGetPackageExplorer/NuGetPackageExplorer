@@ -1,5 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.WindowsRuntime;
+
 using CommunityToolkit.WinUI.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 using NuGet.Common;
 using NuGet.Configuration;
@@ -13,41 +20,18 @@ using NuGetPackageExplorer.Types;
 
 using NuGetPe;
 
-using NupkgExplorer.Framework.Extensions;
 using NupkgExplorer.Framework.Navigation;
 using NupkgExplorer.Presentation.Content;
 using NupkgExplorer.Presentation.Dialogs;
 
-using PackageExplorer;
-
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 
 using Uno.Extensions;
 using Uno.Logging;
 
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Core;
 using Windows.UI.Popups;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -139,13 +123,13 @@ namespace PackageExplorer
             var window = new Window();
             window.Activate();
 #else
-            var window = Microsoft.UI.Xaml.Window.Current;
+            var window = Microsoft.UI.Xaml.Window.Current!;
 #endif
             MainWindow = window;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-            if (!(window.Content is TRootPage rootPage))
+            if (window.Content is not TRootPage rootPage)
             {
                 rootPage = buildRoot()!;
 
@@ -204,14 +188,14 @@ namespace PackageExplorer
 
 #if WINDOWS_UWP || __WASM__
             var manager = SystemNavigationManager.GetForCurrentView();
-			// wire-up back navigation
-			manager.BackRequested += (s, e) => frame.GoBack();
-			frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
-			{
-				manager.AppViewBackButtonVisibility = frame.CanGoBack
-					? AppViewBackButtonVisibility.Visible
-					: AppViewBackButtonVisibility.Collapsed;
-			});
+            // wire-up back navigation
+            manager.BackRequested += (s, e) => frame.GoBack();
+            frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
+            {
+                manager.AppViewBackButtonVisibility = frame.CanGoBack
+                    ? AppViewBackButtonVisibility.Visible
+                    : AppViewBackButtonVisibility.Collapsed;
+            });
 #endif
 
 #if __WASM__
@@ -417,7 +401,7 @@ namespace PackageExplorer
                 }
 
                 // Assume everything else should be a path
-                var deeplink = e.Arguments.NullIfEmpty();
+                var deeplink = e.Arguments?.NullIfEmpty();
                 if (!string.IsNullOrWhiteSpace(deeplink))
                 {
                     return new FileInfo(deeplink);
@@ -467,7 +451,8 @@ namespace PackageExplorer
                     Container.GetExportedValue<CredentialPublishProvider>()!,
                     Container.GetExportedValue<CredentialDialogProvider>()!
                 });
-            };
+            }
+            ;
 
             HttpHandlerResourceV3.CredentialService =
                 new Lazy<ICredentialService>(() => new CredentialService(

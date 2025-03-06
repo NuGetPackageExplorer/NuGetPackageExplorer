@@ -13,6 +13,7 @@ namespace PackageExplorer.MefServices
     {
         private readonly object _feedsLock = new object();
         private readonly List<Tuple<Uri, ICredentials>> _feeds;
+        internal static readonly char[] Separator = [':'];
 
         public CredentialManager()
         {
@@ -24,7 +25,7 @@ namespace PackageExplorer.MefServices
             // Support username and password in feed URL as specified in RFC 1738
             if (!string.IsNullOrEmpty(feedUri.UserInfo))
             {
-                var userInfoSplitted = feedUri.UserInfo.Split(new[] { ':' }, StringSplitOptions.RemoveEmptyEntries);
+                var userInfoSplitted = feedUri.UserInfo.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
                 if (userInfoSplitted.Length >= 2)
                 {
                     credentials = new NetworkCredential(userInfoSplitted[0], userInfoSplitted[1]);

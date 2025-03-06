@@ -5,11 +5,15 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+
 using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
+
 using PackageExplorerViewModel.PackageSearch;
 
 namespace PackageExplorerViewModel
@@ -459,7 +463,7 @@ namespace PackageExplorerViewModel
 
         private void CheckDisposed()
         {
-            if (_disposed) throw new ObjectDisposedException(nameof(PackageChooserViewModel));
+            ObjectDisposedException.ThrowIf(_disposed, nameof(PackageChooserViewModel));
         }
     }
 }

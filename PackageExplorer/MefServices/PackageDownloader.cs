@@ -86,11 +86,11 @@ namespace PackageExplorer
             // FIXME#14: we are bypassing the entire implementation, because DownloadResource could not be created on WASM (but works skia)
             return NugetEndpoint
                 .DownloadPackage(packageIdentity.Id, packageIdentity.Version.ToNormalizedString())
-                .ContinueWith(x =>
+                .ContinueWith<string?>(x =>
                 {
                     var path = $"./tmp/{Guid.NewGuid()}.nupkg";
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    using (var file = File.OpenWrite(path))
+                    Directory.CreateDirectory(Path.GetDirectoryName(path!)!);
+                    using (var file = File.OpenWrite(path!))
                     {
                         x.Result.CopyTo(file);
                     }

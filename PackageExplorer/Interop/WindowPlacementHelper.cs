@@ -14,7 +14,7 @@ namespace PackageExplorer
             }
 
             var wp = WindowPlacement.Parse(setting);
-            wp.length = Marshal.SizeOf(typeof(WindowPlacement));
+            wp.length = Marshal.SizeOf<WindowPlacement>();
             wp.flags = 0;
             wp.showCmd = (wp.showCmd == NativeMethods.SW_SHOWMINIMIZED ? NativeMethods.SW_SHOWNORMAL : wp.showCmd);
 

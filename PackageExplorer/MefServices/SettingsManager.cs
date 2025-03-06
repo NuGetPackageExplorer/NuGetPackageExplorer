@@ -100,7 +100,7 @@ namespace PackageExplorer
         [MethodImpl(MethodImplOptions.NoInlining)]
         private static object? GetValueFromLocalSettings<T>(string name)
         {
-            object value;
+            object? value;
             var settings = ApplicationData.Current.LocalSettings;
             value = settings.Values[name];
             if (typeof(T) == typeof(List<string>) && value is string str)
