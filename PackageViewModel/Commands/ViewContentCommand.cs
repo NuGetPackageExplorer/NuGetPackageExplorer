@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Text;
 using System.Windows.Input;
 
@@ -184,9 +181,7 @@ namespace PackageExplorerViewModel
             var extension = Path.GetExtension(file.Name);
 
             return from p in ViewModel.ContentViewerMetadata
-#if !NETSTANDARD2_1
                    where AppCompat.IsWindows10S ? p.Metadata.SupportsWindows10S : true // Filter out incompatible addins on 10s
-#endif
                    where p.Metadata.SupportedExtensions.Contains(extension, StringComparer.OrdinalIgnoreCase)
                    orderby p.Metadata.Priority
                    select p.Value;

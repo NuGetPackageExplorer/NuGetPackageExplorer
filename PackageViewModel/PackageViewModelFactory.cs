@@ -60,7 +60,7 @@ namespace PackageExplorerViewModel
             if (package is null || packagePath is null)
                 return null;
 
-#if !NETSTANDARD2_1 // UNO TODO: Use proper platform detection; wasm: System.Security.Cryptography.Encoding is not supported on this platform.
+#if !HAS_UNO // UNO TODO: Use proper platform detection; wasm: System.Security.Cryptography.Encoding is not supported on this platform.
             // If it's a zip package, we need to load the verification data so it's ready for later
             if (package is ISignaturePackage zip)
             {

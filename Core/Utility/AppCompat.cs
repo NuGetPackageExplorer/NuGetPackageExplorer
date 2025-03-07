@@ -1,6 +1,4 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 [assembly: DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
 
@@ -9,13 +7,13 @@ namespace NuGetPe
     public static class AppCompat
     {
 #pragma warning disable IDE1006 // Naming Styles
-        private static readonly Lazy<bool> isWindows10S = new Lazy<bool>(GetIsWin10S);
+        private static readonly Lazy<bool> isWindows10S = new Lazy<bool>(() => IsWindows && GetIsWin10S());
 #pragma warning restore IDE1006 // Naming Styles
 
         public static bool IsWindows10S => isWindows10S.Value;
 
         public static bool IsWasm => RuntimeInformation.OSArchitecture ==
-#if NET5_0
+#if NET5_0_OR_GREATER
             Architecture.Wasm;
 #else
             (Architecture)4; // Architecture.Wasm definition is missing under NETSTANDARD2_1 & NETCOREAPP3_1
