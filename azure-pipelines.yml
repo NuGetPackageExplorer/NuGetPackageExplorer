@@ -138,10 +138,15 @@ stages:
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
+    - publish: '$(build.sourcesdirectory)/Uno'
+      displayName: Publish Cors bypass Azure Function
+      artifact: CorsAzureFunction
+      condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
+
     - powershell: |
         dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-desktop /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Uno Desktop App
-      condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'UnoSkia')))
+      condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
 
     - task: ArchiveFiles@2
       displayName: Zip Desktop PackageExplorer files
@@ -155,7 +160,7 @@ stages:
     - powershell: |
         dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-browserwasm /p:NpeAiInstrumentationKey=$(AppInsightsKeyWebAssembly) /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Uno Wasm App
-      condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly')))
+      condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
     - task: CopyFiles@2
       displayName: Copy WebAssembly Package
@@ -183,16 +188,6 @@ stages:
       displayName: Publish signing scripts
       artifact: SigningScripts
 
-    - powershell: |
-        cd Uno
-        git clean -fdx
-      displayName: Clean Uno tree
-      condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'WebAssembly')))
-
-    - publish: '$(build.sourcesdirectory)/Uno'
-      displayName: Publish Cors bypass Azure Function
-      artifact: CorsAzureFunction
-      condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
 - stage: CodeSign
   dependsOn: Build
