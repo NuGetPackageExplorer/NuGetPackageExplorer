@@ -27,12 +27,4 @@
     <PackageReference Condition="$(TargetFramework.Contains('-windows'))" Include="OSVersionHelper" />
   </ItemGroup>
 
-  <ItemGroup>
-    <EditorConfigFiles Remove="E:\dev\NuGetPackageExplorer\Core\Packages\Pkcs\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="E:\dev\NuGetPackageExplorer\Core\Packages\Pkcs\.editorconfig" />
-  </ItemGroup>
-
 </Project>
