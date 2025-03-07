@@ -281,7 +281,7 @@ namespace PackageExplorerViewModel
                     {
                         if (result!.IsFile && File.Exists(value))
                         {
-#if !NETSTANDARD2_1 // UNO TODO: Use proper platform detection
+#if !HAS_UNO // UNO TODO: Use proper platform detection
                             // Clean up the old one since we can't reliably change the Filter without a race
                             if (_watcher != null)
                             {
