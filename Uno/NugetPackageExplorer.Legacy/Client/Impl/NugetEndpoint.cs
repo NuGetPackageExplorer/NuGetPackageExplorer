@@ -16,7 +16,7 @@ namespace NupkgExplorer.Client.Impl
             return QueryJson<SearchResponse>(query => query
                 .Get()
                 .FromUrl("https://azuresearch-usnc.nuget.org/query")
-                .Param("q", search, () => !string.IsNullOrEmpty(search))
+                .Param("q", search!, () => !string.IsNullOrEmpty(search))
                 .Param("skip", skip.ToString())
                 .Param("take", take.ToString())
                 .Param("prerelease", prerelease.ToString())

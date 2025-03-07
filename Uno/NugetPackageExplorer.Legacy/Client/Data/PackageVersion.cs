@@ -6,7 +6,7 @@ namespace NupkgExplorer.Client.Data
 {
 	public class PackageVersion
 	{
-		public string Version { get; set; }
+        public string Version { get; set; } = null!;
 		public long Downloads { get; set; }
 	}
 }

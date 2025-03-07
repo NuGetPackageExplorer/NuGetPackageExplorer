@@ -83,20 +83,22 @@ namespace NupkgExplorer.Presentation.Content
             Task.Run(Refresh);
         }
 
-        public async Task Refresh()
+        public Task Refresh()
         {
             var nuget = Container.GetExportedValue<INugetEndpoint>()!;
 
+            var tcs = new TaskCompletionSource();
             SelectedPackage = null!;
             NugetPackages = new PaginatedCollection<PackageData>(
                 async (start, size) =>
                 {
                     var response = await nuget.Search(SearchTerm, skip: start, take: size, prerelease: IncludePrerelease);
-
                     return response.Content.Data;
                 },
-                pageSize: 25
+                pageSize: 25,
+                tcs
             );
+            return tcs.Task;
         }
 
         public async Task LoadPackageVersions()
@@ -136,8 +138,8 @@ namespace NupkgExplorer.Presentation.Content
                     : (SelectedPackageVersion ?? package.Version);
                 var identity = new PackageIdentity(package.Id, NuGetVersion.Parse(version));
                 var inspectVM = await InspectPackageViewModel.CreateFromRemotePackage(identity);
-
-                NavigationService.NavigateTo(inspectVM);
+                if (inspectVM != null)
+                    NavigationService.NavigateTo(inspectVM);
             }
             catch (Exception e)
             {

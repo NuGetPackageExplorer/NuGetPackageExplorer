@@ -26,7 +26,7 @@ namespace NupkgExplorer.Framework.Xml
         /// <summary>
         /// Populates the object with values from the XElement.
         /// </summary>
-        public static T PopulateTo<T>(this XElement element, T instance) => (T)element.PopulateTo((object)instance);
+        public static T PopulateTo<T>(this XElement element, T instance) => (T)element.PopulateTo((object)instance!);
 
 
         /// <summary>
@@ -50,8 +50,8 @@ namespace NupkgExplorer.Framework.Xml
                     Constructors = x.GetCustomAttributes<XmlElementAttribute>()
                         .ToDictionary(
                             y => y.ElementName ?? x.Name,
-                            y => (y.Type ?? x.PropertyType.GetElementType()) is var type && type.GetConstructor(Type.EmptyTypes) != null
-                                ? (Func<object>)(() => Activator.CreateInstance(type))
+                            y => (y.Type ?? x.PropertyType.GetElementType()) is var type && type!.GetConstructor(Type.EmptyTypes) != null
+                                ? (Func<object>)(() => Activator.CreateInstance(type)!)
                                 : throw new MissingMethodException($"No parameterless ctor defined for {type}"),
                             StringComparer.InvariantCultureIgnoreCase),
                     Buffer = new List<object>(),
@@ -93,7 +93,7 @@ namespace NupkgExplorer.Framework.Xml
                             var ctors = arrayItemAttributes.ToDictionary(
                                 x => x.ElementName,
                                 x => x.Type?.GetConstructor(Type.EmptyTypes) != null
-                                    ? (Func<object>)(() => Activator.CreateInstance(x.Type))
+                                    ? (Func<object>)(() => Activator.CreateInstance(x.Type)!)
                                     : throw new MissingMethodException($"No parameterless ctor defined for {x.Type}"),
                                 StringComparer.InvariantCultureIgnoreCase);
 
@@ -109,7 +109,7 @@ namespace NupkgExplorer.Framework.Xml
                         {
                             // map array with single item type
                             var array = child.Elements()
-                                .Select(x => x.PopulateTo(Activator.CreateInstance(elementType)))
+                                .Select(x => x.PopulateTo(Activator.CreateInstance(elementType)!))
                                 .ToTypeArray(elementType);
 
                             property.SetValue(instance, array);
@@ -121,10 +121,10 @@ namespace NupkgExplorer.Framework.Xml
                     }
                     else if (property.GetCustomAttribute<XmlElementAttribute>() != null)
                     {
-                        if (property?.PropertyType.GetConstructor(Type.EmptyTypes) != null)
+                        if (property.PropertyType.GetConstructor(Type.EmptyTypes) != null)
                         {
                             // map complex type
-                            var innerInstance = Activator.CreateInstance(property.PropertyType);
+                            var innerInstance = Activator.CreateInstance(property.PropertyType)!;
                             child.PopulateTo(innerInstance);
 
                             property.SetValue(instance, innerInstance);

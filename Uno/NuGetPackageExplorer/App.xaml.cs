@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 
 using CommunityToolkit.WinUI.Helpers;
@@ -42,7 +41,7 @@ namespace PackageExplorer
     /// </summary>
     public sealed partial class App : Application
     {
-        public Window MainWindow { get; private set; }
+        public Window MainWindow { get; private set; } = null!;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -71,7 +70,7 @@ namespace PackageExplorer
 
         internal static new App Current => (App)Application.Current;
 
-        private CompositionContainer _container;
+        private CompositionContainer _container = null!;
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         internal CompositionContainer Container
@@ -162,7 +161,7 @@ namespace PackageExplorer
 
         private Shell BuildShell()
         {
-            var shell = Container.GetExportedValue<Shell>();
+            var shell = Container.GetExportedValue<Shell>()!;
             var frame = shell.GetContentFrame();
             frame.Navigated += (s, e) =>
             {
@@ -184,7 +183,7 @@ namespace PackageExplorer
             };
             frame.NavigationFailed += (s, e) => throw new Exception($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
 
-            var service = Container.GetExportedValue<NavigationService>();
+            var service = Container.GetExportedValue<NavigationService>()!;
 
 #if WINDOWS_UWP || __WASM__
             var manager = SystemNavigationManager.GetForCurrentView();
@@ -233,8 +232,8 @@ namespace PackageExplorer
                     if (!file.Exists) throw new FileNotFoundException("No such file", file.FullName);
 
                     var vm = await InspectPackageViewModel.CreateFromLocalPackage(file.FullName);
-
-                    navigation.NavigateTo(vm);
+                    if (vm != null)
+                        navigation.NavigateTo(vm);
 
                     DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", "filePath" } });
                 }
@@ -250,7 +249,8 @@ namespace PackageExplorer
                 {
                     var vm = await InspectPackageViewModel.CreateFromRemotePackageWithFallback(identity);
 
-                    navigation.NavigateTo(vm);
+                    if (vm != null)
+                        navigation.NavigateTo(vm);
 
                     DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", "packageIdentity" } });
                 }
@@ -423,8 +423,7 @@ namespace PackageExplorer
             // Overwrite settings with the real instance
             Resources["Settings"] = Container.GetExportedValue<ISettingsManager>();
 
-            NuGet.Protocol.Core.Types.UserAgent.SetUserAgentString(new NuGet.Protocol.Core.Types.UserAgentStringBuilder("NuGet Package Explorer")
-                                                       .WithOSDescription(RuntimeInformation.RuntimeIdentifier));
+            NuGet.Protocol.Core.Types.UserAgent.SetUserAgentString(new NuGet.Protocol.Core.Types.UserAgentStringBuilder("NuGet Package Explorer"));
 
             InitCredentialService();
             HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>

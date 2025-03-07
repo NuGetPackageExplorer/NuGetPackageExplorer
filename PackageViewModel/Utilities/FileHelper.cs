@@ -1,8 +1,6 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 #if WINDOWS
@@ -304,7 +302,9 @@ namespace PackageExplorerViewModel
         /// </summary>
         private const int MAX_TYPE = 80;
 
+#pragma warning disable CA1823 // Avoid unused private fields
         private const int FILE_ATTRIBUTE_NORMAL = 0x80;
+#pragma warning restore CA1823 // Avoid unused private fields
 
 
         [DllImport("shell32.dll", CharSet = CharSet.Unicode, SetLastError = true)]

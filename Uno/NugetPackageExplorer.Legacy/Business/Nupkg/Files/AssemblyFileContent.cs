@@ -105,7 +105,7 @@ namespace NupkgExplorer.Business.Nupkg.Files
             {
                 if (PrimitiveTypeMappings.TryGetValue(typeCode, out var type))
                 {
-                    return type!.FullName;
+                    return type!.FullName!;
                 }
 
                 throw new ArgumentOutOfRangeException(nameof(typeCode), typeCode, @"Unexpected type code.");
@@ -163,7 +163,7 @@ namespace NupkgExplorer.Business.Nupkg.Files
 
             public string GetSystemType()
             {
-                return typeof(Type).FullName;
+                return typeof(Type).FullName!;
             }
 
             public bool IsSystemType(string type)

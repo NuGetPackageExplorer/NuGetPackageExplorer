@@ -39,8 +39,8 @@ namespace NupkgExplorer.Presentation.Content
             if (file != null)
             {
                 var vm = await InspectPackageViewModel.CreateFromLocalPackage(file);
-
-                NavigationService.NavigateTo(vm);
+                if (vm != null)
+                    NavigationService.NavigateTo(vm);
             }
         }
 
@@ -53,8 +53,8 @@ namespace NupkgExplorer.Presentation.Content
         {
             var identity = new PackageIdentity("Uno.Core.Build", NuGetVersion.Parse("2.3.0"));
             var vm = await InspectPackageViewModel.CreateFromRemotePackage(identity);
-
-            NavigationService.NavigateTo(vm);
+            if (vm != null)
+                NavigationService.NavigateTo(vm);
         }
     }
 }

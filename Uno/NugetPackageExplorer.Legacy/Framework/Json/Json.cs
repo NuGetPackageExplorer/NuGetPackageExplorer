@@ -4,7 +4,7 @@ namespace NupkgExplorer.Framework.Json
 {
     public partial class Json<T> : JObject
     {
-        public T Content { get; }
+        public T Content { get; } = default!;
 
         public Json() { }
         public Json(string json) : base(JObject.Parse(json))

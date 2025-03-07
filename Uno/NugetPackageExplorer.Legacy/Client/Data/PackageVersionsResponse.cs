@@ -6,6 +6,6 @@ namespace NupkgExplorer.Client.Data
 {
 	public class PackageVersionsResponse
 	{
-		public string[] Versions { get; set; }
+        public string[] Versions { get; set; } = null!;
 	}
 }

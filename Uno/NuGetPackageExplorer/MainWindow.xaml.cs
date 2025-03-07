@@ -173,7 +173,7 @@ namespace PackageExplorer
 
             var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, selectedPackageInfo.SemanticVersion);
 
-            async Task processPackageAction(ISignaturePackage package)
+            void processPackageAction(ISignaturePackage package)
             {
                 LoadPackage(package,
                             package.Source,
@@ -195,12 +195,12 @@ namespace PackageExplorer
 
                 if (downloadedPackage != null)
                 {
-                    await processPackageAction(downloadedPackage);
+                    processPackageAction(downloadedPackage);
                 }
             }
             else
             {
-                await processPackageAction(cachePackage);
+                processPackageAction(cachePackage);
             }
         }
 
@@ -309,17 +309,20 @@ namespace PackageExplorer
                 try
                 {
                     var packageViewModel = await PackageViewModelFactory.CreateViewModel(package, packagePath, packageSource);
-                    packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+                    if (packageViewModel != null)
+                    {
+                        packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+                        if (!string.IsNullOrEmpty(packageSource))
+                        {
+                            _mruManager.NotifyFileAdded(package, packageSource, packageType);
+                        }
+                    }
 
                     DataContext = packageViewModel;
-                    if (!string.IsNullOrEmpty(packageSource))
-                    {
-                        _mruManager.NotifyFileAdded(package, packageSource, packageType);
-                    }
                 }
                 catch (Exception e)
                 {
-                    if (!(e is ArgumentException))
+                    if (e is not ArgumentException)
                     {
                         DiagnosticsClient.TrackException(e);
                     }

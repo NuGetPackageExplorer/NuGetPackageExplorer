@@ -48,8 +48,8 @@ namespace PackageExplorer
             if (file != null)
             {
                 var vm = await InspectPackageViewModel.CreateFromLocalPackage(file);
-
-                NavigationService.NavigateTo(vm);
+                if (vm != null)
+                    NavigationService.NavigateTo(vm);
             }
         }
 

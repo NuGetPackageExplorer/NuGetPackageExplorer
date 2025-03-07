@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
+﻿using System.ComponentModel.Composition;
 using System.Net;
 
 using PackageExplorerViewModel.Types;
@@ -53,8 +50,9 @@ namespace PackageExplorer.MefServices
             {
                 var matchingFeeds = _feeds.Where(x => string.Equals(uri.Scheme, x.Item1.Scheme, StringComparison.OrdinalIgnoreCase) &&
                                                       string.Equals(uri.Host, x.Item1.Host, StringComparison.OrdinalIgnoreCase) &&
-                                                      uri.AbsolutePath.Contains(x.Item1.AbsolutePath, StringComparison.OrdinalIgnoreCase));
-                if (matchingFeeds.Any())
+                                                      uri.AbsolutePath.Contains(x.Item1.AbsolutePath, StringComparison.OrdinalIgnoreCase))
+                                          .ToList();
+                if (matchingFeeds.Count > 0)
                 {
                     credentials = matchingFeeds.First().Item2;
                 }

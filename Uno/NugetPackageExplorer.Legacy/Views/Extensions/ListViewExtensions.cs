@@ -138,6 +138,7 @@ namespace NupkgExplorer.Views.Extensions
         {
             var lv = (ListView)sender;
             var sv = VisualTreeHelperEx.GetFirstDescendant<ScrollViewer>(lv);
+            if (sv == null) return;
 
             sv.ViewChanged += async (s, e) =>
             {

@@ -11,10 +11,10 @@ namespace NupkgExplorer.Framework.MVVM
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
-        public string Title { get; protected set; }
+        public string Title { get; protected set; } = null!;
         public string? Location { get; protected set; }
 
-        public static CompositionContainer DefaultContainer { get; set; }
+        public static CompositionContainer DefaultContainer { get; set; } = null!;
 
         public event PropertyChangedEventHandler? PropertyChanged;
 

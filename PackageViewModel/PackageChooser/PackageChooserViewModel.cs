@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 using NuGet.Packaging;
@@ -22,7 +18,7 @@ namespace PackageExplorerViewModel
     {
         private const int PackageListPageSize = 15;
 
-        private IQueryContext<IPackageSearchMetadata>? _currentQuery;
+        private ShowLatestVersionQueryContext<IPackageSearchMetadata>? _currentQuery;
         private string? _currentSearch;
         private FeedType _feedType;
         private MruPackageSourceManager? _packageSourceManager;

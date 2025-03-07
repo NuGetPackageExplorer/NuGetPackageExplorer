@@ -1,21 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Credentials;
 using NuGet.Protocol;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
+
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
+
 using Settings = PackageExplorer.Properties.Settings;
 
 namespace PackageExplorer
@@ -61,8 +62,7 @@ namespace PackageExplorer
             // Overwrite settings with the real instance
             Resources["Settings"] = Container.GetExportedValue<ISettingsManager>();
 
-            NuGet.Protocol.Core.Types.UserAgent.SetUserAgentString(new NuGet.Protocol.Core.Types.UserAgentStringBuilder("NuGet Package Explorer")
-                                                                   .WithOSDescription(RuntimeInformation.RuntimeIdentifier));
+            NuGet.Protocol.Core.Types.UserAgent.SetUserAgentString(new NuGet.Protocol.Core.Types.UserAgentStringBuilder("NuGet Package Explorer"));
 
             InitCredentialService();
             HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>
@@ -101,7 +101,8 @@ namespace PackageExplorer
                     Container.GetExportedValue<CredentialPublishProvider>()!,
                     Container.GetExportedValue<CredentialDialogProvider>()!
                 });
-            };
+            }
+            ;
 
             HttpHandlerResourceV3.CredentialService =
                 new Lazy<ICredentialService>(() => new CredentialService(

@@ -87,7 +87,7 @@ namespace NupkgExplorer.Presentation.Content
                 });
         }
 
-        public static async Task<InspectPackageViewModel> CreateFromLocalPackage(StorageFile packageFile)
+        public static async Task<InspectPackageViewModel?> CreateFromLocalPackage(StorageFile packageFile)
         {
             // since the file returned by OpenFilePicker cannot be opened by its path
             // we are copying the file to the browser storage
@@ -106,7 +106,7 @@ namespace NupkgExplorer.Presentation.Content
 
             return await CreateFromLocalPackage(copy.Path, openOriginal: true);
         }
-        public static async Task<InspectPackageViewModel> CreateFromLocalPackage(string packagePath, bool openOriginal = false)
+        public static async Task<InspectPackageViewModel?> CreateFromLocalPackage(string packagePath, bool openOriginal = false)
         {
             var tempFile = packagePath;
             if (!openOriginal)
@@ -135,17 +135,22 @@ namespace NupkgExplorer.Presentation.Content
             }
             else
             {
-                throw new InvalidOperationException("Unsupport file type: " + extension);
+                throw new InvalidOperationException("Unsupported file type: " + extension);
             }
 
             var factory = DefaultContainer.GetExportedValue<IPackageViewModelFactory>()!;
             var packageVM = await factory.CreateViewModel(package, packagePath, packagePath);
-            var vm = new InspectPackageViewModel(packageVM);
 
-            return vm;
+            if (packageVM != null)
+            {
+                var vm = new InspectPackageViewModel(packageVM);
+
+                return vm;
+            }
+            return null;
         }
 
-        public static async Task<InspectPackageViewModel> CreateFromRemotePackage(PackageIdentity identity, PackageIdentity? redirectedFrom = null)
+        public static async Task<InspectPackageViewModel?> CreateFromRemotePackage(PackageIdentity identity, PackageIdentity? redirectedFrom = null)
         {
             ArgumentNullException.ThrowIfNull(identity);
 
@@ -161,9 +166,14 @@ namespace NupkgExplorer.Presentation.Content
                         typeof(InspectPackageViewModel).Log().Debug("loading package from cache...");
                     }
                     var packageVM = await factory.CreateViewModel(package, package.Source, NuGetConstants.DefaultFeedUrl);
-                    var vm = new InspectPackageViewModel(packageVM, redirectedFrom);
+                    if (packageVM != null)
+                    {
+                        var vm = new InspectPackageViewModel(packageVM, redirectedFrom);
 
-                    return vm;
+                        return vm;
+                    }
+
+                    return null;
                 }
                 catch (Exception e)
                 {
@@ -215,7 +225,7 @@ namespace NupkgExplorer.Presentation.Content
             }
         }
 
-        public static async Task<InspectPackageViewModel> CreateFromRemotePackageWithFallback(PackageIdentity identity)
+        public static async Task<InspectPackageViewModel?> CreateFromRemotePackageWithFallback(PackageIdentity identity)
         {
             ArgumentNullException.ThrowIfNull(identity);
 

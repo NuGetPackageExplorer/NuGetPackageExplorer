@@ -8,7 +8,6 @@
     <Title>NuGet Package Explorer</Title>
     <Description>This is a NuGet package explorer tool which lets you view the metadata of a .nupkg package. After installing it, you can double click on .nupkg packages to open them in Package Explorer.</Description>
     <RootNamespace>PackageExplorer</RootNamespace>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <TieredCompilationQuickJitForLoops>true</TieredCompilationQuickJitForLoops>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <AppendPlatformToOutputPath>true</AppendPlatformToOutputPath>

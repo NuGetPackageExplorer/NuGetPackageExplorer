@@ -20,12 +20,14 @@ namespace NupkgExplorer.Framework.MVVM
         private readonly Fetch _fetch;
         private int _start;
         private readonly int _pageSize;
+        private readonly TaskCompletionSource _initialized;
 
-        public PaginatedCollection(Fetch fetch, int pageSize)
+        public PaginatedCollection(Fetch fetch, int pageSize, TaskCompletionSource initialized)
         {
             _fetch = fetch;
             _start = 0;
             _pageSize = pageSize;
+            _initialized = initialized;
         }
 
         public IAsyncOperation<LoadMoreItemsResult> LoadMoreItemsAsync(uint count)
@@ -50,6 +52,7 @@ namespace NupkgExplorer.Framework.MVVM
                 await tcs.Task;
 
                 _start += items.Length;
+                _initialized.TrySetResult();
 
                 return new LoadMoreItemsResult() { Count = (uint)items.Length };
             }).AsAsyncOperation();

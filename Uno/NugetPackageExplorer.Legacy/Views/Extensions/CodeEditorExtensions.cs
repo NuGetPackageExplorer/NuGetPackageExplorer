@@ -140,7 +140,7 @@ namespace NupkgExplorer.Views.Extensions
 
                 void OnColorValuesChanged(UISettings sender, object args)
                 {
-                    control.RequestedTheme = (Window.Current.Content as FrameworkElement)?.ActualTheme switch
+                    control.RequestedTheme = (Window.Current!.Content as FrameworkElement)?.ActualTheme switch
                     {
                         ElementTheme actualTheme when (actualTheme != ElementTheme.Default) => actualTheme,
                         _ => sender.GetColorValue(UIColorType.Background) == Colors.Black

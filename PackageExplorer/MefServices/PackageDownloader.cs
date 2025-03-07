@@ -98,7 +98,7 @@ namespace PackageExplorer
                     return path;
                 });
 #endif
-
+#pragma warning disable CS0162 // Unreachable code detected -- due to fixme
 #if HAS_UNO || USE_WINUI
             string? description = null;
             int? percent = null;
@@ -173,7 +173,7 @@ namespace PackageExplorer
 
             timer.Start();
 #endif
-
+#pragma warning restore CS0162 // Unreachable code detected -- due to fixme
 
             async Task<string?> DoWorkAsync()
             {

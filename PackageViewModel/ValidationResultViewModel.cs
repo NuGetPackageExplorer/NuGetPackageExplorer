@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using NuGet.Common;
+﻿using NuGet.Common;
 using NuGet.Packaging.Signing;
 
 
@@ -28,7 +24,9 @@ namespace PackageExplorerViewModel
 
 
         public bool Valid => _verifySignaturesResult.IsValid;
+#pragma warning disable CA1720 // Identifier contains type name
         public bool Signed => _verifySignaturesResult.IsSigned;
+#pragma warning restore CA1720 // Identifier contains type name
 
 
         public IReadOnlyList<ILogMessage> ErrorIssues { get; }

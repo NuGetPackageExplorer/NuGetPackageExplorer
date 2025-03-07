@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Input;
 
 using Uno.Disposables;
 using Uno.Extensions;
-using Uno.UI;
-
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Input;
 
 namespace NupkgExplorer.Views.Extensions
 {
@@ -202,7 +194,9 @@ namespace NupkgExplorer.Views.Extensions
                 currentHoverId++;
                 tooltip.IsOpen = false;
             }
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
             async Task HoverTask(long hoverId)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
             {
 #if HAS_UNO
                 await Task.Delay(FeatureConfiguration.ToolTip.ShowDelay).ConfigureAwait(false);
