@@ -18,8 +18,8 @@
     <!-- App Identifier -->
     <ApplicationId>info.nuget.nugetpackageexplorer</ApplicationId>
     <!-- Versions -->
-    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>$(BuildVersionSimple)</ApplicationDisplayVersion>
+    <ApplicationVersion>$(BuildVersionSimple)</ApplicationVersion>
 
   </PropertyGroup>
 

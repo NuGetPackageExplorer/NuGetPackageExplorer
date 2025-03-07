@@ -5,6 +5,8 @@
     See https://aka.platform.uno/using-uno-sdk for more information.
   -->
   <ItemGroup>
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.7.115"  />
+
     <PackageVersion Include="System.IO.Packaging" Version="9.0.0" />
     <PackageVersion Include="System.Reactive" Version="5.0.0" />
 
