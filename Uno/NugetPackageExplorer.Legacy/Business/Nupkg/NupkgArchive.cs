@@ -60,8 +60,8 @@ namespace NupkgExplorer.Business.Nupkg
                 if (current.FullName == string.Empty) continue;
 
                 // find or create parent directory
-                var parentName = Path.GetDirectoryName(current.FullName);
-                if (!mapping!.TryGetOrAddValue(parentName, k => new NupkgContentDirectory(k!), out var parent))
+                var parentName = Path.GetDirectoryName(current.FullName)!;
+                if (!mapping.TryGetOrAddValue(parentName, k => new NupkgContentDirectory(k!), out var parent))
                 {
                     queue.Enqueue(parent);
                 }

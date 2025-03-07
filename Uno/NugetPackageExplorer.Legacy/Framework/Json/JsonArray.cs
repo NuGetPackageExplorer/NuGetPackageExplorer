@@ -8,19 +8,19 @@ namespace NupkgExplorer.Framework.Json
     {
         public T[] Items { get; }
 
-        public JsonArray() { }
+        public JsonArray() { Items = []; }
         public JsonArray(string json) : base(JArray.Parse(json))
         {
-            Items = JsonConvert.DeserializeObject<T[]>(json);
+            Items = JsonConvert.DeserializeObject<T[]>(json)!;
         }
-        public static new JsonArray<T> Parse(string json) => new JsonArray<T>(json);
+        public static new JsonArray<T> Parse(string json) => [.. json];
 
         private object ToDump() => Items;
         public override string ToString()
         {
             // hide default ToString
-            return typeof(T).GetMethod(nameof(ToString)).DeclaringType != typeof(object)
-                ? Items.ToString()
+            return typeof(T).GetMethod(nameof(ToString))!.DeclaringType != typeof(object)
+                ? Items.ToString()!
                 : string.Empty;
         }
     }

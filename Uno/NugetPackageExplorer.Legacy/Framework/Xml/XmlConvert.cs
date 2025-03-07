@@ -205,7 +205,7 @@ namespace NupkgExplorer.Framework.Xml
 
             return default;
 
-            (bool? Success, object Result) MaybeThrow(Exception e = null) => throwException
+            (bool? Success, object Result) MaybeThrow(Exception? e = null) => throwException
                 ? throw e ?? new FormatException($"Unable to parse {type} from: {value}")
                 : (false, e ?? new FormatException($"Unable to parse {type} from: {value}"));
         }

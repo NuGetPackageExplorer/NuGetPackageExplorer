@@ -51,11 +51,14 @@ namespace NupkgExplorer.Business.Nupkg.Files
                 })
                 .Where(x => x.HasValue && x.Value.Name.StartsWith("System.Reflection.Assembly"))
                 .Select(x => new AttributeInfo(
-                    Regex.Replace(x.Value.Name, @"^System\.Reflection\.Assembly(\w+)Attribute", "$1"),
+                    AssemblyAttributeRegex().Replace(x!.Value.Name, "$1"),
                     x.Value.Args.FixedArguments.FirstOrDefault().Value?.ToString()
                 ))
                 .ToArray();
         }
+
+        [GeneratedRegex(@"^System\.Reflection\.Assembly(\w+)Attribute")]
+        private static partial Regex AssemblyAttributeRegex();
     }
 
     public partial class AssemblyFileContent
@@ -64,9 +67,9 @@ namespace NupkgExplorer.Business.Nupkg.Files
         {
             public string Attribute { get; }
 
-            public string Value { get; }
+            public string? Value { get; }
 
-            public AttributeInfo(string attribute, string value)
+            public AttributeInfo(string attribute, string? value)
             {
                 Attribute = attribute;
                 Value = value;
@@ -102,7 +105,7 @@ namespace NupkgExplorer.Business.Nupkg.Files
             {
                 if (PrimitiveTypeMappings.TryGetValue(typeCode, out var type))
                 {
-                    return type.FullName;
+                    return type!.FullName;
                 }
 
                 throw new ArgumentOutOfRangeException(nameof(typeCode), typeCode, @"Unexpected type code.");

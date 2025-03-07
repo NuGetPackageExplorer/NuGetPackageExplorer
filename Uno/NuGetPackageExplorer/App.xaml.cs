@@ -52,10 +52,10 @@ namespace PackageExplorer
         {
             InitializeLogging();
 
-            this.InitializeComponent();
+            InitializeComponent();
 
 #if !USE_WINUI
-            this.Suspending += OnSuspending;
+            Suspending += OnSuspending;
 #endif
 
             DiagnosticsClient.Initialize(
@@ -466,12 +466,12 @@ namespace PackageExplorer
         {
             NupkgExplorer.Framework.MVVM.ViewModelBase.DefaultContainer = Container;
 
-            var navigation = Container.GetExportedValue<NavigationService>();
+            var navigation = Container.GetExportedValue<NavigationService>()!;
             navigation.Register<HomePage, HomePageViewModel>();
             navigation.Register<FeedPackagePicker, FeedPackagePickerViewModel>();
             navigation.Register<InspectPackage, InspectPackageViewModel>();
 
-            var dialog = Container.GetExportedValue<DialogService>();
+            var dialog = Container.GetExportedValue<DialogService>()!;
             dialog.Register<DownloadProgressDialog, DownloadProgressDialogViewModel>();
         }
 

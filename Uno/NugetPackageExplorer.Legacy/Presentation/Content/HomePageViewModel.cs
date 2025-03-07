@@ -1,42 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.IO;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Microsoft.Extensions.Logging;
+﻿using System.ComponentModel.Composition;
 
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
 using NuGetPe;
 
-using NupkgExplorer.Client;
 using NupkgExplorer.Framework.MVVM;
 using NupkgExplorer.Framework.Navigation;
-using NupkgExplorer.Presentation.Dialogs;
-
-using PackageExplorer;
-
-using Uno.Extensions;
 
 using Windows.Storage.Pickers;
 
 namespace NupkgExplorer.Presentation.Content
 {
-	public class HomePageViewModel : ViewModelBase
-	{
+    public class HomePageViewModel : ViewModelBase
+    {
         [Import]
-        public NavigationService NavigationService { get; set; }
+        public NavigationService NavigationService { get; set; } = null!;
 
-        public ICommand OpenLocalPackageCommand => this.GetCommand(OpenLocalPackage);
-        public ICommand OpenRemotePackageCommand => this.GetCommand(OpenRemotePackage);
-        public ICommand OpenTestPackageCommand => this.GetCommand(OpenTestPackage);
+        public ICommand OpenLocalPackageCommand => GetCommand(OpenLocalPackage);
+        public ICommand OpenRemotePackageCommand => GetCommand(OpenRemotePackage);
+        public ICommand OpenTestPackageCommand => GetCommand(OpenTestPackage);
 
-		public HomePageViewModel()
-		{
+        public HomePageViewModel()
+        {
             Title = $"Home | {NuGetPackageExplorer.Constants.AppName}";
             Location = "/";
         }
@@ -70,5 +56,5 @@ namespace NupkgExplorer.Presentation.Content
 
             NavigationService.NavigateTo(vm);
         }
-	}
+    }
 }

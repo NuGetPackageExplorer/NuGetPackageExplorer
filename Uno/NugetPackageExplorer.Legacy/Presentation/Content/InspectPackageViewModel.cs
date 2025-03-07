@@ -307,8 +307,11 @@ namespace NupkgExplorer.Presentation.Content
                 SelectedContent = null!;
             }
 
-            Package.ShowContentViewer = false;
-            Package.CurrentFileInfo = null;
+            if (Package != null)
+            {
+                Package.ShowContentViewer = false;
+                Package.CurrentFileInfo = null;
+            }
 
             await Task.CompletedTask;
         }

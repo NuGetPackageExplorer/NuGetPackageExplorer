@@ -17,9 +17,9 @@ namespace NupkgExplorer.Presentation.Content
     public class FeedPackagePickerViewModel : ViewModelBase
     {
         [Import]
-        public NavigationService NavigationService { get; set; }
+        public NavigationService NavigationService { get; set; } = null!;
 
-        public string SearchTerm
+        public string? SearchTerm
         {
             get => GetProperty<string>();
             set => SetProperty(value);
@@ -29,22 +29,22 @@ namespace NupkgExplorer.Presentation.Content
             get => GetProperty<bool>();
             set => SetProperty(value);
         }
-        public PaginatedCollection<PackageData> NugetPackages
+        public PaginatedCollection<PackageData>? NugetPackages
         {
             get => GetProperty<PaginatedCollection<PackageData>>();
             set => SetProperty(value);
         }
-        public PackageData SelectedPackage
+        public PackageData? SelectedPackage
         {
             get => GetProperty<PackageData>();
             set => SetProperty(value);
         }
-        public string[] SelectedPackageVersions
+        public string[]? SelectedPackageVersions
         {
             get => GetProperty<string[]>();
             set => SetProperty(value);
         }
-        public string SelectedPackageVersion
+        public string? SelectedPackageVersion
         {
             get => GetProperty<string>();
             set => SetProperty(value);
@@ -107,7 +107,7 @@ namespace NupkgExplorer.Presentation.Content
             {
                 if (IncludePrerelease)
                 {
-                    var nuget = Container.GetExportedValue<INugetEndpoint>();
+                    var nuget = Container.GetExportedValue<INugetEndpoint>()!;
                     var response = await nuget.ListVersions(SelectedPackage.Id);
 
                     return response.Content.Versions;
@@ -119,9 +119,7 @@ namespace NupkgExplorer.Presentation.Content
                 }
             }
 
-            SelectedPackageVersions = (await GetVersions())
-                .Reverse() // sort latest on top
-                .ToArray();
+            SelectedPackageVersions = [.. (await GetVersions()).Reverse()];
             SelectedPackageVersion =
                 SelectedPackageVersions.FirstOrDefault(x => string.Equals(x, SelectedPackage.Version, StringComparison.InvariantCultureIgnoreCase)) ??
                 SelectedPackageVersions.FirstOrDefault()!;
