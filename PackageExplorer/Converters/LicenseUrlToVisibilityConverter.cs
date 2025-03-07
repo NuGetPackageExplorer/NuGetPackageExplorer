@@ -1,6 +1,4 @@
-﻿using System;
-using System.Text;
-using NuGet.Packaging;
+﻿using NuGet.Packaging;
 
 #if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml;
@@ -19,7 +17,7 @@ namespace PackageExplorer
 #if !HAS_UNO && !USE_WINUI
     [ValueConversion(typeof(Uri), typeof(Visibility))]
 #endif
-    public class LicenseUrlToVisibilityConverter : IValueConverter
+    public partial class LicenseUrlToVisibilityConverter : IValueConverter
     {
         public object? Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {

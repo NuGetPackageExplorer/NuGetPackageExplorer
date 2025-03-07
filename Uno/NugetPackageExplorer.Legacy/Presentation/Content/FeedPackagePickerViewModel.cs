@@ -14,7 +14,7 @@ using Uno.Extensions;
 
 namespace NupkgExplorer.Presentation.Content
 {
-    public class FeedPackagePickerViewModel : ViewModelBase
+    public partial class FeedPackagePickerViewModel : ViewModelBase
     {
         [Import]
         public NavigationService NavigationService { get; set; } = null!;

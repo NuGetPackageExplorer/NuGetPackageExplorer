@@ -4,7 +4,7 @@ using NuGet.Packaging.Core;
 
 namespace NupkgExplorer.Views.Converters
 {
-    public class PackageDependencyToDeeplinkConverter : IValueConverter
+    public partial class PackageDependencyToDeeplinkConverter : IValueConverter
     {
         public enum DeeplinkType { SearchLink, PackageLink }
 

@@ -2,7 +2,7 @@
 
 namespace NupkgExplorer.Views.Converters
 {
-    public class FromStringToValueConverter : IValueConverter
+    public partial class FromStringToValueConverter : IValueConverter
     {
         public enum CheckMethod { IsNullOrEmpty, IsNullOrWhitespace }
 

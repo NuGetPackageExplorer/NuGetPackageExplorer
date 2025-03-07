@@ -2,7 +2,7 @@
 
 namespace NupkgExplorer.Views.Converters
 {
-    public class FromObjectToValueConverter : IValueConverter
+    public partial class FromObjectToValueConverter : IValueConverter
     {
         public object? NullValue { get; set; }
 

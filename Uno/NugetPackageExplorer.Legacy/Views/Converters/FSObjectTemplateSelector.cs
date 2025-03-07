@@ -5,7 +5,7 @@ using Uno.Logging;
 
 namespace NupkgExplorer.Views.Converters
 {
-    public class FSObjectTemplateSelector : DataTemplateSelector
+    public partial class FSObjectTemplateSelector : DataTemplateSelector
     {
         public DataTemplate? FileTemplate { get; set; }
         public DataTemplate? DirectoryTemplate { get; set; }

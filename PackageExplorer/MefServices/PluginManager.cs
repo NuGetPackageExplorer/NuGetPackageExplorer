@@ -22,7 +22,7 @@ using OSVersionHelper;
 namespace PackageExplorer
 {
     [Export(typeof(IPluginManager))]
-    internal sealed class PluginManager : IPluginManager, IDisposable
+    internal sealed partial class PluginManager : IPluginManager, IDisposable
     {
         private const string NuGetDirectoryName = "NuGet";
         private const string PluginsDirectoryName = "PackageExplorerPlugins";

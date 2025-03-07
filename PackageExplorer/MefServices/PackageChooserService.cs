@@ -12,7 +12,7 @@ using PackageExplorerViewModel;
 namespace PackageExplorer
 {
     [Export(typeof(IPackageChooser))]
-    internal sealed class PackageChooserService : IPackageChooser
+    internal sealed partial class PackageChooserService : IPackageChooser
     {
         private PackageChooserViewModel? _viewModel;
 

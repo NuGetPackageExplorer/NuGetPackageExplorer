@@ -2,7 +2,7 @@
 
 namespace NupkgExplorer.Views.Converters
 {
-    public class FileContentTemplateSelector : DataTemplateSelector
+    public partial class FileContentTemplateSelector : DataTemplateSelector
     {
         public DataTemplate? TextContentTemplate { get; set; }
         public DataTemplate? ImageContentTemplate { get; set; }

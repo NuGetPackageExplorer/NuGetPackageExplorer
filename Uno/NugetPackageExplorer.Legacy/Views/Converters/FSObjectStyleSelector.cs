@@ -5,7 +5,7 @@ using Uno.Logging;
 
 namespace NupkgExplorer.Views.Converters
 {
-    public class FSObjectStyleSelector : StyleSelector
+    public partial class FSObjectStyleSelector : StyleSelector
     {
         public Style? FileStyle { get; set; }
         public Style? DirectoryStyle { get; set; }

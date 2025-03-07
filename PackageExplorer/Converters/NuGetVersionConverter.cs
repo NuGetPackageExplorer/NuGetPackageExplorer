@@ -1,6 +1,5 @@
-﻿using System;
-using System.Globalization;
-using NuGet.Versioning;
+﻿using NuGet.Versioning;
+
 using NuGetPe;
 
 #if HAS_UNO || USE_WINUI
@@ -19,7 +18,7 @@ namespace PackageExplorer
 #if !HAS_UNO && !USE_WINUI
     [ValueConversion(typeof(NuGetVersion), typeof(string))]
 #endif
-    public class NuGetVersionConverter : IValueConverter
+    public partial class NuGetVersionConverter : IValueConverter
     {
         public object? Convert(object value, Type targetType, object parameter, _CultureInfo culture)
         {

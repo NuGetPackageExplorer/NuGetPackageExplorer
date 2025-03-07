@@ -2,7 +2,7 @@
 
 namespace NupkgExplorer.Presentation
 {
-    public class ShellViewModel : ViewModelBase
+    public partial class ShellViewModel : ViewModelBase
     {
         public ViewModelBase? ActiveContent { get => GetProperty<ViewModelBase>(); set => SetProperty(value); }
 

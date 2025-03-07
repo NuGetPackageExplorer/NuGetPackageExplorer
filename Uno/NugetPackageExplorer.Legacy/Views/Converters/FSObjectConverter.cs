@@ -4,7 +4,7 @@ using NupkgExplorer.Business.Nupkg;
 
 namespace NupkgExplorer.Views.Converters
 {
-    public class FSObjectConverter : IValueConverter
+    public partial class FSObjectConverter : IValueConverter
     {
         public string? FileValue { get; set; }
         public string? DirectoryValue { get; set; }

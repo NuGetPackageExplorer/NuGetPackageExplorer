@@ -4,7 +4,7 @@ using Newtonsoft.Json.Linq;
 namespace NupkgExplorer.Framework.Json
 {
 
-    public class JsonArray<T> : JArray
+    public partial class JsonArray<T> : JArray
     {
         public T[] Items { get; }
 

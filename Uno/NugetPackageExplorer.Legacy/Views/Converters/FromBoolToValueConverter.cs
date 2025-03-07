@@ -2,7 +2,7 @@
 
 namespace NupkgExplorer.Views.Converters
 {
-    public class FromBoolToValueConverter : IValueConverter
+    public partial class FromBoolToValueConverter : IValueConverter
     {
         public object? DefaultValue { get; set; }
 

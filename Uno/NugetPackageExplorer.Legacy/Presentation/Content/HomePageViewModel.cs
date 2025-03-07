@@ -12,7 +12,7 @@ using Windows.Storage.Pickers;
 
 namespace NupkgExplorer.Presentation.Content
 {
-    public class HomePageViewModel : ViewModelBase
+    public partial class HomePageViewModel : ViewModelBase
     {
         [Import]
         public NavigationService NavigationService { get; set; } = null!;

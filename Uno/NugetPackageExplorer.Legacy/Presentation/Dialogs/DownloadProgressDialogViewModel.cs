@@ -8,7 +8,7 @@ using Uno.Extensions;
 
 namespace NupkgExplorer.Presentation.Dialogs
 {
-    public class DownloadProgressDialogViewModel : ViewModelBase, IProgress<(long ReceivedBytes, long? TotalBytes)>
+    public partial class DownloadProgressDialogViewModel : ViewModelBase, IProgress<(long ReceivedBytes, long? TotalBytes)>
     {
         private readonly ISubject<(long ReceivedBytes, long? TotalBytes)> _progressSubject;
         private readonly CancellationDisposable _downloadCts;

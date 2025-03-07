@@ -1,9 +1,7 @@
-﻿using System;
-using System.Globalization;
-
-#if HAS_UNO || USE_WINUI
+﻿#if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+
 using _CultureInfo = System.String;
 #else
 using System.Windows;
@@ -20,7 +18,7 @@ namespace PackageExplorer
     /// The built-in converter in WPF restricts us to always use Collapsed when the bound 
     /// value is false.
     /// </summary>
-    public class BooleanToVisibilityConverter : IValueConverter
+    public partial class BooleanToVisibilityConverter : IValueConverter
     {
         public bool Inverted { get; set; }
 

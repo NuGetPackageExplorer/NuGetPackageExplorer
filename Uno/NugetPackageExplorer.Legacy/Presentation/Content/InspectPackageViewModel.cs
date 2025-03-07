@@ -29,7 +29,7 @@ using Constants = NuGetPe.Constants;
 
 namespace NupkgExplorer.Presentation.Content
 {
-    public class InspectPackageViewModel : Framework.MVVM.ViewModelBase
+    public partial class InspectPackageViewModel : Framework.MVVM.ViewModelBase
     {
         public PackageViewModel? Package
         {

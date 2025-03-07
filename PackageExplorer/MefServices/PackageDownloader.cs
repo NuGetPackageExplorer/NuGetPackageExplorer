@@ -312,7 +312,7 @@ namespace PackageExplorer
         public PackageNotFoundException(string message, Exception inner) : base(message, inner) { }
     }
 
-    internal sealed class ProgressStream : Stream
+    internal sealed partial class ProgressStream : Stream
     {
         private readonly Stream _inner;
         private readonly Action<long> _progress;

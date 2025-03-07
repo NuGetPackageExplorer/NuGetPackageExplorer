@@ -3,7 +3,7 @@ using System.Reactive.Subjects;
 
 namespace NupkgExplorer.Framework.MVVM
 {
-    public class AsyncCommand : ICommand
+    public partial class AsyncCommand : ICommand
     {
         public event EventHandler? CanExecuteChanged;
 

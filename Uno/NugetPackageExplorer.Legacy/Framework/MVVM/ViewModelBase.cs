@@ -9,7 +9,7 @@ using Windows.UI.Core;
 
 namespace NupkgExplorer.Framework.MVVM
 {
-    public class ViewModelBase : INotifyPropertyChanged
+    public partial class ViewModelBase : INotifyPropertyChanged
     {
         public string Title { get; protected set; } = null!;
         public string? Location { get; protected set; }
