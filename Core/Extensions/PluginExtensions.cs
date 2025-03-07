@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace NuGetPe
 {
@@ -12,7 +11,7 @@ namespace NuGetPe
 
             ArgumentNullException.ThrowIfNull(targetRootDirectory);
 
-            if (!sourceDirectory.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
+            if (!sourceDirectory.EndsWith('\\'))
             {
                 sourceDirectory += "\\";
             }
@@ -22,7 +21,7 @@ namespace NuGetPe
             {
                 if (file.Path.StartsWith(sourceDirectory, StringComparison.OrdinalIgnoreCase))
                 {
-                    var suffixPath = file.Path.Substring(sourceDirectory.Length);
+                    var suffixPath = file.Path[sourceDirectory.Length..];
                     var targetPath = Path.Combine(targetRootDirectory, suffixPath);
 
                     using (var stream = File.Open(targetPath, FileMode.Create, FileAccess.Write, FileShare.Read))

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
 
 using NuGet.Packaging;
 
@@ -14,6 +13,8 @@ using System.Windows.Data;
 
 using _CultureInfo = System.Globalization.CultureInfo;
 #endif
+
+using CI = System.Globalization.CultureInfo;
 
 namespace PackageExplorer
 {
@@ -40,16 +41,16 @@ namespace PackageExplorer
                     if (metadata.Type == LicenseType.Expression)
                     {
                         sb
-                            .AppendLine($"{Resources.Dialog_LicenseExpression} {metadata.LicenseExpression}")
-                            .AppendLine($"{Resources.Dialog_LicenseExpressionType} {metadata.Type}")
-                            .AppendLine($"{Resources.Dialog_LicenseExpressionVersion} {metadata.Version}");
+                            .AppendLine(CI.CurrentCulture, $"{Resources.Dialog_LicenseExpression} {metadata.LicenseExpression}")
+                            .AppendLine(CI.CurrentCulture, $"{Resources.Dialog_LicenseExpressionType} {metadata.Type}")
+                            .AppendLine(CI.CurrentCulture, $"{Resources.Dialog_LicenseExpressionVersion} {metadata.Version}");
                     }
                     else if (metadata.Type == LicenseType.File)
                     {
                         sb
-                            .AppendLine($"License: {metadata.License}")
-                            .AppendLine($"Type: {metadata.Type}")
-                            .AppendLine($"License Url: {metadata.LicenseUrl}");
+                            .AppendLine(CI.CurrentCulture, $"License: {metadata.License}")
+                            .AppendLine(CI.CurrentCulture, $"Type: {metadata.Type}")
+                            .AppendLine(CI.CurrentCulture, $"License Url: {metadata.LicenseUrl}");
                     }
 
                     return sb.ToString().TrimEnd();

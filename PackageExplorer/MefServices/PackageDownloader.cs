@@ -86,11 +86,11 @@ namespace PackageExplorer
             // FIXME#14: we are bypassing the entire implementation, because DownloadResource could not be created on WASM (but works skia)
             return NugetEndpoint
                 .DownloadPackage(packageIdentity.Id, packageIdentity.Version.ToNormalizedString())
-                .ContinueWith(x =>
+                .ContinueWith<string?>(x =>
                 {
                     var path = $"./tmp/{Guid.NewGuid()}.nupkg";
-                    Directory.CreateDirectory(Path.GetDirectoryName(path));
-                    using (var file = File.OpenWrite(path))
+                    Directory.CreateDirectory(Path.GetDirectoryName(path!)!);
+                    using (var file = File.OpenWrite(path!))
                     {
                         x.Result.CopyTo(file);
                     }
@@ -98,7 +98,7 @@ namespace PackageExplorer
                     return path;
                 });
 #endif
-
+#pragma warning disable CS0162 // Unreachable code detected -- due to fixme
 #if HAS_UNO || USE_WINUI
             string? description = null;
             int? percent = null;
@@ -173,7 +173,7 @@ namespace PackageExplorer
 
             timer.Start();
 #endif
-
+#pragma warning restore CS0162 // Unreachable code detected -- due to fixme
 
             async Task<string?> DoWorkAsync()
             {
@@ -312,7 +312,7 @@ namespace PackageExplorer
         public PackageNotFoundException(string message, Exception inner) : base(message, inner) { }
     }
 
-    internal sealed class ProgressStream : Stream
+    internal sealed partial class ProgressStream : Stream
     {
         private readonly Stream _inner;
         private readonly Action<long> _progress;

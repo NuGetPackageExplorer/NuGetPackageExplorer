@@ -12,7 +12,7 @@ namespace PackageExplorerViewModel.Rules
     [Export(typeof(IPackageRule))]
     internal sealed class MisplacedAssemblyRule : IPackageRule
     {
-        private static readonly HashSet<string> assemblyFolders = new HashSet<string>(new[] { "lib", "analyzers", "build", "ref", "tools" }, StringComparer.OrdinalIgnoreCase);
+        private static readonly HashSet<string> AssemblyFolders = new(["lib", "analyzers", "build", "ref", "tools"], StringComparer.OrdinalIgnoreCase);
 
         #region IPackageRule Members
 
@@ -25,7 +25,7 @@ namespace PackageExplorerViewModel.Rules
                 var directory = segments.First();
 
                 // if under 'folder' directly
-                if (assemblyFolders.Contains(directory))
+                if (AssemblyFolders.Contains(directory))
                 {
                     // file under the directory. Tools can do anything
                     if (segments.Length == 2 && FileHelper.IsAssembly(path) && !"tools".Equals(directory, StringComparison.OrdinalIgnoreCase))

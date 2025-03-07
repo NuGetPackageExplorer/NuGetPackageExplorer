@@ -1,65 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.Composition.Hosting;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 using Uno.Disposables;
 
 using Windows.ApplicationModel.Core;
 using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 
 namespace NupkgExplorer.Framework.MVVM
 {
-	public class ViewModelBase : INotifyPropertyChanged
-	{
-        public string Title { get; protected set; }
+    public partial class ViewModelBase : INotifyPropertyChanged
+    {
+        public string Title { get; protected set; } = null!;
         public string? Location { get; protected set; }
 
-		public static CompositionContainer DefaultContainer { get; set; }
+        public static CompositionContainer DefaultContainer { get; set; } = null!;
 
-		public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
-		protected CompositionContainer Container => DefaultContainer;
+        protected CompositionContainer Container => DefaultContainer;
 
-		private readonly IDictionary<string, object> _backingFields = new Dictionary<string, object>();
+        private readonly Dictionary<string, object?> _backingFields = [];
 
         private int _propertyChangedSuppressionLevel = 0;
 
-		protected async Task RunOnUIThread(DispatchedHandler action)
-		{
-			var dispatcher = CoreApplication.MainView.Dispatcher;
-			if (dispatcher.HasThreadAccess)
-			{
-				action();
-			}
-			else
-			{
-				await dispatcher.RunAsync(CoreDispatcherPriority.Normal, action);
-			}
-		}
+        protected async Task RunOnUIThread(DispatchedHandler action)
+        {
+            var dispatcher = CoreApplication.MainView.Dispatcher;
+            if (dispatcher.HasThreadAccess)
+            {
+                action();
+            }
+            else
+            {
+                await dispatcher.RunAsync(CoreDispatcherPriority.Normal, action);
+            }
+        }
 
-		protected T GetProperty<T>([CallerMemberName] string propertyName = null)
-		{
-			return _backingFields.TryGetValue(propertyName, out var value) ? (T)value : default;
-		}
+        protected T? GetProperty<T>([CallerMemberName] string? propertyName = null)
+        {
+            return _backingFields.TryGetValue(propertyName!, out var value) ? (T?)value : default;
+        }
 
-		protected void SetProperty<T>(T value, [CallerMemberName] string propertyName = null)
-		{
-			if (!(_backingFields.TryGetValue(propertyName, out var oldValue) && oldValue?.Equals(value) == true))
-			{
-				_backingFields[propertyName] = value;
+        protected void SetProperty<T>(T? value, [CallerMemberName] string? propertyName = null)
+        {
+            if (!(_backingFields.TryGetValue(propertyName!, out var oldValue) && oldValue?.Equals(value) == true))
+            {
+                _backingFields[propertyName!] = value;
                 if (_propertyChangedSuppressionLevel == 0)
                 {
                     _ = RunOnUIThread(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
                 }
-			}
-		}
+            }
+        }
 
         /// <summary>
         /// Prevent <see cref="PropertyChanged"/> event from being raised until the disposable is disposed.
@@ -78,19 +71,19 @@ namespace NupkgExplorer.Framework.MVVM
             );
         }
 
-		protected ICommand GetCommand(Func<Task> execute)
-		{
-			return new AsyncCommand(_ => execute());
-		}
+        protected ICommand GetCommand(Func<Task> execute)
+        {
+            return new AsyncCommand(_ => execute());
+        }
 
-		protected ICommand GetCommand(Func<object, Task> execute)
-		{
-			return new AsyncCommand(execute);
-		}
+        protected ICommand GetCommand(Func<object?, Task> execute)
+        {
+            return new AsyncCommand(execute);
+        }
 
-		protected ICommand GetCommand(Action execute)
-		{
-			return new AsyncCommand(_ => Task.Run(execute));
-		}
-	}
+        protected ICommand GetCommand(Action execute)
+        {
+            return new AsyncCommand(_ => Task.Run(execute));
+        }
+    }
 }

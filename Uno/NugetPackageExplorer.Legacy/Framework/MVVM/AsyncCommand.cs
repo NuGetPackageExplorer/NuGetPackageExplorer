@@ -1,53 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace NupkgExplorer.Framework.MVVM
 {
-	public class AsyncCommand : ICommand
-	{
-		public event EventHandler CanExecuteChanged;
+    public partial class AsyncCommand : ICommand
+    {
+        public event EventHandler? CanExecuteChanged;
 
-		public Func<object, Task> _execute;
-		public bool _canExecute;
-		public Subject<bool> _isExecuting;
+        private readonly Func<object?, Task> _execute;
+        private bool _canExecute;
+        private readonly Subject<bool> _isExecuting;
 
-		public AsyncCommand(Func<object, Task> execute, IObservable<bool> observeCanExecute = null)
-		{
-			_execute = execute;
-			_isExecuting = new Subject<bool>();
+        public AsyncCommand(Func<object?, Task> execute, IObservable<bool>? observeCanExecute = null)
+        {
+            _execute = execute;
+            _isExecuting = new Subject<bool>();
 
-			Observable
-				.CombineLatest(_isExecuting.StartWith(false), observeCanExecute ?? Observable.Return(true), (executing, canExecute) => canExecute && !executing)
-				.StartWith(false)
-				.Subscribe(x =>
-				{
-					_canExecute = x;
-					CanExecuteChanged?.Invoke(this, default);
-				});
-		}
+            Observable
+                .CombineLatest(_isExecuting.StartWith(false), observeCanExecute ?? Observable.Return(true), (executing, canExecute) => canExecute && !executing)
+                .StartWith(false)
+                .Subscribe(x =>
+                {
+                    _canExecute = x;
+                    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+                });
+        }
 
-		public bool CanExecute(object parameter) => _canExecute;
+        public bool CanExecute(object? parameter) => _canExecute;
 
-		void ICommand.Execute(object parameter) => _ = Execute(parameter);
+        void ICommand.Execute(object? parameter) => _ = Execute(parameter);
 
-		public async Task Execute(object parameter)
-		{
-			if (!_canExecute) return;
+        public async Task Execute(object? parameter)
+        {
+            if (!_canExecute) return;
 
-			try
-			{
-				_isExecuting.OnNext(true);
-				await _execute(parameter);
-			}
-			finally
-			{
-				_isExecuting.OnNext(false);
-			}
-		}
-	}
+            try
+            {
+                _isExecuting.OnNext(true);
+                await _execute(parameter);
+            }
+            finally
+            {
+                _isExecuting.OnNext(false);
+            }
+        }
+    }
 }

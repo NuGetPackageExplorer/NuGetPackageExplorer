@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
+using Microsoft.UI;
+using Microsoft.UI.Xaml;
+
 using Monaco;
 
 using Uno.Disposables;
@@ -10,8 +13,6 @@ using Uno.Extensions;
 
 using Windows.UI;
 using Windows.UI.ViewManagement;
-using Microsoft.UI.Xaml;
-using Microsoft.UI;
 
 namespace NupkgExplorer.Views.Extensions
 {
@@ -85,7 +86,7 @@ namespace NupkgExplorer.Views.Extensions
 
         #endregion
 
-        private static readonly UISettings _uiSettings = new UISettings();
+        private static readonly UISettings UiSettings = new();
 
         private static void OnAutoLayoutOnResizeChanged(CodeEditor control, DependencyPropertyChangedEventArgs e)
         {
@@ -128,18 +129,18 @@ namespace NupkgExplorer.Views.Extensions
             GetAutoUpdateThemeSubscription(control)?.Dispose();
             if (e.NewValue is bool value && value)
             {
-                _uiSettings.ColorValuesChanged += OnColorValuesChanged;
+                UiSettings.ColorValuesChanged += OnColorValuesChanged;
 
                 // force an initial update
-                OnColorValuesChanged(_uiSettings, null!);
+                OnColorValuesChanged(UiSettings, null!);
 
                 SetAutoUpdateThemeSubscription(control, Disposable.Create(() =>
-                    _uiSettings.ColorValuesChanged -= OnColorValuesChanged
+                    UiSettings.ColorValuesChanged -= OnColorValuesChanged
                 ));
 
                 void OnColorValuesChanged(UISettings sender, object args)
                 {
-                    control.RequestedTheme = (Window.Current.Content as FrameworkElement)?.ActualTheme switch
+                    control.RequestedTheme = (Window.Current!.Content as FrameworkElement)?.ActualTheme switch
                     {
                         ElementTheme actualTheme when (actualTheme != ElementTheme.Default) => actualTheme,
                         _ => sender.GetColorValue(UIColorType.Background) == Colors.Black

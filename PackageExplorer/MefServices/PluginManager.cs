@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -25,7 +22,7 @@ using OSVersionHelper;
 namespace PackageExplorer
 {
     [Export(typeof(IPluginManager))]
-    internal sealed class PluginManager : IPluginManager, IDisposable
+    internal sealed partial class PluginManager : IPluginManager, IDisposable
     {
         private const string NuGetDirectoryName = "NuGet";
         private const string PluginsDirectoryName = "PackageExplorerPlugins";
@@ -353,7 +350,7 @@ namespace PackageExplorer
 
         private static void CreateDeleteMeFile(string targetPath)
         {
-            if (targetPath.EndsWith("\\", StringComparison.OrdinalIgnoreCase))
+            if (targetPath.EndsWith('\\'))
             {
                 targetPath = targetPath[0..^1];
             }

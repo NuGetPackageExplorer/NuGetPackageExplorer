@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
-
-using NuGet.Protocol.Plugins;
 
 namespace NuGetPe.AssemblyMetadata
 {
@@ -33,8 +28,8 @@ namespace NuGetPe.AssemblyMetadata
         public IReadOnlyList<string> SourceLinkErrors { get; internal set; }
         public IReadOnlyList<SymbolKey> SymbolKeys { get; internal set; }
 
-        public IReadOnlyCollection<MetadataReference> MetadataReferences { get; internal set;}
-        public IReadOnlyCollection<CompilerFlag> CompilerFlags { get; internal set;}
+        public IReadOnlyCollection<MetadataReference> MetadataReferences { get; internal set; }
+        public IReadOnlyCollection<CompilerFlag> CompilerFlags { get; internal set; }
 
         public bool PdbChecksumIsValid { get; internal set; }
 
@@ -53,7 +48,7 @@ namespace NuGetPe.AssemblyMetadata
 
         public bool SourcesAreDeterministic => _sourcesAreDeterministic.Value;
 
-        private IReadOnlyList<string> GetNonEmbeddedSourcesInObjDir()
+        private List<string> GetNonEmbeddedSourcesInObjDir()
         {
             // get sources where /obj/ is in the name and it's not
             // Document names may use either / or \ a directory separator
@@ -62,7 +57,7 @@ namespace NuGetPe.AssemblyMetadata
                         let path = doc.Name.Replace('\\', '/')
                         where (path.Contains("/obj/", StringComparison.OrdinalIgnoreCase) ||
                                path.Contains("/temp/", StringComparison.OrdinalIgnoreCase) ||
-                               path.Contains("/tmp/", StringComparison.OrdinalIgnoreCase) ) && !doc.IsEmbedded
+                               path.Contains("/tmp/", StringComparison.OrdinalIgnoreCase)) && !doc.IsEmbedded
                         select doc.Name).ToList();
 
             return docs;
@@ -88,7 +83,7 @@ namespace NuGetPe.AssemblyMetadata
                 if (versionString == null)
                     return false;
 
-                if(!int.TryParse(versionString, out var version))
+                if (!int.TryParse(versionString, out var version))
                 {
                     return false; // could not parse version
                 }

@@ -1,25 +1,27 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
+
 using NuGet.Packaging;
 using NuGet.Versioning;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
+
 using PackageExplorerViewModel;
+
 using Constants = NuGetPe.Constants;
 using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources;
@@ -235,17 +237,20 @@ namespace PackageExplorer
                 try
                 {
                     var packageViewModel = await PackageViewModelFactory.CreateViewModel(package, packagePath, packageSource);
-                    packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+                    if (packageViewModel != null)
+                    {
+                        packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+                        if (!string.IsNullOrEmpty(packageSource))
+                        {
+                            _mruManager.NotifyFileAdded(package, packageSource, packageType);
+                        }
+                    }
 
                     DataContext = packageViewModel;
-                    if (!string.IsNullOrEmpty(packageSource))
-                    {
-                        _mruManager.NotifyFileAdded(package, packageSource, packageType);
-                    }
                 }
                 catch (Exception e)
                 {
-                    if (!(e is ArgumentException))
+                    if (e is not ArgumentException)
                     {
                         DiagnosticsClient.TrackException(e);
                     }
@@ -689,7 +694,7 @@ namespace PackageExplorer
                 {
                     var firstFile = filenames[0];
                     if (FileUtility.IsSupportedFile(firstFile))
-                    {                        
+                    {
                         e.Effects = DragDropEffects.Copy;
                         e.Handled = true;
                         return;

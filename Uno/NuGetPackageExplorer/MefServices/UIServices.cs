@@ -49,7 +49,7 @@ namespace NuGetPackageExplorer.MefServices
 
         public object Initialize()
         {
-            return null;
+            return null!;
         }
 
         public bool OpenCredentialsDialog(string target, out NetworkCredential? networkCredential)

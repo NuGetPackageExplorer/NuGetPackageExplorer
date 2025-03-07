@@ -1,5 +1,11 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.ComponentModel.Composition;
+using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices.WindowsRuntime;
+
 using CommunityToolkit.WinUI.Helpers;
+
+using Microsoft.Extensions.Logging;
 
 using NuGet.Common;
 using NuGet.Configuration;
@@ -13,41 +19,18 @@ using NuGetPackageExplorer.Types;
 
 using NuGetPe;
 
-using NupkgExplorer.Framework.Extensions;
 using NupkgExplorer.Framework.Navigation;
 using NupkgExplorer.Presentation.Content;
 using NupkgExplorer.Presentation.Dialogs;
 
-using PackageExplorer;
-
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
-
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.ComponentModel.Composition.Hosting;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
 
 using Uno.Extensions;
 using Uno.Logging;
 
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Core;
 using Windows.UI.Popups;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
@@ -58,7 +41,7 @@ namespace PackageExplorer
     /// </summary>
     public sealed partial class App : Application
     {
-        public Window MainWindow { get; private set; }
+        public Window MainWindow { get; private set; } = null!;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
@@ -68,10 +51,10 @@ namespace PackageExplorer
         {
             InitializeLogging();
 
-            this.InitializeComponent();
+            InitializeComponent();
 
 #if !USE_WINUI
-            this.Suspending += OnSuspending;
+            Suspending += OnSuspending;
 #endif
 
             DiagnosticsClient.Initialize(
@@ -87,7 +70,7 @@ namespace PackageExplorer
 
         internal static new App Current => (App)Application.Current;
 
-        private CompositionContainer _container;
+        private CompositionContainer _container = null!;
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         internal CompositionContainer Container
@@ -139,13 +122,13 @@ namespace PackageExplorer
             var window = new Window();
             window.Activate();
 #else
-            var window = Microsoft.UI.Xaml.Window.Current;
+            var window = Microsoft.UI.Xaml.Window.Current!;
 #endif
             MainWindow = window;
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
-            if (!(window.Content is TRootPage rootPage))
+            if (window.Content is not TRootPage rootPage)
             {
                 rootPage = buildRoot()!;
 
@@ -178,7 +161,7 @@ namespace PackageExplorer
 
         private Shell BuildShell()
         {
-            var shell = Container.GetExportedValue<Shell>();
+            var shell = Container.GetExportedValue<Shell>()!;
             var frame = shell.GetContentFrame();
             frame.Navigated += (s, e) =>
             {
@@ -200,18 +183,18 @@ namespace PackageExplorer
             };
             frame.NavigationFailed += (s, e) => throw new Exception($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
 
-            var service = Container.GetExportedValue<NavigationService>();
+            var service = Container.GetExportedValue<NavigationService>()!;
 
 #if WINDOWS_UWP || __WASM__
             var manager = SystemNavigationManager.GetForCurrentView();
-			// wire-up back navigation
-			manager.BackRequested += (s, e) => frame.GoBack();
-			frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
-			{
-				manager.AppViewBackButtonVisibility = frame.CanGoBack
-					? AppViewBackButtonVisibility.Visible
-					: AppViewBackButtonVisibility.Collapsed;
-			});
+            // wire-up back navigation
+            manager.BackRequested += (s, e) => frame.GoBack();
+            frame.RegisterPropertyChangedCallback(Frame.CanGoBackProperty, (s, e) =>
+            {
+                manager.AppViewBackButtonVisibility = frame.CanGoBack
+                    ? AppViewBackButtonVisibility.Visible
+                    : AppViewBackButtonVisibility.Collapsed;
+            });
 #endif
 
 #if __WASM__
@@ -249,8 +232,8 @@ namespace PackageExplorer
                     if (!file.Exists) throw new FileNotFoundException("No such file", file.FullName);
 
                     var vm = await InspectPackageViewModel.CreateFromLocalPackage(file.FullName);
-
-                    navigation.NavigateTo(vm);
+                    if (vm != null)
+                        navigation.NavigateTo(vm);
 
                     DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", "filePath" } });
                 }
@@ -266,7 +249,8 @@ namespace PackageExplorer
                 {
                     var vm = await InspectPackageViewModel.CreateFromRemotePackageWithFallback(identity);
 
-                    navigation.NavigateTo(vm);
+                    if (vm != null)
+                        navigation.NavigateTo(vm);
 
                     DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", "packageIdentity" } });
                 }
@@ -417,7 +401,7 @@ namespace PackageExplorer
                 }
 
                 // Assume everything else should be a path
-                var deeplink = e.Arguments.NullIfEmpty();
+                var deeplink = e.Arguments?.NullIfEmpty();
                 if (!string.IsNullOrWhiteSpace(deeplink))
                 {
                     return new FileInfo(deeplink);
@@ -439,8 +423,7 @@ namespace PackageExplorer
             // Overwrite settings with the real instance
             Resources["Settings"] = Container.GetExportedValue<ISettingsManager>();
 
-            NuGet.Protocol.Core.Types.UserAgent.SetUserAgentString(new NuGet.Protocol.Core.Types.UserAgentStringBuilder("NuGet Package Explorer")
-                                                       .WithOSDescription(RuntimeInformation.RuntimeIdentifier));
+            NuGet.Protocol.Core.Types.UserAgent.SetUserAgentString(new NuGet.Protocol.Core.Types.UserAgentStringBuilder("NuGet Package Explorer"));
 
             InitCredentialService();
             HttpHandlerResourceV3.CredentialsSuccessfullyUsed = (uri, credentials) =>
@@ -467,7 +450,8 @@ namespace PackageExplorer
                     Container.GetExportedValue<CredentialPublishProvider>()!,
                     Container.GetExportedValue<CredentialDialogProvider>()!
                 });
-            };
+            }
+            ;
 
             HttpHandlerResourceV3.CredentialService =
                 new Lazy<ICredentialService>(() => new CredentialService(
@@ -481,12 +465,12 @@ namespace PackageExplorer
         {
             NupkgExplorer.Framework.MVVM.ViewModelBase.DefaultContainer = Container;
 
-            var navigation = Container.GetExportedValue<NavigationService>();
+            var navigation = Container.GetExportedValue<NavigationService>()!;
             navigation.Register<HomePage, HomePageViewModel>();
             navigation.Register<FeedPackagePicker, FeedPackagePickerViewModel>();
             navigation.Register<InspectPackage, InspectPackageViewModel>();
 
-            var dialog = Container.GetExportedValue<DialogService>();
+            var dialog = Container.GetExportedValue<DialogService>()!;
             dialog.Register<DownloadProgressDialog, DownloadProgressDialogViewModel>();
         }
 

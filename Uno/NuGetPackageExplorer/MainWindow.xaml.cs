@@ -1,34 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.Composition;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
+
+using Microsoft.UI.Xaml.Data;
 
 using NuGet.Packaging;
 using NuGet.Versioning;
 
-using NuGetPackageExplorer.MefServices;
 using NuGetPackageExplorer.Types;
 
 using NuGetPe;
 
 using PackageExplorerViewModel;
 
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Core;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
 
 using Constants = NuGetPe.Constants;
 using StringResources = PackageExplorer.Resources;
@@ -42,7 +27,7 @@ namespace PackageExplorer
     /// </summary>
     [Export]
     public sealed partial class MainWindow : Page
-	{
+    {
         private readonly IMruManager _mruManager;
 
         [ImportingConstructor]
@@ -66,22 +51,22 @@ namespace PackageExplorer
         }
 
         [Import]
-        public ISettingsManager SettingsManager { get; set; }
+        public ISettingsManager SettingsManager { get; set; } = null!;
 
         [Import]
-        public IUIServices UIServices { get; set; }
+        public IUIServices UIServices { get; set; } = null!;
 
         [Import]
-        public INuGetPackageDownloader PackageDownloader { get; set; }
+        public INuGetPackageDownloader PackageDownloader { get; set; } = null!;
 
         [Import]
-        public IPluginManager PluginManager { get; set; }
+        public IPluginManager PluginManager { get; set; } = null!;
 
         [Import]
-        public IPackageChooser PackageChooser { get; set; }
+        public IPackageChooser PackageChooser { get; set; } = null!;
 
         [Import]
-        public IPackageViewModelFactory PackageViewModelFactory { get; set; }
+        public IPackageViewModelFactory PackageViewModelFactory { get; set; } = null!;
 
         private string? _tempFile;
 
@@ -188,7 +173,7 @@ namespace PackageExplorer
 
             var cachePackage = MachineCache.Default.FindPackage(selectedPackageInfo.Id, selectedPackageInfo.SemanticVersion);
 
-            async Task processPackageAction(ISignaturePackage package)
+            void processPackageAction(ISignaturePackage package)
             {
                 LoadPackage(package,
                             package.Source,
@@ -210,12 +195,12 @@ namespace PackageExplorer
 
                 if (downloadedPackage != null)
                 {
-                    await processPackageAction(downloadedPackage);
+                    processPackageAction(downloadedPackage);
                 }
             }
             else
             {
-                await processPackageAction(cachePackage);
+                processPackageAction(cachePackage);
             }
         }
 
@@ -324,17 +309,20 @@ namespace PackageExplorer
                 try
                 {
                     var packageViewModel = await PackageViewModelFactory.CreateViewModel(package, packagePath, packageSource);
-                    packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+                    if (packageViewModel != null)
+                    {
+                        packageViewModel.PropertyChanged += OnPackageViewModelPropertyChanged;
+                        if (!string.IsNullOrEmpty(packageSource))
+                        {
+                            _mruManager.NotifyFileAdded(package, packageSource, packageType);
+                        }
+                    }
 
                     DataContext = packageViewModel;
-                    if (!string.IsNullOrEmpty(packageSource))
-                    {
-                        _mruManager.NotifyFileAdded(package, packageSource, packageType);
-                    }
                 }
                 catch (Exception e)
                 {
-                    if (!(e is ArgumentException))
+                    if (e is not ArgumentException)
                     {
                         DiagnosticsClient.TrackException(e);
                     }

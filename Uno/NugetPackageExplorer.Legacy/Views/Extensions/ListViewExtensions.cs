@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Linq;
-using System.Text;
-using System.Windows.Input;
+
+using Microsoft.UI.Xaml.Data;
 
 using NupkgExplorer.Views.Helpers;
 
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
-
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Data;
 
 namespace NupkgExplorer.Views.Extensions
 {
@@ -144,6 +138,7 @@ namespace NupkgExplorer.Views.Extensions
         {
             var lv = (ListView)sender;
             var sv = VisualTreeHelperEx.GetFirstDescendant<ScrollViewer>(lv);
+            if (sv == null) return;
 
             sv.ViewChanged += async (s, e) =>
             {

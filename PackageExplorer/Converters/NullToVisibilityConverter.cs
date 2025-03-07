@@ -16,7 +16,7 @@ using System.Windows.Data;
 
 namespace PackageExplorer
 {
-    public class NullToVisibilityConverter : IValueConverter
+    public partial class NullToVisibilityConverter : IValueConverter
     {
         public bool Inverted { get; set; }
 

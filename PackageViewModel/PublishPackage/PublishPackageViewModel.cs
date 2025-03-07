@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
+
 using NuGet.Common;
-using NuGet.Packaging;
 using NuGet.Protocol.Core.Types;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
 
 namespace PackageExplorerViewModel
@@ -13,7 +12,7 @@ namespace PackageExplorerViewModel
     public sealed class PublishPackageViewModel : ViewModelBase, IObserver<int>, IDisposable
     {
         private readonly MruPackageSourceManager _mruSourceManager;
-        private readonly IPackageMetadata _package;
+        private readonly EditablePackageMetadata _package;
         private readonly string? _packageFilePath;
         private readonly ISettingsManager _settingsManager;
         private readonly IUIServices _uiServices;
@@ -249,7 +248,7 @@ namespace PackageExplorerViewModel
                 var updateResource = await repository.GetResourceAsync<PackageUpdateResource>();
 
                 await updateResource.Push(new[] { _packageFilePath }, null, 999, false, s => PublishKeyOrPAT, s => PublishKeyOrPAT, AppendV2ApiToUrl != true, false, null, NullLogger.Instance);
-                
+
 
                 if (PublishAsUnlisted == true)
                 {

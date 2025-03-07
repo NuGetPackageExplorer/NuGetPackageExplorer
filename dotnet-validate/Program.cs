@@ -1,25 +1,22 @@
-using System;
-using System.CommandLine;
+﻿using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.CommandLine.Parsing;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
+
 using NuGet.Versioning;
 
 namespace NuGetPe
 {
-    internal class Program
+    internal sealed class Program
     {
         // Standard exit codes, see https://man.openbsd.org/sysexits and https://docs.microsoft.com/en-us/cpp/c-runtime-library/exit-success-exit-failure
 
-        private const int EXIT_SUCCESS   =  0;
-        private const int EXIT_FAILURE   =  1;
+        private const int EXIT_SUCCESS = 0;
+        private const int EXIT_FAILURE = 1;
         private const int EX_UNAVAILABLE = 69; // A service is unavailable. This can occur if a support program or file does not exist. This can also be used as a catch-all message when something you wanted to do doesn't work, but you don't know why.
-        private const int EX_SOFTWARE    = 70; // An internal software error has been detected. This should be limited to non-operating system related errors if possible.
+        private const int EX_SOFTWARE = 70; // An internal software error has been detected. This should be limited to non-operating system related errors if possible.
 
 
         private static async Task<int> Main(string[] args)
@@ -33,7 +30,7 @@ namespace NuGetPe
             {
                 new Argument<string>("packageId", "Package Id"),
                 new Option<NuGetVersion?>(
-                    new[] { "--version", "-v" },
+                    ["--version", "-v"],
                     parseArgument: arg =>
                     {
                         if (arg.Tokens.Count > 0 && NuGetVersion.TryParse(arg.Tokens[0].Value, out var version))
@@ -50,7 +47,7 @@ namespace NuGetPe
                     },
                     description: "Package version. Defaults to latest."),
                 new Option<DirectoryInfo?>(
-                    new[] { "--nuget-config-directory", "-d" },
+                    ["--nuget-config-directory", "-d"],
                     parseArgument: arg =>
                     {
                         if (arg.Tokens.Count > 0)

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 
 namespace NuGetPe
 {
@@ -178,7 +175,7 @@ namespace NuGetPe
 
         private static string EnsureTrailingSlash(string path)
         {
-            if (!path.EndsWith("\\", StringComparison.Ordinal))
+            if (!path.EndsWith('\\'))
             {
                 path += "\\";
             }

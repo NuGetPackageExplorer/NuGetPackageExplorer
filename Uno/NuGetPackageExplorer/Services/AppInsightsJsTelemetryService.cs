@@ -16,7 +16,7 @@ namespace NuGetPackageExplorer.Services
 {
     public class AppInsightsJsTelemetryService : ITelemetryService
     {
-        private static readonly ILogger _logger = typeof(AppInsightsJsTelemetryService).Log();
+        private static readonly ILogger Logger = typeof(AppInsightsJsTelemetryService).Log();
 
         private readonly bool _initialized;
         private readonly List<ITelemetryServiceInitializer> _initializers;
@@ -26,13 +26,13 @@ namespace NuGetPackageExplorer.Services
             _initialized = GetIsInitialized();
             _initializers = initializers;
 
-            if (_initialized && _logger.IsEnabled(LogLevel.Debug))
+            if (_initialized && Logger.IsEnabled(LogLevel.Debug))
             {
-                _logger.Debug("App Insights SDK initialized successfully");
+                Logger.Debug("App Insights SDK initialized successfully");
             }
-            if (!_initialized && _logger.IsEnabled(LogLevel.Error))
+            if (!_initialized && Logger.IsEnabled(LogLevel.Error))
             {
-                _logger.Error("App Insights SDK failed to initialize");
+                Logger.Error("App Insights SDK failed to initialize");
             }
         }
 
@@ -49,7 +49,7 @@ namespace NuGetPackageExplorer.Services
 
             var localProperties = BuildLocalProperties(properties);
 
-            _logger.DebugIfEnabled(() => $"TrackEvent: {eventName}");
+            Logger.DebugIfEnabled(() => $"TrackEvent: {eventName}");
 
             InvokeJS("appInsights.trackEvent({\n" +
                 $"  name: \"{EscapeJs(eventName)}\",\n" +
@@ -60,8 +60,8 @@ namespace NuGetPackageExplorer.Services
         public void TrackException(Exception exception, IDictionary<string, string>? properties, IDictionary<string, double>? metrics)
         {
             if (!_initialized) return;
-            
-            _logger.DebugIfEnabled(() => $"TrackException: {exception}");
+
+            Logger.DebugIfEnabled(() => $"TrackException: {exception}");
 
             var localProperties = BuildLocalProperties(properties);
 
@@ -74,8 +74,8 @@ namespace NuGetPackageExplorer.Services
         public void TrackPageView(string pageName)
         {
             if (!_initialized) return;
-            
-            _logger.DebugIfEnabled(() => $"TrackPageView: {pageName}");
+
+            Logger.DebugIfEnabled(() => $"TrackPageView: {pageName}");
 
             var localProperties = BuildLocalProperties(null);
 
@@ -89,7 +89,7 @@ namespace NuGetPackageExplorer.Services
         {
             if (!_initialized) return;
 
-            _logger.DebugIfEnabled(() => $"TrackTrace: {evt}");
+            Logger.DebugIfEnabled(() => $"TrackTrace: {evt}");
 
             var localProperties = BuildLocalProperties(properties);
 
@@ -103,7 +103,7 @@ namespace NuGetPackageExplorer.Services
         {
             if (!_initialized) return;
 
-            _logger.DebugIfEnabled(() => $"Flush");
+            Logger.DebugIfEnabled(() => $"Flush");
             InvokeJS($"appInsights.flush();");
         }
 
@@ -122,16 +122,16 @@ namespace NuGetPackageExplorer.Services
         private static string EscapeJs(string value) => Uno.Foundation.WebAssemblyRuntime.EscapeJs(value);
         private static string InvokeJS(string js)
         {
-            if (_logger.IsEnabled(LogLevel.Trace))
+            if (Logger.IsEnabled(LogLevel.Trace))
             {
-                _logger.LogTrace(string.Join("\n",
+                Logger.LogTrace(string.Join("\n",
                     "Invoking JS:",
                     "```",
                     js,
                     "```"
                 ));
             }
-            
+
             return Uno.Foundation.WebAssemblyRuntime.InvokeJS(js);
         }
 

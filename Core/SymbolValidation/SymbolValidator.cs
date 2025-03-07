@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
 
 using Microsoft.Extensions.DependencyModel;
 
@@ -17,7 +13,7 @@ using NuGetPe.Utility;
 
 namespace NuGetPe
 {
-    public class SymbolValidator
+    public partial class SymbolValidator
     {
         private readonly IPackage _package;
         private readonly string _packagePath;
@@ -95,7 +91,7 @@ namespace NuGetPe
 
         public IReadOnlyList<IFile> GetAllFiles() => GetFilesToCheck();
 
-        private IReadOnlyList<IFile> GetFilesToCheck()
+        private List<IFile> GetFilesToCheck()
         {
             if (_package.PackageTypes.Contains(NuGet.Packaging.Core.PackageType.DotnetTool))
             {
@@ -105,7 +101,7 @@ namespace NuGetPe
             return GetLibraryFiles();
         }
 
-        private IReadOnlyList<IFile> GetToolFiles()
+        private List<IFile> GetToolFiles()
         {
 
             var files = new List<IFile>();
@@ -134,7 +130,7 @@ namespace NuGetPe
             return files;
         }
 
-        private IReadOnlyList<IFile> GetLibraryFiles()
+        private List<IFile> GetLibraryFiles()
         {
             // For library packages, we look in lib and runtimes for files to check
 
@@ -397,11 +393,11 @@ namespace NuGetPe
 
                     foreach (var untracked in untrackedSources)
                     {
-                        sb.AppendLine($"Assembly: {untracked.Path}");
+                        sb.AppendLine(CultureInfo.CurrentCulture, $"Assembly: {untracked.Path}");
 
                         foreach (var source in untracked.DebugData!.UntrackedSources)
                         {
-                            sb.AppendLine($"  {source}");
+                            sb.AppendLine(CultureInfo.CurrentCulture, $"  {source}");
                         }
 
                         sb.AppendLine();
@@ -433,7 +429,7 @@ namespace NuGetPe
                 {
                     sourceLinkResult = SymbolValidationResult.NoSourceLink;
 
-                    sb.AppendLine($"Missing Source Link for:\n{string.Join("\n", noSourceLink.Select(p => p.Path))}");
+                    sb.AppendLine(CultureInfo.CurrentCulture, $"Missing Source Link for:\n{string.Join("\n", noSourceLink.Select(p => p.Path))}");
                     found = true;
                 }
 
@@ -446,7 +442,7 @@ namespace NuGetPe
 
                     foreach (var (file, errors) in sourceLinkErrors)
                     {
-                        sb.AppendLine($"Source Link errors for {file.Path}:\n{string.Join("\n", errors)}");
+                        sb.AppendLine(CultureInfo.CurrentCulture, $"Source Link errors for {file.Path}:\n{string.Join("\n", errors)}");
                     }
 
                     found = true;
@@ -464,7 +460,7 @@ namespace NuGetPe
                         sb.AppendLine("Some PDB's checksums do not match their PE files and are shown as missing.");
                     }
 
-                    sb.AppendLine($"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.Path))}");
+                    sb.AppendLine(CultureInfo.CurrentCulture, $"Missing Symbols for:\n{string.Join("\n", noSymbols.Select(p => p.Path))}");
                     found = true;
                 }
                 else if (!found)
@@ -655,7 +651,7 @@ namespace NuGetPe
         // From https://github.com/ctaggart/SourceLink/blob/51e5b47ae64d87447a0803cec559947242fe935b/dotnet-sourcelink/Program.cs
         private static bool IsSatelliteAssembly(string path)
         {
-            var match = Regex.Match(path, @"^(.*)\\[^\\]+\\([^\\]+).resources.dll$");
+            var match = SatelliteAssemblyRegex().Match(path);
 
             return match.Success;
 
@@ -724,5 +720,8 @@ namespace NuGetPe
 #pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
             public IFile? Pdb { get; set; }
         }
+
+        [GeneratedRegex(@"^(.*)\\[^\\]+\\([^\\]+).resources.dll$")]
+        private static partial Regex SatelliteAssemblyRegex();
     }
 }

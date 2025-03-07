@@ -1,16 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.ComponentModel.Composition;
-using System.IO.Compression;
-using System.Linq;
+﻿using System.ComponentModel.Composition;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 using NuGet.Packaging.Core;
 using NuGet.Versioning;
@@ -20,58 +9,53 @@ using NupkgExplorer.Client.Data;
 using NupkgExplorer.Framework.Extensions;
 using NupkgExplorer.Framework.MVVM;
 using NupkgExplorer.Framework.Navigation;
-using NupkgExplorer.Presentation.Dialogs;
-
-using PackageExplorer;
 
 using Uno.Extensions;
-using Uno.Logging;
-using Windows.ApplicationModel.Core;
 
 namespace NupkgExplorer.Presentation.Content
 {
-    public class FeedPackagePickerViewModel : ViewModelBase
+    public partial class FeedPackagePickerViewModel : ViewModelBase
     {
         [Import]
-        public NavigationService NavigationService { get; set; }
+        public NavigationService NavigationService { get; set; } = null!;
 
-		public string SearchTerm
-		{
-			get => GetProperty<string>();
-			set => SetProperty(value);
-		}
-		public bool IncludePrerelease
-		{
-			get => GetProperty<bool>();
-			set => SetProperty(value);
-		}
-		public PaginatedCollection<PackageData> NugetPackages
-		{
-			get => GetProperty<PaginatedCollection<PackageData>>();
-			set => SetProperty(value);
-		}
-		public PackageData SelectedPackage
-		{
-			get => GetProperty<PackageData>();
-			set => SetProperty(value);
-		}
-		public string[] SelectedPackageVersions
-		{
-			get => GetProperty<string[]>();
-			set => SetProperty(value);
-		}
-		public string SelectedPackageVersion
-		{
-			get => GetProperty<string>();
-			set => SetProperty(value);
-		}
+        public string? SearchTerm
+        {
+            get => GetProperty<string>();
+            set => SetProperty(value);
+        }
+        public bool IncludePrerelease
+        {
+            get => GetProperty<bool>();
+            set => SetProperty(value);
+        }
+        public PaginatedCollection<PackageData>? NugetPackages
+        {
+            get => GetProperty<PaginatedCollection<PackageData>>();
+            set => SetProperty(value);
+        }
+        public PackageData? SelectedPackage
+        {
+            get => GetProperty<PackageData>();
+            set => SetProperty(value);
+        }
+        public string[]? SelectedPackageVersions
+        {
+            get => GetProperty<string[]>();
+            set => SetProperty(value);
+        }
+        public string? SelectedPackageVersion
+        {
+            get => GetProperty<string>();
+            set => SetProperty(value);
+        }
 
-		public ICommand RefreshCommand => GetCommand(Refresh);
-		public ICommand LoadPackageVersionsCommand => GetCommand(LoadPackageVersions);
-		public ICommand OpenPackageFromFeedCommand => GetCommand(OpenPackageFromFeed);
+        public ICommand RefreshCommand => GetCommand(Refresh);
+        public ICommand LoadPackageVersionsCommand => GetCommand(LoadPackageVersions);
+        public ICommand OpenPackageFromFeedCommand => GetCommand(OpenPackageFromFeed);
 
-		public FeedPackagePickerViewModel() : this(null) { }
-        public FeedPackagePickerViewModel(string searchTerm = null)
+        public FeedPackagePickerViewModel() : this(null) { }
+        public FeedPackagePickerViewModel(string? searchTerm = null)
         {
             Title = $"Packages | {NuGetPackageExplorer.Constants.AppName}";
             Location = !string.IsNullOrWhiteSpace(searchTerm)
@@ -80,68 +64,68 @@ namespace NupkgExplorer.Presentation.Content
 
             using (SuppressPropertyChangedNotifications())
             {
-                SearchTerm = searchTerm;
+                SearchTerm = searchTerm!;
             }
 
-			// auto refresh when SearchTerm changed
-			this.WhenAnyValue(x => x.SearchTerm, x => x.IncludePrerelease)
-				.DistinctUntilChanged()
-				.Throttle(TimeSpan.FromMilliseconds(300))
-				.SubscribeToCommand(RefreshCommand);
+            // auto refresh when SearchTerm changed
+            this.WhenAnyValue(x => x.SearchTerm, x => x.IncludePrerelease)
+                .DistinctUntilChanged()
+                .Throttle(TimeSpan.FromMilliseconds(300))
+                .SubscribeToCommand(RefreshCommand);
 
-			this.WhenAnyValue(x => x.SelectedPackage)
-				.Subscribe(package =>
-				{
-					SelectedPackageVersion = null;
-					SelectedPackageVersions = null;
-				});
+            this.WhenAnyValue(x => x.SelectedPackage)
+                .Subscribe(package =>
+                {
+                    SelectedPackageVersion = null!;
+                    SelectedPackageVersions = null!;
+                });
 
-			Task.Run(Refresh);
-		}
+            Task.Run(Refresh);
+        }
 
-		public async Task Refresh()
-		{
-			var nuget = Container.GetExportedValue<INugetEndpoint>();
+        public Task Refresh()
+        {
+            var nuget = Container.GetExportedValue<INugetEndpoint>()!;
 
-			SelectedPackage = null;
-			NugetPackages = new PaginatedCollection<PackageData>(
-				async (start, size) =>
-				{
-					var response = await nuget.Search(SearchTerm, skip: start, take: size, prerelease: IncludePrerelease);
+            var tcs = new TaskCompletionSource();
+            SelectedPackage = null!;
+            NugetPackages = new PaginatedCollection<PackageData>(
+                async (start, size) =>
+                {
+                    var response = await nuget.Search(SearchTerm, skip: start, take: size, prerelease: IncludePrerelease);
+                    return response.Content.Data;
+                },
+                pageSize: 25,
+                tcs
+            );
+            return tcs.Task;
+        }
 
-					return response.Content.Data;
-				},
-				pageSize: 25
-			);
-		}
+        public async Task LoadPackageVersions()
+        {
+            if (SelectedPackage == null) throw new ArgumentNullException(nameof(SelectedPackage));
 
-		public async Task LoadPackageVersions()
-		{
-			if (SelectedPackage == null) throw new ArgumentNullException(nameof(SelectedPackage));
+            async Task<IEnumerable<string>> GetVersions()
+            {
+                if (IncludePrerelease)
+                {
+                    var nuget = Container.GetExportedValue<INugetEndpoint>()!;
+                    var response = await nuget.ListVersions(SelectedPackage.Id);
 
-			async Task<IEnumerable<string>> GetVersions()
-			{
-				if (IncludePrerelease)
-				{
-					var nuget = Container.GetExportedValue<INugetEndpoint>();
-					var response = await nuget.ListVersions(SelectedPackage.Id);
+                    return response.Content.Versions;
+                }
+                else
+                {
+                    // PackageData.Versions contains only stable versions
+                    return SelectedPackage.Versions.Select(x => x.Version);
+                }
+            }
 
-					return response.Content.Versions;
-				}
-				else
-				{
-					// PackageData.Versions contains only stable versions
-					return SelectedPackage.Versions.Select(x => x.Version);
-				}
-			}
-
-			SelectedPackageVersions = (await GetVersions())
-				.Reverse() // sort latest on top
-				.ToArray();
-			SelectedPackageVersion =
-				SelectedPackageVersions.FirstOrDefault(x => string.Equals(x, SelectedPackage.Version, StringComparison.InvariantCultureIgnoreCase)) ??
-				SelectedPackageVersions.FirstOrDefault();
-		}
+            SelectedPackageVersions = [.. (await GetVersions()).Reverse()];
+            SelectedPackageVersion =
+                SelectedPackageVersions.FirstOrDefault(x => string.Equals(x, SelectedPackage.Version, StringComparison.InvariantCultureIgnoreCase)) ??
+                SelectedPackageVersions.FirstOrDefault()!;
+        }
 
         public async Task OpenPackageFromFeed(object? parameter)
         {
@@ -154,13 +138,13 @@ namespace NupkgExplorer.Presentation.Content
                     : (SelectedPackageVersion ?? package.Version);
                 var identity = new PackageIdentity(package.Id, NuGetVersion.Parse(version));
                 var inspectVM = await InspectPackageViewModel.CreateFromRemotePackage(identity);
-
-                NavigationService.NavigateTo(inspectVM);
+                if (inspectVM != null)
+                    NavigationService.NavigateTo(inspectVM);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("OpenPackageFromFeed exception " + e);
             }
-		}
-	}
+        }
+    }
 }

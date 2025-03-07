@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
+
 using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
+
 using NuGetPackageExplorer.Types;
+
 using NuGetPe;
+
 using PackageExplorerViewModel.PackageSearch;
 
 namespace PackageExplorerViewModel
@@ -18,7 +18,7 @@ namespace PackageExplorerViewModel
     {
         private const int PackageListPageSize = 15;
 
-        private IQueryContext<IPackageSearchMetadata>? _currentQuery;
+        private ShowLatestVersionQueryContext<IPackageSearchMetadata>? _currentQuery;
         private string? _currentSearch;
         private FeedType _feedType;
         private MruPackageSourceManager? _packageSourceManager;
@@ -459,7 +459,7 @@ namespace PackageExplorerViewModel
 
         private void CheckDisposed()
         {
-            if (_disposed) throw new ObjectDisposedException(nameof(PackageChooserViewModel));
+            ObjectDisposedException.ThrowIf(_disposed, nameof(PackageChooserViewModel));
         }
     }
 }

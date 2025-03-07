@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using NuGetPe.AssemblyMetadata;
 
 namespace PackageExplorerViewModel
@@ -37,7 +38,7 @@ namespace PackageExplorerViewModel
             {
 
             }
-            
+
         }
 
         public PdbType PdbType { get; private set; }
@@ -50,7 +51,7 @@ namespace PackageExplorerViewModel
 
         public bool HasCompilerFlags { get; private set; }
 
-        private static IReadOnlyList<AssemblyDebugSourceDocumentViewModel> CreateSourcesViewModels(AssemblyDebugData debugData)
+        private static List<AssemblyDebugSourceDocumentViewModel> CreateSourcesViewModels(AssemblyDebugData debugData)
         {
             var list = new List<AssemblyDebugSourceDocumentViewModel>(debugData.Sources.Count);
 

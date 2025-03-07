@@ -8,7 +8,7 @@ using Microsoft.UI.Xaml.Data;
 
 namespace NupkgExplorer.Views.Converters
 {
-	public class EnumerableConverter : IValueConverter
+	public partial class EnumerableConverter : IValueConverter
 	{
 		public enum ConvertMethod { StringJoin, Any, None }
 

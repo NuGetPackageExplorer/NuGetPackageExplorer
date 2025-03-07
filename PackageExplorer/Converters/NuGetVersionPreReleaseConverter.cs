@@ -19,7 +19,7 @@ namespace PackageExplorer
 #if !HAS_UNO && !USE_WINUI
     [ValueConversion(typeof(NuGetVersion), typeof(Visibility))]
 #endif
-    public class NuGetVersionPreReleaseConverter : IValueConverter
+    public partial class NuGetVersionPreReleaseConverter : IValueConverter
     {
 #region IValueConverter Members
 

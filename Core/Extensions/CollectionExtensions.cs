@@ -22,7 +22,7 @@ namespace NuGetPe
             ArgumentNullException.ThrowIfNull(collection);
             ArgumentNullException.ThrowIfNull(match);
 
-            IList<T> toRemove = collection.Where(match).ToList();
+            List<T> toRemove = [.. collection.Where(match)];
             foreach (var item in toRemove)
             {
                 collection.Remove(item);

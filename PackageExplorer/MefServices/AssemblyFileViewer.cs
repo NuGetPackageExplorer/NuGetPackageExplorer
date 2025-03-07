@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-using NuGetPackageExplorer.Types;
+﻿using NuGetPackageExplorer.Types;
 
 using NuGetPe;
 using NuGetPe.AssemblyMetadata;
@@ -144,7 +139,11 @@ namespace PackageExplorer
                 };
 #endif
             }
-            catch (Exception e)
+            catch (Exception
+#if HAS_UNO
+            e
+#endif
+            )
             {
 #if HAS_UNO
                 this.Log().Error("Failed to generate view", e);
