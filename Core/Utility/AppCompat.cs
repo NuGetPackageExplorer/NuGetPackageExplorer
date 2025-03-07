@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 
 [assembly: DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
 
@@ -39,6 +40,7 @@ namespace NuGetPe
             };
         }
 
+        [MethodImpl(MethodImplOptions.NoInlining)] // We need this to be a method call so the dll isn't attempted to be loaded
         private static bool GetIsWin10S()
         {
             GetProductInfo(
