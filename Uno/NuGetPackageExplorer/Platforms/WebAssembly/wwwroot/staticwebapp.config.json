@@ -12,6 +12,18 @@
   },
   "routes": [
     {
+      "route": "/_framework/blazor.boot.*",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=3600"
+      }
+    },
+    {
+      "route": "/_framework/dotnet.*",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=3600"
+      }
+    },
+    {
       "route": "/_framework/*",
       "headers": {
         "cache-control": "public, immutable, max-age=31536000"
