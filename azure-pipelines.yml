@@ -70,6 +70,10 @@ stages:
         $manifest.Package.Identity.Version = "$(GitBuildVersionSimple).0"
         $manifest.Save(".\PackageExplorer.Package\Package-Nightly.appxmanifest")
 
+        [xml]$versionFile = Get-Content ".\Uno\NuGetPackageExplorer\Assets\version.xml"
+        $versionFile.Application.Version = "$(Build.BuildNumber)"
+        $versionFile.Save(".\Uno\NuGetPackageExplorer\Assets\version.xml")
+
         # Update badges
         [xml]$badge = Get-Content ".\Build\ci_badge.svg"
         $badge.svg.g[1].text[2].InnerText = "$(GitBuildVersionSimple).0"

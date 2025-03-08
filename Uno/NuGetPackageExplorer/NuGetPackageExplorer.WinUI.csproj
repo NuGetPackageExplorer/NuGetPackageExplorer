@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>
+    <TargetFrameworks>   
       net9.0-windows10.0.19041;
       net9.0-desktop;
-      net9.0-browserwasm;
+      net9.0-browserwasm
     </TargetFrameworks>
 
     <OutputType>Exe</OutputType>
@@ -18,8 +18,8 @@
     <!-- App Identifier -->
     <ApplicationId>info.nuget.nugetpackageexplorer</ApplicationId>
     <!-- Versions -->
-    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>$(BuildVersionSimple)</ApplicationDisplayVersion>
+    <ApplicationVersion>$(BuildVersionSimple)</ApplicationVersion>
 
   </PropertyGroup>
 
