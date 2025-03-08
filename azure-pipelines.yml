@@ -71,7 +71,7 @@ stages:
         $manifest.Save(".\PackageExplorer.Package\Package-Nightly.appxmanifest")
 
         [xml]$versionFile = Get-Content ".\Uno\NuGetPackageExplorer\Assets\version.xml"
-        $versionFile.Version = "$(Build.BuildNumber)"
+        $versionFile.Application.Version = "$(Build.BuildNumber)"
         $versionFile.Save(".\Uno\NuGetPackageExplorer\Assets\version.xml")
 
         # Update badges
