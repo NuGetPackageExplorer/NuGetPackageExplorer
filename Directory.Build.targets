@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <SigningNotSupported Condition=" '$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'netcoreapp2.1' OR '$(TargetFramework)' == 'netstandard2.1' OR '$(TargetFramework)' == 'netcoreapp3.1'">true</SigningNotSupported>
+    <SigningNotSupported Condition="$(TargetFramework.Contains('-browser'))">true</SigningNotSupported>
     <SigningNotSupported Condition=" '$(SigningNotSupported)' != 'true'">false</SigningNotSupported>
   </PropertyGroup>
 
