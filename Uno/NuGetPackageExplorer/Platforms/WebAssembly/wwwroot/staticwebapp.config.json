@@ -18,7 +18,13 @@
       }
     },
     {
-      "route": "/_framework/dotnet.*",
+      "route": "/_framework/dotnet.js",
+      "headers": {
+        "cache-control": "must-revalidate, max-age=3600"
+      }
+    },
+    {
+      "route": "/_framework/dotnet.js.*",
       "headers": {
         "cache-control": "must-revalidate, max-age=3600"
       }
@@ -34,6 +40,10 @@
       "headers": {
         "cache-control": "public, immutable, max-age=31536000"
       }
+    },
+    {
+      "route": "/packages*",
+      "rewrite": "/index.html"
     },
     {
       "route": "/*",
