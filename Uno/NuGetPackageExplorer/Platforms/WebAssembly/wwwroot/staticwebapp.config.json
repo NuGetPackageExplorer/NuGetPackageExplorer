@@ -42,10 +42,6 @@
       }
     },
     {
-      "route": "/packages*",
-      "rewrite": "/index.html"
-    },
-    {
       "route": "/*",
       "headers": {
         "cache-control": "must-revalidate, max-age=3600"
