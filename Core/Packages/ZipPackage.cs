@@ -354,6 +354,7 @@ namespace NuGetPe
 
         public async Task VerifySignatureAsync()
         {
+#if IS_SIGNING_SUPPORTED
             using var reader = new PackageArchiveReader(_streamFactory(), false);
             var signed = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
             if (signed)
@@ -369,6 +370,10 @@ namespace NuGetPe
 
                 VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None).ConfigureAwait(false);
             }
+#else
+            VerificationResult = null!;
+            await Task.CompletedTask; // no-op for the warning due to the ifdef
+#endif
         }
 
         private void EnsureManifest()
