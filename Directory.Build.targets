@@ -9,20 +9,15 @@
     <Product Condition="'$(IsTypesProject)' != 'true'">$(Product) ($(Configuration)) ($(Platform))</Product>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <SigningNotSupported Condition="$(TargetFramework.Contains('-browser'))">true</SigningNotSupported>
-    <SigningNotSupported Condition=" '$(SigningNotSupported)' != 'true'">false</SigningNotSupported>
-  </PropertyGroup>
-
-  <PropertyGroup Condition=" '$(SigningNotSupported)' != 'true' ">
-    <DefineConstants>$(DefineConstants);IS_SIGNING_SUPPORTED</DefineConstants>
-  </PropertyGroup>
-
   <ItemGroup>
     <!-- Remove these bc they conflict with the WPF ones we use by default -->
     <Using Remove="System.Drawing" />
     <Using Remove="System.Windows.Forms" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <EnableSourceLink Condition="'$(Configuration)' == 'Debug'">false</EnableSourceLink>
+  </PropertyGroup>
 
   <Target Name="AddCommitHashToAssemblyAttributes" BeforeTargets="GetAssemblyAttributes">
     <ItemGroup>

@@ -322,7 +322,6 @@ namespace NuGetPe
                     }
                     else
                     {
-#if IS_SIGNING_SUPPORTED
                         var sig = await reader.GetPrimarySignatureAsync(CancellationToken.None).ConfigureAwait(false);
 
                         // Author signatures must be the primary, but they can contain
@@ -341,7 +340,6 @@ namespace NuGetPe
                         {
                             RepositorySignature = new RepositorySignatureInfo(sig);
                         }
-#endif
                     }
                 }
                 catch (SignatureException)
@@ -354,7 +352,8 @@ namespace NuGetPe
 
         public async Task VerifySignatureAsync()
         {
-#if IS_SIGNING_SUPPORTED
+            if (!AppCompat.IsSupported(RuntimeFeature.Cryptography)) return;
+
             using var reader = new PackageArchiveReader(_streamFactory(), false);
             var signed = await reader.IsSignedAsync(CancellationToken.None).ConfigureAwait(false);
             if (signed)
@@ -370,10 +369,6 @@ namespace NuGetPe
 
                 VerificationResult = await verifier.VerifySignaturesAsync(reader, SignedPackageVerifierSettings.GetVerifyCommandDefaultPolicy(), CancellationToken.None).ConfigureAwait(false);
             }
-#else
-            VerificationResult = null!;
-            await Task.CompletedTask; // no-op for the warning due to the ifdef
-#endif
         }
 
         private void EnsureManifest()

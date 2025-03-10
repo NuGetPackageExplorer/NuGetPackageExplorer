@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Security.Cryptography.Pkcs;
 
 using NuGet.Packaging.Signing;
@@ -12,11 +9,12 @@ namespace NuGetPe
 {
     public class SignatureInfo
     {
-#if IS_SIGNING_SUPPORTED
         private readonly Signature? _signature;
 
-        public SignatureInfo(Signature signature)
+        public SignatureInfo(Signature? signature)
         {
+            if (!AppCompat.IsSupported(RuntimeFeature.Cryptography)) return;
+
             _signature = signature ?? throw new ArgumentNullException(nameof(signature));
 
             try
@@ -33,14 +31,7 @@ namespace NuGetPe
             {
             }
         }
-#endif
 
-        /// <remarks>
-        /// Alternative ctor without any dependency to System.Security.Cryptography namespace
-        /// note: IS_SIGNING_SUPPORTED isn't accurate here.
-        /// As wasm (local, not ci) uses .net 5.0, but doesn't support it.
-        /// In fact, <see cref="AppCompat.IsSupported(RuntimeFeature)"/> should be used instead.
-        /// </remarks>
         public SignatureInfo(
             TBSCertificate? signerCertificate,
             DateTimeOffset? timestamp,
@@ -51,12 +42,9 @@ namespace NuGetPe
             TimestampSignerCertificate = timestampSignerCertificate;
         }
 
-        public SignerInfo? SignerInfo =>
-#if !IS_SIGNING_SUPPORTED
+        public SignerInfo? SignerInfo => AppCompat.IsSupported(RuntimeFeature.Cryptography) ?
+            _signature?.SignerInfo :
             null;
-#else
-            _signature?.SignerInfo;
-#endif
 
         public TBSCertificate? SignerCertificate { get; }
 
@@ -68,21 +56,16 @@ namespace NuGetPe
 
         public TBSCertificate? TimestampSignerCertificate { get; }
 
-        public string? FriendlyName =>
-#if !IS_SIGNING_SUPPORTED
+        public string? FriendlyName => AppCompat.IsSupported(RuntimeFeature.Cryptography) ?
+            _signature?.FriendlyName :
             "Unknown";
-#else
-            _signature?.FriendlyName;
-#endif
     }
 
     public class PublisherSignatureInfo : SignatureInfo
     {
-#if IS_SIGNING_SUPPORTED
         public PublisherSignatureInfo(Signature signature) : base(signature)
         {
         }
-#endif
 
         // See remarks on base ctor
         public PublisherSignatureInfo(
@@ -97,15 +80,15 @@ namespace NuGetPe
 
     public class RepositorySignatureInfo : SignatureInfo
     {
-#if IS_SIGNING_SUPPORTED
-        public RepositorySignatureInfo(Signature repositorySignature) : base(repositorySignature)
+        public RepositorySignatureInfo(Signature? repositorySignature) : base(repositorySignature)
         {
+            if (!AppCompat.IsSupported(RuntimeFeature.Cryptography)) return;
+
             var signature = repositorySignature as IRepositorySignature ?? throw new ArgumentException("Not a repository signature", nameof(repositorySignature));
 
             V3ServiceIndexUrl = signature.V3ServiceIndexUrl;
             PackageOwners = signature.PackageOwners;
         }
-#endif
 
         // See remarks on base ctor
         public RepositorySignatureInfo(
@@ -119,7 +102,7 @@ namespace NuGetPe
             Type = SignatureType.Repository;
 
             V3ServiceIndexUrl = v3ServiceIndexUrl;
-            PackageOwners = packageOwners ?? Array.Empty<string>();
+            PackageOwners = packageOwners ?? [];
         }
 
         public Uri? V3ServiceIndexUrl { get; }
