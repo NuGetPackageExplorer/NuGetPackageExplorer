@@ -20,7 +20,20 @@
     <!-- Versions -->
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     <ApplicationVersion>1</ApplicationVersion>
+    
+    <!--
+		Uncomment to use skia rendering
+		-->
+		<UseSkiaRendering>true</UseSkiaRendering>
 
+    <IsSkiaWasm Condition="'$(UseSkiaRendering)'=='true' AND '$(TargetFramework)'=='net9.0-browserwasm'">true</IsSkiaWasm>
+    <IsSkiaWasm Condition="'$(IsSkiaWasm)'==''">false</IsSkiaWasm>
+    
+    <DefineConstants Condition="$(IsSkiaWasm)">$(DefineConstants);IS_WASM_SKIA</DefineConstants>
+
+    <UnoFeatures Condition="$(IsSkiaWasm)">$(UnoFeatures)SkiaRenderer;</UnoFeatures>
+
+    <SkiaVersion>2.88.9</SkiaVersion>
   </PropertyGroup>
 
   <Choose>
@@ -31,7 +44,7 @@
         <MsdlApiBaseLocation>api/MsdlProxy</MsdlApiBaseLocation>
         <MsdlApiBaseLocation Condition="'$(Configuration)'=='Debug'">http://localhost:7071/api/MsdlProxy</MsdlApiBaseLocation>
         
-        <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
+        <DefineConstants Condition=" !$(IsSkiaWasm) ">$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
 
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
         <WasmBuildNative>true</WasmBuildNative>
@@ -57,9 +70,13 @@
         <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/ai.2.6.3.min.js" />
         <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/azure-app-insights.js" />
       </ItemGroup>
-      
+
       <ItemGroup>
-        <PackageReference Include="Uno.Monaco.Editor" />
+        <WasmShellNativeCompile Include="Platforms\WebAssembly\NativePolyfill\libc-polyfill.cpp" />
+      </ItemGroup>
+
+      <ItemGroup>
+        <PackageReference Condition=" !$(IsSkiaWasm) " Include="Uno.Monaco.Editor" />
       </ItemGroup>
 
     </When>
@@ -101,6 +118,7 @@
       $(UnoGenerateAssetsManifestDependsOn);
       GenerateUnoWasmAssets;
     </UnoGenerateAssetsManifestDependsOn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
 </Project>
