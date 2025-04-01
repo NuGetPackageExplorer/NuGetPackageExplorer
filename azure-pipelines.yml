@@ -33,18 +33,13 @@ stages:
     steps:
 
     - task: UseDotNet@2
-      displayName: 'Use .NET 9 SDK'
-      inputs:
-        version: 9.x
-
-    - task: UseDotNet@2
       displayName: 'Use .NET 10 SDK'
       inputs:
         includePreviewVersions: true
         version: 10.x
 
-    - script: dotnet workload restore --include-previews --from-previous-sdk --project .\Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj
-      displayName: Restore workloads
+    - script: dotnet workload install wasm-tools wasm-tools-net9
+      displayName: Install workloads
 
     - task: DotNetCoreCLI@2
       inputs:
