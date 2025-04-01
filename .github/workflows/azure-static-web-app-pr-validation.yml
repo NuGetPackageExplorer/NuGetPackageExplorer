@@ -10,6 +10,7 @@ jobs:
   build_and_deploy_job:
     env:
       DIST_PATH: Uno/NuGetPackageExplorer/bin/Release/net9.0-browserwasm/publish/wwwroot
+      API_DIST_PATH: Uno/Api/bin/Release/net8.0/publish
 
     if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.repository == 'NuGetPackageExplorer/NuGetPackageExplorer'
     runs-on: ubuntu-latest
@@ -22,36 +23,47 @@ jobs:
           submodules: true
 
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
+          dotnet-quality: 'preview'
 
       - run: |
-          dotnet workload install wasm-tools
+          dotnet workload install wasm-tools wasm-tools-net9
 
       - run: |
           cd Uno/NuGetPackageExplorer
           dotnet publish -c Release -f net9.0-browserwasm
+          cd ../Api
+          dotnet publish -c Release 
 
       - uses: actions/upload-artifact@v4
         with:
           name: wasm-site
           path: ${{ env.DIST_PATH }}
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: api
+          path: ${{ env.API_DIST_PATH }}
+
       - name: Build And Deploy
         id: builddeploy_uno
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CI }}
-          skip_deploy_on_missing_secrets: true
           repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "${{ env.DIST_PATH }}" # App source code path
-          api_location: "Uno/Api" # Api source code path - optional
+          api_location: "${{ env.API_DIST_PATH }}" # Api source code path - optional
+          skip_api_build: true # Skip building api project - optional
+          skip_app_build: true # Skip building app project - optional
           output_location: "" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+        env:
+          skip_deploy_on_missing_secrets: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -62,5 +74,7 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CI }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CI }}          
           action: "close"
+        env:
+          skip_deploy_on_missing_secrets: true
