@@ -235,16 +235,17 @@ stages:
       artifact: SigningScripts
 
     - task: UseDotNet@2
-      displayName: 'Use .NET SDK 9.x'
+      displayName: 'Use .NET 10 SDK'
       inputs:
-        version: 9.x
+        includePreviewVersions: true
+        version: 10.x
 
     # Install the code signing tool
     - task: DotNetCoreCLI@2
       inputs:
         command: custom
         custom: tool
-        arguments: install sign --tool-path . --version 0.9.1-beta.24529.1
+        arguments: install sign --tool-path . --prerelease
       displayName: Install SignTool tool
 
     - task: AzureCLI@2
