@@ -82,7 +82,11 @@ namespace NuGetPe
     {
         public RepositorySignatureInfo(Signature? repositorySignature) : base(repositorySignature)
         {
-            if (!AppCompat.IsSupported(RuntimeFeature.Cryptography)) return;
+            if (!AppCompat.IsSupported(RuntimeFeature.Cryptography))
+            {
+                PackageOwners = [];
+                return;
+            }
 
             var signature = repositorySignature as IRepositorySignature ?? throw new ArgumentException("Not a repository signature", nameof(repositorySignature));
 

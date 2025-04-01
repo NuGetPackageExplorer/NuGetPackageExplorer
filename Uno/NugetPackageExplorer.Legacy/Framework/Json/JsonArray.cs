@@ -1,10 +1,12 @@
-﻿using Newtonsoft.Json;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace NupkgExplorer.Framework.Json
 {
 
-    public partial class JsonArray<T> : JArray
+    public partial class JsonArray<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] T> : JArray
     {
         public T[] Items { get; }
 

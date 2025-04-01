@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using Newtonsoft.Json.Linq;
 
 using NupkgExplorer.Framework.Json;
 
@@ -45,7 +47,8 @@ namespace NupkgExplorer.Framework.Extensions
                 throw;
             }
         }
-        public static async Task<Json<T>> ReadAsJson<T>(this Task<HttpResponseMessage> task)
+        public static async Task<Json<T>> ReadAsJson<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)]
+        T>(this Task<HttpResponseMessage> task)
         {
             var response = await task;
             var content = await response.Content.ReadAsStringAsync();
@@ -60,7 +63,7 @@ namespace NupkgExplorer.Framework.Extensions
                 throw;
             }
         }
-        public static async Task<JsonArray<T>> ReadAsJsonArray<T>(this Task<HttpResponseMessage> task)
+        public static async Task<JsonArray<T>> ReadAsJsonArray<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] T>(this Task<HttpResponseMessage> task)
         {
             var response = await task;
             var content = await response.Content.ReadAsStringAsync();

@@ -16,7 +16,7 @@ namespace NupkgExplorer.Framework.Xml
     /// <remarks>Xml attributes may not be used for its original purpose.</remarks>
     public static class XmlConvert
     {
-        private static readonly Lazy<ILogger> Logger = new Lazy<ILogger>(typeof(XmlConvert).Log);
+        private static readonly Lazy<ILogger> Logger = new(typeof(XmlConvert).Log);
 
         /// <summary>
         /// Deserializes the XElement to the specified .NET type.
