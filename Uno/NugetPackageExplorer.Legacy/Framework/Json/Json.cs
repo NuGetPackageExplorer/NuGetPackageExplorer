@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Diagnostics.CodeAnalysis;
+
+using Newtonsoft.Json.Linq;
 
 namespace NupkgExplorer.Framework.Json
 {
-    public partial class Json<T> : JObject
+    public partial class Json<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] T> : JObject
     {
         public T Content { get; } = default!;
 
