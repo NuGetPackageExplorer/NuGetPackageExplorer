@@ -133,9 +133,9 @@ stages:
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'Zip'))
 
-    - publish: '$(build.sourcesdirectory)/Uno'
-      displayName: Publish Cors bypass Azure Function
-      artifact: CorsAzureFunction
+    - powershell: |
+        dotnet publish Uno\Api\Api.csproj  /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel)-Api.binlog
+      displayName: Build CORS Azure Function
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
     - powershell: |
@@ -168,9 +168,25 @@ stages:
         flattenFolders: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
+    - task: CopyFiles@2
+      displayName: Copy Api Package
+      inputs:
+        SourceFolder: '$(build.SourcesDirectory)/Uno/Api/bin/Release/net8.0/publish'
+        Contents: '**'
+        TargetFolder: $(build.SourcesDirectory)\artifacts\Api
+        CleanTargetFolder: false
+        OverWrite: false
+        flattenFolders: false
+      condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
+
     - publish: $(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)
       displayName: Publish Build Packages
       artifact: $(ReleaseChannel)
+
+    - publish: $(Build.SourcesDirectory)\artifacts\Api
+      displayName: Publish Api Package
+      artifact: CorsAzureFunction
+      condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
     - task: PublishBuildArtifacts@1
       inputs:

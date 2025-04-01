@@ -64,8 +64,6 @@ jobs:
           ###### End of Repository/Build Configurations ######
         env:
           skip_deploy_on_missing_secrets: true
-          PLATFORM_NAME: "dotnet"
-          PLATFORM_VERSION: "10.0.100-preview.2"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -78,3 +76,5 @@ jobs:
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CI }}          
           action: "close"
+        env:
+          skip_deploy_on_missing_secrets: true
