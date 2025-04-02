@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -80,6 +77,16 @@ namespace PackageExplorer
                         "v9.0-maccatalyst", "net9.0-maccatalyst",
                         "v9.0-tizen", "net9.0-tizen",
                         "v9.0-windows", "net9.0-windows",
+
+                        // .NET 10 References
+                        "v10.0","net10.0",
+                        "v10.0-android", "net10.0-android",
+                        "v10.0-ios", "net10.0-ios",
+                        "v10.0-macos", "net10.0-macos",
+                        "v10.0-tvos", "net10.0-tvos",
+                        "v10.0-maccatalyst", "net10.0-maccatalyst",
+                        "v10.0-tizen", "net10.0-tizen",
+                        "v10.0-windows", "net10.0-windows",
                     }
                 ),
 

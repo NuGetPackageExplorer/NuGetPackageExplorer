@@ -43,6 +43,10 @@ namespace PackageExplorer
             "lib\\netcoreapp3.1",
             "lib\\net5.0",
             "lib\\net6.0",
+            "lib\\net7.0",
+            "lib\\net8.0",
+            "lib\\net9.0",
+            "lib\\net10.0",
         };
 
         // %localappdata%/NuGet/PackageExplorerPlugins
