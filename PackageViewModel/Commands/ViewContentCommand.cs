@@ -146,20 +146,32 @@ namespace PackageExplorerViewModel
                 else
                 {
                     using var stream = StreamUtility.MakeSeekable(file.GetStream(), disposeOriginal: true);
-                    var peFile = new PeFile(stream);
-                    var certificate = CryptoUtility.GetSigningCertificate(peFile);
 
-                    if (certificate is not null)
+                    if (PeFile.IsPeFile(stream))
                     {
-                        sigs = new List<AuthenticodeSignature>(0);
-                        isValidSig = SignatureCheckResult.UnknownProvider;
+                        stream.Position = 0;
+
+                        var peFile = new PeFile(stream);
+                        var certificate = CryptoUtility.GetSigningCertificate(peFile);
+
+                        if (certificate is not null)
+                        {
+                            sigs = new List<AuthenticodeSignature>(0);
+                            isValidSig = SignatureCheckResult.UnknownProvider;
+                        }
+                        else
+                        {
+                            sigs = new List<AuthenticodeSignature>(0);
+                            isValidSig = SignatureCheckResult.NoSignature;
+                        }
+                        size = peFile.FileSize;
                     }
                     else
                     {
                         sigs = new List<AuthenticodeSignature>(0);
+                        size = stream.Length;
                         isValidSig = SignatureCheckResult.NoSignature;
                     }
-                    size = peFile.FileSize;
                 }
             }
 
