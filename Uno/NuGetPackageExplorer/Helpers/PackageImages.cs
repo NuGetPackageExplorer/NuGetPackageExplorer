@@ -1,6 +1,4 @@
-﻿using System;
-
-using Microsoft.UI.Xaml.Media.Imaging;
+﻿using Microsoft.UI.Xaml.Media.Imaging;
 
 namespace PackageExplorer
 {
@@ -12,12 +10,13 @@ namespace PackageExplorer
         static PackageImages()
 #pragma warning restore CA1810 // Initialize reference type static fields inline
         {
-            DefaultPackageIcon = new BitmapImage();
+            DefaultPackageIcon = new BitmapImage
+            {
+                UriSource = new Uri("ms-appx:///Assets/Images/default_package_icon.png"),
 
-            DefaultPackageIcon.UriSource = new Uri("ms-appx:///Assets/default-package-icon.png");
-
-            DefaultPackageIcon.DecodePixelWidth = 32;
-            DefaultPackageIcon.DecodePixelHeight = 32;
+                DecodePixelWidth = 32,
+                DecodePixelHeight = 32
+            };
         }
     }
 }
