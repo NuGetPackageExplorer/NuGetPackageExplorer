@@ -13,7 +13,7 @@ namespace PackageExplorer
 {
     public class PackageIconConverterHelper
     {
-        private static readonly IconUrlConverterHelper IconUrlConverter = new IconUrlConverterHelper();
+        private static readonly IconUrlConverterHelper IconUrlConverter = new();
 
         public static BitmapSource? ConvertToImage(PackageViewModel package, string iconOrIconUrl)
         {

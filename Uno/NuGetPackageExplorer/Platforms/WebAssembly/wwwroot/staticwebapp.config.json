@@ -5,6 +5,8 @@
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
+      "/_framework/*",
+      "/package_*",
       "*.{css,js}",
       "*.{png}",
       "*.{c,h,wasm,clr,pdb,dat,txt}"
@@ -14,19 +16,25 @@
     {
       "route": "/_framework/blazor.boot.*",
       "headers": {
-        "cache-control": "must-revalidate, max-age=3600"
+        "cache-control": "no-cache, must-revalidate"
       }
     },
     {
       "route": "/_framework/dotnet.js",
       "headers": {
-        "cache-control": "must-revalidate, max-age=3600"
+        "cache-control": "no-cache, must-revalidate"
       }
     },
     {
       "route": "/_framework/dotnet.js.*",
       "headers": {
-        "cache-control": "must-revalidate, max-age=3600"
+        "cache-control": "no-cache, must-revalidate"
+      }
+    },
+    {
+      "route": "/_framework/dotnet.runtime.js.*",
+      "headers": {
+        "cache-control": "no-cache, must-revalidate"
       }
     },
     {
@@ -39,6 +47,24 @@
       "route": "/package_*",
       "headers": {
         "cache-control": "public, immutable, max-age=31536000"
+      }
+    },
+    {
+      "route": "/service-worker.*",
+      "headers": {
+        "cache-control": "no-cache, must-revalidate"
+      }
+    },
+    {
+      "route": "/index.*",
+      "headers": {
+        "cache-control": "no-cache, must-revalidate"
+      }
+    },
+    {
+      "route": "/manifest.*",
+      "headers": {
+        "cache-control": "no-cache, must-revalidate"
       }
     },
     {
