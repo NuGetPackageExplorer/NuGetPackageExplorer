@@ -12,7 +12,7 @@ the release version with no interference and will automatically update.
 
 | Build Number | Link |
 | ------------ | ---- |
-| [![Nightly build number](https://npenightly.blob.core.windows.net/nightly/ci_badge.svg?q=1)](https://npenightly.blob.core.windows.net/nightly/install.html)| [Install](https://npenightly.blob.core.windows.net/nightly/PackageExplorer.Package.appinstaller)
+| [![Nightly build number](https://npenightly.blob.core.windows.net/nightly/ci_badge.svg?q=1)](https://npenightly.blob.core.windows.net/nightly/PackageExplorer.Package.appinstaller)| [Install](https://npenightly.blob.core.windows.net/nightly/PackageExplorer.Package.appinstaller)
 | [![Stable build number](https://npenightly.blob.core.windows.net/store/stable_badge.svg?q=1)](https://www.microsoft.com/store/apps/9wzdncrdmdm3) | [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) |
 | [![Chocolatey build number](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg)](https://chocolatey.org/packages/NugetPackageExplorer) | [Chocolatey](https://chocolatey.org/packages/NugetPackageExplorer) |
 | ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/dotnet-validate) | [dotnet-validate CLI](https://www.nuget.org/packages/dotnet-validate) |
