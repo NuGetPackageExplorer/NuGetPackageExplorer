@@ -17,10 +17,12 @@ namespace Api
     public class MsdlProxy
     {
         private readonly ILogger<MsdlProxy> _log;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public MsdlProxy(ILogger<MsdlProxy> log)
+        public MsdlProxy(ILogger<MsdlProxy> log, IHttpClientFactory httpClientFactory)
         {
             _log = log;
+            _httpClientFactory = httpClientFactory;
         }
 
         [Function("MsdlProxy")]
@@ -32,6 +34,14 @@ namespace Api
             Debug.Assert(_log != null);
 
             var key = req.Query["symbolkey"];
+            if (string.IsNullOrEmpty(key))
+            {
+                _log.LogWarning("Symbol key is missing in the request.");
+                var badRequestResponse = req.CreateResponse(HttpStatusCode.BadRequest);
+                await badRequestResponse.WriteStringAsync("Symbol key is required.");
+                return badRequestResponse;
+            }
+
             _log.LogInformation($"Symbol request for {key}");
 
             var checksum = req.Headers.TryGetValues("SymbolChecksum", out var checksums)
@@ -53,24 +63,38 @@ namespace Api
 
             using var cancellationSource = CancellationTokenSource.CreateLinkedTokenSource(hostCancellationToken, req.FunctionContext.CancellationToken);
 
-            using var httpClient = new HttpClient();
+            try
+            {
+                var httpClient = _httpClientFactory.CreateClient();
+                using var response = await httpClient.SendAsync(pdbRequest, cancellationSource.Token).ConfigureAwait(false);
 
-            using var response = await httpClient.SendAsync(pdbRequest, cancellationSource.Token).ConfigureAwait(false);
+                if (!response.IsSuccessStatusCode)
+                {
+                    var errorResponse = req.CreateResponse(response.StatusCode);
+                    var errorContent = await response.Content.ReadAsStringAsync(cancellationSource.Token);
+                    await errorResponse.WriteStringAsync(errorContent, cancellationSource.Token);
+                    return errorResponse;
+                }
 
-            response.EnsureSuccessStatusCode();
+                var pdbStream = new MemoryStream();
+                await response.Content.CopyToAsync(pdbStream, cancellationSource.Token).ConfigureAwait(false);
+                pdbStream.Position = 0;
 
-            var pdbStream = new MemoryStream();
+                var resp = req.CreateResponse(HttpStatusCode.OK);
+                resp.Headers.Add("Cache-Control", "public, immutable, max-age=31536000");
+                resp.Headers.Add("Content-Type", "application/octet-stream");
 
-            await response.Content.CopyToAsync(pdbStream, cancellationSource.Token).ConfigureAwait(false);
-            pdbStream.Position = 0;
+                await resp.WriteBytesAsync(pdbStream.ToArray(), cancellationSource.Token);
 
-            var resp = req.CreateResponse(HttpStatusCode.OK);
-            resp.Headers.Add("Cache-Control", "public, immutable, max-age=31536000");
-            resp.Headers.Add("Content-Type", "application/octet-stream");
-
-            await resp.WriteBytesAsync(pdbStream.ToArray());
-
-            return resp;
+                return resp;
+            }
+            catch (Exception ex)
+            {
+                _log.LogError(ex, "An error occurred while processing the request.");
+                var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
+                await errorResponse.WriteStringAsync("An internal server error occurred.");
+                return errorResponse;
+            }
         }
     }
 }
