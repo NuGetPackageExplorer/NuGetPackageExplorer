@@ -56,7 +56,8 @@
       
       <ItemGroup>
         <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/azure-app-insights.js" />
-        <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/ai.*" />
+        <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/ai.*.js" />
+        <Content Include="Platforms/WebAssembly/WasmScripts/ai.*.map"/>
       </ItemGroup>
       
       <ItemGroup>
