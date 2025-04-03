@@ -12,6 +12,9 @@
       "*.{c,h,wasm,clr,pdb,dat,txt}"
     ]
   },
+  "mimeTypes": {
+    ".map": "application/json"
+  },
   "routes": [
     {
       "route": "/_framework/blazor.boot.*",
