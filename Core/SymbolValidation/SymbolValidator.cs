@@ -687,22 +687,29 @@ namespace NuGetPe
                 {
                     request.Headers.Add("SymbolChecksum", string.Join(";", symbolKey.Checksums));
                 }
+                try
+                {
+                    using var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-                using var response = await _httpClient.SendAsync(request, cancellationToken).ConfigureAwait(false);
-                if (!response.IsSuccessStatusCode)
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        continue;
+                    }
+
+                    var pdbStream = new MemoryStream();
+#if NET5_0_OR_GREATER
+                    await response.Content!.CopyToAsync(pdbStream, cancellationToken).ConfigureAwait(false);
+#else
+                    await response.Content!.CopyToAsync(pdbStream).ConfigureAwait(false);
+#endif
+                    pdbStream.Position = 0;
+
+                    return pdbStream;
+                }
+                catch (HttpRequestException) // If there's a network error, ignore it as there's not much we can do
                 {
                     continue;
                 }
-
-                var pdbStream = new MemoryStream();
-#if NET5_0_OR_GREATER
-                await response.Content!.CopyToAsync(pdbStream, cancellationToken).ConfigureAwait(false);
-#else
-                await response.Content!.CopyToAsync(pdbStream).ConfigureAwait(false);
-#endif
-                pdbStream.Position = 0;
-
-                return pdbStream;
             }
 
             return null;
