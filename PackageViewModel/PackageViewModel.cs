@@ -279,9 +279,10 @@ namespace PackageExplorerViewModel
                     // This may be a URI or a file
                     if (Uri.TryCreate(value, UriKind.Absolute, out var result))
                     {
-                        if (result!.IsFile && File.Exists(value))
+                        if (AppCompat.IsSupported(NuGetPe.RuntimeFeature.FileSystemWatcher)
+                            && result!.IsFile
+                            && File.Exists(value))
                         {
-#if !HAS_UNO // UNO TODO: Use proper platform detection
                             // Clean up the old one since we can't reliably change the Filter without a race
                             if (_watcher != null)
                             {
@@ -301,7 +302,6 @@ namespace PackageExplorerViewModel
                             _watcher.Path = Path.GetDirectoryName(PackagePath)!;
                             _watcher.Filter = Path.GetFileName(PackagePath);
                             _watcher.EnableRaisingEvents = true;
-#endif
                         }
                     }
                 }
