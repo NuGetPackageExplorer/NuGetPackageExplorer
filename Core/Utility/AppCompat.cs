@@ -14,11 +14,7 @@ namespace NuGetPe
         public static bool IsWindows10S => isWindows10S.Value;
 
         public static bool IsWasm => RuntimeInformation.OSArchitecture ==
-#if NET5_0_OR_GREATER
             Architecture.Wasm;
-#else
-            (Architecture)4; // Architecture.Wasm definition is missing under NETSTANDARD2_1 & NETCOREAPP3_1
-#endif
 
         public static bool IsWindows => RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
 
@@ -35,6 +31,7 @@ namespace NuGetPe
                 RuntimeFeature.Cryptography => !IsWasm,
                 RuntimeFeature.NativeMethods => IsWindows,
                 RuntimeFeature.DiaSymReader => IsWindows,
+                RuntimeFeature.FileSystemWatcher => !IsWasm,
 
                 _ => throw new ArgumentOutOfRangeException($"Unknown feature flag: {feature}")
             };
@@ -80,5 +77,6 @@ namespace NuGetPe
         Cryptography,
         NativeMethods,
         DiaSymReader,
+        FileSystemWatcher,
     }
 }
