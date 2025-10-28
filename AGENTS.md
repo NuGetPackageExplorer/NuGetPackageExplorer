@@ -1,10 +1,18 @@
 # Repository Automation Documentation
 
-This document provides a comprehensive overview of all automated agents, bots, and workflows used in the NuGetPackageExplorer/NuGetPackageExplorer repository.
+This document provides a comprehensive overview of all automated agents, bots, and workflows used in the NuGetPackageExplorer/NuGetPackageExplorer repository, as well as essential development information for contributors and AI agents working on this codebase.
 
 ## Table of Contents
 
-- [Overview](#overview)
+- [Development Environment Setup](#development-environment-setup)
+  - [Prerequisites](#prerequisites)
+  - [Building the Project](#building-the-project)
+  - [Project Structure](#project-structure)
+  - [Testing](#testing)
+- [Coding Standards](#coding-standards)
+  - [Language Features](#language-features)
+  - [Code Style](#code-style)
+  - [Naming Conventions](#naming-conventions)
 - [Agents and Workflows](#agents-and-workflows)
   - [Azure Pipelines CI/CD](#azure-pipelines-cicd)
   - [GitHub Actions - Azure Static Web App PR Validation](#github-actions---azure-static-web-app-pr-validation)
@@ -13,6 +21,188 @@ This document provides a comprehensive overview of all automated agents, bots, a
 - [How to Add a New Agent](#how-to-add-a-new-agent)
 - [Best Practices](#best-practices)
 - [Change History](#change-history)
+
+## Development Environment Setup
+
+### Prerequisites
+
+**Required:**
+- **Visual Studio 2022** or later with support for Preview .NET Core SDKs
+- **.NET SDK 10.0.100-preview.2** (as specified in `global.json`)
+  - The project uses `allowPrerelease: true` and `rollForward: latestMajor`
+  - Download from [.NET Preview Downloads](https://dotnet.microsoft.com/download/dotnet)
+- **Uno Platform SDK 6.0.146** (configured via MSBuild SDK)
+
+**Optional but Recommended:**
+- **Git** for version control
+- **Azure CLI** for working with Azure resources (if deploying)
+
+### Building the Project
+
+**Command Line Build:**
+```bash
+# Restore dependencies
+dotnet restore
+
+# Build all projects
+dotnet build NuGetPackageExplorer.sln
+
+# Build specific configurations
+dotnet build -c Release
+dotnet build -c Debug
+```
+
+**Visual Studio:**
+1. Open `NuGetPackageExplorer.sln`
+2. Enable "Use previews of the .NET SDK" in Tools > Options > Environment > Preview Features
+3. Build > Build Solution (Ctrl+Shift+B)
+
+**Release Channels:**
+The project supports multiple build channels:
+- **Zip**: Standard desktop application
+- **Store**: Microsoft Store package
+- **Nightly**: Nightly builds with auto-update
+- **Choco**: Chocolatey package
+- **WebAssembly**: Uno Platform WebAssembly build
+- **UnoSkia**: Uno Platform Skia Desktop
+
+### Project Structure
+
+```
+NuGetPackageExplorer/
+├── Core/                    # Core NuGet package manipulation logic
+├── Types/                   # Shared types and interfaces
+├── PackageViewModel/        # View models and business logic
+├── PackageExplorer/         # Main WPF application (Windows Desktop)
+├── PackageExplorer.Package/ # MSIX packaging project
+├── Uno/                     # Uno Platform projects
+│   ├── NuGetPackageExplorer/ # Uno WebAssembly and Skia apps
+│   └── Api/                 # Azure Functions API for CORS
+├── dotnet-validate/         # CLI tool for package validation
+└── NuGetPeGenerators/       # Source generators
+```
+
+**Key Files:**
+- `Directory.Build.props` - Common MSBuild properties
+- `Directory.Build.targets` - Common MSBuild targets
+- `Directory.Packages.props` - Central package management (CPM)
+- `global.json` - SDK version pinning
+- `version.json` - Version management via Nerdbank.GitVersioning
+- `.editorconfig` - Code style and formatting rules
+- `NuGetPackageExplorer.ruleset` - Code analysis rules
+
+### Testing
+
+**Running Tests:**
+```bash
+# Run all tests
+dotnet test
+
+# Run tests with detailed output
+dotnet test --verbosity normal
+
+# Run tests for specific project
+dotnet test PackageViewModel/PackageViewModel.csproj
+```
+
+**Test Projects:**
+- Tests should be added alongside the code they test
+- Follow existing test patterns using xUnit or MSTest
+- Ensure tests pass locally before submitting PRs
+
+## Coding Standards
+
+### Language Features
+
+**C# Language Version:** `preview`
+- Use latest C# language features
+- Nullable reference types are **enabled** by default
+- Implicit usings are **enabled**
+- Unsafe blocks are **allowed** where necessary
+
+**Target Frameworks:**
+- Desktop (WPF): `net9.0-windows10.0.19041.0`
+- Uno WebAssembly: `net9.0-browserwasm`
+- Uno Desktop: `net9.0-desktop`
+- CLI Tool: `net8.0` and `net9.0`
+
+**Key PropertyGroup Settings:**
+```xml
+<LangVersion>preview</LangVersion>
+<Nullable>enable</Nullable>
+<ImplicitUsings>enable</ImplicitUsings>
+<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+<AnalysisMode>AllEnabledByDefault</AnalysisMode>
+<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+```
+
+### Code Style
+
+**Formatting (from `.editorconfig`):**
+
+**Indentation:**
+- Use **spaces**, not tabs
+- C# files: 4 spaces
+- XML/config files: 2 spaces
+- JSON/YAML: 2 spaces
+
+**Braces:**
+- New line before opening brace (`csharp_new_line_before_open_brace = all`)
+- New line before `else`, `catch`, `finally`
+
+**var Usage:**
+- Prefer `var` for built-in types
+- Prefer `var` when type is apparent
+- Prefer `var` elsewhere (suggestion level)
+
+**Expression Bodies:**
+- Methods: Do **not** use expression bodies
+- Properties/indexers/accessors: **Use** expression bodies
+- Lambdas: **Use** expression bodies
+
+**Null Checking:**
+- Use throw expressions where appropriate
+- Use null-conditional operators (`?.`)
+- Use null-coalescing operators (`??`)
+
+**Modern Features:**
+- Use object initializers
+- Use collection initializers
+- Use pattern matching over `is` with cast
+- Use pattern matching over `as` with null check
+
+### Naming Conventions
+
+**Interfaces:** `IPascalCase` (prefix with `I`)
+
+**Public Members:** `PascalCase`
+
+**Parameters:** `camelCase`
+
+**Constants:** `PascalCase`
+
+**Private Fields:** `_camelCase` (prefix with underscore)
+```csharp
+private int _myField;
+```
+
+**Static Readonly Fields:** `PascalCase`
+```csharp
+private static readonly string MyStaticField = "value";
+```
+
+**Modifier Order:**
+```
+public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async
+```
+
+**Suppressed Diagnostics:**
+- CA1303 (literals as localized parameters)
+- CA1051 (visible instance fields)
+- CA1031 (general exception types)
+- CA1515 (public types internal)
+- CA1054/CA1056 (Uri parameters)
+- CA2007 (ConfigureAwait)
 
 ## Overview
 
@@ -327,11 +517,15 @@ When adding a new automated agent or workflow to this repository:
 | Date | Change | Author |
 |------|--------|--------|
 | 2025-10-28 | Initial creation - Auto-discovered 4 agents (Azure Pipelines, GitHub Actions PR Validation, Dependabot, Release Drafter) | Automated Agent |
+| 2025-10-28 | Expanded with comprehensive development environment setup, coding standards, language features, and project structure information | Automated Agent |
 
 **Auto-Discovery Notes:**
 - Scanned `.github/workflows/` - Found 1 GitHub Action workflow
 - Scanned `.github/` - Found Dependabot and Release Drafter configurations
 - Scanned root directory - Found Azure Pipelines configuration
+- Extracted coding standards from `.editorconfig`
+- Extracted build configuration from `Directory.Build.props`, `global.json`
+- Documented project structure and testing approach
 - No Renovate, CircleCI, AppVeyor, or custom bot scripts detected
 - No CODEOWNERS file detected
 
@@ -340,4 +534,5 @@ When adding a new automated agent or workflow to this repository:
 - [ ] Verify Azure DevOps permissions and secret scope
 - [ ] Check if Release Drafter GitHub Action workflow exists
 - [ ] Review and update security considerations as needed
+- [ ] Verify .NET SDK version requirements are current
 - [ ] Add any additional agents not automatically detected
