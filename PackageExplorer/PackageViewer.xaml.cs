@@ -546,8 +546,10 @@ namespace PackageExplorer
             }
         }
 
-        private bool CanHandleDataObject(PackageFolder? folder, IDataObject data)
+        private bool CanHandleDataObject(PackageFolder? folder, IDataObject? data)
         {
+            if (data is null) return false;
+
             if (DataContext is PackageViewModel model)
             {
                 if (model.IsSigned || model.IsInEditFileMode || model.IsInEditMetadataMode)
@@ -586,8 +588,10 @@ namespace PackageExplorer
             return false;
         }
 
-        private bool HandleDataObject(PackageFolder? folder, IDataObject data, bool copy)
+        private bool HandleDataObject(PackageFolder? folder, IDataObject? data, bool copy)
         {
+            if (data is null) return false;
+
             if (!CanHandleDataObject(folder, data))
             {
                 return false;

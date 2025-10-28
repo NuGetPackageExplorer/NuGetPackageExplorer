@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net9.0</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net9.0-windows10.0.26100</TargetFrameworks>
+    <TargetFrameworks>net10.0</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net10.0-windows10.0.26100</TargetFrameworks>
     <Description>Contains ViewModel classes for the main application.</Description>
     <RootNamespace>PackageExplorerViewModel</RootNamespace>
     <AssemblyName>NuGetPackageExplorer.PackageViewModel</AssemblyName>
@@ -25,7 +25,7 @@
     <AdditionalFiles Include="**\*.resx" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net9.0'">
+  <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
     <PackageReference Remove="System.Windows.Extensions" />
   </ItemGroup>
 

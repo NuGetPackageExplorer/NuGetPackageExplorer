@@ -139,7 +139,7 @@ stages:
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
     - powershell: |
-        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-desktop /p:NpeAiInstrumentationKey="$(AppInsightsKeyWebAssembly)" /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
+        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net10.0-desktop /p:NpeAiInstrumentationKey="$(AppInsightsKeyWebAssembly)" /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Uno Desktop App
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
 
@@ -147,20 +147,20 @@ stages:
       displayName: Zip Desktop PackageExplorer files
       inputs:
         archiveType: zip
-        rootFolderOrFile: $(build.SourcesDirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-desktop
+        rootFolderOrFile: $(build.SourcesDirectory)/Uno/NuGetPackageExplorer/bin/Release/net10.0-desktop
         archiveFile: $(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\PackageExplorer.Desktop.$(Build.BuildNumber).zip
         includeRootFolder: false
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
 
     - powershell: |
-        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net9.0-browserwasm /p:NpeAiInstrumentationKey="$(AppInsightsKeyWebAssembly)" /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
+        dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net10.0-browserwasm /p:NpeAiInstrumentationKey="$(AppInsightsKeyWebAssembly)" /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Uno Wasm App
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
     - task: CopyFiles@2
       displayName: Copy WebAssembly Package
       inputs:
-        SourceFolder: '$(build.SourcesDirectory)/Uno/NuGetPackageExplorer/bin/Release/net9.0-browserwasm/publish/wwwroot'
+        SourceFolder: '$(build.SourcesDirectory)/Uno/NuGetPackageExplorer/bin/Release/net10.0-browserwasm/publish/wwwroot'
         Contents: '**'
         TargetFolder: $(build.SourcesDirectory)\artifacts\$(ReleaseChannel)
         CleanTargetFolder: false
@@ -171,7 +171,7 @@ stages:
     - task: CopyFiles@2
       displayName: Copy Api Package
       inputs:
-        SourceFolder: '$(build.SourcesDirectory)/Uno/Api/bin/Release/net8.0/publish'
+        SourceFolder: '$(build.SourcesDirectory)/Uno/Api/bin/Release/net10.0/publish'
         Contents: '**'
         TargetFolder: $(build.SourcesDirectory)\artifacts\Api
         CleanTargetFolder: false
