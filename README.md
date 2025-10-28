@@ -107,6 +107,8 @@ We accept pull requests (PR). Please open an issue to discuss first if there isn
 
 If you'd like to help, please check the GitHub [issues](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/issues). If you'd like to contribute more structurally, we would be happy to add you to our team!
 
+For information about automated workflows, bots, and CI/CD pipelines in this repository, see [AGENTS.md](./AGENTS.md).
+
 ## Issues
 
 Please check the [FAQ](https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/wiki) first and search for duplicate issues before reporting them. 
