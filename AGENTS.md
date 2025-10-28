@@ -8,7 +8,10 @@
 ## Build & Tooling
 - The repo pins SDK `10.0.100-rc.2` in `global.json`; keep preview features enabled (`LangVersion preview`, `Nullable enable`, `AllowUnsafeBlocks true`).
 - Standard desktop build: `dotnet build NuGetPackageExplorer.sln -c Release` (outputs under `artifacts/bin` due to `UseArtifactsOutput=true`).
-- UNO/Web builds require workloads: `dotnet workload install wasm-tools wasm-tools-net9` before `dotnet publish Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj -f net10.0-browserwasm`.
+- UNO/Web builds require workloads: `dotnet workload install wasm-tools wasm-tools-net9` before publishing Uno targets.
+- Uno desktop publish: `dotnet publish Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj -f net10.0-desktop -c Release`.
+- Uno WebAssembly publish: `dotnet publish Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj -f net10.0-browserwasm -c Release`.
+- All builds must complete without warnings or errors; treat warning-free output as the acceptance bar.
 - Azure pipelines drive packaging via `ReleaseChannel`; local publishes mimic this (`dotnet publish PackageExplorer/NuGetPackageExplorer.csproj /p:PublishProfile=...`).
 - Versions flow from `version.json` + Nerdbank.GitVersioning (`nbgv`) and land in manifests (`PackageExplorer.Package/*.appxmanifest`); adjust there instead of hardcoding.
 

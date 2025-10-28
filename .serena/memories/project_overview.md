@@ -1,0 +1,1 @@
+NuGet Package Explorer (NPE) lets users inspect, build, and validate NuGet packages. The repo contains the classic WPF desktop shell, a shared PackageViewModel layer, cross-platform Uno (WinUI, WASM, Skia) front ends, and a dotnet-validate CLI. Core logic lives in Core/ for reuse across all entrypoints.
