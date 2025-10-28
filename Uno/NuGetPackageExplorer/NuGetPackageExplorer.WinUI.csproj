@@ -89,9 +89,7 @@
 
   <ItemGroup>
     <PackageReference Include="System.Reactive" />
-
-    <PackageReference Include="Microsoft.Windows.Compatibility" />
-    <PackageReference Include="Uno.Core" />
+    <PackageReference Include="Microsoft.Windows.Compatibility" />    
   </ItemGroup>
   
   <Import Project="..\..\PackageExplorer\NugetPackageExplorer.Views.Shared.projitems" Label="Shared" />
