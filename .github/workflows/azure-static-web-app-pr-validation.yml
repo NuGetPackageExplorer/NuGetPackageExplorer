@@ -9,23 +9,23 @@ on:
 jobs:
   build_and_deploy_job:
     env:
-      DIST_PATH: Uno/NuGetPackageExplorer/bin/Release/net9.0-browserwasm/publish/wwwroot
-      API_DIST_PATH: Uno/Api/bin/Release/net8.0/publish
+      DIST_PATH: artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot
+      API_DIST_PATH: artifacts/publish/Api/release
 
     if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.repository == 'NuGetPackageExplorer/NuGetPackageExplorer'
     runs-on: ubuntu-latest
-    container: 'unoplatform/wasm-build:3.0'
+    container: 'unoplatform/wasm-build:5.0'
     name: Build and Deploy Job
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0
           submodules: true
 
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
-          dotnet-version: '10.0.x'
+          dotnet-version: '10.0'
           dotnet-quality: 'preview'
 
       - run: |
@@ -33,7 +33,7 @@ jobs:
 
       - run: |
           cd Uno/NuGetPackageExplorer
-          dotnet publish -c Release -f net9.0-browserwasm
+          dotnet publish -c Release -f net10.0-browserwasm
           cd ../Api
           dotnet publish -c Release 
 
