@@ -27,15 +27,13 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    // Note: In order to select this profile, you'll need to comment the `Packaged` profile below until this is fixed: https://aka.platform.uno/wasdk-maui-debug-profile-issue
     "NuGetPackageExplorer.WinUI (WinAppSDK Unpackaged)": {
       "commandName": "Project",
       "compatibleTargetFramework": "windows"
     },
     "NuGetPackageExplorer.WinUI (WinAppSDK Packaged)": {
       "commandName": "MsixPackage",
-      "compatibleTargetFramework": "windows",
-      "nativeDebugging": true,
+      "compatibleTargetFramework": "windows"
     },
     "NuGetPackageExplorer.WinUI (Desktop)": {
       "commandName": "Project",
@@ -43,7 +41,7 @@
     },
     "NuGetPackageExplorer.WinUI (Desktop WSL2)": {
       "commandName": "WSL2",
-      "commandLineArgs": "{ProjectDir}/bin/Debug/net9.0-desktop/PackageExplorer.dll",
+      "commandLineArgs": "{ProjectDir}/bin/Debug/net10.0-desktop/PackageExplorer.dll",
       "distributionName": "",
       "compatibleTargetFramework": "desktop"
     }

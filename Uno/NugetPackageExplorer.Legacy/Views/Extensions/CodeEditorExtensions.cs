@@ -102,7 +102,9 @@ namespace NupkgExplorer.Views.Extensions
                 {
                     // force layout on SizeChanged, or otherwise
                     // the editor would be stuck at minimal size when its visibility is toggled
-                    editor.ExecuteJavascript("editor.layout();");
+
+                    // TODO: FIX ME
+                    //      editor.ExecuteJavascript("editor.layout();");
                 }
             }
         }
@@ -120,7 +122,8 @@ namespace NupkgExplorer.Views.Extensions
 
             // CodeLanguage doesn't work when the control is loading/first loaded
             // calling its underlying method to ensure the language is actually set
-            control.ExecuteJavascript($"monaco.editor.setModelLanguage(model, '{language}');");
+            // TODO: FIX ME
+            //control.ExecuteJavascript($"monaco.editor.setModelLanguage(model, '{language}');");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intended to be dispose on next call")]

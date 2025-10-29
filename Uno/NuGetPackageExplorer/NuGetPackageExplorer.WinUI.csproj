@@ -1,17 +1,15 @@
 ﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>      
-      net10.0-browserwasm;
-      net10.0-windows10.0.19041;
-      net10.0-desktop
-    </TargetFrameworks>
+    <TargetFrameworks>net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
+    
     <NoWarn>$(NoWarn);NU1701;Uno0001</NoWarn>
     <AssemblyName>PackageExplorer</AssemblyName>
     <RootNamespace>PackageExplorer</RootNamespace>
     <IsPackable>false</IsPackable>
+    <IsUnoProject>true</IsUnoProject>
 
     <!-- Display name -->
     <ApplicationTitle>NuGet Package Explorer</ApplicationTitle>
@@ -22,7 +20,20 @@
     <ApplicationVersion>$(BuildVersionSimple)</ApplicationVersion>    
     <UnoSplashScreenBaseSize>450,450</UnoSplashScreenBaseSize>
     <UnoSplashScreenColor>#FFFFFF</UnoSplashScreenColor>
-  </PropertyGroup>
+
+    <UnoFeatures>
+      Lottie;
+      Hosting;
+      Toolkit;
+      Logging;
+      Mvvm;
+      Configuration;
+      Localization;
+      ThemeService;
+      SkiaRenderer;
+    </UnoFeatures>
+  
+</PropertyGroup>
 
   <Choose>
     <When Condition="'$(TargetFramework)'=='net10.0-browserwasm'">
@@ -38,10 +49,10 @@
         <WasmBuildNative>true</WasmBuildNative>
       </PropertyGroup>
 
-      <ItemGroup>
+      <!--<ItemGroup>
         <WasmShellAdditionalPInvokeLibrary Include="libc" />
         <WasmShellAdditionalPInvokeLibrary Include="libc.so" />
-      </ItemGroup>
+      </ItemGroup>-->
       
       <ItemGroup>
         <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
@@ -57,7 +68,7 @@
       <ItemGroup>
         <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/azure-app-insights.js" />
         <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/ai.*.js" />
-        <Content Include="Platforms/WebAssembly/WasmScripts/ai.*.map"/>
+        <Content Include="Platforms/WebAssembly/WasmScripts/ai.*.map" />
       </ItemGroup>
       
       <ItemGroup>
@@ -89,7 +100,8 @@
 
   <ItemGroup>
     <PackageReference Include="System.Reactive" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" />    
+    <PackageReference Include="Microsoft.Windows.Compatibility" />
+    <PackageReference Include="Uno.Core.Extensions.Compatibility" />    
   </ItemGroup>
   
   <Import Project="..\..\PackageExplorer\NugetPackageExplorer.Views.Shared.projitems" Label="Shared" />
@@ -102,6 +114,10 @@
 
   <ItemGroup>
     <UnoImage Include="Assets\Images\*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Platforms\Windows\Properties\" />
   </ItemGroup>
 
 

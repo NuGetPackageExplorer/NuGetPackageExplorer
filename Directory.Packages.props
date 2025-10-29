@@ -73,7 +73,7 @@
     <PackageVersion Include="System.Windows.Extensions" Version="$(SystemDependencyVersion)" />
 
 
-
+    <PackageVersion Include="Uno.Core.Extensions.Compatibility" Version="4.1.1" />
 
 
 
