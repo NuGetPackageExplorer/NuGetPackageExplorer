@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Windows;
 
 using Microsoft.ApplicationInsights;
@@ -38,7 +36,7 @@ namespace NuGetPe
                 config.TelemetryInitializers.Add(new EnvironmentTelemetryInitializer());
 
 #if WINDOWS
-                Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+                TryRegisterUnhandledExceptionHandler();
 #endif
             }
 
@@ -60,10 +58,49 @@ namespace NuGetPe
         }
 
 #if WINDOWS
+        private static void TryRegisterUnhandledExceptionHandler()
+        {
+            // WPF check - System.Windows.Application.Current
+            if (Application.Current != null)
+            {
+                Application.Current.DispatcherUnhandledException += App_DispatcherUnhandledException;
+                return;
+            }
+
+            // WinUI 3 check - need reflection because we can't have both using directives
+            var winuiAppType = Type.GetType("Microsoft.UI.Xaml.Application, Microsoft.WinUI");
+            if (winuiAppType != null)
+            {
+                var currentProperty = winuiAppType.GetProperty("Current", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+                var currentApp = currentProperty?.GetValue(null);
+                if (currentApp != null)
+                {
+                    var unhandledExceptionEvent = winuiAppType.GetEvent("UnhandledException");
+                    if (unhandledExceptionEvent != null)
+                    {
+                        var handler = Delegate.CreateDelegate(
+                            unhandledExceptionEvent.EventHandlerType!,
+                            typeof(DiagnosticsClient).GetMethod(nameof(WinUIUnhandledException), System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!);
+                        unhandledExceptionEvent.AddEventHandler(currentApp, handler);
+                    }
+                }
+            }
+        }
+
         private static void App_DispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
         {
             TrackException(e.Exception);
         }
+
+        private static void WinUIUnhandledException(object sender, object e)
+        {
+            var exceptionProperty = e.GetType().GetProperty("Exception");
+            if (exceptionProperty?.GetValue(e) is Exception exception)
+            {
+                TrackException(exception);
+            }
+        }
+
 #endif
 
         public static void TrackEvent(string eventName, IDictionary<string, string>? properties = null, IDictionary<string, double>? metrics = null)
