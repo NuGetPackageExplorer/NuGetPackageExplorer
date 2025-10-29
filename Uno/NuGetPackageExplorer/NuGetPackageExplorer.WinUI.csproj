@@ -20,7 +20,8 @@
     <ApplicationVersion>$(BuildVersionSimple)</ApplicationVersion>    
     <UnoSplashScreenBaseSize>450,450</UnoSplashScreenBaseSize>
     <UnoSplashScreenColor>#FFFFFF</UnoSplashScreenColor>
-
+    
+    <!-- <WindowsSdkPackageVersion>10.0.22621.28</WindowsSdkPackageVersion> -->
     <UnoFeatures>
       Lottie;
       Hosting;
@@ -29,6 +30,7 @@
       Mvvm;
       Configuration;
       Localization;
+      Navigation;
       ThemeService;
       SkiaRenderer;
     </UnoFeatures>
@@ -46,22 +48,13 @@
         <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
 
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
-        <WasmBuildNative>true</WasmBuildNative>
       </PropertyGroup>
 
-      <!--<ItemGroup>
-        <WasmShellAdditionalPInvokeLibrary Include="libc" />
-        <WasmShellAdditionalPInvokeLibrary Include="libc.so" />
-      </ItemGroup>-->
-      
       <ItemGroup>
         <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
 
         <!-- This value must be the instrumentation key, not the connection string -->
         <WasmShellMonoEnvironment Include="NPE_AI_INSTRUMENTATIONKEY" Value="$(NpeAiInstrumentationKey)" />
-      </ItemGroup>
-      
-      <ItemGroup>
         <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
       </ItemGroup>
       
@@ -117,8 +110,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Platforms\Windows\Properties\" />
+    <EmbeddedResource Include="Platforms\WebAssembly\WasmAssets\NuGet.config" />    
   </ItemGroup>
-
 
 </Project>
