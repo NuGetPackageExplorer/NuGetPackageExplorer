@@ -56,7 +56,7 @@
 
         <!-- This value must be the instrumentation key, not the connection string -->
         <WasmShellMonoEnvironment Include="NPE_AI_INSTRUMENTATIONKEY" Value="$(NpeAiInstrumentationKey)" />
-        <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+        <!--<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />-->
       </ItemGroup>
       
       <ItemGroup>
