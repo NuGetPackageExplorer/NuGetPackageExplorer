@@ -61,7 +61,7 @@ namespace PackageExplorer
         private void EvaluateButtonEnabledState(object sender, RoutedEventArgs e)
         {
             var _allCheckBoxes = new CheckBox[] { NetCheckBox, SilverlightCheckBox, WindowsCheckBox, WPSLCheckBox, WindowsPhoneCheckBox };
-            var count = _allCheckBoxes.Count(p => p.IsChecked == true);
+            var count = _allCheckBoxes.Count(static p => p.IsChecked == true);
             OKButton.IsEnabled = count >= 2;
         }
     }

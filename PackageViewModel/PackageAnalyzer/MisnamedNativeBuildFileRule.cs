@@ -18,7 +18,7 @@ namespace PackageExplorerViewModel.Rules
         public IEnumerable<PackageIssue> Validate(IPackage package, string packagePath)
         {
             var files =
-                package.GetFiles().Where(x =>
+                package.GetFiles().Where(static x =>
                     x.Path.EndsWith(".props", StringComparison.OrdinalIgnoreCase) ||
                     x.Path.EndsWith(".targets", StringComparison.OrdinalIgnoreCase));
 

@@ -81,13 +81,13 @@ namespace NuGetPe.Packages.Pkcs
             // extensions      [3]  EXPLICIT Extensions OPTIONAL
             //                      -- If present, version MUST be v3 }
             var subjectPublicKeyInfo = sequence.ReadEncodedValue();
-            var issuerUniqueID = sequence.ReadOptional(1, (x, t) => x.ReadEncodedValue());
-            var subjectUniqueID = sequence.ReadOptional(2, (x, t) => x.ReadEncodedValue());
+            var issuerUniqueID = sequence.ReadOptional(1, static (x, t) => x.ReadEncodedValue());
+            var subjectUniqueID = sequence.ReadOptional(2, static (x, t) => x.ReadEncodedValue());
 
             // extensions      [3]  EXPLICIT Extensions OPTIONAL
             //                      -- If present, version MUST be v3 }
             // Extensions  ::=  SEQUENCE SIZE (1..MAX) OF Extension
-            var extensions = sequence.ReadOptional(3, (r, t) => r.ReadSequence(t), r => r.ReadSequenceOf(x => TBSCertificateExtension.Decode(x)));
+            var extensions = sequence.ReadOptional(3, static (r, t) => r.ReadSequence(t), static r => r.ReadSequenceOf(static x => TBSCertificateExtension.Decode(x)));
 
             if (sequence.HasData) sequence.PeekTag();
             sequence.ThrowIfNotEmpty();

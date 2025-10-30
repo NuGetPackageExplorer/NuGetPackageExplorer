@@ -4,13 +4,12 @@ using System.Reactive.Subjects;
 using NupkgExplorer.Framework.MVVM;
 
 using Uno.Disposables;
-using Uno.Extensions;
 
 namespace NupkgExplorer.Presentation.Dialogs
 {
     public partial class DownloadProgressDialogViewModel : ViewModelBase, IProgress<(long ReceivedBytes, long? TotalBytes)>
     {
-        private readonly ISubject<(long ReceivedBytes, long? TotalBytes)> _progressSubject;
+        private readonly ReplaySubject<(long ReceivedBytes, long? TotalBytes)> _progressSubject;
         private readonly CancellationDisposable _downloadCts;
 
         public string? PackageName
@@ -59,12 +58,16 @@ namespace NupkgExplorer.Presentation.Dialogs
 
         public DownloadProgressDialogViewModel(string packageName, string packageVersion, CancellationDisposable downloadCts)
         {
-            this._progressSubject = new ReplaySubject<(long ReceivedBytes, long? TotalBytes)>(1);
-            this._downloadCts = downloadCts;
-            this.PackageName = packageName;
-            this.PackageVersion = packageVersion;
+            ArgumentNullException.ThrowIfNull(downloadCts);
 
+            _progressSubject = new ReplaySubject<(long ReceivedBytes, long? TotalBytes)>(1);
+            _downloadCts = downloadCts;
+            PackageName = packageName;
+            PackageVersion = packageVersion;
+
+#pragma warning disable CA2000 // Dispose objects before losing scope
             var disposable = new CompositeDisposable();
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
 #if WINDOWS_UWP || HAS_UNO_SKIA // disabled for other platforms due to #70
 			var progressDisposable = _progressSubject

@@ -12,13 +12,13 @@ namespace PackageExplorerViewModel
         {
             _verifySignaturesResult = verifySignaturesResult ?? throw new ArgumentNullException(nameof(verifySignaturesResult));
 
-            Trust = verifySignaturesResult.Results.Select(r => r.Trust).Min();
+            Trust = verifySignaturesResult.Results.Select(static r => r.Trust).Min();
 
-            ErrorIssues = verifySignaturesResult.Results.SelectMany(prv => prv.GetErrorIssues()).ToList();
-            WarningIssues = verifySignaturesResult.Results.SelectMany(prv => prv.GetWarningIssues()).ToList();
+            ErrorIssues = verifySignaturesResult.Results.SelectMany(static prv => prv.GetErrorIssues()).ToList();
+            WarningIssues = verifySignaturesResult.Results.SelectMany(static prv => prv.GetWarningIssues()).ToList();
             InformationIssues = verifySignaturesResult.Results
-                                                      .SelectMany(prv => prv.Issues)
-                                                      .Where(sl => sl.Level == LogLevel.Information)
+                                                      .SelectMany(static prv => prv.Issues)
+                                                      .Where(static sl => sl.Level == LogLevel.Information)
                                                       .ToList();
         }
 

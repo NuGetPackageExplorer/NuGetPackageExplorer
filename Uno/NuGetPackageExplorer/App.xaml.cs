@@ -47,6 +47,7 @@ namespace PackageExplorer
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
+        [RequiresUnreferencedCode("DiagnosticsClient initialization uses reflection.")]
         public App()
         {
             InitializeLogging();
@@ -73,24 +74,24 @@ namespace PackageExplorer
         private CompositionContainer _container = null!;
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal CompositionContainer Container
+        internal CompositionContainer Container => EnsureContainer();
+
+        [RequiresUnreferencedCode("MEF composition uses reflection to satisfy exports during trimming.")]
+        private CompositionContainer EnsureContainer()
         {
-            get
+            if (_container == null)
             {
-                if (_container == null)
-                {
-                    var catalog1 = new AssemblyCatalog(typeof(App).Assembly);
-                    var catalog2 = new AssemblyCatalog(typeof(PackageViewModel).Assembly);
-                    var catalog = new AggregateCatalog(catalog1, catalog2);
+                var catalog1 = new AssemblyCatalog(typeof(App).Assembly);
+                var catalog2 = new AssemblyCatalog(typeof(PackageViewModel).Assembly);
+                var catalog = new AggregateCatalog(catalog1, catalog2);
 
-                    _container = new CompositionContainer(catalog);
+                _container = new CompositionContainer(catalog);
 
-                    // add PluginManager instance to be available as export to the rest of the app.
-                    _container.ComposeParts(new PluginManager(catalog));
-                }
-
-                return _container;
+                // add PluginManager instance to be available as export to the rest of the app.
+                _container.ComposeParts(new PluginManager(catalog));
             }
+
+            return _container;
         }
 
         /// <summary>
@@ -98,11 +99,13 @@ namespace PackageExplorer
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
+        [RequiresUnreferencedCode("MEF composition resolves views and view models via reflection during application launch.")]
         protected override async void OnLaunched(LaunchActivatedEventArgs e) =>
             //await OnLaunched<MainWindow>(e, Container.GetExportedValue<MainWindow>, PerformMainLandingNavigation)
             await OnLaunched<Shell>(e, BuildShell, PerformShellLandingNavigation)
                 .ConfigureAwait(true);
 
+        [RequiresUnreferencedCode("MEF composition resolves views and view models via reflection during application launch.")]
         private async Task OnLaunched<TRootPage>(LaunchActivatedEventArgs e, Func<TRootPage?> buildRoot, Func<TRootPage, LaunchActivatedEventArgs, Task> landingNavigation) where TRootPage : UIElement
         {
             ArgumentNullException.ThrowIfNull(buildRoot);
@@ -159,6 +162,7 @@ namespace PackageExplorer
             }
         }
 
+        [RequiresUnreferencedCode("MEF composition resolves Shell dependencies via reflection.")]
         private Shell BuildShell()
         {
             var shell = Container.GetExportedValue<Shell>()!;
@@ -212,6 +216,7 @@ namespace PackageExplorer
             return shell;
         }
 
+        [RequiresUnreferencedCode("MEF composition resolves navigation services and view models via reflection during landing navigation.")]
         private async Task PerformShellLandingNavigation(Shell shell, LaunchActivatedEventArgs e)
         {
             var navigation = Container.GetExportedValue<NavigationService>()!;
@@ -327,7 +332,7 @@ namespace PackageExplorer
         {
             try
             {
-                object? DefaultFallbackResult()
+                static object? DefaultFallbackResult()
                 {
 #pragma warning disable CS0162 // Unreachable code detected
 #if DEBUG
@@ -351,7 +356,7 @@ namespace PackageExplorer
                 var uri = new Uri(location);
                 var subpaths = uri.Segments
                     .Skip(1) // skip first item that is just "/"
-                    .Select(x => x.TrimEnd('/')) // remove segment separator
+                    .Select(static x => x.TrimEnd('/')) // remove segment separator
                     .ToArray();
 
                 // Process `/packages` route
@@ -382,7 +387,7 @@ namespace PackageExplorer
                         var query = new QueryParameterCollection(location)
                             .Aggregate(
                                 new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase),
-                                (dict, kvp) =>
+                                static (dict, kvp) =>
                                 {
                                     dict[kvp.Key] = kvp.Value;
                                     return dict;
@@ -418,6 +423,7 @@ namespace PackageExplorer
             }
         }
 
+        [RequiresUnreferencedCode("MEF composition resolves services and view models via reflection.")]
         private void InitializeContainer()
         {
             // Overwrite settings with the real instance
@@ -439,6 +445,7 @@ namespace PackageExplorer
             uiServices.Initialize();
         }
 
+        [RequiresUnreferencedCode("MEF composition resolves credential providers via reflection.")]
         private void InitCredentialService()
         {
             Task<IEnumerable<ICredentialProvider>> getProviders()
@@ -461,6 +468,7 @@ namespace PackageExplorer
 
         }
 
+        [RequiresUnreferencedCode("MEF composition resolves navigation and dialog services via reflection.")]
         private void RegisterShellNavigation()
         {
             NupkgExplorer.Framework.MVVM.ViewModelBase.DefaultContainer = Container;
@@ -503,7 +511,7 @@ namespace PackageExplorer
         /// </summary>
         internal static void InitializeLogging()
         {
-            var factory = LoggerFactory.Create(builder =>
+            var factory = LoggerFactory.Create(static builder =>
             {
 #if __WASM__
                 builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());

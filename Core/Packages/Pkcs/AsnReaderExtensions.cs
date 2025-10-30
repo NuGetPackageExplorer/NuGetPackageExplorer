@@ -59,7 +59,7 @@ namespace NuGetPe.Packages.Pkcs
                 : throw new AsnContentException();
         }
 
-        internal static T? ReadOptionalSequence<T>(this AsnReader reader, int? context, Func<AsnReader, T> read) => reader.ReadOptional(context, (r, tag) => r.ReadSequence(tag), read);
+        internal static T? ReadOptionalSequence<T>(this AsnReader reader, int? context, Func<AsnReader, T> read) => reader.ReadOptional(context, static (r, tag) => r.ReadSequence(tag), read);
         internal static T[]? ReadOptionalSequenceOf<T>(this AsnReader reader, int? context, Func<AsnReader, T> readElement)
         {
             // ToArray to ensure immediate materialization. If done lazily, it will break integrity validation, as the data wont be consumed.

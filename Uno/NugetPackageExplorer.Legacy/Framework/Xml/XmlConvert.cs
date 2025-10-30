@@ -1,11 +1,11 @@
 ﻿using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using System.Xml.Linq;
 using System.Xml.Serialization;
 
 using Microsoft.Extensions.Logging;
 
-using Uno.Extensions;
 using Uno.Logging;
 
 namespace NupkgExplorer.Framework.Xml
@@ -21,12 +21,13 @@ namespace NupkgExplorer.Framework.Xml
         /// <summary>
         /// Deserializes the XElement to the specified .NET type.
         /// </summary>
-        public static T DeserializeObject<T>(this XElement element) where T : new() => element.PopulateTo(new T());
+        public static T DeserializeObject<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] T>(this XElement element)
+            where T : new() => element.PopulateTo(new T());
 
         /// <summary>
         /// Populates the object with values from the XElement.
         /// </summary>
-        public static T PopulateTo<T>(this XElement element, T instance) => (T)element.PopulateTo((object)instance!);
+        public static T PopulateTo<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] T>(this XElement element, T instance) => (T)element.PopulateTo((object)instance!);
 
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace NupkgExplorer.Framework.Xml
         /// <param name="element"></param>
         /// <param name="instance">The target object to populate the values onto</param>
         /// <returns></returns>
-        private static object PopulateTo(this XElement element, object instance)
+        private static object PopulateTo(this XElement element, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] object instance)
         {
             var properties = instance.GetType().GetProperties()
                 .Where(x => x.SetMethod != null);
@@ -56,7 +57,7 @@ namespace NupkgExplorer.Framework.Xml
                             StringComparer.InvariantCultureIgnoreCase),
                     Buffer = new List<object>(),
                 })
-                .Where(x => x.Constructors.Any())
+                .Where(x => x.Constructors.Count != 0)
                 .ToArray();
 
             foreach (var attribute in element.Attributes())
@@ -159,7 +160,7 @@ namespace NupkgExplorer.Framework.Xml
             foreach (var directArrayProperty in directArrayProperties)
             {
                 // map DAP buffer to property
-                if (directArrayProperty.Buffer.Any())
+                if (directArrayProperty.Buffer.Count != 0)
                 {
                     var array = directArrayProperty.Buffer.ToTypeArray(directArrayProperty.ElementType!);
 
@@ -184,7 +185,7 @@ namespace NupkgExplorer.Framework.Xml
         /// <param name="value">value to parse</param>
         /// <param name="throwException">True to throw exception on format exception, false to return exception as Value of result</param>
         /// <returns>True if successful, false if failed to parse, and null for unknown type</returns>
-        private static (bool? Success, object Value) TryParseValue(Type type, string value, bool throwException = false)
+        private static (bool? Success, object Value) TryParseValue([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicFields | DynamicallyAccessedMemberTypes.PublicProperties | DynamicallyAccessedMemberTypes.PublicMethods)] Type type, string value, bool throwException = false)
         {
             if (type == typeof(string))
             {
@@ -217,7 +218,7 @@ namespace NupkgExplorer.Framework.Xml
                 .ToArray();
         }
 
-        private static Array ToTypeArray(this IEnumerable<object> source, Type type)
+        private static Array ToTypeArray(this IEnumerable<object> source, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type type)
         {
             var collection = source as ICollection ?? source.ToArray();
             var buffer = Array.CreateInstance(type, collection.Count);

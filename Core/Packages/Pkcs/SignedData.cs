@@ -42,20 +42,20 @@ namespace NuGetPe.Packages.Pkcs
 
             // digestAlgorithms DigestAlgorithmIdentifiers
             // DigestAlgorithmIdentifiers ::= SET OF DigestAlgorithmIdentifier
-            var digestAlgorithms = sequence.ReadSetOf(set => AlgorithmIdentifier.Decode(set));
+            var digestAlgorithms = sequence.ReadSetOf(static set => AlgorithmIdentifier.Decode(set));
 
             // encapContentInfo EncapsulatedContentInfo
             var encapContentInfo = EncapsulatedContentInfo.Decode(sequence);
 
             // certificates [0] IMPLICIT CertificateSet OPTIONAL,
-            var certificates = sequence.ReadOptionalSetOf(0, set => CertificateChoices.Decode(set));
+            var certificates = sequence.ReadOptionalSetOf(0, static set => CertificateChoices.Decode(set));
 
             // crls [1] IMPLICIT RevocationInfoChoices OPTIONAL,
-            var crls = sequence.ReadOptionalSetOf(1, set => set.ReadEncodedValue());
+            var crls = sequence.ReadOptionalSetOf(1, static set => set.ReadEncodedValue());
 
             // signerInfos SignerInfos
             // SignerInfos ::= SET OF SignerInfo
-            var signerInfos = sequence.ReadSetOf(set => SignerInfo.Decode(set));
+            var signerInfos = sequence.ReadSetOf(static set => SignerInfo.Decode(set));
 
             sequence.ThrowIfNotEmpty();
             return new()

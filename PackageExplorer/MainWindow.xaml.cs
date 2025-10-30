@@ -23,7 +23,6 @@ using NuGetPe;
 using PackageExplorerViewModel;
 
 using Constants = NuGetPe.Constants;
-using LazyPackageCommand = System.Lazy<NuGetPackageExplorer.Types.IPackageCommand, NuGetPackageExplorer.Types.IPackageCommandMetadata>;
 using StringResources = PackageExplorer.Resources;
 
 namespace PackageExplorer
@@ -78,13 +77,13 @@ namespace PackageExplorer
 
         [ImportMany(AllowRecomposition = true)]
 #pragma warning disable CA2227 // Collection properties should be read only
-        public ObservableCollection<LazyPackageCommand> PackageCommands
+        public ObservableCollection<Lazy<IPackageCommand, IPackageCommandMetadata>> PackageCommands
 #pragma warning restore CA2227 // Collection properties should be read only
         {
             get
             {
                 return PackageCommandsContainer != null
-                           ? (ObservableCollection<LazyPackageCommand>)PackageCommandsContainer.Collection
+                           ? (ObservableCollection<Lazy<IPackageCommand, IPackageCommandMetadata>>)PackageCommandsContainer.Collection
                            : null!;
             }
             set
@@ -627,7 +626,7 @@ namespace PackageExplorer
 
         private bool HasLoadedContent<T>()
         {
-            return MainContentContainer.Children.Cast<UIElement>().Any(p => p is T);
+            return MainContentContainer.Children.Cast<UIElement>().Any(static p => p is T);
         }
 
         private void CanExecuteNewCommand(object sender, CanExecuteRoutedEventArgs e)

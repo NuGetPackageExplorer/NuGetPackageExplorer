@@ -103,7 +103,7 @@ namespace NuGetPackageExplorer.Services
         {
             if (!_initialized) return;
 
-            Logger.DebugIfEnabled(() => $"Flush");
+            Logger.DebugIfEnabled(static () => $"Flush");
             InvokeJS($"appInsights.flush();");
         }
 
@@ -112,9 +112,9 @@ namespace NuGetPackageExplorer.Services
             if (o == null) return null;
             if (o.Count == 0) return "{}";
 
-            return "{" + string.Join(", ", o.Select(x => $"\"{x.Key}\": {FormatValue(x.Value)}")) + "}";
+            return "{" + string.Join(", ", o.Select(static x => $"\"{x.Key}\": {FormatValue(x.Value)}")) + "}";
 
-            string FormatValue(string x) => x != null
+            static string FormatValue(string x) => x != null
                 ? ('"' + EscapeJs(x) + '"')
                 : "null";
         }

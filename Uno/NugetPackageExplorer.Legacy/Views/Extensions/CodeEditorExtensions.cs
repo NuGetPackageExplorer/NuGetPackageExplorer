@@ -96,7 +96,7 @@ namespace NupkgExplorer.Views.Extensions
                 control.SizeChanged += ForceLayout;
             }
 
-            void ForceLayout(object sender, SizeChangedEventArgs args)
+            static void ForceLayout(object sender, SizeChangedEventArgs args)
             {
                 if (sender is CodeEditor editor)
                 {

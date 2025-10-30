@@ -60,8 +60,8 @@ namespace NuGetPe.Packages.Pkcs
                     universalString         UniversalString (SIZE (1..MAX)),
                     utf8String              UTF8String (SIZE (1..MAX)),
                     bmpString               BMPString (SIZE (1..MAX)) } */
-            var RDNs = reader.ReadSequenceOf(sequence =>
-                sequence.ReadSetOf(set =>
+            var RDNs = reader.ReadSequenceOf(static sequence =>
+                sequence.ReadSetOf(static set =>
                 {
                     var sequence = set.ReadSequence();
                     var type = sequence.ReadObjectIdentifier();
@@ -77,7 +77,7 @@ namespace NuGetPe.Packages.Pkcs
 
             return new()
             {
-                ValueCollection = RDNs.SelectMany(x => x).ToArray()
+                ValueCollection = RDNs.SelectMany(static x => x).ToArray()
             };
         }
 
@@ -88,7 +88,7 @@ namespace NuGetPe.Packages.Pkcs
 
             return string.Join(", ", ValueCollection
                 .Reverse()
-                .Select(x => $"{(SubjectLabelMappings.TryGetValue(x.Type, out var alias) ? alias : x.Type)}={x.Value}")
+                .Select(static x => $"{(SubjectLabelMappings.TryGetValue(x.Type, out var alias) ? alias : x.Type)}={x.Value}")
             );
         }
 

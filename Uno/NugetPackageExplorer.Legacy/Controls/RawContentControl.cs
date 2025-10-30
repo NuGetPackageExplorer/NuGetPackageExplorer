@@ -20,7 +20,7 @@ namespace NupkgExplorer.Controls
             nameof(RawContent),
             typeof(object),
             typeof(RawContentControl),
-            new PropertyMetadata(default(object), (s, e) => ((RawContentControl)s).OnRawContentChanged(e)));
+            new PropertyMetadata(default(object), static (s, e) => ((RawContentControl)s).OnRawContentChanged(e)));
 
         public object RawContent
         {

@@ -12,12 +12,12 @@ namespace PackageExplorer
 
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Any(v => v == null || v == DependencyProperty.UnsetValue))
+            if (values.Any(static v => v == null || v == DependencyProperty.UnsetValue))
             {
                 return false;
             }
 
-            return values.Cast<bool>().All(a => a);
+            return values.Cast<bool>().All(static a => a);
         }
 
         public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)

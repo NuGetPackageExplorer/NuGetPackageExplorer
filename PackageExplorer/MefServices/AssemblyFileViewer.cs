@@ -217,7 +217,7 @@ namespace PackageExplorer
                 yield return KeyValuePair.Create("Strong Name", assemblyMetaData.StrongName);
             }
 
-            foreach (var entry in assemblyMetaData.MetadataEntries.OrderBy(kv => kv.Key))
+            foreach (var entry in assemblyMetaData.MetadataEntries.OrderBy(static kv => kv.Key))
             {
                 yield return entry;
             }
@@ -227,8 +227,8 @@ namespace PackageExplorer
                 var assemblyNamesDelimitedByLineBreak = string.Join(
                     Environment.NewLine,
                     assemblyMetaData.ReferencedAssemblies
-                        .OrderBy(assName => assName.Name)
-                        .Select(assName => assName.FullName));
+                        .OrderBy(static assName => assName.Name)
+                        .Select(static assName => assName.FullName));
 
                 yield return KeyValuePair.Create("Referenced assemblies", assemblyNamesDelimitedByLineBreak);
             }

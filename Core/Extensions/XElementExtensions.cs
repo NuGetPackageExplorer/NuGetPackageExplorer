@@ -168,8 +168,8 @@ namespace NuGetPe
             if (leftExactMatches == rightExactMatches)
             {
                 // Then check which names match
-                var leftNameMatches = CountMatches(left, target, (a, b) => a.Name == b.Name);
-                var rightNameMatches = CountMatches(right, target, (a, b) => a.Name == b.Name);
+                var leftNameMatches = CountMatches(left, target, static (a, b) => a.Name == b.Name);
+                var rightNameMatches = CountMatches(right, target, static (a, b) => a.Name == b.Name);
 
                 return rightNameMatches.CompareTo(leftNameMatches);
             }
@@ -188,7 +188,7 @@ namespace NuGetPe
         private static bool HasConflict(XElement source, XElement target)
         {
             // Get all attributes as name value pairs
-            var sourceAttr = source.Attributes().ToDictionary(a => a.Name, a => a.Value);
+            var sourceAttr = source.Attributes().ToDictionary(static a => a.Name, static a => a.Value);
             // Loop over all the other attributes and see if there are
             foreach (var targetAttr in target.Attributes())
             {

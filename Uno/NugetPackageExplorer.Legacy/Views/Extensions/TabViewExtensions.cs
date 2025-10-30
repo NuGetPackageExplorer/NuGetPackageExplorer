@@ -72,13 +72,13 @@ namespace NupkgExplorer.Views.Extensions
 
         private static void OnResetSelectionWithChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
         {
-            if (sender is TabView tv) CoreImpl(tv, x => x.TabItems
+            if (sender is TabView tv) CoreImpl(tv, static x => x.TabItems
                 .OfType<TabViewItem>()
                 .FirstOrDefault()
-                ?.Apply(y => y.IsSelected = true));
-            if (sender is TabViewItem tvi) CoreImpl(tvi, x => x.IsSelected = true);
+                ?.Apply(static y => y.IsSelected = true));
+            if (sender is TabViewItem tvi) CoreImpl(tvi, static x => x.IsSelected = true);
 
-            void CoreImpl<T>(T control, Action<T> action) where T : FrameworkElement
+            static void CoreImpl<T>(T control, Action<T> action) where T : FrameworkElement
             {
                 if (GetResetSelectionWith(control) is not null)
                 {

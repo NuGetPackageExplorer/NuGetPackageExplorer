@@ -5,7 +5,7 @@ namespace PackageExplorerViewModel
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler? PropertyChanged = delegate { };
+        public event PropertyChangedEventHandler? PropertyChanged = static delegate { };
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
         {

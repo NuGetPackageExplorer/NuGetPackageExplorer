@@ -24,7 +24,7 @@ namespace PackageExplorerViewModel.Rules
                 return Array.Empty<PackageIssue>();
             }
 
-            return package.DependencyGroups.SelectMany(p => p.Packages)
+            return package.DependencyGroups.SelectMany(static p => p.Packages)
                                          .Where(IsPrereleaseDependency)
                                          .Select(CreatePackageIssue);
         }

@@ -81,11 +81,11 @@ namespace NuGetPe.Packages.Pkcs
             // nonce                        INTEGER                  OPTIONAL,
             // tsa                          [0] GeneralName          OPTIONAL,
             // extensions                   [1] IMPLICIT Extensions   OPTIONAL
-            var accuracy = sequence.ReadOptional(Asn1Tag.Sequence, (r, t) => r.ReadEncodedValue());
-            var ordering = sequence.ReadOptional(Asn1Tag.Boolean, (r, t) => r.ReadBoolean());
-            var nonce = sequence.ReadOptional(null, (r, t) => r.ReadInteger());
-            var tsa = sequence.ReadOptional(0, (r, t) => r.ReadEncodedValue());
-            var extensions = sequence.ReadOptional(1, (r, t) => r.ReadEncodedValue());
+            var accuracy = sequence.ReadOptional(Asn1Tag.Sequence, static (r, t) => r.ReadEncodedValue());
+            var ordering = sequence.ReadOptional(Asn1Tag.Boolean, static (r, t) => r.ReadBoolean());
+            var nonce = sequence.ReadOptional(null, static (r, t) => r.ReadInteger());
+            var tsa = sequence.ReadOptional(0, static (r, t) => r.ReadEncodedValue());
+            var extensions = sequence.ReadOptional(1, static (r, t) => r.ReadEncodedValue());
 
             //sequence.ReadRemainingTags().Dump();
             sequence.ThrowIfNotEmpty();

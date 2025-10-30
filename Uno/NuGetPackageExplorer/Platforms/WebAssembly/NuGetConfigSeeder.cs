@@ -21,7 +21,7 @@
 
             var asm = Assembly.GetExecutingAssembly();
             var res = asm.GetManifestResourceNames()
-                         .FirstOrDefault(n => n.EndsWith(".NuGet.Config", StringComparison.OrdinalIgnoreCase));
+                         .FirstOrDefault(static n => n.EndsWith(".NuGet.Config", StringComparison.OrdinalIgnoreCase));
             if (res is null) return;
 
             using var s = asm.GetManifestResourceStream(res)!;

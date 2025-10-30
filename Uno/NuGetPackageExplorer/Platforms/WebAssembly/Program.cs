@@ -9,7 +9,7 @@ namespace PackageExplorer
             //FeatureConfiguration.ApiInformation.NotImplementedLogLevel = Uno.Foundation.Logging.LogLevel.Debug;
 
             var host = UnoPlatformHostBuilder.Create()
-                .App(() => new App())
+                .App(static () => new App())
                 .UseWebAssembly()
                 .Build();
 

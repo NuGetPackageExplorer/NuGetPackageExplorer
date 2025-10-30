@@ -877,7 +877,7 @@ namespace PackageExplorerViewModel
             }
 
             // validate the package to see if there is any error before actually creating the package.
-            var firstIssue = Validate().FirstOrDefault(p => p.Level == PackageIssueLevel.Error);
+            var firstIssue = Validate().FirstOrDefault(static p => p.Level == PackageIssueLevel.Error);
             if (firstIssue != null)
             {
                 UIServices.Show(
@@ -1021,7 +1021,7 @@ namespace PackageExplorerViewModel
             {
                 DiagnosticsClient.TrackEvent("PackageViewModel_ViewPackageAnalysisExecute");
 
-                IEnumerable<PackageIssue> allIssues = Validate().OrderBy(p => p.Title, StringComparer.CurrentCulture);
+                IEnumerable<PackageIssue> allIssues = Validate().OrderBy(static p => p.Title, StringComparer.CurrentCulture);
                 SetPackageIssues(allIssues);
                 ShowPackageAnalysis = true;
             }
@@ -1460,7 +1460,7 @@ namespace PackageExplorerViewModel
         {
             var package = PackageHelper.BuildPackage(PackageMetadata, GetFiles());
             var packageFileName = Path.IsPathRooted(PackagePath) ? Path.GetFileName(PackagePath)! : string.Empty;
-            return package.Validate(_packageRules.Select(r => r.Value), packageFileName);
+            return package.Validate(_packageRules.Select(static r => r.Value), packageFileName);
         }
 
         private void Export(string rootPath)
@@ -1689,8 +1689,8 @@ namespace PackageExplorerViewModel
 
             // any deps
             return PackageMetadata.DependencyGroups
-                    .SelectMany(ds => ds.Packages)
-                    .Any(dp => dp.VersionRange.MinVersion?.IsTokenized() == true || dp.VersionRange.MaxVersion?.IsTokenized() == true);
+                    .SelectMany(static ds => ds.Packages)
+                    .Any(static dp => dp.VersionRange.MinVersion?.IsTokenized() == true || dp.VersionRange.MaxVersion?.IsTokenized() == true);
         }
 
         public bool IsTokenized => IsPackageTokenized();

@@ -26,7 +26,7 @@ namespace PackageExplorerViewModel
         private readonly PackageChooserViewModel _parentViewModel;
         private CancellationTokenSource? _downloadCancelSource;
         private bool _hasFinishedLoading;
-        private readonly Func<Task<IEnumerable<VersionInfo>>> _versionInfos = () => Task.FromResult(Enumerable.Empty<VersionInfo>());
+        private readonly Func<Task<IEnumerable<VersionInfo>>> _versionInfos = static () => Task.FromResult(Enumerable.Empty<VersionInfo>());
 
         public PackageInfoViewModel(
             PackageInfo info,
@@ -224,10 +224,10 @@ namespace PackageExplorerViewModel
                 {
                     var query = await packageMetadataResource.GetMetadataAsync(LatestPackageInfo.Id, ShowPrerelease, ShowPrerelease, sourceCacheContext, NullLogger.Instance, _downloadCancelSource.Token);
 
-                    query = query.OrderByDescending(p => p.Identity.Version);
+                    query = query.OrderByDescending(static p => p.Identity.Version);
 
                     var packages = query.ToList();
-                    var deprecations = await Task.WhenAll(packages.Select(p => p.GetDeprecationMetadataAsync()));
+                    var deprecations = await Task.WhenAll(packages.Select(static p => p.GetDeprecationMetadataAsync()));
                     for (var i = 0; i < packages.Count; i++)
                     {
                         var package = packages[i];

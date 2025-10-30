@@ -144,9 +144,9 @@ namespace NuGetPe.Utility
         private static IEnumerable<(DateTimeOffset Value, TBSCertificate? SignerCertificate)?>? GetTimestamps(SignerInfo? signerInfo)
         {
             return signerInfo?.UnsignedAttrs
-                ?.Where(x => x.AttrType == Rfc3161TstInfo.ContentTypeID)
-                .SelectMany(x => x.AttrValues)
-                .Select(x =>
+                ?.Where(static x => x.AttrType == Rfc3161TstInfo.ContentTypeID)
+                .SelectMany(static x => x.AttrValues)
+                .Select(static x =>
                 {
                     var data = ContentInfo.Unwrap(SignedData.ContentTypeID, x, SignedData.Decode);
                     var info = Rfc3161TstInfo.From(data.EncapContentInfo);

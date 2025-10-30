@@ -207,7 +207,7 @@ namespace NuGetPe
             if (errorMessage != null)
             {
                 const int indent = 4;
-                errorString = Environment.NewLine + string.Join(Environment.NewLine, errorMessage.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Select(e => new string(' ', indent) + e));
+                errorString = Environment.NewLine + string.Join(Environment.NewLine, errorMessage.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Select(static e => new string(' ', indent) + e));
             }
             else
             {

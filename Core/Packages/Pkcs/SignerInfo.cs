@@ -47,7 +47,7 @@ namespace NuGetPe.Packages.Pkcs
 
             // signedAttrs [0] IMPLICIT SignedAttributes OPTIONAL,
             // SignedAttributes ::= SET SIZE (1..MAX) OF Attribute
-            var signedAttrs = sequence.ReadOptionalSetOf(0, set => AttributeValue.Decode(set));
+            var signedAttrs = sequence.ReadOptionalSetOf(0, static set => AttributeValue.Decode(set));
 
             // signatureAlgorithm SignatureAlgorithmIdentifier,
             var signatureAlgorithm = AlgorithmIdentifier.Decode(sequence);
@@ -58,7 +58,7 @@ namespace NuGetPe.Packages.Pkcs
 
             // unsignedAttrs [1] IMPLICIT UnsignedAttributes OPTIONAL
             // UnsignedAttributes ::= SET SIZE (1..MAX) OF Attribute
-            var unsignedAttrs = sequence.ReadOptionalSetOf(1, set => AttributeValue.Decode(set));
+            var unsignedAttrs = sequence.ReadOptionalSetOf(1, static set => AttributeValue.Decode(set));
 
             sequence.ThrowIfNotEmpty();
             return new()

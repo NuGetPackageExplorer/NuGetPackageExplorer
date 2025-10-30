@@ -133,7 +133,7 @@ namespace PackageExplorerViewModel
             get { return _authors; }
             set
             {
-                if (string.IsNullOrWhiteSpace(value) && !PackageTypes.Any(pt => string.Equals(pt.Name, "SymbolsPackage", StringComparison.OrdinalIgnoreCase)))
+                if (string.IsNullOrWhiteSpace(value) && !PackageTypes.Any(static pt => string.Equals(pt.Name, "SymbolsPackage", StringComparison.OrdinalIgnoreCase)))
                 {
                     const string message = "Authors is required.";
                     SetError("Authors", message);
@@ -675,7 +675,7 @@ namespace PackageExplorerViewModel
 
         private static IEnumerable<string> SplitString(string? text)
         {
-            return text == null ? Enumerable.Empty<string>() : text.Split(',').Select(a => a.Trim());
+            return text == null ? Enumerable.Empty<string>() : text.Split(',').Select(static a => a.Trim());
         }
 
         private static string ConvertToString(IEnumerable<string> items)

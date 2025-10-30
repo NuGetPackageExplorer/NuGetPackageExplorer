@@ -1,7 +1,5 @@
 ﻿using NupkgExplorer.Framework.Extensions;
 
-using Uno.Extensions;
-
 namespace NupkgExplorer.Framework.Query
 {
     public class QueryBuilder
@@ -42,12 +40,12 @@ namespace NupkgExplorer.Framework.Query
 
         public Task<HttpResponseMessage> Query(HttpClient httpClient, bool ensureSuccess = true, HttpCompletionOption option = HttpCompletionOption.ResponseContentRead)
         {
-            if (_query.Any() && _payload.Any())
+            if (_query.Count != 0 && _payload.Count != 0)
                 throw new InvalidOperationException("Param and PayloadParam should not be used together");
 
-            if (_query.Any())
+            if (_query.Count != 0)
                 _request.RequestUri = new Uri(_request.RequestUri!.OriginalString + "?" + GetQueryString(), _request.RequestUri!.IsAbsoluteUri ? UriKind.Absolute : UriKind.Relative);
-            if (_payload.Any())
+            if (_payload.Count != 0)
                 _request.Content = new FormUrlEncodedContent(_payload);
 
             return httpClient

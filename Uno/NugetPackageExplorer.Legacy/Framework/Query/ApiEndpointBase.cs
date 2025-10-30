@@ -9,7 +9,7 @@ namespace NupkgExplorer.Framework.Query
     {
         private readonly HttpClient _client;
 
-        public ApiEndpointBase()
+        protected ApiEndpointBase()
         {
             var handler = new HttpClientHandler();
             var client = new HttpClient(new LoggingHttpClientHandler(handler));

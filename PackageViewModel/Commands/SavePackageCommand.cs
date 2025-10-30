@@ -71,7 +71,7 @@ namespace PackageExplorerViewModel
                 {
                     // validate the package to see if there is any error before actually creating the package.
                     var firstIssue =
-                        ViewModel.Validate().FirstOrDefault(p => p.Level == PackageIssueLevel.Error);
+                        ViewModel.Validate().FirstOrDefault(static p => p.Level == PackageIssueLevel.Error);
                     if (firstIssue != null)
                     {
                         ViewModel.UIServices.Show(

@@ -11,13 +11,12 @@ namespace NupkgExplorer.Views.Converters
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            switch (value)
+            return value switch
             {
-                case NupkgContentFile _: return FileValue!;
-                case NupkgContentDirectory _: return DirectoryValue!;
-
-                default: return null!;
-            }
+                NupkgContentFile _ => FileValue!,
+                NupkgContentDirectory _ => DirectoryValue!,
+                _ => null!,
+            };
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language) => throw new NotSupportedException("Only one-way conversion is supported.");

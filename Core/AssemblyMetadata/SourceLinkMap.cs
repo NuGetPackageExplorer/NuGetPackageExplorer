@@ -118,7 +118,7 @@ namespace Microsoft.SourceLink.Tools
 
             // Sort the map by decreasing file path length. This ensures that the most specific paths will checked before the least specific
             // and that absolute paths will be checked before a wildcard path with a matching base
-            list.Sort((left, right) => -left.FilePath.Path.Length.CompareTo(right.FilePath.Path.Length));
+            list.Sort(static (left, right) => -left.FilePath.Path.Length.CompareTo(right.FilePath.Path.Length));
 
             return new SourceLinkMap(new ReadOnlyCollection<Entry>(list));
         }

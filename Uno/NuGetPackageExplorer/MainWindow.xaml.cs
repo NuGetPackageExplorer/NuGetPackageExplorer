@@ -333,7 +333,7 @@ namespace PackageExplorer
         }
         private bool HasLoadedContent<T>()
         {
-            return MainContentContainer.Children.Cast<UIElement>().Any(p => p is T);
+            return MainContentContainer.Children.Cast<UIElement>().Any(static p => p is T);
         }
     }
 }

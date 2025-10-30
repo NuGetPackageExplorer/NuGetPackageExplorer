@@ -21,7 +21,7 @@ namespace NuGetPe.Packages.Pkcs
                 attrValues SET OF AttributeValue }*/
             var sequence = reader.ReadSequence();
             var attrType = sequence.ReadObjectIdentifier();
-            var attrValues = sequence.ReadSetOf(x => x.ReadEncodedValue());
+            var attrValues = sequence.ReadSetOf(static x => x.ReadEncodedValue());
 
             sequence.ThrowIfNotEmpty();
             return new()

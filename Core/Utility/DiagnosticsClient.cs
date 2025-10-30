@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Windows;
 
 using Microsoft.ApplicationInsights;
@@ -13,6 +14,7 @@ namespace NuGetPe
     {
         private static ITelemetryService? _service;
 
+        [RequiresUnreferencedCode("DiagnosticsClient hooks platform exception handlers via reflection.")]
         public static void Initialize(bool forLibrary = false)
         {
 #pragma warning disable CA2000 // Dispose objects before losing scope
@@ -58,6 +60,7 @@ namespace NuGetPe
         }
 
 #if WINDOWS
+        [RequiresUnreferencedCode("Registers WinUI handlers using reflection which requires untrimmed members.")]
         private static void TryRegisterUnhandledExceptionHandler()
         {
             // WPF check - System.Windows.Application.Current
@@ -92,6 +95,7 @@ namespace NuGetPe
             TrackException(e.Exception);
         }
 
+        [RequiresUnreferencedCode("Accesses WinUI UnhandledException event arguments via reflection.")]
         private static void WinUIUnhandledException(object sender, object e)
         {
             var exceptionProperty = e.GetType().GetProperty("Exception");

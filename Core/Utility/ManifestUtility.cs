@@ -60,7 +60,7 @@ namespace NuGetPe
                     else
                     {
                         // Some packages (like Paket.Core have version="" in the dependencies. NuGet doesn't handle it, so remove it so we can load.
-                        dep.RemoveAttributes(a => string.Equals("version", a.Name.LocalName, StringComparison.OrdinalIgnoreCase));
+                        dep.RemoveAttributes(static a => string.Equals("version", a.Name.LocalName, StringComparison.OrdinalIgnoreCase));
                     }
                 }
             }            

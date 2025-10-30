@@ -30,7 +30,7 @@ namespace NuGetPe.Packages.Pkcs
                                 -- by extnID } */
             var sequence = reader.ReadSequence();
             var extnID = sequence.ReadObjectIdentifier();
-            var critical = sequence.ReadOptional<bool?>(null, (x, t) => t.HasSameClassAndValue(Asn1Tag.Boolean) ? x.ReadBoolean() : default) ?? false;
+            var critical = sequence.ReadOptional<bool?>(null, static (x, t) => t.HasSameClassAndValue(Asn1Tag.Boolean) ? x.ReadBoolean() : default) ?? false;
             var extnValue = sequence.ReadOctetString();
 
             sequence.ThrowIfNotEmpty();

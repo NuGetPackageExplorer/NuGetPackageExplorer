@@ -38,7 +38,7 @@ namespace PackageExplorer
         public PackageDependencyEditor(IEnumerable<PackageDependencyGroup> existingDependencySets)
             : this()
         {
-            _dependencySets.AddRange(existingDependencySets.Select(ds => new EditablePackageDependencySet(ds)));
+            _dependencySets.AddRange(existingDependencySets.Select(static ds => new EditablePackageDependencySet(ds)));
 
             if (_dependencySets.Count > 0)
             {
@@ -50,7 +50,7 @@ namespace PackageExplorer
 
         public ICollection<PackageDependencyGroup> GetEditedDependencySets()
         {
-            return _dependencySets.Select(set => set.AsReadOnly()).ToArray();
+            return _dependencySets.Select(static set => set.AsReadOnly()).ToArray();
         }
 
         private EditablePackageDependencySet ActivePackageDependencySet

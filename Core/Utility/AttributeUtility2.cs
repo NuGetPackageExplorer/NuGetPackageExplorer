@@ -18,12 +18,12 @@ namespace NuGetPe.Utility
         public static SignatureType GetSignatureType(AttributeValue[]? signedAttrs)
         {
             var types = signedAttrs
-                ?.Where(attr => attr.AttrType == Oids.CommitmentTypeIndication)
-                .SelectMany(attr => attr.AttrValues)
-                .Select(value => CommitmentTypeIndication.Decode(value))
-                .Select(indication => GetSignatureType(indication.CommitmentTypeId))
+                ?.Where(static attr => attr.AttrType == Oids.CommitmentTypeIndication)
+                .SelectMany(static attr => attr.AttrValues)
+                .Select(static value => CommitmentTypeIndication.Decode(value))
+                .Select(static indication => GetSignatureType(indication.CommitmentTypeId))
                 .Distinct()
-                .Where(x => x != SignatureType.Unknown)
+                .Where(static x => x != SignatureType.Unknown)
                 .ToArray();
             var type = types?.Length switch
             {
@@ -87,9 +87,9 @@ namespace NuGetPe.Utility
         public static SignerInfo[]? GetCounterSigner(AttributeValue[]? unsignedAttrs)
         {
             return unsignedAttrs
-                ?.Where(x => x.AttrType == Oids.Countersignature)
-                .SelectMany(attr => attr.AttrValues)
-                .Select(x => SignerInfo.Decode(x))
+                ?.Where(static x => x.AttrType == Oids.Countersignature)
+                .SelectMany(static attr => attr.AttrValues)
+                .Select(static x => SignerInfo.Decode(x))
                 .ToArray();
         }
     }

@@ -4,7 +4,6 @@ using System.Xml.Linq;
 using NupkgExplorer.Business.Nuspec;
 using NupkgExplorer.Extensions;
 
-using Uno.Extensions;
 using Uno.Logging;
 
 namespace NupkgExplorer.Business.Nupkg
@@ -25,7 +24,7 @@ namespace NupkgExplorer.Business.Nupkg
             try
             {
                 var nuspec = _nupkg.Entries
-                    .FirstOrDefault(x => x.Name == x.FullName && x.Name.EndsWith(".nuspec", StringComparison.InvariantCultureIgnoreCase))
+                    .FirstOrDefault(static x => x.Name == x.FullName && x.Name.EndsWith(".nuspec", StringComparison.InvariantCultureIgnoreCase))
                     ?? throw new FileNotFoundException("Unable to find the nuspec file.");
                 var document = XDocument.Load(nuspec.Open());
 
@@ -40,28 +39,28 @@ namespace NupkgExplorer.Business.Nupkg
 
         public IEnumerable<NupkgContentFile> GetContentFiles()
         {
-            return _nupkg.Entries.Select(x => new NupkgContentFile(x));
+            return _nupkg.Entries.Select(static x => new NupkgContentFile(x));
         }
 
         public INupkgFileSystemObject[] GetHierarchicalContentFiles()
         {
             var directories = _nupkg.Entries
-                .OrderBy(x => x.FullName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))
-                .Select(x => new NupkgContentFile(x))
-                .GroupBy(x => Path.GetDirectoryName(x.FullName), (directory, files) => new NupkgContentDirectory(directory!, [.. files]))
+                .OrderBy(static x => x.FullName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar))
+                .Select(static x => new NupkgContentFile(x))
+                .GroupBy(static x => Path.GetDirectoryName(x.FullName), static (directory, files) => new NupkgContentDirectory(directory!, [.. files]))
                 .ToArray();
-            var mapping = directories.ToDictionary(x => x.FullName);
-            var virtualRoot = mapping.GetOrAddValue(string.Empty, k => new NupkgContentDirectory(k));
+            var mapping = directories.ToDictionary(static x => x.FullName);
+            var virtualRoot = mapping.GetOrAddValue(string.Empty, static k => new NupkgContentDirectory(k));
             var queue = new Queue<NupkgContentDirectory>(directories);
 
             // rebuild hierarchy
             while (queue.Count > 0 && queue.Dequeue() is NupkgContentDirectory current)
             {
-                if (current.FullName == string.Empty) continue;
+                if (string.IsNullOrEmpty(current.FullName)) continue;
 
                 // find or create parent directory
                 var parentName = Path.GetDirectoryName(current.FullName)!;
-                if (!mapping.TryGetOrAddValue(parentName, k => new NupkgContentDirectory(k!), out var parent))
+                if (!mapping.TryGetOrAddValue(parentName, static k => new NupkgContentDirectory(k!), out var parent))
                 {
                     queue.Enqueue(parent);
                 }
@@ -70,7 +69,7 @@ namespace NupkgExplorer.Business.Nupkg
             }
 
             return virtualRoot.Items
-                .OrderByDescending(x => x is NupkgContentDirectory) // sort directory first
+                .OrderByDescending(static x => x is NupkgContentDirectory) // sort directory first
                 .ToArray();
         }
     }

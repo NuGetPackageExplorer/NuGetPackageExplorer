@@ -27,8 +27,8 @@ namespace PackageExplorerViewModel
                     Sources = CreateSourcesViewModels(debugData);
                     PdbType = debugData.PdbType;
 
-                    MetadataReferences = debugData.MetadataReferences.OrderBy(r => r.Name).ToList();
-                    CompilerFlags = debugData.CompilerFlags.OrderBy(f => f.Key).ToList();
+                    MetadataReferences = debugData.MetadataReferences.OrderBy(static r => r.Name).ToList();
+                    CompilerFlags = debugData.CompilerFlags.OrderBy(static f => f.Key).ToList();
                     HasCompilerFlags = debugData.HasCompilerFlags;
                 }
 

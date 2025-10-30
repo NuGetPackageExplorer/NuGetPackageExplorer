@@ -6,15 +6,15 @@ using Microsoft.Extensions.Logging.ApplicationInsights;
 
 var host = Host.CreateDefaultBuilder()
     .ConfigureFunctionsWebApplication()
-    .ConfigureServices(s =>
+    .ConfigureServices(static s =>
     {
         s.AddApplicationInsightsTelemetryWorkerService();
         s.ConfigureFunctionsApplicationInsights();
         s.AddHttpClient();
 
-        s.Configure<LoggerFilterOptions>(options =>
+        s.Configure<LoggerFilterOptions>(static options =>
         {
-            var toRemove = options.Rules.FirstOrDefault(rule => rule.ProviderName
+            var toRemove = options.Rules.FirstOrDefault(static rule => rule.ProviderName
                 == "Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider");
 
             if (toRemove is not null)
@@ -23,7 +23,7 @@ var host = Host.CreateDefaultBuilder()
             }
         });
     })
-    .ConfigureLogging(logging => logging
+    .ConfigureLogging(static logging => logging
         .AddFilter<ApplicationInsightsLoggerProvider>(null, LogLevel.Information))
     .Build();
 

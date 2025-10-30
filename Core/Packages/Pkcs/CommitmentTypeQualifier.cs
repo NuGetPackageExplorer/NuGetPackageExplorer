@@ -22,7 +22,7 @@ namespace NuGetPe.Packages.Pkcs
                 qualifier                  ANY DEFINED BY commitmentTypeIdentifier }*/
             var sequence = reader.ReadSequence();
             var commitmentTypeIdentifier = sequence.ReadObjectIdentifier();
-            var qualifier = sequence.ReadOptional(null, (r, _) => r, sequence => sequence.ReadEncodedValue());
+            var qualifier = sequence.ReadOptional(null, static (r, _) => r, static sequence => sequence.ReadEncodedValue());
 
             sequence.ThrowIfNotEmpty();
             return new()
