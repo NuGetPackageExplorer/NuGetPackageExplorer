@@ -48,6 +48,7 @@
         <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
 
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
+        <WasmFingerprintAssets>false</WasmFingerprintAssets>
       </PropertyGroup>
 
       <ItemGroup>
