@@ -1,29 +1,54 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using System.Net;
+
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
-using System.Net;
+using Microsoft.Extensions.Logging;
 
 namespace Api
 {
-    public class MsdlProxy
+    public partial class MsdlProxy(ILogger<MsdlProxy> log, IHttpClientFactory httpClientFactory)
     {
-        private readonly ILogger<MsdlProxy> _log;
-        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly ILogger<MsdlProxy> _log = log;
+        private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
-        public MsdlProxy(ILogger<MsdlProxy> log, IHttpClientFactory httpClientFactory)
+
+        // LoggerMessage delegate for warning about missing symbol key
+        private static readonly Action<ILogger, string, Exception?> MissingSymbolKeyWarning =
+            LoggerMessage.Define<string>(
+                LogLevel.Warning,
+                new EventId(1, nameof(MissingSymbolKey)),
+                "Symbol key is missing in the request. {Details}");
+
+        // LoggerMessage delegate for information about symbol request
+        private static readonly Action<ILogger, string, Exception?> SymbolRequestInfo =
+            LoggerMessage.Define<string>(
+                LogLevel.Information,
+                new EventId(2, nameof(SymbolRequest)),
+                "Symbol request for {SymbolKey}");
+
+        // LoggerMessage delegate for error logging
+        private static readonly Action<ILogger, Exception, Exception?> ProcessingError =
+            LoggerMessage.Define<Exception>(
+                LogLevel.Error,
+                new EventId(3, nameof(LogProcessingError)),
+                "An error occurred while processing the request. {Exception}");
+
+        private static void MissingSymbolKey(ILogger logger, string details)
         {
-            _log = log;
-            _httpClientFactory = httpClientFactory;
+            MissingSymbolKeyWarning(logger, details, null);
         }
+
+        private static void SymbolRequest(ILogger logger, string symbolKey)
+        {
+            SymbolRequestInfo(logger, symbolKey, null);
+        }
+
+        private static void LogProcessingError(ILogger logger, Exception exception)
+        {
+            ProcessingError(logger, exception, null);
+        }
+
 
         [Function("MsdlProxy")]
         public async Task<HttpResponseData> Run(
@@ -36,13 +61,13 @@ namespace Api
             var key = req.Query["symbolkey"];
             if (string.IsNullOrEmpty(key))
             {
-                _log.LogWarning("Symbol key is missing in the request.");
+                MissingSymbolKey(_log, "Symbol key is required in the query string.");
                 var badRequestResponse = req.CreateResponse(HttpStatusCode.BadRequest);
                 await badRequestResponse.WriteStringAsync("Symbol key is required.");
                 return badRequestResponse;
             }
 
-            _log.LogInformation($"Symbol request for {key}");
+            SymbolRequest(_log, key);
 
             var checksum = req.Headers.TryGetValues("SymbolChecksum", out var checksums)
                 ? checksums.FirstOrDefault()
@@ -65,7 +90,7 @@ namespace Api
 
             try
             {
-                var httpClient = _httpClientFactory.CreateClient();
+                using var httpClient = _httpClientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(pdbRequest, cancellationSource.Token).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
@@ -90,7 +115,7 @@ namespace Api
             }
             catch (Exception ex)
             {
-                _log.LogError(ex, "An error occurred while processing the request.");
+                LogProcessingError(_log, ex);
                 var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
                 await errorResponse.WriteStringAsync("An internal server error occurred.");
                 return errorResponse;
