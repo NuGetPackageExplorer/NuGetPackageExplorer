@@ -40,7 +40,7 @@
     <PackageVersion Include="Microsoft.SymbolStore" Version="8.0.0-preview.24273.2" />
 
     <PackageVersion Include="Microsoft.NET.Sdk.Functions" Version="4.6.0" />
-    <PackageVersion Include="Microsoft.Azure.Functions.Worker" Version="2.2.0" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker" Version="2.50.0-preview2" />
     <PackageVersion Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="2.0.0" />
     <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
     <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.1" />
