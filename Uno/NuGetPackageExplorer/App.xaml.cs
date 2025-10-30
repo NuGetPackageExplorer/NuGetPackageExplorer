@@ -26,7 +26,6 @@ using NupkgExplorer.Presentation.Dialogs;
 using PackageExplorerViewModel;
 using PackageExplorerViewModel.Types;
 
-using Uno.Extensions;
 using Uno.Logging;
 
 using Windows.UI.Core;
@@ -128,6 +127,11 @@ namespace PackageExplorer
             var window = Microsoft.UI.Xaml.Window.Current!;
 #endif
             MainWindow = window;
+
+#if DEBUG
+            MainWindow.UseStudio();
+#endif
+
 
             // Do not repeat app initialization when the Window already has content,
             // just ensure that the window is active
