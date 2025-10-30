@@ -40,6 +40,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <NuGetAuditMode>all</NuGetAuditMode>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <PropertyGroup>
