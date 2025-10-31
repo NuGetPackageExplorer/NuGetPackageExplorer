@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -10,7 +11,7 @@ namespace NupkgExplorer.Framework.Extensions
 {
     public static class CompositionContainerExtensions
     {
-        public static object GetExportedValue(this CompositionContainer container, Type type)
+        public static object GetExportedValue(this CompositionContainer container, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type)
         {
             var export = container.GetExports(type, null, null)
                 .FirstOrDefault()

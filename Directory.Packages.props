@@ -3,31 +3,51 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
-
-    <NuGetDependencyVersion>6.13.2</NuGetDependencyVersion>
-    <SystemDependencyVersion>9.0.3</SystemDependencyVersion>
+    <NuGetDependencyVersion>7.1.0-preview.1.42</NuGetDependencyVersion>
+    <CommunityToolkitVersion>7.1.2</CommunityToolkitVersion>
+    <UnoCommunityToolkitVersion>7.1.204</UnoCommunityToolkitVersion>
+    <SystemDependencyVersion>10.0.0-rc.2.25502.107</SystemDependencyVersion>
   </PropertyGroup>
   <ItemGroup>
     <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.7.115"  />
 
     <PackageVersion Include="AppInsights.WindowsDesktop" Version="2.18.1" />
     <PackageVersion Include="AuthenticodeExaminer" Version="0.4.0" />
-    <PackageVersion Include="AvalonEdit" Version="6.3.0.90" />
+    <PackageVersion Include="AvalonEdit" Version="6.3.1.120" />
     <PackageVersion Include="GrayscaleEffect" Version="1.0.1" />
     <PackageVersion Include="Humanizer" Version="2.14.1" />
     <PackageVersion Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageVersion Include="OSVersionHelper" Version="1.1.24" />
     <PackageVersion Include="PeNet" Version="4.1.2" />
 
-    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.13.0" />
-    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="3.11.0" />
-    <PackageVersion Include="Microsoft.DiaSymReader" Version="2.2.0-beta.25124.1" />
-    <PackageVersion Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-25127-02" />
+
+    <PackageVersion Include="CommunityToolkit.WinUI.UI.Controls" Version="$(CommunityToolkitVersion)" />
+    <PackageVersion Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="$(CommunityToolkitVersion)" />
+    <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="$(UnoCommunityToolkitVersion)" />
+    <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="$(UnoCommunityToolkitVersion)" />
+    <PackageVersion Include="Uno.Monaco.Editor" Version="6.4.0-dev.8.gbf77f0200e" />
+    <PackageVersion Include="System.Reactive" Version="5.0.0" />
+    
+    
+    <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0-2.final" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.Analyzers" Version="5.0.0-1.25277.114" />
+    <PackageVersion Include="Microsoft.DiaSymReader" Version="2.2.0-beta.25527.104" />
+    <PackageVersion Include="Microsoft.DiaSymReader.Converter" Version="1.1.0-beta2-25526-01" />
     <PackageVersion Include="Microsoft.DiaSymReader.Native" Version="17.12.0-beta1.24603.5" />
-    <PackageVersion Include="Microsoft.DiaSymReader.PortablePdb" Version="2.0.0-beta-25124-01" />
+    <PackageVersion Include="Microsoft.DiaSymReader.PortablePdb" Version="2.0.0-beta-25526-01" />
     <PackageVersion Include="Microsoft.Extensions.DependencyModel" Version="$(SystemDependencyVersion)" />
     <PackageVersion Include="Microsoft.Extensions.FileSystemGlobbing" Version="$(SystemDependencyVersion)" />
-    <PackageVersion Include="Microsoft.SymbolStore" Version="8.0.0-preview.24273.2" />    
+    <PackageVersion Include="Microsoft.SymbolStore" Version="8.0.0-preview.24273.2" />
+
+    <PackageVersion Include="Microsoft.NET.Sdk.Functions" Version="4.6.0" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker" Version="2.50.0-preview2" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="2.0.0" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.1" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.5" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.0" />
+    <PackageVersion Include="Microsoft.ApplicationInsights.WorkerService" Version="2.23.0" />
+    <PackageVersion Include="Microsoft.Windows.Compatibility" Version="$(SystemDependencyVersion)" />
 
     <PackageVersion Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
     <PackageVersion Include="NuGet.Credentials" Version="$(NuGetDependencyVersion)" />
@@ -36,20 +56,26 @@
     <PackageVersion Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />
     <PackageVersion Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />    
 
-    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta1.20574.7" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-rc.2.25502.107" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="$(SystemDependencyVersion)" />
     
     <PackageVersion Include="System.Formats.Asn1" Version="$(SystemDependencyVersion)" />
-    <PackageVersion Include="System.Memory" Version="4.6.2" />
+    <PackageVersion Include="System.IO.Packaging" Version="$(SystemDependencyVersion)" />
+    <PackageVersion Include="System.Memory" Version="4.6.3" />
     <PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Private.Uri" Version="4.3.2" />
     <PackageVersion Include="System.Reflection.Metadata" Version="$(SystemDependencyVersion)" />
-    <PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.1" />
+    <PackageVersion Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
     <PackageVersion Include="System.Runtime.Caching" Version="$(SystemDependencyVersion)" />    
     <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="$(SystemDependencyVersion)" />
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="$(SystemDependencyVersion)" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />    
     <PackageVersion Include="System.Windows.Extensions" Version="$(SystemDependencyVersion)" />
+
+
+    <PackageVersion Include="Uno.Core.Extensions.Compatibility" Version="4.1.1" />
+
+
 
 
 

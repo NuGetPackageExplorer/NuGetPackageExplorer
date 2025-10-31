@@ -398,7 +398,7 @@ namespace NuGetPe
 
         public void Dispose()
         {
-            _danglingStreams.ForEach(ds => ds.Dispose());
+            _danglingStreams.ForEach(static ds => ds.Dispose());
         }
 
 

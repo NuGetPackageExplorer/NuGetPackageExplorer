@@ -285,6 +285,9 @@ dotnet_diagnostic.CA1056.severity = none
 # CS8766: Nullability of reference types in return type doesn't match implicitly implemented member (possibly because of nullability attributes).
 dotnet_diagnostic.CS8766.severity = none
 
+# IDE0060: Remove unused parameter
+dotnet_diagnostic.IDE0060.severity = none
+
 csharp_using_directive_placement = outside_namespace:silent
 csharp_prefer_simple_using_statement = true:suggestion
 csharp_style_namespace_declarations = block_scoped:silent

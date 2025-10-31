@@ -1,17 +1,15 @@
 ﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>      
-      net9.0-browserwasm;
-      net9.0-windows10.0.19041;
-      net9.0-desktop
-    </TargetFrameworks>
+    <TargetFrameworks>net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 
     <OutputType>Exe</OutputType>
     <UnoSingleProject>true</UnoSingleProject>
+    
     <NoWarn>$(NoWarn);NU1701;Uno0001</NoWarn>
     <AssemblyName>PackageExplorer</AssemblyName>
     <RootNamespace>PackageExplorer</RootNamespace>
     <IsPackable>false</IsPackable>
+    <IsUnoProject>true</IsUnoProject>
 
     <!-- Display name -->
     <ApplicationTitle>NuGet Package Explorer</ApplicationTitle>
@@ -22,10 +20,25 @@
     <ApplicationVersion>$(BuildVersionSimple)</ApplicationVersion>    
     <UnoSplashScreenBaseSize>450,450</UnoSplashScreenBaseSize>
     <UnoSplashScreenColor>#FFFFFF</UnoSplashScreenColor>
-  </PropertyGroup>
+    
+    <!-- <WindowsSdkPackageVersion>10.0.22621.28</WindowsSdkPackageVersion> -->
+    <UnoFeatures>
+      Lottie;
+      Hosting;
+      Toolkit;
+      Logging;
+      Mvvm;
+      Configuration;
+      Localization;
+      Navigation;
+      ThemeService;
+      SkiaRenderer;
+    </UnoFeatures>
+  
+</PropertyGroup>
 
   <Choose>
-    <When Condition="'$(TargetFramework)'=='net9.0-browserwasm'">
+    <When Condition="'$(TargetFramework)'=='net10.0-browserwasm'">
       <PropertyGroup>
         <WasmShellWebAppBasePath>/</WasmShellWebAppBasePath>
         <WasmPWAManifestFile>Platforms/WebAssembly/manifest.webmanifest</WasmPWAManifestFile>
@@ -35,29 +48,21 @@
         <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
 
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
-        <WasmBuildNative>true</WasmBuildNative>
+        <WasmFingerprintAssets>false</WasmFingerprintAssets>
       </PropertyGroup>
 
-      <ItemGroup>
-        <WasmShellAdditionalPInvokeLibrary Include="libc" />
-        <WasmShellAdditionalPInvokeLibrary Include="libc.so" />
-      </ItemGroup>
-      
       <ItemGroup>
         <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
 
         <!-- This value must be the instrumentation key, not the connection string -->
         <WasmShellMonoEnvironment Include="NPE_AI_INSTRUMENTATIONKEY" Value="$(NpeAiInstrumentationKey)" />
-      </ItemGroup>
-      
-      <ItemGroup>
-        <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+        <!--<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />-->
       </ItemGroup>
       
       <ItemGroup>
         <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/azure-app-insights.js" />
         <EmbeddedResource Include="Platforms/WebAssembly/WasmScripts/ai.*.js" />
-        <Content Include="Platforms/WebAssembly/WasmScripts/ai.*.map"/>
+        <Content Include="Platforms/WebAssembly/WasmScripts/ai.*.map" />
       </ItemGroup>
       
       <ItemGroup>
@@ -89,9 +94,8 @@
 
   <ItemGroup>
     <PackageReference Include="System.Reactive" />
-
     <PackageReference Include="Microsoft.Windows.Compatibility" />
-    <PackageReference Include="Uno.Core" />
+    <PackageReference Include="Uno.Core.Extensions.Compatibility" />    
   </ItemGroup>
   
   <Import Project="..\..\PackageExplorer\NugetPackageExplorer.Views.Shared.projitems" Label="Shared" />
@@ -106,5 +110,8 @@
     <UnoImage Include="Assets\Images\*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Platforms\WebAssembly\WasmAssets\NuGet.config" />    
+  </ItemGroup>
 
 </Project>

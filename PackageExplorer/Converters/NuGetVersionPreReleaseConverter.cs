@@ -1,11 +1,11 @@
-﻿using System;
-using System.Globalization;
-using NuGet.Versioning;
+﻿using NuGet.Versioning;
+
 using NuGetPe;
 
 #if HAS_UNO || USE_WINUI
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
+
 using _CultureInfo = System.String;
 #else
 using System.Windows;
@@ -21,9 +21,9 @@ namespace PackageExplorer
 #endif
     public partial class NuGetVersionPreReleaseConverter : IValueConverter
     {
-#region IValueConverter Members
+        #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             var version = value as NuGetVersion;
 
@@ -38,11 +38,11 @@ namespace PackageExplorer
             return Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo language)
         {
             throw new NotImplementedException();
         }
 
-#endregion
+        #endregion
     }
 }

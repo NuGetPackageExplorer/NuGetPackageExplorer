@@ -99,7 +99,7 @@ namespace PackageExplorerViewModel.PackageSearch
             {
                 return new List<string>();
             }
-            var values = value.Split(separator, StringSplitOptions.RemoveEmptyEntries).Select(t => t.Trim());
+            var values = value.Split(separator, StringSplitOptions.RemoveEmptyEntries).Select(static t => t.Trim());
             return values;
         }
 

@@ -69,8 +69,8 @@ namespace PackageExplorer
         {
             LanguageBox.ItemsSource =
                 CultureInfo.GetCultures(CultureTypes.SpecificCultures)
-                    .Select(c => c.Name)
-                    .OrderBy(p => p, StringComparer.OrdinalIgnoreCase);
+                    .Select(static c => c.Name)
+                    .OrderBy(static p => p, StringComparer.OrdinalIgnoreCase);
         }
 
         private void PopulateFrameworkAssemblyNames()

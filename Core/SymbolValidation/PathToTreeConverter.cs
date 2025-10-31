@@ -14,11 +14,11 @@ namespace NuGetPe
         {
             ArgumentNullException.ThrowIfNull(paths);
 
-            paths.Sort((p1, p2) => string.Compare(p1.Path, p2.Path, StringComparison.OrdinalIgnoreCase));
+            paths.Sort(static (p1, p2) => string.Compare(p1.Path, p2.Path, StringComparison.OrdinalIgnoreCase));
 
             var root = new Folder("", parent: null);
 
-            var parsedPaths = paths.Select(p => Tuple.Create<NuGet.Packaging.IPackageFile, string[]>(p, p.Path.Split('\\'))).ToList();
+            var parsedPaths = paths.Select(static p => Tuple.Create<NuGet.Packaging.IPackageFile, string[]>(p, p.Path.Split('\\'))).ToList();
             Parse(root, parsedPaths, 0, 0, parsedPaths.Count);
 
             return root;
@@ -136,7 +136,7 @@ namespace NuGetPe
 
             public string Name { get; }
 
-            public IEnumerable<IFile> GetFiles() => Children.SelectMany(e => e.GetFiles());
+            public IEnumerable<IFile> GetFiles() => Children.SelectMany(static e => e.GetFiles());
 
             public IPart? this[string name] => Children.SingleOrDefault(e => e.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
         }

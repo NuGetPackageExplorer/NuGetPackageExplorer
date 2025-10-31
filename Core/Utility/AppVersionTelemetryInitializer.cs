@@ -24,7 +24,7 @@ namespace NuGetPe.Utility
             _properties["WPF version"] = _wpfVersion;
 #endif
             _appVersion = typeof(DiagnosticsClient).Assembly.GetCustomAttributes<AssemblyMetadataAttribute>()?
-                                                            .FirstOrDefault(ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))?
+                                                            .FirstOrDefault(static ama => string.Equals(ama.Key, "CloudBuildNumber", StringComparison.OrdinalIgnoreCase))?
                                                             .Value ?? "0.0.0.1";
 
             _properties["Version"] = _appVersion;

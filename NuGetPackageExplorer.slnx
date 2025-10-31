@@ -1,0 +1,115 @@
+<Solution>
+  <Configurations>
+    <BuildType Name="Ad-Hoc" />
+    <BuildType Name="AppStore" />
+    <BuildType Name="Debug" />
+    <BuildType Name="Release" />
+    <Platform Name="Any CPU" />
+    <Platform Name="ARM" />
+    <Platform Name="ARM64" />
+    <Platform Name="iPhone" />
+    <Platform Name="iPhoneSimulator" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".github/workflows/azure-static-web-app-pr-validation.yml" />
+    <File Path="azure-pipelines.yml" />
+    <File Path="Common/CommonAssemblyInfo.cs" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Build.targets" />
+    <File Path="Directory.Packages.props" />
+    <File Path="global.json" />
+    <File Path="NuGet.config" />
+    <File Path="NuGetPackageExplorer.ruleset" />
+    <File Path="README-developers.md" />
+    <File Path="README.md" />
+    <File Path="version.json" />
+  </Folder>
+  <Folder Name="/Uno/">
+    <Project Path="PackageExplorer/NugetPackageExplorer.Views.Shared.shproj" />
+    <Project Path="Uno/Api/Api.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+    </Project>
+    <Project Path="Uno/NugetPackageExplorer.Legacy/NugetPackageExplorer.Shared.Legacy.shproj" />
+    <Project Path="Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj">
+      <BuildType Solution="Ad-Hoc|*" Project="Debug" />
+      <BuildType Solution="AppStore|*" Project="Debug" />
+      <Deploy Solution="Debug|Any CPU" />
+    </Project>
+  </Folder>
+  <Project Path="Core/Core.csproj">
+    <BuildType Solution="Ad-Hoc|*" Project="Release" />
+    <BuildType Solution="AppStore|*" Project="Release" />
+  </Project>
+  <Project Path="dotnet-validate/dotnet-validate.csproj">
+    <BuildType Solution="Ad-Hoc|*" Project="Release" />
+    <BuildType Solution="AppStore|*" Project="Release" />
+  </Project>
+  <Project Path="NuGetPeGenerators/NuGetPeGenerators.csproj">
+    <BuildType Solution="Ad-Hoc|*" Project="Release" />
+    <BuildType Solution="AppStore|*" Project="Release" />
+  </Project>
+  <Project Path="PackageExplorer.Package/PackageExplorer.Package.wapproj" Type="c7167f0d-bc9f-4e6e-afe1-012c56b48db5">
+    <BuildType Solution="Ad-Hoc|Any CPU" Project="Debug" />
+    <BuildType Solution="Ad-Hoc|ARM" Project="Debug" />
+    <BuildType Solution="Ad-Hoc|ARM64" Project="Debug" />
+    <BuildType Solution="Ad-Hoc|iPhone" Project="Debug" />
+    <BuildType Solution="Ad-Hoc|iPhoneSimulator" Project="Debug" />
+    <BuildType Solution="Ad-Hoc|x64" Project="Release" />
+    <BuildType Solution="Ad-Hoc|x86" Project="Debug" />
+    <BuildType Solution="AppStore|Any CPU" Project="Debug" />
+    <BuildType Solution="AppStore|ARM" Project="Debug" />
+    <BuildType Solution="AppStore|ARM64" Project="Debug" />
+    <BuildType Solution="AppStore|iPhone" Project="Debug" />
+    <BuildType Solution="AppStore|iPhoneSimulator" Project="Debug" />
+    <BuildType Solution="AppStore|x64" Project="Release" />
+    <BuildType Solution="AppStore|x86" Project="Debug" />
+    <Platform Solution="Ad-Hoc|Any CPU" Project="ARM64" />
+    <Platform Solution="Ad-Hoc|ARM" Project="ARM64" />
+    <Platform Solution="Ad-Hoc|iPhone" Project="ARM64" />
+    <Platform Solution="Ad-Hoc|iPhoneSimulator" Project="ARM64" />
+    <Platform Solution="AppStore|Any CPU" Project="ARM64" />
+    <Platform Solution="AppStore|ARM" Project="ARM64" />
+    <Platform Solution="AppStore|iPhone" Project="ARM64" />
+    <Platform Solution="AppStore|iPhoneSimulator" Project="ARM64" />
+    <Platform Solution="Debug|Any CPU" Project="x64" />
+    <Platform Solution="Debug|ARM" Project="x86" />
+    <Platform Solution="Debug|iPhone" Project="x86" />
+    <Platform Solution="Debug|iPhoneSimulator" Project="x86" />
+    <Platform Solution="Release|Any CPU" Project="x64" />
+    <Platform Solution="Release|ARM" Project="x86" />
+    <Platform Solution="Release|iPhone" Project="x86" />
+    <Platform Solution="Release|iPhoneSimulator" Project="x86" />
+    <Build Solution="Debug|ARM" Project="false" />
+    <Build Solution="Debug|iPhone" Project="false" />
+    <Build Solution="Debug|iPhoneSimulator" Project="false" />
+    <Build Solution="Release|ARM" Project="false" />
+    <Build Solution="Release|iPhone" Project="false" />
+    <Build Solution="Release|iPhoneSimulator" Project="false" />
+    <Deploy Solution="*|Any CPU" />
+    <Deploy Solution="*|ARM64" />
+    <Deploy Solution="*|x64" />
+    <Deploy Solution="*|x86" />
+    <Deploy Solution="Ad-Hoc|ARM" />
+    <Deploy Solution="Ad-Hoc|iPhone" />
+    <Deploy Solution="Ad-Hoc|iPhoneSimulator" />
+    <Deploy Solution="AppStore|ARM" />
+    <Deploy Solution="AppStore|iPhone" />
+    <Deploy Solution="AppStore|iPhoneSimulator" />
+  </Project>
+  <Project Path="PackageExplorer/NuGetPackageExplorer.csproj">
+    <BuildType Solution="Ad-Hoc|*" Project="Release" />
+    <BuildType Solution="AppStore|*" Project="Release" />
+  </Project>
+  <Project Path="PackageViewModel/PackageViewModel.csproj">
+    <BuildType Solution="Ad-Hoc|*" Project="Release" />
+    <BuildType Solution="AppStore|*" Project="Release" />
+  </Project>
+  <Project Path="Types/Types.csproj">
+    <BuildType Solution="Ad-Hoc|*" Project="Release" />
+    <BuildType Solution="AppStore|*" Project="Release" />
+  </Project>
+</Solution>

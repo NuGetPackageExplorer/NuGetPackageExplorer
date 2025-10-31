@@ -50,7 +50,7 @@ namespace NuGetPe
         }
         public IEnumerable<IPackageFile> GetFiles()
         {
-            return _packageBuilder.Files.Where(p => !PackageUtility.IsManifest(p.Path));
+            return _packageBuilder.Files.Where(static p => !PackageUtility.IsManifest(p.Path));
         }
 
         public Stream GetStream()

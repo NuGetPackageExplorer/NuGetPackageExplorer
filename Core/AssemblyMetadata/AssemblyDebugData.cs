@@ -33,9 +33,9 @@ namespace NuGetPe.AssemblyMetadata
 
         public bool PdbChecksumIsValid { get; internal set; }
 
-        public bool HasSourceLink => Sources.Any(doc => doc.HasSourceLink);
+        public bool HasSourceLink => Sources.Any(static doc => doc.HasSourceLink);
 
-        public bool AllSourceLink => Sources.All(doc => doc.HasSourceLink);
+        public bool AllSourceLink => Sources.All(static doc => doc.HasSourceLink);
 
         /// <summary>
         /// True if we hae PDB data loaded
@@ -75,8 +75,8 @@ namespace NuGetPe.AssemblyMetadata
                 // we have the min compiler version we can support for this
 
 
-                var versionString = CompilerFlags.Where(f => f.Key == "version")
-                                           .Select(f => f.Value)
+                var versionString = CompilerFlags.Where(static f => f.Key == "version")
+                                           .Select(static f => f.Value)
                                            .FirstOrDefault();
 
                 // if missing, the compiler is too old
@@ -94,7 +94,7 @@ namespace NuGetPe.AssemblyMetadata
 
         private bool CalculateSourcesDeterministic()
         {
-            return Sources.All(doc => doc.Name.StartsWith("/_", StringComparison.OrdinalIgnoreCase));
+            return Sources.All(static doc => doc.Name.StartsWith("/_", StringComparison.OrdinalIgnoreCase));
         }
 
     }

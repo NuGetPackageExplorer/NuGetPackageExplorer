@@ -23,7 +23,7 @@ namespace NuGetPe.Packages.Pkcs
                commitmentTypeQualifier     SEQUENCE SIZE (1..MAX) OF CommitmentTypeQualifier OPTIONAL}*/
             var sequence = reader.ReadSequence();
             var commitmentTypeId = sequence.ReadObjectIdentifier();
-            var commitmentTypeQualifiers = sequence.ReadOptionalSequenceOf(null, sequence => CommitmentTypeQualifier.Decode(sequence));
+            var commitmentTypeQualifiers = sequence.ReadOptionalSequenceOf(null, static sequence => CommitmentTypeQualifier.Decode(sequence));
 
             sequence.ThrowIfNotEmpty();
             return new()

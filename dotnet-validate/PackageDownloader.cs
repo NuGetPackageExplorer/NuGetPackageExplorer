@@ -59,7 +59,7 @@ namespace NuGetPe
         public async Task<FileInfo> DownloadAsync(string packageId, NuGetVersion? packageVersion, CancellationToken cancellationToken)
         {
             var packageSources = GetPackageSources(packageId);
-            foreach (var sourceRepository in packageSources.Select(e => Repository.Factory.GetCoreV3(e)))
+            foreach (var sourceRepository in packageSources.Select(static e => Repository.Factory.GetCoreV3(e)))
             {
                 PackageIdentity? packageIdentity;
                 if (packageVersion is not null)
@@ -99,7 +99,7 @@ namespace NuGetPe
             string notFoundMessage = packageSources.Count switch
             {
                 1 => $"the \"{packageSources.First().Name}\" NuGet package source.",
-                _ => $"{packageSources.Skip(1).Aggregate($"neither \"{packageSources.First().Name}\"", (s, p) => s + $" nor \"{p.Name}\"")} NuGet package sources.",
+                _ => $"{packageSources.Skip(1).Aggregate($"neither \"{packageSources.First().Name}\"", static (s, p) => s + $" nor \"{p.Name}\"")} NuGet package sources.",
             };
             throw new UnavailableException($"The package \"{packageDisplayName}\" was not found in {notFoundMessage}");
         }

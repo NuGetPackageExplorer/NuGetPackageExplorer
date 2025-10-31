@@ -145,14 +145,13 @@ namespace NupkgExplorer.Business.Nupkg.Files
                     : reader.GetString(reference.Namespace) + "." + reader.GetString(reference.Name);
 
                 Handle scope = reference.ResolutionScope;
-                switch (scope.Kind)
+                return scope.Kind switch
                 {
-                    case HandleKind.TypeReference: return GetTypeFromReference(reader, (TypeReferenceHandle)scope, 0) + "+" + name;
-
+                    HandleKind.TypeReference => GetTypeFromReference(reader, (TypeReferenceHandle)scope, 0) + "+" + name,
                     // If type refers other module or assembly, don't append them to result.
                     // Usually we don't have those assemblies, so we'll be unable to resolve the exact type.
-                    default: return name;
-                }
+                    _ => name,
+                };
                 ;
             }
 

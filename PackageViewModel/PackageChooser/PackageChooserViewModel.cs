@@ -214,9 +214,9 @@ namespace PackageExplorerViewModel
         public ICommand ChangePackageSourceCommand { get; private set; }
         public RelayCommand CancelCommand { get; private set; }
 
-        public event EventHandler LoadPackagesCompleted = delegate { };
-        public event EventHandler OpenPackageRequested = delegate { };
-        public event EventHandler PackageDownloadRequested = delegate { };
+        public event EventHandler LoadPackagesCompleted = static delegate { };
+        public event EventHandler OpenPackageRequested = static delegate { };
+        public event EventHandler PackageDownloadRequested = static delegate { };
 
         private readonly PackageListCache<IPackageSearchMetadata> _packageListCache = new PackageListCache<IPackageSearchMetadata>();
 

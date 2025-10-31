@@ -16,7 +16,7 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var frameworkNames = (IEnumerable<NuGetFramework>)value;
-            return frameworkNames == null ? string.Empty : string.Join("; ", frameworkNames.Select(fn => fn.DotNetFrameworkName));
+            return frameworkNames == null ? string.Empty : string.Join("; ", frameworkNames.Select(static fn => fn.DotNetFrameworkName));
         }
         private static readonly char[] Separator = [';', ','];
 

@@ -26,7 +26,7 @@ namespace PackageExplorer
                 return null;
             }
 
-            var fxs = string.Join("; ", far.SupportedFrameworks.Select(fn => fn.DotNetFrameworkName));
+            var fxs = string.Join("; ", far.SupportedFrameworks.Select(static fn => fn.DotNetFrameworkName));
 
             if (parameter as string == "includeAssembly")
             {

@@ -109,14 +109,14 @@ namespace NuGetPe
             // We will look for *.deps.json and read the libraries node for type: project.
             // Then we return the matching files in the same directory
 
-            var depsFiles = _rootFolder["tools"]?.GetFiles().Where(f => f.Path.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase)) ?? Enumerable.Empty<IFile>();
+            var depsFiles = _rootFolder["tools"]?.GetFiles().Where(static f => f.Path.EndsWith(".deps.json", StringComparison.OrdinalIgnoreCase)) ?? Enumerable.Empty<IFile>();
 
             foreach (var depFile in depsFiles)
             {
                 using var reader = new DependencyContextJsonReader();
                 var context = reader.Read(depFile.GetStream());
 
-                var runtimeLibs = context.RuntimeLibraries.Where(rl => "project".Equals(rl.Type, StringComparison.OrdinalIgnoreCase)).ToList();
+                var runtimeLibs = context.RuntimeLibraries.Where(static rl => "project".Equals(rl.Type, StringComparison.OrdinalIgnoreCase)).ToList();
 
 
                 var userFiles = (from rl in runtimeLibs
@@ -135,7 +135,7 @@ namespace NuGetPe
             // For library packages, we look in lib and runtimes for files to check
 
             var libFiles = _rootFolder["lib"]?.GetFiles() ?? Enumerable.Empty<IFile>();
-            var runtimeFiles = _rootFolder["runtimes"]?.GetFiles().Where(f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IFile>();
+            var runtimeFiles = _rootFolder["runtimes"]?.GetFiles().Where(static f => !IsNativeRuntimeFilePath(f.Path)) ?? Enumerable.Empty<IFile>();
             var files = libFiles.Union(runtimeFiles).ToList();
 
 

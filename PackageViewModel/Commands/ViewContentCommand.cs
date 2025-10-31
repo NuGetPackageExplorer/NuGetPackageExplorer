@@ -22,7 +22,7 @@ namespace PackageExplorerViewModel
 
         #region ICommand Members
 
-        public event EventHandler? CanExecuteChanged = delegate { };
+        public event EventHandler? CanExecuteChanged = static delegate { };
 
         public bool CanExecute(object? parameter)
         {

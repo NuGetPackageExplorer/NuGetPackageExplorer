@@ -13,6 +13,13 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <DefaultLanguage>en-US</DefaultLanguage>
     <NoWarn>1701;1702;1705;1591;NU1701;NU1510;CA1014;CA1002</NoWarn>
+    <!--
+      Adding NoWarn to remove build warnings
+      NU1507: Warning when there are multiple package sources when using CPM with no source mapping
+      NETSDK1201: Warning that specifying RID won't create self containing app
+      PRI257: Ignore default language (en) not being one of the included resources (eg en-us, en-uk)
+    -->
+    <NoWarn>$(NoWarn);NU1507;NETSDK1201;PRI257</NoWarn>
 
     <IsTypesProject>$(MSBuildProjectName.Contains('Types'))</IsTypesProject>
     <IsLegacyProject>$(MSBuildProjectName.Equals('PackageExplorer'))</IsLegacyProject>
@@ -33,6 +40,7 @@
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <NuGetAuditMode>all</NuGetAuditMode>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
   </PropertyGroup>
 
   <PropertyGroup>

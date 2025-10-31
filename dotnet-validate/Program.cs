@@ -1,6 +1,4 @@
 ﻿using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.Parsing;
 
 using Microsoft.Extensions.FileSystemGlobbing;
 using Microsoft.Extensions.FileSystemGlobbing.Abstractions;
@@ -21,34 +19,45 @@ namespace NuGetPe
 
         private static async Task<int> Main(string[] args)
         {
+            var fileArgument = new Argument<string>("file")
+            {
+                Description = "Package to validate."
+            };
+
             var localCommand = new Command("local", "A local package")
             {
-                new Argument<string>("file", "Package to validate.")
+                fileArgument
+            };
+
+            var packageIdArgument = new Argument<string>("packageId")
+            {
+                Description = "Package Id"
             };
 
             var remoteCommand = new Command("remote", "A package on a NuGet Feed")
             {
-                new Argument<string>("packageId", "Package Id"),
-                new Option<NuGetVersion?>(
-                    ["--version", "-v"],
-                    parseArgument: arg =>
+                packageIdArgument,
+                new Option<NuGetVersion?>("--version","-v")
                     {
-                        if (arg.Tokens.Count > 0 && NuGetVersion.TryParse(arg.Tokens[0].Value, out var version))
+                        Description = "Package version. Defaults to latest.",
+                        CustomParser = arg =>
                         {
-                            return version;
+                            if (arg.Tokens.Count > 0 && NuGet.Versioning.NuGetVersion.TryParse(arg.Tokens[0].Value, out var version))
+                            {
+                                return version;
+                            }
+                            else
+                            {
+                                arg.AddError("The provided version string could not be parsed." +
+                                     Environment.NewLine +
+                                    "See https://docs.microsoft.com/en-us/nuget/concepts/package-versioning");
+                                return null;
+                            }
                         }
-                        else
-                        {
-                            arg.ErrorMessage = "The provided version string could not be parsed." +
-                                Environment.NewLine +
-                                "See https://docs.microsoft.com/en-us/nuget/concepts/package-versioning";
-                            return null;
-                        }
-                    },
-                    description: "Package version. Defaults to latest."),
-                new Option<DirectoryInfo?>(
-                    ["--nuget-config-directory", "-d"],
-                    parseArgument: arg =>
+                },
+                new Option<DirectoryInfo?>( "--nuget-config-directory", "-d")
+                {
+                    CustomParser = arg =>
                     {
                         if (arg.Tokens.Count > 0)
                         {
@@ -58,13 +67,15 @@ namespace NuGetPe
                             {
                                 return directoryInfo;
                             }
-                            arg.ErrorMessage = $"The NuGet configuration directory that was specified must exist: {directory}";
+
+                            arg.AddError($"The NuGet configuration directory that was specified must exist: {directory}");
                         }
                         return null;
                     },
-                    description: "The directory from where the NuGet configuration is loaded. " +
+                    Description = "The directory from where the NuGet configuration is loaded. " +
                                  "This is used to automatically detect NuGet package sources and the location of the global‑packages directory. " +
-                                 "Defaults to the current directory."),
+                                 "Defaults to the current directory."
+                }
             };
 
             var rootCommand = new RootCommand()
@@ -76,10 +87,12 @@ namespace NuGetPe
                 }
             };
 
-            localCommand.Handler = CommandHandler.Create<string>(RunLocalCommand);
-            remoteCommand.Handler = CommandHandler.Create<string, NuGetVersion?, DirectoryInfo?>(RunRemoteCommand);
 
-            return await rootCommand.InvokeAsync(args).ConfigureAwait(false);
+            localCommand.SetAction(async (r) => await RunLocalCommand(r.GetRequiredValue(fileArgument)));
+            remoteCommand.SetAction(async (r) => await RunRemoteCommand(r.GetRequiredValue(packageIdArgument), r.GetValue<NuGetVersion?>("--version"), r.GetValue<DirectoryInfo?>("--nuget-config-directory")));
+
+
+            return await rootCommand.Parse(args).InvokeAsync().ConfigureAwait(false);
         }
 
         private static async Task<int> RunLocalCommand(string file)
@@ -194,7 +207,7 @@ namespace NuGetPe
             if (errorMessage != null)
             {
                 const int indent = 4;
-                errorString = Environment.NewLine + string.Join(Environment.NewLine, errorMessage.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Select(e => new string(' ', indent) + e));
+                errorString = Environment.NewLine + string.Join(Environment.NewLine, errorMessage.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Select(static e => new string(' ', indent) + e));
             }
             else
             {

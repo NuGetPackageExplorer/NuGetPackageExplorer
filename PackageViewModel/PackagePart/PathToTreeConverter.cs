@@ -11,12 +11,12 @@ namespace PackageExplorerViewModel
         {
             ArgumentNullException.ThrowIfNull(paths);
 
-            paths.Sort((p1, p2) => string.Compare(p1.Path, p2.Path, StringComparison.OrdinalIgnoreCase));
+            paths.Sort(static (p1, p2) => string.Compare(p1.Path, p2.Path, StringComparison.OrdinalIgnoreCase));
 
             var root = new PackageFolder("", viewModel);
 
             var parsedPaths =
-                paths.Select(p => Tuple.Create(p, p.Path.Split('\\'))).ToList();
+                paths.Select(static p => Tuple.Create(p, p.Path.Split('\\'))).ToList();
             Parse(root, parsedPaths, 0, 0, parsedPaths.Count);
 
             return root;

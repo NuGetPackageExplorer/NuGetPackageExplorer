@@ -103,7 +103,7 @@ namespace PackageExplorerViewModel
 
         public PackageDependency AsReadOnly()
         {
-            return new PackageDependency(Id, VersionSpec, null, Exclude?.Split(',').Select(s => s.Trim()).ToList());
+            return new PackageDependency(Id, VersionSpec, null, Exclude?.Split(',').Select(static s => s.Trim()).ToList());
         }
     }
 }

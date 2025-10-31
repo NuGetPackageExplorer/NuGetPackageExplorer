@@ -8,7 +8,7 @@ namespace NuGetPe
     public static class AppCompat
     {
 #pragma warning disable IDE1006 // Naming Styles
-        private static readonly Lazy<bool> isWindows10S = new Lazy<bool>(() => IsWindows && GetIsWin10S());
+        private static readonly Lazy<bool> isWindows10S = new Lazy<bool>(static () => IsWindows && GetIsWin10S());
 #pragma warning restore IDE1006 // Naming Styles
 
         public static bool IsWindows10S => isWindows10S.Value;

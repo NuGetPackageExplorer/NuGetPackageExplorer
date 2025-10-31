@@ -1,4 +1,6 @@
-﻿using Microsoft.UI.Xaml.Data;
+﻿using System.Globalization;
+
+using Microsoft.UI.Xaml.Data;
 
 namespace NupkgExplorer.Views.Converters
 {
@@ -14,16 +16,15 @@ namespace NupkgExplorer.Views.Converters
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            switch (Conversion)
+            return Conversion switch
             {
-                case ConversionType.FileSize: return HumanizeFileSize(value, targetType, parameter, language)!;
-                case ConversionType.LargeNumber: return HumanizeLargeNumber(value, targetType, parameter, language)!;
-
-                default: throw new NotImplementedException($"ConversionType '{Conversion}' not implemented");
-            }
+                ConversionType.FileSize => HumanizeFileSize(value, targetType, parameter, language)!,
+                ConversionType.LargeNumber => HumanizeLargeNumber(value, targetType, parameter, language)!,
+                _ => throw new NotImplementedException($"ConversionType '{Conversion}' not implemented"),
+            };
         }
 
-        private string? HumanizeFileSize(object value, Type targetType, object parameter, string language)
+        private static string? HumanizeFileSize(object value, Type targetType, object parameter, string language)
         {
             if (value is long l)
             {
@@ -32,13 +33,13 @@ namespace NupkgExplorer.Views.Converters
                 var unit = FileSizeUnits[tier];
                 var format = tier == 0 ? "0" : "0.0";
 
-                return $"{(l / Math.Pow(2, 10 * tier)).ToString(format)} {unit}";
+                return $"{(l / Math.Pow(2, 10 * tier)).ToString(format, CultureInfo.CurrentCulture)} {unit}";
             }
 
             return null;
         }
 
-        private string? HumanizeLargeNumber(object value, Type targetType, object parameter, string language)
+        private static string? HumanizeLargeNumber(object value, Type targetType, object parameter, string language)
         {
             if (value is long l)
             {
@@ -47,7 +48,7 @@ namespace NupkgExplorer.Views.Converters
                 var unit = LargeNumberUnits[tier];
                 var format = tier == 0 ? "0" : "0.0";
 
-                return (l / Math.Pow(10, 3 * tier)).ToString(format) + unit;
+                return (l / Math.Pow(10, 3 * tier)).ToString(format, CultureInfo.CurrentCulture) + unit;
             }
 
             return null;

@@ -1,0 +1,7 @@
+- dotnet restore NuGetPackageExplorer.sln
+- dotnet build NuGetPackageExplorer.sln -c Release (artifacts under artifacts/bin)
+- dotnet build Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj -c Release (requires wasm-tools & wasm-tools-net9 workloads)
+- dotnet publish Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj -f net10.0-browserwasm -c Release
+- dotnet run --project dotnet-validate/dotnet-validate.csproj package local <path>
+- nbgv get-version (check Nerdbank.GitVersioning state)
+- PowerShell basics: Get-ChildItem (ls), Set-Location (cd), git status/add/commit for SCM

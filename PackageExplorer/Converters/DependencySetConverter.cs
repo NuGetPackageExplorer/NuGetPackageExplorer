@@ -11,7 +11,7 @@ namespace PackageExplorer
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             var dependencySets = (IEnumerable<PackageDependencyGroup>)value;
-            if (dependencySets.Any(d => (d.TargetFramework != null && !d.TargetFramework.IsAny)))
+            if (dependencySets.Any(static d => (d.TargetFramework != null && !d.TargetFramework.IsAny)))
             {
                 // if there is at least one dependency set with non-null target framework,
                 // we show the dependencies grouped by target framework.
@@ -19,7 +19,7 @@ namespace PackageExplorer
             }
 
             // otherwise, flatten the groups into a single list of dependencies
-            return dependencySets.SelectMany(d => d.Packages);
+            return dependencySets.SelectMany(static d => d.Packages);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

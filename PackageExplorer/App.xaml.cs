@@ -26,6 +26,7 @@ namespace PackageExplorer
 #pragma warning restore CA1001 // Types that own disposable fields should be disposable
     {
 #pragma warning disable CS8618 // Non-nullable field is uninitialized.
+        [RequiresUnreferencedCode("DiagnosticsClient initialization uses reflection.")]
         public App()
 #pragma warning restore CS8618 // Non-nullable field is uninitialized.
         {
@@ -35,26 +36,29 @@ namespace PackageExplorer
         private CompositionContainer _container;
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
-        internal CompositionContainer Container
+        internal CompositionContainer Container => EnsureContainer();
+
+        [RequiresUnreferencedCode("MEF composition uses reflection to satisfy exports during trimming.")]
+        private CompositionContainer EnsureContainer()
         {
-            get
+            if (_container == null)
             {
-                if (_container == null)
-                {
-                    var catalog1 = new AssemblyCatalog(typeof(App).Assembly);
-                    var catalog2 = new AssemblyCatalog(typeof(PackageViewModel).Assembly);
-                    var catalog = new AggregateCatalog(catalog1, catalog2);
+                var catalog1 = new AssemblyCatalog(typeof(App).Assembly);
+                var catalog2 = new AssemblyCatalog(typeof(PackageViewModel).Assembly);
+#pragma warning disable CA2000 // Dispose objects before losing scope
+                var catalog = new AggregateCatalog(catalog1, catalog2);
+#pragma warning restore CA2000 // Dispose objects before losing scope
 
-                    _container = new CompositionContainer(catalog);
+                _container = new CompositionContainer(catalog);
 
-                    // add PluginManager instance to be available as export to the rest of the app.
-                    _container.ComposeParts(new PluginManager(catalog));
-                }
-
-                return _container;
+                // add PluginManager instance to be available as export to the rest of the app.
+                _container.ComposeParts(new PluginManager(catalog));
             }
+
+            return _container;
         }
 
+        [RequiresUnreferencedCode("MEF composition and WPF bindings rely on reflection to create exports and data contexts.")]
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
             DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", e.Args.Length > 0 ? "fileAssociation" : "shortcut" } });
@@ -90,6 +94,7 @@ namespace PackageExplorer
             }
         }
 
+        [RequiresUnreferencedCode("MEF composition is used to resolve credential providers via reflection.")]
         private void InitCredentialService()
         {
             Task<IEnumerable<ICredentialProvider>> getProviders()

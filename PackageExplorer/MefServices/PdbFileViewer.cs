@@ -30,15 +30,15 @@ namespace PackageExplorer
             if (selectedFile.Name.EndsWith(".ni.pdb", StringComparison.OrdinalIgnoreCase))
             {
                 // This case is to ensure we are prioritize the ni dll (ngen framework case).
-                pe = peerFiles.FirstOrDefault(pc => pc.Name.EndsWith(".ni.dll", StringComparison.OrdinalIgnoreCase));
+                pe = peerFiles.FirstOrDefault(static pc => pc.Name.EndsWith(".ni.dll", StringComparison.OrdinalIgnoreCase));
             }
 
             // Cascade to trying the dll/winmd, this is the crossgen/crossgen2 case of .NET Core/.NET 5+
-            pe ??= peerFiles.FirstOrDefault(pc => ".dll".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) ||
+            pe ??= peerFiles.FirstOrDefault(static pc => ".dll".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase) ||
                                                 ".winmd".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase));
 
             // Get the exe as a last resort, the stand-alone case (.NET Single file or .NET Framework app)
-            pe ??= peerFiles.FirstOrDefault(pc => ".exe".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase));
+            pe ??= peerFiles.FirstOrDefault(static pc => ".exe".Equals(Path.GetExtension(pc.Name), StringComparison.OrdinalIgnoreCase));
 
 #pragma warning disable CA2000 // Dispose objects before losing scope -- ReadDebugData will dispose
             var peStream = pe != null

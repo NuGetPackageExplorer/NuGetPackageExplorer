@@ -1,0 +1,1 @@
+Before finishing a change, run dotnet build NuGetPackageExplorer.sln (and Uno WinUI build if touched). Generate dotnet publish outputs for Uno when relevant. Validate package scenarios with dotnet-validate CLI when touching analyzer logic. Keep artifacts under artifacts/ and inspect binlogs in artifacts/logs for build issues. Update version.json via nbgv if release-impacting.

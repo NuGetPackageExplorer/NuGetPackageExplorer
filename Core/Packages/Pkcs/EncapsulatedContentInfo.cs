@@ -22,7 +22,7 @@ namespace NuGetPe.Packages.Pkcs
                 eContent [0] EXPLICIT OCTET STRING OPTIONAL } */
             var sequence = reader.ReadSequence();
             var contentType = sequence.ReadObjectIdentifier();
-            var content = sequence.ReadOptionalSequence(0, sequence => sequence.ReadEncodedValue());
+            var content = sequence.ReadOptionalSequence(0, static sequence => sequence.ReadEncodedValue());
 
             sequence.ThrowIfNotEmpty();
             return new()

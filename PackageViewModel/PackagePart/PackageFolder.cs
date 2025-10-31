@@ -100,7 +100,7 @@ namespace PackageExplorerViewModel
 
         public override IEnumerable<IFile> GetFiles()
         {
-            return Children.Count == 0 ? Array.Empty<IFile>() : Children.SelectMany(p => p.GetFiles());
+            return Children.Count == 0 ? Array.Empty<IFile>() : Children.SelectMany(static p => p.GetFiles());
         }
 
         public override IEnumerable<IPackageFile> GetPackageFiles()
@@ -119,13 +119,13 @@ namespace PackageExplorerViewModel
             }
             else
             {
-                return Children.SelectMany(p => p.GetPackageFiles());
+                return Children.SelectMany(static p => p.GetPackageFiles());
             }
         }
 
         public override IEnumerable<PackagePart> GetPackageParts()
         {
-            return new PackagePart[] { this }.Concat(Children.SelectMany(p => p.GetPackageParts()));
+            return new PackagePart[] { this }.Concat(Children.SelectMany(static p => p.GetPackageParts()));
         }
 
         public void RemoveChild(PackagePart child)

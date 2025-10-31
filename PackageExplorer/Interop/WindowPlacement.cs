@@ -87,7 +87,7 @@ namespace PackageExplorer
         {
             ArgumentNullException.ThrowIfNull(value);
             var ss = Array.ConvertAll(value.Split([';'], StringSplitOptions.RemoveEmptyEntries),
-                                        v => int.Parse(v, CultureInfo.InvariantCulture));
+                                        static v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 4 ? new Rect(ss[0], ss[1], ss[2], ss[3]) : new Rect();
         }
     }
@@ -114,7 +114,7 @@ namespace PackageExplorer
         {
             ArgumentNullException.ThrowIfNull(value);
             var ss = Array.ConvertAll(value.Split([';'], StringSplitOptions.RemoveEmptyEntries),
-                                        v => int.Parse(v, CultureInfo.InvariantCulture));
+                                        static v => int.Parse(v, CultureInfo.InvariantCulture));
             return ss.Length == 2 ? new Point(ss[0], ss[1]) : new Point();
         }
     }

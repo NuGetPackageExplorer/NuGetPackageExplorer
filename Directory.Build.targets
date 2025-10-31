@@ -1,6 +1,6 @@
 <Project>
 
-  <PropertyGroup Condition="$(TargetFramework.Contains('-windows'))">
+  <PropertyGroup Condition="$(TargetFramework.Contains('-windows')) and '$(IsUnoProject)' != 'true' ">
     <UseWpf>true</UseWpf>
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>

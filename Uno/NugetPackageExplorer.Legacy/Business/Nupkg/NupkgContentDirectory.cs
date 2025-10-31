@@ -1,4 +1,5 @@
-﻿namespace NupkgExplorer.Business.Nupkg
+﻿
+namespace NupkgExplorer.Business.Nupkg
 {
     public class NupkgContentDirectory : INupkgFileSystemObject
     {

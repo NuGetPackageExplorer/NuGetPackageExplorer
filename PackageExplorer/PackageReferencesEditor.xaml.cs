@@ -31,7 +31,7 @@ namespace PackageExplorer
         public PackageReferencesEditor(IEnumerable<PackageReferenceSet> existingReferenceSets)
             : this()
         {
-            _referenceSets.AddRange(existingReferenceSets.Select(rs => new EditablePackageReferenceSet(rs)));
+            _referenceSets.AddRange(existingReferenceSets.Select(static rs => new EditablePackageReferenceSet(rs)));
 
             if (_referenceSets.Count > 0)
             {
@@ -43,7 +43,7 @@ namespace PackageExplorer
 
         public ICollection<PackageReferenceSet> GetEditedReferencesSets()
         {
-            return _referenceSets.Select(set => set.AsReadOnly()).ToArray();
+            return _referenceSets.Select(static set => set.AsReadOnly()).ToArray();
         }
 
         private EditablePackageReferenceSet ActivePackageReferenceSet

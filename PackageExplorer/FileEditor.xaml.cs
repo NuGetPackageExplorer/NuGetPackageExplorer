@@ -33,7 +33,7 @@ namespace PackageExplorer
             SyntaxDefinitions.ItemsSource = HighlightingManager.Instance.HighlightingDefinitions;
 
             // Set the initial Font Family to Consolas
-            FontChoice.ItemsSource = Fonts.SystemFontFamilies.OrderBy(p => p.Source);
+            FontChoice.ItemsSource = Fonts.SystemFontFamilies.OrderBy(static p => p.Source);
             FontChoice.SelectedItem = ConsolasFont;
 
             // disable unnecessary editor features

@@ -22,7 +22,7 @@ namespace NuGetPe.Packages.Pkcs
                 parameters              ANY DEFINED BY algorithm OPTIONAL  }*/
             var sequence = reader.ReadSequence();
             var algorithm = sequence.ReadObjectIdentifier();
-            var parameters = sequence.ReadOptional(null, (r, _) => r, reader => reader.ReadEncodedValue());
+            var parameters = sequence.ReadOptional(null, static (r, _) => r, static reader => reader.ReadEncodedValue());
 
             sequence.ThrowIfNotEmpty();
             return new()

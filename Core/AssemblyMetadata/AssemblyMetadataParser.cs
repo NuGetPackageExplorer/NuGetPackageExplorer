@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -23,7 +24,7 @@ namespace NuGetPe.AssemblyMetadata
 
         public AssemblyDebugData GetDebugData()
         {
-            var entry = _peReader.ReadDebugDirectory().Where(de => de.Type == DebugDirectoryEntryType.EmbeddedPortablePdb).ToList();
+            var entry = _peReader.ReadDebugDirectory().Where(static de => de.Type == DebugDirectoryEntryType.EmbeddedPortablePdb).ToList();
             if (entry.Count == 0) // no embedded ppdb
             {
 
@@ -218,6 +219,7 @@ namespace NuGetPe.AssemblyMetadata
                 return typeof(Type).FullName!;
             }
 
+            [RequiresUnreferencedCode("Uses Type.GetType at runtime to resolve System.Type.")]
             public bool IsSystemType(string type)
             {
                 return Type.GetType(type, false) == typeof(Type);
@@ -228,6 +230,7 @@ namespace NuGetPe.AssemblyMetadata
                 return name;
             }
 
+            [RequiresUnreferencedCode("Uses Type.GetType at runtime to resolve enum information.")]
             public PrimitiveTypeCode GetUnderlyingEnumType(string type)
             {
                 var runtimeType = Type.GetType(type, false);

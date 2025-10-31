@@ -96,13 +96,16 @@ namespace NupkgExplorer.Views.Extensions
                 control.SizeChanged += ForceLayout;
             }
 
-            void ForceLayout(object sender, SizeChangedEventArgs args)
+            static async void ForceLayout(object sender, SizeChangedEventArgs args)
             {
                 if (sender is CodeEditor editor)
                 {
                     // force layout on SizeChanged, or otherwise
                     // the editor would be stuck at minimal size when its visibility is toggled
-                    editor.ExecuteJavascript("editor.layout();");
+
+
+                    //editor.ExecuteJavascript("editor.layout();");
+                    await editor.InvokeScriptAsync("editor.layout();");
                 }
             }
         }
@@ -114,13 +117,14 @@ namespace NupkgExplorer.Views.Extensions
             // CodeEditor::CodeLanguageProperty is internal...
             control.CodeLanguage = language;
         }
-        private static void OnModelLanguageChanged(CodeEditor control, DependencyPropertyChangedEventArgs e)
+        private async static void OnModelLanguageChanged(CodeEditor control, DependencyPropertyChangedEventArgs e)
         {
             var language = e.NewValue as string ?? "plaintext";
 
             // CodeLanguage doesn't work when the control is loading/first loaded
             // calling its underlying method to ensure the language is actually set
-            control.ExecuteJavascript($"monaco.editor.setModelLanguage(model, '{language}');");
+
+            await control.InvokeScriptAsync($"monaco.editor.setModelLanguage(model, '{language}');");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intended to be dispose on next call")]
