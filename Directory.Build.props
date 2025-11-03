@@ -58,6 +58,11 @@
     <SourceRootDir>$(MSBuildThisFileDirectory)</SourceRootDir>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'WorkerExtensions'">
+    <!-- Generated Azure Functions worker project hardcodes package versions; disable CPM here to avoid NU1008. -->
+    <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
   <ItemGroup>    
     <Compile Include="$(MSBuildThisFileDirectory)Common\CommonAssemblyInfo.cs" LinkBase="Properties" />
   </ItemGroup>

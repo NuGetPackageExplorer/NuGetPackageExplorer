@@ -21,10 +21,12 @@
 	  xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:xamarin="http://uno.ui/xamarin"
 	  xmlns:wasm="http://uno.ui/wasm"
+	  xmlns:wasmskia="http://uno.ui/wasmskia"
 	  xmlns:not_win="http://uno.ui/not_win"
 	  xmlns:not_wasm="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:not_wasmskia="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	  xmlns:todo="what should be done"
-	  mc:Ignorable="d todo wasm xamarin not_win"
+	  mc:Ignorable="d todo wasm wasmskia xamarin not_win"
 	  x:Name="PageRoot"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -984,21 +986,21 @@
 					</Grid>
 
 					<!-- Raw Text Content Viewer -->
-                    <wasm:Border x:Load="{x:Bind Model.Package.CurrentFileInfo.IsTextFile, Mode=OneWay}">
+                    <wasmskia:Border x:Load="{x:Bind Model.Package.CurrentFileInfo.IsTextFile, Mode=OneWay}">
 						<monaco:CodeEditor Text="{Binding Package.CurrentFileInfo.Content, TargetNullValue=''}"
 										   extensions:CodeEditorExtensions.ModelLanguage="{Binding OpenedDocumentLanguage}"
 										   extensions:CodeEditorExtensions.AutoLayoutOnResize="True"
 										   extensions:CodeEditorExtensions.AutoUpdateTheme="True"
 										   ReadOnly="True" />
-					</wasm:Border>
-					<not_wasm:Border Visibility="{Binding Package.CurrentFileInfo.IsTextFile, Converter={StaticResource TrueToVisible}}">
+					</wasmskia:Border>
+					<not_wasmskia:Border Visibility="{Binding Package.CurrentFileInfo.IsTextFile, Converter={StaticResource TrueToVisible}}">
 						<ScrollViewer HorizontalScrollBarVisibility="Auto"
 									  VerticalScrollBarVisibility="Auto"
 									  Padding="0,0,16,16">
 							<TextBlock Text="{Binding Package.CurrentFileInfo.Content}"
 									   IsTextSelectionEnabled="True" />
 						</ScrollViewer>
-					</not_wasm:Border>
+					</not_wasmskia:Border>
 
 				</Grid>
 			</Grid>
