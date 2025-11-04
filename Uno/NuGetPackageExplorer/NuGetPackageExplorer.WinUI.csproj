@@ -50,10 +50,12 @@
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
         <WasmFingerprintAssets>false</WasmFingerprintAssets>
         <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
-        <!--<RunAOTCompilationAfterBuild>true</RunAOTCompilationAfterBuild>-->
+        <!--<WasmShellGenerateAOTProfile>true</WasmShellGenerateAOTProfile>-->
       </PropertyGroup>
 
       <ItemGroup>
+        <WasmShellEnableAotProfile Include="$(NpeSrcRoot)\Build\aot.profile" />
+        
         <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
 
         <!-- This value must be the instrumentation key, not the connection string -->

@@ -41,6 +41,7 @@
     <NuGetAuditMode>all</NuGetAuditMode>
     <EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <NpeSrcRoot>$(MSBuildThisFileDirectory)</NpeSrcRoot>
   </PropertyGroup>
 
   <PropertyGroup>
