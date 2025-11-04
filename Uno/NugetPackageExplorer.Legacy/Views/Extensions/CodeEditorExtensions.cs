@@ -124,7 +124,7 @@ namespace NupkgExplorer.Views.Extensions
             // CodeLanguage doesn't work when the control is loading/first loaded
             // calling its underlying method to ensure the language is actually set
 
-            await control.InvokeScriptAsync(script: $"editor.setModelLanguage(model, '{language}');");
+            await control.InvokeScriptAsync(script: $"monaco.editor.setModelLanguage(model, '{language}');");
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Reliability", "CA2000:Dispose objects before losing scope", Justification = "Intended to be dispose on next call")]
