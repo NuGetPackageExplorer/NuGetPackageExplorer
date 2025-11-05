@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Concurrent;
+using System.ComponentModel;
 using System.ComponentModel.Composition.Hosting;
 using System.Runtime.CompilerServices;
 
@@ -21,6 +22,10 @@ namespace NupkgExplorer.Framework.MVVM
         protected CompositionContainer Container => DefaultContainer;
 
         private readonly Dictionary<string, object?> _backingFields = [];
+        private readonly ConcurrentQueue<PropertyChangedEventArgs> _propertyChangedQueue = new();
+        private volatile bool _isInDelayedInitialization;
+        private volatile bool _isReplayingEvents;
+        private readonly object _replayLock = new();
 
         private int _propertyChangedSuppressionLevel = 0;
 
@@ -49,8 +54,27 @@ namespace NupkgExplorer.Framework.MVVM
                 _backingFields[propertyName!] = value;
                 if (_propertyChangedSuppressionLevel == 0)
                 {
-                    _ = RunOnUIThread(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName)));
+                    RaisePropertyChanged(propertyName);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event with proper queue handling for delayed initialization.
+        /// </summary>
+        private void RaisePropertyChanged(string? propertyName)
+        {
+            var args = new PropertyChangedEventArgs(propertyName);
+
+            // If we're in delayed initialization or replaying events, queue the event
+            if (_isInDelayedInitialization || _isReplayingEvents)
+            {
+                _propertyChangedQueue.Enqueue(args);
+            }
+            else
+            {
+                // Normal path: dispatch to UI thread and raise the event
+                _ = RunOnUIThread(() => PropertyChanged?.Invoke(this, args));
             }
         }
 
@@ -84,6 +108,53 @@ namespace NupkgExplorer.Framework.MVVM
         protected ICommand GetCommand(Action execute)
         {
             return new AsyncCommand(_ => Task.Run(execute));
+        }
+
+        /// <summary>
+        /// Starts delayed initialization mode. During this phase, property change events are queued
+        /// instead of being raised immediately. Call <see cref="CompleteDelayedInitialization"/> to 
+        /// replay all queued events in order.
+        /// </summary>
+        protected void BeginDelayedInitialization()
+        {
+            _isInDelayedInitialization = true;
+        }
+
+        /// <summary>
+        /// Completes delayed initialization and replays all queued property change events in the order
+        /// they were captured. Any events raised during replay are added to the queue to maintain proper ordering.
+        /// Once the queue is drained, events are processed directly going forward.
+        /// </summary>
+        protected async Task CompleteDelayedInitialization()
+        {
+            if (!_isInDelayedInitialization)
+            {
+                return;
+            }
+
+            // Use the lock to ensure thread-safe replay
+            await Task.Run(() =>
+            {
+                lock (_replayLock)
+                {
+                    _isInDelayedInitialization = false;
+                    _isReplayingEvents = true;
+
+                    try
+                    {
+                        // Replay all queued events
+                        while (_propertyChangedQueue.TryDequeue(out var args))
+                        {
+                            // Dispatch to UI thread for replay
+                            _ = RunOnUIThread(() => PropertyChanged?.Invoke(this, args));
+                        }
+                    }
+                    finally
+                    {
+                        _isReplayingEvents = false;
+                    }
+                }
+            });
         }
     }
 }
