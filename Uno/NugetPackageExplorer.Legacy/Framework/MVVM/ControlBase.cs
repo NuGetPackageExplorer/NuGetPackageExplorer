@@ -5,16 +5,16 @@ namespace NupkgExplorer.Framework.MVVM
 {
     /// <summary>
     /// Base class for custom Uno controls with support for delayed dependency property initialization.
-    /// Provides queue-based mechanism to capture and replay dependency property changes during initialization.
+    /// Provides queue-based mechanism to defer dependency property SetValue operations during initialization.
     /// </summary>
     public abstract class ControlBase : Control
     {
-        private Queue<Action>? _propertyChangeQueue;
+        private Queue<Action>? _setValueQueue;
         private bool _isInitialized = true; // Default to initialized (existing behavior)
         private bool _isReplaying;
 
         /// <summary>
-        /// Begins delayed initialization mode. Dependency property change callbacks will be queued instead of being invoked immediately.
+        /// Begins delayed initialization mode. Dependency property SetValue operations will be queued instead of being executed immediately.
         /// </summary>
         protected void BeginDelayedInitialization()
         {
@@ -24,13 +24,13 @@ namespace NupkgExplorer.Framework.MVVM
             }
 
             _isInitialized = false;
-            _propertyChangeQueue = new Queue<Action>();
+            _setValueQueue = new Queue<Action>();
         }
 
         /// <summary>
-        /// Ends delayed initialization mode and replays all queued dependency property change callbacks in order.
-        /// Callbacks that trigger during replay are added to the queue to maintain proper ordering.
-        /// Once the queue is drained, callbacks are invoked directly.
+        /// Ends delayed initialization mode and executes all queued SetValue operations in order.
+        /// SetValue operations that trigger during replay are added to the queue to maintain proper ordering.
+        /// Once the queue is drained, SetValue operations execute directly.
         /// </summary>
         protected void EndDelayedInitialization()
         {
@@ -39,9 +39,9 @@ namespace NupkgExplorer.Framework.MVVM
                 throw new InvalidOperationException("Delayed initialization has not been started or has already been completed.");
             }
 
-            if (_propertyChangeQueue is null)
+            if (_setValueQueue is null)
             {
-                throw new InvalidOperationException("Property change queue is not initialized.");
+                throw new InvalidOperationException("SetValue queue is not initialized.");
             }
 
             _isInitialized = true;
@@ -49,17 +49,17 @@ namespace NupkgExplorer.Framework.MVVM
 
             try
             {
-                // Process property changes until the queue is empty
-                while (_propertyChangeQueue.Count > 0)
+                // Process SetValue operations until the queue is empty
+                while (_setValueQueue.Count > 0)
                 {
-                    var callback = _propertyChangeQueue.Dequeue();
-                    callback();
+                    var setValueAction = _setValueQueue.Dequeue();
+                    setValueAction();
                 }
             }
             finally
             {
                 _isReplaying = false;
-                _propertyChangeQueue = null; // Queue is no longer needed
+                _setValueQueue = null; // Queue is no longer needed
             }
         }
 
@@ -69,27 +69,59 @@ namespace NupkgExplorer.Framework.MVVM
         protected bool IsDelayedInitializationActive => !_isInitialized;
 
         /// <summary>
-        /// Handles dependency property changes with support for delayed initialization.
-        /// Call this method from your property changed callbacks to enable queueing during initialization.
+        /// Sets the value of a dependency property with support for delayed initialization.
+        /// Use this instead of SetValue() directly to enable queueing during initialization.
         /// </summary>
-        /// <param name="callback">The callback to invoke for the property change.</param>
-        protected void HandlePropertyChanged(Action callback)
+        /// <param name="dp">The dependency property to set.</param>
+        /// <param name="value">The new value.</param>
+        protected void SetValueDelayed(DependencyProperty dp, object? value)
         {
-            if (callback == null)
+            if (dp == null)
             {
-                throw new ArgumentNullException(nameof(callback));
+                throw new ArgumentNullException(nameof(dp));
             }
 
-            // If we're not initialized (delayed initialization mode) or currently replaying changes,
-            // queue the callback instead of invoking it immediately
+            // If we're not initialized (delayed initialization mode) or currently replaying,
+            // queue the SetValue operation instead of executing it immediately
             if (!_isInitialized || _isReplaying)
             {
-                _propertyChangeQueue?.Enqueue(callback);
+                _setValueQueue?.Enqueue(() => SetValue(dp, value));
             }
             else
             {
-                // Normal processing: invoke the callback immediately
-                callback();
+                // Normal processing: execute SetValue immediately
+                SetValue(dp, value);
+            }
+        }
+
+        /// <summary>
+        /// Sets the value of a dependency property with support for delayed initialization.
+        /// This overload accepts a value factory that is invoked when the SetValue operation is executed.
+        /// </summary>
+        /// <param name="dp">The dependency property to set.</param>
+        /// <param name="valueFactory">A function that returns the value to set.</param>
+        protected void SetValueDelayed(DependencyProperty dp, Func<object?> valueFactory)
+        {
+            if (dp == null)
+            {
+                throw new ArgumentNullException(nameof(dp));
+            }
+
+            if (valueFactory == null)
+            {
+                throw new ArgumentNullException(nameof(valueFactory));
+            }
+
+            // If we're not initialized (delayed initialization mode) or currently replaying,
+            // queue the SetValue operation instead of executing it immediately
+            if (!_isInitialized || _isReplaying)
+            {
+                _setValueQueue?.Enqueue(() => SetValue(dp, valueFactory()));
+            }
+            else
+            {
+                // Normal processing: execute SetValue immediately
+                SetValue(dp, valueFactory());
             }
         }
     }

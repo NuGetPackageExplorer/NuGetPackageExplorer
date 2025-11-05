@@ -2,45 +2,64 @@
 
 ## Overview
 
-The `ControlBase` class provides a base for custom Uno platform controls with **delayed initialization** support and queue-based dependency property change callback replay. This feature allows controls to queue dependency property change callbacks during initialization and replay them in order once initialization is complete.
+The `ControlBase` class provides a base for custom Uno platform controls with **delayed initialization** support for dependency properties. This feature allows controls to queue `SetValue()` operations during initialization and execute them in order once initialization is complete.
+
+## Key Concept
+
+Unlike `ViewModelBase` which queues property change *events*, `ControlBase` queues the actual `SetValue()` *operations* themselves. This is critical because:
+
+1. Dependency properties use `SetValue()` which immediately triggers callbacks registered in `PropertyMetadata`
+2. You cannot override `SetValue()` (it's sealed on `DependencyObject`)
+3. The solution is to queue the `SetValue()` calls themselves, not their callbacks
 
 ## Use Cases
 
 This feature is particularly useful when:
 
-1. **Complex Control Initialization**: A control needs to set multiple dependency properties during initialization, and you want to ensure all property change callbacks are executed in the correct order after initialization completes.
+1. **Complex Control Initialization**: A control needs to set multiple dependency properties during initialization, and you want to ensure all properties are set before any callbacks execute.
 
-2. **Async Data Loading**: The control needs to load data asynchronously while dependency properties are being set, and you want to batch the property change handling.
+2. **Async Data Loading**: The control needs to load data asynchronously and set multiple properties, batching all the SetValue operations until data is loaded.
 
-3. **Interdependent Properties**: Multiple dependency properties have interdependencies, and you want to ensure they're all set before any callbacks execute.
+3. **Interdependent Properties**: Multiple dependency properties have interdependencies (e.g., Min/Max/Value), and you want to set all of them before validation callbacks run.
 
-4. **Performance**: You want to batch dependency property change callbacks to avoid triggering expensive operations (like layout or rendering) multiple times during initialization.
+4. **Performance**: You want to batch property setting to avoid triggering expensive operations (like layout or rendering) multiple times during initialization.
 
 ## API
 
 ### Methods
 
 #### `BeginDelayedInitialization()`
-Begins delayed initialization mode. After calling this method, all dependency property change callbacks (that use `HandlePropertyChanged`) will be queued instead of being invoked immediately.
+Begins delayed initialization mode. After calling this method, `SetValueDelayed()` calls will be queued instead of executing immediately.
 
 **Throws:**
 - `InvalidOperationException` if delayed initialization has already been started.
 
 #### `EndDelayedInitialization()`
-Ends delayed initialization mode and replays all queued property change callbacks in order. Callbacks that trigger during replay are automatically added to the queue to maintain proper ordering. Once the queue is drained, normal immediate callback processing resumes.
+Ends delayed initialization mode and executes all queued `SetValue()` operations in order. SetValue operations that trigger during execution are added to the queue to maintain proper ordering. Once the queue is drained, operations execute directly.
 
 **Throws:**
 - `InvalidOperationException` if delayed initialization has not been started or has already been completed.
-- `InvalidOperationException` if the property change queue is not initialized.
+- `InvalidOperationException` if the SetValue queue is not initialized.
 
-#### `HandlePropertyChanged(Action callback)`
-Handles dependency property changes with support for delayed initialization. Call this method from your property changed callbacks instead of executing the logic directly.
+#### `SetValueDelayed(DependencyProperty dp, object? value)`
+Sets the value of a dependency property with support for delayed initialization. Use this instead of `SetValue()` directly to enable queueing during initialization.
 
 **Parameters:**
-- `callback`: The callback action to invoke for the property change.
+- `dp`: The dependency property to set.
+- `value`: The new value.
 
 **Throws:**
-- `ArgumentNullException` if callback is null.
+- `ArgumentNullException` if dp is null.
+
+#### `SetValueDelayed(DependencyProperty dp, Func<object?> valueFactory)`
+Sets the value of a dependency property with support for delayed initialization. The value factory is invoked when the SetValue operation is actually executed.
+
+**Parameters:**
+- `dp`: The dependency property to set.
+- `valueFactory`: A function that returns the value to set.
+
+**Throws:**
+- `ArgumentNullException` if dp or valueFactory is null.
 
 ### Properties
 
@@ -51,13 +70,11 @@ Returns `true` if between `BeginDelayedInitialization()` and `EndDelayedInitiali
 
 ## Usage Examples
 
-### Example 1: Basic Usage with Dependency Properties
+### Example 1: Basic Usage
 
 ```csharp
 public class DataGridControl : ControlBase
 {
-    #region ItemsSource DependencyProperty
-    
     public static readonly DependencyProperty ItemsSourceProperty = 
         DependencyProperty.Register(
             nameof(ItemsSource),
@@ -74,18 +91,9 @@ public class DataGridControl : ControlBase
     private static void OnItemsSourceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (DataGridControl)d;
-        control.HandlePropertyChanged(() => control.OnItemsSourceChangedImpl(e.OldValue, e.NewValue));
+        // This callback fires when SetValue is executed
+        control.RefreshItems();
     }
-    
-    private void OnItemsSourceChangedImpl(object? oldValue, object? newValue)
-    {
-        // This will be queued during delayed initialization
-        RefreshItems();
-    }
-    
-    #endregion
-    
-    #region SortColumn DependencyProperty
     
     public static readonly DependencyProperty SortColumnProperty = 
         DependencyProperty.Register(
@@ -103,27 +111,19 @@ public class DataGridControl : ControlBase
     private static void OnSortColumnChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (DataGridControl)d;
-        control.HandlePropertyChanged(() => control.OnSortColumnChangedImpl());
+        control.ApplySorting();
     }
-    
-    private void OnSortColumnChangedImpl()
-    {
-        // This will be queued during delayed initialization
-        ApplySorting();
-    }
-    
-    #endregion
     
     public DataGridControl()
     {
         // Begin delayed initialization
         BeginDelayedInitialization();
         
-        // Set multiple properties - callbacks are queued
-        ItemsSource = GetDefaultItems();
-        SortColumn = "Name";
+        // Queue SetValue operations - callbacks DON'T fire yet
+        SetValueDelayed(ItemsSourceProperty, GetDefaultItems());
+        SetValueDelayed(SortColumnProperty, "Name");
         
-        // End delayed initialization - all callbacks execute in order
+        // Execute all SetValue operations (and their callbacks) in order
         EndDelayedInitialization();
     }
 }
@@ -150,14 +150,15 @@ public class ChartControl : ControlBase
     private static void OnDataChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (ChartControl)d;
-        control.HandlePropertyChanged(() => control.RenderChart());
+        control.RenderChart(); // Expensive operation
     }
     
     public ChartControl()
     {
         BeginDelayedInitialization();
         
-        Data = null; // Initial state
+        // Initial value queued
+        SetValueDelayed(DataProperty, null);
         
         _ = LoadDataAsync();
     }
@@ -170,27 +171,18 @@ public class ChartControl : ControlBase
             var data = await FetchDataFromServiceAsync();
             
             // Update property - still queued
-            Data = data;
-            
-            // Additional initialization...
-            await Task.Delay(100);
+            SetValueDelayed(DataProperty, data);
         }
         finally
         {
-            // Replay all queued callbacks
+            // Execute all SetValue operations - RenderChart() called only once
             EndDelayedInitialization();
         }
-    }
-    
-    private void RenderChart()
-    {
-        // Expensive rendering operation
-        // Only called once after all properties are set
     }
 }
 ```
 
-### Example 3: Interdependent Properties
+### Example 3: Interdependent Properties with Value Factory
 
 ```csharp
 public class RangeControl : ControlBase
@@ -237,7 +229,7 @@ public class RangeControl : ControlBase
     private static void OnRangeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
     {
         var control = (RangeControl)d;
-        control.HandlePropertyChanged(() => control.ValidateRange());
+        control.ValidateRange();
     }
     
     public RangeControl()
@@ -245,57 +237,75 @@ public class RangeControl : ControlBase
         BeginDelayedInitialization();
         
         // Set all three properties
-        Minimum = 0;
-        Maximum = 100;
-        Value = 50;
+        SetValueDelayed(MinimumProperty, 0);
+        SetValueDelayed(MaximumProperty, 100);
         
-        // Now validate once with all values set
+        // Value factory allows access to Min/Max when SetValue actually executes
+        SetValueDelayed(ValueProperty, () => 
+        {
+            var min = (double)GetValue(MinimumProperty);
+            var max = (double)GetValue(MaximumProperty);
+            return (min + max) / 2; // Default to middle
+        });
+        
+        // Now execute all SetValue operations - validation runs once with all values set
         EndDelayedInitialization();
     }
     
     private void ValidateRange()
     {
-        // Ensure Value is within Min/Max
-        if (Value < Minimum) Value = Minimum;
-        if (Value > Maximum) Value = Maximum;
+        // All three properties are set before this validation runs
+        if (Value < Minimum) SetValue(ValueProperty, Minimum);
+        if (Value > Maximum) SetValue(ValueProperty, Maximum);
     }
 }
 ```
 
-## Integration Pattern
+## Important Notes
 
-The typical pattern for integrating ControlBase with dependency properties is:
+### Direct SetValue vs SetValueDelayed
 
-1. **Define the dependency property** with a static callback
-2. **In the static callback**, call `HandlePropertyChanged` on the instance
-3. **Pass a lambda** that invokes your actual property change logic
+**During delayed initialization:**
+- Use `SetValueDelayed()` to queue operations
+- Regular `SetValue()` still works but executes immediately (bypassing the queue)
+- Property setters (e.g., `Title = "value"`) use `SetValue()` internally and execute immediately
+
+**After delayed initialization:**
+- Both `SetValueDelayed()` and `SetValue()` execute immediately
+- No difference in behavior
+
+### Pattern for Using ControlBase
+
+1. **Inherit from ControlBase** instead of Control
+2. **Define dependency properties normally** (no changes needed)
+3. **In constructor**, call `BeginDelayedInitialization()`
+4. **Use SetValueDelayed()** to set property values
+5. **Call EndDelayedInitialization()** to execute all queued SetValue operations
+
+### Why Not Use Property Setters?
+
+You might wonder: "Why not just do `Title = "value"` during delayed init?"
+
+The problem is that property setters call `SetValue()` directly, which cannot be intercepted. You must explicitly use `SetValueDelayed()` to queue the operation.
+
+**Consider providing alternate initialization methods:**
 
 ```csharp
-// 1. Define property with callback
-public static readonly DependencyProperty MyProperty = 
-    DependencyProperty.Register(
-        nameof(MyProperty),
-        typeof(string),
-        typeof(MyControl),
-        new PropertyMetadata(null, OnMyPropertyChanged));  // ← Static callback
-
-// 2. Static callback uses HandlePropertyChanged
-private static void OnMyPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+public class MyControl : ControlBase
 {
-    var control = (MyControl)d;
-    control.HandlePropertyChanged(() => control.OnMyPropertyChangedImpl(e));  // ← Queue or invoke
-}
-
-// 3. Actual implementation
-private void OnMyPropertyChangedImpl(DependencyPropertyChangedEventArgs e)
-{
-    // Your property change logic here
+    public void Initialize(string title, string subtitle)
+    {
+        BeginDelayedInitialization();
+        SetValueDelayed(TitleProperty, title);
+        SetValueDelayed(SubtitleProperty, subtitle);
+        EndDelayedInitialization();
+    }
 }
 ```
 
 ## Best Practices
 
-1. **Always use try-finally**: When using delayed initialization with async operations, always use try-finally to ensure `EndDelayedInitialization()` is called.
+1. **Always use try-finally**: When using with async operations:
 
    ```csharp
    BeginDelayedInitialization();
@@ -309,109 +319,42 @@ private void OnMyPropertyChangedImpl(DependencyPropertyChangedEventArgs e)
    }
    ```
 
-2. **Don't nest**: Don't call `BeginDelayedInitialization()` if already in delayed initialization mode. Check `IsDelayedInitializationActive` if needed.
+2. **Use value factories for computed values**: When a value depends on other properties that are also being set:
 
-3. **Use for initialization only**: This feature is designed for control initialization. Don't use it for runtime property changes unless you have a specific reason.
+   ```csharp
+   SetValueDelayed(DerivedProperty, () => ComputeFromOtherProperties());
+   ```
 
-4. **Be consistent**: Either use `HandlePropertyChanged` for all your property callbacks or none. Mixing approaches can be confusing.
+3. **Don't nest**: Don't call `BeginDelayedInitialization()` if already in delayed mode.
 
-5. **Consider performance**: Use delayed initialization when you have multiple properties that trigger expensive operations (layout, rendering, data processing).
+4. **Document your API**: If your control uses delayed initialization, document which methods trigger it.
 
-## Implementation Details
-
-### How It Works
-
-1. **Queue Creation**: `BeginDelayedInitialization()` creates an action queue and enters delayed mode
-2. **Callback Queueing**: Property change callbacks are queued instead of being invoked
-3. **Callback Replay**: `EndDelayedInitialization()` replays all callbacks in FIFO order
-4. **Replay Protection**: Callbacks during replay are queued to maintain order
-5. **Normal Resumption**: After queue drains, callbacks execute immediately
-
-### Thread Safety
-
-The current implementation is not thread-safe. If you need to set properties from multiple threads during initialization, you must provide your own synchronization. However, this is typically not an issue for UI controls which operate on the UI thread.
-
-### Performance
-
-- **Memory**: Uses a `Queue<Action>` with minimal overhead
-- **Time**: Callback replay is O(n) where n is the number of queued callbacks
-- **GC**: The queue is nulled after replay to allow garbage collection
+5. **Consider separate initialization method**: Instead of doing it in the constructor, provide a separate `Initialize()` method.
 
 ## Comparison with ViewModelBase
 
-| Feature | ViewModelBase | ControlBase |
-|---------|--------------|-------------|
-| Base Type | INotifyPropertyChanged | Control |
-| Mechanism | PropertyChanged events | Dependency property callbacks |
-| Queue Type | PropertyChangedEventArgs | Action delegates |
+| Aspect | ViewModelBase | ControlBase |
+|--------|--------------|-------------|
+| Base Type | INotifyPropertyChanged | Control (DependencyObject) |
+| What's Queued | PropertyChanged events | SetValue() operations |
+| When Callbacks Fire | During replay | During SetValue execution |
+| API | OnPropertyChanged() | SetValueDelayed() |
 | Use Case | MVVM view models | Custom controls |
+| Property Access | Direct field access | GetValue/SetValue |
 | Platform | WPF + Uno | Uno only |
 
-## Backward Compatibility
+## Performance
 
-This feature is **fully backward compatible**:
+- **Memory**: Uses a `Queue<Action>` with minimal overhead
+- **Time**: SetValue execution is O(n) where n is the number of queued operations
+- **GC**: The queue is nulled after replay to allow garbage collection
 
-- Controls that don't inherit from ControlBase are unaffected
-- By default, controls are in "initialized" state (not delayed)
-- Existing controls that inherit from Control continue to work
-- `HandlePropertyChanged` can be adopted incrementally
+## Limitations
 
-## Example: Converting Existing Control
-
-**Before:**
-```csharp
-public class MyControl : Control
-{
-    public static readonly DependencyProperty TitleProperty = 
-        DependencyProperty.Register(
-            nameof(Title),
-            typeof(string),
-            typeof(MyControl),
-            new PropertyMetadata(null, OnTitleChanged));
-    
-    private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-        ((MyControl)d).UpdateTitle();  // Executes immediately
-    }
-    
-    private void UpdateTitle()
-    {
-        // Update logic
-    }
-}
-```
-
-**After:**
-```csharp
-public class MyControl : ControlBase  // ← Inherit from ControlBase
-{
-    public static readonly DependencyProperty TitleProperty = 
-        DependencyProperty.Register(
-            nameof(Title),
-            typeof(string),
-            typeof(MyControl),
-            new PropertyMetadata(null, OnTitleChanged));
-    
-    private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-        var control = (MyControl)d;
-        control.HandlePropertyChanged(() => control.UpdateTitle());  // ← Use HandlePropertyChanged
-    }
-    
-    private void UpdateTitle()
-    {
-        // Update logic (unchanged)
-    }
-    
-    public MyControl()
-    {
-        // Optionally use delayed initialization
-        BeginDelayedInitialization();
-        // ... set properties ...
-        EndDelayedInitialization();
-    }
-}
-```
+1. **Not thread-safe**: Designed for single-threaded UI scenarios
+2. **Uno only**: Uses Uno/WinUI types, not compatible with WPF
+3. **Must use SetValueDelayed()**: Property setters bypass the queue
+4. **No automatic detection**: You must explicitly opt-in by using SetValueDelayed()
 
 ## Testing
 
@@ -420,16 +363,9 @@ When testing controls that use ControlBase:
 1. Test normal behavior (without delayed initialization)
 2. Test delayed initialization with single property
 3. Test multiple properties during initialization
-4. Test callbacks triggered during replay
-5. Test that normal processing resumes after replay
+4. Test value factory evaluation timing
+5. Test that normal processing resumes after completion
 6. Test error conditions (double begin, end without begin)
-
-## Limitations
-
-1. **Not thread-safe**: Requires external synchronization for multi-threaded use
-2. **Uno only**: Uses Uno/WinUI types, not compatible with WPF
-3. **Requires HandlePropertyChanged**: Only callbacks wrapped in `HandlePropertyChanged` are queued
-4. **Memory overhead**: Queue holds delegates during initialization
 
 ## Related Documentation
 

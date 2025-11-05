@@ -27,16 +27,8 @@ namespace NupkgExplorer.Controls
         private static void OnTitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (ExampleDelayedControl)d;
-            // Use HandlePropertyChanged to enable queueing during delayed initialization
-            control.HandlePropertyChanged(() => control.OnTitleChangedImpl(e.OldValue as string, e.NewValue as string));
-        }
-
-        private void OnTitleChangedImpl(string? oldValue, string? newValue)
-        {
-            // Property change logic here
-            // During delayed initialization, this will be queued
-            // After initialization, this executes immediately
-            System.Diagnostics.Debug.WriteLine($"Title changed: {oldValue} -> {newValue}");
+            // Property change callback executes when SetValue is called
+            System.Diagnostics.Debug.WriteLine($"Title changed: {e.OldValue} -> {e.NewValue}");
         }
 
         #endregion
@@ -59,12 +51,7 @@ namespace NupkgExplorer.Controls
         private static void OnSubtitleChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             var control = (ExampleDelayedControl)d;
-            control.HandlePropertyChanged(() => control.OnSubtitleChangedImpl());
-        }
-
-        private void OnSubtitleChangedImpl()
-        {
-            System.Diagnostics.Debug.WriteLine($"Subtitle changed: {Subtitle}");
+            System.Diagnostics.Debug.WriteLine($"Subtitle changed: {e.NewValue}");
         }
 
         #endregion
@@ -74,14 +61,14 @@ namespace NupkgExplorer.Controls
             // Example 1: Delayed initialization in constructor
             BeginDelayedInitialization();
             
-            // Set multiple properties - callbacks will be queued
-            Title = "Default Title";
-            Subtitle = "Default Subtitle";
+            // Use SetValueDelayed to queue SetValue operations
+            SetValueDelayed(TitleProperty, "Default Title");
+            SetValueDelayed(SubtitleProperty, "Default Subtitle");
             
-            // Replay all queued callbacks in order
+            // Execute all queued SetValue operations (and their callbacks) in order
             EndDelayedInitialization();
             
-            // Future property changes will execute immediately
+            // Future property changes execute immediately
         }
 
         /// <summary>
@@ -96,13 +83,28 @@ namespace NupkgExplorer.Controls
                 // Simulate async data loading
                 await Task.Delay(100);
                 
-                Title = "Async Title";
-                Subtitle = "Async Subtitle";
+                // Queue SetValue operations
+                SetValueDelayed(TitleProperty, "Async Title");
+                SetValueDelayed(SubtitleProperty, "Async Subtitle");
             }
             finally
             {
+                // Execute all queued operations
                 EndDelayedInitialization();
             }
+        }
+        
+        /// <summary>
+        /// Example showing value factory pattern for computed values
+        /// </summary>
+        public void InitializeWithFactory()
+        {
+            BeginDelayedInitialization();
+            
+            // Value is computed when the SetValue actually executes
+            SetValueDelayed(TitleProperty, () => $"Title at {DateTime.Now:HH:mm:ss}");
+            
+            EndDelayedInitialization();
         }
     }
 }
