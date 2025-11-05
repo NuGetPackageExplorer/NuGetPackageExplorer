@@ -43,8 +43,14 @@ namespace PackageExplorerViewModel
                 try
                 {
                     // Replay all queued events
-                    while (_propertyChangedQueue.TryDequeue(out var args))
+                    // Process events in batches to prevent infinite loops from event handlers
+                    // that trigger new property changes during replay
+                    var processedCount = 0;
+                    var maxEvents = 10000; // Safety limit to prevent infinite loops
+                    
+                    while (_propertyChangedQueue.TryDequeue(out var args) && processedCount < maxEvents)
                     {
+                        processedCount++;
                         // Directly invoke the event to replay it
                         PropertyChanged!(this, args);
                     }

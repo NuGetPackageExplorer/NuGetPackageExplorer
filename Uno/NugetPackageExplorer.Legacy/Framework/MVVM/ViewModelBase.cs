@@ -132,29 +132,35 @@ namespace NupkgExplorer.Framework.MVVM
                 return;
             }
 
-            // Use the lock to ensure thread-safe replay
-            await Task.Run(() =>
+            lock (_replayLock)
             {
-                lock (_replayLock)
-                {
-                    _isInDelayedInitialization = false;
-                    _isReplayingEvents = true;
+                _isInDelayedInitialization = false;
+                _isReplayingEvents = true;
+            }
 
-                    try
-                    {
-                        // Replay all queued events
-                        while (_propertyChangedQueue.TryDequeue(out var args))
-                        {
-                            // Dispatch to UI thread for replay
-                            _ = RunOnUIThread(() => PropertyChanged?.Invoke(this, args));
-                        }
-                    }
-                    finally
-                    {
-                        _isReplayingEvents = false;
-                    }
+            try
+            {
+                // Collect all events from the queue first
+                var eventsToReplay = new List<PropertyChangedEventArgs>();
+                var processedCount = 0;
+                var maxEvents = 10000; // Safety limit to prevent infinite loops
+                
+                while (_propertyChangedQueue.TryDequeue(out var args) && processedCount < maxEvents)
+                {
+                    processedCount++;
+                    eventsToReplay.Add(args);
                 }
-            });
+
+                // Dispatch all events to UI thread and await completion
+                foreach (var args in eventsToReplay)
+                {
+                    await RunOnUIThread(() => PropertyChanged?.Invoke(this, args));
+                }
+            }
+            finally
+            {
+                _isReplayingEvents = false;
+            }
         }
     }
 }
