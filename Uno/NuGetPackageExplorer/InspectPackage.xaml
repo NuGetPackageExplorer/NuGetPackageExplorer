@@ -987,8 +987,8 @@
 
 					<!-- Raw Text Content Viewer -->
                     <wasmskia:Border x:Load="{x:Bind Model.Package.CurrentFileInfo.IsTextFile, Mode=OneWay}">
-						<monaco:CodeEditor Text="{Binding Package.CurrentFileInfo.Content, TargetNullValue=''}"
-										   extensions:CodeEditorExtensions.ModelLanguage="{Binding OpenedDocumentLanguage}"
+						<monaco:CodeEditor Text="{Binding Package.CurrentFileInfo.Content, TargetNullValue=''}"                                           
+                                           extensions:CodeEditorExtensions.FileExtension="{Binding OpenedDocument.Extension}"
 										   extensions:CodeEditorExtensions.AutoLayoutOnResize="True"
 										   extensions:CodeEditorExtensions.AutoUpdateTheme="True"
 										   ReadOnly="True" />

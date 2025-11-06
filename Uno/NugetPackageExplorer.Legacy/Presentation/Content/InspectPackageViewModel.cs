@@ -13,14 +13,12 @@ using NupkgExplorer.Client;
 using NupkgExplorer.Framework.Extensions;
 using NupkgExplorer.Framework.Navigation;
 using NupkgExplorer.Presentation.Dialogs;
-using NupkgExplorer.Presentation.Helpers;
 
 using PackageExplorer;
 
 using PackageExplorerViewModel;
 
 using Uno.Disposables;
-using Uno.Extensions;
 using Uno.Logging;
 
 using Windows.Storage.Pickers;
@@ -80,10 +78,6 @@ namespace NupkgExplorer.Presentation.Content
                     Package.SelectedItem = x;
 
                     Package.ViewContentCommand.Execute(x);
-                    OpenedDocumentLanguage = ((package.CurrentFileInfo is { } fi && fi.IsTextFile)
-                        ? MonacoEditorLanguageHelper.MapFileNameToLanguage(fi.Name)
-                        : default
-                    ) ?? "plaintext";
                 });
         }
 
