@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.Composition;
+﻿using System;
+using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Reflection;
 
 using CommunityToolkit.WinUI.Helpers;
 
@@ -42,6 +44,12 @@ namespace PackageExplorer
     {
         public Window MainWindow { get; private set; } = null!;
 
+        private static readonly Uri CommitUriValue = new Uri("https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/commit/" + ResolveCommitId());
+
+        public static string InformationalVersion => global::ThisAssembly.AssemblyInformationalVersion;
+
+        public static Uri CommitUri => CommitUriValue;
+
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
         /// executed, and as such is the logical equivalent of main() or WinMain().
@@ -71,6 +79,19 @@ namespace PackageExplorer
         internal static new App Current => (App)Application.Current;
 
         private CompositionContainer _container = null!;
+
+        private static string ResolveCommitId()
+        {
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+            var fullField = typeof(global::ThisAssembly).GetField("GitCommitIdFull", flags);
+
+            if (fullField?.GetValue(null) is string full && !string.IsNullOrEmpty(full))
+            {
+                return full;
+            }
+
+            return global::ThisAssembly.GitCommitId;
+        }
 
         [SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope")]
         internal CompositionContainer Container => EnsureContainer();

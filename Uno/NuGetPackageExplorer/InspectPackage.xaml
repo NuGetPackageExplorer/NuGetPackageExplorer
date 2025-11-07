@@ -1012,7 +1012,13 @@
 			  Margin="0,5,0,0"
 			  Padding="24"
 			  Style="{StaticResource SectionGridStyle}">
-			<HyperlinkButton Style="{StaticResource PoweredByHyperlinkButtonStyle}" />
+			<StackPanel HorizontalAlignment="Center"
+						Spacing="4">
+				<HyperlinkButton Style="{StaticResource PoweredByHyperlinkButtonStyle}" />
+				<HyperlinkButton Style="{StaticResource PoweredByVersionHyperlinkButtonStyle}"
+								 NavigateUri="{x:Bind pexpl:App.CommitUri, Mode=OneTime}"
+								 Content="{x:Bind pexpl:App.InformationalVersion, Mode=OneTime}" />
+			</StackPanel>
 		</Grid>
 	</Grid>
 </Page>
