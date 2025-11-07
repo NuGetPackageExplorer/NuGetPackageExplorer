@@ -44,11 +44,11 @@ namespace PackageExplorer
     {
         public Window MainWindow { get; private set; } = null!;
 
-        private static readonly Uri s_commitUri = new Uri("https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/commit/" + ResolveCommitId());
+        private static readonly Uri CommitUriValue = new Uri("https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/commit/" + ResolveCommitId());
 
         public static string InformationalVersion => global::ThisAssembly.AssemblyInformationalVersion;
 
-        public static Uri CommitUri => s_commitUri;
+        public static Uri CommitUri => CommitUriValue;
 
         /// <summary>
         /// Initializes the singleton application object.  This is the first line of authored code
