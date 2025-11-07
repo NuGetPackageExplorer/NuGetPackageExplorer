@@ -98,10 +98,11 @@ namespace NuGetPe
             var packageDisplayName = packageVersion is null ? packageId : $"{packageId} {packageVersion.ToNormalizedString()}";
             string notFoundMessage = packageSources.Count switch
             {
-                1 => $"the \"{packageSources.First().Name}\" NuGet package source.",
-                _ => $"{packageSources.Skip(1).Aggregate($"neither \"{packageSources.First().Name}\"", static (s, p) => s + $" nor \"{p.Name}\"")} NuGet package sources.",
+                0 => $". Make sure that package source mapping is properly configured in {string.Join(" and ", _settings.GetConfigFilePaths())}.",
+                1 => $" in the \"{packageSources.First().Name}\" NuGet package source.",
+                _ => $" in {packageSources.Skip(1).Aggregate($"neither \"{packageSources.First().Name}\"", static (s, p) => s + $" nor \"{p.Name}\"")} NuGet package sources.",
             };
-            throw new UnavailableException($"The package \"{packageDisplayName}\" was not found in {notFoundMessage}");
+            throw new UnavailableException($"The package \"{packageDisplayName}\" was not found{notFoundMessage}");
         }
 
         public void Dispose()
