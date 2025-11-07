@@ -1,4 +1,4 @@
-﻿<Application
+<Application
     x:Class="PackageExplorer.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -103,7 +103,7 @@
                    TargetType="HyperlinkButton">
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
-                        <DataTemplate>
+                        <DataTemplate x:DataType="HyperlinkButton">
                             <Image Source="{ThemeResource PoweredByUnoPlatformImageSource}"
                                    Height="40" />
                         </DataTemplate>
@@ -112,6 +112,23 @@
                 <Setter Property="NavigateUri" Value="https://platform.uno/" />
                 <Setter Property="Padding" Value="0" />
                 <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+
+            <Style x:Key="PoweredByVersionHyperlinkButtonStyle"
+                   TargetType="HyperlinkButton">
+                <Setter Property="Foreground" Value="{ThemeResource OnSurfaceThemeBrush38}" />
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="HyperlinkButton">
+                            <TextBlock Text="{TemplateBinding Content}"
+                                       Style="{StaticResource CaptionTextBlockStyle}"
+                                       Foreground="{TemplateBinding Foreground}"
+                                       TextAlignment="Center" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
             </Style>
         </ResourceDictionary>
     </Application.Resources>
