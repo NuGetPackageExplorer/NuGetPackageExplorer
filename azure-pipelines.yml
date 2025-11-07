@@ -140,11 +140,13 @@ stages:
 
     - powershell: |
         $aiKeyParam = ""
-        if ("$(AppInsightsKeyWebAssembly)" -ne "") {
-          $aiKeyParam = '/p:NpeAiInstrumentationKey="$(AppInsightsKeyWebAssembly)"'
+        if ($env:AppInsightsKeyWebAssembly) {
+          $aiKeyParam = '/p:NpeAiInstrumentationKey="' + $env:AppInsightsKeyWebAssembly + '"'
         }
         dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net10.0-desktop $aiKeyParam /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Uno Desktop App
+      env:
+        AppInsightsKeyWebAssembly: $(AppInsightsKeyWebAssembly)
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'UnoSkia'))
 
     - task: ArchiveFiles@2
@@ -158,11 +160,13 @@ stages:
 
     - powershell: |
         $aiKeyParam = ""
-        if ("$(AppInsightsKeyWebAssembly)" -ne "") {
-          $aiKeyParam = '/p:NpeAiInstrumentationKey="$(AppInsightsKeyWebAssembly)"'
+        if ($env:AppInsightsKeyWebAssembly) {
+          $aiKeyParam = '/p:NpeAiInstrumentationKey="' + $env:AppInsightsKeyWebAssembly + '"'
         }
         dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net10.0-browserwasm $aiKeyParam /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Uno Wasm App
+      env:
+        AppInsightsKeyWebAssembly: $(AppInsightsKeyWebAssembly)
       condition: and(succeeded(), eq(variables['ReleaseChannel'], 'WebAssembly'))
 
     - task: CopyFiles@2
