@@ -50,6 +50,8 @@
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
         <WasmFingerprintAssets>false</WasmFingerprintAssets>
         <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
+        <WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
+
         <!--<WasmShellGenerateAOTProfile>true</WasmShellGenerateAOTProfile>-->
       </PropertyGroup>
 
