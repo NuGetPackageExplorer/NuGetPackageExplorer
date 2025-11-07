@@ -12,7 +12,10 @@ jobs:
       DIST_PATH: artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot
       API_DIST_PATH: artifacts/publish/Api/release
 
-    if: github.event_name == 'pull_request' && github.event.action != 'closed' && github.repository == 'NuGetPackageExplorer/NuGetPackageExplorer'
+    if: >
+      github.event_name == 'pull_request' && 
+      github.event.action != 'closed' && 
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     container: 'unoplatform/wasm-build:5.0'
     name: Build and Deploy Job
@@ -66,7 +69,10 @@ jobs:
           skip_deploy_on_missing_secrets: true
 
   close_pull_request_job:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: >
+      github.event_name == 'pull_request' && 
+      github.event.action == 'closed' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     name: Close Pull Request Job
     steps:
