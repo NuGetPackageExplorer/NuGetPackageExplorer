@@ -265,6 +265,7 @@ __pycache__/
 
 # NuGet tools
 .store/
+nbgv
 
 # VS Code
 .vscode/
