@@ -50,6 +50,11 @@
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
         <WasmFingerprintAssets>false</WasmFingerprintAssets>
         <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
+        <WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
+
+        <!-- Disable the jitinterpreter for possible interp crash -->
+        <WasmShellEnableJiterpreter>false</WasmShellEnableJiterpreter>
+
         <!--<WasmShellGenerateAOTProfile>true</WasmShellGenerateAOTProfile>-->
       </PropertyGroup>
 
