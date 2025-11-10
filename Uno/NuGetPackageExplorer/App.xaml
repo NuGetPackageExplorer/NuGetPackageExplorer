@@ -103,7 +103,7 @@
                    TargetType="HyperlinkButton">
                 <Setter Property="ContentTemplate">
                     <Setter.Value>
-                        <DataTemplate x:DataType="HyperlinkButton">
+                        <DataTemplate>
                             <Image Source="{ThemeResource PoweredByUnoPlatformImageSource}"
                                    Height="40" />
                         </DataTemplate>
