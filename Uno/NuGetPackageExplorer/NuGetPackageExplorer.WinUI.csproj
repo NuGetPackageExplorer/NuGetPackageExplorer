@@ -1,4 +1,4 @@
-﻿<Project Sdk="Uno.Sdk.Private">
+﻿<Project Sdk="Uno.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net10.0-windows10.0.26100;net10.0-browserwasm;net10.0-desktop</TargetFrameworks>
 
@@ -48,7 +48,6 @@
         <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
 
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
-        <WasmFingerprintAssets>false</WasmFingerprintAssets>
         <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
         <WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
 

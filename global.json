@@ -2,12 +2,12 @@
   "sdk": {
     "allowPrerelease": true,
     "rollForward": "latestMajor",
-    "version": "10.0.100-rc.2.25502.107"
+    "version": "10.0.100"
   },
 
   // To update the version of Uno please update the version of the Uno.Sdk here. See https://aka.platform.uno/upgrade-uno-packages for more information.
   "msbuild-sdks": {
-    "Uno.Sdk": "6.4.8",
+    "Uno.Sdk": "6.4.13",
     "Uno.Sdk.Private": "6.5.0-dev.43.gb4dabf8cea"
   }
 }
