@@ -3,27 +3,28 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
-    <NuGetDependencyVersion>7.1.0-preview.1.42</NuGetDependencyVersion>
+    <NuGetDependencyVersion>7.3.0-preview.1.10</NuGetDependencyVersion>
     <CommunityToolkitVersion>7.1.2</CommunityToolkitVersion>
     <UnoCommunityToolkitVersion>7.1.204</UnoCommunityToolkitVersion>
-    <SystemDependencyVersion>10.0.0-rc.2.25502.107</SystemDependencyVersion>
+    <SystemDependencyVersion>10.0.0</SystemDependencyVersion>
   </PropertyGroup>
   <ItemGroup>
-    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.7.115"  />
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.9.50"  />
 
     <PackageVersion Include="AppInsights.WindowsDesktop" Version="2.18.1" />
     <PackageVersion Include="AuthenticodeExaminer" Version="0.4.0" />
     <PackageVersion Include="AvalonEdit" Version="6.3.1.120" />
     <PackageVersion Include="GrayscaleEffect" Version="1.0.1" />
-    <PackageVersion Include="Humanizer" Version="2.14.1" />
+    <PackageVersion Include="Humanizer" Version="3.0.0-rc.30" />
     <PackageVersion Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageVersion Include="OSVersionHelper" Version="1.1.24" />
-    <PackageVersion Include="PeNet" Version="4.1.2" />
+    <PackageVersion Include="PeNet" Version="5.1.0" />
 
     <PackageVersion Include="CommunityToolkit.WinUI.UI.Controls" Version="$(CommunityToolkitVersion)" />
     <PackageVersion Include="CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="$(CommunityToolkitVersion)" />
     <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="$(UnoCommunityToolkitVersion)" />
     <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="$(UnoCommunityToolkitVersion)" />
+    <PackageVersion Include="Uno.Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.4.2" />
     <PackageVersion Include="Uno.Monaco.Editor" Version="6.4.0-dev.25.gb8530c2257" />
     <PackageVersion Include="System.Reactive" Version="5.0.0" />    
     
@@ -42,7 +43,7 @@
     <PackageVersion Include="Microsoft.Azure.Functions.Worker.ApplicationInsights" Version="2.0.0" />
     <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Http" Version="3.3.0" />
     <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Timer" Version="4.3.1" />
-    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.5" />
+    <PackageVersion Include="Microsoft.Azure.Functions.Worker.Sdk" Version="2.0.6" />
     <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.0" />
     <PackageVersion Include="Microsoft.ApplicationInsights.WorkerService" Version="2.23.0" />
     <PackageVersion Include="Microsoft.Windows.Compatibility" Version="$(SystemDependencyVersion)" />
@@ -54,7 +55,7 @@
     <PackageVersion Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />
     <PackageVersion Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />    
 
-    <PackageVersion Include="System.CommandLine" Version="2.0.0-rc.2.25502.107" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.0" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="$(SystemDependencyVersion)" />
     
     <PackageVersion Include="System.Formats.Asn1" Version="$(SystemDependencyVersion)" />

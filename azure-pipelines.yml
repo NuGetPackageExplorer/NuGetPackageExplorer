@@ -35,7 +35,6 @@ stages:
     - task: UseDotNet@2
       displayName: 'Use .NET 10 SDK'
       inputs:
-        includePreviewVersions: true
         version: 10.x
 
     - script: dotnet workload install wasm-tools wasm-tools-net9

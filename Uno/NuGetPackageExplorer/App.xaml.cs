@@ -1,9 +1,8 @@
-﻿using System;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 using CommunityToolkit.WinUI.Helpers;
 
@@ -44,7 +43,7 @@ namespace PackageExplorer
     {
         public Window MainWindow { get; private set; } = null!;
 
-        private static readonly Uri CommitUriValue = new Uri("https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/commit/" + ResolveCommitId());
+        public static readonly Uri CommitUriValue = new Uri("https://github.com/NuGetPackageExplorer/NuGetPackageExplorer/commit/" + ResolveCommitId());
 
         public static string InformationalVersion => global::ThisAssembly.AssemblyInformationalVersion;
 
