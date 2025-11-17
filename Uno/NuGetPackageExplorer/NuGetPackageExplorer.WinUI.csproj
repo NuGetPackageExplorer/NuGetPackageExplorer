@@ -48,17 +48,17 @@
         <DefineConstants>$(DefineConstants);USE_MONACO_EDITOR</DefineConstants>
 
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
-        <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
+        <!--<WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>-->
         <WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
 
         <!-- Disable the jitinterpreter for possible interp crash -->
-        <WasmShellEnableJiterpreter>false</WasmShellEnableJiterpreter>
+        <!--<WasmShellEnableJiterpreter>false</WasmShellEnableJiterpreter>-->
 
         <!--<WasmShellGenerateAOTProfile>true</WasmShellGenerateAOTProfile>-->
       </PropertyGroup>
 
       <ItemGroup>
-        <WasmShellEnableAotProfile Include="$(NpeSrcRoot)\Build\aot.profile" />
+        <!--<WasmShellEnableAotProfile Include="$(NpeSrcRoot)\Build\aot.profile" />-->
         
         <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
 
