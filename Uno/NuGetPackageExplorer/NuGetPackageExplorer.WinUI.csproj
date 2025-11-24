@@ -56,7 +56,7 @@
 
         <!--<WasmShellGenerateAOTProfile>true</WasmShellGenerateAOTProfile>-->
         <WasmShellGenerateAOTProfileDebugList>true</WasmShellGenerateAOTProfileDebugList>
-        <WasmShellAOTProfileExcludedMethods>Dummy</WasmShellAOTProfileExcludedMethods>
+        <WasmShellAOTProfileExcludedMethods>SkiaApi.*;DelegateProxies.*;SKSurfaceRasterReleaseProxyDelegate.*;SKSurfaceReleaseDelegate.*</WasmShellAOTProfileExcludedMethods>
       </PropertyGroup>
 
       <ItemGroup>

@@ -1,4 +1,8 @@
-﻿using Uno.UI.Hosting;
+﻿using System.Runtime.InteropServices;
+
+using SkiaSharp;
+
+using Uno.UI.Hosting;
 
 namespace PackageExplorer
 {
@@ -14,6 +18,29 @@ namespace PackageExplorer
                 .Build();
 
             await host.RunAsync();
+        }
+
+        static async void TestSkia()
+        {
+            var imageBytes = Marshal.AllocHGlobal(100);
+            SKData.Create(imageBytes, 100, (_, _) =>
+            {
+                Console.WriteLine("SKData DISPOSED!");
+                Marshal.FreeHGlobal(imageBytes);
+            });
+            while (true)
+            {
+                await Task.Delay(25);
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
+        }
+
+        static Program()
+        {
+            TestSkia();
         }
     }
 }
