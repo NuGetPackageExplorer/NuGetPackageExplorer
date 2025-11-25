@@ -55,8 +55,8 @@
         <!--<WasmShellEnableJiterpreter>false</WasmShellEnableJiterpreter>-->
 
         <!--<WasmShellGenerateAOTProfile>true</WasmShellGenerateAOTProfile>-->
-        <WasmShellGenerateAOTProfileDebugList>true</WasmShellGenerateAOTProfileDebugList>
-        <WasmShellAOTProfileExcludedMethods>SkiaApi.*;DelegateProxies.*;SKSurfaceRasterReleaseProxyDelegate.*;SKSurfaceReleaseDelegate.*</WasmShellAOTProfileExcludedMethods>
+        <!--<WasmShellGenerateAOTProfileDebugList>true</WasmShellGenerateAOTProfileDebugList>-->
+        <!--<WasmShellAOTProfileExcludedMethods>Dummy</WasmShellAOTProfileExcludedMethods>-->
       </PropertyGroup>
 
       <ItemGroup>
