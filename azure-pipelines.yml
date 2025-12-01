@@ -163,7 +163,7 @@ stages:
           $aiKeyParam = '/p:NpeAiInstrumentationKey="' + $env:AppInsightsKeyWebAssembly + '"'
         }
         dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net10.0-browserwasm $aiKeyParam /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
-        cp $(build.SourcesDirectory)/artifacts/obj/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/AOTProfileDump.* $(Build.SourcesDirectory)\artifacts\logs
+        cp $(Build.SourcesDirectory)/artifacts/obj/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/AOTProfileDump.* $(Build.SourcesDirectory)\artifacts\logs
       displayName: Build Uno Wasm App
       env:
         AppInsightsKeyWebAssembly: $(AppInsightsKeyWebAssembly)
