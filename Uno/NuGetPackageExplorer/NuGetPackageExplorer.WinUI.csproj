@@ -63,6 +63,9 @@
         <WasmShellEnableAotProfile Include="$(NpeSrcRoot)Build\aot.profile" />
         
         <WasmShellMonoEnvironment Include="MSDL_PROXY_LOCATION" Value="$(MsdlApiBaseLocation)" />
+
+        <!-- Exclude SkiaSharp from mixed mode loading to avoid issues on WebAssembly AOT -->    
+        <MonoRuntimeMixedModeExcludedAssembly Include="SkiaSharp" />  
         
         <!-- This value must be the instrumentation key, not the connection string -->
         <WasmShellMonoEnvironment Include="NPE_AI_INSTRUMENTATIONKEY" Value="$(NpeAiInstrumentationKey)" />
