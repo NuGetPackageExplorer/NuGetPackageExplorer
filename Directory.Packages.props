@@ -25,7 +25,7 @@
     <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls" Version="$(UnoCommunityToolkitVersion)" />
     <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="$(UnoCommunityToolkitVersion)" />
     <PackageVersion Include="Uno.Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.4.2" />
-    <PackageVersion Include="Uno.Monaco.Editor" Version="6.4.0-dev.25.gb8530c2257" />
+    <PackageVersion Include="Uno.Monaco.Editor" Version="6.4.0-dev.41.gfc42320b13" />
     <PackageVersion Include="System.Reactive" Version="5.0.0" />    
     
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0-2.final" />
