@@ -1,4 +1,6 @@
-﻿using NuGet.Common;
+﻿using System.Text;
+using CI = System.Globalization.CultureInfo;
+using NuGet.Common;
 using NuGet.Packaging.Signing;
 
 
@@ -20,6 +22,47 @@ namespace PackageExplorerViewModel
                                                       .SelectMany(static prv => prv.Issues)
                                                       .Where(static sl => sl.Level == LogLevel.Information)
                                                       .ToList();
+        }
+
+        public string CopyValidationMessage
+        {
+            get
+            {
+                var messageBuilder = new StringBuilder(); 
+                messageBuilder.AppendLine(CI.CurrentCulture, $"Validation Result: {Valid}");
+                messageBuilder.AppendLine(CI.CurrentCulture, $"Signed: {Signed}");
+                messageBuilder.AppendLine(CI.CurrentCulture, $"Trust Level: {Trust}");
+
+                if (ErrorIssues?.Count > 0)
+                {
+                    messageBuilder.AppendLine(CI.CurrentCulture, $"Errors:");
+                    foreach (var issue in ErrorIssues)
+                    {
+                        messageBuilder.AppendLine(CI.CurrentCulture, $"{issue.Message}");
+                    }
+                }
+
+                if (WarningIssues?.Count > 0)
+                {
+                    messageBuilder.AppendLine(CI.CurrentCulture, $"Warnings:");
+                    foreach (var issue in WarningIssues)
+                    {
+                        messageBuilder.AppendLine(CI.CurrentCulture, $"{issue.Message}");
+                    }
+                }
+
+                if(InformationIssues?.Count > 0)
+                {
+                    messageBuilder.AppendLine(CI.CurrentCulture, $"Information:");
+                    foreach (var issue in InformationIssues)
+                    {
+                        messageBuilder.AppendLine(CI.CurrentCulture, $"{issue.Message}");
+                    }
+                }
+
+                return messageBuilder.ToString();
+            }
+            
         }
 
 
