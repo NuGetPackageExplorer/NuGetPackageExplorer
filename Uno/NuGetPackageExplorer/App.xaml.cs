@@ -510,16 +510,15 @@ namespace PackageExplorer
 
         private void TrackPluginInventory()
         {
-            var pluginManager = Container.GetExportedValue<IPluginManager>();
-            var plugins = pluginManager.Plugins
-                .Select(static plugin => plugin.Id + "@" + plugin.Version)
-                .OrderBy(static plugin => plugin, StringComparer.OrdinalIgnoreCase)
-                .ToList();
+            if (PluginInventoryTelemetry.TryTrack(() => Container.GetExportedValue<IPluginManager>()!, out var pluginInventoryError))
+            {
+                return;
+            }
 
-            DiagnosticsClient.TrackEvent(
-                "PluginInventory",
-                new Dictionary<string, string> { { "plugins", string.Join(";", plugins) } },
-                new Dictionary<string, double> { { "pluginCount", plugins.Count } });
+            if (this.Log().IsEnabled(LogLevel.Error))
+            {
+                this.Log().Error("Failed to track plugin inventory:", pluginInventoryError);
+            }
         }
 
         /// <summary>

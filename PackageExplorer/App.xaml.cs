@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -63,7 +63,10 @@ namespace PackageExplorer
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
             DiagnosticsClient.TrackEvent("AppStart", new Dictionary<string, string> { { "launchType", e.Args.Length > 0 ? "fileAssociation" : "shortcut" } });
-            TrackPluginInventory();
+            if (!PluginInventoryTelemetry.TryTrack(() => Container.GetExportedValue<IPluginManager>()!, out var pluginInventoryError))
+            {
+                Trace.TraceWarning($"Failed to track plugin inventory: {pluginInventoryError}");
+            }
 
             // Overwrite settings with the real instance
             Resources["Settings"] = Container.GetExportedValue<ISettingsManager>();
@@ -145,20 +148,6 @@ namespace PackageExplorer
             {
                 return false;
             }
-        }
-
-        private void TrackPluginInventory()
-        {
-            var pluginManager = Container.GetExportedValue<IPluginManager>();
-            var plugins = pluginManager.Plugins
-                .Select(static plugin => plugin.Id + "@" + plugin.Version)
-                .OrderBy(static plugin => plugin, StringComparer.OrdinalIgnoreCase)
-                .ToList();
-
-            DiagnosticsClient.TrackEvent(
-                "PluginInventory",
-                new Dictionary<string, string> { { "plugins", string.Join(";", plugins) } },
-                new Dictionary<string, double> { { "pluginCount", plugins.Count } });
         }
 
         private void Application_Exit(object sender, ExitEventArgs e)
