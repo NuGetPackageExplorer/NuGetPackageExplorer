@@ -62,7 +62,7 @@ namespace PackageExplorerViewModel
             // copy to temporary file
             // create package in the temporary file first in case the operation fails which would
             // override existing file with a 0-byte file.
-            var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
+            var tempFileName = GetTempFileName(file.Name);
             using (Stream tempFileStream = File.Create(tempFileName))
             using (var packageStream = file.GetStream())
             {
@@ -96,7 +96,7 @@ namespace PackageExplorerViewModel
             // copy to temporary file
             // create package in the temporary file first in case the operation fails which would
             // override existing file with a 0-byte file.
-            var tempFileName = Path.Combine(GetTempFilePath(), file.Name);
+            var tempFileName = GetTempFileName(file.Name);
 
             using (Stream tempFileStream = File.Create(tempFileName))
             using (var packageStream = file.GetStream())
@@ -159,7 +159,7 @@ namespace PackageExplorerViewModel
                 throw new ArgumentException("Argument is null or empty", nameof(fileName));
             }
 
-            var filePath = Path.Combine(GetTempFilePath(), fileName);
+            var filePath = GetTempFileName(fileName);
             File.WriteAllText(filePath, content);
             return filePath;
         }
@@ -173,12 +173,18 @@ namespace PackageExplorerViewModel
 
             ArgumentNullException.ThrowIfNull(content);
 
-            var filePath = Path.Combine(GetTempFilePath(), fileName);
+            var filePath = GetTempFileName(fileName);
             using (Stream targetStream = File.Create(filePath))
             {
                 content.CopyTo(targetStream);
             }
             return filePath;
+        }
+
+        private static string GetTempFileName(string fileName)
+        {
+            var normalizedFileName = PackagePathUtility.NormalizePathSegment(fileName);
+            return Path.Combine(GetTempFilePath(), normalizedFileName);
         }
 
         public static bool IsAssembly(string path)

@@ -94,6 +94,24 @@ public sealed class PathTraversalTests
         Assert.Equal("content", childFolder.Path);
     }
 
+    [Fact]
+    public void CreateTempFileRejectsTraversalNamesForStringContent()
+    {
+        var exception = Record.Exception(() => FileHelper.CreateTempFile("..\\escape.txt", "content"));
+
+        Assert.NotNull(exception);
+    }
+
+    [Fact]
+    public void CreateTempFileRejectsTraversalNamesForStreamContent()
+    {
+        using var content = new MemoryStream(Encoding.UTF8.GetBytes("content"));
+
+        var exception = Record.Exception(() => FileHelper.CreateTempFile("..\\escape.txt", content));
+
+        Assert.NotNull(exception);
+    }
+
     private sealed class TempDirectory : IDisposable
     {
         public TempDirectory()
