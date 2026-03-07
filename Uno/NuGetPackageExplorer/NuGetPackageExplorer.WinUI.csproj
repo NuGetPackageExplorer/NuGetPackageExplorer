@@ -67,7 +67,7 @@
         <!-- Exclude SkiaSharp from mixed mode loading to avoid issues on WebAssembly AOT -->    
         <MonoRuntimeMixedModeExcludedAssembly Include="SkiaSharp" />  
         
-        <!-- This value must be the instrumentation key, not the connection string -->
+        <!-- Local builds may omit this, but CI/release WebAssembly builds must provide a full App Insights connection string. -->
         <WasmShellMonoEnvironment Include="NPE_AI_INSTRUMENTATIONKEY" Value="$(NpeAiInstrumentationKey)" />
         <WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
       </ItemGroup>
@@ -89,6 +89,25 @@
       </PropertyGroup>
     </When>
   </Choose>
+
+  <Target Name="ValidateBrowserWasmTelemetryConfig"
+          BeforeTargets="PrepareForBuild"
+          Condition="'$(TargetFramework)'=='net10.0-browserwasm' and '$(Configuration)'=='Release' and '$(ReleaseChannel)'=='WebAssembly' and '$(TF_BUILD)'=='True'">
+    <PropertyGroup>
+      <_TelemetryValue>$(NpeAiInstrumentationKey)</_TelemetryValue>
+      <_TelemetryLooksUnresolved>$([System.String]::Copy('$(_TelemetryValue)').StartsWith('$'))</_TelemetryLooksUnresolved>
+      <_TelemetryLooksLikeConnectionString>$([System.String]::Copy('$(_TelemetryValue)').StartsWith('InstrumentationKey='))</_TelemetryLooksLikeConnectionString>
+      <_TelemetryHasIngestionEndpoint>$([System.String]::Copy('$(_TelemetryValue)').Contains('IngestionEndpoint='))</_TelemetryHasIngestionEndpoint>
+    </PropertyGroup>
+    <Error Text="NpeAiInstrumentationKey must be provided for WebAssembly release builds."
+           Condition="'$(NpeAiInstrumentationKey)'==''" />
+    <Error Text="NpeAiInstrumentationKey must be resolved before the WebAssembly release build starts."
+           Condition="'$(_TelemetryLooksUnresolved)'=='True'" />
+    <Error Text="NpeAiInstrumentationKey must be a full App Insights connection string for WebAssembly release builds."
+           Condition="'$(_TelemetryLooksLikeConnectionString)'!='True'" />
+    <Error Text="App Insights connection strings must include IngestionEndpoint= for WebAssembly release builds."
+           Condition="'$(_TelemetryHasIngestionEndpoint)'!='True'" />
+  </Target>
 
   <ItemGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
     <PackageReference Include="CommunityToolkit.WinUI.UI.Controls" />
