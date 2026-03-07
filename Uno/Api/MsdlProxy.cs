@@ -131,6 +131,7 @@ namespace Api
                 var payload = await ReadBoundedAsync(responseStream, cancellationSource.Token).ConfigureAwait(false);
                 if (payload is null)
                 {
+                    LogOversizedResponse(_log, MaxResponseBytes);
                     var tooLargeResponse = req.CreateResponse(HttpStatusCode.RequestEntityTooLarge);
                     await tooLargeResponse.WriteStringAsync("Symbol response exceeded the allowed size.", cancellationSource.Token);
                     return tooLargeResponse;

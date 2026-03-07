@@ -159,8 +159,14 @@ stages:
 
     - powershell: |
         $aiKeyParam = ""
+        $requireAiConfig = "$(Build.Reason)" -ne "PullRequest"
         if ($env:AppInsightsKeyWebAssembly) {
           $aiKeyParam = '/p:NpeAiInstrumentationKey="' + $env:AppInsightsKeyWebAssembly + '"'
+          if ($requireAiConfig) {
+            $aiKeyParam += ' /p:RequireBrowserWasmTelemetryConfig=true'
+          }
+        } elseif ($requireAiConfig) {
+          throw "AppInsightsKeyWebAssembly must be provided for non-PR WebAssembly builds."
         }
         dotnet publish Uno\NuGetPackageExplorer\NuGetPackageExplorer.WinUI.csproj -f net10.0-browserwasm $aiKeyParam /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
         cp $(Build.SourcesDirectory)/artifacts/obj/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/AOTProfileDump.* $(Build.SourcesDirectory)\artifacts\logs
@@ -288,4 +294,3 @@ stages:
     - publish: $(Pipeline.Workspace)/ToSign/Nightly
       displayName: Publish Signed Choco Packages
       artifact: NightlySigned
-

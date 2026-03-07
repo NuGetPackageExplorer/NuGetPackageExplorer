@@ -11,10 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" VersionOverride="6.0.4" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" VersionOverride="17.14.1" />
-    <PackageReference Include="xunit" VersionOverride="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" VersionOverride="3.1.4" />
+    <PackageReference Include="coverlet.collector" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio" />
   </ItemGroup>
 
   <ItemGroup>

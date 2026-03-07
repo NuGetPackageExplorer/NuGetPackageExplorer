@@ -92,7 +92,7 @@
 
   <Target Name="ValidateBrowserWasmTelemetryConfig"
           BeforeTargets="PrepareForBuild"
-          Condition="'$(TargetFramework)'=='net10.0-browserwasm' and '$(Configuration)'=='Release' and '$(ReleaseChannel)'=='WebAssembly' and '$(TF_BUILD)'=='True'">
+          Condition="'$(TargetFramework)'=='net10.0-browserwasm' and '$(Configuration)'=='Release' and '$(ReleaseChannel)'=='WebAssembly' and '$(RequireBrowserWasmTelemetryConfig)'=='true'">
     <PropertyGroup>
       <_TelemetryValue>$(NpeAiInstrumentationKey)</_TelemetryValue>
       <_TelemetryLooksUnresolved>$([System.String]::Copy('$(_TelemetryValue)').StartsWith('$'))</_TelemetryLooksUnresolved>

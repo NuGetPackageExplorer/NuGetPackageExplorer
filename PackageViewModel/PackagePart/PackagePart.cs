@@ -279,7 +279,7 @@ namespace PackageExplorerViewModel
         {
         }
 
-        private static bool IsSafePathSegment(string pathSegment)
+        protected static bool IsSafePathSegment(string pathSegment)
         {
             try
             {

@@ -448,7 +448,9 @@ namespace PackageExplorerViewModel
 
         public override void Export(string rootPath)
         {
-            var fullPath = PackagePathUtility.ResolvePathUnderRoot(rootPath, Path);
+            var fullPath = string.IsNullOrEmpty(Path)
+                ? Path.GetFullPath(rootPath)
+                : PackagePathUtility.ResolvePathUnderRoot(rootPath, Path);
             if (!Directory.Exists(fullPath))
             {
                 Directory.CreateDirectory(fullPath);
@@ -467,19 +469,6 @@ namespace PackageExplorerViewModel
                 part.Dispose();
             }
             base.Dispose(disposing);
-        }
-
-        private static bool IsSafePathSegment(string pathSegment)
-        {
-            try
-            {
-                PackagePathUtility.NormalizePathSegment(pathSegment);
-                return true;
-            }
-            catch (InvalidDataException)
-            {
-                return false;
-            }
         }
     }
 }
