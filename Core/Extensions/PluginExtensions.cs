@@ -22,7 +22,8 @@ namespace NuGetPe
                 if (file.Path.StartsWith(sourceDirectory, StringComparison.OrdinalIgnoreCase))
                 {
                     var suffixPath = file.Path[sourceDirectory.Length..];
-                    var targetPath = Path.Combine(targetRootDirectory, suffixPath);
+                    var targetPath = PackagePathUtility.ResolvePathUnderRoot(targetRootDirectory, suffixPath);
+                    Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
 
                     using (var stream = File.Open(targetPath, FileMode.Create, FileAccess.Write, FileShare.Read))
                     {

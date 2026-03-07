@@ -224,7 +224,7 @@ namespace PackageExplorerViewModel
 
         public override void Export(string rootPath)
         {
-            var fullPath = System.IO.Path.Combine(rootPath, Path);
+            var fullPath = PackagePathUtility.ResolvePathUnderRoot(rootPath, Path);
             if (File.Exists(fullPath))
             {
                 var confirmed = PackageViewModel?.UIServices.Confirm(

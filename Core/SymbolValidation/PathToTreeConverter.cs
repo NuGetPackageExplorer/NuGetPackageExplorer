@@ -18,7 +18,9 @@ namespace NuGetPe
 
             var root = new Folder("", parent: null);
 
-            var parsedPaths = paths.Select(static p => Tuple.Create<NuGet.Packaging.IPackageFile, string[]>(p, p.Path.Split('\\'))).ToList();
+            var parsedPaths = paths
+                .Select(p => Tuple.Create<NuGet.Packaging.IPackageFile, string[]>(p, PackagePathUtility.NormalizeRelativePath(p.Path).Split('\\')))
+                .ToList();
             Parse(root, parsedPaths, 0, 0, parsedPaths.Count);
 
             return root;

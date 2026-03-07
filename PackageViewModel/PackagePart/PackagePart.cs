@@ -170,6 +170,11 @@ namespace PackageExplorerViewModel
         {
             if (!Name.Equals(newName, StringComparison.Ordinal))
             {
+                if (!IsSafePathSegment(newName))
+                {
+                    return;
+                }
+
                 if (_parent != null)
                 {
                     if (!Name.Equals(newName, StringComparison.OrdinalIgnoreCase) &&
@@ -271,6 +276,19 @@ namespace PackageExplorerViewModel
 
         protected virtual void Dispose(bool disposing)
         {
+        }
+
+        private static bool IsSafePathSegment(string pathSegment)
+        {
+            try
+            {
+                PackagePathUtility.NormalizePathSegment(pathSegment);
+                return true;
+            }
+            catch (InvalidDataException)
+            {
+                return false;
+            }
         }
 
         ~PackagePart()

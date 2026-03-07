@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using NuGet.Packaging;
+using NuGetPe;
 
 namespace PackageExplorerViewModel
 {
@@ -16,7 +17,7 @@ namespace PackageExplorerViewModel
             var root = new PackageFolder("", viewModel);
 
             var parsedPaths =
-                paths.Select(static p => Tuple.Create(p, p.Path.Split('\\'))).ToList();
+                paths.Select(p => Tuple.Create(p, PackagePathUtility.NormalizeRelativePath(p.Path).Split('\\'))).ToList();
             Parse(root, parsedPaths, 0, 0, parsedPaths.Count);
 
             return root;

@@ -163,6 +163,11 @@ namespace PackageExplorerViewModel
                 return false;
             }
 
+            if (!IsSafePathSegment(folderName))
+            {
+                return false;
+            }
+
             if (PackageViewModel?.IsSigned == true || PackageViewModel?.IsInEditFileMode == true)
             {
                 return false;
@@ -443,7 +448,7 @@ namespace PackageExplorerViewModel
 
         public override void Export(string rootPath)
         {
-            var fullPath = System.IO.Path.Combine(rootPath, Path);
+            var fullPath = PackagePathUtility.ResolvePathUnderRoot(rootPath, Path);
             if (!Directory.Exists(fullPath))
             {
                 Directory.CreateDirectory(fullPath);
@@ -462,6 +467,19 @@ namespace PackageExplorerViewModel
                 part.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        private static bool IsSafePathSegment(string pathSegment)
+        {
+            try
+            {
+                PackagePathUtility.NormalizePathSegment(pathSegment);
+                return true;
+            }
+            catch (InvalidDataException)
+            {
+                return false;
+            }
         }
     }
 }

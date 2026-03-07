@@ -46,6 +46,7 @@
     <PackageVersion Include="Microsoft.Azure.Functions.Worker.Extensions.Http.AspNetCore" Version="2.1.0" />
     <PackageVersion Include="Microsoft.ApplicationInsights.WorkerService" Version="2.23.0" />
     <PackageVersion Include="Microsoft.Windows.Compatibility" Version="$(SystemDependencyVersion)" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
 
     <PackageVersion Include="NuGet.Commands" Version="$(NuGetDependencyVersion)" />
     <PackageVersion Include="NuGet.Credentials" Version="$(NuGetDependencyVersion)" />
@@ -69,6 +70,9 @@
     <PackageVersion Include="System.Security.Cryptography.Xml" Version="$(SystemDependencyVersion)" />
     <PackageVersion Include="System.Text.RegularExpressions" Version="4.3.1" />    
     <PackageVersion Include="System.Windows.Extensions" Version="$(SystemDependencyVersion)" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.4" />
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.4" />
 
     <PackageVersion Include="Uno.Core.Extensions.Compatibility" Version="4.1.1" />
 
