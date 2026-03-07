@@ -36,7 +36,7 @@ namespace NuGetPe
             // This method needs to replace tokens in version fields with a sentinel value
             // since the NuGetVersion object model doesn't support it.
             // Also needs to handle blank versions
-            var xdoc = XDocument.Load(stream);
+            var xdoc = SecureXmlLoader.Load(stream);
             var ns = xdoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
 
             // Get the version node
@@ -140,7 +140,7 @@ namespace NuGetPe
         {
             // This method needs to replace tokens in version fields with a sentinel value
             // since the NuGetVersion object model doesn't support it.
-            var xdoc = XDocument.Load(sourceStream);
+            var xdoc = SecureXmlLoader.Load(sourceStream);
             var ns = xdoc.Root?.GetDefaultNamespace() ?? XNamespace.None;
 
             // Get the version node
