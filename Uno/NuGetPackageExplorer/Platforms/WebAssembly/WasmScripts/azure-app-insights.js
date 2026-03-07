@@ -1,3 +1,5 @@
+let appInsights = null;
+
 define([`${config.uno_app_base}/ai.3.3.6.min.js`], () => {
     const key = (config.environmentVariables['NPE_AI_INSTRUMENTATIONKEY'] || '').trim();
     if (!key) {
