@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 
@@ -173,6 +174,7 @@ namespace PackageExplorer
 
             try
             {
+                TrackPluginInventory();
                 await landingNavigation(rootPage, e).ConfigureAwait(true);
             }
             catch (Exception ex)
@@ -504,6 +506,20 @@ namespace PackageExplorer
 
             var dialog = Container.GetExportedValue<DialogService>()!;
             dialog.Register<DownloadProgressDialog, DownloadProgressDialogViewModel>();
+        }
+
+        private void TrackPluginInventory()
+        {
+            var pluginManager = Container.GetExportedValue<IPluginManager>();
+            var plugins = pluginManager.Plugins
+                .Select(static plugin => plugin.Id + "@" + plugin.Version)
+                .OrderBy(static plugin => plugin, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            DiagnosticsClient.TrackEvent(
+                "PluginInventory",
+                new Dictionary<string, string> { { "plugins", string.Join(";", plugins) } },
+                new Dictionary<string, double> { { "pluginCount", plugins.Count } });
         }
 
         /// <summary>
