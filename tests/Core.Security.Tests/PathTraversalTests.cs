@@ -1,8 +1,6 @@
 using System.IO;
 using System.Text;
 using System.Runtime.Versioning;
-using System.Collections.ObjectModel;
-
 using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
