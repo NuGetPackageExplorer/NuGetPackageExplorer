@@ -7,6 +7,6 @@ namespace PackageExplorerViewModel.Types
     {
         void Add(ICredentials credentials, Uri feedUri);
 
-        ICredentials GetForUri(Uri uri);
+        ICredentials? GetForUri(Uri uri);
     }
 }

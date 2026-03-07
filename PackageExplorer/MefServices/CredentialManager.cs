@@ -43,25 +43,40 @@ namespace PackageExplorer.MefServices
             }
         }
 
-        public ICredentials GetForUri(Uri uri)
+        public ICredentials? GetForUri(Uri uri)
         {
-            var credentials = CredentialCache.DefaultCredentials;
             lock (_feedsLock)
             {
                 var matchingFeeds = _feeds.Where(x => string.Equals(uri.Scheme, x.Item1.Scheme, StringComparison.OrdinalIgnoreCase) &&
                                                       string.Equals(uri.Host, x.Item1.Host, StringComparison.OrdinalIgnoreCase) &&
-                                                      uri.AbsolutePath.Contains(x.Item1.AbsolutePath, StringComparison.OrdinalIgnoreCase))
+                                                      uri.Port == x.Item1.Port &&
+                                                      HasPathPrefixBoundary(uri.AbsolutePath, x.Item1.AbsolutePath))
                                           .ToList();
                 if (matchingFeeds.Count > 0)
                 {
-                    credentials = matchingFeeds.First().Item2;
+                    return matchingFeeds.First().Item2;
                 }
-                else if (TryAddUriCredentials(uri, out var uriCredentials))
+                if (TryAddUriCredentials(uri, out var uriCredentials))
                 {
-                    credentials = uriCredentials!;
+                    return uriCredentials;
                 }
             }
-            return credentials;
+
+            return null;
+        }
+
+        private static bool HasPathPrefixBoundary(string candidatePath, string feedPath)
+        {
+            var normalizedCandidatePath = candidatePath.TrimEnd('/');
+            var normalizedFeedPath = feedPath.TrimEnd('/');
+
+            if (!normalizedCandidatePath.StartsWith(normalizedFeedPath, StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            return normalizedCandidatePath.Length == normalizedFeedPath.Length ||
+                   normalizedCandidatePath[normalizedFeedPath.Length] == '/';
         }
     }
 }
