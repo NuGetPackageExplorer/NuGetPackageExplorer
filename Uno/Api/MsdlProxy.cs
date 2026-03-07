@@ -15,6 +15,61 @@ namespace Api
         private readonly ILogger<MsdlProxy> _log = log;
         private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
 
+        private static readonly Action<ILogger, string, Exception?> MissingSymbolKeyWarning =
+            LoggerMessage.Define<string>(
+                LogLevel.Warning,
+                new EventId(1, nameof(MissingSymbolKey)),
+                "Symbol key is missing in the request. {Details}");
+
+        private static readonly Action<ILogger, string, Exception?> SymbolRequestInfo =
+            LoggerMessage.Define<string>(
+                LogLevel.Information,
+                new EventId(2, nameof(SymbolRequest)),
+                "Symbol request for {SymbolKey}");
+
+        private static readonly Action<ILogger, Exception, Exception?> ProcessingError =
+            LoggerMessage.Define<Exception>(
+                LogLevel.Error,
+                new EventId(3, nameof(LogProcessingError)),
+                "An error occurred while processing the request. {Exception}");
+
+        private static readonly Action<ILogger, HttpStatusCode, Exception?> UpstreamFailureWarning =
+            LoggerMessage.Define<HttpStatusCode>(
+                LogLevel.Warning,
+                new EventId(4, nameof(LogUpstreamFailure)),
+                "Upstream symbol server returned non-success status {StatusCode}");
+
+        private static readonly Action<ILogger, long, Exception?> OversizedResponseWarning =
+            LoggerMessage.Define<long>(
+                LogLevel.Warning,
+                new EventId(5, nameof(LogOversizedResponse)),
+                "Rejected oversized symbol response. Size={ResponseSizeBytes}");
+
+        private static void MissingSymbolKey(ILogger logger, string details)
+        {
+            MissingSymbolKeyWarning(logger, details, null);
+        }
+
+        private static void SymbolRequest(ILogger logger, string symbolKey)
+        {
+            SymbolRequestInfo(logger, symbolKey, null);
+        }
+
+        private static void LogProcessingError(ILogger logger, Exception exception)
+        {
+            ProcessingError(logger, exception, null);
+        }
+
+        private static void LogUpstreamFailure(ILogger logger, HttpStatusCode statusCode)
+        {
+            UpstreamFailureWarning(logger, statusCode, null);
+        }
+
+        private static void LogOversizedResponse(ILogger logger, long responseSizeBytes)
+        {
+            OversizedResponseWarning(logger, responseSizeBytes, null);
+        }
+
         [Function("MsdlProxy")]
         public async Task<HttpResponseData> Run(
             [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = null)] HttpRequestData req,
@@ -24,6 +79,7 @@ namespace Api
             var key = req.Query["symbolkey"];
             if (string.IsNullOrEmpty(key))
             {
+                MissingSymbolKey(_log, "Symbol key is required in the query string.");
                 var badRequestResponse = req.CreateResponse(HttpStatusCode.BadRequest);
                 await badRequestResponse.WriteStringAsync("Symbol key is required.", hostCancellationToken);
                 return badRequestResponse;
@@ -36,7 +92,7 @@ namespace Api
                 return badRequestResponse;
             }
 
-            _log.LogInformation("Symbol request for {SymbolKey}", normalizedKey);
+            SymbolRequest(_log, normalizedKey);
 
             var checksum = req.Headers.TryGetValues("SymbolChecksum", out var checksums)
                 ? checksums.FirstOrDefault()
@@ -57,7 +113,7 @@ namespace Api
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    _log.LogWarning("Upstream symbol server returned non-success status {StatusCode}", response.StatusCode);
+                    LogUpstreamFailure(_log, response.StatusCode);
                     var upstreamFailureResponse = req.CreateResponse(HttpStatusCode.BadGateway);
                     await upstreamFailureResponse.WriteStringAsync("Upstream symbol server request failed.", cancellationSource.Token);
                     return upstreamFailureResponse;
@@ -65,7 +121,7 @@ namespace Api
 
                 if (response.Content.Headers.ContentLength is long contentLength && contentLength > MaxResponseBytes)
                 {
-                    _log.LogWarning("Rejected oversized symbol response. Size={ResponseSizeBytes}", contentLength);
+                    LogOversizedResponse(_log, contentLength);
                     var tooLargeResponse = req.CreateResponse(HttpStatusCode.RequestEntityTooLarge);
                     await tooLargeResponse.WriteStringAsync("Symbol response exceeded the allowed size.", cancellationSource.Token);
                     return tooLargeResponse;
@@ -88,7 +144,7 @@ namespace Api
             }
             catch (Exception ex)
             {
-                _log.LogError(ex, "An error occurred while processing the request.");
+                LogProcessingError(_log, ex);
                 var errorResponse = req.CreateResponse(HttpStatusCode.InternalServerError);
                 await errorResponse.WriteStringAsync("An internal server error occurred.", cancellationSource.Token);
                 return errorResponse;
