@@ -449,7 +449,7 @@ namespace PackageExplorerViewModel
         public override void Export(string rootPath)
         {
             var fullPath = string.IsNullOrEmpty(Path)
-                ? Path.GetFullPath(rootPath)
+                ? global::System.IO.Path.GetFullPath(rootPath)
                 : PackagePathUtility.ResolvePathUnderRoot(rootPath, Path);
             if (!Directory.Exists(fullPath))
             {
