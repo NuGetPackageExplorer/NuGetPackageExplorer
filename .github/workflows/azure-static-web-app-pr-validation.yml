@@ -11,10 +11,11 @@ jobs:
     env:
       DIST_PATH: artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot
       API_DIST_PATH: artifacts/publish/Api/release
+      DOTNET_VERSION: '10.0'
 
     if: >
-      github.event_name == 'pull_request' && 
-      github.event.action != 'closed' && 
+      github.event_name == 'pull_request' &&
+      github.event.action != 'closed' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     container: 'unoplatform/wasm-build:5.0'
@@ -37,7 +38,7 @@ jobs:
           cd Uno/NuGetPackageExplorer
           dotnet publish -c Release -f net10.0-browserwasm
           cd ../Api
-          dotnet publish -c Release 
+          dotnet publish -c Release
 
       - uses: actions/upload-artifact@v4
         with:
@@ -69,7 +70,7 @@ jobs:
 
   close_pull_request_job:
     if: >
-      github.event_name == 'pull_request' && 
+      github.event_name == 'pull_request' &&
       github.event.action == 'closed' &&
       github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
@@ -79,7 +80,7 @@ jobs:
         id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CI }}          
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_CI }}
           action: "close"
         env:
           skip_deploy_on_missing_secrets: true
