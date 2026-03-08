@@ -3,10 +3,10 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
 
-    <NuGetDependencyVersion>7.3.0-preview.1.11308</NuGetDependencyVersion>
+    <NuGetDependencyVersion>7.3.0</NuGetDependencyVersion>
     <CommunityToolkitVersion>7.1.2</CommunityToolkitVersion>
-    <UnoCommunityToolkitVersion>7.1.204</UnoCommunityToolkitVersion>
-    <SystemDependencyVersion>10.0.1</SystemDependencyVersion>
+    <UnoCommunityToolkitVersion>7.1.205</UnoCommunityToolkitVersion>
+    <SystemDependencyVersion>10.0.3</SystemDependencyVersion>
   </PropertyGroup>
   <ItemGroup>
     <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.9.50"  />
@@ -15,7 +15,7 @@
     <PackageVersion Include="AuthenticodeExaminer" Version="0.4.0" />
     <PackageVersion Include="AvalonEdit" Version="6.3.1.120" />
     <PackageVersion Include="GrayscaleEffect" Version="1.0.1" />
-    <PackageVersion Include="Humanizer" Version="3.0.1" />
+    <PackageVersion Include="Humanizer" Version="3.0.10" />
     <PackageVersion Include="Ookii.Dialogs.Wpf" Version="5.0.1" />
     <PackageVersion Include="OSVersionHelper" Version="1.1.24" />
     <PackageVersion Include="PeNet" Version="5.1.0" />
@@ -26,7 +26,7 @@
     <PackageVersion Include="Uno.CommunityToolkit.WinUI.UI.Controls.DataGrid" Version="$(UnoCommunityToolkitVersion)" />
     <PackageVersion Include="Uno.Microsoft.Xaml.Behaviors.WinUI.Managed" Version="2.4.2" />
     <PackageVersion Include="Uno.Monaco.Editor" Version="6.4.0-dev.41.gfc42320b13" />
-    <PackageVersion Include="System.Reactive" Version="5.0.0" />    
+    <PackageVersion Include="System.Reactive" Version="6.1.0" />    
     
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="5.0.0" />
     <PackageVersion Include="Microsoft.DiaSymReader" Version="2.2.3" />
@@ -53,7 +53,7 @@
     <PackageVersion Include="NuGet.Protocol" Version="$(NuGetDependencyVersion)" />
     <PackageVersion Include="NuGet.Resolver" Version="$(NuGetDependencyVersion)" />    
 
-    <PackageVersion Include="System.CommandLine" Version="2.0.1" />
+    <PackageVersion Include="System.CommandLine" Version="2.0.3" />
     <PackageVersion Include="System.ComponentModel.Composition" Version="$(SystemDependencyVersion)" />
     
     <PackageVersion Include="System.Formats.Asn1" Version="$(SystemDependencyVersion)" />

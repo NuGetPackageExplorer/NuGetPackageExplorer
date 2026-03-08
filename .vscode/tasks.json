@@ -1,0 +1,104 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "browser:publish",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "publish",
+        "Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj",
+        "-f",
+        "net10.0-browserwasm",
+        "-c",
+        "Release"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "api:build",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "Uno/Api/Api.csproj",
+        "-c",
+        "Debug"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": "build"
+    },
+    {
+      "label": "api:start",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "--prefix",
+        "${workspaceFolder}/.tools",
+        "func",
+        "start",
+        "--port",
+        "7071"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/Uno/Api"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": {
+          "regexp": "."
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Host lock lease acquired by instance ID|Worker process started and initialized"
+        }
+      }
+    },
+    {
+      "label": "swa:start",
+      "type": "shell",
+      "command": "npx",
+      "args": [
+        "--prefix",
+        "${workspaceFolder}",
+        "swa",
+        "start",
+        "artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "4280",
+        "--api-devserver-url",
+        "http://127.0.0.1:7071",
+        "--swa-config-location",
+        "Uno/NuGetPackageExplorer/Platforms/WebAssembly/wwwroot"
+      ],
+      "isBackground": true,
+      "dependsOn": [
+        "browser:publish"
+      ],
+      "problemMatcher": {
+        "owner": "custom",
+        "pattern": {
+          "regexp": "."
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": ".*",
+          "endsPattern": "Azure Static Web Apps emulator started at http://127.0.0.1:4280"
+        }
+      }
+    },
+    {
+      "label": "swa:full",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "api:start",
+        "swa:start"
+      ]
+    }
+  ]
+}

@@ -37,14 +37,28 @@ namespace NuGetPackageExplorer.Helpers
 
             var uri = absoluteOrRelativeUri.IsAbsoluteUri
                 ? absoluteOrRelativeUri
-                : new Uri(new Uri(InvokeJS("window.location")), absoluteOrRelativeUri);
+                : new Uri(GetApplicationBaseLocation(), absoluteOrRelativeUri.OriginalString.TrimStart('/'));
 
             ReplaceUrl(uri.AbsoluteUri);
         }
         public static Uri GetApplicationBaseLocation()
         {
-            var location = new Uri(InvokeJS("window.location"));
-            return new Uri(location.GetLeftPart(UriPartial.Authority));
+            var baseLocation = InvokeJS(
+                """
+                (() => {
+                    const bootstrapScript = document.querySelector('script[src*="uno-bootstrap.js"]');
+                    const scriptSource = bootstrapScript?.getAttribute('src') ?? '/';
+                    const packageMarkerIndex = scriptSource.indexOf('/package_');
+                    const basePath = packageMarkerIndex > 0
+                        ? scriptSource.substring(0, packageMarkerIndex)
+                        : '';
+
+                    return new URL(basePath ? `${basePath}/` : '/', window.location.origin).toString();
+                })()
+                """
+            );
+
+            return new Uri(baseLocation);
         }
     }
 }

@@ -17,6 +17,7 @@ using NuGet.Protocol;
 using NuGet.Versioning;
 
 using NuGetPackageExplorer.Extensions;
+using NuGetPackageExplorer.Core.DeepLinking;
 using NuGetPackageExplorer.Types;
 
 using NuGetPe;
@@ -380,52 +381,17 @@ namespace PackageExplorer
                 }
 
                 var uri = new Uri(location);
-                var subpaths = uri.Segments
-                    .Skip(1) // skip first item that is just "/"
-                    .Select(static x => x.TrimEnd('/')) // remove segment separator
-                    .ToArray();
+                var applicationBasePath = NuGetPackageExplorer.Helpers.ApplicationHelper.GetApplicationBaseLocation().AbsolutePath;
+                var route = WasmPackageRouteParser.Parse(uri, applicationBasePath);
 
-                // Process `/packages` route
-                if (subpaths.Any() && "packages".Equals(subpaths[0], StringComparison.OrdinalIgnoreCase))
+                return route switch
                 {
-                    // nuget.org considers any subpath after version as invalid, eg: /packages/xyz/3.1.2/invalid
-                    if (subpaths.Length >= 4)
-                    {
-                        throw new FormatException($"Invalid path: {location}");
-                    }
-
-                    // Try to extract a direct package link, like: /packages/xyz, /packages/xyz/3.1.2
-                    if (subpaths.Length >= 2)
-                    {
-                        var id = subpaths[1];
-                        var version = default(NuGetVersion);
-                        if (subpaths.Length >= 3 && !NuGetVersion.TryParse(subpaths[2], out version))
-                        {
-                            throw new FormatException($"Invalid version: {subpaths[2]}");
-                        }
-
-                        return new PackageIdentity(id, version);
-                    }
-
-                    // Or, a search query, like: /packages, /packages?q=uno
-                    else
-                    {
-                        var query = new QueryParameterCollection(location)
-                            .Aggregate(
-                                new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase),
-                                static (dict, kvp) =>
-                                {
-                                    dict[kvp.Key] = kvp.Value;
-                                    return dict;
-                                }
-                            );
-
-                        // note: null is for landing page, which isn't exactly(depends on landing navigation impl) the same as the search page.
-                        return query.GetValueOrDefault("q") ?? string.Empty;
-                    }
-                }
-#endif
-
+                    WasmPackageIdentityRoute packageRoute => new PackageIdentity(packageRoute.Id, packageRoute.Version),
+                    WasmPackageSearchRoute searchRoute => searchRoute.Query,
+                    WasmPackageInvalidRoute => throw new FormatException($"Invalid path: {location}"),
+                    _ => DefaultFallbackResult()
+                };
+#else
                 if (this.Log().IsEnabled(LogLevel.Debug))
                 {
                     this.Log().Debug("parsing launch arg: " + e.Arguments);
@@ -439,6 +405,7 @@ namespace PackageExplorer
                 }
 
                 return DefaultFallbackResult();
+#endif
             }
             catch (Exception ex)
             {

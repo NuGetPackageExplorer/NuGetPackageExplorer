@@ -1,0 +1,19 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "SWA Browser",
+      "type": "pwa-msedge",
+      "request": "launch",
+      "url": "http://127.0.0.1:4280/packages",
+      "webRoot": "${workspaceFolder}",
+      "preLaunchTask": "swa:full"
+    },
+    {
+      "name": "Attach Functions Worker",
+      "type": "coreclr",
+      "request": "attach",
+      "processName": "Api"
+    }
+  ]
+}

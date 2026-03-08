@@ -6,6 +6,7 @@ using NuGet.Packaging.Core;
 using NuGet.Versioning;
 
 using NuGetPackageExplorer.Types;
+using NuGetPackageExplorer.Core.Async;
 
 using NuGetPe;
 
@@ -187,23 +188,19 @@ namespace NupkgExplorer.Presentation.Content
 
                 var dialogTask = dialog.ShowAsync(cts.Token, progressVM);
                 var downloadPackageTask = DownloadPackage();
+                var downloadedPackage = await OptionalDialogCoordinator.WaitForResultAsync(downloadPackageTask, dialogTask, cts.Token);
 
-                var completed = await Task.WhenAny(dialogTask, downloadPackageTask);
-                if (completed == downloadPackageTask)
-                {
-                    var packageVM = await factory.CreateViewModel(downloadPackageTask.Result, downloadPackageTask.Result?.Source, NuGetConstants.DefaultFeedUrl);
-                    if (packageVM == null)
-                    {
-                        throw new InvalidOperationException("Failed to create package view model");
-                    }
-                    var vm = new InspectPackageViewModel(packageVM, redirectedFrom);
+                cts.Dispose();
+                _ = dialogTask.ContinueWith(static _ => { }, TaskScheduler.Default);
 
-                    return vm;
-                }
-                else
+                var packageVM = await factory.CreateViewModel(downloadedPackage, downloadedPackage?.Source, NuGetConstants.DefaultFeedUrl);
+                if (packageVM == null)
                 {
-                    throw new OperationCanceledException();
+                    throw new InvalidOperationException("Failed to create package view model");
                 }
+                var vm = new InspectPackageViewModel(packageVM, redirectedFrom);
+
+                return vm;
             }
             catch (AggregateException ae) when (ae.GetPossibleInnerException<HttpResponseExceptionWithStatusCode>() is { StatusCode: HttpStatusCode.NotFound } e)
             {

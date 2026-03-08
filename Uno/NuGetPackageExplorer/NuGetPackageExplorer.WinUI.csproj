@@ -50,6 +50,7 @@
         <WasmShellEnableIDBFS>true</WasmShellEnableIDBFS>
         <WasmShellMonoRuntimeExecutionMode>InterpreterAndAOT</WasmShellMonoRuntimeExecutionMode>
         <WasmShellEnableEmccProfiling>true</WasmShellEnableEmccProfiling>
+        <WasmStripILAfterAOT>false</WasmStripILAfterAOT>
 
         <!-- Disable the jitinterpreter for possible interp crash -->
         <!--<WasmShellEnableJiterpreter>false</WasmShellEnableJiterpreter>-->
@@ -126,7 +127,6 @@
 
   <ItemGroup>
     <PackageReference Include="System.Reactive" />
-    <PackageReference Include="Microsoft.Windows.Compatibility" />
     <PackageReference Include="Uno.Core.Extensions.Compatibility" />    
   </ItemGroup>
   
