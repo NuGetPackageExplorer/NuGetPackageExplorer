@@ -11,9 +11,6 @@ jobs:
     env:
       DIST_PATH: artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot
       API_DIST_PATH: artifacts/publish/Api/release
-      DOTNET_VERSION: '10.0'
-      PROJECT: 'Uno/Api/Api.csproj'
-      BUILD_CONFIG: 'Release'
 
     if: >
       github.event_name == 'pull_request' &&
