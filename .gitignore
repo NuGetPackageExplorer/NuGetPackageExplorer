@@ -268,7 +268,7 @@ __pycache__/
 nbgv
 
 # VS Code
-!.vscode/
+.vscode/*
 !.vscode/tasks.json
 !.vscode/launch.json
 /dotnet-validate/Properties/launchSettings.json

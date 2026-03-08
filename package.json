@@ -8,6 +8,7 @@
   "scripts": {
     "api:build": "dotnet build Uno/Api/Api.csproj -c Debug",
     "api:start": ".tools/node_modules/.bin/func start --port 7071",
+    "api:wait": "node scripts/wait-for-http.mjs http://127.0.0.1:7071/api/MsdlProxy?symbolkey=https://evil.invalid/a.pdb/abc/a.pdb 400 90000",
     "browser:publish": "dotnet publish Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj -f net10.0-browserwasm -c Release",
     "swa": "swa",
     "swa:start": "swa start artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot --host 127.0.0.1 --port 4280 --api-devserver-url http://127.0.0.1:7071 --swa-config-location Uno/NuGetPackageExplorer/Platforms/WebAssembly/wwwroot",

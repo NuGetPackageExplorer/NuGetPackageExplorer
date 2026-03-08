@@ -58,6 +58,15 @@
       }
     },
     {
+      "label": "api:wait",
+      "type": "shell",
+      "command": "npm",
+      "args": [
+        "run",
+        "api:wait"
+      ]
+    },
+    {
       "label": "swa:start",
       "type": "shell",
       "command": "npx",
@@ -97,6 +106,7 @@
       "dependsOrder": "sequence",
       "dependsOn": [
         "api:start",
+        "api:wait",
         "swa:start"
       ]
     }
