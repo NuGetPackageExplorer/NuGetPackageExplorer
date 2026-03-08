@@ -191,7 +191,11 @@ namespace NupkgExplorer.Presentation.Content
                 var downloadedPackage = await OptionalDialogCoordinator.WaitForResultAsync(downloadPackageTask, dialogTask, cts.Token);
 
                 cts.Dispose();
-                _ = dialogTask.ContinueWith(static _ => { }, TaskScheduler.Default);
+                _ = dialogTask.ContinueWith(
+                    static t => _ = t.Exception,
+                    CancellationToken.None,
+                    TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+                    TaskScheduler.Default);
 
                 var packageVM = await factory.CreateViewModel(downloadedPackage, downloadedPackage?.Source, NuGetConstants.DefaultFeedUrl);
                 if (packageVM == null)
