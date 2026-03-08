@@ -6,7 +6,6 @@
     "rewrite": "/index.html",
     "exclude": [
       "/_framework/*",
-      "/package_*",
       "*.{css,js}",
       "*.{png}",
       "*.{c,h,wasm,clr,pdb,dat,txt}"

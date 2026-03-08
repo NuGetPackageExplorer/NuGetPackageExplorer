@@ -1,3 +1,5 @@
+import fs from "node:fs";
+import path from "node:path";
 import { expect, test } from "@playwright/test";
 
 const stablePackage = {
@@ -10,8 +12,30 @@ const previewPackage = {
   version: "11.0.0-preview.1.26104.118"
 };
 
+const wasmPublishIndexPath = path.resolve(
+  process.cwd(),
+  "artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot/index.html"
+);
+
+let publishedPackageBasePath: string | undefined;
+
 function escapeRegex(text: string) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function getPublishedPackageBasePath() {
+  publishedPackageBasePath ??= (() => {
+    const indexHtml = fs.readFileSync(wasmPublishIndexPath, "utf8");
+    const packagePathMatch = indexHtml.match(/\/(package_[^/]+)\/uno-bootstrap\.js/);
+
+    if (!packagePathMatch) {
+      throw new Error(`Could not find a published package base path in ${wasmPublishIndexPath}.`);
+    }
+
+    return packagePathMatch[1];
+  })();
+
+  return publishedPackageBasePath;
 }
 
 async function captureStartupSignals(page: import("@playwright/test").Page) {
@@ -138,6 +162,35 @@ test("hard refresh on a versioned package deep link keeps the requested package 
   );
   await expect(page).toHaveTitle(
     new RegExp(`^${escapeRegex(stablePackage.id)} ${escapeRegex(stablePackage.version)} \\| NuGet Package Explorer$`)
+  );
+  expectNoStartupFailure(consoleMessages);
+});
+
+test("published package base-path deep links survive direct navigation and hard refresh", async ({ page }) => {
+  const consoleMessages = await captureStartupSignals(page);
+  const packageBasePath = getPublishedPackageBasePath();
+  const targetPath = `/${packageBasePath}/packages/${previewPackage.id}/${previewPackage.version}`;
+
+  await page.goto(targetPath, {
+    waitUntil: "domcontentloaded"
+  });
+  await waitForUnoShell(page);
+
+  await expect(page).toHaveURL(
+    new RegExp(`/${escapeRegex(packageBasePath)}/packages/${escapeRegex(previewPackage.id)}/${escapeRegex(previewPackage.version)}$`)
+  );
+  await expect(page).toHaveTitle(
+    new RegExp(`^${escapeRegex(previewPackage.id)} ${escapeRegex(previewPackage.version)} \\| NuGet Package Explorer$`)
+  );
+
+  await page.reload({ waitUntil: "domcontentloaded" });
+  await waitForUnoShell(page);
+
+  await expect(page).toHaveURL(
+    new RegExp(`/${escapeRegex(packageBasePath)}/packages/${escapeRegex(previewPackage.id)}/${escapeRegex(previewPackage.version)}$`)
+  );
+  await expect(page).toHaveTitle(
+    new RegExp(`^${escapeRegex(previewPackage.id)} ${escapeRegex(previewPackage.version)} \\| NuGet Package Explorer$`)
   );
   expectNoStartupFailure(consoleMessages);
 });
