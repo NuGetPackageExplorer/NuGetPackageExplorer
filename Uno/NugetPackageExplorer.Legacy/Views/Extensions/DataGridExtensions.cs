@@ -20,8 +20,17 @@ namespace NupkgExplorer.Views.Extensions
 			typeof(DataGridExtensions),
 			new PropertyMetadata(default, (d, e) => d.Maybe<DataGrid>(control => OnDelayedItemsSourceChanged(control, e))));
 
-		public static IEnumerable GetDelayedItemsSource(DataGrid obj) => (IEnumerable)obj.GetValue(DelayedItemsSourceProperty);
-		public static void SetDelayedItemsSource(DataGrid obj, IEnumerable value) => obj.SetValue(DelayedItemsSourceProperty, value);
+        public static IEnumerable GetDelayedItemsSource(DataGrid obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (IEnumerable)obj.GetValue(DelayedItemsSourceProperty);
+        }
+
+        public static void SetDelayedItemsSource(DataGrid obj, IEnumerable value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(DelayedItemsSourceProperty, value);
+        }
 
 		#endregion
 

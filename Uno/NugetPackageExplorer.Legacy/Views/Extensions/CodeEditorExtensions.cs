@@ -35,8 +35,17 @@ namespace NupkgExplorer.Views.Extensions
             typeof(CodeEditorExtensions),
             new PropertyMetadata(default(bool), (d, e) => d.Maybe<CodeEditor>(control => OnAutoLayoutOnResizeChanged(control, e))));
 
-        public static bool GetAutoLayoutOnResize(CodeEditor obj) => (bool)obj.GetValue(AutoLayoutOnResizeProperty);
-        public static void SetAutoLayoutOnResize(CodeEditor obj, bool value) => obj.SetValue(AutoLayoutOnResizeProperty, value);
+        public static bool GetAutoLayoutOnResize(CodeEditor obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (bool)obj.GetValue(AutoLayoutOnResizeProperty);
+        }
+
+        public static void SetAutoLayoutOnResize(CodeEditor obj, bool value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(AutoLayoutOnResizeProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: CodeLanguage
@@ -47,8 +56,17 @@ namespace NupkgExplorer.Views.Extensions
             typeof(CodeEditorExtensions),
             new PropertyMetadata(default(string), (d, e) => d.Maybe<CodeEditor>(control => OnFileExtensionPropertyChanged(control, e))));
 
-        public static string GetFileExtension(CodeEditor obj) => (string)obj.GetValue(FileExtensionProperty);
-        public static void SetFileExtension(CodeEditor obj, string value) => obj.SetValue(FileExtensionProperty, value);
+        public static string GetFileExtension(CodeEditor obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (string)obj.GetValue(FileExtensionProperty);
+        }
+
+        public static void SetFileExtension(CodeEditor obj, string value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(FileExtensionProperty, value);
+        }
 
         #endregion
 
@@ -60,8 +78,17 @@ namespace NupkgExplorer.Views.Extensions
             typeof(CodeEditorExtensions),
             new PropertyMetadata(default(bool), (d, e) => d.Maybe<CodeEditor>(control => OnAutoUpdateThemeChanged(control, e))));
 
-        public static bool GetAutoUpdateTheme(CodeEditor obj) => (bool)obj.GetValue(AutoUpdateThemeProperty);
-        public static void SetAutoUpdateTheme(CodeEditor obj, bool value) => obj.SetValue(AutoUpdateThemeProperty, value);
+        public static bool GetAutoUpdateTheme(CodeEditor obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (bool)obj.GetValue(AutoUpdateThemeProperty);
+        }
+
+        public static void SetAutoUpdateTheme(CodeEditor obj, bool value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(AutoUpdateThemeProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: AutoUpdateThemeSubscription
@@ -72,8 +99,17 @@ namespace NupkgExplorer.Views.Extensions
             typeof(CodeEditorExtensions),
             new PropertyMetadata(default(IDisposable)));
 
-        public static IDisposable GetAutoUpdateThemeSubscription(CodeEditor obj) => (IDisposable)obj.GetValue(AutoUpdateThemeSubscriptionProperty);
-        public static void SetAutoUpdateThemeSubscription(CodeEditor obj, IDisposable value) => obj.SetValue(AutoUpdateThemeSubscriptionProperty, value);
+        public static IDisposable GetAutoUpdateThemeSubscription(CodeEditor obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (IDisposable)obj.GetValue(AutoUpdateThemeSubscriptionProperty);
+        }
+
+        public static void SetAutoUpdateThemeSubscription(CodeEditor obj, IDisposable value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(AutoUpdateThemeSubscriptionProperty, value);
+        }
 
         #endregion
 

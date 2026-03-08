@@ -12,7 +12,7 @@ namespace NupkgExplorer.Framework.Navigation
     [Export]
     public class NavigationService
     {
-        public event EventHandler<(Type PageType, ViewModelBase ViewModel)>? Navigated;
+        public event EventHandler<NavigationEventArgs>? Navigated;
 
         private readonly IDictionary<Type, Type> _mapping = new Dictionary<Type, Type>();
 
@@ -37,10 +37,15 @@ namespace NupkgExplorer.Framework.Navigation
         public void NavigateTo<TViewModel>(TViewModel viewModel)
             where TViewModel : ViewModelBase
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
             NavigateToCore(viewModel);
         }
 
-        public void NavigateTo(ViewModelBase viewModel) => NavigateToCore(viewModel);
+        public void NavigateTo(ViewModelBase viewModel)
+        {
+            ArgumentNullException.ThrowIfNull(viewModel);
+            NavigateToCore(viewModel);
+        }
 
         private void NavigateToCore(ViewModelBase viewModel)
         {
@@ -53,13 +58,19 @@ namespace NupkgExplorer.Framework.Navigation
 
                 App.Current.Container.SatisfyImportsOnce(viewModel);
 
-                Navigated?.Invoke(this, (pageType, viewModel));
+                Navigated?.Invoke(this, new NavigationEventArgs(pageType, viewModel));
             }
             catch (Exception e)
             {
                 this.Log().Error($"Navigation failed for `{viewModel?.GetType().Name ?? "<null>"}`:", e);
                 throw;
             }
+        }
+
+        public sealed class NavigationEventArgs(Type pageType, ViewModelBase viewModel) : EventArgs
+        {
+            public Type PageType { get; } = pageType;
+            public ViewModelBase ViewModel { get; } = viewModel;
         }
     }
 }

@@ -26,8 +26,17 @@ namespace NupkgExplorer.Views.Behaviors
             typeof(TreeViewBehavior),
             new PropertyMetadata(default, (d, e) => d.Maybe<TreeView>(control => OnEnableSelectedItemBindingChanged(control, e))));
 
-        public static bool GetEnableSelectedItemBinding(TreeView obj) => (bool)obj.GetValue(EnableSelectedItemBindingProperty);
-        public static void SetEnableSelectedItemBinding(TreeView obj, bool value) => obj.SetValue(EnableSelectedItemBindingProperty, value);
+        public static bool GetEnableSelectedItemBinding(TreeView obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (bool)obj.GetValue(EnableSelectedItemBindingProperty);
+        }
+
+        public static void SetEnableSelectedItemBinding(TreeView obj, bool value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(EnableSelectedItemBindingProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: IsUpdatingSelectedItem
@@ -38,8 +47,17 @@ namespace NupkgExplorer.Views.Behaviors
             typeof(TreeViewBehavior),
             new PropertyMetadata(default));
 
-        public static bool GetIsUpdatingSelectedItem(TreeView obj) => (bool)obj.GetValue(IsUpdatingSelectedItemProperty);
-        public static void SetIsUpdatingSelectedItem(TreeView obj, bool value) => obj.SetValue(IsUpdatingSelectedItemProperty, value);
+        public static bool GetIsUpdatingSelectedItem(TreeView obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (bool)obj.GetValue(IsUpdatingSelectedItemProperty);
+        }
+
+        public static void SetIsUpdatingSelectedItem(TreeView obj, bool value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(IsUpdatingSelectedItemProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: SelectedItem
@@ -50,8 +68,17 @@ namespace NupkgExplorer.Views.Behaviors
             typeof(TreeViewBehavior),
             new PropertyMetadata(default, (d, e) => d.Maybe<TreeView>(control => OnSelectedItemChanged(control, e))));
 
-        public static object GetSelectedItem(TreeView obj) => (object)obj.GetValue(SelectedItemProperty);
-        public static void SetSelectedItem(TreeView obj, object value) => obj.SetValue(SelectedItemProperty, value);
+        public static object GetSelectedItem(TreeView obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (object)obj.GetValue(SelectedItemProperty);
+        }
+
+        public static void SetSelectedItem(TreeView obj, object value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(SelectedItemProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: SelectedItemBindingDisposable
@@ -62,8 +89,17 @@ namespace NupkgExplorer.Views.Behaviors
             typeof(TreeViewBehavior),
             new PropertyMetadata(default));
 
-        public static IDisposable GetSelectedItemBindingDisposable(TreeView obj) => (IDisposable)obj.GetValue(SelectedItemBindingDisposableProperty);
-        public static void SetSelectedItemBindingDisposable(TreeView obj, IDisposable value) => obj.SetValue(SelectedItemBindingDisposableProperty, value);
+        public static IDisposable GetSelectedItemBindingDisposable(TreeView obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (IDisposable)obj.GetValue(SelectedItemBindingDisposableProperty);
+        }
+
+        public static void SetSelectedItemBindingDisposable(TreeView obj, IDisposable value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(SelectedItemBindingDisposableProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: AutoToggleItemExpansion
@@ -74,8 +110,17 @@ namespace NupkgExplorer.Views.Behaviors
         typeof(TreeViewBehavior),
         new PropertyMetadata(default(bool), (d, e) => d.Maybe<TreeView>(control => OnAutoToggleItemExpansionChanged(control, e))));
 
-        public static bool GetAutoToggleItemExpansion(TreeView obj) => (bool)obj.GetValue(AutoToggleItemExpansionProperty);
-        public static void SetAutoToggleItemExpansion(TreeView obj, bool value) => obj.SetValue(AutoToggleItemExpansionProperty, value);
+        public static bool GetAutoToggleItemExpansion(TreeView obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (bool)obj.GetValue(AutoToggleItemExpansionProperty);
+        }
+
+        public static void SetAutoToggleItemExpansion(TreeView obj, bool value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(AutoToggleItemExpansionProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: AutoToggleItemExpansionDisposable
@@ -86,8 +131,17 @@ namespace NupkgExplorer.Views.Behaviors
             typeof(TreeViewBehavior),
             new PropertyMetadata(default(IDisposable)));
 
-        private static IDisposable GetAutoToggleItemExpansionDisposable(TreeView obj) => (IDisposable)obj.GetValue(AutoToggleItemExpansionDisposableProperty);
-        private static void SetAutoToggleItemExpansionDisposable(TreeView obj, IDisposable value) => obj.SetValue(AutoToggleItemExpansionDisposableProperty, value);
+        private static IDisposable GetAutoToggleItemExpansionDisposable(TreeView obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (IDisposable)obj.GetValue(AutoToggleItemExpansionDisposableProperty);
+        }
+
+        private static void SetAutoToggleItemExpansionDisposable(TreeView obj, IDisposable value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(AutoToggleItemExpansionDisposableProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: DoubleClickCommand
@@ -98,8 +152,17 @@ namespace NupkgExplorer.Views.Behaviors
             typeof(TreeViewBehavior),
             new PropertyMetadata(default(ICommand), (d, e) => d.Maybe<TreeView>(control => OnDoubleClickCommandChanged(control, e))));
 
-        public static ICommand GetDoubleClickCommand(TreeView obj) => (ICommand)obj.GetValue(DoubleClickCommandProperty);
-        public static void SetDoubleClickCommand(TreeView obj, ICommand value) => obj.SetValue(DoubleClickCommandProperty, value);
+        public static ICommand GetDoubleClickCommand(TreeView obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (ICommand)obj.GetValue(DoubleClickCommandProperty);
+        }
+
+        public static void SetDoubleClickCommand(TreeView obj, ICommand value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(DoubleClickCommandProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: DoubleClickCommandDisposable
@@ -110,8 +173,17 @@ namespace NupkgExplorer.Views.Behaviors
             typeof(TreeViewBehavior),
             new PropertyMetadata(default(IDisposable)));
 
-        public static IDisposable GetDoubleClickCommandDisposable(TreeView obj) => (IDisposable)obj.GetValue(DoubleClickCommandDisposableProperty);
-        public static void SetDoubleClickCommandDisposable(TreeView obj, IDisposable value) => obj.SetValue(DoubleClickCommandDisposableProperty, value);
+        public static IDisposable GetDoubleClickCommandDisposable(TreeView obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (IDisposable)obj.GetValue(DoubleClickCommandDisposableProperty);
+        }
+
+        public static void SetDoubleClickCommandDisposable(TreeView obj, IDisposable value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(DoubleClickCommandDisposableProperty, value);
+        }
 
         #endregion
 

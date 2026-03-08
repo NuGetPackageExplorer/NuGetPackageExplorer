@@ -3,8 +3,28 @@
     /// <summary>
     /// An HttpRequestException that captures the StatusCode before it is lost.
     /// </summary>
-    public sealed class HttpResponseExceptionWithStatusCode(HttpStatusCode statusCode, string message) : HttpRequestException(message)
+    public sealed class HttpResponseExceptionWithStatusCode : HttpRequestException
     {
-        public new HttpStatusCode StatusCode { get; init; } = statusCode;
+        public HttpResponseExceptionWithStatusCode()
+        {
+        }
+
+        public HttpResponseExceptionWithStatusCode(string message)
+            : base(message)
+        {
+        }
+
+        public HttpResponseExceptionWithStatusCode(string message, Exception innerException)
+            : base(message, innerException)
+        {
+        }
+
+        public HttpResponseExceptionWithStatusCode(HttpStatusCode statusCode, string message)
+            : base(message)
+        {
+            StatusCode = statusCode;
+        }
+
+        public new HttpStatusCode StatusCode { get; init; }
     }
 }

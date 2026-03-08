@@ -4,6 +4,9 @@
     {
         public static bool TryGetOrAddValue<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, Func<TKey, TValue> valueFactory, out TValue result) where TKey : notnull
         {
+            ArgumentNullException.ThrowIfNull(dict);
+            ArgumentNullException.ThrowIfNull(valueFactory);
+
             if (dict.TryGetValue(key, out result!)) return true;
 
             result = valueFactory(key);
@@ -12,6 +15,9 @@
         }
         public static TValue GetOrAddValue<TKey, TValue>(this Dictionary<TKey, TValue> dict, TKey key, Func<TKey, TValue> valueFactory) where TKey : notnull
         {
+            ArgumentNullException.ThrowIfNull(dict);
+            ArgumentNullException.ThrowIfNull(valueFactory);
+
             dict.TryGetOrAddValue(key, valueFactory, out var result);
             return result;
         }

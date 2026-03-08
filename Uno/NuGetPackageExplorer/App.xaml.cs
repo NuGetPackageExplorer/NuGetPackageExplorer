@@ -212,7 +212,7 @@ namespace PackageExplorer
 
                 DiagnosticsClient.TrackPageView(e.Content.GetType().Name);
             };
-            frame.NavigationFailed += (s, e) => throw new Exception($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
+            frame.NavigationFailed += (s, e) => throw new InvalidOperationException($"Failed to load {e.SourcePageType.FullName}: {e.Exception}", e.Exception);
 
             var service = Container.GetExportedValue<NavigationService>()!;
 
@@ -299,7 +299,10 @@ namespace PackageExplorer
 
                 await new MessageDialog(ex.Message, nameof(PackageNotFoundException)).ShowAsync();
 
-                if (deeplink is not PackageIdentity identity) throw new InvalidOperationException();
+                if (deeplink is not PackageIdentity identity)
+                {
+                    throw new InvalidOperationException("Package deeplink was expected after a package-not-found failure.");
+                }
 
                 var vm = new FeedPackagePickerViewModel(identity.Id);
 
@@ -495,7 +498,7 @@ namespace PackageExplorer
         /// <param name="e">Details about the navigation failure</param>
         void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            throw new Exception($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
+            throw new InvalidOperationException($"Failed to load {e.SourcePageType.FullName}: {e.Exception}", e.Exception);
         }
 
         /// <summary>

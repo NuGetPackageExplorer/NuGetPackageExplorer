@@ -22,8 +22,17 @@ namespace NupkgExplorer.Views.Extensions
             typeof(TooltipExtensions),
             new PropertyMetadata(default(object), (d, e) => d.Maybe<FrameworkElement>(control => OnToolTipChanged(control, e))));
 
-        public static object GetToolTip(FrameworkElement obj) => (object)obj.GetValue(ToolTipProperty);
-        public static void SetToolTip(FrameworkElement obj, object value) => obj.SetValue(ToolTipProperty, value);
+        public static object GetToolTip(FrameworkElement obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (object)obj.GetValue(ToolTipProperty);
+        }
+
+        public static void SetToolTip(FrameworkElement obj, object value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(ToolTipProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: Placement
@@ -34,8 +43,17 @@ namespace NupkgExplorer.Views.Extensions
             typeof(TooltipExtensions),
             new PropertyMetadata(PlacementMode.Top, (d, e) => d.Maybe<FrameworkElement>(control => OnPlacementChanged(control, e))));
 
-        public static PlacementMode GetPlacement(FrameworkElement obj) => (PlacementMode)obj.GetValue(PlacementProperty);
-        public static void SetPlacement(FrameworkElement obj, PlacementMode value) => obj.SetValue(PlacementProperty, value);
+        public static PlacementMode GetPlacement(FrameworkElement obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (PlacementMode)obj.GetValue(PlacementProperty);
+        }
+
+        public static void SetPlacement(FrameworkElement obj, PlacementMode value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(PlacementProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: PlacementTarget
@@ -46,8 +64,17 @@ namespace NupkgExplorer.Views.Extensions
             typeof(TooltipExtensions),
             new PropertyMetadata(default(UIElement), (d, e) => d.Maybe<FrameworkElement>(control => OnPlacementTargetChanged(control, e))));
 
-        public static UIElement GetPlacementTarget(FrameworkElement obj) => (UIElement)obj.GetValue(PlacementTargetProperty);
-        public static void SetPlacementTarget(FrameworkElement obj, UIElement value) => obj.SetValue(PlacementTargetProperty, value);
+        public static UIElement GetPlacementTarget(FrameworkElement obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (UIElement)obj.GetValue(PlacementTargetProperty);
+        }
+
+        public static void SetPlacementTarget(FrameworkElement obj, UIElement value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(PlacementTargetProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: ToolTipReference
@@ -58,8 +85,17 @@ namespace NupkgExplorer.Views.Extensions
             typeof(TooltipExtensions),
             new PropertyMetadata(default(ToolTip)));
 
-        public static ToolTip GetToolTipReference(FrameworkElement obj) => (ToolTip)obj.GetValue(ToolTipReferenceProperty);
-        public static void SetToolTipReference(FrameworkElement obj, ToolTip? value) => obj.SetValue(ToolTipReferenceProperty, value);
+        public static ToolTip GetToolTipReference(FrameworkElement obj)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            return (ToolTip)obj.GetValue(ToolTipReferenceProperty);
+        }
+
+        public static void SetToolTipReference(FrameworkElement obj, ToolTip? value)
+        {
+            ArgumentNullException.ThrowIfNull(obj);
+            obj.SetValue(ToolTipReferenceProperty, value);
+        }
 
         #endregion
         #region DependencyProperty: ToolTipSubscription

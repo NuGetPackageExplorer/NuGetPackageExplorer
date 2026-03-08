@@ -22,10 +22,12 @@ namespace NupkgExplorer.Framework.MVVM
 
         private readonly Dictionary<string, object?> _backingFields = [];
 
-        private int _propertyChangedSuppressionLevel = 0;
+        private int _propertyChangedSuppressionLevel;
 
-        protected async Task RunOnUIThread(DispatchedHandler action)
+        protected static async Task RunOnUIThread(DispatchedHandler action)
         {
+            ArgumentNullException.ThrowIfNull(action);
+
             var dispatcher = CoreApplication.MainView.Dispatcher;
             if (dispatcher.HasThreadAccess)
             {
