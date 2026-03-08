@@ -185,28 +185,28 @@ namespace NupkgExplorer.Presentation.Content
             try
             {
                 var dialog = DefaultContainer.GetExportedValue<DialogService>()!;
-                using var cts = new CancellationDisposable();
+                var cts = new CancellationDisposable();
                 var progressVM = new DownloadProgressDialogViewModel(identity.Id, identity.Version.ToNormalizedString(), cts);
 
-                var dialogTask = dialog.ShowAsync(cts.Token, progressVM);
-                var downloadPackageTask = DownloadPackage();
-                var downloadedPackage = await OptionalDialogCoordinator.WaitForResultAsync(downloadPackageTask, dialogTask, cts.Token);
-
-                cts.Dispose();
-                _ = dialogTask.ContinueWith(
-                    static t => _ = t.Exception,
-                    CancellationToken.None,
-                    TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
-                    TaskScheduler.Default);
-
-                var packageVM = await factory.CreateViewModel(downloadedPackage, downloadedPackage?.Source, NuGetConstants.DefaultFeedUrl);
-                if (packageVM == null)
+                try
                 {
-                    throw new InvalidOperationException("Failed to create package view model");
-                }
-                var vm = new InspectPackageViewModel(packageVM, redirectedFrom);
+                    var dialogTask = dialog.ShowAsync(cts.Token, progressVM);
+                    var downloadPackageTask = DownloadPackage();
+                    var downloadedPackage = await OptionalDialogCoordinator.WaitForResultAsync(downloadPackageTask, dialogTask, cts.Token);
 
-                return vm;
+                    var packageVM = await factory.CreateViewModel(downloadedPackage, downloadedPackage?.Source, NuGetConstants.DefaultFeedUrl);
+                    if (packageVM == null)
+                    {
+                        throw new InvalidOperationException("Failed to create package view model");
+                    }
+                    var vm = new InspectPackageViewModel(packageVM, redirectedFrom);
+
+                    return vm;
+                }
+                finally
+                {
+                    cts.Dispose();
+                }
             }
             catch (AggregateException ae) when (ae.GetPossibleInnerException<HttpResponseExceptionWithStatusCode>() is { StatusCode: HttpStatusCode.NotFound } e)
             {
