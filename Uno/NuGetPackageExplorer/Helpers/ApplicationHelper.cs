@@ -46,12 +46,13 @@ namespace NuGetPackageExplorer.Helpers
             var baseLocation = InvokeJS(
                 """
                 (() => {
+                    const resolutionBase = document.baseURI || window.location.href;
                     const baseElement = document.querySelector('base[href]');
                     let basePath = '';
 
                     if (baseElement) {
                         try {
-                            const baseUrl = new URL(baseElement.getAttribute('href'), window.location.origin);
+                            const baseUrl = new URL(baseElement.getAttribute('href'), resolutionBase);
                             basePath = baseUrl.pathname || '';
                         } catch {
                         }
@@ -60,7 +61,7 @@ namespace NuGetPackageExplorer.Helpers
                     if (!basePath) {
                         const bootstrapScript = document.querySelector('script[src*="uno-bootstrap.js"]');
                         const scriptSource = bootstrapScript?.getAttribute('src') ?? '/';
-                        const scriptUrl = new URL(scriptSource, window.location.origin);
+                        const scriptUrl = new URL(scriptSource, resolutionBase);
                         const scriptPath = scriptUrl.pathname || '/';
                         const packageMarkerIndex = scriptPath.indexOf('/package_');
 

@@ -7,6 +7,12 @@ public static class OptionalDialogCoordinator
         ArgumentNullException.ThrowIfNull(workTask);
         ArgumentNullException.ThrowIfNull(dialogTask);
 
+        _ = dialogTask.ContinueWith(
+            static t => _ = t.Exception,
+            CancellationToken.None,
+            TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously,
+            TaskScheduler.Default);
+
         var completed = await Task.WhenAny(workTask, dialogTask).ConfigureAwait(false);
         if (completed == workTask)
         {
@@ -16,11 +22,6 @@ public static class OptionalDialogCoordinator
         if (cancellationToken.IsCancellationRequested)
         {
             cancellationToken.ThrowIfCancellationRequested();
-        }
-
-        if (dialogTask.IsFaulted)
-        {
-            _ = dialogTask.Exception;
         }
 
         return await workTask.ConfigureAwait(false);

@@ -121,25 +121,24 @@ test("preview-version deep links keep the requested preview package open", async
 test("pasted versioned deep links keep the requested package open", async ({ page }) => {
   const consoleMessages = captureStartupSignals(page);
   const targetPath = `/packages/${stablePackage.id}/${stablePackage.version}`;
+  const targetUrlPattern = new RegExp(`/packages/${escapeRegex(stablePackage.id)}/${escapeRegex(stablePackage.version)}$`);
 
   await page.goto("/packages", {
     waitUntil: "domcontentloaded"
   });
   await waitForUnoShell(page);
 
-  const navigation = page.waitForURL(/\/packages(?:\/.*)?$/, {
-    timeout: 30_000
-  });
-
-  await page.evaluate(path => {
-    window.location.assign(path);
-  }, targetPath);
-  await navigation;
+  await Promise.all([
+    page.waitForURL(targetUrlPattern, {
+      timeout: 30_000
+    }),
+    page.evaluate(path => {
+      window.location.assign(path);
+    }, targetPath)
+  ]);
   await waitForUnoShell(page);
 
-  await expect(page).toHaveURL(
-    new RegExp(`/packages/${escapeRegex(stablePackage.id)}/${escapeRegex(stablePackage.version)}$`)
-  );
+  await expect(page).toHaveURL(targetUrlPattern);
   await expect(page).toHaveTitle(
     new RegExp(`^${escapeRegex(stablePackage.id)} ${escapeRegex(stablePackage.version)} \\| NuGet Package Explorer$`)
   );

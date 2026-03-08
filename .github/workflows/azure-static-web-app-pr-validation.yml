@@ -8,10 +8,6 @@ on:
 
 jobs:
   build_and_deploy_job:
-    env:
-      DIST_PATH: artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot
-      API_DIST_PATH: artifacts/publish/Api/release
-
     if: >
       github.event_name == 'pull_request' &&
       github.event.action != 'closed' &&
@@ -42,12 +38,12 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: wasm-site
-          path: ${{ env.DIST_PATH }}
+          path: artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot
 
       - uses: actions/upload-artifact@v4
         with:
           name: api
-          path: ${{ env.API_DIST_PATH }}
+          path: artifacts/publish/Api/release
 
       - name: Build And Deploy
         id: builddeploy_uno
@@ -58,8 +54,8 @@ jobs:
           action: "upload"
           ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
-          app_location: "${{ env.DIST_PATH }}" # App source code path
-          api_location: "${{ env.API_DIST_PATH }}" # Api source code path - optional
+          app_location: "artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot" # App source code path
+          api_location: "artifacts/publish/Api/release" # Api source code path - optional
           skip_api_build: true # Skip building api project - optional
           skip_app_build: true # Skip building app project - optional
           output_location: "" # Built app content directory - optional

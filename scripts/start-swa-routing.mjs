@@ -3,7 +3,9 @@ import { spawn, spawnSync } from "node:child_process";
 import {
   apiPath,
   ensureLocalToolsInstalled,
+  ensureWorkspaceToolsInstalled,
   getFuncExecutable,
+  getSwaExecutable,
   workspaceRoot
 } from "./local-tooling.mjs";
 
@@ -29,6 +31,7 @@ if (publish.status !== 0) {
 }
 
 ensureLocalToolsInstalled();
+ensureWorkspaceToolsInstalled();
 
 const func = spawn(
   getFuncExecutable(),
@@ -65,10 +68,8 @@ if (waitForApi.status !== 0) {
 }
 
 const swa = spawn(
-  "npx",
+  getSwaExecutable(),
   [
-    "--yes",
-    "@azure/static-web-apps-cli",
     "start",
     "artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot",
     "--host",
@@ -87,6 +88,14 @@ const swa = spawn(
   }
 );
 
+func.on("exit", code => {
+  if (swa.exitCode == null) {
+    swa.kill();
+  }
+
+  process.exit(code ?? 0);
+});
+
 const forwardSignal = signal => {
   func.kill(signal);
   swa.kill(signal);
@@ -96,6 +105,9 @@ process.on("SIGINT", forwardSignal);
 process.on("SIGTERM", forwardSignal);
 
 swa.on("exit", code => {
-  func.kill();
+  if (func.exitCode == null) {
+    func.kill();
+  }
+
   process.exit(code ?? 0);
 });

@@ -10,10 +10,18 @@ export const workspaceRoot = path.resolve(scriptsDirectory, "..");
 export const toolsPath = path.join(workspaceRoot, ".tools");
 export const apiPath = path.join(workspaceRoot, "Uno", "Api");
 
-export function getFuncExecutable() {
+function getExecutable(root, name) {
   return process.platform === "win32"
-    ? path.join(toolsPath, "node_modules", ".bin", "func.cmd")
-    : path.join(toolsPath, "node_modules", ".bin", "func");
+    ? path.join(root, "node_modules", ".bin", `${name}.cmd`)
+    : path.join(root, "node_modules", ".bin", name);
+}
+
+export function getFuncExecutable() {
+  return getExecutable(toolsPath, "func");
+}
+
+export function getSwaExecutable() {
+  return getExecutable(workspaceRoot, "swa");
 }
 
 export function ensureLocalToolsInstalled() {
@@ -25,6 +33,26 @@ export function ensureLocalToolsInstalled() {
   const install = spawnSync(
     npmExecutable,
     ["--prefix", toolsPath, "ci", "--no-audit", "--no-fund"],
+    {
+      cwd: workspaceRoot,
+      stdio: "inherit"
+    }
+  );
+
+  if (install.status !== 0) {
+    process.exit(install.status ?? 1);
+  }
+}
+
+export function ensureWorkspaceToolsInstalled() {
+  if (fs.existsSync(getSwaExecutable())) {
+    return;
+  }
+
+  const npmExecutable = process.platform === "win32" ? "npm.cmd" : "npm";
+  const install = spawnSync(
+    npmExecutable,
+    ["ci", "--no-audit", "--no-fund"],
     {
       cwd: workspaceRoot,
       stdio: "inherit"
