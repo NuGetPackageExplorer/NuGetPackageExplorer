@@ -18,6 +18,13 @@ if (expectedStatuses.size === 0) {
 }
 
 const timeoutMs = Number.parseInt(timeoutText, 10);
+
+if (!Number.isFinite(timeoutMs) || !Number.isInteger(timeoutMs) || timeoutMs <= 0) {
+  throw new Error(
+    `Invalid timeout "${timeoutText}". Timeout must be a finite positive integer in milliseconds.`
+  );
+}
+
 const startedAt = Date.now();
 let lastStatus = null;
 let lastError = null;

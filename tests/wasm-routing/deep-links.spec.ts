@@ -38,7 +38,7 @@ function getPublishedPackageBasePath() {
   return publishedPackageBasePath;
 }
 
-async function captureStartupSignals(page: import("@playwright/test").Page) {
+function captureStartupSignals(page: import("@playwright/test").Page) {
   const consoleMessages: string[] = [];
 
   page.on("console", message => {
@@ -68,7 +68,7 @@ function expectNoStartupFailure(consoleMessages: string[]) {
 }
 
 test("direct versioned deep link opens the requested package", async ({ page }) => {
-  const consoleMessages = await captureStartupSignals(page);
+  const consoleMessages = captureStartupSignals(page);
 
   await page.goto(`/packages/${stablePackage.id}/${stablePackage.version}`, {
     waitUntil: "domcontentloaded"
@@ -85,7 +85,7 @@ test("direct versioned deep link opens the requested package", async ({ page }) 
 });
 
 test("direct deep link without a version resolves to a package view", async ({ page }) => {
-  const consoleMessages = await captureStartupSignals(page);
+  const consoleMessages = captureStartupSignals(page);
 
   await page.goto(`/packages/${stablePackage.id}`, {
     waitUntil: "domcontentloaded"
@@ -102,7 +102,7 @@ test("direct deep link without a version resolves to a package view", async ({ p
 });
 
 test("preview-version deep links keep the requested preview package open", async ({ page }) => {
-  const consoleMessages = await captureStartupSignals(page);
+  const consoleMessages = captureStartupSignals(page);
 
   await page.goto(`/packages/${previewPackage.id}/${previewPackage.version}`, {
     waitUntil: "domcontentloaded"
@@ -119,7 +119,7 @@ test("preview-version deep links keep the requested preview package open", async
 });
 
 test("pasted versioned deep links keep the requested package open", async ({ page }) => {
-  const consoleMessages = await captureStartupSignals(page);
+  const consoleMessages = captureStartupSignals(page);
   const targetPath = `/packages/${stablePackage.id}/${stablePackage.version}`;
 
   await page.goto("/packages", {
@@ -147,7 +147,7 @@ test("pasted versioned deep links keep the requested package open", async ({ pag
 });
 
 test("hard refresh on a versioned package deep link keeps the requested package open", async ({ page }) => {
-  const consoleMessages = await captureStartupSignals(page);
+  const consoleMessages = captureStartupSignals(page);
 
   await page.goto(`/packages/${stablePackage.id}/${stablePackage.version}`, {
     waitUntil: "domcontentloaded"
@@ -167,7 +167,7 @@ test("hard refresh on a versioned package deep link keeps the requested package 
 });
 
 test("published package base-path deep links survive direct navigation and hard refresh", async ({ page }) => {
-  const consoleMessages = await captureStartupSignals(page);
+  const consoleMessages = captureStartupSignals(page);
   const packageBasePath = getPublishedPackageBasePath();
   const targetPath = `/${packageBasePath}/packages/${previewPackage.id}/${previewPackage.version}`;
 
@@ -196,7 +196,7 @@ test("published package base-path deep links survive direct navigation and hard 
 });
 
 test("encoded package ids still resolve to the package view", async ({ page }) => {
-  const consoleMessages = await captureStartupSignals(page);
+  const consoleMessages = captureStartupSignals(page);
 
   await page.goto(`/packages/${encodeURIComponent(stablePackage.id)}/${stablePackage.version}`, {
     waitUntil: "domcontentloaded"

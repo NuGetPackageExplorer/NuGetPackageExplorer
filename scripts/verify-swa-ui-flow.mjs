@@ -11,10 +11,10 @@ page.on("console", message => {
   consoleMessages.push(message.text());
 });
 
-let afterUiUrl;
-let afterUiTitle;
-let finalUrl;
-let finalTitle;
+let afterUiUrl = "";
+let afterUiTitle = "";
+let finalUrl = "";
+let finalTitle = "";
 
 try {
   await page.goto(`${baseUrl}/packages?q=uno`, { waitUntil: "domcontentloaded" });
