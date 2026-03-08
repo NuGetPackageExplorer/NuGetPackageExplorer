@@ -13,6 +13,9 @@ namespace NupkgExplorer.Framework.Extensions
         public static IObservable<TProperty> WhenAnyValue<TViewModel, TProperty>(this TViewModel viewModel, Expression<Func<TViewModel, TProperty>> propertySelector)
             where TViewModel : ViewModelBase
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+            ArgumentNullException.ThrowIfNull(propertySelector);
+
             var propertyName = GetPropertyName(propertySelector);
             var selector = propertySelector.Compile();
 
@@ -24,6 +27,10 @@ namespace NupkgExplorer.Framework.Extensions
         public static IObservable<(TProperty1, TProperty2)> WhenAnyValue<TViewModel, TProperty1, TProperty2>(this TViewModel viewModel, Expression<Func<TViewModel, TProperty1>> propertySelector1, Expression<Func<TViewModel, TProperty2>> propertySelector2)
             where TViewModel : ViewModelBase
         {
+            ArgumentNullException.ThrowIfNull(viewModel);
+            ArgumentNullException.ThrowIfNull(propertySelector1);
+            ArgumentNullException.ThrowIfNull(propertySelector2);
+
             var propertyNames = new LambdaExpression[] { propertySelector1, propertySelector2 }
                 .Select(GetPropertyName)
                 .ToArray();
@@ -40,6 +47,8 @@ namespace NupkgExplorer.Framework.Extensions
 
         public static void SubscribeToCommand<TDontCare>(this IObservable<TDontCare> source, ICommand command)
         {
+            ArgumentNullException.ThrowIfNull(source);
+            ArgumentNullException.ThrowIfNull(command);
             source.Subscribe(_ => command.Execute(default));
         }
 

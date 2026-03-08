@@ -36,7 +36,7 @@ namespace NuGetPackageExplorer.Services
             }
         }
 
-        private bool GetIsInitialized()
+        private static bool GetIsInitialized()
         {
             var result = InvokeJS("appInsights && !!appInsights.core");
 
@@ -59,6 +59,7 @@ namespace NuGetPackageExplorer.Services
 
         public void TrackException(Exception exception, IDictionary<string, string>? properties, IDictionary<string, double>? metrics)
         {
+            ArgumentNullException.ThrowIfNull(exception);
             if (!_initialized) return;
 
             Logger.DebugIfEnabled(() => $"TrackException: {exception}");

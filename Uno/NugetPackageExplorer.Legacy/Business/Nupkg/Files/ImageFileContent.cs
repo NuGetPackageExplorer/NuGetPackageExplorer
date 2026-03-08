@@ -16,6 +16,7 @@ namespace NupkgExplorer.Business.Nupkg.Files
 
 		public ImageFileContent(Stream stream)
 		{
+			ArgumentNullException.ThrowIfNull(stream);
 			try
 			{
 				using (var memory = new MemoryStream())

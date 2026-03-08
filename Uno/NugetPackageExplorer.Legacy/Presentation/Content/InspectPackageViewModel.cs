@@ -84,6 +84,8 @@ namespace NupkgExplorer.Presentation.Content
 
         public static async Task<InspectPackageViewModel?> CreateFromLocalPackage(StorageFile packageFile)
         {
+            ArgumentNullException.ThrowIfNull(packageFile);
+
             // since the file returned by OpenFilePicker cannot be opened by its path
             // we are copying the file to the browser storage
             var localFolder = ApplicationData.Current.LocalFolder;

@@ -54,7 +54,7 @@ namespace NupkgExplorer.Presentation.Dialogs
             set => SetProperty(value);
         }
 
-        public ICommand CancelDownloadCommand => this.GetCommand(CancelDownload);
+        public ICommand CancelDownloadCommand => GetCommand(CancelDownload);
 
         public DownloadProgressDialogViewModel(string packageName, string packageVersion, CancellationDisposable downloadCts)
         {

@@ -17,8 +17,17 @@ namespace NupkgExplorer.Framework.Query
             _client = client;
         }
 
-        protected Task<HttpResponseMessage> Query(Func<QueryBuilder, QueryBuilder> builder) => builder(new QueryBuilder()).Query(_client);
-        protected Task<HttpResponseMessage> Query(HttpCompletionOption option, Func<QueryBuilder, QueryBuilder> builder) => builder(new QueryBuilder()).Query(_client, option: option);
+        protected Task<HttpResponseMessage> Query(Func<QueryBuilder, QueryBuilder> builder)
+        {
+            ArgumentNullException.ThrowIfNull(builder);
+            return builder(new QueryBuilder()).Query(_client);
+        }
+
+        protected Task<HttpResponseMessage> Query(HttpCompletionOption option, Func<QueryBuilder, QueryBuilder> builder)
+        {
+            ArgumentNullException.ThrowIfNull(builder);
+            return builder(new QueryBuilder()).Query(_client, option: option);
+        }
         protected Task<Json<T>> QueryJson<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] T>(Func<QueryBuilder, QueryBuilder> builder) => Query(builder).ReadAsJson<T>();
         protected Task<JsonArray<T>> QueryJsonArray<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicMethods)] T>(Func<QueryBuilder, QueryBuilder> builder) => Query(builder).ReadAsJsonArray<T>();
     }

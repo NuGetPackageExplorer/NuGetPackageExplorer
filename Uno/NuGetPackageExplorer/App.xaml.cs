@@ -129,6 +129,7 @@ namespace PackageExplorer
         [RequiresUnreferencedCode("MEF composition resolves views and view models via reflection during application launch.")]
         private async Task OnLaunched<TRootPage>(LaunchActivatedEventArgs e, Func<TRootPage?> buildRoot, Func<TRootPage, LaunchActivatedEventArgs, Task> landingNavigation) where TRootPage : UIElement
         {
+            ArgumentNullException.ThrowIfNull(e);
             ArgumentNullException.ThrowIfNull(buildRoot);
             ArgumentNullException.ThrowIfNull(landingNavigation);
 

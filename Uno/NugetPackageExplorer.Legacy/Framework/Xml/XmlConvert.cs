@@ -38,6 +38,8 @@ namespace NupkgExplorer.Framework.Xml
         /// <returns></returns>
         private static object PopulateTo(this XElement element, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] object instance)
         {
+            ArgumentNullException.ThrowIfNull(element);
+
             var properties = instance.GetType().GetProperties()
                 .Where(x => x.SetMethod != null);
 
@@ -101,7 +103,7 @@ namespace NupkgExplorer.Framework.Xml
                             var array = child.Elements()
                                 .Select(x => ctors.TryGetValue(x.Name.LocalName, out var ctor)
                                     ? x.PopulateTo(ctor())
-                                    : throw new Exception($"Cannot parse XElement '{x.Name.LocalName}' into {elementType} (property: {property.Name})"))
+                                    : throw new InvalidOperationException($"Cannot parse XElement '{x.Name.LocalName}' into {elementType} (property: {property.Name})"))
                                 .ToTypeArray(elementType);
 
                             property.SetValue(instance, array);

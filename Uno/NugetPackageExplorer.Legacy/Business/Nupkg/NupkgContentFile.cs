@@ -24,6 +24,7 @@ namespace NupkgExplorer.Business.Nupkg
 
 		public NupkgContentFile(ZipArchiveEntry entry)
 		{
+			ArgumentNullException.ThrowIfNull(entry);
 			_entry = entry;
 			_content = new Lazy<IFileContent>(LoadContent);
 

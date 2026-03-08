@@ -20,12 +20,32 @@ namespace NupkgExplorer.Framework.Query
         public QueryBuilder FromUrl(string nextUrl) => Do(() => _request.RequestUri = new Uri(nextUrl));
 
         public QueryBuilder Param(string name, string value) => Do(() => _query.Add(name, value));
-        public QueryBuilder Param(string name, string value, Func<bool> condition) => Do(() => _query.Add(name, value), condition);
-        public QueryBuilder Param(string name, Func<string> value, Func<bool> condition) => Do(() => _query.Add(name, value()), condition);
+        public QueryBuilder Param(string name, string value, Func<bool> condition)
+        {
+            ArgumentNullException.ThrowIfNull(condition);
+            return Do(() => _query.Add(name, value), condition);
+        }
+
+        public QueryBuilder Param(string name, Func<string> value, Func<bool> condition)
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            ArgumentNullException.ThrowIfNull(condition);
+            return Do(() => _query.Add(name, value()), condition);
+        }
 
         public QueryBuilder PayloadParam(string name, string value) => Do(() => _payload.Add(name, value));
-        public QueryBuilder PayloadParam(string name, string value, Func<bool> condition) => Do(() => _payload.Add(name, value), condition);
-        public QueryBuilder PayloadParam(string name, Func<string> value, Func<bool> condition) => Do(() => _payload.Add(name, value()), condition);
+        public QueryBuilder PayloadParam(string name, string value, Func<bool> condition)
+        {
+            ArgumentNullException.ThrowIfNull(condition);
+            return Do(() => _payload.Add(name, value), condition);
+        }
+
+        public QueryBuilder PayloadParam(string name, Func<string> value, Func<bool> condition)
+        {
+            ArgumentNullException.ThrowIfNull(value);
+            ArgumentNullException.ThrowIfNull(condition);
+            return Do(() => _payload.Add(name, value()), condition);
+        }
 
         private QueryBuilder Do(Action action)
         {
@@ -40,6 +60,8 @@ namespace NupkgExplorer.Framework.Query
 
         public Task<HttpResponseMessage> Query(HttpClient httpClient, bool ensureSuccess = true, HttpCompletionOption option = HttpCompletionOption.ResponseContentRead)
         {
+            ArgumentNullException.ThrowIfNull(httpClient);
+
             if (_query.Count != 0 && _payload.Count != 0)
                 throw new InvalidOperationException("Param and PayloadParam should not be used together");
 

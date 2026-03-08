@@ -238,7 +238,7 @@ namespace PackageExplorer
         [Bindable]
         public class AssemblyFileContent
         {
-            public bool IsAssemblyFileContent => true;
+            public static bool IsAssemblyFileContent => true;
 
             public KeyValuePair<string, string>[]? Metadata { get; init; }
             public AssemblyDebugDataViewModel? DebugData { get; init; }

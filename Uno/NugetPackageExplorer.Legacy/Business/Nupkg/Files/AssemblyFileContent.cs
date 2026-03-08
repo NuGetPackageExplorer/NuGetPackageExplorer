@@ -14,6 +14,8 @@ namespace NupkgExplorer.Business.Nupkg.Files
 
         public AssemblyFileContent(Stream stream)
         {
+            ArgumentNullException.ThrowIfNull(stream);
+
             using (var memory = new MemoryStream())
             {
                 stream.CopyTo(memory);

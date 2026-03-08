@@ -1,6 +1,6 @@
 ﻿namespace NupkgExplorer.Views.Helpers
 {
-    public class VisualTreeHelperEx
+    public static class VisualTreeHelperEx
     {
         public static T? GetFirstDescendant<T>(DependencyObject reference) => GetDescendants(reference)
             .OfType<T>()

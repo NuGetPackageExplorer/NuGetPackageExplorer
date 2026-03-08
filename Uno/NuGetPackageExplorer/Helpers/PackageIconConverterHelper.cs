@@ -11,7 +11,7 @@ using NuGetPe;
 
 namespace PackageExplorer
 {
-    public class PackageIconConverterHelper
+    public static class PackageIconConverterHelper
     {
         private static readonly IconUrlConverterHelper IconUrlConverter = new();
 

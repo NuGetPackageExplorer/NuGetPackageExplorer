@@ -13,6 +13,9 @@ namespace NupkgExplorer.Framework.Extensions
     {
         public static object GetExportedValue(this CompositionContainer container, [DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors | DynamicallyAccessedMemberTypes.PublicProperties)] Type type)
         {
+            ArgumentNullException.ThrowIfNull(container);
+            ArgumentNullException.ThrowIfNull(type);
+
             var export = container.GetExports(type, null, null)
                 .FirstOrDefault()
                 ?? throw new ImportCardinalityMismatchException("Cannot find export for type:" + type);

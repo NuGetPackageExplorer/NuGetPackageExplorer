@@ -18,7 +18,7 @@ namespace NupkgExplorer.Framework.MVVM
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        protected CompositionContainer Container => DefaultContainer;
+        protected static CompositionContainer Container => DefaultContainer;
 
         private readonly Dictionary<string, object?> _backingFields = [];
 
@@ -73,18 +73,21 @@ namespace NupkgExplorer.Framework.MVVM
             );
         }
 
-        protected ICommand GetCommand(Func<Task> execute)
+        protected static ICommand GetCommand(Func<Task> execute)
         {
+            ArgumentNullException.ThrowIfNull(execute);
             return new AsyncCommand(_ => execute());
         }
 
-        protected ICommand GetCommand(Func<object?, Task> execute)
+        protected static ICommand GetCommand(Func<object?, Task> execute)
         {
+            ArgumentNullException.ThrowIfNull(execute);
             return new AsyncCommand(execute);
         }
 
-        protected ICommand GetCommand(Action execute)
+        protected static ICommand GetCommand(Action execute)
         {
+            ArgumentNullException.ThrowIfNull(execute);
             return new AsyncCommand(_ => Task.Run(execute));
         }
     }
