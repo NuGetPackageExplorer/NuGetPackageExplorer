@@ -11,29 +11,38 @@ page.on("console", message => {
   consoleMessages.push(message.text());
 });
 
-await page.goto(`${baseUrl}/packages?q=uno`, { waitUntil: "domcontentloaded" });
-await page.waitForTimeout(8_000);
-await page.evaluate(() => {
-  document.getElementById("uno-enable-accessibility")?.dispatchEvent(
-    new MouseEvent("click", { bubbles: true })
-  );
-});
-await page.waitForTimeout(5_000);
+let afterUiUrl;
+let afterUiTitle;
+let finalUrl;
+let finalTitle;
 
-const packageRow = page.locator('#uno-semantics-root [aria-label="NupkgExplorer.Client.Data.PackageData"]').first();
-await packageRow.dblclick({ force: true });
-await page.waitForTimeout(12_000);
+try {
+  await page.goto(`${baseUrl}/packages?q=uno`, { waitUntil: "domcontentloaded" });
+  await page.waitForSelector("#uno-enable-accessibility", { state: "visible", timeout: 15_000 });
+  await page.waitForTimeout(8_000);
+  await page.evaluate(() => {
+    document.getElementById("uno-enable-accessibility")?.dispatchEvent(
+      new MouseEvent("click", { bubbles: true })
+    );
+  });
 
-const afterUiUrl = page.url();
-const afterUiTitle = await page.title();
+  const packageRow = page.locator('#uno-semantics-root [aria-label="NupkgExplorer.Client.Data.PackageData"]').first();
+  await packageRow.waitFor({ state: "visible", timeout: 20_000 });
+  await packageRow.dblclick({ force: true });
+  await page.waitForURL(/\/packages\/[^/]+\/[^/?#]+$/, { timeout: 20_000 });
 
-await page.goto(`${baseUrl}${previewPath}`, { waitUntil: "domcontentloaded" });
-await page.waitForTimeout(12_000);
+  afterUiUrl = page.url();
+  afterUiTitle = await page.title();
 
-const finalUrl = page.url();
-const finalTitle = await page.title();
+  await page.goto(`${baseUrl}${previewPath}`, { waitUntil: "domcontentloaded" });
+  await page.waitForURL(`**${previewPath}`, { timeout: 20_000 });
+  await page.waitForFunction(() => document.title.length > 0, { timeout: 20_000 });
 
-await browser.close();
+  finalUrl = page.url();
+  finalTitle = await page.title();
+} finally {
+  await browser.close();
+}
 
 const startupFailures = consoleMessages.filter(message => message.includes("landing navigation failed"));
 

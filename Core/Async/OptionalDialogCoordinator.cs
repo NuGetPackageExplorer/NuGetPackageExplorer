@@ -18,6 +18,11 @@ public static class OptionalDialogCoordinator
             cancellationToken.ThrowIfCancellationRequested();
         }
 
+        if (dialogTask.IsFaulted)
+        {
+            _ = dialogTask.Exception;
+        }
+
         return await workTask.ConfigureAwait(false);
     }
 }

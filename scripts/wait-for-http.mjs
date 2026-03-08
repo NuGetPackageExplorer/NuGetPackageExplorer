@@ -11,6 +11,12 @@ const expectedStatuses = new Set(
     .filter(Number.isFinite)
 );
 
+if (expectedStatuses.size === 0) {
+  throw new Error(
+    `No valid expected HTTP statuses parsed from "${expectedStatusText}". Provide at least one numeric status code.`
+  );
+}
+
 const timeoutMs = Number.parseInt(timeoutText, 10);
 const startedAt = Date.now();
 

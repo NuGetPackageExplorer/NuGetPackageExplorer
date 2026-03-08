@@ -1,5 +1,9 @@
+import path from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 
+const workspaceRoot = process.cwd();
+const toolsPath = path.join(workspaceRoot, ".tools");
+const apiPath = path.join(workspaceRoot, "Uno", "Api");
 const port = process.env.NPE_WASM_TEST_PORT ?? "4281";
 const apiPort = process.env.NPE_API_TEST_PORT ?? "7071";
 const publishArgs = [
@@ -25,14 +29,14 @@ const func = spawn(
   "npx",
   [
     "--prefix",
-    `${process.cwd()}\\.tools`,
+    toolsPath,
     "func",
     "start",
     "--port",
     apiPort
   ],
   {
-    cwd: `${process.cwd()}\\Uno\\Api`,
+    cwd: apiPath,
     stdio: "inherit",
     shell: process.platform === "win32"
   }
@@ -47,7 +51,7 @@ const waitForApi = spawnSync(
     "90000"
   ],
   {
-    cwd: process.cwd(),
+    cwd: workspaceRoot,
     stdio: "inherit",
     shell: process.platform === "win32"
   }
@@ -75,7 +79,7 @@ const swa = spawn(
     "Uno/NuGetPackageExplorer/Platforms/WebAssembly/wwwroot"
   ],
   {
-    cwd: process.cwd(),
+    cwd: workspaceRoot,
     stdio: "inherit",
     shell: process.platform === "win32"
   }

@@ -46,14 +46,41 @@ namespace NuGetPackageExplorer.Helpers
             var baseLocation = InvokeJS(
                 """
                 (() => {
-                    const bootstrapScript = document.querySelector('script[src*="uno-bootstrap.js"]');
-                    const scriptSource = bootstrapScript?.getAttribute('src') ?? '/';
-                    const packageMarkerIndex = scriptSource.indexOf('/package_');
-                    const basePath = packageMarkerIndex > 0
-                        ? scriptSource.substring(0, packageMarkerIndex)
-                        : '';
+                    const baseElement = document.querySelector('base[href]');
+                    let basePath = '';
 
-                    return new URL(basePath ? `${basePath}/` : '/', window.location.origin).toString();
+                    if (baseElement) {
+                        try {
+                            const baseUrl = new URL(baseElement.getAttribute('href'), window.location.origin);
+                            basePath = baseUrl.pathname || '';
+                        } catch {
+                        }
+                    }
+
+                    if (!basePath) {
+                        const bootstrapScript = document.querySelector('script[src*="uno-bootstrap.js"]');
+                        const scriptSource = bootstrapScript?.getAttribute('src') ?? '/';
+                        const scriptUrl = new URL(scriptSource, window.location.origin);
+                        const scriptPath = scriptUrl.pathname || '/';
+                        const packageMarkerIndex = scriptPath.indexOf('/package_');
+
+                        if (packageMarkerIndex > 0) {
+                            basePath = scriptPath.substring(0, packageMarkerIndex);
+                        } else {
+                            const lastSlash = scriptPath.lastIndexOf('/');
+                            basePath = lastSlash > 0 ? scriptPath.substring(0, lastSlash) : '/';
+                        }
+                    }
+
+                    if (!basePath) {
+                        basePath = '/';
+                    }
+
+                    if (!basePath.endsWith('/')) {
+                        basePath += '/';
+                    }
+
+                    return new URL(basePath, window.location.origin).toString();
                 })()
                 """
             );
