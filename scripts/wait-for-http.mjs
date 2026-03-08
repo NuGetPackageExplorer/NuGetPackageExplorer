@@ -19,18 +19,33 @@ if (expectedStatuses.size === 0) {
 
 const timeoutMs = Number.parseInt(timeoutText, 10);
 const startedAt = Date.now();
+let lastStatus = null;
+let lastError = null;
 
 while (Date.now() - startedAt < timeoutMs) {
   try {
     const response = await fetch(url);
+    lastStatus = response.status;
+    lastError = null;
+
     if (expectedStatuses.has(response.status)) {
       process.stdout.write(`${response.status}\n`);
       process.exit(0);
     }
-  } catch {
+  } catch (error) {
+    lastError = error;
   }
 
   await new Promise(resolve => setTimeout(resolve, 1_000));
 }
 
-throw new Error(`Timed out waiting for ${url} to return one of [${[...expectedStatuses].join(", ")}].`);
+let timeoutMessage = `Timed out waiting for ${url} to return one of [${[...expectedStatuses].join(", ")}].`;
+if (lastStatus !== null) {
+  timeoutMessage += ` Last HTTP status received: ${lastStatus}.`;
+}
+if (lastError !== null) {
+  const errorMessage = lastError instanceof Error ? lastError.message : String(lastError);
+  timeoutMessage += ` Last error: ${errorMessage}.`;
+}
+
+throw new Error(timeoutMessage);
