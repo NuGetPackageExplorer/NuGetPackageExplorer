@@ -1,9 +1,13 @@
 import path from "node:path";
 import { spawn, spawnSync } from "node:child_process";
 
-const workspaceRoot = process.cwd();
-const toolsPath = path.join(workspaceRoot, ".tools");
-const apiPath = path.join(workspaceRoot, "Uno", "Api");
+import {
+  apiPath,
+  ensureLocalToolsInstalled,
+  getFuncExecutable,
+  workspaceRoot
+} from "./local-tooling.mjs";
+
 const port = process.env.NPE_WASM_TEST_PORT ?? "4281";
 const apiPort = process.env.NPE_API_TEST_PORT ?? "7071";
 const publishArgs = [
@@ -25,12 +29,11 @@ if (publish.status !== 0) {
   process.exit(publish.status ?? 1);
 }
 
+ensureLocalToolsInstalled();
+
 const func = spawn(
-  "npx",
+  getFuncExecutable(),
   [
-    "--prefix",
-    toolsPath,
-    "func",
     "start",
     "--port",
     apiPort

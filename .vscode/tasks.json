@@ -32,17 +32,13 @@
     {
       "label": "api:start",
       "type": "shell",
-      "command": "npx",
+      "command": "npm",
       "args": [
-        "--prefix",
-        "${workspaceFolder}/.tools",
-        "func",
-        "start",
-        "--port",
-        "7071"
+        "run",
+        "api:start"
       ],
       "options": {
-        "cwd": "${workspaceFolder}/Uno/Api"
+        "cwd": "${workspaceFolder}"
       },
       "isBackground": true,
       "problemMatcher": {
