@@ -27,9 +27,11 @@ Use the repo's real validation paths. For browser work, the authoritative local 
 ## Commands
 
 - WPF/solution build:
-  - `dotnet build NuGetPackageExplorer.sln -c Release`
+  - `dotnet build NuGetPackageExplorer.slnx -c Release`
 - Store/WAP build:
-  - `MSBuild.exe PackageExplorer.Package/PackageExplorer.Package.wapproj /restore /p:Configuration=Release /p:AppxPackageDir="<repo>\\artifacts\\Store\\" /m:1 /clp:ErrorsOnly`
+  - `MSBuild.exe PackageExplorer.Package/PackageExplorer.Package.wapproj /restore /p:Configuration=Release /p:ReleaseChannel=Store /p:AppxPackageDir="<repo>\\artifacts\\Store\\" /m:1 /clp:ErrorsOnly`
+- Nightly/WAP build:
+  - `MSBuild.exe PackageExplorer.Package/PackageExplorer.Package.wapproj /restore /p:Configuration=Release /p:ReleaseChannel=Nightly /p:AppxPackageDir="<repo>\\artifacts\\Nightly\\" /m:1 /clp:ErrorsOnly`
 - Uno desktop publish:
   - `dotnet publish Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj -f net10.0-desktop -c Release`
 - Uno WASM publish:
@@ -43,8 +45,9 @@ Use the repo's real validation paths. For browser work, the authoritative local 
 
 ## SWA Rules
 
-- Use `scripts/start-swa-routing.mjs` through Playwright `webServer` or `npm run swa:start`.
-- The API must be wired through the local Functions host.
+- For the fully wired local browser path, use Playwright `webServer` / `npx playwright test ...` or `npm run swa:start:test`.
+- `npm run swa:start` only starts the SWA emulator; run `npm run api:start` first when using it manually.
+- `npm run api:wait` can be used to confirm the Functions host is ready before launching SWA manually.
 - Canonical app URLs are `/packages/...`; `package_*` is internal-only.
 - If preview behavior looks stale, clear the site data/service worker before concluding the code is wrong.
 

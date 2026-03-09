@@ -26,7 +26,9 @@ This repo does not have one universal local build command. Match the local comma
 ## Local Commands
 
 - Store/WAP:
-  - `MSBuild.exe PackageExplorer.Package/PackageExplorer.Package.wapproj /restore /p:Configuration=Release /p:AppxPackageDir="<repo>\\artifacts\\Store\\" /m:1 /clp:ErrorsOnly`
+  - `MSBuild.exe PackageExplorer.Package/PackageExplorer.Package.wapproj /restore /p:Configuration=Release /p:ReleaseChannel=Store /p:AppxPackageDir="<repo>\\artifacts\\Store\\" /m:1 /clp:ErrorsOnly`
+- Nightly/WAP:
+  - `MSBuild.exe PackageExplorer.Package/PackageExplorer.Package.wapproj /restore /p:Configuration=Release /p:ReleaseChannel=Nightly /p:AppxPackageDir="<repo>\\artifacts\\Nightly\\" /m:1 /clp:ErrorsOnly`
 - Zip/desktop publish:
   - `dotnet publish PackageExplorer/NuGetPackageExplorer.csproj -c Release /p:PublishProfile=Properties/PublishProfiles/WinX64.pubxml`
 - Uno desktop:
