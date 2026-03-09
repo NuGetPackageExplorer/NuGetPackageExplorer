@@ -17,9 +17,14 @@ namespace NupkgExplorer.Framework.Extensions
 
             if (!response.IsSuccessStatusCode)
             {
-                throw new HttpResponseExceptionWithStatusCode(
-                    response.StatusCode,
-                    $"Response status code does not indicate success: {(int)response.StatusCode} ({response.ReasonPhrase}).");
+                var statusCode = response.StatusCode;
+                var reasonPhrase = response.ReasonPhrase;
+                response.Dispose();
+
+                throw new HttpRequestException(
+                    $"Response status code does not indicate success: {(int)statusCode} ({reasonPhrase}).",
+                    inner: null,
+                    statusCode: statusCode);
             }
 
             return response;

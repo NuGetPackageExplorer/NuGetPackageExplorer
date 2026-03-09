@@ -9,6 +9,12 @@ using Uno.Logging;
 
 namespace NupkgExplorer.Framework.Navigation
 {
+    public sealed class NavigationEventArgs(Type pageType, ViewModelBase viewModel) : EventArgs
+    {
+        public Type PageType { get; } = pageType;
+        public ViewModelBase ViewModel { get; } = viewModel;
+    }
+
     [Export]
     public class NavigationService
     {
@@ -65,12 +71,6 @@ namespace NupkgExplorer.Framework.Navigation
                 this.Log().Error($"Navigation failed for `{viewModel?.GetType().Name ?? "<null>"}`:", e);
                 throw;
             }
-        }
-
-        public sealed class NavigationEventArgs(Type pageType, ViewModelBase viewModel) : EventArgs
-        {
-            public Type PageType { get; } = pageType;
-            public ViewModelBase ViewModel { get; } = viewModel;
         }
     }
 }

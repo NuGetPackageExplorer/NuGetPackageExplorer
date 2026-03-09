@@ -30,7 +30,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\StackPanelEx.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Framework\Extensions\CompositionContainerExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Framework\Extensions\HttpClientExtensions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Framework\Extensions\HttpResponseExceptionWithStatusCode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Framework\Extensions\MvvmExtensions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Framework\Json\Json.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Framework\Json\JsonArray.cs" />

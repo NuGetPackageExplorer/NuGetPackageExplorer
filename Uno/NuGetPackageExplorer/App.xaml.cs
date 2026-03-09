@@ -119,7 +119,7 @@ namespace PackageExplorer
         /// Invoked when the application is launched normally by the end user.  Other entry points
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
-        /// <param name="e">Details about the launch request and process.</param>
+        /// <param name="args">Details about the launch request and process.</param>
         [RequiresUnreferencedCode("MEF composition resolves views and view models via reflection during application launch.")]
         protected override async void OnLaunched(LaunchActivatedEventArgs args) =>
             //await OnLaunched<MainWindow>(args, Container.GetExportedValue<MainWindow>, PerformMainLandingNavigation)

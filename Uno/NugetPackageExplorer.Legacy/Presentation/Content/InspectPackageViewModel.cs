@@ -208,7 +208,7 @@ namespace NupkgExplorer.Presentation.Content
                     cts.Dispose();
                 }
             }
-            catch (AggregateException ae) when (ae.GetPossibleInnerException<HttpResponseExceptionWithStatusCode>() is { StatusCode: HttpStatusCode.NotFound } e)
+            catch (AggregateException ae) when (ae.GetPossibleInnerException<HttpRequestException>() is { StatusCode: HttpStatusCode.NotFound })
             {
                 throw new PackageNotFoundException($"Package '{identity.Id} {identity.Version}' not found");
             }
