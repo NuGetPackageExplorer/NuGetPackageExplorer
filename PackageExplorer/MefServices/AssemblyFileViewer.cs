@@ -236,7 +236,7 @@ namespace PackageExplorer
 
 #if HAS_UNO || USE_WINUI
         [Bindable]
-        public class AssemblyFileContent
+        public sealed class AssemblyFileContent
         {
             public bool IsAssemblyFileContent => true;
 

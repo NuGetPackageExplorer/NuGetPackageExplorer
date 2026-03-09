@@ -15,7 +15,7 @@ using Uno.Logging;
 namespace NuGetPackageExplorer.MefServices
 {
     [Export(typeof(IUIServices))]
-    internal class UIServices : IUIServices
+    internal sealed class UIServices : IUIServices
     {
         public Task BeginInvoke(Action action)
         {

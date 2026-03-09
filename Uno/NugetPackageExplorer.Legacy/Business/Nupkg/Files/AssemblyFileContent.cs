@@ -78,7 +78,7 @@ namespace NupkgExplorer.Business.Nupkg.Files
             }
         }
 
-        private class AttributeTypeProvider : ICustomAttributeTypeProvider<string>
+        private sealed class AttributeTypeProvider : ICustomAttributeTypeProvider<string>
         {
             private static readonly Dictionary<PrimitiveTypeCode, Type> PrimitiveTypeMappings =
                 new Dictionary<PrimitiveTypeCode, Type>
@@ -198,7 +198,7 @@ namespace NupkgExplorer.Business.Nupkg.Files
             }
         }
 
-        private class UnknownTypeException : InvalidOperationException
+        private sealed class UnknownTypeException : InvalidOperationException
         {
             public UnknownTypeException(string message) : base(message)
             {

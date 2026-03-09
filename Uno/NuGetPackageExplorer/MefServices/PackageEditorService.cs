@@ -8,7 +8,7 @@ using NuGetPackageExplorer.Types;
 namespace NuGetPackageExplorer.MefServices
 {
     [Export(typeof(IPackageEditorService))]
-    class PackageEditorService : IPackageEditorService
+    internal sealed class PackageEditorService : IPackageEditorService
     {
         void IPackageEditorService.BeginEdit()
         {

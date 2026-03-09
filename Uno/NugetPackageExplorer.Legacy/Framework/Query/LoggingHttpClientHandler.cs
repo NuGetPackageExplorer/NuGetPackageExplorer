@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace NupkgExplorer.Framework.Query
 {
-    internal class LoggingHttpClientHandler : DelegatingHandler
+    internal sealed class LoggingHttpClientHandler : DelegatingHandler
     {
         private static readonly Action<ILogger, string, Uri?, Exception?> RequestLog =
             LoggerMessage.Define<string, Uri?>(
