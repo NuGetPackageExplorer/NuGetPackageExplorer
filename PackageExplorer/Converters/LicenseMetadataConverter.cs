@@ -23,7 +23,7 @@ namespace PackageExplorer
 #endif
     public class LicenseMetadataConverter : IValueConverter
     {
-        public object? Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             if (value is LicenseMetadata metadata)
             {
@@ -60,6 +60,6 @@ namespace PackageExplorer
             return null;
         }
 
-        public object? ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture) => throw new NotSupportedException("Only one-way conversion is supported.");
+        public object? ConvertBack(object value, Type targetType, object parameter, _CultureInfo language) => throw new NotSupportedException("Only one-way conversion is supported.");
     }
 }

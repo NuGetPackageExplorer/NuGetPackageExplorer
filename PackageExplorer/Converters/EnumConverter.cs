@@ -16,14 +16,14 @@ namespace PackageExplorer
 {
     public partial class EnumConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             if (value == null) return DependencyProperty.UnsetValue;
 
             return GetDescription((Enum)value);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo language)
         {
             return value;
         }

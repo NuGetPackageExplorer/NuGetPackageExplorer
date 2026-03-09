@@ -8,7 +8,7 @@
       "/_framework/*",
       "*.{css,js}",
       "*.{png}",
-      "*.{c,h,wasm,clr,pdb,dat,txt}"
+      "*.{c,h,wasm,clr,pdb,dat,txt,dll,json,br,gz}"
     ]
   },
   "mimeTypes": {

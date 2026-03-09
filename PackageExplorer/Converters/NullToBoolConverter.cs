@@ -17,7 +17,7 @@ namespace PackageExplorer
     {
 #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             if (value is string stringValue)
             {
@@ -27,7 +27,7 @@ namespace PackageExplorer
             return value != null;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo language)
         {
             throw new NotImplementedException();
         }

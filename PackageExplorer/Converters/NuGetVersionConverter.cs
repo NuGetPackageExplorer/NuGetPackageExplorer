@@ -20,13 +20,13 @@ namespace PackageExplorer
 #endif
     public partial class NuGetVersionConverter : IValueConverter
     {
-        public object? Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             var version = value as NuGetVersion;
             return ManifestUtility.ReplaceMetadataWithToken(version?.ToFullString());
         }
 
-        public object? ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object? ConvertBack(object value, Type targetType, object parameter, _CultureInfo language)
         {
             var stringValue = (string?)value;
             if (string.IsNullOrWhiteSpace(stringValue))

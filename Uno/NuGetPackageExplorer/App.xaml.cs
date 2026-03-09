@@ -121,9 +121,9 @@ namespace PackageExplorer
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
         [RequiresUnreferencedCode("MEF composition resolves views and view models via reflection during application launch.")]
-        protected override async void OnLaunched(LaunchActivatedEventArgs e) =>
-            //await OnLaunched<MainWindow>(e, Container.GetExportedValue<MainWindow>, PerformMainLandingNavigation)
-            await OnLaunched<Shell>(e, BuildShell, PerformShellLandingNavigation)
+        protected override async void OnLaunched(LaunchActivatedEventArgs args) =>
+            //await OnLaunched<MainWindow>(args, Container.GetExportedValue<MainWindow>, PerformMainLandingNavigation)
+            await OnLaunched<Shell>(args, BuildShell, PerformShellLandingNavigation)
                 .ConfigureAwait(true);
 
         [RequiresUnreferencedCode("MEF composition resolves views and view models via reflection during application launch.")]

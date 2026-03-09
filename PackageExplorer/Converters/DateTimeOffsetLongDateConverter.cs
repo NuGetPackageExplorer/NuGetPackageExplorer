@@ -16,7 +16,7 @@ namespace PackageExplorer
     {
         #region IValueConverter Members
 
-        public object? Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object? Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             if (value is DateTimeOffset dateTimeOffset)
             {
@@ -26,9 +26,9 @@ namespace PackageExplorer
                     if (!string.IsNullOrWhiteSpace(format))
                     {
 #if HAS_UNO
-                        return dateTimeOffset.LocalDateTime.ToString(format, new CultureInfo(culture));
+                        return dateTimeOffset.LocalDateTime.ToString(format, new CultureInfo(language));
 #else
-                        return dateTimeOffset.LocalDateTime.ToString(format, culture);
+                        return dateTimeOffset.LocalDateTime.ToString(format, language);
 #endif
                     }
 
@@ -38,7 +38,7 @@ namespace PackageExplorer
             return null;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo language)
         {
             throw new NotImplementedException();
         }

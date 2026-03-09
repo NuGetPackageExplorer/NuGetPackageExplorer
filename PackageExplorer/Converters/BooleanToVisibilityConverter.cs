@@ -24,7 +24,7 @@ namespace PackageExplorer
 
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             var boolValue = (bool)value;
             if (Inverted)
@@ -35,7 +35,7 @@ namespace PackageExplorer
             return boolValue ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo language)
         {
             throw new NotImplementedException();
         }

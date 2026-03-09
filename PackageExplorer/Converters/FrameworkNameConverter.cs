@@ -19,7 +19,7 @@ namespace PackageExplorer
     {
         private static readonly string[] WellknownPackageFolders = new string[] { "content", "lib", "tools", "build", "ref" };
 
-        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             if (value is NuGetFramework framework)
             {
@@ -67,7 +67,7 @@ namespace PackageExplorer
             return string.Empty;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo language)
         {
             throw new NotImplementedException();
         }

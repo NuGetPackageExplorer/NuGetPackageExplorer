@@ -25,6 +25,6 @@
             StatusCode = statusCode;
         }
 
-        public new HttpStatusCode StatusCode { get; init; }
+        public new HttpStatusCode? StatusCode { get; init; }
     }
 }

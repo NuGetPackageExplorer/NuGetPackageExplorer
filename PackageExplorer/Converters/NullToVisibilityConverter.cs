@@ -22,7 +22,7 @@ namespace PackageExplorer
 
         #region IValueConverter Members
 
-        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             if (targetType == typeof(Visibility))
             {
@@ -63,7 +63,7 @@ namespace PackageExplorer
             return value;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo language)
         {
             throw new NotImplementedException();
         }

@@ -17,7 +17,7 @@ namespace PackageExplorer
 {
     public class ReferenceSetConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, _CultureInfo language)
         {
             var referenceSets = (ICollection<PackageReferenceSet>)value;
             if (referenceSets.Any(static d => d.TargetFramework != null))
@@ -31,7 +31,7 @@ namespace PackageExplorer
             return referenceSets.SelectMany(static d => d.References);
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, _CultureInfo language)
         {
             throw new NotImplementedException();
         }
