@@ -1,0 +1,7 @@
+interface:
+  display_name: "Verifying WASM Routing"
+  short_description: "Check canonical `/packages/...` routing through SWA"
+  default_prompt: "Use $verifying-wasm-routing to validate NuGet Package Explorer browser routes and canonical URLs."
+
+policy:
+  allow_implicit_invocation: true

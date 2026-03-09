@@ -1,0 +1,7 @@
+interface:
+  display_name: "Building Release Channels"
+  short_description: "Match local builds to NPE Azure DevOps channels"
+  default_prompt: "Use $building-release-channels to pick the exact local build command for this NuGet Package Explorer release path."
+
+policy:
+  allow_implicit_invocation: true
