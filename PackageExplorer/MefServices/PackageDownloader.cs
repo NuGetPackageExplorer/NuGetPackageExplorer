@@ -80,10 +80,10 @@ namespace PackageExplorer
 
         }
 
-        private Task<string?> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity, CancellationToken cancellationToken)
+        private async Task<string?> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity, CancellationToken cancellationToken)
         {
 #if __WASM__
-            return DownloadWasmAsync();
+            return await DownloadWasmAsync().ConfigureAwait(false);
 #endif
 #pragma warning disable CS0162 // Unreachable code detected -- due to fixme
 #if HAS_UNO || USE_WINUI
@@ -92,10 +92,10 @@ namespace PackageExplorer
             var updated = 0;
 
             var tcs = new TaskCompletionSource<string?>();
-            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             // TODO: progress/error reporting & cancellation
-            DoWorkAsync().ContinueWith(x => tcs.TrySetResult(x.Result));
+            _ = DoWorkAsync().ContinueWith(x => tcs.TrySetResult(x.Result));
 #else
             string progressDialogText;
             if (packageIdentity.HasVersion)
@@ -122,7 +122,7 @@ namespace PackageExplorer
             };
 
             // polling for Cancel button being clicked
-            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            using var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var timer = new System.Timers.Timer(100);
             var tcs = new TaskCompletionSource<string?>();
 
@@ -202,11 +202,9 @@ namespace PackageExplorer
                 finally
                 {
 #if HAS_UNO || USE_WINUI
-                    cts!.Dispose();
 #else
                     timer!.Stop();
                     timer.Dispose();
-                    cts!.Dispose();
 
                     // close progress dialog when done
                     lock (progressDialogLock!)
@@ -247,7 +245,7 @@ namespace PackageExplorer
                 Interlocked.Exchange(ref updated, 1);
             }
 
-            return tcs.Task;
+            return await tcs.Task.ConfigureAwait(false);
 
 #if __WASM__
             async Task<string?> DownloadWasmAsync()
