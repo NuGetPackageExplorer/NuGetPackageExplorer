@@ -191,7 +191,7 @@ namespace NupkgExplorer.Presentation.Content
                 try
                 {
                     var dialogTask = dialog.ShowAsync(cts.Token, progressVM);
-                    var downloadPackageTask = DownloadPackage();
+                    var downloadPackageTask = DownloadPackage(cts.Token);
                     var downloadedPackage = await OptionalDialogCoordinator.WaitForResultAsync(downloadPackageTask, dialogTask, cts.Token);
 
                     var packageVM = await factory.CreateViewModel(downloadedPackage, downloadedPackage?.Source, NuGetConstants.DefaultFeedUrl);
@@ -213,12 +213,12 @@ namespace NupkgExplorer.Presentation.Content
                 throw new PackageNotFoundException($"Package '{identity.Id} {identity.Version}' not found");
             }
 
-            Task<ISignaturePackage?> DownloadPackage()
+            Task<ISignaturePackage?> DownloadPackage(CancellationToken cancellationToken)
             {
                 var downloader = DefaultContainer.GetExportedValue<INuGetPackageDownloader>()!;
                 var repository = PackageRepositoryFactory.CreateRepository(NuGetConstants.DefaultFeedUrl);
 
-                return downloader.Download(repository, identity);
+                return downloader.Download(repository, identity, cancellationToken);
             }
         }
 

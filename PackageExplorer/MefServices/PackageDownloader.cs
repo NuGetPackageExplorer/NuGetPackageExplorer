@@ -50,18 +50,18 @@ namespace PackageExplorer
 
         #region IPackageDownloader Members
 
-        public async Task Download(string targetFilePath, SourceRepository sourceRepository, PackageIdentity packageIdentity)
+        public async Task Download(string targetFilePath, SourceRepository sourceRepository, PackageIdentity packageIdentity, CancellationToken cancellationToken = default)
         {
-            var sourceFilePath = await DownloadWithProgress(sourceRepository, packageIdentity);
+            var sourceFilePath = await DownloadWithProgress(sourceRepository, packageIdentity, cancellationToken);
             if (!string.IsNullOrEmpty(sourceFilePath))
             {
                 File.Copy(sourceFilePath, targetFilePath, overwrite: true);
             }
         }
 
-        public async Task<ISignaturePackage?> Download(SourceRepository sourceRepository, PackageIdentity packageIdentity)
+        public async Task<ISignaturePackage?> Download(SourceRepository sourceRepository, PackageIdentity packageIdentity, CancellationToken cancellationToken = default)
         {
-            var tempFilePath = await DownloadWithProgress(sourceRepository, packageIdentity);
+            var tempFilePath = await DownloadWithProgress(sourceRepository, packageIdentity, cancellationToken);
             try
             {
                 return (tempFilePath == null) ? null : new ZipPackage(tempFilePath);
@@ -80,23 +80,10 @@ namespace PackageExplorer
 
         }
 
-        private Task<string?> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity)
+        private Task<string?> DownloadWithProgress(SourceRepository sourceRepository, PackageIdentity packageIdentity, CancellationToken cancellationToken)
         {
 #if __WASM__
-            // FIXME#14: we are bypassing the entire implementation, because DownloadResource could not be created on WASM (but works skia)
-            return NugetEndpoint
-                .DownloadPackage(packageIdentity.Id, packageIdentity.Version.ToNormalizedString())
-                .ContinueWith<string?>(x =>
-                {
-                    var path = $"./tmp/{Guid.NewGuid()}.nupkg";
-                    Directory.CreateDirectory(Path.GetDirectoryName(path!)!);
-                    using (var file = File.OpenWrite(path!))
-                    {
-                        x.Result.CopyTo(file);
-                    }
-
-                    return path;
-                });
+            return DownloadWasmAsync();
 #endif
 #pragma warning disable CS0162 // Unreachable code detected -- due to fixme
 #if HAS_UNO || USE_WINUI
@@ -105,7 +92,7 @@ namespace PackageExplorer
             var updated = 0;
 
             var tcs = new TaskCompletionSource<string?>();
-            var cts = new CancellationTokenSource();
+            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             // TODO: progress/error reporting & cancellation
             DoWorkAsync().ContinueWith(x => tcs.TrySetResult(x.Result));
@@ -135,7 +122,7 @@ namespace PackageExplorer
             };
 
             // polling for Cancel button being clicked
-            var cts = new CancellationTokenSource();
+            var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
             var timer = new System.Timers.Timer(100);
             var tcs = new TaskCompletionSource<string?>();
 
@@ -261,6 +248,23 @@ namespace PackageExplorer
             }
 
             return tcs.Task;
+
+            async Task<string?> DownloadWasmAsync()
+            {
+                var path = $"./tmp/{Guid.NewGuid()}.nupkg";
+                Directory.CreateDirectory(Path.GetDirectoryName(path!)!);
+
+                await using var packageStream = await NugetEndpoint.DownloadPackage(
+                    cancellationToken,
+                    packageIdentity.Id,
+                    packageIdentity.Version.ToNormalizedString(),
+                    progress: NullProgress.Instance).ConfigureAwait(false);
+
+                await using var file = File.OpenWrite(path);
+                await packageStream.CopyToAsync(file, cancellationToken).ConfigureAwait(false);
+
+                return path;
+            }
         }
 
         #endregion
@@ -268,6 +272,15 @@ namespace PackageExplorer
         private void OnError(Exception error)
         {
             UIServices.Show((error.InnerException ?? error).Message, MessageLevel.Error);
+        }
+    }
+
+    internal sealed class NullProgress : IProgress<(long ReceivedBytes, long? TotalBytes)>
+    {
+        public static NullProgress Instance { get; } = new();
+
+        public void Report((long ReceivedBytes, long? TotalBytes) value)
+        {
         }
     }
 

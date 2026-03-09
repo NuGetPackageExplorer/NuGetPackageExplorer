@@ -88,6 +88,7 @@ namespace NupkgExplorer.Client.Impl
                 progress.Report((received += read, total));
             }
 
+            stream.Position = 0;
             return stream;
         }
     }
