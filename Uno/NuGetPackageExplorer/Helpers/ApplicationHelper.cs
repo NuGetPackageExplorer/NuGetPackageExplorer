@@ -65,7 +65,7 @@ namespace NuGetPackageExplorer.Helpers
                         const scriptPath = scriptUrl.pathname || '/';
                         const packageMarkerIndex = scriptPath.indexOf('/package_');
 
-                        if (packageMarkerIndex > 0) {
+                        if (packageMarkerIndex >= 0) {
                             basePath = scriptPath.substring(0, packageMarkerIndex);
                         } else {
                             const lastSlash = scriptPath.lastIndexOf('/');

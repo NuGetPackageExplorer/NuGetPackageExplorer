@@ -165,10 +165,10 @@ test("hard refresh on a versioned package deep link keeps the requested package 
   expectNoStartupFailure(consoleMessages);
 });
 
-test("published package base-path deep links survive direct navigation and hard refresh", async ({ page }) => {
+test("published assets do not leak package base paths into canonical deep links", async ({ page }) => {
   const consoleMessages = captureStartupSignals(page);
   const packageBasePath = getPublishedPackageBasePath();
-  const targetPath = `/${packageBasePath}/packages/${previewPackage.id}/${previewPackage.version}`;
+  const targetPath = `/packages/${previewPackage.id}/${previewPackage.version}`;
 
   await page.goto(targetPath, {
     waitUntil: "domcontentloaded"
@@ -176,8 +176,9 @@ test("published package base-path deep links survive direct navigation and hard 
   await waitForUnoShell(page);
 
   await expect(page).toHaveURL(
-    new RegExp(`/${escapeRegex(packageBasePath)}/packages/${escapeRegex(previewPackage.id)}/${escapeRegex(previewPackage.version)}$`)
+    new RegExp(`/packages/${escapeRegex(previewPackage.id)}/${escapeRegex(previewPackage.version)}$`)
   );
+  expect(page.url()).not.toContain(`/${packageBasePath}/`);
   await expect(page).toHaveTitle(
     new RegExp(`^${escapeRegex(previewPackage.id)} ${escapeRegex(previewPackage.version)} \\| NuGet Package Explorer$`)
   );
@@ -186,8 +187,9 @@ test("published package base-path deep links survive direct navigation and hard 
   await waitForUnoShell(page);
 
   await expect(page).toHaveURL(
-    new RegExp(`/${escapeRegex(packageBasePath)}/packages/${escapeRegex(previewPackage.id)}/${escapeRegex(previewPackage.version)}$`)
+    new RegExp(`/packages/${escapeRegex(previewPackage.id)}/${escapeRegex(previewPackage.version)}$`)
   );
+  expect(page.url()).not.toContain(`/${packageBasePath}/`);
   await expect(page).toHaveTitle(
     new RegExp(`^${escapeRegex(previewPackage.id)} ${escapeRegex(previewPackage.version)} \\| NuGet Package Explorer$`)
   );
