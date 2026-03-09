@@ -30,8 +30,14 @@ let lastStatus = null;
 let lastError = null;
 
 while (Date.now() - startedAt < timeoutMs) {
+  const attemptStartedAt = Date.now();
+  const remainingMs = timeoutMs - (attemptStartedAt - startedAt);
+  const perAttemptTimeoutMs = Math.max(1, Math.min(remainingMs, 5_000));
+  const controller = new AbortController();
+  const timeoutHandle = setTimeout(() => controller.abort(), perAttemptTimeoutMs);
+
   try {
-    const response = await fetch(url);
+    const response = await fetch(url, { signal: controller.signal });
     lastStatus = response.status;
     lastError = null;
 
@@ -41,6 +47,8 @@ while (Date.now() - startedAt < timeoutMs) {
     }
   } catch (error) {
     lastError = error;
+  } finally {
+    clearTimeout(timeoutHandle);
   }
 
   await new Promise(resolve => setTimeout(resolve, 1_000));

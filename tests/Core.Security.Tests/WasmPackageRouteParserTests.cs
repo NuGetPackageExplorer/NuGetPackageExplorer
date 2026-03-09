@@ -36,6 +36,15 @@ public sealed class WasmPackageRouteParserTests
     }
 
     [Fact]
+    public void ParseDecodesPlusDelimitedSearchQueries()
+    {
+        var result = WasmPackageRouteParser.Parse(new Uri("https://nuget.info/packages?q=uno+platform"));
+
+        var search = Assert.IsType<WasmPackageSearchRoute>(result);
+        Assert.Equal("uno platform", search.Query);
+    }
+
+    [Fact]
     public void ParseRejectsExtraSegmentsAfterVersion()
     {
         var result = WasmPackageRouteParser.Parse(new Uri("https://nuget.info/packages/Newtonsoft.Json/13.0.3/invalid"));

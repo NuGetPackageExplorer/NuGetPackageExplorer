@@ -110,14 +110,16 @@ public static class WasmPackageRouteParser
         foreach (var pair in query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
         {
             var pieces = pair.Split('=', 2);
-            if (!key.Equals(Uri.UnescapeDataString(pieces[0]), StringComparison.OrdinalIgnoreCase))
+            if (!key.Equals(DecodeQueryComponent(pieces[0]), StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
 
-            return pieces.Length == 2 ? Uri.UnescapeDataString(pieces[1]) : string.Empty;
+            return pieces.Length == 2 ? DecodeQueryComponent(pieces[1]) : string.Empty;
         }
 
         return null;
     }
+
+    private static string DecodeQueryComponent(string value) => Uri.UnescapeDataString(value.Replace("+", " ", StringComparison.Ordinal));
 }
