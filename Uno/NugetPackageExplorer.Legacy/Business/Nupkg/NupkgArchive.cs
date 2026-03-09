@@ -8,14 +8,13 @@ using Uno.Logging;
 
 namespace NupkgExplorer.Business.Nupkg
 {
-    public class NupkgArchive
+    public sealed class NupkgArchive : IDisposable
     {
-        private readonly Stream _stream;
         private readonly ZipArchive _nupkg;
 
         public NupkgArchive(Stream stream)
         {
-            _stream = stream;
+            ArgumentNullException.ThrowIfNull(stream);
             _nupkg = new ZipArchive(stream);
         }
 
@@ -71,6 +70,11 @@ namespace NupkgExplorer.Business.Nupkg
             return virtualRoot.Items
                 .OrderByDescending(static x => x is NupkgContentDirectory) // sort directory first
                 .ToArray();
+        }
+
+        public void Dispose()
+        {
+            _nupkg.Dispose();
         }
     }
 }

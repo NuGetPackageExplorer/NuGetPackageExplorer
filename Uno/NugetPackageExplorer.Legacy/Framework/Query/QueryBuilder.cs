@@ -2,7 +2,7 @@
 
 namespace NupkgExplorer.Framework.Query
 {
-    public class QueryBuilder
+    public sealed class QueryBuilder : IDisposable
     {
         private readonly HttpRequestMessage _request = new();
         private readonly Dictionary<string, string> _query = [];
@@ -58,7 +58,7 @@ namespace NupkgExplorer.Framework.Query
             return this;
         }
 
-        public Task<HttpResponseMessage> Query(HttpClient httpClient, bool ensureSuccess = true, HttpCompletionOption option = HttpCompletionOption.ResponseContentRead)
+        public async Task<HttpResponseMessage> Query(HttpClient httpClient, bool ensureSuccess = true, HttpCompletionOption option = HttpCompletionOption.ResponseContentRead)
         {
             ArgumentNullException.ThrowIfNull(httpClient);
 
@@ -70,9 +70,8 @@ namespace NupkgExplorer.Framework.Query
             if (_payload.Count != 0)
                 _request.Content = new FormUrlEncodedContent(_payload);
 
-            return httpClient
-                .SendAsync(_request, option)
-                .Apply(x => ensureSuccess ? x.EnsureSuccessStatusCode() : x);
+            var response = await httpClient.SendAsync(_request, option).ConfigureAwait(false);
+            return ensureSuccess ? response.EnsureSuccessStatusCode() : response;
 
             string GetQueryString(bool filterEmptyValue = true, bool addQueryIndicator = false)
             {
@@ -86,6 +85,11 @@ namespace NupkgExplorer.Framework.Query
                 }
                 ;
             }
+        }
+
+        public void Dispose()
+        {
+            _request.Dispose();
         }
     }
 }

@@ -9,9 +9,6 @@ namespace NupkgExplorer.Business.Nupkg.Files
     {
         public AttributeInfo[] AssemblyAttributes { get; }
 
-        private readonly PEReader _peReader;
-        private readonly MetadataReader _metadataReader;
-
         public AssemblyFileContent(Stream stream)
         {
             ArgumentNullException.ThrowIfNull(stream);
@@ -21,24 +18,24 @@ namespace NupkgExplorer.Business.Nupkg.Files
                 stream.CopyTo(memory);
                 memory.Seek(0, SeekOrigin.Begin);
 
-                _peReader = new PEReader(memory);
-                _metadataReader = _peReader.GetMetadataReader();
+                using var peReader = new PEReader(memory);
+                var metadataReader = peReader.GetMetadataReader();
 
-                AssemblyAttributes = GetAssemblyAttributes();
+                AssemblyAttributes = GetAssemblyAttributes(metadataReader);
             }
         }
 
-        private AttributeInfo[] GetAssemblyAttributes()
+        private static AttributeInfo[] GetAssemblyAttributes(MetadataReader metadataReader)
         {
-            return _metadataReader.CustomAttributes
-                .Select(_metadataReader.GetCustomAttribute)
+            return metadataReader.CustomAttributes
+                .Select(metadataReader.GetCustomAttribute)
                 .Where(x => x.Constructor.Kind == HandleKind.MemberReference && x.Parent.Kind == HandleKind.AssemblyDefinition)
                 .Select(customAttribute =>
                 {
-                    var constructorRef = _metadataReader.GetMemberReference((MemberReferenceHandle)customAttribute.Constructor);
+                    var constructorRef = metadataReader.GetMemberReference((MemberReferenceHandle)customAttribute.Constructor);
                     var attributeTypeRefHandle = (TypeReferenceHandle)constructorRef.Parent;
                     var typeProvider = new AttributeTypeProvider();
-                    var attributeTypeName = typeProvider.GetTypeFromReference(_metadataReader, attributeTypeRefHandle, 0);
+                    var attributeTypeName = typeProvider.GetTypeFromReference(metadataReader, attributeTypeRefHandle, 0);
 
                     try
                     {
