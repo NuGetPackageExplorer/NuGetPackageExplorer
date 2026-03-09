@@ -249,6 +249,7 @@ namespace PackageExplorer
 
             return tcs.Task;
 
+#if __WASM__
             async Task<string?> DownloadWasmAsync()
             {
                 var path = $"./tmp/{Guid.NewGuid()}.nupkg";
@@ -265,6 +266,7 @@ namespace PackageExplorer
 
                 return path;
             }
+#endif
         }
 
         #endregion
