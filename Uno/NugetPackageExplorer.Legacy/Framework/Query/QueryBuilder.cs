@@ -71,7 +71,20 @@ namespace NupkgExplorer.Framework.Query
                 _request.Content = new FormUrlEncodedContent(_payload);
 
             var response = await httpClient.SendAsync(_request, option).ConfigureAwait(false);
-            return ensureSuccess ? response.EnsureSuccessStatusCode() : response;
+            if (!ensureSuccess)
+            {
+                return response;
+            }
+
+            try
+            {
+                return response.EnsureSuccessStatusCode();
+            }
+            catch
+            {
+                response.Dispose();
+                throw;
+            }
 
             string GetQueryString(bool filterEmptyValue = true, bool addQueryIndicator = false)
             {
