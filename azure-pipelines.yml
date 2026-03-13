@@ -89,16 +89,18 @@ stages:
 
     - powershell: |
         $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
-        $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\amd64\MSBuild.exe | Select-Object -First 1
-        if (-not $msbuild) {
-          throw 'Could not locate the latest x64 MSBuild with vswhere.'
+        $vsInstall = & $vswhere -latest -requires Microsoft.Component.MSBuild -property installationPath | Select-Object -First 1
+        if (-not $vsInstall) {
+          throw 'Could not locate a Visual Studio installation with MSBuild via vswhere.'
         }
+        $wapProjPath = Join-Path $vsInstall 'MSBuild\Microsoft\DesktopBridge\'
 
-        & $msbuild `
+        dotnet msbuild `
           PackageExplorer.Package/PackageExplorer.Package.wapproj `
           /restore `
           /m `
           /p:Configuration=$(BuildConfiguration) `
+          /p:WapProjPath="$wapProjPath" `
           /p:AppxPackageDir="$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\\" `
           /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Package
