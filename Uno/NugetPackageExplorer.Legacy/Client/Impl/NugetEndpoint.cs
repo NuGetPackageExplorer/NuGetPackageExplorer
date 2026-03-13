@@ -66,7 +66,7 @@ namespace NupkgExplorer.Client.Impl
             version = version.ToLowerInvariant();
 
             // https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
-            var response = await Query(HttpCompletionOption.ResponseHeadersRead, query => query
+            var response = await Query(query => query
                 .Get()
                 .FromUrl($"https://api.nuget.org/v3-flatcontainer/{packageId}/{version}/{packageId}.{version}.nupkg")
             );
