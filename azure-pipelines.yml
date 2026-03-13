@@ -87,16 +87,21 @@ stages:
         AppInsightsKey: $(AppInsightsKey)
       condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['AppInsightsKey'], '')))
 
-    - task: MSBuild@1
+    - powershell: |
+        $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+        $msbuild = & $vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\amd64\MSBuild.exe | Select-Object -First 1
+        if (-not $msbuild) {
+          throw 'Could not locate the latest x64 MSBuild with vswhere.'
+        }
+
+        & $msbuild `
+          PackageExplorer.Package/PackageExplorer.Package.wapproj `
+          /restore `
+          /m `
+          /p:Configuration=$(BuildConfiguration) `
+          /p:AppxPackageDir="$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\\" `
+          /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       displayName: Build Package
-      inputs:
-        solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-        msbuildLocationMethod: version
-        msbuildArchitecture: x64
-        msbuildVersion: '18.0'
-        msbuildArguments: /restore /p:AppxPackageDir="$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\\" /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
-        configuration: $(BuildConfiguration)
-        maximumCpuCount: true
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'Store')))
 
     - task: DotNetCoreCLI@2
