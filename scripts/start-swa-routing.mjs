@@ -14,7 +14,6 @@ const apiPort = process.env.NPE_API_TEST_PORT ?? "7071";
 const configuration = process.env.NPE_WASM_TEST_CONFIGURATION ?? "Release";
 const runtimeMode = process.env.NPE_WASM_TEST_RUNTIME_MODE;
 const disableJiterpreter = process.env.NPE_WASM_TEST_DISABLE_JITERPRETER === "1";
-const unoOverrideVersion = process.env.NPE_WASM_TEST_UNO_OVERRIDE_VERSION;
 const childEnvironment = {
   ...process.env,
   CI: process.env.CI ?? "1",
@@ -35,10 +34,6 @@ if (runtimeMode) {
 
 if (disableJiterpreter) {
   publishArgs.push("-p:WasmShellEnableJiterpreter=false");
-}
-
-if (unoOverrideVersion) {
-  publishArgs.push(`-p:UnoNugetOverrideVersion=${unoOverrideVersion}`);
 }
 
 const publishFolder = `artifacts/publish/NuGetPackageExplorer.WinUI/${configuration.toLowerCase()}_net10.0-browserwasm/wwwroot`;

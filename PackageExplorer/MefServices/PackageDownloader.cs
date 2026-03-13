@@ -253,14 +253,14 @@ namespace PackageExplorer
                 var path = $"./tmp/{Guid.NewGuid()}.nupkg";
                 Directory.CreateDirectory(Path.GetDirectoryName(path!)!);
 
-                await using var packageStream = await NugetEndpoint.DownloadPackage(
+                await using var file = File.OpenWrite(path);
+                await NugetEndpoint.DownloadPackage(
                     cancellationToken,
                     packageIdentity.Id,
                     packageIdentity.Version.ToNormalizedString(),
+                    file,
                     progress: NullProgress.Instance).ConfigureAwait(false);
-
-                await using var file = File.OpenWrite(path);
-                await packageStream.CopyToAsync(file, cancellationToken).ConfigureAwait(false);
+                await file.FlushAsync(cancellationToken).ConfigureAwait(false);
 
                 return path;
             }

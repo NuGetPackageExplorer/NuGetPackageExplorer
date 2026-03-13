@@ -91,6 +91,8 @@ stages:
       displayName: Build Package
       inputs:
         solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
+        msbuildLocationMethod: version
+        msbuildVersion: '18.0'
         msbuildArguments: /restore /p:AppxPackageDir="$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\\" /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
         configuration: $(BuildConfiguration)
         maximumCpuCount: true

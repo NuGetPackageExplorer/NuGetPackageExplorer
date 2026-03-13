@@ -56,40 +56,29 @@ namespace NupkgExplorer.Client.Impl
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "It's what the URL needs to be")]
-        public async Task<Stream> DownloadPackage(CancellationToken ct, string packageId, string version, IProgress<(long ReceivedBytes, long? TotalBytes)> progress)
+        public async Task DownloadPackage(CancellationToken ct, string packageId, string version, Stream destination, IProgress<(long ReceivedBytes, long? TotalBytes)> progress)
         {
             ArgumentNullException.ThrowIfNullOrWhiteSpace(packageId);
             ArgumentNullException.ThrowIfNullOrWhiteSpace(version);
+            ArgumentNullException.ThrowIfNull(destination);
             ArgumentNullException.ThrowIfNull(progress);
 
             packageId = packageId.ToLowerInvariant();
             version = version.ToLowerInvariant();
 
             // https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
-            var response = await Query(query => query
+            using var response = await Query(query => query
                 .Get()
                 .FromUrl($"https://api.nuget.org/v3-flatcontainer/{packageId}/{version}/{packageId}.{version}.nupkg")
-            );
+            ).ConfigureAwait(false);
 
             var total = response.Content.Headers.ContentLength;
-            long read = 0, received = 0;
-            var buffer = new Memory<byte>(new byte[2 << 12]);
-            progress.Report((received, total));
-
-            var stream = new MemoryStream((int)(total ?? 0));
-            using (var content = await response.Content.ReadAsStreamAsync())
+            progress.Report((0, total));
+            await response.Content.CopyToAsync(destination, ct).ConfigureAwait(false);
+            if (total.HasValue)
             {
-                while ((read = await content.ReadAsync(buffer)) > 0)
-                {
-                    await stream.WriteAsync(buffer[..(int)read]);
-                    progress.Report((received += read, total));
-                    ct.ThrowIfCancellationRequested();
-                }
-                progress.Report((received += read, total));
+                progress.Report((total.Value, total));
             }
-
-            stream.Position = 0;
-            return stream;
         }
     }
 }
