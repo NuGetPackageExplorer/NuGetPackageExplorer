@@ -44,7 +44,7 @@
     <BuildType Solution="Ad-Hoc|*" Project="Release" />
     <BuildType Solution="AppStore|*" Project="Release" />
   </Project>
-  <Project Path="dotnet-validate/dotnet-validate.csproj">
+  <Project Path="nupkg-validate/nupkg-validate.csproj">
     <BuildType Solution="Ad-Hoc|*" Project="Release" />
     <BuildType Solution="AppStore|*" Project="Release" />
   </Project>

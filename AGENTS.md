@@ -3,7 +3,7 @@
 - `Core` holds platform-agnostic package inspection (loading `.nupkg`, `SymbolValidation`, telemetry helpers) and feeds both desktop and CLI; favor adding heavy logic here.
 - `PackageViewModel` implements the MVVM surface and MEF extensibility (`Commands/`, `PackageAnalyzer/`, `PluginManagerViewModel`); desktop views bind directly to these models.
 - `Types` defines plugin contracts (`IPackageCommand`, `IPackageContentViewer`, `IPackageRule`) consumed through MEF; shared XAML in `PackageExplorer/NugetPackageExplorer.Views.Shared.projitems` is reused by UNO targets.
-- `dotnet-validate` (CLI) and `Uno/NuGetPackageExplorer.WinUI.csproj` reference the same `Core` + `PackageViewModel` assemblies, so cross-cutting changes must build across WPF, WinUI, and browser WASM.
+- `nupkg-validate` (CLI) and `Uno/NuGetPackageExplorer.WinUI.csproj` reference the same `Core` + `PackageViewModel` assemblies, so cross-cutting changes must build across WPF, WinUI, and browser WASM.
 
 ## Build & Tooling
 - The repo pins SDK `10.0.100-rc.2` in `global.json`; keep preview features enabled (`LangVersion preview`, `Nullable enable`, `AllowUnsafeBlocks true`).
@@ -18,7 +18,7 @@
 ## Developer Workflows
 - Run `nbgv get-version` before packaging to confirm semantic versioning; pipeline calls `nbgv cloud -c -a` so keep `version.json` in sync.
 - Desktop package publishes use `Properties/PublishProfiles/WinX64.pubxml`; WAP builds live in `PackageExplorer.Package/*.wapproj` and require the Release channel to populate manifests before MSBuild.
-- `dotnet run --project dotnet-validate/dotnet-validate.csproj package local <path>` exercises the CLI validator against local nupkg files; `remote` subcommand pulls through NuGet feeds for regression checks.
+- `dotnet run --project nupkg-validate/nupkg-validate.csproj package local <path>` exercises the CLI validator against local nupkg files; `remote` subcommand pulls through NuGet feeds for regression checks.
 - Build artifacts collect under `artifacts/<channel>`; binlogs land in `artifacts/logs` (match pipeline layout when reproducing MSBuild failures locally).
 - When testing feed interactions, seed credentials through `App.xaml.cs::InitCredentialService` providers; many flows depend on `machine.config` and the MRU caches persisted in `%APPDATA%`.
 
@@ -52,6 +52,6 @@
 ## Gotchas
 - `UseArtifactsOutput` means tests or tooling looking for binaries should read from `artifacts/` instead of `bin/` directly.
 - Nightly/Store builds inject `ReleaseChannel` constants (`Directory.Build.props`); guard channel-specific code with the existing `NIGHTLY` and `STORE` preprocessor symbols.
-- There is minimal automated testing—manual validation paths (`PackageExplorer/MainWindow.xaml.cs` workflows, `dotnet-validate`) are the de facto regression checks.
+- There is minimal automated testing—manual validation paths (`PackageExplorer/MainWindow.xaml.cs` workflows, `nupkg-validate`) are the de facto regression checks.
 - UNO `MefServices` currently throw `NotImplementedException` for some contracts; desktop features that assume complete implementations need conditional guards.
 - `Common/CommonAssemblyInfo.cs` is linked into each project; update assembly metadata here rather than per-project attributes.

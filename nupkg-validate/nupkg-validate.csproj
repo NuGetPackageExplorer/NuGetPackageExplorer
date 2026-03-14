@@ -5,8 +5,9 @@
     <TargetFrameworks>net10.0;net8.0</TargetFrameworks>
     <RootNamespace>NuGetPe</RootNamespace>
     <PackAsTool>true</PackAsTool>
+    <ToolCommandName>nupkg-validate</ToolCommandName>
     <Product>NuGet Package Explorer</Product>
-    <Description>Enables Validation of .NET Packages from the CLI</Description>
+    <Description>Validates NuGet package health from the CLI. Checks Source Link, deterministic builds, and compiler flags.</Description>
   </PropertyGroup>
 
   <ItemGroup>

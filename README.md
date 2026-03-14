@@ -15,7 +15,7 @@ the release version with no interference and will automatically update.
 | [![Nightly build number](https://npenightly.blob.core.windows.net/nightly/ci_badge.svg?q=1)](https://npenightly.blob.core.windows.net/nightly/PackageExplorer.Package.appinstaller)| [Install](https://npenightly.blob.core.windows.net/nightly/PackageExplorer.Package.appinstaller)
 | [![Stable build number](https://npenightly.blob.core.windows.net/store/stable_badge.svg?q=1)](https://www.microsoft.com/store/apps/9wzdncrdmdm3) | [Microsoft Store](https://www.microsoft.com/store/apps/9wzdncrdmdm3) |
 | [![Chocolatey build number](https://img.shields.io/chocolatey/v/NugetPackageExplorer.svg)](https://chocolatey.org/packages/NugetPackageExplorer) | [Chocolatey](https://chocolatey.org/packages/NugetPackageExplorer) |
-| ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/dotnet-validate) | [dotnet-validate CLI](https://www.nuget.org/packages/dotnet-validate) |
+| ![Nuget (with prereleases)](https://img.shields.io/nuget/vpre/nupkg-validate) | [nupkg-validate CLI](https://www.nuget.org/packages/nupkg-validate) |
 
 ### Microsoft Store (recommended)
 
@@ -33,19 +33,19 @@ winget install "NuGet Package Explorer"
 
 A subset of functionality for checking package health is now available as a cross-platform CLI tool. Install with:
 
-`dotnet tool install -g dotnet-validate --version 0.0.1-preview.42`
+`dotnet tool install -g nupkg-validate --version 0.0.1-preview.42`
 
 *Note: Use the latest version*
 
 There is one command and two subcommands:
 
-The main command is `package`. This is so `dotnet validate ...` can be used for additional things later.
+The main command is `package`.
 
 Usage:
 
 ```
 Usage:
-  dotnet validate package local [options] <file>
+  nupkg-validate package local [options] <file>
 
 Arguments:
   <file>    Package to validate.
@@ -57,7 +57,7 @@ Options:
 
 ```
 Usage:
-  dotnet validate package remote [options] <packageId>
+  nupkg-validate package remote [options] <packageId>
 
 Arguments:
   <packageId>    Package Id

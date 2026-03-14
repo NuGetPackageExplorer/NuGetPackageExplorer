@@ -271,4 +271,4 @@ nbgv
 .vscode/*
 !.vscode/tasks.json
 !.vscode/launch.json
-/dotnet-validate/Properties/launchSettings.json
+/nupkg-validate/Properties/launchSettings.json
