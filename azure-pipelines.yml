@@ -35,7 +35,7 @@ stages:
     - task: UseDotNet@2
       displayName: 'Use .NET 10 SDK'
       inputs:
-        useGlobalJson: true
+        version: 10.x
 
     - script: dotnet workload install wasm-tools wasm-tools-net9
       displayName: Install workloads
@@ -87,13 +87,26 @@ stages:
         AppInsightsKey: $(AppInsightsKey)
       condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['AppInsightsKey'], '')))
 
-    - task: MSBuild@1
-      displayName: Build Package
-      inputs:
-        solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
-        msbuildArguments: /restore /p:AppxPackageDir="$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\\" /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
-        configuration: $(BuildConfiguration)
-        maximumCpuCount: true
+    - powershell: |
+        $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+        $msbuild = & $vswhere `
+          -prerelease `
+          -latest `
+          -products * `
+          -requires Microsoft.Component.MSBuild `
+          -find MSBuild\**\Bin\amd64\MSBuild.exe | Select-Object -First 1
+
+        if (-not $msbuild) {
+          throw 'Could not locate the latest prerelease x64 MSBuild with vswhere.'
+        }
+
+        & $msbuild `
+          PackageExplorer.Package/PackageExplorer.Package.wapproj `
+          /restore `
+          /m `
+          /p:Configuration=$(BuildConfiguration) `
+          /p:AppxPackageDir="$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\\" `
+          /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'Store')))
 
     - task: DotNetCoreCLI@2
