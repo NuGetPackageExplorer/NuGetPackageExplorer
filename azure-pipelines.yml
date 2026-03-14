@@ -35,7 +35,7 @@ stages:
     - task: UseDotNet@2
       displayName: 'Use .NET 10 SDK'
       inputs:
-        version: 10.x
+        useGlobalJson: true
 
     - script: dotnet workload install wasm-tools wasm-tools-net9
       displayName: Install workloads
@@ -87,23 +87,13 @@ stages:
         AppInsightsKey: $(AppInsightsKey)
       condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['AppInsightsKey'], '')))
 
-    - powershell: |
-        $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
-        $vsInstall = & $vswhere -latest -requires Microsoft.Component.MSBuild -property installationPath | Select-Object -First 1
-        if (-not $vsInstall) {
-          throw 'Could not locate a Visual Studio installation with MSBuild via vswhere.'
-        }
-        $wapProjPath = Join-Path $vsInstall 'MSBuild\Microsoft\DesktopBridge'
-
-        dotnet msbuild `
-          PackageExplorer.Package/PackageExplorer.Package.wapproj `
-          /restore `
-          /m `
-          /p:Configuration=$(BuildConfiguration) `
-          /p:WapProjPath="$wapProjPath" `
-          /p:AppxPackageDir="$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\\" `
-          /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
+    - task: MSBuild@1
       displayName: Build Package
+      inputs:
+        solution: PackageExplorer.Package/PackageExplorer.Package.wapproj
+        msbuildArguments: /restore /p:AppxPackageDir="$(Build.SourcesDirectory)\artifacts\$(ReleaseChannel)\\" /bl:$(Build.SourcesDirectory)\artifacts\logs\$(ReleaseChannel).binlog
+        configuration: $(BuildConfiguration)
+        maximumCpuCount: true
       condition: and(succeeded(), or(eq(variables['ReleaseChannel'], 'Nightly'), eq(variables['ReleaseChannel'], 'Store')))
 
     - task: DotNetCoreCLI@2
