@@ -1,6 +1,6 @@
 ![Logo](images/npe-logo.png)
 
-[![Build Status](https://dev.azure.com/clairernovotny/GitBuilds/_apis/build/status/NuGet%20Package%20Explorer/NuGet%20Package%20Explorer%20CI?branchName=master)](https://dev.azure.com/clairernovotny/GitBuilds/_build/latest?definitionId=16)
+[![Build Status](https://dev.azure.com/dotnet/b0a66910-a6f1-42a3-a52c-e41f4903ee5f/_apis/build/status/NuGet%20Package%20Explorer%20CI?branchName=main)](https://dev.azure.com/dotnet/b0a66910-a6f1-42a3-a52c-e41f4903ee5f/_build)
 [![Twitter Follow](https://img.shields.io/twitter/follow/NuGetPE.svg?style=social?maxAge=2592000)](https://twitter.com/NuGetPE)
 
 ## How to install
