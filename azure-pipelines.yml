@@ -93,7 +93,7 @@ stages:
         if (-not $vsInstall) {
           throw 'Could not locate a Visual Studio installation with MSBuild via vswhere.'
         }
-        $wapProjPath = Join-Path $vsInstall 'MSBuild\Microsoft\DesktopBridge\'
+        $wapProjPath = Join-Path $vsInstall 'MSBuild\Microsoft\DesktopBridge'
 
         dotnet msbuild `
           PackageExplorer.Package/PackageExplorer.Package.wapproj `
