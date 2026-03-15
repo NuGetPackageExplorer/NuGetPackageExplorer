@@ -19,7 +19,7 @@ const unoPackage = {
 
 const wasmPublishIndexPath = path.resolve(
   process.cwd(),
-  "artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot/index.html"
+  `artifacts/publish/NuGetPackageExplorer.WinUI/${(process.env.NPE_WASM_TEST_CONFIGURATION ?? "Release").toLowerCase()}_net10.0-browserwasm/wwwroot/index.html`
 );
 
 let publishedPackageBasePath: string | undefined;

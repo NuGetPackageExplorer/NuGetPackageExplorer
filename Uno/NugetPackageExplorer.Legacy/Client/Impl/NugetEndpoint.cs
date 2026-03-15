@@ -67,18 +67,29 @@ namespace NupkgExplorer.Client.Impl
             version = version.ToLowerInvariant();
 
             // https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
-            using var response = await Query(query => query
-                .Get()
-                .FromUrl($"https://api.nuget.org/v3-flatcontainer/{packageId}/{version}/{packageId}.{version}.nupkg")
-            ).ConfigureAwait(false);
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"https://api.nuget.org/v3-flatcontainer/{packageId}/{version}/{packageId}.{version}.nupkg");
+            using var response = await Client.SendAsync(request, HttpCompletionOption.ResponseContentRead, ct).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
 
             var total = response.Content.Headers.ContentLength;
-            progress.Report((0, total));
-            await response.Content.CopyToAsync(destination, ct).ConfigureAwait(false);
-            if (total.HasValue)
+            long received = 0;
+            var buffer = new Memory<byte>(new byte[2 << 12]);
+            progress.Report((received, total));
+
+            await using (var content = await response.Content.ReadAsStreamAsync(ct).ConfigureAwait(false))
             {
-                progress.Report((total.Value, total));
+                int read;
+                while ((read = await content.ReadAsync(buffer, ct).ConfigureAwait(false)) > 0)
+                {
+                    await destination.WriteAsync(buffer[..read], ct).ConfigureAwait(false);
+                    received += read;
+                    progress.Report((received, total));
+                }
             }
+
+            progress.Report((received, total));
         }
     }
 }
