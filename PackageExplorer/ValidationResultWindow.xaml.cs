@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using NuGetPe;
+using Clipboard = System.Windows.Forms.Clipboard;
 
 using PackageExplorerViewModel;
 
@@ -27,7 +28,7 @@ namespace PackageExplorer
         {
             if (DataContext is ValidationResultViewModel viewModel)
             {
-                Clipboard.SetText(viewModel.CopyValidationMessage);
+                Clipboard.SetText(viewModel.ValidationSummary);
             }
         }
 
