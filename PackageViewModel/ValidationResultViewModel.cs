@@ -24,7 +24,7 @@ namespace PackageExplorerViewModel
                                                       .ToList();
         }
 
-        public string CopyValidationMessage
+        public string ValidationSummary
         {
             get
             {
@@ -33,30 +33,30 @@ namespace PackageExplorerViewModel
                 messageBuilder.AppendLine(CI.CurrentCulture, $"Signed: {Signed}");
                 messageBuilder.AppendLine(CI.CurrentCulture, $"Trust Level: {Trust}");
 
-                if (ErrorIssues?.Count > 0)
+                if (ErrorIssues.Count > 0)
                 {
-                    messageBuilder.AppendLine(CI.CurrentCulture, $"Errors:");
+                    messageBuilder.AppendLine("Errors:");
                     foreach (var issue in ErrorIssues)
                     {
-                        messageBuilder.AppendLine(CI.CurrentCulture, $"{issue.Message}");
+                        messageBuilder.AppendLine(issue.Message);
                     }
                 }
 
-                if (WarningIssues?.Count > 0)
+                if (WarningIssues.Count > 0)
                 {
-                    messageBuilder.AppendLine(CI.CurrentCulture, $"Warnings:");
+                    messageBuilder.AppendLine("Warnings:");
                     foreach (var issue in WarningIssues)
                     {
-                        messageBuilder.AppendLine(CI.CurrentCulture, $"{issue.Message}");
+                        messageBuilder.AppendLine(issue.Message);
                     }
                 }
 
-                if(InformationIssues?.Count > 0)
+                if (InformationIssues.Count > 0)
                 {
-                    messageBuilder.AppendLine(CI.CurrentCulture, $"Information:");
+                    messageBuilder.AppendLine("Information:");
                     foreach (var issue in InformationIssues)
                     {
-                        messageBuilder.AppendLine(CI.CurrentCulture, $"{issue.Message}");
+                        messageBuilder.AppendLine(issue.Message);
                     }
                 }
 
