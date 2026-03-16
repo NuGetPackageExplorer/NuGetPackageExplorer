@@ -255,11 +255,11 @@ namespace PackageExplorer
 
                 await using var file = File.OpenWrite(path);
                 await NugetEndpoint.DownloadPackage(
-                    cancellationToken,
                     packageIdentity.Id,
                     packageIdentity.Version.ToNormalizedString(),
                     file,
-                    progress: NullProgress.Instance).ConfigureAwait(false);
+                    progress: NullProgress.Instance,
+                    cancellationToken).ConfigureAwait(false);
                 await file.FlushAsync(cancellationToken).ConfigureAwait(false);
 
                 return path;
