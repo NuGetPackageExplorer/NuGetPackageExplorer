@@ -56,7 +56,7 @@ namespace NupkgExplorer.Client.Impl
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "It's what the URL needs to be")]
-        public async Task DownloadPackage(CancellationToken ct, string packageId, string version, Stream destination, IProgress<(long ReceivedBytes, long? TotalBytes)> progress)
+        public async Task DownloadPackage(string packageId, string version, Stream destination, IProgress<(long ReceivedBytes, long? TotalBytes)> progress, CancellationToken ct)
         {
             ArgumentNullException.ThrowIfNullOrWhiteSpace(packageId);
             ArgumentNullException.ThrowIfNullOrWhiteSpace(version);
