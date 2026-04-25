@@ -11,17 +11,36 @@ import {
 
 const port = process.env.NPE_WASM_TEST_PORT ?? "4281";
 const apiPort = process.env.NPE_API_TEST_PORT ?? "7071";
+const configuration = process.env.NPE_WASM_TEST_CONFIGURATION ?? "Release";
+const runtimeMode = process.env.NPE_WASM_TEST_RUNTIME_MODE;
+const disableJiterpreter = process.env.NPE_WASM_TEST_DISABLE_JITERPRETER === "1";
+const childEnvironment = {
+  ...process.env,
+  CI: process.env.CI ?? "1",
+  FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT: process.env.FUNCTIONS_CORE_TOOLS_TELEMETRY_OPTOUT ?? "1"
+};
 const publishArgs = [
   "publish",
   "Uno/NuGetPackageExplorer/NuGetPackageExplorer.WinUI.csproj",
   "-f",
   "net10.0-browserwasm",
   "-c",
-  "Release"
+  configuration
 ];
+
+if (runtimeMode) {
+  publishArgs.push(`-p:WasmShellMonoRuntimeExecutionMode=${runtimeMode}`);
+}
+
+if (disableJiterpreter) {
+  publishArgs.push("-p:WasmShellEnableJiterpreter=false");
+}
+
+const publishFolder = `artifacts/publish/NuGetPackageExplorer.WinUI/${configuration.toLowerCase()}_net10.0-browserwasm/wwwroot`;
 
 const publish = spawnSync("dotnet", publishArgs, {
   cwd: process.cwd(),
+  env: childEnvironment,
   stdio: "inherit",
   shell: process.platform === "win32"
 });
@@ -38,10 +57,13 @@ const func = spawn(
   [
     "start",
     "--port",
-    apiPort
+    apiPort,
+    "--runtime",
+    "default"
   ],
   {
     cwd: apiPath,
+    env: childEnvironment,
     stdio: "inherit",
     shell: process.platform === "win32"
   }
@@ -57,6 +79,7 @@ const waitForApi = spawnSync(
   ],
   {
     cwd: workspaceRoot,
+    env: childEnvironment,
     stdio: "inherit",
     shell: process.platform === "win32"
   }
@@ -71,7 +94,7 @@ const swa = spawn(
   getSwaExecutable(),
   [
     "start",
-    "artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot",
+    publishFolder,
     "--host",
     "127.0.0.1",
     "--port",
@@ -83,6 +106,7 @@ const swa = spawn(
   ],
   {
     cwd: workspaceRoot,
+    env: childEnvironment,
     stdio: "inherit",
     shell: process.platform === "win32"
   }
