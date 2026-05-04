@@ -6,7 +6,7 @@
     <NuGetDependencyVersion>7.3.0</NuGetDependencyVersion>
     <CommunityToolkitVersion>7.1.2</CommunityToolkitVersion>
     <UnoCommunityToolkitVersion>7.1.205</UnoCommunityToolkitVersion>
-    <SystemDependencyVersion>10.0.3</SystemDependencyVersion>
+    <SystemDependencyVersion>10.0.7</SystemDependencyVersion>
   </PropertyGroup>
   <ItemGroup>
     <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.9.50"  />
