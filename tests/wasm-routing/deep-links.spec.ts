@@ -12,9 +12,14 @@ const previewPackage = {
   version: "11.0.0-preview.1.26104.118"
 };
 
+const unoPackage = {
+  id: "Uno.WinUI",
+  version: "6.5.153"
+};
+
 const wasmPublishIndexPath = path.resolve(
   process.cwd(),
-  "artifacts/publish/NuGetPackageExplorer.WinUI/release_net10.0-browserwasm/wwwroot/index.html"
+  `artifacts/publish/NuGetPackageExplorer.WinUI/${(process.env.NPE_WASM_TEST_CONFIGURATION ?? "Release").toLowerCase()}_net10.0-browserwasm/wwwroot/index.html`
 );
 
 let publishedPackageBasePath: string | undefined;
@@ -114,6 +119,23 @@ test("preview-version deep links keep the requested preview package open", async
   );
   await expect(page).toHaveTitle(
     new RegExp(`^${escapeRegex(previewPackage.id)} ${escapeRegex(previewPackage.version)} \\| NuGet Package Explorer$`)
+  );
+  expectNoStartupFailure(consoleMessages);
+});
+
+test("Uno.WinUI deep links keep the requested package open", async ({ page }) => {
+  const consoleMessages = captureStartupSignals(page);
+
+  await page.goto(`/packages/${unoPackage.id}/${unoPackage.version}`, {
+    waitUntil: "domcontentloaded"
+  });
+  await waitForUnoShell(page);
+
+  await expect(page).toHaveURL(
+    new RegExp(`/packages/${escapeRegex(unoPackage.id)}/${escapeRegex(unoPackage.version)}$`)
+  );
+  await expect(page).toHaveTitle(
+    new RegExp(`^${escapeRegex(unoPackage.id)} ${escapeRegex(unoPackage.version)} \\| NuGet Package Explorer$`)
   );
   expectNoStartupFailure(consoleMessages);
 });

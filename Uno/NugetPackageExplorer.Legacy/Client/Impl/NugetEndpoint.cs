@@ -56,40 +56,40 @@ namespace NupkgExplorer.Client.Impl
         }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization", "CA1308:Normalize strings to uppercase", Justification = "It's what the URL needs to be")]
-        public async Task<Stream> DownloadPackage(CancellationToken ct, string packageId, string version, IProgress<(long ReceivedBytes, long? TotalBytes)> progress)
+        public async Task DownloadPackage(string packageId, string version, Stream destination, IProgress<(long ReceivedBytes, long? TotalBytes)> progress, CancellationToken ct)
         {
             ArgumentNullException.ThrowIfNullOrWhiteSpace(packageId);
             ArgumentNullException.ThrowIfNullOrWhiteSpace(version);
+            ArgumentNullException.ThrowIfNull(destination);
             ArgumentNullException.ThrowIfNull(progress);
 
             packageId = packageId.ToLowerInvariant();
             version = version.ToLowerInvariant();
 
             // https://docs.microsoft.com/en-us/nuget/api/package-base-address-resource
-            var response = await Query(HttpCompletionOption.ResponseHeadersRead, query => query
-                .Get()
-                .FromUrl($"https://api.nuget.org/v3-flatcontainer/{packageId}/{version}/{packageId}.{version}.nupkg")
-            );
+            using var request = new HttpRequestMessage(
+                HttpMethod.Get,
+                $"https://api.nuget.org/v3-flatcontainer/{packageId}/{version}/{packageId}.{version}.nupkg");
+            using var response = await Client.SendAsync(request, HttpCompletionOption.ResponseContentRead, ct).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
 
             var total = response.Content.Headers.ContentLength;
-            long read = 0, received = 0;
+            long received = 0;
             var buffer = new Memory<byte>(new byte[2 << 12]);
             progress.Report((received, total));
 
-            var stream = new MemoryStream((int)(total ?? 0));
-            using (var content = await response.Content.ReadAsStreamAsync())
+            await using (var content = await response.Content.ReadAsStreamAsync(ct).ConfigureAwait(false))
             {
-                while ((read = await content.ReadAsync(buffer)) > 0)
+                int read;
+                while ((read = await content.ReadAsync(buffer, ct).ConfigureAwait(false)) > 0)
                 {
-                    await stream.WriteAsync(buffer[..(int)read]);
-                    progress.Report((received += read, total));
-                    ct.ThrowIfCancellationRequested();
+                    await destination.WriteAsync(buffer[..read], ct).ConfigureAwait(false);
+                    received += read;
+                    progress.Report((received, total));
                 }
-                progress.Report((received += read, total));
             }
 
-            stream.Position = 0;
-            return stream;
+            progress.Report((received, total));
         }
     }
 }
