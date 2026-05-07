@@ -6,11 +6,10 @@
   },
   "test": {
     "runner": "Microsoft.Testing.Platform"
-  },
-
+  }
   // To update the version of Uno please update the version of the Uno.Sdk here. See https://aka.platform.uno/upgrade-uno-packages for more information.
   "msbuild-sdks": {
-    "Uno.Sdk": "6.5.31",
+    "Uno.Sdk": "6.5.33",
     "Uno.Sdk.Private": "6.5.153"
   }
 }
