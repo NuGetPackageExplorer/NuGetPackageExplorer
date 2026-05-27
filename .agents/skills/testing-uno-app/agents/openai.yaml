@@ -1,0 +1,7 @@
+interface:
+  display_name: "Testing Uno App"
+  short_description: "Validate NPE across Uno, WPF, SWA, and preview"
+  default_prompt: "Use $testing-uno-app to run the correct local validation path for this NuGet Package Explorer change."
+
+policy:
+  allow_implicit_invocation: true
