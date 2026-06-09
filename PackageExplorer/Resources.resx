@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Dialog_CreatedByLabel" xml:space="preserve">
     <value>Authors:</value>
@@ -355,6 +355,18 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   </data>
   <data name="ProxyConnectToMessage" xml:space="preserve">
     <value>Connect to {0}</value>
+  </data>
+  <data name="ValidationResult_Copy" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="ValidationResult_Errors" xml:space="preserve">
+    <value>Errors:</value>
+  </data>
+  <data name="ValidationResult_Info" xml:space="preserve">
+    <value>Information:</value>
+  </data>
+  <data name="ValidationResult_Warnings" xml:space="preserve">
+    <value>Warnings:</value>
   </data>
   <data name="Validation_Disallowed" xml:space="preserve">
     <value>Disallowed</value>

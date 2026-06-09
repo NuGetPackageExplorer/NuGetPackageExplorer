@@ -28,7 +28,14 @@ namespace PackageExplorer
         {
             if (DataContext is ValidationResultViewModel viewModel)
             {
-                Clipboard.SetText(viewModel.ValidationSummary);
+                try
+                {
+                    Clipboard.SetText(viewModel.ValidationSummary);
+                }
+                catch (System.Runtime.InteropServices.ExternalException)
+                {
+                    MessageBox.Show(this, "Failed to copy validation summary to clipboard.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 

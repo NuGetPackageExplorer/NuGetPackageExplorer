@@ -1,7 +1,11 @@
-﻿using System.Text;
-using CI = System.Globalization.CultureInfo;
+﻿using System.Globalization;
+using System.Resources;
+using System.Text;
+
 using NuGet.Common;
 using NuGet.Packaging.Signing;
+
+using CI = System.Globalization.CultureInfo;
 
 
 namespace PackageExplorerViewModel
@@ -9,6 +13,8 @@ namespace PackageExplorerViewModel
     public sealed class ValidationResultViewModel
     {
         private readonly VerifySignaturesResult _verifySignaturesResult;
+        private static ResourceManager resManager => Resources.ResourceManager;
+        private static CultureInfo cultureInfo => CultureInfo.CurrentCulture;
 
         public ValidationResultViewModel(VerifySignaturesResult verifySignaturesResult)
         {
@@ -35,7 +41,7 @@ namespace PackageExplorerViewModel
 
                 if (ErrorIssues.Count > 0)
                 {
-                    messageBuilder.AppendLine("Errors:");
+                    messageBuilder.AppendLine(resManager.GetString("ValidationResult_Errors", cultureInfo));
                     foreach (var issue in ErrorIssues)
                     {
                         messageBuilder.AppendLine(issue.Message);
@@ -44,10 +50,10 @@ namespace PackageExplorerViewModel
 
                 if (WarningIssues.Count > 0)
                 {
-                    messageBuilder.AppendLine("Warnings:");
+                    messageBuilder.AppendLine(resManager.GetString("ValidationResult_Warnings", cultureInfo));
                     foreach (var issue in WarningIssues)
                     {
-                        messageBuilder.AppendLine(issue.Message);
+                        messageBuilder.AppendLine(resManager.GetString("ValidationResult_Info", cultureInfo));
                     }
                 }
 
