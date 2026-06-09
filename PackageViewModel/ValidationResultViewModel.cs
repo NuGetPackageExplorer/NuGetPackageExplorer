@@ -1,4 +1,6 @@
-﻿using NuGet.Common;
+﻿using System.Globalization;
+using System.Text;
+using NuGet.Common;
 using NuGet.Packaging.Signing;
 
 
@@ -7,6 +9,7 @@ namespace PackageExplorerViewModel
     public sealed class ValidationResultViewModel
     {
         private readonly VerifySignaturesResult _verifySignaturesResult;
+        private static CultureInfo cultureInfo => CultureInfo.CurrentUICulture;
 
         public ValidationResultViewModel(VerifySignaturesResult verifySignaturesResult)
         {
@@ -21,6 +24,58 @@ namespace PackageExplorerViewModel
                                                       .Where(static sl => sl.Level == LogLevel.Information)
                                                       .ToList();
         }
+
+        public string ValidationSummary
+        {
+            get
+            {
+                var messageBuilder = new StringBuilder();
+
+                messageBuilder.AppendLine(cultureInfo, $"{Resources.Validation_Result}: {(Valid ? Resources.Validation_True : Resources.Validation_False)}");
+                messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Signed}: {(Signed ? Resources.Validation_True : Resources.Validation_False)}");
+                messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Trust_Level}: {GetLocalizedTrustText(Trust)}");
+
+                if (ErrorIssues.Count > 0)
+                {
+                    messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Errors}");
+                    foreach (var issue in ErrorIssues)
+                    {
+                        messageBuilder.AppendLine(issue.Message);
+                    }
+                }
+
+                if (WarningIssues.Count > 0)
+                {
+                    messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Warnings}");
+                    foreach (var issue in WarningIssues)
+                    {
+                        messageBuilder.AppendLine(issue.Message);
+                    }
+                }
+
+                if (InformationIssues.Count > 0)
+                {
+                    messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Info}");
+                    foreach (var issue in InformationIssues)
+                    {
+                        messageBuilder.AppendLine(issue.Message);
+                    }
+                }
+
+                return messageBuilder.ToString();
+            }
+            
+        }
+
+        private static string GetLocalizedTrustText(SignatureVerificationStatus trust) =>
+            trust switch
+            {
+                SignatureVerificationStatus.Valid => Resources.Validation_Valid,
+                SignatureVerificationStatus.Disallowed => Resources.Validation_Disallowed,
+                SignatureVerificationStatus.Unknown => Resources.Validation_Unknown,
+                SignatureVerificationStatus.Suspect => Resources.Validation_Suspect,
+                _ => Resources.Validation_Unknown
+            };
 
 
         public bool Valid => _verifySignaturesResult.IsValid;
