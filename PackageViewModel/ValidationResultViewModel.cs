@@ -1,11 +1,7 @@
 ﻿using System.Globalization;
-using System.Resources;
 using System.Text;
-
 using NuGet.Common;
 using NuGet.Packaging.Signing;
-
-using CI = System.Globalization.CultureInfo;
 
 
 namespace PackageExplorerViewModel
@@ -13,8 +9,7 @@ namespace PackageExplorerViewModel
     public sealed class ValidationResultViewModel
     {
         private readonly VerifySignaturesResult _verifySignaturesResult;
-        private static ResourceManager resManager => Resources.ResourceManager;
-        private static CultureInfo cultureInfo => CultureInfo.CurrentCulture;
+        private static CultureInfo cultureInfo => CultureInfo.CurrentUICulture;
 
         public ValidationResultViewModel(VerifySignaturesResult verifySignaturesResult)
         {
@@ -34,14 +29,15 @@ namespace PackageExplorerViewModel
         {
             get
             {
-                var messageBuilder = new StringBuilder(); 
-                messageBuilder.AppendLine(CI.CurrentCulture, $"Validation Result: {Valid}");
-                messageBuilder.AppendLine(CI.CurrentCulture, $"Signed: {Signed}");
-                messageBuilder.AppendLine(CI.CurrentCulture, $"Trust Level: {Trust}");
+                var messageBuilder = new StringBuilder();
+
+                messageBuilder.AppendLine(cultureInfo, $"{Resources.Validation_Result}: {Valid}");
+                messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Signed}: {Signed}");
+                messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Trust_Level}: {Trust}");
 
                 if (ErrorIssues.Count > 0)
                 {
-                    messageBuilder.AppendLine(resManager.GetString("ValidationResult_Errors", cultureInfo));
+                    messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Errors}");
                     foreach (var issue in ErrorIssues)
                     {
                         messageBuilder.AppendLine(issue.Message);
@@ -50,7 +46,7 @@ namespace PackageExplorerViewModel
 
                 if (WarningIssues.Count > 0)
                 {
-                    messageBuilder.AppendLine(resManager.GetString("ValidationResult_Warnings", cultureInfo));
+                    messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Warnings}");
                     foreach (var issue in WarningIssues)
                     {
                         messageBuilder.AppendLine(issue.Message);
@@ -59,7 +55,7 @@ namespace PackageExplorerViewModel
 
                 if (InformationIssues.Count > 0)
                 {
-                    messageBuilder.AppendLine(resManager.GetString("ValidationResult_Info", cultureInfo));
+                    messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Info}");
                     foreach (var issue in InformationIssues)
                     {
                         messageBuilder.AppendLine(issue.Message);

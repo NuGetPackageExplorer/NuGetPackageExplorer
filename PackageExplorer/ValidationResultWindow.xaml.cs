@@ -1,8 +1,11 @@
 ﻿using System.Windows;
+
 using NuGetPe;
-using Clipboard = System.Windows.Forms.Clipboard;
 
 using PackageExplorerViewModel;
+
+using StringResources = PackageExplorer.Resources;
+using Clipboard = System.Windows.Forms.Clipboard;
 
 namespace PackageExplorer
 {
@@ -34,7 +37,7 @@ namespace PackageExplorer
                 }
                 catch (System.Runtime.InteropServices.ExternalException)
                 {
-                    MessageBox.Show(this, "Failed to copy validation summary to clipboard.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show(this, StringResources.Copy_Error, StringResources.Error, MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
         }

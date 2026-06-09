@@ -359,15 +359,6 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="ValidationResult_Copy" xml:space="preserve">
     <value>Copy</value>
   </data>
-  <data name="ValidationResult_Errors" xml:space="preserve">
-    <value>Errors:</value>
-  </data>
-  <data name="ValidationResult_Info" xml:space="preserve">
-    <value>Information:</value>
-  </data>
-  <data name="ValidationResult_Warnings" xml:space="preserve">
-    <value>Warnings:</value>
-  </data>
   <data name="Validation_Disallowed" xml:space="preserve">
     <value>Disallowed</value>
   </data>
@@ -404,10 +395,16 @@ Do you want to add '{0}' to the list of package publish sources?</value>
   <data name="Validation_Unknown" xml:space="preserve">
     <value>Unknown</value>
   </data>
+  <data name="Validation_ValidExternal" xml:space="preserve">
+    <value>Valid with Symbol Server</value>
+  </data>
   <data name="Validation_Valid" xml:space="preserve">
     <value>Valid</value>
   </data>
-  <data name="Validation_ValidExternal" xml:space="preserve">
-    <value>Valid with Symbol Server</value>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Copy_Error" xml:space="preserve">
+    <value>Failed to copy validation summary to clipboard.</value>
   </data>
 </root>
