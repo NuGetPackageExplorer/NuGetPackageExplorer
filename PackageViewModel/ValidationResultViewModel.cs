@@ -31,8 +31,8 @@ namespace PackageExplorerViewModel
             {
                 var messageBuilder = new StringBuilder();
 
-                messageBuilder.AppendLine(cultureInfo, $"{Resources.Validation_Result}: {Valid}");
-                messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Signed}: {Signed}");
+                messageBuilder.AppendLine(cultureInfo, $"{Resources.Validation_Result}: {(Valid ? Resources.Validation_True : Resources.Validation_False)}");
+                messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Signed}: {(Signed ? Resources.Validation_True : Resources.Validation_False)}");
                 messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Trust_Level}: {GetLocalizedTrustText(Trust)}");
 
                 if (ErrorIssues.Count > 0)

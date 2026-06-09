@@ -252,11 +252,17 @@
   <data name="Validation_Disallowed" xml:space="preserve">
     <value>Disallowed</value>
   </data>
+  <data name="Validation_False" xml:space="preserve">
+    <value>False</value>
+  </data>
   <data name="Validation_Result" xml:space="preserve">
     <value>Validation Result</value>
   </data>
   <data name="Validation_Suspect" xml:space="preserve">
     <value>Suspect</value>
+  </data>
+  <data name="Validation_True" xml:space="preserve">
+    <value>True</value>
   </data>
   <data name="Validation_Unknown" xml:space="preserve">
     <value>Unknown</value>
