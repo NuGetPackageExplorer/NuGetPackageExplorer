@@ -53,13 +53,13 @@ namespace PackageExplorerViewModel
                     messageBuilder.AppendLine(resManager.GetString("ValidationResult_Warnings", cultureInfo));
                     foreach (var issue in WarningIssues)
                     {
-                        messageBuilder.AppendLine(resManager.GetString("ValidationResult_Info", cultureInfo));
+                        messageBuilder.AppendLine(issue.Message);
                     }
                 }
 
                 if (InformationIssues.Count > 0)
                 {
-                    messageBuilder.AppendLine("Information:");
+                    messageBuilder.AppendLine(resManager.GetString("ValidationResult_Info", cultureInfo));
                     foreach (var issue in InformationIssues)
                     {
                         messageBuilder.AppendLine(issue.Message);
