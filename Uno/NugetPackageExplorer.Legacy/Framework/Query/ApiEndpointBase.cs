@@ -8,6 +8,7 @@ namespace NupkgExplorer.Framework.Query
     public abstract class ApiEndpointBase
     {
         private readonly HttpClient _client;
+        protected HttpClient Client => _client;
 
         protected ApiEndpointBase()
         {
