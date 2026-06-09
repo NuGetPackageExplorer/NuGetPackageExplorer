@@ -33,7 +33,7 @@ namespace PackageExplorerViewModel
 
                 messageBuilder.AppendLine(cultureInfo, $"{Resources.Validation_Result}: {Valid}");
                 messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Signed}: {Signed}");
-                messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Trust_Level}: {Trust}");
+                messageBuilder.AppendLine(cultureInfo, $"{Resources.ValidationResult_Trust_Level}: {GetLocalizedTrustText(Trust)}");
 
                 if (ErrorIssues.Count > 0)
                 {
@@ -66,6 +66,16 @@ namespace PackageExplorerViewModel
             }
             
         }
+
+        private static string GetLocalizedTrustText(SignatureVerificationStatus trust) =>
+            trust switch
+            {
+                SignatureVerificationStatus.Valid => Resources.Validation_Valid,
+                SignatureVerificationStatus.Disallowed => Resources.Validation_Disallowed,
+                SignatureVerificationStatus.Unknown => Resources.Validation_Unknown,
+                SignatureVerificationStatus.Suspect => Resources.Validation_Suspect,
+                _ => Resources.Validation_Unknown
+            };
 
 
         public bool Valid => _verifySignaturesResult.IsValid;
