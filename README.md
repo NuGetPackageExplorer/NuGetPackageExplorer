@@ -48,7 +48,7 @@ Usage:
   dotnet validate package local [options] <file>
 
 Arguments:
-  <file>    Package to validate.
+  <file>    Package to validate
 
 Options:
   -?, -h, --help    Show help and usage information
@@ -160,3 +160,8 @@ Requirements to build the project:
 - VS2022 or later. If using the stable release, make sure to enable support for Preview .NET Core SDK's
 - [.NET 7 SDK](https://dotnet.microsoft.com/download/dotnet/7.0)
 
+## Sponsorship
+
+Sponsorship helps fund ongoing maintenance across the Windows and web applications, package validation tooling, build and release infrastructure, and continued work as the NuGet ecosystem evolves.
+
+[Support Claire Novotny's open-source work through GitHub Sponsors](https://github.com/sponsors/clairernovotny).
