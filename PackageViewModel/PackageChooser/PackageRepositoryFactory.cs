@@ -40,7 +40,15 @@ namespace PackageExplorerViewModel
             var configuredSource =
                 SettingsUtility
                     .GetEnabledSources(settings)
-                    .FirstOrDefault(s => string.Equals(s.Source.TrimEnd('/'), source.TrimEnd('/'), StringComparison.OrdinalIgnoreCase));
+                    .FirstOrDefault(s =>
+                    {
+                        var configuredUri = s.TrySourceAsUri;
+                        return configuredUri != null
+                               && Uri.Compare(configuredUri, uri, UriComponents.SchemeAndServer, UriFormat.UriEscaped, StringComparison.OrdinalIgnoreCase) == 0
+                               && string.Equals(configuredUri.AbsolutePath.TrimEnd('/'), uri.AbsolutePath.TrimEnd('/'), StringComparison.Ordinal)
+                               && string.Equals(configuredUri.Query, uri.Query, StringComparison.Ordinal)
+                               && string.Equals(configuredUri.Fragment, uri.Fragment, StringComparison.Ordinal);
+                    });
 
             return CreateRepository(configuredSource ?? new PackageSource(source));
         }
