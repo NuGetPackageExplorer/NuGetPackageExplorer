@@ -36,7 +36,13 @@ namespace PackageExplorerViewModel
                 throw new ArgumentException("Invalid URL", nameof(source));
             }
 
-            return CreateRepository(new PackageSource(source));
+            var settings = Settings.LoadDefaultSettings(null);
+            var configuredSource =
+                SettingsUtility
+                    .GetEnabledSources(settings)
+                    .FirstOrDefault(s => string.Equals(s.Source.TrimEnd('/'), source.TrimEnd('/'), StringComparison.OrdinalIgnoreCase));
+
+            return CreateRepository(configuredSource ?? new PackageSource(source));
         }
     }
 
