@@ -55,3 +55,7 @@
 - There is minimal automated testing—manual validation paths (`PackageExplorer/MainWindow.xaml.cs` workflows, `dotnet-validate`) are the de facto regression checks.
 - UNO `MefServices` currently throw `NotImplementedException` for some contracts; desktop features that assume complete implementations need conditional guards.
 - `Common/CommonAssemblyInfo.cs` is linked into each project; update assembly metadata here rather than per-project attributes.
+
+## Merging
+
+PRs land through the Mergify merge queue (`.mergify.yml`), squashed into one commit on `main` titled and described by the PR; merge commits and rebase merges are turned off. Do not merge by hand. Mergify queues a PR once it is not a draft, its required checks are green, every review thread is resolved, and it is authored by clairernovotny or approved by someone with write access. Add the `do-not-merge` label to hold one back.
