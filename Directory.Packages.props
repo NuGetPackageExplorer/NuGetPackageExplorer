@@ -9,7 +9,7 @@
     <SystemDependencyVersion>10.0.3</SystemDependencyVersion>
   </PropertyGroup>
   <ItemGroup>
-    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.9.50"  />
+    <GlobalPackageReference Include="Nerdbank.GitVersioning" Version="3.10.85"  />
 
     <PackageVersion Include="AppInsights.WindowsDesktop" Version="2.18.1" />
     <PackageVersion Include="AuthenticodeExaminer" Version="0.4.0" />
