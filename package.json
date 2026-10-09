@@ -2,7 +2,7 @@
   "name": "nuget-package-explorer-devtools",
   "private": true,
   "devDependencies": {
-    "@azure/static-web-apps-cli": "2.0.8",
+    "@azure/static-web-apps-cli": "2.0.9",
     "@playwright/test": "1.58.2"
   },
   "scripts": {
